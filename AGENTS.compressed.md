@@ -41,13 +41,13 @@ spike/002-build-poc/  SPIKE-002: harmonized Bazel build proof-of-concept — ind
 
 before non-trivial impl: check $ts/vision/ + $ts/tickets/TICKETS.md + $ts/research/ for prior work
 
-SPIKE ISOLATION: agents working a spike touch ONLY their spike subdirectory; no other repo files
+SPIKE ISOLATION: work directly in main repo checkout; touch ONLY spike/NNN-name/**; no other repo files; no jj workspaces
 SPIKE COMMANDS: use names (npm,bazel,node) not absolute paths; all tooling must be on PATH
 SPIKE COMMIT WORKFLOW:
   during: commit after each logical chunk; run build+tests before commit; squash fixes freely; no PR
   at completion: all AC met + SPIKE-REPORT.md written → one PR → full critique cycle → merge
 SPIKE CHECKPOINTING: maintain PROGRESS.md in spike dir; update+commit with each chunk
-  format: working-dir(absolute path; jj workspace sibling e.g. .../redistricting-sim-spike-NNN/spike/NNN-name/) | status | AC checklist(next-up bolded) | decisions(non-obvious only) | blockers
+  format: working-dir(absolute path inside repo e.g. .../redistricting-sim/spike/NNN-name/) | status | AC checklist(next-up bolded) | decisions(non-obvious only) | blockers
   resuming agent: read ticket → PROGRESS.md → jj log; continue from Next up
   keep under 30 lines; skip anything evident from ticket or code
 

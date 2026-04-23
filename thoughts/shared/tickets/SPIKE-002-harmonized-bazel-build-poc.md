@@ -78,18 +78,17 @@ at `spike/002-build-poc/MODULE.bazel` and run all Bazel commands from within tha
 directory (`cd spike/002-build-poc && bazel build //...`). This keeps the spike
 fully self-contained and avoids touching the repo root.
 
-## jj Discipline (CRITICAL for parallel spike work)
+## jj Discipline
 
-This spike runs in parallel with SPIKE-001 (game tech stack). To avoid conflicts:
+Work directly in the main repo checkout. All spike files live under `spike/002-build-poc/`
+inside the repo — do not create sibling directories or jj workspaces.
 
-1. Before starting, confirm the working copy (@) is on a fresh change descended from
-   main: `jj log`
-2. Create a dedicated jj workspace for this spike:
-   `jj workspace add ../redistricting-sim-spike-002`
-   Work exclusively in that workspace directory.
-3. All commits in this spike's change stack touch only `spike/002-build-poc/**`.
-4. Create bookmark: `jj bookmark create spike/002-build-poc -r @`
-5. Push and open PR only when **all acceptance criteria are met and `SPIKE-REPORT.md` is written**.
+1. Before starting: `jj log` — confirm `@` is a fresh empty change descended from main.
+   If not, run `jj new main` to start one.
+2. All commits touch only `spike/002-build-poc/**` — no other repo files.
+3. Create a bookmark before your first push:
+   `jj bookmark create spike/002-build-poc -r @`
+4. Push and open PR only when **all acceptance criteria are met and `SPIKE-REPORT.md` is written**.
 
 **Commit workflow during the spike:** commit after each logical chunk; run
 `bazel test //...` (or fallback equivalent) before each commit; squash small fixes

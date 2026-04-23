@@ -85,10 +85,7 @@ Format:
 
 ```markdown
 ## Working Directory
-`<absolute path to spike dir>`
-# Note: spikes run in jj workspaces created with `jj workspace add ../redistricting-sim-spike-NNN`.
-# The spike dir is therefore a sibling of the repo root, e.g.:
-# /Users/cgruber/Projects/github/cgruber/redistricting-sim-spike-001/spike/001-game-poc/
+`<absolute path to spike dir within the repo, e.g. /Users/cgruber/Projects/github/cgruber/redistricting-sim/spike/001-game-poc/>`
 
 ## Status: In Progress | Blocked: <reason> | Complete
 

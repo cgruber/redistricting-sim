@@ -39,22 +39,21 @@ and play? It is not production code — correctness and polish are out of scope.
 `package.json`, `tsconfig.json`, and toolchain. Do not modify any files outside
 `spike/001-game-poc/`. Do not import from or depend on anything outside this directory.
 
-## jj Discipline (CRITICAL for parallel spike work)
+## jj Discipline
 
-This spike runs in parallel with SPIKE-002 (build system). To avoid conflicts:
+Work directly in the main repo checkout. All spike files live under `spike/001-game-poc/`
+inside the repo — do not create sibling directories or jj workspaces.
 
-1. Before starting, confirm the working copy (@) is on a fresh change descended from
-   main: `jj log`
-2. Create a dedicated jj workspace for this spike:
-   `jj workspace add ../redistricting-sim-spike-001`
-   Work exclusively in that workspace directory.
-3. All commits in this spike's change stack touch only `spike/001-game-poc/**`.
-4. Create bookmark: `jj bookmark create spike/001-game-poc -r @`
-5. Push and open PR only when **all acceptance criteria are met and `SPIKE-REPORT.md` is written**.
+1. Before starting: `jj log` — confirm `@` is a fresh empty change descended from main.
+   If not, run `jj new main` to start one.
+2. All commits touch only `spike/001-game-poc/**` — no other repo files.
+3. Create a bookmark before your first push:
+   `jj bookmark create spike/001-game-poc -r @`
+4. Push and open PR only when **all acceptance criteria are met and `SPIKE-REPORT.md` is written**.
 
 **Commit workflow during the spike:** commit after each logical chunk; run `npm test`
-before each commit; squash small fixes into the relevant commit freely. No PR during
-active execution — one PR at completion covers the whole spike.
+before each commit; squash small fixes freely. No PR during active execution — one PR
+at completion covers the whole spike.
 
 ## Map Generation
 
