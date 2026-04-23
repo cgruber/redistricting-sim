@@ -2,7 +2,7 @@
 id: AGENT-001
 title: Apply $abr dollar-prefix convention to all compressed docs
 area: docs, agents
-status: open
+status: resolved
 created: 2026-04-23
 ---
 
@@ -17,15 +17,16 @@ The following files were written without applying this convention and need a pas
 
 Exception per convention: literal tool/target names that share a prefix (e.g. `grpc_kotlin`, `ktfmt`) stay as literals. Also watch for prose words that could be mistaken for abbreviations.
 
-## Current State
+## Resolution
 
-Both files use bare abbreviation names in their bodies. Functionally correct but not convention-compliant.
+All §ABBREV key references in both files prefixed with `$`. Merged in PR #2.
+Third criterion (future files) is a standing convention, not a one-time task.
 
 ## Goals / Acceptance Criteria
 
-- [ ] All §ABBREV key references in `game-vision.compressed.md` use `$abr` format
-- [ ] All §ABBREV key references in `2026-04-23-agent-team-and-workflow-design.compressed.md` use `$abr` format
-- [ ] Any other `.compressed.md` files added in the future follow the convention from creation
+- [x] All §ABBREV key references in `game-vision.compressed.md` use `$abr` format
+- [x] All §ABBREV key references in `2026-04-23-agent-team-and-workflow-design.compressed.md` use `$abr` format
+- [x] Any other `.compressed.md` files added in the future follow the convention from creation
 
 ## References
 

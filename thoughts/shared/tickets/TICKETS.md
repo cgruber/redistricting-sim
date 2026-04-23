@@ -33,7 +33,6 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 
 | File | Area | Summary |
 |---|---|---|
-| `AGENT-001-compressed-abbrev-dollar-prefix.md` | docs, agents | Apply $abr dollar-prefix convention to all compressed docs (game-vision, agent-team-design) |
 | `KT-004-kotlin-docker-deployment.md` | kotlin, docker, deployment | Docker container build for Kotlin service; staging + production profiles |
 | `CI-001-github-action-ticket-close-sync.md` | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
 | `BUILD-001-grpc-kotlin-bzlmod-migration.md` | kotlin, bazel, grpc | Migrate to bzlmod-native `grpc_kotlin` when upstream supports it |
@@ -47,6 +46,7 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 
 | Summary | Resolution |
 |---|---|
+| AGENT-001: $abr convention in compressed docs | Applied $-prefix to all §ABBREV key references in game-vision.compressed.md and agent-team-design.compressed.md; merged PR #2 |
 | KT-007: DB-backed bracket config | Implemented: `BracketPairRepository` (JOOQ), `BracketsDbModule`, `BracketsServiceTelemetry`, `@GrpcCallScope` endpoint wiring, tests; merged in PR #50 |
 | KT-002: Dagger 2 DI via dagger-grpc | `ApplicationGraph` @Component, `GrpcCallScopeGraph` subcomponent, all service modules, `@Inject` constructors |
 | KT-005: JOOQ codegen | `JooqCodegenRunner`, Bazel genrule + `jooq_db_lib`, DDLDatabase codegen from migration SQL, generated files gitignored; merged in PR #45 |
