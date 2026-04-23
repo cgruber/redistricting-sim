@@ -16,7 +16,7 @@
 import * as d3 from "d3";
 import { hexCorners, mapBounds } from "../model/generator.js";
 import type { Precinct } from "../model/types.js";
-import { DISTRICT_COLORS, PARTY_LABELS } from "../model/types.js";
+import { DISTRICT_COLORS, PARTY_COLORS, PARTY_LABELS } from "../model/types.js";
 import type { GameStore } from "../store/gameStore.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -375,8 +375,6 @@ export class MapRenderer {
 }
 
 // ─── Election results renderer ────────────────────────────────────────────────
-
-import { PARTY_COLORS } from "../model/types.js";
 
 export function renderResults(container: HTMLElement, state: GameStore): void {
 	if (state.simulationResult === null || state.simulationResult.districtResults.length === 0) {
