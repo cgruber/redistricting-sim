@@ -1,0 +1,26 @@
+{
+	"name": "redistricting-sim-spike-001",
+	"version": "0.1.0",
+	"private": true,
+	"description": "SPIKE-001: Game tech stack proof-of-concept — TypeScript + Vite + D3 + Zustand",
+	"scripts": {
+		"start": "vite",
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview",
+		"format": "biome format --write .",
+		"lint": "biome lint .",
+		"check": "biome check ."
+	},
+	"dependencies": {
+		"d3": "^7.9.0",
+		"zustand": "^5.0.3",
+		"zundo": "^2.3.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@types/d3": "^7.4.3",
+		"typescript": "^5.7.3",
+		"vite": "^6.0.11"
+	}
+}
