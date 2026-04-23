@@ -1,1 +1,0 @@
-# Kotlin implementation of brackets checker.

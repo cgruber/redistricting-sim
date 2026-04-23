@@ -1,113 +1,11 @@
 # Buildkite CI Pipeline
 #
-# Two platforms:
-#   Linux  — steps run inside local/ci-agent:latest Docker containers via the Docker plugin
-#   macOS  — steps run natively on the Mac agent with Bazel seatbelt sandboxing
-#
-# Dependency graph:
-#   build-linux ──── test-linux ──── kotlin-integration-linux
-#
-#   build-macos ──── test-macos ──── kotlin-integration-macos
-#
-# Plugins:
-#   docker#v5.11.0  https://github.com/buildkite-plugins/docker-buildkite-plugin  (Apache-2.0)
+# Stack is being decided — see SPIKE-001 (game tech stack) and SPIKE-002 (build system).
+# Steps will be added once the spike results are merged and the stack is locked.
 
 env:
   BUILDKITE_CLEAN_CHECKOUT: "true"
 
 steps:
-
-  ##############################################################################
-  # BUILD PHASE — fail fast before running tests
-  ##############################################################################
-
-  - label: ":bazel: Build (Linux)"
-    key: build-linux
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 2
-    plugins:
-      - docker#v5.11.0:
-          image: "local/ci-agent:latest"
-          always-pull: false
-          volumes:
-            - "/tmp/bazel:/tmp/bazel-disk-cache"
-            - "/tmp/bazel-repo:/root/.cache/bazel"
-          environment:
-            - HOME=/root
-    command: bazel build --config=ci //...
-
-  - label: ":apple: Build (macOS)"
-    key: build-macos
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 2
-    agents:
-      os: macos
-    command: bazel build --config=ci //...
-
-  ##############################################################################
-  # TEST PHASE — parallel per platform
-  ##############################################################################
-
-  - label: ":bazel: Test (Linux)"
-    key: test-linux
-    depends_on: build-linux
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 2
-    plugins:
-      - docker#v5.11.0:
-          image: "local/ci-agent:latest"
-          always-pull: false
-          volumes:
-            - "/tmp/bazel:/tmp/bazel-disk-cache"
-            - "/tmp/bazel-repo:/root/.cache/bazel"
-          environment:
-            - HOME=/root
-    command: bazel test --config=ci //...
-
-  - label: ":apple: Test (macOS)"
-    key: test-macos
-    depends_on: build-macos
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 2
-    agents:
-      os: macos
-    command: bazel test --config=ci //...
-
-  ##############################################################################
-  # INTEGRATION TESTS — Kotlin gRPC service smoke test
-  ##############################################################################
-
-  - label: ":kotlin: Kotlin integration test (Linux)"
-    depends_on: test-linux
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 2
-    plugins:
-      - docker#v5.11.0:
-          image: "local/ci-agent:latest"
-          always-pull: false
-          volumes:
-            - "/tmp/bazel:/tmp/bazel-disk-cache"
-            - "/tmp/bazel-repo:/root/.cache/bazel"
-          environment:
-            - HOME=/root
-    command: .buildkite/scripts/kotlin-integration-test.sh
-
-  - label: ":apple: :kotlin: Kotlin integration test (macOS)"
-    depends_on: test-macos
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 2
-    agents:
-      os: macos
-    command: .buildkite/scripts/kotlin-integration-test.sh
+  - label: ":memo: No build steps yet"
+    command: echo "Stack spike in progress — see SPIKE-001 and SPIKE-002 tickets"

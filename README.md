@@ -1,54 +1,38 @@
-# Redistricting Simulator
+# redistricting-sim
 
-An educational simulator exploring the dynamics of gerrymandering and its effects on electoral
-outcomes — a spiritual successor to *The Redistricting Game*.
+An educational browser-based game about gerrymandering and electoral redistricting.
 
-## Purpose
+Players draw district boundaries over a fictional region, then simulate elections to see
+how boundary choices affect outcomes. The goal is visceral understanding: same population,
+same votes, dramatically different results depending on who drew the lines.
 
-Representative democracy is highly sensitive to how district boundaries are drawn. Small
-changes in boundary placement can dramatically alter which party wins a given election,
-even when the underlying population's preferences stay the same. This simulator is designed
-to make that sensitivity visible and tangible.
+## Status
 
-Players draw district boundaries over a small synthetic region with a defined population
-distribution, then simulate elections to observe the outcome. Different boundary choices —
-even ones that satisfy neutral criteria like equal population — can produce wildly different
-results. The game covers:
+Early design and prototyping phase. The game vision is documented in
+`thoughts/shared/vision/game-vision.md`. The tech stack is being validated via parallel
+proof-of-concept spikes (see `thoughts/shared/tickets/`).
 
-- **Party-composition scenarios**: see how district shapes affect which party controls a
-  legislature from the same electorate.
-- **Racial and demographic scenarios**: explore how boundary choices interact with the
-  Voting Rights Act's mandate that minority communities have an effective voice.
-- **Neutral-rule scenarios**: see what "independent redistricting" criteria like
-  compactness, contiguity, and equal population actually achieve — and what they leave open.
-- **Population-change scenarios**: redraw districts after population shifts, as happens
-  after each census.
+Working direction:
+- Browser-based, desktop-first
+- TypeScript + SVG/D3 for map rendering and game UI
+- Client-side election simulation (no server-side compute)
+- Local browser storage for progress (no user accounts in v1)
 
-The near-term focus is a single small region with first-past-the-post elections. Stretch
-goals for later versions include larger polities, alternative electoral systems (plurality
-at-large, party-list proportional representation, single transferable vote), and
-Arrow's-impossibility-style exploration of what any voting system must trade off.
+## Repository Layout
 
-## Tech Stack
-
-- **Backend service**: Kotlin, gRPC (Armeria), Dagger 2 DI, Flyway + JOOQ (database)
-- **Build**: Bazel (bzlmod), JVM 21
-- **Observability**: OpenTelemetry (traces, metrics, structured logs via OTLP)
-- **CI**: Buildkite (Linux via Docker, macOS native)
-
-## Building
-
-```bash
-bazel build //...
-bazel test //...
+```
+thoughts/shared/vision/     # Game design documents — start here
+thoughts/shared/research/   # Research and architectural decisions
+thoughts/shared/tickets/    # Work tracking
+spike/001-game-poc/         # SPIKE-001: game tech stack proof-of-concept (in progress)
+spike/002-build-poc/        # SPIKE-002: build system proof-of-concept (in progress)
 ```
 
-Run the gRPC service:
+## Contributing
 
-```bash
-bazel run //kotlin:brackets_service
-```
+See `AGENTS.md` for agent and contributor conventions. The game vision document is the
+anchor for all design decisions — read it before opening any PRs.
 
-## Development
+## License
 
-See `thoughts/shared/` for architecture decisions, implementation plans, and open tickets.
+See `LICENSE`.
