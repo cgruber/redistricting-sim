@@ -5,7 +5,7 @@ branch: main
 repository: cgruber/redistricting-sim
 topic: Multi-agent team design and development workflow for redistricting-sim
 tags: agents, workflow, roles, team-design, product, architecture
-status: provisional — tech stack session pending
+status: provisional — spikes running (SPIKE-001, SPIKE-002)
 last_updated: 2026-04-23
 last_updated_by: claude+cgruber
 ---
@@ -20,8 +20,15 @@ Builds on the TDD workflow pattern established in polyglot
 substantially to cover the requirements of a game: product management, game mechanics
 design, web UI, visual design, and a set of on-demand specialist reviewers.
 
-Two open workstreams remain before implementation begins: a tech stack session (involving
-GES and Architect) and a game vision document (PM-driven, user-reviewed).
+Two prerequisites before implementation: a tech stack session (GES + Architect) and a game
+vision document (PM-driven, user-reviewed). Both are now resolved — vision doc is written
+and tech stack spikes are running (see SPIKE-001, SPIKE-002 tickets).
+
+**Note on user role:** The user is the project owner and customer — the human the PM
+escalates to, the person who plays the game at sprint demos, and the final arbiter of
+educational and product direction. The user also brings informal software architect
+expertise and subjective game-feel feedback. These contributions flow through PM escalation
+and sprint demos; the user is not an agent role.
 
 ---
 
@@ -49,13 +56,14 @@ demos — the user plays whatever has been built each sprint, giving feedback th
 the next cycle.
 
 #### Game Engine Specialist (GES)
-**Domain:** Game mechanics design and simulation. Owns: electoral algorithm design
-(FPTP for v1; STV, party-list, etc. as stretch goals), district validity rules
-(contiguity, compactness metrics), population distribution modeling, scenario mechanics,
-progression design. Does necessary domain research as part of this work (how FPTP
-counting actually works, what compactness metrics academics use, historical redistricting
-patterns). Not responsible for raw domain accuracy checks — that's the Domain Reviewer's
-role on-demand.
+**Domain:** Game mechanics design and simulation. A technical role — not the user.
+Owns: electoral algorithm design (FPTP for v1; STV, party-list, etc. as stretch goals),
+district validity rules (contiguity, compactness metrics), population distribution
+modeling, scenario mechanics, progression design. Does necessary domain research as part
+of this work (how FPTP counting actually works, what compactness metrics academics use,
+historical redistricting patterns). Not responsible for raw domain accuracy checks — that's
+the Domain Reviewer's role on-demand. Not responsible for whether the game is *fun to play*
+— that's the Game Experience Specialist (GXS, on-demand).
 
 **Relationship to Architect:** Peer/co-designer, not subordinate. Both answer to PM.
 GES owns "what is the simulation capable of and how should it work"; Architect owns "how
@@ -132,6 +140,20 @@ back to TDD Designer; may not change them unilaterally.
 
 These roles are not present in every sprint. They are invoked at specific trigger points.
 Each should have a stable, reusable prompt template that improves over time.
+
+#### Game Experience Specialist (GXS)
+**Invoked for:** New game mechanics landing in a playable form, new scenario UX, before
+any major release. Evaluates: does the game feel engaging to play? Does the district-drawing
+interaction feel right? Does the feedback loop (draw → simulate → see result) communicate
+clearly? Is the educational point landing without being heavy-handed?
+
+**Distinct from GES:** GES reasons about what the mechanics are and how they work
+technically. GXS reasons about how those mechanics feel from the player's perspective.
+**Distinct from EER:** EER asks "does it teach the right lesson?" GXS asks "is it fun and
+clear enough for the lesson to land at all?"
+**Distinct from user:** The user provides subjective game-feel feedback through sprint
+demos (as the project owner, not as an agent). GXS provides structured UX evaluation
+that can be run against a playable build without requiring the user's direct involvement.
 
 #### Domain Reviewer
 **Invoked for:** Electoral accuracy checks, scenario validity ("is this redistricting
@@ -267,6 +289,7 @@ new ticket, and what is deferred.
 
 | Trigger | Reviewer invoked |
 |---|---|
+| New mechanics or scenario in playable form | Game Experience Specialist (GXS) |
 | Any trust boundary touched | Security Reviewer |
 | Any UI feature | Accessibility Reviewer |
 | Infrastructure/service decision | Cost/Finance Reviewer |
@@ -334,10 +357,11 @@ Four distinct advantages over general-purpose agents for specialist roles:
 
 ## Open Questions
 
-1. **Tech stack** — in-browser vs. server computation, mobile roadmap, WASM feasibility
-   (Kotlin Multiplatform?). Needs a dedicated session with GES and Architect before
-   system design begins. Map tile data source is part of this (cost + licensing
-   implications).
+1. **Tech stack** — decided: pure TypeScript v1, SVG/D3 rendering, Zustand state,
+   Vite dev server; WASM deferred. Two parallel spikes running to validate:
+   SPIKE-001 (game tech stack: TypeScript/npm) and SPIKE-002 (build system: Bazel).
+   Map tile data source (cost + licensing) remains open — deferred until game
+   reaches real geographic data.
 
 2. ~~**Game vision document** — what are the concrete v1 scenarios? What does a player
    session look like start to finish? What should a player understand at the end that they

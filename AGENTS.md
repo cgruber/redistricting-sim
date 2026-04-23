@@ -55,6 +55,11 @@ Before starting any non-trivial implementation work: check `thoughts/shared/visi
 
 **Spike directories are completely independent source roots.** Each has its own build toolchain, dependencies, and cannot import from or depend on anything outside its own directory. Agents working on a spike must only create or modify files under their designated `spike/NNN-*/` subdirectory — no changes to other repo files, no cross-spike imports.
 
+**Spike commit workflow** — spikes use a lightweight commit discipline; full PR rigor applies only at completion:
+
+- *During the spike:* commit locally after each logical chunk; run the spike's build and tests (`npm test`, `bazel test //...`, etc.) before each commit; squash small fixes into the relevant commit freely; no PR during active execution.
+- *At completion:* when all acceptance criteria are met and `SPIKE-REPORT.md` is written, open one PR for the full spike result. Run the standard PR review cycle (critique → response → merge) at that point.
+
 ---
 
 ## Working with Tickets

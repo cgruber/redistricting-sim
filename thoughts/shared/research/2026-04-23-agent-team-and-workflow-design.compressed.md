@@ -2,10 +2,10 @@
 §META
 date:2026-04-23 researcher:claude+cgruber branch:main repo:cgruber/redistricting-sim
 topic:multi-agent team design+workflow tags:agents,workflow,roles,team-design,product,architecture
-status:provisional — tech stack session pending last_updated:2026-04-23
+status:provisional — spikes running (SPIKE-001,SPIKE-002) last_updated:2026-04-23
 
 §ABBREV
-PM=Product Manager GES=Game Engine Specialist ARCH=Architect
+PM=Product Manager GES=Game Engine Specialist GXS=Game Experience Specialist ARCH=Architect
 WD=Web/UI Designer VDA=Visual Designer/Artist
 TDDB=TDD Designer(backend) TDDF=TDD Designer(frontend)
 CB=Coder(backend) CF=Coder(frontend)
@@ -16,8 +16,9 @@ ts=thoughts/shared nfr=non-functional requirement
 
 §SUMMARY
 Multi-agent team for redistricting-sim. Extends polyglot TDD workflow ($ts/research/2026-04-21-multi-agent-tdd-workflow.md)
-with: $PM, $GES, $VDA added as standing; 7 on-demand reviewers; SCRUM-like sprint rhythm.
-Two prerequisites before impl: tech stack session ($GES+$ARCH) + game vision doc ($PM+user).
+with: $PM, $GES, $VDA added as standing; 8 on-demand reviewers (incl. new $GXS); SCRUM-like sprint rhythm.
+Prerequisites: tech stack(decided: TypeScript v1+spikes running) + game vision doc(written). Both resolved.
+User=project owner+customer; escalation target; not an agent role.
 
 §STANDING_ROLES
 
@@ -29,11 +30,11 @@ $PM
   $nfr ownership: DoD, test sufficiency, a11y standards, privacy policy, browser/device targets,
     educational effectiveness as product req
 
-$GES
+$GES [technical role — not the user]
   domain: game mechanics; simulation design; electoral algorithms(FPTP v1; STV/party-list stretch);
     district validity rules(contiguity,compactness); population modeling; scenario mechanics
   absorbs: domain research for own mechanics design
-  does NOT own: domain accuracy checks → $DR(on-demand)
+  does NOT own: domain accuracy checks → $DR(on-demand); game feel → $GXS(on-demand)
   vs $ARCH: peers, both answer to $PM; $GES="what can simulation do+how";
     $ARCH="how does system hang together"; negotiate boundary in Phase 1
 
@@ -80,6 +81,7 @@ $CB + $CF
 
 | Role | Trigger(s) |
 |---|---|
+| $GXS(Game Experience) | new mechanics/scenario in playable form; major release; "does this feel right to play?" |
 | $DR(Domain) | electoral accuracy; scenario validity; VRA representation; domain UI text |
 | $EER(Educ.Effectiveness) | scenario design; tutorial design; "does this teach the lesson?" |
 | $SR(Security) | any trust boundary: exposed API, user data, UGC, auth |
@@ -87,6 +89,8 @@ $CB + $CF
 | $CFR(Cost/Finance) | infra decisions; 3rd-party service choices; build-vs-buy; cost at scale |
 | $LR(Legal) | COPPA/GDPR; map data licensing; real-event scenarios |
 | $BS(Build) | new Bazel targets(TS,WASM,Docker); significant CI changes |
+
+$GXS distinct from: $GES(mechanics design) $EER(lesson quality) user(subjective owner feedback via demos)
 
 COPPA flag: if game reaches US schools, data collection from <13 regulated federally — even
   anonymised telemetry may be in scope; needs legal position before any analytics added
@@ -151,10 +155,10 @@ Four advantages of specialty agents vs general-purpose:
 4. prompt reusability: stable reviewer prompts improve over sprints; outputs predictable+auditable
 
 §OPEN
-1. tech stack — in-browser vs server; mobile; WASM(Kotlin Multiplatform?); map tile source
-   → needs $GES+$ARCH session before any system design
-2. ~~game vision doc — v1 scenarios; player session flow; learning objectives
-   → $PM-driven; user-reviewed; required before $GES+$ARCH design work~~
+1. ~~tech stack — in-browser vs server; mobile; WASM; map tile source~~
+   RESOLVED: TypeScript v1; SVG/D3; Zustand; Vite; WASM deferred; spikes running(SPIKE-001,SPIKE-002)
+   Map tile source still open — deferred until game uses real geographic data
+2. ~~game vision doc — v1 scenarios; player session flow; learning objectives~~
    RESOLVED: vision doc written; see $ts/vision/game-vision.compressed.md
 3. $LR segmentation(privacy vs IP/licensing) — deferred
 4. component inventory format ($WD→$TDDF handoff) — deferred until tech stack known

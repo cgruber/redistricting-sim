@@ -50,7 +50,38 @@ This spike runs in parallel with SPIKE-002 (build system). To avoid conflicts:
    Work exclusively in that workspace directory.
 3. All commits in this spike's change stack touch only `spike/001-game-poc/**`.
 4. Create bookmark: `jj bookmark create spike/001-game-poc -r @`
-5. Push and open PR when acceptance criteria are met.
+5. Push and open PR only when **all acceptance criteria are met and `SPIKE-REPORT.md` is written**.
+
+**Commit workflow during the spike:** commit after each logical chunk; run `npm test`
+before each commit; squash small fixes into the relevant commit freely. No PR during
+active execution — one PR at completion covers the whole spike.
+
+## Precinct Data Format
+
+The spike's static JSON file should prototype the structure that production will use.
+Design it with this in mind — spike format can be looser, but should prove the shape.
+
+**Required fields per precinct:**
+
+- `id` — unique identifier (integer or short string)
+- `neighbors` — adjacency list of neighbor IDs (prefer adjacency over raw coordinates if
+  using an abstract grid; use coordinates if doing real geographic projection)
+- `partyShare` — partisan vote-share as floats (0.0–1.0), keys: `R`, `D`, `L`, `G`, `I`
+  (Republican, Democrat, Libertarian, Green, Independent); must sum to 1.0
+- `previousResult` — simulated prior election winner (`R` | `D` | `L` | `G` | `I`) and
+  margin (e.g. `{ winner: "D", margin: 0.07 }`)
+- `demographics` — at least one additional demographic breakdown to prove multi-property
+  modeling; use sex/gender for the spike: `{ male: 0.49, female: 0.49, nonbinary: 0.02 }`
+
+**Production considerations** (for the SPIKE-REPORT.md to comment on):
+- IDs should stay compact (integer preferred)
+- Percentages as floats (0.0–1.0) rather than integers save a parse step and prevent
+  off-by-one rounding when summing
+- Adjacency list is sufficient for contiguity checks without needing full polygon topology
+
+**Agent latitude:** if the simulation model needs additional fields (population count,
+area, historical partisan lean, etc.) propose them in the data format before committing
+to the schema — the spike is the right time to surface missing properties.
 
 ## Tech Stack to Use
 

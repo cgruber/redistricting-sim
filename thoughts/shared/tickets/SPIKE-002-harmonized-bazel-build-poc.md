@@ -35,6 +35,21 @@ and served with `bazel run //spike/002-build-poc:serve` (or equivalent).
 - Production-quality build configuration (caching, remote execution, CI)
 - Mobile or cross-platform targets
 
+## Fallback Build System
+
+If the Bazel hermetic build proves too painful, unstable, or the investment/benefit ratio
+doesn't justify adoption, the fallback is:
+
+- **Rust → WASM:** `cargo` + `wasm-pack` directly (not Bazel-managed)
+- **TypeScript:** `yarn` / `npm` + standard bundler (Vite or esbuild)
+- **Integration:** a `Makefile` with explicit targets for build, test, and serve
+- **Hermeticity:** not guaranteed; mitigated by version pinning, `cargo.lock`, `package-lock.json`,
+  and documentation of host-tool requirements
+
+The SPIKE-REPORT.md must state clearly if the fallback was triggered, why, and what the
+build experience pain points were. A "fallback triggered" result is a valid and useful
+spike outcome — not a failure.
+
 ## Working Directory
 
 `spike/002-build-poc/` — this is a completely independent source root with its own
@@ -57,7 +72,11 @@ This spike runs in parallel with SPIKE-001 (game tech stack). To avoid conflicts
    Work exclusively in that workspace directory.
 3. All commits in this spike's change stack touch only `spike/002-build-poc/**`.
 4. Create bookmark: `jj bookmark create spike/002-build-poc -r @`
-5. Push and open PR when acceptance criteria are met.
+5. Push and open PR only when **all acceptance criteria are met and `SPIKE-REPORT.md` is written**.
+
+**Commit workflow during the spike:** commit after each logical chunk; run
+`bazel test //...` (or fallback equivalent) before each commit; squash small fixes
+freely. No PR during active execution — one PR at completion covers the whole spike.
 
 ## Reference: polyglot Exemplar
 
