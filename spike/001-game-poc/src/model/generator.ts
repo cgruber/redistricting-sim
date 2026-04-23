@@ -31,14 +31,27 @@ function hexToPixel(q: number, r: number): Point {
 	return { x, y };
 }
 
-/** The 6 axial direction vectors for a hex grid */
+/**
+ * The 6 axial direction vectors for a flat-top hex grid.
+ * Index i corresponds to edge i (corner[i] → corner[i+1] in hexCorners).
+ * Direction i is the outward neighbor across edge i.
+ *
+ * Corner angles (flat-top, SVG y-down): 0°, 60°, 120°, 180°, 240°, 300°
+ * Edge i midpoint angle: 30° + 60°*i
+ *   edge 0 = 30°  → lower-right  = [+q, +0]
+ *   edge 1 = 90°  → down         = [+0, +r]
+ *   edge 2 = 150° → lower-left   = [-q, +r]
+ *   edge 3 = 210° → upper-left   = [-q, +0]
+ *   edge 4 = 270° → up           = [+0, -r]
+ *   edge 5 = 330° → upper-right  = [+q, -r]
+ */
 const HEX_DIRECTIONS: [number, number][] = [
-	[1, 0],
-	[1, -1],
-	[0, -1],
-	[-1, 0],
-	[-1, 1],
-	[0, 1],
+	[1, 0], // edge 0: lower-right
+	[0, 1], // edge 1: down
+	[-1, 1], // edge 2: lower-left
+	[-1, 0], // edge 3: upper-left
+	[0, -1], // edge 4: up
+	[1, -1], // edge 5: upper-right
 ];
 
 // ─── Simple seeded PRNG (LCG) ─────────────────────────────────────────────────
@@ -69,19 +82,6 @@ function gaussianContribution(dq: number, dr: number, epi: Epicenter): number {
 }
 
 // ─── Partisan lean (spatial coherence via sinusoidal gradient) ───────────────
-
-/**
- * Returns a "D-lean" value in [0, 1] for a given hex coord.
- * Uses overlapping sinusoidal waves at different angles/frequencies
- * to produce a smooth, geographically coherent lean field.
- * No urban/rural mapping — purely positional.
- */
-function partisanLean(q: number, r: number, rng: () => number): number {
-	// Phase offsets chosen once (stable per call with deterministic rng)
-	// We pre-compute these from the rng before calling this function in the main loop
-	return 0; // placeholder — computed via closure below
-}
-void partisanLean; // suppress unused warning — replaced by closure
 
 function makePartisanField(rng: () => number): (q: number, r: number) => number {
 	// Three sinusoidal components at different angles and frequencies
@@ -207,15 +207,13 @@ export function generatePrecincts(seed = 42): Precinct[] {
 			nonbinary: Math.round(nb * 1000) / 1000,
 		};
 
-		// Neighbors: adjacent hex cells that are valid grid positions
-		const neighbors: number[] = [];
-		for (const [dq, dr] of HEX_DIRECTIONS) {
+		// Neighbors: fixed-length array of 6 entries (null = no neighbor / grid boundary).
+		// Index i corresponds to HEX_DIRECTIONS[i] and hexCorners edge i.
+		const neighbors: (number | null)[] = HEX_DIRECTIONS.map(([dq, dr]) => {
 			const nKey = `${q + dq},${r + dr}`;
 			const nId = idMap.get(nKey);
-			if (nId !== undefined) {
-				neighbors.push(nId);
-			}
-		}
+			return nId !== undefined ? nId : null;
+		});
 
 		const center = hexToPixel(q, r);
 

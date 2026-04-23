@@ -51,8 +51,12 @@ export interface Precinct {
 	coord: HexCoord;
 	/** Pixel center (pre-computed for rendering) */
 	center: Point;
-	/** Adjacency list of neighbor precinct IDs */
-	neighbors: number[];
+	/**
+	 * Fixed-length array of 6 neighbor precinct IDs (or null if no neighbor).
+	 * Index i corresponds to edge i (corner[i] → corner[i+1]) and its outward direction.
+	 * Directions: [0]=lower-right, [1]=down, [2]=lower-left, [3]=upper-left, [4]=up, [5]=upper-right
+	 */
+	neighbors: (number | null)[];
 	/** Population count (arbitrary units) */
 	population: number;
 	/** Partisan vote share, floats summing to 1.0 */

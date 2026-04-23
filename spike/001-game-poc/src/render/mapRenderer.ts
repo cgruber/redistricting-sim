@@ -157,23 +157,22 @@ export class MapRenderer {
 				// The 6 neighbor directions correspond to edge indices
 				// We only draw the edge if the neighbor belongs to a different district
 				// (or is unassigned / out-of-bounds)
-				const nId = p.neighbors[i];
-				if (nId === undefined) {
-					// Boundary of grid — draw edge
-					const c0 = corners[i];
-					const c1 = corners[(i + 1) % 6];
-					if (c0 !== undefined && c1 !== undefined) {
-						segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
-					}
+				// neighbors[i] is null if there is no neighbor across edge i (grid boundary).
+				// Index i aligns with edge i (corner[i] → corner[i+1]) by construction.
+				const nId = p.neighbors[i] ?? null;
+				const c0 = corners[i];
+				const c1 = corners[(i + 1) % 6];
+				if (c0 === undefined || c1 === undefined) continue;
+
+				if (nId === null) {
+					// Grid boundary edge — always draw
+					segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
 					continue;
 				}
 				const nDist = assignments.get(nId);
 				if (pDist !== nDist) {
-					const c0 = corners[i];
-					const c1 = corners[(i + 1) % 6];
-					if (c0 !== undefined && c1 !== undefined) {
-						segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
-					}
+					// District boundary edge — draw
+					segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
 				}
 			}
 		}
