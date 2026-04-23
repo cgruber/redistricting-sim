@@ -171,10 +171,15 @@ rustfmt <changed-files>   # or: cargo fmt
 
 ## Definition of Done
 
-Spike is done when all acceptance criteria are checked and a written report is added
-to `spike/002-build-poc/SPIKE-REPORT.md` covering:
-- Which Bazel rules versions were used and whether they were stable
-- Any hermeticity gaps found (tools from host PATH, generated files not gitignored, etc.)
-- Build time for a clean build (baseline for future optimisation)
-- Any open questions for the BUILD specialist or ARCH
-- Go/no-go recommendation for adopting this build setup for the full game
+Spike is done when all acceptance criteria are checked and:
+
+1. `spike/002-build-poc/SPIKE-REPORT.md` is written covering:
+   - Which Bazel rules versions were used and whether they were stable
+   - Any hermeticity gaps found (tools from host PATH, generated files not gitignored, etc.)
+   - Friction classification: what was setup friction (one-time) vs. ongoing friction
+   - Build time for a clean build (baseline for future optimisation)
+   - Any open questions for the BUILD specialist or ARCH
+   - Go/no-go recommendation for adopting this build setup for the full game
+
+2. `spike/002-build-poc/PROGRESS.md` is updated to `Status: Complete` with all criteria
+   checked — this is the clean handoff signal for the coordinating agent.
