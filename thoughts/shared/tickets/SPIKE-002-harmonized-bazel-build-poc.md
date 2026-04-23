@@ -67,6 +67,30 @@ whether fallback was triggered and why, and give a clear go/no-go on Bazel adopt
 A fallback outcome is valid — but it should be a considered decision, not a first response
 to setup difficulty.
 
+## Host Tooling Prerequisites
+
+The following are not present on the host and must be installed before the WASM target
+can be built. These are one-time setup costs — classify them as setup friction in
+SPIKE-REPORT.md, not ongoing friction.
+
+```bash
+# Add the WASM compilation target to the Rust toolchain
+rustup target add wasm32-unknown-unknown
+
+# Install wasm-pack (used by rules_rust for wasm-bindgen output)
+cargo install wasm-pack
+```
+
+Verify before starting:
+```bash
+rustup target list --installed | grep wasm   # should show wasm32-unknown-unknown
+wasm-pack --version
+```
+
+If `rules_rust` manages the Rust toolchain hermetically (downloading its own), these
+host tools may not be needed for the Bazel path — document which path was taken in
+SPIKE-REPORT.md.
+
 ## Working Directory
 
 `spike/002-build-poc/` — this is a completely independent source root with its own
