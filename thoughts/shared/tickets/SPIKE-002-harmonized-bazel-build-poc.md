@@ -35,10 +35,26 @@ and served with `bazel run //spike/002-build-poc:serve` (or equivalent).
 - Production-quality build configuration (caching, remote execution, CI)
 - Mobile or cross-platform targets
 
-## Fallback Build System
+## Bazel Preference and Fallback Threshold
 
-If the Bazel hermetic build proves too painful, unstable, or the investment/benefit ratio
-doesn't justify adoption, the fallback is:
+**Strong preference for Bazel.** Give it a genuine, thorough attempt before considering
+fallback. When friction is encountered, first classify it:
+
+- **Setup friction (one-time cost):** complex `MODULE.bazel` wiring, toolchain registration,
+  first-run cache population. This is absorbable — it pays for itself in every subsequent
+  build. Do not trigger fallback for setup friction alone.
+- **Ongoing friction (recurring cost):** workarounds that must be maintained every time a
+  new target is added, Bazel bugs that regularly resurface, build graph clutter required
+  to paper over a fundamental gap in the rules. This is the real signal to reconsider.
+
+**Hybrid is also a valid outcome.** Both `rules_ts` and `rules_rust` consume a native
+lockfile (`package-lock.json` / `Cargo.lock`) and translate it into a Bazel-managed
+dependency graph — Bazel owns the fetch and build, but the lockfile is generated and
+updated with native tooling (`npm install --package-lock-only` / `cargo update`). A result
+where Bazel orchestrates the full build graph via translated lockfiles is the intended
+design, not a compromise — document the setup steps and evaluate repeatability.
+
+**Fallback (only if ongoing friction is severe):**
 
 - **Rust → WASM:** `cargo` + `wasm-pack` directly (not Bazel-managed)
 - **TypeScript:** `yarn` / `npm` + standard bundler (Vite or esbuild)
@@ -46,9 +62,10 @@ doesn't justify adoption, the fallback is:
 - **Hermeticity:** not guaranteed; mitigated by version pinning, `cargo.lock`, `package-lock.json`,
   and documentation of host-tool requirements
 
-The SPIKE-REPORT.md must state clearly if the fallback was triggered, why, and what the
-build experience pain points were. A "fallback triggered" result is a valid and useful
-spike outcome — not a failure.
+The SPIKE-REPORT.md must classify any friction encountered (setup vs. ongoing), state
+whether fallback was triggered and why, and give a clear go/no-go on Bazel adoption.
+A fallback outcome is valid — but it should be a considered decision, not a first response
+to setup difficulty.
 
 ## Working Directory
 
