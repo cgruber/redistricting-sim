@@ -39,6 +39,9 @@ spike/002-build-poc/  SPIKE-002: harmonized Bazel build proof-of-concept — ind
 before non-trivial impl: check $ts/vision/ + $ts/tickets/TICKETS.md + $ts/research/ for prior work
 
 SPIKE ISOLATION: agents working a spike touch ONLY their spike subdirectory; no other repo files
+SPIKE COMMIT WORKFLOW:
+  during: commit after each logical chunk; run build+tests before commit; squash fixes freely; no PR
+  at completion: all AC met + SPIKE-REPORT.md written → one PR → full critique cycle → merge
 
 §TICKETS
 TICKETS.md=canonical index; do NOT maintain ticket inventories elsewhere
