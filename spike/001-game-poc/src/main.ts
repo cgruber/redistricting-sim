@@ -4,13 +4,13 @@
  * D3 owns the SVG DOM; Zustand owns state.
  */
 
-import { useGameStore, useTemporalStore } from "./store/gameStore.js";
 import {
 	MapRenderer,
 	renderDistrictButtons,
 	renderLegend,
 	renderResults,
 } from "./render/mapRenderer.js";
+import { useGameStore, useTemporalStore } from "./store/gameStore.js";
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
 

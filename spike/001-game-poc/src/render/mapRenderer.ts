@@ -7,10 +7,10 @@
  */
 
 import * as d3 from "d3";
-import type { GameStore } from "../store/gameStore.js";
 import { hexCorners, mapBounds } from "../model/generator.js";
 import type { Precinct } from "../model/types.js";
 import { DISTRICT_COLORS, PARTY_COLORS, PARTY_LABELS } from "../model/types.js";
+import type { GameStore } from "../store/gameStore.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 

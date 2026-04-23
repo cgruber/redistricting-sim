@@ -5,10 +5,10 @@
  * Undo/redo tracks assignment diffs (not full state snapshots) via zundo's temporal store.
  */
 
-import { create } from "zustand";
 import { temporal } from "zundo";
-import type { AssignmentMap, DistrictId, GameState } from "../model/types.js";
+import { create } from "zustand";
 import { generatePrecincts } from "../model/generator.js";
+import type { AssignmentMap, DistrictId, GameState } from "../model/types.js";
 import { runElection } from "../simulation/election.js";
 
 // ─── Store shape ─────────────────────────────────────────────────────────────
