@@ -46,13 +46,14 @@ Always write content to a file first, then reference it by path:
 ## Repository Layout (Key Directories)
 
 ```
+thoughts/shared/vision/     # Game vision and design documents (read first — anchors everything)
 thoughts/shared/research/   # Research documents (read before implementing)
 thoughts/shared/tickets/    # Ticket files + TICKETS.md index (check before starting new work)
 thoughts/shared/plans/      # Implementation plans
 thoughts/shared/handoffs/   # Session handoff documents
 ```
 
-Before starting any non-trivial implementation work: check `thoughts/shared/tickets/TICKETS.md` for a summary of open and resolved work, and `thoughts/shared/research/` for relevant prior research.
+Before starting any non-trivial implementation work: check `thoughts/shared/vision/` for the current game vision (it anchors all design decisions), `thoughts/shared/tickets/TICKETS.md` for a summary of open and resolved work, and `thoughts/shared/research/` for relevant prior research.
 
 ---
 

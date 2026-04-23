@@ -31,11 +31,12 @@ use Write tool for /tmp files (unique names prevent exists-error); cat > heredoc
 THIS RULE APPLIES TO SUBAGENTS TOO: embed it verbatim at the top of every prompt written to /tmp before spawning
 
 §LAYOUT
+$ts/vision/     game vision+design docs — read first; anchors everything
 $ts/research/   read before implementing
 $ts/tickets/    TICKETS.md index + ticket files; check before starting new work
 $ts/plans/      implementation plans
 $ts/handoffs/   session handoff documents
-before non-trivial impl: check $ts/tickets/TICKETS.md + $ts/research/ for prior work
+before non-trivial impl: check $ts/vision/ + $ts/tickets/TICKETS.md + $ts/research/ for prior work
 
 §TICKETS
 TICKETS.md=canonical index; do NOT maintain ticket inventories elsewhere
