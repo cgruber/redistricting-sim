@@ -1,0 +1,9 @@
+# CI config: sandboxing + local disk cache.
+build:ci --spawn_strategy=sandboxed
+build:ci --disk_cache=/tmp/bazel-disk-cache-spike002
+
+# Use tsc as the default transpiler for ts_project (aspect_rules_ts 3.x requires explicit selection).
+common --@aspect_rules_ts//ts:default_to_tsc_transpiler
+
+# Show test output on failure.
+test --test_output=errors
