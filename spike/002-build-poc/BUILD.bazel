@@ -1,0 +1,13 @@
+# Root BUILD for spike/002-build-poc workspace.
+
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+
+sh_binary(
+    name = "serve",
+    srcs = [":serve.sh"],
+    data = [
+        "//rust:wasm_calc_bindgen",
+        "//web:app",
+        "//web:html",
+    ],
+)
