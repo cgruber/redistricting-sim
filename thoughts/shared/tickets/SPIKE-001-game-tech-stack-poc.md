@@ -56,6 +56,42 @@ This spike runs in parallel with SPIKE-002 (build system). To avoid conflicts:
 before each commit; squash small fixes into the relevant commit freely. No PR during
 active execution — one PR at completion covers the whole spike.
 
+## Map Generation
+
+The spike region must be procedurally generated — do not hand-author 50 precincts.
+The generator itself is part of the spike deliverable.
+
+**Geometry:** Regular hexagonal grid (e.g. 7×8 offset grid ≈ 50 cells). Hex grids give
+natural 6-neighbor adjacency without the artificial look of a square grid. Adjacency can
+be derived directly from grid coordinates at generation time and stored in the precinct
+data (no need to compute it at runtime).
+
+**Population distribution:** Place 1–3 epicenters at fixed or randomly chosen grid
+positions. Each precinct's population is the sum of contributions from each epicenter,
+with contribution falling off with distance. This produces realistic clustering —
+dense urban cores, sparse periphery, occasional secondary clusters — without requiring
+real geographic data.
+
+**Partisan lean:** Assign a lean that has geographic coherence — nearby precincts should
+have correlated lean, not independent noise. A smooth random field (e.g. low-frequency
+noise or a 2D sinusoidal gradient) mapped to party share works well. Do **not** hardcode
+real-world urban/rural stereotypes; this is a fictional region.
+
+**Before implementing the generator:**
+
+1. Create `PROGRESS.md` from the template in AGENTS.md (see Spike Checkpointing).
+2. Spin up a Domain Researcher subagent to investigate:
+   - State-of-the-art or widely-used approaches for cheaply simulating realistic
+     population distribution snapshots (Gaussian mixture? gravity model? something else
+     in the redistricting or synthetic-geography literature?)
+   - Whether redistricting research uses established parameterizations for synthetic
+     partisan geographic distributions
+3. The researcher returns findings as text. Write a one-paragraph summary into
+   `PROGRESS.md`'s Decisions section before coding the generator.
+
+The goal is "informed simple" — pick a defensible approach, not the most sophisticated
+one. The generator is a means to an end; the spike is about the game stack.
+
 ## Precinct Data Format
 
 The spike's static JSON file should prototype the structure that production will use.
@@ -151,9 +187,14 @@ The game vision is at `thoughts/shared/vision/game-vision.compressed.md`.
 
 ## Definition of Done
 
-Spike is done when all acceptance criteria are checked and a short written report is
-added to `spike/001-game-poc/SPIKE-REPORT.md` covering:
-- What worked well
-- What was harder than expected
-- Any open questions for GES/ARCH
-- Recommended adjustments to the planned stack (if any)
+Spike is done when all acceptance criteria are checked and:
+
+1. `spike/001-game-poc/SPIKE-REPORT.md` is written covering:
+   - What worked well
+   - What was harder than expected
+   - Any open questions for GES/ARCH
+   - Recommended adjustments to the planned stack (if any)
+   - Map generator: which population distribution approach was used and why
+
+2. `spike/001-game-poc/PROGRESS.md` is updated to `Status: Complete` with all criteria
+   checked — this is the clean handoff signal for the coordinating agent.

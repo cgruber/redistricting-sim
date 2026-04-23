@@ -15,6 +15,9 @@ client-side election simulation. See $ts/vision/game-vision.compressed.md for fu
 $ts/ docs have two forms: <name>.md(human) + <name>.compressed.md(token-efficient,lossless)
 compressed: §SECTION markers + §ABBREV table; all §ABBREV refs use $abr format; definition left-sides bare
 
+§SUBAGENTS
+always include working directory in subagent prompt — eliminates navigation errors + wrong-place failures
+
 §NOINLINE [NON-OPTIONAL]
 FORBIDDEN in any Bash tool call:
   heredocs: cmd << 'EOF'...EOF
@@ -39,9 +42,14 @@ spike/002-build-poc/  SPIKE-002: harmonized Bazel build proof-of-concept — ind
 before non-trivial impl: check $ts/vision/ + $ts/tickets/TICKETS.md + $ts/research/ for prior work
 
 SPIKE ISOLATION: agents working a spike touch ONLY their spike subdirectory; no other repo files
+SPIKE COMMANDS: use names (npm,bazel,node) not absolute paths; all tooling must be on PATH
 SPIKE COMMIT WORKFLOW:
   during: commit after each logical chunk; run build+tests before commit; squash fixes freely; no PR
   at completion: all AC met + SPIKE-REPORT.md written → one PR → full critique cycle → merge
+SPIKE CHECKPOINTING: maintain PROGRESS.md in spike dir; update+commit with each chunk
+  format: working-dir(absolute path; jj workspace sibling e.g. .../redistricting-sim-spike-NNN/spike/NNN-name/) | status | AC checklist(next-up bolded) | decisions(non-obvious only) | blockers
+  resuming agent: read ticket → PROGRESS.md → jj log; continue from Next up
+  keep under 30 lines; skip anything evident from ticket or code
 
 §TICKETS
 TICKETS.md=canonical index; do NOT maintain ticket inventories elsewhere

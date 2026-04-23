@@ -26,6 +26,18 @@ The `thoughts/` directory contains research, plans, tickets, and handoffs. Many 
 
 The compressed format uses `§SECTION` markers and an `§ABBREV` table at the top for decoding all shorthands. All `§ABBREV` key references in the body use `$abr` dollar-prefix format (e.g. `$ts/tickets/` not `ts/tickets/`). Definition left-sides stay bare.
 
+## Spawning Subagents
+
+**Always include the working directory in a subagent's prompt.** This eliminates an
+entire class of navigation errors and file-not-found failures. A subagent that doesn't
+know where it is will spend tokens figuring it out — or worse, silently work in the
+wrong place. State it explicitly: "Your working directory is `<path>`."
+
+Follow the **No Inline Content** rule when writing the subagent's prompt — write it to a
+temp file and reference it by path.
+
+---
+
 ## No Inline Content in Shell Commands
 
 Never pass non-trivial text inline to any shell command or tool call. Characters such as backticks, `---`, and `*` are misinterpreted by shell argument parsers and security hooks even when the content is benign.
@@ -55,10 +67,46 @@ Before starting any non-trivial implementation work: check `thoughts/shared/visi
 
 **Spike directories are completely independent source roots.** Each has its own build toolchain, dependencies, and cannot import from or depend on anything outside its own directory. Agents working on a spike must only create or modify files under their designated `spike/NNN-*/` subdirectory — no changes to other repo files, no cross-spike imports.
 
+**Spike commands** — use commands by name (e.g. `npm`, `bazel`, `node`), never by
+absolute path (e.g. `/usr/local/bin/node`). All spike tooling must be on PATH. This
+keeps the spike portable and avoids permission guardrails on path-specific rules.
+
 **Spike commit workflow** — spikes use a lightweight commit discipline; full PR rigor applies only at completion:
 
 - *During the spike:* commit locally after each logical chunk; run the spike's build and tests (`npm test`, `bazel test //...`, etc.) before each commit; squash small fixes into the relevant commit freely; no PR during active execution.
 - *At completion:* when all acceptance criteria are met and `SPIKE-REPORT.md` is written, open one PR for the full spike result. Run the standard PR review cycle (critique → response → merge) at that point.
+
+**Spike checkpointing — `PROGRESS.md`** — each spike maintains a `PROGRESS.md` in its
+spike directory. Update and commit it with every logical chunk of work. A session resuming
+after failure reads ticket → `PROGRESS.md` → `jj log` and has everything needed to
+continue without re-doing work.
+
+Format:
+
+```markdown
+## Working Directory
+`<absolute path to spike dir>`
+# Note: spikes run in jj workspaces created with `jj workspace add ../redistricting-sim-spike-NNN`.
+# The spike dir is therefore a sibling of the repo root, e.g.:
+# /Users/cgruber/Projects/github/cgruber/redistricting-sim-spike-001/spike/001-game-poc/
+
+## Status: In Progress | Blocked: <reason> | Complete
+
+## Acceptance Criteria
+- [x] Completed item
+- [ ] **Next up** — specific next action in one line
+- [ ] Future item
+
+## Decisions
+- <non-obvious choice>: <why; what alternatives were rejected>
+
+## Blockers / Open Questions
+- <anything needing user input or an unresolved external answer>
+```
+
+Rules: `Decisions` captures only non-obvious choices — skip anything evident from reading
+the ticket or the code. `Next up` is the single most valuable field; keep it to one
+concrete action. The whole file should rarely exceed 30 lines.
 
 ---
 
