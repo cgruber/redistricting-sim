@@ -1,0 +1,77 @@
+module(name = "redistricting-sim")
+
+bazel_dep(name = "bazel_skylib", version = "1.8.2")
+bazel_dep(name = "rules_java", version = "8.14.0")
+bazel_dep(name = "rules_kotlin", version = "2.1.9")
+bazel_dep(name = "rules_jvm_external", version = "6.8")
+bazel_dep(name = "protobuf", version = "32.1")
+bazel_dep(name = "grpc", version = "1.74.1")
+bazel_dep(name = "protoc-gen-validate", version = "1.2.1.bcr.1")  # pins version to avoid conflict
+bazel_dep(name = "grpc-java", version = "1.74.0")
+bazel_dep(name = "grpc_kotlin", version = "1.5.0")
+bazel_dep(name = "dagger-grpc", version = "0.1")
+git_override(
+    module_name = "dagger-grpc",
+    remote = "https://github.com/geekinasuit/dagger-grpc.git",
+    commit = "728888940ff6f3dec88674230d633739ccc4bd97",
+)
+
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+maven.artifact(
+    testonly = True,
+    artifact = "truth",
+    group = "com.google.truth",
+    version = "1.4.4",
+)
+maven.artifact(
+    testonly = True,
+    artifact = "junit",
+    group = "junit",
+    version = "4.13.2",
+)
+maven.install(
+    artifacts = [
+        "io.github.oshai:kotlin-logging-jvm:5.1.0",
+        "com.github.ajalt.clikt:clikt-jvm:5.0.1",
+        "com.google.protobuf:protobuf-java:4.29.3",
+        "com.google.protobuf:protobuf-kotlin:4.29.3",
+        "io.grpc:grpc-kotlin-stub:1.4.1",
+        "io.grpc:grpc-netty-shaded:1.71.0",
+        "io.grpc:grpc-protobuf:1.71.0",
+        "io.grpc:grpc-stub:1.71.0",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1",
+        "io.grpc:grpc-kotlin-stub:1.4.1",
+        "io.grpc:grpc-netty-shaded:1.71.0",
+        "com.linecorp.armeria:armeria-grpc:1.26.4",
+        "com.linecorp.armeria:armeria:1.26.4",
+        "io.opentelemetry.instrumentation:opentelemetry-armeria-1.3:2.14.0-alpha",
+        "com.sksamuel.hoplite:hoplite-core:2.9.0",
+        "com.sksamuel.hoplite:hoplite-yaml:2.9.0",
+        "org.slf4j:slf4j-api:2.0.11",
+        "ch.qos.logback:logback-classic:1.5.6",
+        "net.logstash.logback:logstash-logback-encoder:7.4",
+        "io.opentelemetry.instrumentation:opentelemetry-logback-appender-1.0:2.14.0-alpha",
+        "io.opentelemetry:opentelemetry-api:1.47.0",
+        "io.opentelemetry:opentelemetry-sdk:1.47.0",
+        "io.opentelemetry:opentelemetry-exporter-otlp:1.47.0",
+        "io.grpc:grpc-opentelemetry:1.71.0",
+        "com.google.dagger:dagger:2.55",
+        "com.google.dagger:dagger-compiler:2.55",
+        "javax.inject:javax.inject:1",
+        "org.jooq:jooq:3.19.11",
+        "org.jooq:jooq-kotlin:3.19.11",
+        "org.jooq:jooq-meta-extensions:3.19.11",
+        "org.jooq:jooq-codegen:3.19.11",
+        "com.h2database:h2:2.2.224",
+        "com.zaxxer:HikariCP:5.1.0",
+        "org.flywaydb:flyway-core:9.22.3",
+    ],
+    fetch_sources = True,
+    generate_compat_repositories = True,
+    repositories = [
+        "m2local",
+        "https://maven.google.com",
+        "https://repo1.maven.org/maven2",
+    ],
+)
+use_repo(maven, "maven", "grpc_kotlin_maven")
