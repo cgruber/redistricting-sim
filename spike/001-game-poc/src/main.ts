@@ -20,6 +20,7 @@ const legendEl = document.getElementById("legend-container") as HTMLElement | nu
 const districtBtnsEl = document.getElementById("district-buttons") as HTMLElement | null;
 const btnUndo = document.getElementById("btn-undo") as HTMLButtonElement | null;
 const btnRedo = document.getElementById("btn-redo") as HTMLButtonElement | null;
+const btnViewToggle = document.getElementById("btn-view-toggle") as HTMLButtonElement | null;
 
 if (
 	svgEl === null ||
@@ -27,7 +28,8 @@ if (
 	legendEl === null ||
 	districtBtnsEl === null ||
 	btnUndo === null ||
-	btnRedo === null
+	btnRedo === null ||
+	btnViewToggle === null
 ) {
 	throw new Error("Required DOM elements not found");
 }
@@ -82,6 +84,14 @@ btnUndo.addEventListener("click", () => {
 
 btnRedo.addEventListener("click", () => {
 	useTemporalStore().getState().redo();
+});
+
+let currentViewMode: "districts" | "lean" = "districts";
+btnViewToggle.addEventListener("click", () => {
+	currentViewMode = currentViewMode === "districts" ? "lean" : "districts";
+	renderer.setViewMode(currentViewMode);
+	btnViewToggle.textContent =
+		currentViewMode === "districts" ? "View: Partisan Lean" : "View: Districts";
 });
 
 // ─── Subscribe to state changes ───────────────────────────────────────────────

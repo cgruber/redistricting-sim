@@ -6,7 +6,7 @@
  */
 
 import { temporal } from "zundo";
-import { create } from "zustand";
+import { createStore } from "zustand";
 import { generatePrecincts } from "../model/generator.js";
 import type { AssignmentMap, DistrictId, GameState } from "../model/types.js";
 import { runElection } from "../simulation/election.js";
@@ -64,7 +64,7 @@ function cloneAssignments(m: AssignmentMap): AssignmentMap {
 
 // ─── Store ───────────────────────────────────────────────────────────────────
 
-export const useGameStore = create<GameStore>()(
+export const useGameStore = createStore<GameStore>()(
 	temporal(
 		(set, get) => ({
 			...buildInitialState(),

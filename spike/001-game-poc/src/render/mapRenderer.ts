@@ -3,13 +3,20 @@
  *
  * Uses the data join pattern (selection.data(data).join(...)) — not manual append loops.
  * Reads state from the Zustand store; does not mutate it.
- * Brush painting is wired here (mouse event handlers call store actions).
+ *
+ * SVG layer order (bottom → top):
+ *   borderGroup      — committed district boundaries (solid white)
+ *   hexGroup         — precinct fills
+ *   previewBorderGroup — in-stroke boundary preview (dashed white)
+ *
+ * All persistent event listeners are registered once in the constructor via delegation
+ * on the SVG node. Nothing is re-registered in render().
  */
 
 import * as d3 from "d3";
 import { hexCorners, mapBounds } from "../model/generator.js";
 import type { Precinct } from "../model/types.js";
-import { DISTRICT_COLORS, PARTY_COLORS, PARTY_LABELS } from "../model/types.js";
+import { DISTRICT_COLORS, PARTY_LABELS } from "../model/types.js";
 import type { GameStore } from "../store/gameStore.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -17,6 +24,7 @@ import type { GameStore } from "../store/gameStore.js";
 type SVGSel = d3.Selection<SVGSVGElement, unknown, null, undefined>;
 // D3's append returns a Selection with parent type null when chained from select(element)
 type GSel = d3.Selection<SVGGElement, unknown, null, undefined>;
+type Segment = { x1: number; y1: number; x2: number; y2: number };
 
 // ─── Polygon path helper ─────────────────────────────────────────────────────
 
@@ -25,12 +33,45 @@ function hexPolygonPath(p: Precinct): string {
 	return `M${corners.map((c) => c.join(",")).join("L")}Z`;
 }
 
+// ─── Boundary segment computation ────────────────────────────────────────────
+
+/**
+ * Returns all boundary segments for the given assignment map.
+ * A segment is drawn for every hex edge where the two adjacent precincts
+ * belong to different districts, and for every grid-boundary edge.
+ */
+function computeBoundarySegments(
+	precincts: Precinct[],
+	assignments: Map<number, number | null>,
+): Segment[] {
+	const segments: Segment[] = [];
+	for (const p of precincts) {
+		const pDist = assignments.get(p.id);
+		const corners = hexCorners(p.center);
+		for (let i = 0; i < 6; i++) {
+			const nId = p.neighbors[i] ?? null;
+			const c0 = corners[i];
+			const c1 = corners[(i + 1) % 6];
+			if (c0 === undefined || c1 === undefined) continue;
+			if (nId === null) {
+				segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
+				continue;
+			}
+			if (pDist !== assignments.get(nId)) {
+				segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
+			}
+		}
+	}
+	return segments;
+}
+
 // ─── Renderer class ──────────────────────────────────────────────────────────
 
 export class MapRenderer {
 	private svg: SVGSel;
-	private hexGroup: GSel;
 	private borderGroup: GSel;
+	private hexGroup: GSel;
+	private previewBorderGroup: GSel;
 	private getState: () => GameStore;
 	private paintStroke: GameStore["paintStroke"];
 	private setActiveDistrict: GameStore["setActiveDistrict"];
@@ -39,6 +80,18 @@ export class MapRenderer {
 	private isPainting = false;
 	private strokePrecincts: Set<number> = new Set();
 	private strokeDistrict = 1;
+	// Snapshot of assignments at stroke start — used to compute preview boundaries
+	private strokeSnapshot: Map<number, number | null> | null = null;
+
+	// Hover state — tracks which path is currently highlighted
+	private hoveredPath: SVGPathElement | null = null;
+
+	// View mode — render concern only, not game state
+	private viewMode: "districts" | "lean" = "districts";
+
+	// Population range — cached once (precincts are immutable)
+	private popMin = 0;
+	private popMax = 1;
 
 	constructor(
 		svgEl: SVGSVGElement,
@@ -51,26 +104,37 @@ export class MapRenderer {
 		this.setActiveDistrict = setActiveDistrict;
 
 		this.svg = d3.select(svgEl);
+		// Layer order matters: borderGroup behind hexes, previewBorderGroup on top
 		this.borderGroup = this.svg.append("g").attr("class", "borders");
 		this.hexGroup = this.svg.append("g").attr("class", "hexes");
+		this.previewBorderGroup = this.svg.append("g").attr("class", "preview-borders");
+
+		const pops = getState().precincts.map((p) => p.population);
+		this.popMin = Math.min(...pops);
+		this.popMax = Math.max(...pops);
 
 		this.initViewBox();
 		this.initBrushEvents();
+		this.initHoverEvents();
+	}
+
+	setViewMode(mode: "districts" | "lean") {
+		this.viewMode = mode;
+		this.render();
 	}
 
 	private initViewBox() {
 		const { precincts } = this.getState();
 		const bounds = mapBounds(precincts);
 		this.svg.attr("viewBox", `${bounds.minX} ${bounds.minY} ${bounds.width} ${bounds.height}`);
-		this.svg.attr("width", "100%").attr("height", "100%");
 	}
 
-	/** Main render — called any time state changes */
-	render() {
-		const state = this.getState();
-		const { precincts, assignments, activeDistrict } = state;
+	// ─── Main render ──────────────────────────────────────────────────────────
 
-		// ── Hex fill polygons (data join) ──────────────────────────────────────
+	/** Called on every committed state change. Reconciles fills and solid boundaries. */
+	render() {
+		const { precincts, assignments } = this.getState();
+
 		this.hexGroup
 			.selectAll<SVGPathElement, Precinct>("path.hex")
 			.data(precincts, (d) => String(d.id))
@@ -86,99 +150,15 @@ export class MapRenderer {
 				(update) => update,
 				(exit) => exit.remove(),
 			)
-			.attr("fill", (d) => {
-				const dId = assignments.get(d.id);
-				if (dId === null || dId === undefined) return "#2a2a3e";
-				const color = DISTRICT_COLORS[dId - 1];
-				return color ?? "#2a2a3e";
-			})
-			.attr("opacity", (d) => {
-				const dId = assignments.get(d.id);
-				return dId !== null && dId !== undefined ? 0.75 : 0.35;
-			})
-			.on("mouseenter", (_event, d) => {
-				const dId = assignments.get(d.id);
-				const distLabel = dId !== null && dId !== undefined ? `District ${dId}` : "Unassigned";
-				const bar = document.getElementById("status-bar");
-				if (bar !== null) {
-					const topParty = (["D", "R", "L", "G", "I"] as const).reduce((a, b) =>
-						d.partyShare[a] > d.partyShare[b] ? a : b,
-					);
-					bar.textContent = `Precinct ${d.id} | ${distLabel} | Pop: ${d.population.toLocaleString()} | Lean: ${PARTY_LABELS[topParty]} (${(d.partyShare[topParty] * 100).toFixed(1)}%)`;
-				}
-				// Highlight on hover
-				d3.select<SVGPathElement, Precinct>(
-					this.hexGroup
-						.selectAll<SVGPathElement, Precinct>("path.hex")
-						.filter((p) => p.id === d.id)
-						.node() as SVGPathElement,
-				)
-					.attr("stroke", "#ffffff")
-					.attr("stroke-width", 1.5)
-					.attr("opacity", 0.95);
-			})
-			.on("mouseleave", (_event, d) => {
-				const dId = assignments.get(d.id);
-				d3.select<SVGPathElement, Precinct>(
-					this.hexGroup
-						.selectAll<SVGPathElement, Precinct>("path.hex")
-						.filter((p) => p.id === d.id)
-						.node() as SVGPathElement,
-				)
-					.attr("stroke", "none")
-					.attr("stroke-width", 0.5)
-					.attr("opacity", dId !== null && dId !== undefined ? 0.75 : 0.35);
-			})
-			.on("mousedown", (_event, d) => {
-				this.isPainting = true;
-				this.strokeDistrict = activeDistrict;
-				this.strokePrecincts = new Set([d.id]);
-				this.setActiveDistrict(activeDistrict);
-			})
-			.on("mousemove", (_event, d) => {
-				if (!this.isPainting) return;
-				this.strokePrecincts.add(d.id);
-			});
+			.attr("fill", (d) => this.hexFill(d, assignments))
+			.attr("opacity", (d) => this.hexOpacity(d, assignments));
 
-		// ── District boundary edges ────────────────────────────────────────────
-		this.renderBoundaries(precincts, assignments);
+		this.renderBoundaries(computeBoundarySegments(precincts, assignments));
 	}
 
-	private renderBoundaries(precincts: Precinct[], assignments: GameStore["assignments"]) {
-		// Collect boundary segments: edges between precincts in different districts
-		const segments: Array<{ x1: number; y1: number; x2: number; y2: number }> = [];
-
-		for (const p of precincts) {
-			const pDist = assignments.get(p.id);
-			const corners = hexCorners(p.center);
-
-			for (let i = 0; i < 6; i++) {
-				// Each edge is shared with a neighbor
-				// The 6 neighbor directions correspond to edge indices
-				// We only draw the edge if the neighbor belongs to a different district
-				// (or is unassigned / out-of-bounds)
-				// neighbors[i] is null if there is no neighbor across edge i (grid boundary).
-				// Index i aligns with edge i (corner[i] → corner[i+1]) by construction.
-				const nId = p.neighbors[i] ?? null;
-				const c0 = corners[i];
-				const c1 = corners[(i + 1) % 6];
-				if (c0 === undefined || c1 === undefined) continue;
-
-				if (nId === null) {
-					// Grid boundary edge — always draw
-					segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
-					continue;
-				}
-				const nDist = assignments.get(nId);
-				if (pDist !== nDist) {
-					// District boundary edge — draw
-					segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
-				}
-			}
-		}
-
+	private renderBoundaries(segments: Segment[]) {
 		this.borderGroup
-			.selectAll<SVGLineElement, (typeof segments)[number]>("line.boundary")
+			.selectAll<SVGLineElement, Segment>("line.boundary")
 			.data(segments)
 			.join(
 				(enter) => enter.append("line").attr("class", "boundary").attr("stroke-linecap", "round"),
@@ -191,24 +171,212 @@ export class MapRenderer {
 			.attr("y2", (d) => d.y2)
 			.attr("stroke", "#ffffff")
 			.attr("stroke-width", 1.5)
-			.attr("opacity", 0.6);
+			.attr("opacity", 0.6)
+			.attr("stroke-dasharray", null);
 	}
 
-	/** Bind mouse-up on window to commit stroke */
+	// ─── Boundary preview (during drag) ───────────────────────────────────────
+
+	/**
+	 * Renders the preview boundary (where the boundary will be after this stroke)
+	 * as a dashed overlay in previewBorderGroup. The committed solid boundaries in
+	 * borderGroup are untouched — so old (solid) and new (dashed) are visible together.
+	 */
+	private updateBoundaryPreview() {
+		if (this.strokeSnapshot === null) return;
+		const { precincts } = this.getState();
+
+		// Apply pending stroke on top of the snapshot
+		const previewAssignments = new Map(this.strokeSnapshot);
+		for (const id of this.strokePrecincts) {
+			previewAssignments.set(id, this.strokeDistrict);
+		}
+
+		const segments = computeBoundarySegments(precincts, previewAssignments);
+
+		this.previewBorderGroup
+			.selectAll<SVGLineElement, Segment>("line.preview-boundary")
+			.data(segments)
+			.join(
+				(enter) =>
+					enter
+						.append("line")
+						.attr("class", "preview-boundary")
+						.attr("stroke-linecap", "round"),
+				(update) => update,
+				(exit) => exit.remove(),
+			)
+			.attr("x1", (d) => d.x1)
+			.attr("y1", (d) => d.y1)
+			.attr("x2", (d) => d.x2)
+			.attr("y2", (d) => d.y2)
+			.attr("stroke", "#ffffff")
+			.attr("stroke-width", 2)
+			.attr("stroke-dasharray", "5,4")
+			.attr("opacity", 0.85);
+	}
+
+	private clearBoundaryPreview() {
+		this.previewBorderGroup.selectAll("line.preview-boundary").remove();
+	}
+
+	// ─── Hover events ─────────────────────────────────────────────────────────
+
+	/**
+	 * Single delegated mousemove/mouseout on the SVG.
+	 * Hover only sets stroke/opacity — never fill — so clearHover never needs to
+	 * restore fill (which would clobber in-progress paint visuals).
+	 */
+	private initHoverEvents() {
+		const svgNode = this.svg.node()!;
+
+		svgNode.addEventListener("mousemove", (event: MouseEvent) => {
+			const target = event.target as Element;
+			if (!target.classList.contains("hex")) {
+				this.clearHover();
+				return;
+			}
+			const path = target as SVGPathElement;
+			const d = d3.select<SVGPathElement, Precinct>(path).datum();
+			if (d === undefined) return;
+
+			if (this.hoveredPath !== path) {
+				this.clearHover();
+				this.hoveredPath = path;
+				d3.select(path).attr("stroke", "#ffffff").attr("stroke-width", 1.5).attr("opacity", 0.95);
+
+				const { assignments } = this.getState();
+				const dId = assignments.get(d.id);
+				const bar = document.getElementById("status-bar");
+				if (bar !== null) {
+					const distLabel = dId != null ? `District ${dId}` : "Unassigned";
+					const topParty = (["D", "R", "L", "G", "I"] as const).reduce((a, b) =>
+						d.partyShare[a] > d.partyShare[b] ? a : b,
+					);
+					bar.textContent = `Precinct ${d.id} | ${distLabel} | Pop: ${d.population.toLocaleString()} | Lean: ${PARTY_LABELS[topParty]} (${(d.partyShare[topParty] * 100).toFixed(1)}%)`;
+				}
+			}
+		});
+
+		svgNode.addEventListener("mouseout", (event: MouseEvent) => {
+			if (!svgNode.contains(event.relatedTarget as Node | null)) {
+				this.clearHover();
+			}
+		});
+	}
+
+	/** Restores stroke/opacity only — never fill (hover never changes fill). */
+	private clearHover() {
+		if (this.hoveredPath === null) return;
+		const path = this.hoveredPath;
+		this.hoveredPath = null;
+		const { assignments } = this.getState();
+		const d = d3.select<SVGPathElement, Precinct>(path).datum();
+		if (d !== undefined) {
+			d3.select(path)
+				.attr("stroke", "none")
+				.attr("stroke-width", 0.5)
+				.attr("opacity", this.hexOpacity(d, assignments));
+		}
+	}
+
+	// ─── Brush events ─────────────────────────────────────────────────────────
+
+	/** Delegated brush events — mousedown/mousemove on SVG, mouseup on window. */
 	private initBrushEvents() {
+		const svgNode = this.svg.node()!;
+
+		svgNode.addEventListener("mousedown", (event: MouseEvent) => {
+			const target = event.target as Element;
+			if (!target.classList.contains("hex")) return;
+			const path = target as SVGPathElement;
+			const d = d3.select<SVGPathElement, Precinct>(path).datum();
+			if (d === undefined) return;
+
+			const { activeDistrict, assignments } = this.getState();
+			this.isPainting = true;
+			this.strokeDistrict = activeDistrict;
+			this.strokePrecincts = new Set([d.id]);
+			this.strokeSnapshot = new Map(assignments);
+			this.setActiveDistrict(activeDistrict);
+			this.applyPaintVisual(path, activeDistrict);
+			this.updateBoundaryPreview();
+		});
+
+		svgNode.addEventListener("mousemove", (event: MouseEvent) => {
+			if (!this.isPainting) return;
+			const target = event.target as Element;
+			if (!target.classList.contains("hex")) return;
+			const path = target as SVGPathElement;
+			const d = d3.select<SVGPathElement, Precinct>(path).datum();
+			if (d === undefined || this.strokePrecincts.has(d.id)) return;
+
+			this.strokePrecincts.add(d.id);
+			this.applyPaintVisual(path, this.strokeDistrict);
+			this.updateBoundaryPreview();
+		});
+
 		window.addEventListener("mouseup", () => {
 			if (!this.isPainting) return;
 			this.isPainting = false;
+			this.clearBoundaryPreview();
+			this.strokeSnapshot = null;
 			const ids = Array.from(this.strokePrecincts);
 			if (ids.length > 0) {
+				// Single store commit → single undo step; render() reconciles the DOM
 				this.paintStroke(ids, this.strokeDistrict);
 			}
 			this.strokePrecincts = new Set();
 		});
 	}
+
+	/**
+	 * Directly sets hex fill during a drag stroke (no store update — committed on mouseup).
+	 * Skipped in lean mode: lean color is intrinsic to the precinct, not the assignment,
+	 * so there is no hex-color feedback in lean mode; boundary preview is the signal.
+	 */
+	private applyPaintVisual(path: SVGPathElement, districtId: number) {
+		if (this.viewMode === "lean") return;
+		const d = d3.select<SVGPathElement, Precinct>(path).datum();
+		const base = DISTRICT_COLORS[districtId - 1] ?? "#2a2a3e";
+		const c = d3.hsl(base);
+		if (d !== undefined && this.popMax > this.popMin) {
+			const normPop = (d.population - this.popMin) / (this.popMax - this.popMin);
+			c.l = 0.55 - normPop * 0.30;
+		}
+		d3.select(path).attr("fill", c.formatHex()).attr("opacity", 0.75);
+	}
+
+	// ─── Fill / opacity helpers ───────────────────────────────────────────────
+
+	private hexFill(d: Precinct, assignments: GameStore["assignments"]): string {
+		if (this.viewMode === "lean") {
+			const lean = d.partyShare.D - d.partyShare.R;
+			const t = (lean + 1) / 2; // 0 = full R (red), 1 = full D (blue)
+			return d3.interpolateRdBu(t);
+		}
+		const dId = assignments.get(d.id);
+		if (dId == null) return "#2a2a3e";
+		const base = DISTRICT_COLORS[dId - 1] ?? "#2a2a3e";
+		const normPop =
+			this.popMax > this.popMin
+				? (d.population - this.popMin) / (this.popMax - this.popMin)
+				: 0.5;
+		const c = d3.hsl(base);
+		c.l = 0.55 - normPop * 0.30;
+		return c.formatHex();
+	}
+
+	private hexOpacity(d: Precinct, assignments: GameStore["assignments"]): number {
+		if (this.viewMode === "lean") return 0.9;
+		const dId = assignments.get(d.id);
+		return dId != null ? 0.75 : 0.35;
+	}
 }
 
 // ─── Election results renderer ────────────────────────────────────────────────
+
+import { PARTY_COLORS } from "../model/types.js";
 
 export function renderResults(container: HTMLElement, state: GameStore): void {
 	if (state.simulationResult === null || state.simulationResult.districtResults.length === 0) {

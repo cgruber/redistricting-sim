@@ -2,7 +2,7 @@
 id: SPIKE-001
 title: Game tech stack proof-of-concept
 area: frontend, game, architecture
-status: open
+status: complete
 created: 2026-04-23
 ---
 
