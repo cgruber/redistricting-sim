@@ -1,23 +1,17 @@
 working-dir: /Users/cgruber/Projects/github/cgruber/redistricting-sim/spike/001-game-poc/
-status: In Progress
+status: Complete
 AC:
-  [ ] ~50-precinct hex grid rendered as SVG polygons
-  [ ] Precincts paintable into districts via brush stroke
-  [ ] At least 2 districts, boundaries visible
-  [ ] Election simulation runs after each edit, results shown
-  [ ] Undo/redo of at least one brush stroke
-  [ ] npm install && npm start works
-  [ ] No server — fully static/client-side
+  [x] ~50-precinct hex grid rendered as SVG polygons (7×8=56 cells, flat-top hex)
+  [x] Precincts paintable into districts via brush stroke
+  [x] At least 2 districts, boundaries visible (4 districts available; white boundary edges)
+  [x] Election simulation runs after each edit, results shown (sidebar panel)
+  [x] Undo/redo of at least one brush stroke (zundo temporal store)
+  [x] npm install && npm start works (Vite dev server, 84ms startup)
+  [x] No server — fully static/client-side
 decisions:
-  Population distribution: Using a Gaussian mixture model approach with 2–3 epicenters
-  placed at fixed grid positions. Each precinct's population is the sum of weighted
-  Gaussian contributions from each epicenter (exp(-d²/2σ²)), scaled so total population
-  across the grid falls in a plausible range. This is the standard "informed simple"
-  approach used in synthetic geography literature — cheap to compute, produces realistic
-  dense urban cores with sparse periphery, and epicenters can be tuned independently.
-  Partisan lean uses a 2D sinusoidal gradient (low-frequency noise via overlapping sine
-  waves at different angles) to ensure spatial coherence without hardcoding real-world
-  urban/rural stereotypes.
-  Undo/redo: Using zundo (zustand-travel is not a real package; zundo is the established
-  Zustand undo/redo middleware).
+  Population distribution: Gaussian mixture model, 2–3 epicenters, exp(-d²/2σ²) falloff.
+  Partisan lean: 3 overlapping sinusoidal waves (low-freq, random angles/phases), no
+  urban/rural stereotypes. Undo/redo: zundo (zustand-travel is not a real package).
+  AssignmentMap as Map<id, DistrictId|null>: works but note JSON serialisation concern
+  for production (see SPIKE-REPORT.md). Full zundo snapshots (not diffs) for simplicity.
 blockers: none
