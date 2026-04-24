@@ -1,0 +1,7 @@
+build:ci --spawn_strategy=sandboxed
+build:ci --disk_cache=/tmp/bazel-disk-cache-game
+
+# aspect_rules_ts 3.x requires explicit transpiler selection.
+common --@aspect_rules_ts//ts:default_to_tsc_transpiler
+
+test --test_output=errors

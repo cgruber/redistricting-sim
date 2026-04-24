@@ -1,0 +1,53 @@
+load("@aspect_rules_esbuild//esbuild:defs.bzl", "esbuild")
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
+
+ts_config(
+    name = "tsconfig",
+    src = "tsconfig.json",
+)
+
+# Type-check target: verifies TypeScript types without producing runtime output.
+ts_project(
+    name = "app_typecheck_lib",
+    srcs = glob(["src/**/*.ts"]),
+    tsconfig = ":tsconfig",
+    deps = [
+        "//:node_modules/d3",
+        "//:node_modules/@types/d3",
+        "//:node_modules/zustand",
+        "//:node_modules/zundo",
+    ],
+)
+
+# build_test: confirms type checking passes under bazel test //...
+build_test(
+    name = "app_typecheck_test",
+    targets = [":app_typecheck_lib"],
+    visibility = ["//visibility:public"],
+)
+
+# esbuild bundles TypeScript + npm deps into a single browser-ready JS file.
+esbuild(
+    name = "app",
+    srcs = glob(["src/**/*.ts"]),
+    entry_point = "src/main.ts",
+    deps = [
+        "//:node_modules/d3",
+        "//:node_modules/zustand",
+        "//:node_modules/zundo",
+    ],
+    output = "bundle.js",
+    format = "esm",
+    # Mark react as external: zustand ships React bindings that are not used here
+    # (we use zustand/vanilla). The bazel-sandbox plugin would fail trying to bundle
+    # react since it is not a declared dependency.
+    external = ["react", "react-dom"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "html",
+    srcs = ["index.html"],
+    visibility = ["//visibility:public"],
+)

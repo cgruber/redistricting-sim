@@ -1,0 +1,15 @@
+load("@npm//:defs.bzl", "npm_link_all_packages")
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+
+# Link all npm packages into //:node_modules — required for ts_project deps.
+npm_link_all_packages(name = "node_modules")
+
+sh_binary(
+    name = "serve",
+    srcs = [":serve.sh"],
+    data = [
+        "//rust:wasm_calc_bindgen",
+        "//web:app",
+        "//web:html",
+    ],
+)

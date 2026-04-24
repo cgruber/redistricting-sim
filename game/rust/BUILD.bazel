@@ -1,0 +1,32 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_library", "rust_test")
+load("@rules_rust_wasm_bindgen//:defs.bzl", "rust_wasm_bindgen")
+
+rust_library(
+    name = "calc",
+    srcs = ["src/lib.rs"],
+    edition = "2021",
+    visibility = ["//visibility:public"],
+)
+
+rust_test(
+    name = "calc_test",
+    crate = ":calc",
+)
+
+rust_binary(
+    name = "wasm_calc",
+    srcs = ["src/wasm_entry.rs"],
+    edition = "2021",
+    target_compatible_with = ["@platforms//cpu:wasm32"],
+    deps = [
+        ":calc",
+        "@rules_rust_wasm_bindgen//3rdparty:wasm_bindgen",
+    ],
+)
+
+rust_wasm_bindgen(
+    name = "wasm_calc_bindgen",
+    target = "no-modules",
+    wasm_file = ":wasm_calc",
+    visibility = ["//visibility:public"],
+)
