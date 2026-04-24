@@ -57,10 +57,13 @@ module) is deferred to a future ticket when the WASM surface grows.
 `incompatible_use_toolchain_transition = True`, which was removed in Bazel 9.x.
 Fixed via `single_version_override` + `patches/aspect_rules_esbuild_bazel9.patch`.
 
-**zustand/vanilla subpath** — zustand 5.x's default entry point imports React.
-The game uses zustand's vanilla store (no React). Importing from `zustand/vanilla`
-avoids the React dependency. `react` and `react-dom` are also marked `external` in
-the esbuild rule as a belt-and-suspenders guard.
+**zustand/vanilla subpath + react import map shim** — zustand 5.x's default entry
+imports React; `zundo` pulls in `zustand/esm/react.mjs` transitively even when the
+game code only imports `zustand/vanilla`. This leaves `import React from "react"` in
+the esbuild bundle (as an external). The browser cannot resolve the bare specifier
+`"react"`, so `index.html` provides an import map that shims it to an empty module
+(`data:text/javascript,export default {};`). Nothing in the app calls React APIs —
+the import is purely a dead transitive artifact.
 
 **ts_project + esbuild separation** — `ts_project` provides type checking; `esbuild`
 provides the browser bundle. `ts_project` does not produce a browser-ready artifact
