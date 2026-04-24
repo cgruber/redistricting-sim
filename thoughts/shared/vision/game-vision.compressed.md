@@ -183,10 +183,17 @@ OUT: player-facing Custom Level UI + community sharing(post-$v1) |
 4. Mobile: deferred; may be different interaction model on same data; may not happen; no decision needed
 5. Fictional region names+geographies: GES+VDA creative decision per scenario
 6. [RESOLVED] Tech stack: TypeScript+Vite+D3.js+Zustand (SPIKE-001) + Bazel 9.1+bzlmod+rules_rust+aspect_rules_ts (SPIKE-002); Rust→WASM via wasm-bindgen; open: switch to web target+proper .d.ts import for production; next: BUILD ticket to integrate spikes into single Bazel graph
-7. Precinct count calibration: target ~hundreds; DR to research real sub-state regions+precinct
-   counts to inform GES+ARCH rendering+perf targets
-8. $VRA/bloc voting model: simplified — demographic group vote-share % per $pc; district outcome
-   aggregated from breakdown; GES+DR to validate educational soundness; generalises to any demographic
+7. [RESOLVED] Precinct count: 300 nominal (250–350); parameterized (tutorial@150↔hard@500)
+   Travis County TX anchor; SVG safe ≤1,000 elements; Canvas crossover 1,000–2,000
+   see research/2026-04-24-precinct-count-calibration.md
+8. [RESOLVED] $VRA/bloc voting model + simulation architecture:
+   vote_shares:Map<PartyId,float> per group (N-party); district=population-weighted avg
+   waves=demographic events(turnout_shift|vote_share_shift|population_shift) not partisan labels
+   partisan outcome always derived; deterministic core; waves=designed scenario events not noise
+   demographic drift between scenarios=animated transition (not a level)
+   scenario format must include events[] first-class alongside success criteria
+   $VRA risk: minority $VAP ≥30% but <50% AND preferred-cand loses
+   see decisions/2026-04-24-election-simulation-architecture.md + research docs
 9. Historical/inspired scenarios: post-$v1; fictional pop data on inspired maps; DR required
 10. About page content: deferred until page exists; convey intent+non-partisan framing
 

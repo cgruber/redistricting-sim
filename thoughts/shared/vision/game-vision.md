@@ -459,17 +459,24 @@ static data once published; no per-session server compute needed.
    `.d.ts` import for production). Integration of spike prototypes into a single Bazel build graph
    is the next immediate BUILD ticket.
 
-7. **Precinct count calibration** — target is "hundreds" (visually small, fat-pixel
-   aesthetic). Domain Reviewer should research real sub-state regions, their precinct
-   counts, and how actual redistricting breaks down at that scale. Result informs
-   GES + ARCH on rendering and performance targets.
+7. **Precinct count calibration** — [RESOLVED] Target 300 nominal precincts (range
+   250–350); parameterized so scenarios can dial 150 (tutorial) to 500 (hard). Travis
+   County TX (247–287) is the real-world calibration anchor. SVG+D3 safe to ~1,000
+   elements; Canvas crossover at 1,000–2,000. See research doc
+   `thoughts/shared/research/2026-04-24-precinct-count-calibration.md`.
 
-8. **VRA / bloc voting simulation model** — simplified model: each demographic group
-   has a per-precinct vote-share percentage (e.g., "Latinos in this precinct vote
-   R 44%, D 38%, other 18%"); district outcome is aggregated from precinct-level
-   demographic breakdowns. GES + Domain Reviewer to validate that this simplification
-   is educationally sound and sufficient for the VRA scenario. The same model should
-   generalise to other demographic groups.
+8. **VRA / bloc voting simulation model** — [RESOLVED] Model validated and extended.
+   Key decisions (see ADR `thoughts/shared/decisions/2026-04-24-election-simulation-architecture.md`):
+   - Demographic data: `vote_shares: Map<PartyId, float>` per group (N-party, not 2-party);
+     district outcome = population-weighted average across groups and precincts.
+   - Waves/variance: expressed as demographic events (turnout_shift, vote_share_shift,
+     population_shift) per group — never as partisan labels. Partisan outcome derived.
+   - Deterministic core for v1; waves are designed scenario events, not ambient noise.
+   - Demographic drift between scenarios: animated inter-scenario transition (not a level).
+   - Scenario format must include first-class `events[]` alongside success criteria.
+   - VRA risk indicator: minority VAP ≥30% but <50% AND preferred candidate loses.
+   See also research docs `2026-04-24-election-simulation-and-evaluation-metrics.md`
+   and `2026-04-24-vra-and-bloc-voting-model.md`.
 
 9. **Historical / inspired scenarios** — later versions may use historically-inspired
    maps with fictional population data. Domain Reviewer required. Flag for v2.
