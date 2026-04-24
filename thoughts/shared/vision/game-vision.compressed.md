@@ -1,12 +1,13 @@
 <!--COMPRESSED v1; source:game-vision.md-->
 §META
-type:vision status:draft created:2026-04-23 authors:cgruber+claude last_updated:2026-04-23
+type:vision status:draft created:2026-04-23 authors:cgruber+claude last_updated:2026-04-24
 LIVING DOC — updated each sprint after demo; direction changes reviewed with user before acting
 
 §ABBREV
-pc=precinct seg=segment dist=district
+pc=precinct seg=segment dist=district ET=election-type DistId=DistrictId
+MapRend=MapRenderer SvgMapRend=SvgMapRenderer CanvasMapRend=CanvasMapRenderer
 FPTP=first-past-the-post VRA=Voting Rights Act
-v1=version 1 scope
+v1=version 1 scope v2=version 2
 
 §GOAL
 Primary: players understand viscerally that same population+votes → wildly different outcomes
@@ -74,14 +75,21 @@ Cats and Dogs(complete cats-vs-dogs scenario)
 Replay motivation: achievements + optional criteria + completionism
 
 §MAP_MECHANICS
-Playfield: fictional sub-state region(county/metro/similar) — ONE region per scenario
-  scope: NOT whole state; not multi-state; "zoom out" deferred(may be relevant for electoral-system
-  comparisons later; explicitly not $v1 or near-term)
-Precincts($pc): atomic geographic unit; not subdivisible; target ~hundreds; visually small
-  ("fat pixels whose edges you push around"); exact count → calibrate against real regions(see §OPEN)
+Playfield: fictional scenario region — ONE region per scenario; NOT county-bound (scenario-defined)
+  geography: State→Region→Precinct (hierarchy in data model from $v1; state view=$v2)
+  context $pcs: neighboring read-only $pcs completing cross-boundary $dists; participate in sim; not editable
+  one $ET per scenario: congressional|state-senate|state-house = separate maps; editing one ≠ changes others
+  county boundary changes: EXPLICITLY OUT OF SCOPE (rare IRL; lesson→redistricting+demographic shift)
+Viewport: pannable (right-click-drag|arrows); $pcs scroll in/out; simulation=always statewide
+  panning: CSS transform→60fps smooth regardless of node count; interaction degrades >~1,000 SVG nodes
+  rendering: $MapRend=interface; $SvgMapRend|$CanvasMapRend=implementations; Canvas+SVG hybrid at >800 $pcs
+  state-level view=$v2: data model+rendering interface must not preclude it
+Precincts($pc): atomic geographic unit; not subdivisible; target 300 nominal(250–350); parameterized
+  (tutorial@150↔hard@500); visually small ("fat pixels whose edges you push around")
 $pc metadata: population(total+density) | demographic breakdown(race,partisan,gender,religion) |
   last election result(votes by party, turnout) | scenario-specific data
 $dist = grouping of $pcs; boundary = edges between adjacent $pcs in different $dists
+  $pc.assignments:Map<$ET,$DistId> (not single ID)
 $seg = contiguous blob of $pcs within a $dist; $dist may have multiple $segs(non-contiguous)
   non-contiguous: DISABLED by default; enabled only when scenario permits
 
@@ -169,10 +177,14 @@ IN: single-player | single sub-state region/scenario | $FPTP only | fictional re
   8-12 scenarios(partisan+demographic+neutral-rules) | desktop-first |
   progress: local browser storage(IndexedDB/localStorage); no user accounts; no server game state
   scenario data format(shared w/ pre-built authoring; player UI deferred)
+  rendering: $MapRend interface + $SvgMapRend impl; Canvas+SVG hybrid when >800 $pcs; CSS transform panning
 OUT: player-facing Custom Level UI + community sharing(post-$v1) |
-  alt electoral systems(STV,party-list) | real geodata | full-state/multi-state scope |
+  alt electoral systems(STV,party-list) | real geodata |
+  county boundary changes(out of scope entirely) |
+  state-level view(=$v2; data model+rendering interface must accommodate w/o refactor) |
+  full-state/multi-state editing scope |
   multiplayer | mobile-optimised editor(TBD; may be different model on same data) |
-  international comparisons(early v2) | user accounts/cross-device(v2 if justified) |
+  international comparisons(early $v2) | user accounts/cross-device($v2 if justified) |
   campaign/narrative mode(stretch; must not be precluded)
 
 §OPEN
@@ -196,7 +208,14 @@ OUT: player-facing Custom Level UI + community sharing(post-$v1) |
    see decisions/2026-04-24-election-simulation-architecture.md + research docs
 9. Historical/inspired scenarios: post-$v1; fictional pop data on inspired maps; DR required
 10. About page content: deferred until page exists; convey intent+non-partisan framing
+11. [RESOLVED] Map geography+rendering: scenario region(not county-bound) | State→Region→Precinct hierarchy |
+    neighboring context $pcs first-class | one $ET/scenario | $pc.assignments:Map<$ET,$DistId> |
+    pannable viewport; scoring not walls | $MapRend interface from $v1; Canvas+SVG hybrid >800 $pcs |
+    state-level view=$v2; county boundary changes=out of scope
+    see decisions/2026-04-24-map-geography-and-rendering-architecture.md
 
 §REFS
 team+workflow: thoughts/shared/research/2026-04-23-agent-team-and-workflow-design.compressed.md
 project purpose: README.md
+map geography+rendering ADR: thoughts/shared/decisions/2026-04-24-map-geography-and-rendering-architecture.compressed.md
+election sim ADR: thoughts/shared/decisions/2026-04-24-election-simulation-architecture.compressed.md
