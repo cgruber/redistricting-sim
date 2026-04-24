@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redistricting Simulator</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #1a1a2e;
+        color: #e0e0e0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      #app-header {
+        padding: 10px 16px;
+        background: #16213e;
+        border-bottom: 1px solid #0f3460;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-shrink: 0;
+      }
+
+      #app-header h1 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #e94560;
+      }
+
+      #controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .district-btn {
+        padding: 4px 12px;
+        border: 2px solid transparent;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.15s;
+      }
+
+      .district-btn.active {
+        border-color: white;
+      }
+
+      #btn-undo, #btn-redo {
+        padding: 4px 10px;
+        background: #0f3460;
+        color: #e0e0e0;
+        border: 1px solid #1a4a7a;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.85rem;
+      }
+
+      #btn-undo:hover, #btn-redo:hover {
+        background: #1a4a7a;
+      }
+
+      #btn-undo:disabled, #btn-redo:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      #main {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+        gap: 0;
+      }
+
+      #map-container {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        position: relative;
+        user-select: none;
+        cursor: crosshair;
+      }
+
+      #map-svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      #sidebar {
+        width: 260px;
+        flex-shrink: 0;
+        background: #16213e;
+        border-left: 1px solid #0f3460;
+        padding: 16px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      #sidebar h2 {
+        font-size: 0.95rem;
+        color: #e94560;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .result-district {
+        background: #0f3460;
+        border-radius: 6px;
+        padding: 10px;
+        border-left: 4px solid #ccc;
+      }
+
+      .result-district .dist-name {
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+      }
+
+      .result-district .vote-bar {
+        height: 8px;
+        border-radius: 4px;
+        background: linear-gradient(to right, #3a7bd5 var(--d-pct), #e94560 var(--d-pct));
+        margin-bottom: 4px;
+      }
+
+      .result-district .vote-details {
+        font-size: 0.78rem;
+        color: #a0a0b0;
+      }
+
+      .result-district .winner-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+
+      .legend {
+        font-size: 0.8rem;
+        color: #a0a0b0;
+        line-height: 1.6;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .legend-swatch {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        flex-shrink: 0;
+      }
+
+      #status-bar {
+        padding: 4px 16px;
+        background: #16213e;
+        border-top: 1px solid #0f3460;
+        font-size: 0.75rem;
+        color: #606080;
+        flex-shrink: 0;
+      }
+
+      #wasm-status-bar {
+        padding: 2px 16px;
+        background: #16213e;
+        border-top: 1px solid #0a1f3a;
+        font-size: 0.7rem;
+        color: #404060;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header id="app-header">
+      <h1>Redistricting Simulator</h1>
+      <div id="controls">
+        <span style="font-size:0.8rem;color:#888;">Draw district:</span>
+        <div id="district-buttons"></div>
+        <button id="btn-undo" disabled>↩ Undo</button>
+        <button id="btn-redo" disabled>↪ Redo</button>
+        <button id="btn-view-toggle">View: Partisan Lean</button>
+      </div>
+    </header>
+
+    <div id="main">
+      <div id="map-container">
+        <svg id="map-svg"></svg>
+      </div>
+      <aside id="sidebar">
+        <h2>Election Results</h2>
+        <div id="results-container">
+          <div style="color:#606080;font-size:0.85rem;">Draw districts to see results</div>
+        </div>
+        <h2>Legend</h2>
+        <div id="legend-container" class="legend"></div>
+      </aside>
+    </div>
+
+    <div id="status-bar">Hover over a precinct to see details. Click and drag to paint districts.</div>
+    <div id="wasm-status-bar">
+      <span id="wasm-status"></span>
+    </div>
+
+    <!--
+      WASM loading sequence (no-modules target):
+      1. Load the wasm-bindgen glue — registers global wasm_bindgen.
+      2. Init the WASM binary asynchronously.
+      3. After WASM is ready, load the bundled game (ES module).
+    -->
+    <script src="wasm_calc_bindgen.js"></script>
+    <script>
+      wasm_bindgen("./wasm_calc_bindgen_bg.wasm").then(function () {
+        var s = document.createElement("script");
+        s.type = "module";
+        s.src = "bundle.js";
+        document.body.appendChild(s);
+      });
+    </script>
+  </body>
+</html>
