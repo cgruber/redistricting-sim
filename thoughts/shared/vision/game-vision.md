@@ -3,7 +3,7 @@ type: vision
 status: draft — awaiting review
 created: 2026-04-23
 authors: cgruber + claude
-last_updated: 2026-04-23
+last_updated: 2026-04-24
 ---
 
 # Redistricting Simulator — Game Vision
@@ -194,18 +194,38 @@ Achievement examples (not exhaustive):
 
 ### The Map
 
-The playfield is a fictional sub-state **region** — a county, metro area, or similar
-geographic unit — divided into **precincts**. Each scenario covers one such region.
-The game does not model whole states; redistricting at the state-legislature or
-congressional-district level happens within a single region boundary. "Zooming out" to
-full-state or multi-state scope is explicitly deferred — it may become relevant for
-electoral-system comparison scenarios but is not needed for v1 or the near term.
+The playfield is a fictional **scenario region** — a set of precincts defined by the
+scenario, not constrained to administrative county boundaries. Each scenario covers one
+such region. The region is roughly county-sized in feel (~300 precincts nominal) but
+may extend into neighboring areas as the scenario requires.
+
+**Geography model** (see ADR `decisions/2026-04-24-map-geography-and-rendering-architecture.md`):
+- Data hierarchy: State → Region → Precinct. The hierarchy exists in the data model
+  from v1 even though the state-level view is deferred to v2.
+- Each scenario includes an editable region plus read-only **neighboring context precincts**
+  that complete districts crossing the editing boundary. Context precincts participate in
+  population balance and simulation but are not editable.
+- **One election type per scenario.** Congressional, state senate, and state house are
+  entirely separate maps. Editing one type never changes another. Multiple types may be
+  shown as read-only overlay views for comparison.
+- County boundary changes are out of scope — the lesson is better taught through
+  redistricting and demographic shift.
+
+**Viewport and navigation**: The editing window is a pannable viewport. The player
+pans via right-click-drag or arrow keys; precincts scroll in and out of view. The
+state-wide simulation always covers all precincts; the viewport constrains what is
+visible and editable, not what is simulated. A visual focus-zone hint indicates where
+the interesting action is; scenario scoring (not a hard wall) enforces scope.
+
+**State-level view** (v2): a zoomed-out view showing the player's edited region in
+full state context with statewide electoral consequences. Data model and rendering
+interface are designed to accommodate it without refactoring.
 
 Precincts are the atomic unit of redistricting: small, fixed-boundary geographic cells
 (a stylised grid or organic shapes depending on the scenario's aesthetic). They cannot be
-subdivided. Target count is in the hundreds — visually small, like fat pixels whose edges
-the player pushes around. The exact count should be calibrated against real regional
-examples (see §Open Questions — precinct count research).
+subdivided. Target count: 300 nominal (250–350 range), parameterized per scenario
+(tutorial ~150; hard scenarios ~500). See research doc
+`research/2026-04-24-precinct-count-calibration.md`.
 
 Each precinct has metadata:
 - Population (total and density)
@@ -419,11 +439,23 @@ static data once published; no per-session server compute needed.
 - Scenario data format designed for authoring (pre-built scenarios use it; player-facing
   UI deferred to post-v1)
 
+**Rendering architecture (v1):**
+- Renderer-agnostic data/simulation layer; `MapRenderer` interface exists from v1 with
+  `SvgMapRenderer` as initial implementation
+- Pure SVG acceptable if total precincts (editable + context) stay ≤800; Canvas+SVG hybrid
+  required when scenarios exceed that threshold
+- CSS transform panning (smooth 60fps regardless of node count); Canvas layer for hex grid
+  background; SVG overlay for interactive elements only
+
 **Explicitly out of v1:**
 - Player-facing Custom Level UI and community scenario sharing (data format in v1; UI post-v1)
 - Alternative electoral systems (STV, party-list, etc.)
 - Real geographic data
-- Full-state or multi-state scope
+- County boundary changes (out of scope entirely — rare IRL; lesson taught via redistricting
+  and demographic shift)
+- State-level view showing edited region in statewide context (v2; data model and rendering
+  interface must accommodate it without refactoring)
+- Full-state or multi-state editing scope
 - Multiplayer
 - Mobile-optimised boundary drawing (TBD — may be a different interaction model on the
   same data; decision deferred)
@@ -484,3 +516,13 @@ static data once published; no per-session server compute needed.
 10. **About page content** — deferred. Deserves its own review when there is a page
     to look at. Should convey educational intent and non-partisan framing without
     making claims that require ongoing maintenance.
+
+11. ~~**Map geography model and rendering architecture**~~ — **Resolved.** Key decisions
+    (see ADR `thoughts/shared/decisions/2026-04-24-map-geography-and-rendering-architecture.md`):
+    - Playfield is a *scenario region* (scenario-defined, not county-bounded)
+    - Geographic hierarchy: State → Region → Precinct in data model from v1
+    - Neighboring context precincts are first-class in scenario data
+    - One election type per scenario; `pc.assignments: Map<ElectionType, DistrictId>`
+    - Pannable viewport; scenario scope enforced by scoring not hard walls
+    - `MapRenderer` interface from v1; Canvas+SVG hybrid when >800 total precincts
+    - State-level view is explicit v2; county boundary changes out of scope entirely
