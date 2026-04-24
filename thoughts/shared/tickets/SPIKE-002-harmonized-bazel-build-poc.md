@@ -2,7 +2,7 @@
 id: SPIKE-002
 title: Harmonized Bazel build proof-of-concept
 area: build, tooling, architecture
-status: open
+status: complete
 created: 2026-04-23
 ---
 

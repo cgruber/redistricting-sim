@@ -34,8 +34,6 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 
 | File | Area | Summary |
 |---|---|---|
-| `SPIKE-001-game-tech-stack-poc.md` | frontend, game | TypeScript + SVG/D3 + Zustand game prototype in `spike/001-game-poc/` (independent source root) |
-| `SPIKE-002-harmonized-bazel-build-poc.md` | build | Bazel + rules_ts + Rust→WASM hello-world in `spike/002-build-poc/` (independent source root) |
 | `CI-001-github-action-ticket-close-sync.md` | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
 | `AGENT-002-pr-review-cycle-kotlin-tools.md` | agentic workflow | Update infra repo pr-review-cycle to use kotlin scripts in critique/response agent prompts instead of raw gh api |
 
@@ -45,6 +43,8 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 
 | Summary | Resolution |
 |---|---|
+| SPIKE-001: Game tech stack PoC | TypeScript+Vite+D3.js+Zustand hex-grid prototype complete; all AC met; SPIKE-REPORT.md written |
+| SPIKE-002: Harmonized Bazel build PoC | Bazel 9.1.0+bzlmod+rules_rust+rules_ts TypeScript+Rust/WASM build complete; all AC met; SPIKE-REPORT.md written; Go recommendation |
 | AGENT-001: $abr convention in compressed docs | Applied $-prefix to all §ABBREV key references in game-vision.compressed.md and agent-team-design.compressed.md; merged PR #2 |
 | KT-001, KT-003, KT-004: Kotlin gRPC service work | Superseded — Kotlin service removed from repo; game will be a TypeScript browser app |
 | BUILD-001: grpc-kotlin bzlmod migration | Superseded — Kotlin and Bazel removed; build system being re-evaluated via SPIKE-002 |

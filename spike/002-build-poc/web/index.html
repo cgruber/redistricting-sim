@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPIKE-002: TypeScript + Rust/WASM</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    .result { font-size: 1.5rem; font-weight: bold; color: #2a7ae2; }
+  </style>
+</head>
+<body>
+  <h1>SPIKE-002: Bazel + TypeScript + Rust/WASM</h1>
+  <p>
+    Rust/WASM <code>add(2, 3)</code> =
+    <span class="result" id="result">loading…</span>
+  </p>
+  <p><small>
+    Stack: Bazel + rules_ts (TypeScript) + rules_rust + rust_wasm_bindgen (Rust→WASM)
+  </small></p>
+
+  <!--
+    1. Load the no-modules wasm-bindgen glue (creates global wasm_bindgen object).
+    2. Init WASM, then inject main.js so it runs after wasm_bindgen is ready.
+  -->
+  <script src="wasm_calc_bindgen.js"></script>
+  <script>
+    wasm_bindgen('./wasm_calc_bindgen_bg.wasm').then(function () {
+      var s = document.createElement('script');
+      s.src = 'main.js';
+      document.body.appendChild(s);
+    });
+  </script>
+</body>
+</html>

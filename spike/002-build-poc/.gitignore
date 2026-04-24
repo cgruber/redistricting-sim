@@ -1,0 +1,5 @@
+# Bazel output trees
+bazel-*
+# Generated WASM bindings and compiled JS — derived at build time
+*.wasm
+*.d.ts

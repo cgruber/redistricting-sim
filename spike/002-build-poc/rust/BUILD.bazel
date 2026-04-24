@@ -1,0 +1,40 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_library", "rust_test")
+load("@rules_rust_wasm_bindgen//:defs.bzl", "rust_wasm_bindgen")
+
+# Pure calc library — no WASM or browser dependencies; compiled and tested natively.
+rust_library(
+    name = "calc",
+    srcs = ["src/lib.rs"],
+    edition = "2021",
+    visibility = ["//visibility:public"],
+)
+
+# Native unit tests for the pure calc library.
+rust_test(
+    name = "calc_test",
+    crate = ":calc",
+)
+
+# WASM binary: wraps calc with wasm-bindgen exports.
+# target_compatible_with restricts this target to wasm32; rust_wasm_bindgen handles
+# the platform transition internally and builds it cross-compiled to wasm32.
+rust_binary(
+    name = "wasm_calc",
+    srcs = ["src/wasm_entry.rs"],
+    edition = "2021",
+    target_compatible_with = ["@platforms//cpu:wasm32"],
+    deps = [
+        ":calc",
+        "@rules_rust_wasm_bindgen//3rdparty:wasm_bindgen",
+    ],
+)
+
+# wasm-bindgen post-processing: generates wasm_calc.js + wasm_calc_bg.wasm.
+# target = "no-modules" produces a self-contained script (no ES module imports)
+# that exposes a global `wasm_bindgen` object with all exported functions.
+rust_wasm_bindgen(
+    name = "wasm_calc_bindgen",
+    target = "no-modules",
+    wasm_file = ":wasm_calc",
+    visibility = ["//visibility:public"],
+)

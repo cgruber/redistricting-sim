@@ -1,0 +1,22 @@
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
+
+# ts_config wraps the tsconfig.json so ts_project can properly extend and reference it.
+ts_config(
+    name = "tsconfig",
+    src = "tsconfig.json",
+)
+
+# Compiles main.ts → main.js using the Bazel-managed TypeScript toolchain.
+# TypeScript version (5.6.2) is registered via rules_ts_ext.deps() in MODULE.bazel.
+ts_project(
+    name = "app",
+    srcs = ["src/main.ts"],
+    tsconfig = ":tsconfig",
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "html",
+    srcs = ["index.html"],
+    visibility = ["//visibility:public"],
+)
