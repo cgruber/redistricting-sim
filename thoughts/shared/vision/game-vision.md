@@ -452,8 +452,12 @@ static data once published; no per-session server compute needed.
 5. **Scenario fictional region names and geographies** — placeholder. GES + Visual Designer
    creative decision informed by educational goals per scenario.
 
-6. **Tech stack** — unresolved (separate session with GES + Architect). Affects: how
-   simulation runs, map rendering approach, save system, mobile.
+6. ~~**Tech stack**~~ — **Resolved.** TypeScript + Vite + D3.js + Zustand (browser game;
+   validated by SPIKE-001). Build system: Bazel 9.1 + bzlmod + rules_rust + aspect_rules_ts
+   (validated by SPIKE-002; go recommendation). Rust → WASM for compute kernel (optional
+   per-scenario; wasm-bindgen no-modules for v1; open question: switch to `web` target + proper
+   `.d.ts` import for production). Integration of spike prototypes into a single Bazel build graph
+   is the next immediate BUILD ticket.
 
 7. **Precinct count calibration** — target is "hundreds" (visually small, fat-pixel
    aesthetic). Domain Reviewer should research real sub-state regions, their precinct
