@@ -1,0 +1,1 @@
+exports_files(["aspect_rules_esbuild_bazel9.patch"])

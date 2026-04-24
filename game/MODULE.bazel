@@ -1,0 +1,48 @@
+module(
+    name = "redistricting_sim",
+    version = "0.1.0",
+)
+
+bazel_dep(name = "bazel_skylib", version = "1.8.2")
+bazel_dep(name = "platforms", version = "1.0.0")
+bazel_dep(name = "aspect_rules_ts", version = "3.8.8")
+bazel_dep(name = "aspect_rules_esbuild", version = "0.21.0")
+# Patch: remove incompatible_use_toolchain_transition (removed in Bazel 9.x).
+single_version_override(
+    module_name = "aspect_rules_esbuild",
+    version = "0.21.0",
+    patches = ["//patches:aspect_rules_esbuild_bazel9.patch"],
+    patch_strip = 1,
+)
+bazel_dep(name = "aspect_rules_js", version = "2.9.2")
+# rules_nodejs 6.7.4 fixes the CcInfo removal in Bazel 9.x (rules_cc dependency added).
+# Declared explicitly to override the 6.3.3 minimum that aspect_rules_js carries.
+bazel_dep(name = "rules_nodejs", version = "6.7.4")
+bazel_dep(name = "rules_shell", version = "0.6.1")
+bazel_dep(name = "rules_rust", version = "0.70.0")
+bazel_dep(name = "rules_rust_wasm_bindgen", version = "0.70.0")
+
+# TypeScript compiler fetched by Bazel — no npm/pnpm installation required.
+rules_ts_ext = use_extension("@aspect_rules_ts//ts:extensions.bzl", "ext")
+rules_ts_ext.deps(ts_version = "5.6.2")
+use_repo(rules_ts_ext, "npm_typescript")
+
+# npm dependencies (d3, zustand, zundo) translated from pnpm-lock.yaml.
+npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
+npm.npm_translate_lock(
+    name = "npm",
+    pnpm_lock = "//:pnpm-lock.yaml",
+    verify_node_modules_ignored = "//:.bazelignore",
+)
+use_repo(npm, "npm")
+
+# Rust toolchain: native + wasm32 cross-compilation target.
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(
+    edition = "2021",
+    versions = ["1.85.0"],
+    extra_target_triples = ["wasm32-unknown-unknown"],
+)
+use_repo(rust, "rust_toolchains")
+
+register_toolchains("@rust_toolchains//:all")
