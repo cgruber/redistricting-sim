@@ -182,7 +182,7 @@ OUT: player-facing Custom Level UI + community sharing(post-$v1) |
 3. [RESOLVED] Precinct naming: "precinct" confirmed
 4. Mobile: deferred; may be different interaction model on same data; may not happen; no decision needed
 5. Fictional region names+geographies: GES+VDA creative decision per scenario
-6. Tech stack: unresolved → separate GES+ARCH session
+6. [RESOLVED] Tech stack: TypeScript+Vite+D3.js+Zustand (SPIKE-001) + Bazel 9.1+bzlmod+rules_rust+aspect_rules_ts (SPIKE-002); Rust→WASM via wasm-bindgen; open: switch to web target+proper .d.ts import for production; next: BUILD ticket to integrate spikes into single Bazel graph
 7. Precinct count calibration: target ~hundreds; DR to research real sub-state regions+precinct
    counts to inform GES+ARCH rendering+perf targets
 8. $VRA/bloc voting model: simplified — demographic group vote-share % per $pc; district outcome
