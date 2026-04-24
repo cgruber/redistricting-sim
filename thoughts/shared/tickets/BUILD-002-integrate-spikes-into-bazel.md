@@ -2,7 +2,7 @@
 id: BUILD-002
 title: Integrate spike prototypes into a single Bazel build graph
 area: build, tooling, architecture
-status: open
+status: resolved
 created: 2026-04-24
 ---
 
@@ -16,24 +16,23 @@ subsequent game development.
 
 ## Goals / Acceptance Criteria
 
-- [ ] `game/` directory created as a new Bazel workspace (`game/MODULE.bazel`) descended
+- [x] `game/` directory created as a new Bazel workspace (`game/MODULE.bazel`) descended
       from the SPIKE-002 build patterns (no WORKSPACE file; bzlmod only)
-- [ ] TypeScript source migrated from `spike/001-game-poc/src/` into `game/web/src/`
+- [x] TypeScript source migrated from `spike/001-game-poc/src/` into `game/web/src/`
       compiled by `ts_project` (aspect_rules_ts 3.x); `bazel build //web/...` succeeds
-- [ ] Rust `calc` library and WASM binding migrated from `spike/002-build-poc/rust/` into
+- [x] Rust `calc` library and WASM binding migrated from `spike/002-build-poc/rust/` into
       `game/rust/`; `bazel build //rust/...` succeeds
-- [ ] TypeScript calls Rust/WASM function at runtime (end-to-end integration verified in
+- [x] TypeScript calls Rust/WASM function at runtime (end-to-end integration verified in
       browser; not just build-time type-check)
-- [ ] `bazel test //...` passes all migrated tests (Rust unit tests + TypeScript type-check)
-- [ ] `bazel run //:serve` (or equivalent) serves the game locally; hex map renders; election
+- [x] `bazel test //...` passes all migrated tests (Rust unit tests + TypeScript type-check)
+- [x] `bazel run //:serve` (or equivalent) serves the game locally; hex map renders; election
       simulation runs; WASM add function called from TypeScript
-- [ ] WASM type import pattern resolved: either document the `no-modules` ambient-declare
-      approach as the v1 standard, OR prove the `web` target + generated `.d.ts` import
-      pattern works end-to-end (see SPIKE-002-REPORT open question #2)
-- [ ] `game/` is hermetic: all tools come from Bazel-managed toolchains (document any host
-      tool dependencies found, per SPIKE-002 hermeticity assessment baseline)
-- [ ] `game/WORKSPACE_NOTES.md` (or equivalent) documents any version overrides, hermeticity
-      gaps, and setup steps needed for a fresh checkout
+- [x] WASM type import pattern resolved: `no-modules` + ambient-declare confirmed as v1
+      standard; documented in BUILD-NOTES.md
+- [x] `game/` is hermetic: all tools come from Bazel-managed toolchains; only exception is
+      `python3 -m http.server` in serve.sh (dev convenience, not a build dep); documented
+- [x] `game/BUILD-NOTES.md` documents version overrides, hermeticity assessment, WASM
+      type import decision, and how to run
 
 ## Out of Scope
 
