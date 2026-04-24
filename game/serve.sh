@@ -18,5 +18,5 @@ cp "${BAZEL_BIN}/web/bundle.js" "${DIST}/"
 # HTML entry point (served from source)
 cp "${BUILD_WORKSPACE_DIRECTORY}/web/index.html" "${DIST}/"
 
-echo "Serving on http://localhost:8080 (Ctrl-C to stop)"
-cd "${DIST}" && python3 -m http.server 8080
+echo "Serving on http://localhost:58080 (Ctrl-C to stop)"
+cd "${DIST}" && python3 -m http.server 58080

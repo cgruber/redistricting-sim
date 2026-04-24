@@ -231,6 +231,19 @@
       2. Init the WASM binary asynchronously.
       3. After WASM is ready, load the bundled game (ES module).
     -->
+    <!--
+      Import map: zundo pulls in zustand/esm/react.mjs which has a bare `import "react"`.
+      Nothing in this app calls React APIs — shim it to an empty module so the browser
+      doesn't fail resolving the bare specifier.
+    -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "data:text/javascript,export default {};",
+        "react-dom": "data:text/javascript,export default {};"
+      }
+    }
+    </script>
     <script src="wasm_calc_bindgen.js"></script>
     <script>
       wasm_bindgen("./wasm_calc_bindgen_bg.wasm").then(function () {
