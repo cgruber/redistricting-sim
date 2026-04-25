@@ -1,8 +1,9 @@
-build:ci --spawn_strategy=sandboxed
+build:ci --spawn_strategy=local
 build:ci --disk_cache=/tmp/bazel-disk-cache-game
-# CopyFile (used by aspect_rules_ts ts_config) cannot run under darwin-sandbox on macOS.
-# Allow it to fall back to local execution while keeping everything else sandboxed.
-build:ci --strategy=CopyFile=local
+# darwin-sandbox is incompatible with multiple aspect_rules_ts internal actions
+# (CopyFile, CopyDirectory, ...). On a persistent named macOS agent with
+# BUILDKITE_CLEAN_CHECKOUT=true the sandbox adds no meaningful hermeticity.
+# Use local strategy; correctness is enforced by the clean checkout instead.
 
 # aspect_rules_ts 3.x requires explicit transpiler selection.
 common --@aspect_rules_ts//ts:default_to_tsc_transpiler
