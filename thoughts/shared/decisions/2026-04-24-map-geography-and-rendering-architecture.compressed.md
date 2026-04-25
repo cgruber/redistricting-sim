@@ -59,7 +59,7 @@ pc=precinct dist=district ET=election-type
   Random map gen(v2): generating county-like $pc groupings = secondary v2 goal; not v1
 
 §CONSEQUENCES
-Scenario format: neighboring_context_precincts[] first-class field; $pc.county_id metadata field
+Scenario format: ~~neighboring_context_precincts[] first-class field~~ superseded: merged into single precincts[] distinguished by editable:bool (see scenario data format spec); $pc.county_id metadata field
 Simulation API: simulate(allPrecincts, assignments, electionType) → ElectionResult
 District assignment: pc.assignments: Map<ElectionType, DistrictId> (not single ID)
 Rendering: MapRenderer interface; SVG+Canvas as implementations; county border overlay layer

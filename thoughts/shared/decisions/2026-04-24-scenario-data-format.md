@@ -21,7 +21,10 @@ Defines the canonical data format for a redistricting scenario. The format serve
 
 All data is self-contained in one document per scenario. No external lookups at
 runtime. A scenario file is deterministic: given the same file and the same player
-map, the simulation always produces the same result.
+map, the simulation always produces the same result. (Planned v2: ensemble/
+Monte Carlo comparison — showing where a player's map falls in a distribution
+of randomly-drawn valid maps — runs as a separate analytical layer against the
+same deterministic simulation. See the election simulation ADR, Decision 1.)
 
 ## Conventions
 
@@ -56,6 +59,8 @@ interface Scenario {
   precincts:      Precinct[]          // editable + context precincts
 
   group_schema?:  GroupSchema         // optional dimensional schema (see Demographic Groups)
+  default_district_id?: DistrictId     // auto-fill target for unassigned editable precincts
+                                       // defaults to districts[0] if absent
 
   events:         DemographicEvent[]  // fires at evaluation time
   rules:          ScenarioRules
@@ -191,6 +196,7 @@ renderer distinguishes them visually.
 ```typescript
 interface DemographicGroup {
   id:               GroupId         // opaque string; unique within precinct
+  name?:            string          // display label shown in UI (e.g., "Latino voters")
   population_share: number          // fraction of precinct total_population [0, 1]
   vote_shares:      Record<PartyId, number>  // must sum to 1.0; all parties present
   turnout_rate:     number          // fraction of eligible pop that votes [0, 1]
@@ -295,6 +301,17 @@ The simulation sees the post-event demographic state.
 
 ### `ScenarioRules`
 
+**Rules vs. success criteria — the distinction:**
+Rules are hard validity constraints. A map that violates a rule is *illegal* — the
+player cannot submit it and the Test sequence will not run to completion. Rules define
+the boundaries of what counts as a valid redistricting plan (e.g., districts must be
+roughly equal in population; districts must be contiguous). They are not negotiable.
+
+Success criteria are the scenario's *grading rubric*. A valid map is always testable;
+criteria determine whether it passes, partially passes (optional criteria), or fails.
+Required criteria must all pass to complete the scenario. Optional criteria add depth —
+players can replay to achieve them. See `SuccessCriterion` below.
+
 ```typescript
 interface ScenarioRules {
   population_tolerance:    number
@@ -324,9 +341,10 @@ interface SuccessCriterion {
 
 type Criterion =
   | { type: "seat_count";         party: PartyId; operator: CompareOp; count: number }
-  | { type: "majority_minority";  group_filter: GroupFilter; min_cvap_share: number;
+  | { type: "majority_minority";  group_filter: GroupFilter; min_eligible_share: number;
                                   min_districts: number }
-                                  // at least min_districts must have ≥ min_cvap_share CVAP
+                                  // at least min_districts must have ≥ min_eligible_share
+                                  // of voter-eligible population from the filtered groups
   | { type: "efficiency_gap";     operator: CompareOp; threshold: number }
   | { type: "mean_median";        party: PartyId; operator: CompareOp; threshold: number }
   | { type: "compactness";        operator: CompareOp; threshold: number }   // Fraction Kept
@@ -338,17 +356,30 @@ type Criterion =
                                   // all districts within rules.population_tolerance
                                   // (redundant if rules enforce it; included for
                                   //  explicit display in Test sequence)
+  | { type: "district_count" }
+                                  // all districts[].length districts are non-empty
+                                  // and fully assigned; no districts left unused.
+                                  // Captures the constitutional requirement that a
+                                  // state must draw exactly its apportioned seat count.
+                                  // Typically required:true in every scenario.
 
 type CompareOp = "lt" | "lte" | "eq" | "gte" | "gt"
 ```
 
-`majority_minority` uses CVAP if a citizenship dimension is present in
-`group_schema`; falls back to VAP otherwise. The criterion description should
-tell the player which is being evaluated.
+`majority_minority` evaluates voter-eligible population as defined by the scenario's
+`eligibility_rules`. If a citizenship dimension is present with non-citizen groups marked
+ineligible, this naturally computes a CVAP-equivalent denominator. If no eligibility rules
+are declared, all population is voter-eligible, so VAP = eligible population. The criterion
+does not need to know which measure is in use — it always operates on eligible population.
+The scenario description should tell the player what the threshold represents in context.
 
 ---
 
 ### `Narrative`
+
+> **Provisional**: this section captures the minimum required for v1. It will likely
+> evolve as front-end and visual design requirements are formalized. Changes should
+> be reviewed with front-end and design roles before first scenario authoring begins.
 
 ```typescript
 interface Narrative {
@@ -377,6 +408,12 @@ interface Slide {
 Pre-computed election results for all regions outside the player's scenario region.
 Used for state-level aggregation (displaying statewide seat totals as the player
 draws).
+
+> **Design concern** (see Open Question 9 below): the current shape has a conceptual
+> issue — `total_districts` includes the player's region, which makes it volatile, not
+> pre-computed. `RegionResult` may not map cleanly to the current data model where
+> Region is an editable view rather than a fixed entity. This section will be redesigned
+> before v1 implementation. It is a structural placeholder; v1 ignores it.
 
 ```typescript
 interface StateContext {
@@ -417,16 +454,20 @@ A scenario is valid if and only if:
    adjacency is symmetric (if A lists B as neighbor, B lists A).
 10. For `geometry.type == "custom"`: all `PrecinctId` values in `neighbors[]` must
     exist in `scenario.precincts`.
-11. `scenario.districts` has at least 2 entries.
+11. `scenario.districts` has at least 2 entries. (Note: this constrains the scenario
+    *definition*, not the player's starting state — the auto-fill behavior starting all
+    editable precincts in one district is intentional even when `districts.length > 1`.)
 12. Every `EventId`, `CriterionId`, `PrecinctId`, `DistrictId`, `GroupId`, `PartyId`
     is unique within the scenario.
+13. `scenario.precincts` is non-empty (`precincts.length ≥ 1`).
 
 ---
 
 ## Unassigned Precinct Handling
 
 When a scenario provides no `initial_district_id` on any precinct (or all are null),
-the game initializes all precincts to `districts[0]`. The player begins with one
+the game initializes all editable precincts to the `default_district_id` (if set on the
+scenario) or `districts[0]` if not. The player begins with one
 giant district and carves it into the required number. This avoids an error state
 and gives a natural starting point.
 
@@ -550,32 +591,30 @@ A minimal two-district, two-party scenario with one event and one required crite
 
 ## Open Questions
 
-1. **CVAP vs VAP in `majority_minority` criterion**: The criterion uses CVAP when
-   a citizenship dimension is present. Should the criterion explicitly declare
-   which measure to use (`measure: "cvap" | "vap"`) rather than inferring from
-   schema? More explicit; better for authoring validation.
+1. ~~**CVAP vs VAP in `majority_minority` criterion**~~: Resolved. The criterion uses
+   voter-eligible population as defined by `eligibility_rules`. If citizenship eligibility
+   rules are present, this naturally computes CVAP-equivalent denominators. No explicit
+   `measure` field needed — the eligibility rules model is the mechanism.
 
-2. ~~**Event ordering and interaction**~~: Resolved. Events are applied in
-   declaration order (sequential). Scenario authors must be aware that overlapping
-   population shifts may produce different results depending on order; this is by
-   design and should be documented in authoring guidance.
+2. ~~**Event ordering and interaction**~~: Resolved. Events are applied in declaration
+   order (sequential). Scenario authors must be aware that overlapping population shifts
+   may produce order-dependent results; document in authoring guidance.
 
-3. ~~**`state_context` in v1**~~: Resolved. `state_context` is included in the format
-   for forward compatibility; v1 renderer may ignore it. No breaking change needed
-   when v2 state-level view is implemented.
+3. ~~**`state_context` in v1**~~: Resolved. Included for forward compatibility; v1
+   renderer ignores it. See also Open Question 9.
 
 4. **Narrative asset references**: `Slide.image` references an asset. What is the
    asset resolution strategy? Relative path to a sibling assets directory? A
    named key in a shared asset bundle? Needs a decision before pre-built scenario
    authoring begins.
 
-5. **Partial initial assignment auto-fill**: The spec says unassigned precincts
-   auto-fill to `districts[0]`. Should the auto-fill target be configurable
-   (`default_district_id` on the scenario)? Or is `districts[0]` always correct?
+5. ~~**Partial initial assignment auto-fill**~~: Resolved. Added `default_district_id?`
+   to the top-level `Scenario` interface. Unassigned editable precincts auto-fill to
+   `default_district_id` if set, otherwise `districts[0]`.
 
-6. **Scenario versioning / migration**: No migration strategy defined. Format
-   version `"1"` is parsed or rejected. Future versions will need a migration path.
-   Defer until there is a v2 format requirement.
+6. ~~**Scenario versioning**~~: Partially resolved. `format_version: "1"` is in the
+   format; parser rejects unknown versions. Migration strategy deferred until a v2 format
+   requirement exists.
 
 7. **Context precinct non-editability as a pedagogical simplification**: In
    real-world redistricting, districts frequently cross county/region boundaries
@@ -588,10 +627,21 @@ A minimal two-district, two-party scenario with one event and one required crite
 
 8. **Editor tools for blank-start scenarios**: The brush/paint interaction is
    sufficient for reshaping an existing map but is a poor starting point for drawing
-   ~300 blank precincts from scratch. Editor needs additional tools before blank-start
-   scenarios are playable:
-   - Flood-fill from a seed precinct (expand greedily to district boundary)
-   - Lasso / region-select then assign
-   - Generate valid starting partition (randomize contiguous, population-balanced map)
-   These are UI/editor concerns, not format concerns. Track separately when
-   approaching editor implementation.
+   ~300 blank precincts from scratch. Editor needs: flood-fill from seed, lasso/region-
+   select, generate-valid-partition. UI/editor concern; track separately when approaching
+   editor implementation.
+
+9. **`StateContext` redesign**: The current `StateContext` shape is a placeholder with
+   known issues: `total_districts` "including this region" is volatile (changes as player
+   draws), and `RegionResult` does not map cleanly to the current data model where Region
+   is an editable view. This section needs redesign before v1 implementation. Proposed
+   direction: `other_region_seat_totals: Record<PartyId, number>` (pre-computed aggregate,
+   fixed) + `state_total_districts: number` (constitutional total, fixed). Player's region
+   contributes live; no per-region breakdown needed. v1 ignores this field, so the redesign
+   can happen before implementation without a breaking change.
+
+10. **Achievement / star-ranking system**: The `required: false` criteria field enables
+    optional objectives. A star-ranking system (e.g., 1 star = all required met; 2 stars =
+    required + some optional; 3 stars = all optional met) is architecturally supported by
+    the current spec but the UX design needs game ergonomics research before the format is
+    extended. See DESIGN-001.

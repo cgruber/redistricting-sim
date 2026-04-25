@@ -132,8 +132,11 @@ rendering mode, not refactoring the data model.
 
 ## Consequences
 
-**Scenario data format**: Must include `neighboring_context_precincts[]` alongside the
-editable precinct set. Context precincts participate in simulation but are not editable.
+**Scenario data format**: ~~Must include `neighboring_context_precincts[]` alongside the
+editable precinct set.~~ *Superseded by the scenario data format spec*: editable and
+context precincts are merged into a single `precincts[]` array distinguished by
+`editable: boolean`. The semantic distinction is preserved; the data shape is simpler.
+Context precincts participate in simulation but are not editable.
 
 **Simulation API**: Operates on the full set of precincts (editable + context). The
 election type is a required parameter. `simulate(allPrecincts, assignments, electionType)`

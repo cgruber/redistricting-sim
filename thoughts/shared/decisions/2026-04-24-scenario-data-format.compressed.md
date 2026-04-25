@@ -12,6 +12,7 @@ v1=version 1
 Self-contained per-scenario JSON doc; no runtime external lookups
 Serves: pre-built authoring | sim engine | future player/community scenarios
 Deterministic: same file + same map → same sim result
+  v2 planned: ensemble/Monte Carlo comparison runs as separate analytical layer against same deterministic sim (see election-simulation ADR Decision 1)
 format_version:"1" required; parser rejects unknown versions
 
 §TOP_LEVEL Scenario
@@ -26,6 +27,7 @@ parties         Party[]          min 2; fictional names
 districts       District[]       defines target $dist set; count = num to draw
 precincts       Precinct[]       editable + context $pcs
 group_schema?   GroupSchema      optional dimensional schema
+default_district_id? DistId       auto-fill target for unassigned editable $pcs; default districts[0]
 events          DemographicEvent[]  fire at evaluation time
 rules           ScenarioRules
 success_criteria SuccessCriterion[]
@@ -58,7 +60,7 @@ tags?             string[]       for event PrecinctFilter
 ```
 
 §DEMOGRAPHIC_GROUPS
-$grp fields: id | population_share[0,1] | vote_shares:Map<$PartyId,float>(sum=1.0; ALL parties)
+$grp fields: id | name?(string,UI display label) | population_share[0,1] | vote_shares:Map<$PartyId,float>(sum=1.0; ALL parties)
   | turnout_rate[0,1] | dimensions?:Map<DimName,DimValue>(required if group_schema declared)
 voter_eligible: NOT on $grp — derived from group_schema.eligibility_rules
 voter_weight = total_population × population_share × voter_eligible × turnout_rate
@@ -78,6 +80,10 @@ population_shift: id | precinct_filter | group_filter | delta(renormalized after
 GroupFilter: {group_ids:$GroupId[]} | {dimension,value}(requires schema)
 PrecinctFilter: {precinct_ids:$PcId[]} | {tags:string[]}(ALL tags) | {editable_only:true}
 
+§RULES_VS_CRITERIA
+rules=hard validity constraints; illegal map→Test blocked
+criteria=grading rubric; required→must pass to complete; optional→achievements/stars
+
 §RULES
 population_tolerance: float  ±fraction from ideal (congressional~0.001; state-leg~0.05)
 contiguity: "required"|"preferred"|"allowed"
@@ -87,14 +93,15 @@ compactness_threshold?: float  min Fraction Kept; absent=not enforced (still eva
 §CRITERIA SuccessCriterion: id | required:bool | description | criterion
 ```
 seat_count:        party | operator(lt|lte|eq|gte|gt) | count
-majority_minority: group_filter | min_cvap_share | min_districts
-                   (uses CVAP if citizenship dim present; else VAP)
+majority_minority: group_filter | min_eligible_share | min_districts
+                   (uses voter-eligible pop; eligibility_rules define the denominator)
 efficiency_gap:    operator | threshold
 mean_median:       party | operator | threshold
 compactness:       operator | threshold  (Fraction Kept metric)
 safe_seats:        party | margin | min_count
 competitive_seats: margin | min_count
 population_balance: (no params; display hook for Test sequence)
+district_count:    (no params; all districts[] non-empty+assigned; constitutional seat count)
 ```
 
 §NARRATIVE
@@ -108,8 +115,8 @@ state_name | total_districts | other_region_results:Map<RegionId,{district_count
 live region results + sum(other) = statewide totals
 
 §UNASSIGNED_PCS
-absent/null initial_district_id → auto-assign to districts[0] (editable $pcs only; context $pcs must have non-null)
-partial assignments ok: unassigned $pcs → districts[0]
+absent/null initial_district_id → auto-assign to default_district_id (if set) else districts[0] (editable $pcs only)
+partial assignments ok: unassigned $pcs → default_district_id (if set) else districts[0]
 scenario wanting blank start: set all initial_district_id:null; narrative explains
 initial assignments = starting point for player session state; simulate() receives CURRENT assignment map
 runtime maintains assignment state separately; initial_district_id read once at scenario load
@@ -124,16 +131,17 @@ runtime maintains assignment state separately; initial_district_id read once at 
 7. If group_schema: ∀$pc has one $grp per dim-value combo; ∀$grp has value for every dim
 8. hex_axial→no neighbors field; custom→neighbors present+symmetric
 9. custom geometry: all $PcId values in neighbors[] must exist in scenario.precincts
-10. districts.length ≥ 2
+10. districts.length ≥ 2 (scenario definition constraint; not player starting state)
 11. All ids (EventId,CriterionId,PcId,DistId,GroupId,$PartyId) unique within scenario
+12. precincts.length ≥ 1
 
 §OPEN
-1. majority_minority criterion: infer CVAP from schema presence, or explicit measure field?
+1. [RESOLVED] CVAP/VAP: majority_minority uses voter-eligible pop; eligibility_rules are the mechanism; no explicit measure field needed
 2. [RESOLVED] Event ordering: sequential (declaration order); overlapping shifts produce order-dependent results by design; document in authoring guidance
-3. [RESOLVED] state_context in v1: included for forward compat; v1 renderer may ignore; no breaking change when v2 state-level view implemented
+3. [RESOLVED] state_context in v1: included for forward compat; v1 renderer may ignore; no breaking change when v2 state-level view implemented; see OQ9
 4. Narrative asset refs: relative path vs. asset key? Decide before pre-built authoring
-5. Partial auto-fill target: always districts[0], or configurable default_district_id?
-6. Format migration: no strategy yet; defer until v2 format requirement exists
+5. [RESOLVED] auto-fill: added default_district_id? to scenario; falls back to districts[0]
+6. [RESOLVED-PARTIAL] format_version:1 in spec; migration strategy deferred to v2 requirement
 7. Context $pc non-editability = pedagogical simplification: real redistricting may require
    cross-boundary $pc adjustments for population balance; spec locks context $pcs as read-only
    ok for v1: (a) editable:false is per-$pc so scenario can override; (b) early scenarios simplified
@@ -141,3 +149,5 @@ runtime maintains assignment state separately; initial_district_id read once at 
 8. Editor tools for blank-start: brush alone is poor for ~300 unassigned $pcs from scratch
    needed: flood-fill from seed | lasso+assign | generate valid starting partition
    UI/editor concern not format concern; track separately when approaching editor build
+9. StateContext redesign: total_districts volatile; RegionResult concept unclear; redesign before $v1 impl; proposed: other_region_seat_totals:Record<PartyId,int>+state_total_districts:int
+10. Achievement/star system: OQ; required:false criteria enable it; game ergonomics research needed before format extension; see DESIGN-001
