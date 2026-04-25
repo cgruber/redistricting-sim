@@ -70,14 +70,14 @@ filegroup(
 # Playwright behavioral (e2e) smoke test — CI-002 Phase 1.
 #
 # Assembles Bazel-built artifacts into a temp dir, starts python3 http.server
-# on port 58173, and runs npx playwright test against it.
+# on port 58173, and runs pnpm exec playwright test against it.
 #
-# local = True: Playwright requires host npx and a Chromium browser binary
-# (installed once via `npx playwright install chromium`). The test cannot run
-# inside the Bazel sandbox.
+# local = True: Playwright requires a host Chromium browser binary installed
+# outside the Bazel sandbox. Run `./setup.sh` once per machine/workspace to
+# install node_modules and Playwright browsers via pnpm exec playwright install.
 #
 # One-time setup outside Bazel:
-#   cd game && npx playwright install chromium
+#   cd game && ./setup.sh
 sh_test(
     name = "e2e_test",
     srcs = ["e2e_test.sh"],

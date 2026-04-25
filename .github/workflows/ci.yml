@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel any in-progress run for the same branch/PR when a new one is triggered.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    # Least-privilege: this workflow only reads repo contents.
+    permissions:
+      contents: read
+
+    defaults:
+      run:
+        working-directory: game
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Bazelisk reads game/.bazelversion and downloads the pinned Bazel release.
+      - uses: bazelbuild/setup-bazelisk@v3
+
+      # pnpm must be installed before setup-node so setup-node can locate the store.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          # Caches the pnpm store keyed on pnpm-lock.yaml; pnpm install is then a
+          # fast local copy rather than a network fetch.
+          cache: pnpm
+          cache-dependency-path: game/pnpm-lock.yaml
+
+      # Bazel disk cache: stores action results (compiled TS, WASM, etc.).
+      # Keyed on all BUILD/bzl/MODULE files; partial hits via restore-keys.
+      - name: Cache Bazel disk cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/bazel-disk-cache-game
+          key: ${{ runner.os }}-bazel-disk-${{ hashFiles('game/MODULE.bazel', 'game/**/*.bazel', 'game/**/*.bzl') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-disk-
+
+      # Bazel repository cache: stores downloaded external deps (Rust toolchain,
+      # npm packages, etc.). Re-download only when MODULE.bazel changes.
+      - name: Cache Bazel repository downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/bazel
+          key: ${{ runner.os }}-bazel-repo-${{ hashFiles('game/MODULE.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-repo-
+
+      # Playwright browser binaries: installed machine-globally.
+      # Keyed on pnpm-lock.yaml so a Playwright version bump invalidates the cache.
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('game/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      # setup.sh handles the two things Bazel does not manage:
+      #   1. node_modules/ (pnpm install --frozen-lockfile)
+      #   2. Playwright browser binaries (pnpm exec playwright install chromium)
+      # Both steps are idempotent — cache hits make them near-instant.
+      - name: Setup environment
+        run: ./setup.sh
+
+      - name: Bazel build
+        run: bazel build //... --config=ci
+
+      # Runs all tests: TypeScript type-check, unit tests, and the Playwright e2e test.
+      # --config=ci enables sandboxed strategy and the disk cache (see .bazelrc).
+      - name: Bazel test
+        run: bazel test //... --config=ci
