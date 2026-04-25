@@ -5,7 +5,7 @@
 #   1. Assembles Bazel-built artifacts (bundle.js, WASM files, index.html)
 #      into a temp directory using Bazel runfiles.
 #   2. Starts python3 -m http.server on port 58173.
-#   3. Runs npx playwright test against that server.
+#   3. Runs pnpm exec playwright test against that server.
 #   4. Kills the server on exit (pass or fail).
 #
 # Port 58173 is distinct from the dev serve port (58080) to avoid conflicts.
