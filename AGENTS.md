@@ -129,7 +129,7 @@ concrete action. The whole file should rarely exceed 30 lines.
 | `AGENT-NNN` | Agentic workflow and agent tooling changes |
 | `SPIKE-NNN` | Time-boxed proof-of-concept investigations |
 
-Check existing tickets in a category to find the next number before creating a new ticket.
+Check **both** the Open and Resolved sections of `TICKETS.md` to find the highest existing number in a category before creating a new ticket. Ticket files are deleted when resolved, but their IDs remain in the index permanently — checking only the filesystem will miss them and cause collisions.
 
 ### Ticket File Conventions
 
