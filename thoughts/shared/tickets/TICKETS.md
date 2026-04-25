@@ -43,6 +43,8 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 | `GAME-003-tutorial-scenario-content.md` | game, content | Author tutorial scenario JSON (sketch proposal first, then full data file) |
 | `GAME-004-map-renderer-interface.md` | game, rendering | Extract MapRenderer interface; rename concrete class to SvgMapRenderer |
 | `GAME-005-render-scenario-from-json.md` | game, rendering | Sprint 1 demo: wire loader + scenario into renderer; replace procedural generator |
+| `GAME-006-scenario-compression.md` | game, build | Compressed scenario delivery: HTTP gzip for bundled; `.scenarioz` format for future downloads |
+| `GAME-007-player-progress-persistence.md` | game, storage | Save/resume in-progress scenario + completion tracking; "Continue" menu; localStorage |
 | `CI-001-github-action-ticket-close-sync.md` | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
 | `LEGAL-001-content-presentation-risks.md` | legal, content | Research legal risk from partial/no eligibility-restriction warnings in sim authoring tool |
 | `DIST-001-steam-deployment-research.md` | distribution, platform | Research Steam free/educational program, achievements API, web-vs-Steam tradeoffs |
