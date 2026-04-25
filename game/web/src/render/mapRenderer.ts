@@ -19,7 +19,29 @@ import type { Precinct } from "../model/types.js";
 import { DISTRICT_COLORS, PARTY_COLORS, PARTY_LABELS } from "../model/types.js";
 import type { GameStore } from "../store/gameStore.js";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+// ─── Public interface ─────────────────────────────────────────────────────────
+
+/** View mode toggle — render concern only, not game state */
+export type ViewMode = "districts" | "lean";
+
+/**
+ * Renderer-agnostic interface for the hex precinct map.
+ * Game logic (main.ts, store) must depend only on this interface.
+ * SvgMapRenderer is the v1 implementation; a Canvas+SVG hybrid may replace it
+ * at >800 precincts without callers needing to change.
+ */
+export interface MapRenderer {
+	render(): void;
+	setViewMode(mode: ViewMode): void;
+	/**
+	 * Toggle the county border overlay layer.
+	 * No-op in SvgMapRenderer until county_id data is present in scenarios;
+	 * included from v1 so callers are already written to the interface.
+	 */
+	setCountyBordersVisible(visible: boolean): void;
+}
+
+// ─── Internal types ───────────────────────────────────────────────────────────
 
 type SVGSel = d3.Selection<SVGSVGElement, unknown, null, undefined>;
 // D3's append returns a Selection with parent type null when chained from select(element)
@@ -67,7 +89,7 @@ function computeBoundarySegments(
 
 // ─── Renderer class ──────────────────────────────────────────────────────────
 
-export class MapRenderer {
+export class SvgMapRenderer implements MapRenderer {
 	private svg: SVGSel;
 	private borderGroup: GSel;
 	private hexGroup: GSel;
@@ -87,7 +109,7 @@ export class MapRenderer {
 	private hoveredPath: SVGPathElement | null = null;
 
 	// View mode — render concern only, not game state
-	private viewMode: "districts" | "lean" = "districts";
+	private viewMode: ViewMode = "districts";
 
 	// Population range — cached once (precincts are immutable)
 	private popMin = 0;
@@ -118,9 +140,13 @@ export class MapRenderer {
 		this.initHoverEvents();
 	}
 
-	setViewMode(mode: "districts" | "lean") {
+	setViewMode(mode: ViewMode) {
 		this.viewMode = mode;
 		this.render();
+	}
+
+	setCountyBordersVisible(_visible: boolean) {
+		// No-op until county_id data is present in scenarios.
 	}
 
 	private initViewBox() {

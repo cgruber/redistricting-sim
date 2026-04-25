@@ -20,7 +20,7 @@ see game-vision.compressed.md for full scope
 §SPRINT_OVERVIEW
 | $sp | goal | demo | status |
 |-----|------|------|--------|
-| S1 | load+display real scenario | tutorial JSON→hex map; player paints $dists | planned |
+| S1 | load+display real scenario | tutorial JSON→hex map; player paints $dists; Playwright harness live | in-progress |
 | S2 | edit map + live feedback | live pop-balance, contiguity, $pc tooltip | backlog |
 | S3 | test the map | Test→per-criterion pass/fail; real sim engine | backlog |
 | S4 | one complete playable scenario | tutorial: intro→edit→test→pass/fail→retry | backlog |
@@ -33,10 +33,12 @@ goal: app renders tutorial-001.json; player paints+undoes; no sim/game-loop yet
 tickets (dependency order):
   GAME-001 scenario TS types          [no deps; start here]
   GAME-004 MapRenderer interface      [no deps; parallel w/ GAME-001]
+  CI-002 Phase1 Playwright harness    [no deps; parallel w/ GAME-001; smoke test only]
   GAME-002 scenario loader+validator  [needs GAME-001]
   GAME-003 tutorial scenario content  [needs GAME-001+002; sketch proposal FIRST]
   GAME-005 sprint1 integration        [needs all above; this IS the demo]
-GAME-001 ∥ GAME-004 → GAME-002 → GAME-003(Phase2) → GAME-005
+  CI-002 Phase2 behavioral tests      [needs GAME-005; closes CI-002]
+GAME-001 ∥ GAME-004 ∥ CI-002(Ph1) → GAME-002 → GAME-003(Phase2) → GAME-005 → CI-002(Ph2)
   note: GAME-003 Phase1(sketch) can start alongside GAME-002
 
 §SPRINT2 (backlog; ticket on sprint-plan before S2 starts)
