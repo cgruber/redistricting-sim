@@ -2,7 +2,7 @@
 id: AGENT-002
 title: Add kotlin tools reference to pr-review-cycle critique/response agent prompts
 area: agentic workflow, tooling
-status: open
+status: resolved
 created: 2026-04-23
 ---
 
@@ -33,8 +33,19 @@ And §STEP7 uses raw GraphQL `gh api graphql` calls for thread resolution instea
 - [ ] §STEP7 updated to use `gh-pr-threads.main.kts` instead of raw graphql
 - [ ] `pr-review-cycle.compressed.md` in `geekinasuit/infra` updated to match
 
+## Resolution
+
+Resolved via a different path than originally scoped. When re-examined, the infra repo
+workflow (`/opt/geekinasuit/agents/internal/workflows/pr-review-cycle.compressed.md`)
+already contained the kotlin-tools preamble in §STEP3/§STEP4 and used `gh-pr-threads.main.kts`
+in §STEP7 — the infra update had already been applied outside this ticket's tracking.
+
+The local override (`thoughts/shared/workflows/pr-review-cycle.*`) was not loaded by the
+bootstrap chain and was therefore redundant. It was deleted in PR #26.
+
+The original AC items were rendered moot by the pre-existing infra update.
+
 ## References
 
-- This repo's updated workflow: `thoughts/shared/workflows/pr-review-cycle.md`
 - Tool catalog: `/opt/geekinasuit/agents/internal/TOOLS.compressed.md`
 - Infra repo: `/Users/cgruber/Projects/github/geekinasuit/infra`
