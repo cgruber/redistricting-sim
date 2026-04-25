@@ -108,10 +108,18 @@ fi
 # falling back to BUILD_WORKSPACE_DIRECTORY if set.
 WORKSPACE_DIR="${BUILD_WORKSPACE_DIRECTORY:-}"
 if [[ -z "${WORKSPACE_DIR}" ]]; then
-  # Derive from script path: the script is in $WORKSPACE/web/, so go two levels
-  # up from its runfiles location to get the workspace root.
-  # Note: use cd+pwd -P instead of readlink -f (macOS BSD readlink lacks -f).
-  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+  # Bazel invokes sh_test with a relative path, so BASH_SOURCE[0] is relative.
+  # We must make it absolute, then follow symlinks to reach the actual source
+  # file (the runfiles copy is a symlink to the source tree).
+  # Note: readlink without -f works on macOS BSD; we loop manually.
+  _s="${BASH_SOURCE[0]}"
+  [[ "${_s}" = /* ]] || _s="$(pwd)/${_s}"
+  while [[ -L "${_s}" ]]; do
+    _t="$(readlink "${_s}")"
+    [[ "${_t}" = /* ]] || _t="$(dirname "${_s}")/${_t}"
+    _s="${_t}"
+  done
+  SCRIPT_DIR="$(cd "$(dirname "${_s}")" && pwd -P)"
   WORKSPACE_DIR="$(dirname "${SCRIPT_DIR}")"
 fi
 
@@ -125,6 +133,13 @@ fi
 # Bazel test runner may strip the user's PATH (e.g. /opt/homebrew/bin absent).
 # Extend PATH with common node/pnpm locations so pnpm exec is accessible.
 export PATH="/opt/homebrew/bin:/usr/local/bin:${PATH}"
+
+# Bazel sandboxes $HOME to a tmpdir, so Playwright cannot find its browser
+# cache at $HOME/Library/Caches/ms-playwright.  $USER is not sandboxed;
+# reconstruct the real browser cache path from it.
+if [[ "${OSTYPE}" == darwin* ]]; then
+  export PLAYWRIGHT_BROWSERS_PATH="/Users/${USER}/Library/Caches/ms-playwright"
+fi
 cd "${WORKSPACE_DIR}"
 pnpm exec playwright test --config "web/playwright.config.ts"
 exit $?
