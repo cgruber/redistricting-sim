@@ -63,6 +63,10 @@ ID categories (sequential within each):
   OPT = performance optimization
   AGENT = agentic workflow+tooling changes
   SPIKE = time-boxed proof-of-concept investigations
+  LEGAL = legal, content liability, compliance research
+  DIST = distribution, deployment, platform research
+  DESIGN = game design, UX, ergonomics research
+  GAME = game implementation (rendering, simulation, content, game loop)
 check TICKETS.md Open+Resolved sections for highest existing ID in category before creating new ticket; files deleted on resolve but IDs stay in index permanently — filesystem check alone causes collisions
 
 ticket file conventions:
