@@ -148,3 +148,25 @@ assignment layer is being edited.
 it does not import SVG or Canvas specifics.
 
 **Do not model**: county boundary changes; multi-type simultaneous editing.
+
+### 9. County borders as rendering overlay (flavor, not mechanics)
+
+County borders are drawn as a visual overlay for realism and geographic orientation.
+They are mechanically inert — no game logic, simulation, scoring, or district
+assignment depends on county membership. A precinct's county is metadata for display
+only.
+
+The rendering interface must support a county border overlay layer alongside the
+existing district boundary overlay. These are independent visual layers; the player
+can toggle each.
+
+County membership is a precinct-level attribute in the data model (`precinct.county_id`)
+so the renderer can draw county borders without any additional data structure. No
+county-level aggregation or simulation is needed.
+
+**Random map generation** (post-v1 / v2): when procedurally generating fictional
+regions, generating county-like groupings of precincts is a secondary v2 goal —
+adds realism without affecting simulation correctness. Not a v1 requirement.
+
+**Explicitly not modeled**: county boundary changes (confirmed out of scope in
+decision 1 above); county as an administrative unit with any game-mechanical effect.

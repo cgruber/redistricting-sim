@@ -253,7 +253,11 @@ Hovering a precinct shows a tooltip with all metadata. Players can keep a precin
 pinned for comparison while browsing.
 
 District boundary lines are always overlaid on top of whichever color dimension is
-active.
+active. County borders are also shown as a separate toggleable overlay — for geographic
+orientation and realism, not as a game mechanic. County membership has no effect on
+scoring, simulation, or district validity (`precinct.county_id` is display metadata only).
+Random map generation (v2) will aim to produce county-like groupings of precincts for
+added realism, but this is a secondary v2 goal with no v1 requirement.
 
 ### Editing Boundaries
 
@@ -526,3 +530,4 @@ static data once published; no per-session server compute needed.
     - Pannable viewport; scenario scope enforced by scoring not hard walls
     - `MapRenderer` interface from v1; Canvas+SVG hybrid when >800 total precincts
     - State-level view is explicit v2; county boundary changes out of scope entirely
+    - County borders rendered as toggleable overlay (`precinct.county_id` metadata); no game mechanic; random-gen county groupings = v2 secondary goal
