@@ -68,6 +68,17 @@ ts_project(
     visibility = ["//web:__pkg__", "//web/src/model:__pkg__"],
 )
 
+# ── adapter_lib: Scenario → spike internal types (GAME-005) ──────────────────
+
+ts_project(
+    name = "adapter_lib",
+    srcs = ["adapter.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [":model_lib", ":types_lib", ":generator_lib"],
+    visibility = ["//web:__pkg__", "//web/src/model:__pkg__"],
+)
+
 # ── loader_typecheck_test: type-check passes ──────────────────────────────────
 
 build_test(

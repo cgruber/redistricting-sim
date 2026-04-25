@@ -18,5 +18,9 @@ cp "${BAZEL_BIN}/web/bundle.js" "${DIST}/"
 # HTML entry point (served from source)
 cp "${BUILD_WORKSPACE_DIRECTORY}/web/index.html" "${DIST}/"
 
+# Scenario JSON files (fetched at runtime; not bundled by esbuild)
+mkdir -p "${DIST}/scenarios"
+cp "${BUILD_WORKSPACE_DIRECTORY}/scenarios/"*.json "${DIST}/scenarios/"
+
 echo "Serving on http://localhost:58080 (Ctrl-C to stop)"
 cd "${DIST}" && python3 -m http.server 58080

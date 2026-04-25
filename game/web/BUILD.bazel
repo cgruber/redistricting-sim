@@ -24,6 +24,7 @@ ts_project(
         "//web/src/model:model_lib",
         "//web/src/model:types_lib",
         "//web/src/model:generator_lib",
+        "//web/src/model:adapter_lib",
     ],
 )
 
@@ -49,6 +50,7 @@ esbuild(
         "//web/src/model:model_lib",
         "//web/src/model:types_lib",
         "//web/src/model:generator_lib",
+        "//web/src/model:adapter_lib",
     ],
     output = "bundle.js",
     format = "esm",
@@ -83,6 +85,7 @@ sh_test(
         ":app",
         ":html",
         "//rust:wasm_calc_bindgen",
+        "//scenarios:scenario_files",
         "playwright.config.ts",
         "e2e/smoke.spec.ts",
     ],
