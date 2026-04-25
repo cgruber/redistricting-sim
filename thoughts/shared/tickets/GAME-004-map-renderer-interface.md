@@ -4,6 +4,7 @@ title: Extract MapRenderer interface from spike renderer
 area: game, rendering
 status: open
 created: 2026-04-25
+github_issue: 32
 ---
 
 ## Summary
@@ -20,7 +21,7 @@ renderer, enabling the Canvas+SVG hybrid swap later without refactoring callers.
 
 ## Goals / Acceptance Criteria
 
-- [ ] `MapRenderer` defined as a TypeScript interface in
+- [x] `MapRenderer` defined as a TypeScript interface in
   `game/web/src/render/mapRenderer.ts` (or a new `types.ts` in that dir)
   - `render(): void`
   - `setViewMode(mode: ViewMode): void`
@@ -29,13 +30,13 @@ renderer, enabling the Canvas+SVG hybrid swap later without refactoring callers.
     interface must include it from v1 even if the toggle is a no-op in SvgMapRenderer
     until county_id data is present)
   - Anything else currently called on the concrete class from `main.ts`
-- [ ] Rename concrete class to `SvgMapRenderer implements MapRenderer`
-- [ ] `main.ts` typed against `MapRenderer` (the interface), not `SvgMapRenderer`
+- [x] Rename concrete class to `SvgMapRenderer implements MapRenderer`
+- [x] `main.ts` typed against `MapRenderer` (the interface), not `SvgMapRenderer`
   - Construction site (`new SvgMapRenderer(...)`) is the one allowed concrete reference
-- [ ] `ViewMode` type exported (`"districts" | "lean"` from spike, expandable later)
-- [ ] All existing spike functionality continues to work (paint, undo/redo, view toggle,
+- [x] `ViewMode` type exported (`"districts" | "lean"` from spike, expandable later)
+- [x] All existing spike functionality continues to work (paint, undo/redo, view toggle,
   district buttons, results panel, WASM diagnostic)
-- [ ] `bazel build //game/web/...` and `bazel test //game/web/...` pass (if tests exist)
+- [x] `bazel build //game/web/...` and `bazel test //game/web/...` pass (if tests exist)
 
 ## References
 

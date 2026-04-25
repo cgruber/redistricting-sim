@@ -1,6 +1,6 @@
 ---
 date: 2026-04-24
-status: draft — awaiting review
+status: accepted — pending sprint-1 feedback
 ---
 
 # Spec: Scenario Data Format

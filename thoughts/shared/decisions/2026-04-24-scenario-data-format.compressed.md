@@ -1,6 +1,6 @@
 <!--COMPRESSED v1; source:2026-04-24-scenario-data-format.md-->
 §META
-date:2026-04-24 status:draft — awaiting review
+date:2026-04-24 status:accepted — pending sprint-1 feedback
 topic:scenario data format spec — gate before simulation implementation
 
 §ABBREV

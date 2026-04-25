@@ -12,7 +12,9 @@
 declare const wasm_bindgen: { add(a: number, b: number): number };
 
 import {
-	MapRenderer,
+	type MapRenderer,
+	type ViewMode,
+	SvgMapRenderer,
 	renderDistrictButtons,
 	renderLegend,
 	renderResults,
@@ -45,7 +47,7 @@ if (
 
 const store = useGameStore;
 
-const renderer = new MapRenderer(
+const renderer: MapRenderer = new SvgMapRenderer(
 	svgEl,
 	() => store.getState(),
 	(ids, district) => store.getState().paintStroke(ids, district),
@@ -93,7 +95,7 @@ btnRedo.addEventListener("click", () => {
 	useTemporalStore().getState().redo();
 });
 
-let currentViewMode: "districts" | "lean" = "districts";
+let currentViewMode: ViewMode = "districts";
 btnViewToggle.addEventListener("click", () => {
 	currentViewMode = currentViewMode === "districts" ? "lean" : "districts";
 	renderer.setViewMode(currentViewMode);
