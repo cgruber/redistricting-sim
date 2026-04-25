@@ -1,0 +1,112 @@
+"""
+Bazel targets for the scenario model:
+
+  model_lib  — scenario.ts (GAME-001 types; DistrictId, PartyId, Scenario, etc.)
+  loader_lib — loader.ts (GAME-002 loadScenario function)
+  types_lib  — types.ts (spike/legacy types for the hex-grid spike renderer)
+  generator_lib — generator.ts (spike/legacy procedural precinct generator)
+
+Creating this BUILD.bazel makes src/model/ a separate Bazel package, so the
+parent's glob(["src/**/*.ts"]) no longer covers this directory.  game/web/BUILD.bazel
+lists all four model targets (model_lib, loader_lib, types_lib, generator_lib) as
+explicit deps so the parent typecheck and bundle remain intact.
+"""
+
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
+load("@aspect_rules_js//js:defs.bzl", "js_test")
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
+
+# Standalone ts_config for this package (game/web/src/model/tsconfig.json has no
+# extends field — it is a self-contained config, not derived from //web:tsconfig).
+# A local tsconfig.json avoids requiring visibility changes to //web:tsconfig or
+# //web:tsconfig.json, which are owned by CI-002's BUILD.bazel.
+ts_config(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    visibility = ["//web/src/model:__pkg__"],
+)
+
+# ── types_lib: types.ts (spike/legacy types for the hex-grid renderer) ────────
+
+ts_project(
+    name = "types_lib",
+    srcs = ["types.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    visibility = ["//web:__pkg__", "//web/src/model:__pkg__"],
+)
+
+# ── generator_lib: generator.ts (spike/legacy procedural precinct generator) ──
+
+ts_project(
+    name = "generator_lib",
+    srcs = ["generator.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [":types_lib"],
+    visibility = ["//web:__pkg__", "//web/src/model:__pkg__"],
+)
+
+# ── model_lib: scenario.ts types (GAME-001) ───────────────────────────────────
+
+ts_project(
+    name = "model_lib",
+    srcs = ["scenario.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    visibility = ["//web:__pkg__", "//web/src/model:__pkg__"],
+)
+
+# ── loader_lib: loadScenario function ────────────────────────────────────────
+
+ts_project(
+    name = "loader_lib",
+    srcs = ["loader.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [":model_lib"],
+    visibility = ["//web:__pkg__", "//web/src/model:__pkg__"],
+)
+
+# ── loader_typecheck_test: type-check passes ──────────────────────────────────
+
+build_test(
+    name = "loader_typecheck_test",
+    targets = [":loader_lib"],
+    visibility = ["//visibility:public"],
+)
+
+# ── loader_test_lib: compile the test file ────────────────────────────────────
+
+ts_project(
+    name = "loader_test_lib",
+    srcs = ["loader_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [":loader_lib", ":model_lib"],
+    testonly = True,
+)
+
+# ── loader_test: run tests with Node built-in test runner ─────────────────────
+#
+# aspect_rules_js js_test runs the entry JS file with Node.js.
+# The compiled output of loader_test_lib is loader_test.js (ES2022 modules).
+# Node 18+ supports ESM natively via --input-type or .mjs; however the compiled
+# output from ts_project is .js with ES module syntax.
+#
+# We pass --experimental-vm-modules (Node ≥ 18) and use the js_test entry_point
+# to point at the compiled .js file.
+
+js_test(
+    name = "loader_test",
+    entry_point = "loader_test.js",
+    data = [
+        ":loader_test_lib",
+        ":loader_lib",
+        ":model_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
