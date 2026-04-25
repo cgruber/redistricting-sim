@@ -2,7 +2,7 @@
 id: GAME-002
 title: Scenario JSON loader and validator
 area: game, core, data
-status: open
+status: resolved
 created: 2026-04-25
 ---
 
@@ -19,9 +19,9 @@ to create precincts at runtime. The loader replaces that data source.
 
 ## Goals / Acceptance Criteria
 
-- [ ] `loadScenario(json: unknown): Scenario` function in `game/web/src/model/`
-- [ ] Rejects unknown `format_version`; throws a descriptive error
-- [ ] Validates all 13 invariants from the spec:
+- [x] `loadScenario(json: unknown): Scenario` function in `game/web/src/model/`
+- [x] Rejects unknown `format_version`; throws a descriptive error
+- [x] Validates all 13 invariants from the spec:
   - All `PartyId` refs in `vote_shares`, events, criteria exist in `scenario.parties`
   - All `DistrictId` refs in `initial_district_id` exist in `scenario.districts`
   - All `GroupId` refs in events/criteria exist in ≥1 precinct's `demographic_groups`
@@ -35,12 +35,12 @@ to create precincts at runtime. The loader replaces that data source.
   - `districts.length ≥ 2`
   - All ids unique within scenario
   - `precincts.length ≥ 1`
-- [ ] `auto-fill` behaviour: editable precincts with absent/null `initial_district_id`
+- [x] `auto-fill` behaviour: editable precincts with absent/null `initial_district_id`
   are resolved to `default_district_id` (if set) or `districts[0]` at load time;
   returned `Scenario` always has explicit `initial_district_id` on editable precincts
-- [ ] Error messages identify which invariant failed and where (e.g. precinct id)
-- [ ] Unit tests: happy path + one test per invariant violation
-- [ ] Depends on: GAME-001
+- [x] Error messages identify which invariant failed and where (e.g. precinct id)
+- [x] Unit tests: happy path + one test per invariant violation
+- [x] Depends on: GAME-001
 
 ## References
 

@@ -2,7 +2,7 @@
 id: GAME-001
 title: Define scenario TypeScript types from spec
 area: game, core, types
-status: open
+status: resolved
 created: 2026-04-25
 github_issue: 31
 ---

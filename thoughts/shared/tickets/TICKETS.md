@@ -38,10 +38,7 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 
 | File | Area | Summary |
 |---|---|---|
-| `GAME-001-scenario-typescript-types.md` | game, core | Define TypeScript types from scenario data format spec; replaces spike-grade types |
-| `GAME-002-scenario-loader-validator.md` | game, core | Scenario JSON loader + all 13 spec validation invariants; unit tested |
 | `GAME-003-tutorial-scenario-content.md` | game, content | Author tutorial scenario JSON (sketch proposal first, then full data file) |
-| `GAME-004-map-renderer-interface.md` | game, rendering | Extract MapRenderer interface; rename concrete class to SvgMapRenderer |
 | `GAME-005-render-scenario-from-json.md` | game, rendering | Sprint 1 demo: wire loader + scenario into renderer; replace procedural generator |
 | `GAME-006-scenario-compression.md` | game, build | Compressed scenario delivery: HTTP gzip for bundled; `.scenarioz` format for future downloads |
 | `GAME-007-player-progress-persistence.md` | game, storage | Save/resume in-progress scenario + completion tracking; "Continue" menu; localStorage |
@@ -57,6 +54,9 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 
 | Summary | Resolution |
 |---|---|
+| GAME-001: Define scenario TypeScript types from spec | All AC met; branded types + full Scenario interface; merged PR #33 |
+| GAME-002: Scenario JSON loader and validator | All AC met; loadScenario + all 13 invariants + 33 unit tests; merged PR #34 |
+| GAME-004: Extract MapRenderer interface | All AC met; MapRenderer interface + SvgMapRenderer rename; merged PR #33 |
 | AGENT-002: Add kotlin tools to pr-review-cycle critique/response prompts | Infra workflow already updated; local override deleted — infra workflow is canonical |
 | BUILD-002: Integrate spikes into game/ Bazel workspace | Unified game/ workspace: TypeScript+D3+Zustand+Rust/WASM; all AC met; bazel build/test/run verified; merged PR #16 |
 | SPIKE-001: Game tech stack PoC | TypeScript+Vite+D3.js+Zustand hex-grid prototype complete; all AC met; SPIKE-REPORT.md written; go recommendation — merged PR #11 |
