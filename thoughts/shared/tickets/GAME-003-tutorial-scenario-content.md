@@ -2,7 +2,7 @@
 id: GAME-003
 title: Author tutorial scenario JSON (scenario 1)
 area: game, content
-status: open
+status: resolved
 created: 2026-04-25
 ---
 
@@ -25,7 +25,7 @@ the game vision provides design constraints but not specific creative choices.
 ## Goals / Acceptance Criteria
 
 **Phase 1 — Proposal (produce first, before Phase 2):**
-- [ ] Written sketch covering:
+- [x] Written sketch covering:
   - Fictional state name and region/county name
   - Two fictional party names and abbreviations (not Red/Blue — something more fun)
   - Player character: name, role, motivation (low-stakes, tutorial framing)
@@ -37,19 +37,19 @@ the game vision provides design constraints but not specific creative choices.
   - Lesson taught: how redistricting works; no partisan angle
 
 **Phase 2 — Full JSON authoring (after proposal reviewed):**
-- [ ] Valid scenario JSON file at `game/scenarios/tutorial-001.json`
-- [ ] Passes `loadScenario()` validator (GAME-002) with no errors
-- [ ] `format_version: "1"`; `election_type: "state_house"`
-- [ ] ~30 hex precincts in axial coordinates; all editable; no context precincts needed
-- [ ] Demographic groups: at minimum 2 groups per precinct; `vote_shares` sum to 1.0
+- [x] Valid scenario JSON file at `game/scenarios/tutorial-001.json`
+- [x] Passes `loadScenario()` validator (GAME-002) with no errors
+- [x] `format_version: "1"`; `election_type: "state_house"`
+- [x] ~30 hex precincts in axial coordinates; all editable; no context precincts needed
+- [x] Demographic groups: at minimum 2 groups per precinct; `vote_shares` sum to 1.0
   for all parties; `population_share` sum to 1.0 per precinct
-- [ ] Both districts populated plausibly when auto-fill applied (not all precincts
+- [x] Both districts populated plausibly when auto-fill applied (not all precincts
   in one corner)
-- [ ] `initial_district_id: null` on all precincts (player draws from scratch)
-- [ ] No events (tutorial is baseline only)
-- [ ] 2 required success criteria: `district_count` + `population_balance`
-- [ ] Optional criterion: at least 1 (e.g. rough partisan balance or compactness)
-- [ ] Narrative: character framing, 1–2 intro slides, map objective text
+- [x] `initial_district_id: null` on all precincts (player draws from scratch)
+- [x] No events (tutorial is baseline only)
+- [x] 2 required success criteria: `district_count` + `population_balance`
+- [x] Optional criterion: at least 1 (e.g. rough partisan balance or compactness)
+- [x] Narrative: character framing, 1–2 intro slides, map objective text
 
 ## Design Constraints (from game vision)
 

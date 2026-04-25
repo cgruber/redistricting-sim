@@ -2,7 +2,7 @@
 id: GAME-005
 title: Sprint 1 integration — render scenario from JSON
 area: game, rendering, integration
-status: open
+status: resolved
 created: 2026-04-25
 ---
 
@@ -23,24 +23,24 @@ swap the data source without breaking the rendering and editing experience.
 
 ## Goals / Acceptance Criteria
 
-- [ ] App loads `tutorial-001.json` at startup (hardcoded path / static import for now;
+- [x] App loads `tutorial-001.json` at startup (hardcoded path / static import for now;
   scenario picker is a later sprint)
-- [ ] Scenario passed through `loadScenario()` before use; validation errors surface
+- [x] Scenario passed through `loadScenario()` before use; validation errors surface
   clearly in the browser console (no silent failures)
-- [ ] Precincts rendered at correct hex positions from `scenario.precincts[*].position`
-- [ ] Initial district assignments from `initial_district_id` applied (or auto-fill
+- [x] Precincts rendered at correct hex positions from `scenario.precincts[*].position`
+- [x] Initial district assignments from `initial_district_id` applied (or auto-fill
   if null) before first render
-- [ ] District color overlay rendered; district boundaries drawn between adjacent
+- [x] District color overlay rendered; district boundaries drawn between adjacent
   precincts in different districts
-- [ ] Paint/brush interaction works: stroking assigns precincts to active district
-- [ ] Undo/redo works
-- [ ] View mode toggle works (districts ↔ partisan lean)
+- [x] Paint/brush interaction works: stroking assigns precincts to active district
+- [x] Undo/redo works
+- [x] View mode toggle works (districts ↔ partisan lean)
   - Partisan lean derived from scenario's demographic groups + vote_shares
     (population-weighted average across groups for now — full group model is Sprint 3)
-- [ ] Viewport panning works (CSS transform; existing spike behaviour)
-- [ ] Spike types (`types.ts`, `generator.ts`) and spike entry point left in place
+- [x] Viewport panning works (CSS transform; existing spike behaviour)
+- [x] Spike types (`types.ts`, `generator.ts`) and spike entry point left in place
   but no longer the primary data path; they can be deleted in a follow-up
-- [ ] `bazel build //game/web/...` passes; app serves and renders correctly
+- [x] `bazel build //game/web/...` passes; app serves and renders correctly
 
 **Sprint 1 demo**: open browser via `serve.sh`, see tutorial scenario map, paint
 districts, undo/redo, toggle view mode. No simulation, no test sequence yet.

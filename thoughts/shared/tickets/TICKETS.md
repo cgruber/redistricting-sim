@@ -38,8 +38,6 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 
 | File | Area | Summary |
 |---|---|---|
-| `GAME-003-tutorial-scenario-content.md` | game, content | Author tutorial scenario JSON (sketch proposal first, then full data file) |
-| `GAME-005-render-scenario-from-json.md` | game, rendering | Sprint 1 demo: wire loader + scenario into renderer; replace procedural generator |
 | `GAME-006-scenario-compression.md` | game, build | Compressed scenario delivery: HTTP gzip for bundled; `.scenarioz` format for future downloads |
 | `GAME-007-player-progress-persistence.md` | game, storage | Save/resume in-progress scenario + completion tracking; "Continue" menu; localStorage |
 | `CI-001-github-action-ticket-close-sync.md` | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
@@ -54,6 +52,8 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 
 | Summary | Resolution |
 |---|---|
+| GAME-003: Author tutorial scenario JSON | All AC met; 30-precinct Kalanoa/Westford scenario; proposal + full JSON; merged PR #37 |
+| GAME-005: Sprint 1 integration — render scenario from JSON | All AC met; adapter + async store init + serve.sh wiring; Sprint 1 demo complete; merged PR #38 |
 | GAME-001: Define scenario TypeScript types from spec | All AC met; branded types + full Scenario interface; merged PR #33 |
 | GAME-002: Scenario JSON loader and validator | All AC met; loadScenario + all 13 invariants + 33 unit tests; merged PR #34 |
 | GAME-004: Extract MapRenderer interface | All AC met; MapRenderer interface + SvgMapRenderer rename; merged PR #33 |
