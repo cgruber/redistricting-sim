@@ -123,8 +123,8 @@ fi
 
 # ── Run Playwright ────────────────────────────────────────────────────────────
 # Bazel test runner may strip the user's PATH (e.g. /opt/homebrew/bin absent).
-# Extend PATH with common node/npm locations so npx is accessible.
+# Extend PATH with common node/pnpm locations so pnpm exec is accessible.
 export PATH="/opt/homebrew/bin:/usr/local/bin:${PATH}"
 cd "${WORKSPACE_DIR}"
-npx playwright test --config "web/playwright.config.ts"
+pnpm exec playwright test --config "web/playwright.config.ts"
 exit $?
