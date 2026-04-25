@@ -1,11 +1,50 @@
-# Buildkite CI Pipeline
+# Buildkite CI Pipeline — redistricting-sim
 #
-# Stack is being decided — see SPIKE-001 (game tech stack) and SPIKE-002 (build system).
-# Steps will be added once the spike results are merged and the stack is locked.
+# Runs on the macOS agent (native, no Docker). The game/ directory is the
+# Bazel workspace; all build and test commands run from there.
+#
+# Dependency graph:
+#   build ──── test
+#
+# Setup (node_modules + Playwright Chromium) runs as part of the build step
+# via game/setup.sh. It is idempotent — on a warm agent it exits quickly.
 
 env:
   BUILDKITE_CLEAN_CHECKOUT: "true"
 
 steps:
-  - label: ":memo: No build steps yet"
-    command: echo "Stack spike in progress — see SPIKE-001 and SPIKE-002 tickets"
+
+  ##############################################################################
+  # BUILD — compile TypeScript, Rust/WASM, verify types; fail fast before tests
+  ##############################################################################
+
+  - label: ":hammer: Build"
+    key: build
+    agents:
+      os: macos
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 2
+    command: |
+      cd game
+      ./setup.sh
+      bazel build --config=ci //...
+
+  ##############################################################################
+  # TEST — TypeScript type-check, unit tests, Playwright e2e smoke test
+  ##############################################################################
+
+  - label: ":bazel: Test"
+    key: test
+    depends_on: build
+    agents:
+      os: macos
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 2
+    command: |
+      cd game
+      ./setup.sh
+      bazel test --config=ci //...
