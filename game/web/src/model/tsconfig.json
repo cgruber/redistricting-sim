@@ -9,6 +9,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "lib": ["ES2022", "DOM"],
+    "types": [],
     "skipLibCheck": true,
     "isolatedModules": true,
     "esModuleInterop": true,

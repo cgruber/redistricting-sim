@@ -29,6 +29,7 @@ steps:
     command: |
       cd game
       ./setup.sh
+      bazel clean
       bazel build --config=ci //...
 
   ##############################################################################
