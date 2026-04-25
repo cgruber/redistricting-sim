@@ -11,11 +11,12 @@
 # Port 58173 is distinct from the dev serve port (58080) to avoid conflicts.
 # There is no Vite dev server in this project — the app is statically served.
 #
-# Runfiles layout (module name "redistricting_sim" from MODULE.bazel):
-#   $RUNFILES_DIR/redistricting_sim/web/bundle.js
-#   $RUNFILES_DIR/redistricting_sim/web/index.html
-#   $RUNFILES_DIR/redistricting_sim/rust/wasm_calc_bindgen/wasm_calc_bindgen.js
-#   $RUNFILES_DIR/redistricting_sim/rust/wasm_calc_bindgen/wasm_calc_bindgen_bg.wasm
+# Runfiles layout (module name "redistricting_sim" from MODULE.bazel).
+# Bazel ≥ 7 uses canonical name _main for the current repo; we try both.
+#   $RUNFILES_DIR/_main/web/bundle.js          (Bazel ≥ 7)
+#   $RUNFILES_DIR/redistricting_sim/web/bundle.js  (older Bazel)
+#   $RUNFILES_DIR/_main/scenarios/tutorial-001.json
+#   $RUNFILES_DIR/_main/rust/wasm_calc_bindgen/wasm_calc_bindgen.js
 
 set -euo pipefail
 
@@ -29,15 +30,27 @@ if [[ -z "${RUNFILES}" ]]; then
 fi
 
 MODULE="redistricting_sim"
-WEB_BUNDLE="${RUNFILES}/${MODULE}/web/bundle.js"
-WEB_HTML="${RUNFILES}/${MODULE}/web/index.html"
-WASM_JS="${RUNFILES}/${MODULE}/rust/wasm_calc_bindgen/wasm_calc_bindgen.js"
-WASM_BG="${RUNFILES}/${MODULE}/rust/wasm_calc_bindgen/wasm_calc_bindgen_bg.wasm"
+# Bazel ≥ 7 uses the canonical name (_main) for the current repo instead of
+# the module name (redistricting_sim). Check both; prefer the explicit name.
+if [[ -d "${RUNFILES}/${MODULE}" ]]; then
+  RUNFILES_MOD="${RUNFILES}/${MODULE}"
+elif [[ -d "${RUNFILES}/_main" ]]; then
+  RUNFILES_MOD="${RUNFILES}/_main"
+else
+  echo "ERROR: runfiles module dir not found (tried ${MODULE} and _main under ${RUNFILES})" >&2
+  exit 1
+fi
+WEB_BUNDLE="${RUNFILES_MOD}/web/bundle.js"
+WEB_HTML="${RUNFILES_MOD}/web/index.html"
+WASM_JS="${RUNFILES_MOD}/rust/wasm_calc_bindgen/wasm_calc_bindgen.js"
+WASM_BG="${RUNFILES_MOD}/rust/wasm_calc_bindgen/wasm_calc_bindgen_bg.wasm"
+SCENARIOS_DIR="${RUNFILES_MOD}/scenarios"
 
 # ── Verify all required artifacts exist ──────────────────────────────────────
 for f in "${WEB_BUNDLE}" "${WEB_HTML}" "${WASM_JS}" "${WASM_BG}"; do
   if [[ ! -f "${f}" ]]; then
     echo "ERROR: required artifact not found: ${f}" >&2
+    echo "  RUNFILES_MOD=${RUNFILES_MOD}" >&2
     echo "  RUNFILES_DIR=${RUNFILES_DIR:-<unset>}" >&2
     echo "  JAVA_RUNFILES=${JAVA_RUNFILES:-<unset>}" >&2
     exit 1
@@ -58,6 +71,12 @@ cp "${WEB_HTML}"   "${SERVE_DIR}/index.html"
 cp "${WEB_BUNDLE}" "${SERVE_DIR}/bundle.js"
 cp "${WASM_JS}"    "${SERVE_DIR}/wasm_calc_bindgen.js"
 cp "${WASM_BG}"    "${SERVE_DIR}/wasm_calc_bindgen_bg.wasm"
+
+# Scenario JSON files (fetched at runtime by the app)
+if [[ -d "${SCENARIOS_DIR}" ]]; then
+  mkdir -p "${SERVE_DIR}/scenarios"
+  cp "${SCENARIOS_DIR}/"*.json "${SERVE_DIR}/scenarios/"
+fi
 
 # ── Start HTTP server ─────────────────────────────────────────────────────────
 PORT=58173
@@ -103,7 +122,9 @@ if [[ ! -f "${PLAYWRIGHT_CONFIG}" ]]; then
 fi
 
 # ── Run Playwright ────────────────────────────────────────────────────────────
-# npx resolves playwright from the node_modules in the workspace root (game/).
+# Bazel test runner may strip the user's PATH (e.g. /opt/homebrew/bin absent).
+# Extend PATH with common node/npm locations so npx is accessible.
+export PATH="/opt/homebrew/bin:/usr/local/bin:${PATH}"
 cd "${WORKSPACE_DIR}"
 npx playwright test --config "web/playwright.config.ts"
 exit $?

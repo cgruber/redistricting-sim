@@ -25,7 +25,7 @@ const COLS = 7;
 const ROWS = 8;
 
 /** Flat-top axial hex → pixel center (offset layout) */
-function hexToPixel(q: number, r: number): Point {
+export function hexToPixel(q: number, r: number): Point {
 	const x = HEX_SIZE * (1.5 * q);
 	const y = HEX_SIZE * (Math.sqrt(3) * r + (Math.sqrt(3) / 2) * q);
 	return { x, y };
@@ -45,7 +45,7 @@ function hexToPixel(q: number, r: number): Point {
  *   edge 4 = 270° → up           = [+0, -r]
  *   edge 5 = 330° → upper-right  = [+q, -r]
  */
-const HEX_DIRECTIONS: [number, number][] = [
+export const HEX_DIRECTIONS: [number, number][] = [
 	[1, 0], // edge 0: lower-right
 	[0, 1], // edge 1: down
 	[-1, 1], // edge 2: lower-left
