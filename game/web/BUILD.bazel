@@ -1,6 +1,7 @@
 load("@aspect_rules_esbuild//esbuild:defs.bzl", "esbuild")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
 
 ts_config(
     name = "tsconfig",
@@ -8,6 +9,8 @@ ts_config(
 )
 
 # Type-check target: verifies TypeScript types without producing runtime output.
+# Note: src/model/ is a separate Bazel package (owns BUILD.bazel); glob does not
+# cross package boundaries, so model targets are listed explicitly as deps.
 ts_project(
     name = "app_typecheck_lib",
     srcs = glob(["src/**/*.ts"]),
@@ -17,6 +20,10 @@ ts_project(
         "//:node_modules/@types/d3",
         "//:node_modules/zustand",
         "//:node_modules/zundo",
+        "//web/src/model:loader_lib",
+        "//web/src/model:model_lib",
+        "//web/src/model:types_lib",
+        "//web/src/model:generator_lib",
     ],
 )
 
@@ -28,6 +35,8 @@ build_test(
 )
 
 # esbuild bundles TypeScript + npm deps into a single browser-ready JS file.
+# Note: src/model/ is a separate Bazel package; model sources are provided via
+# deps on //web/src/model targets.
 esbuild(
     name = "app",
     srcs = glob(["src/**/*.ts"]),
@@ -36,6 +45,10 @@ esbuild(
         "//:node_modules/d3",
         "//:node_modules/zustand",
         "//:node_modules/zundo",
+        "//web/src/model:loader_lib",
+        "//web/src/model:model_lib",
+        "//web/src/model:types_lib",
+        "//web/src/model:generator_lib",
     ],
     output = "bundle.js",
     format = "esm",
@@ -49,5 +62,34 @@ esbuild(
 filegroup(
     name = "html",
     srcs = ["index.html"],
+    visibility = ["//visibility:public"],
+)
+
+# Playwright behavioral (e2e) smoke test — CI-002 Phase 1.
+#
+# Assembles Bazel-built artifacts into a temp dir, starts python3 http.server
+# on port 58173, and runs npx playwright test against it.
+#
+# local = True: Playwright requires host npx and a Chromium browser binary
+# (installed once via `npx playwright install chromium`). The test cannot run
+# inside the Bazel sandbox.
+#
+# One-time setup outside Bazel:
+#   cd game && npx playwright install chromium
+sh_test(
+    name = "e2e_test",
+    srcs = ["e2e_test.sh"],
+    data = [
+        ":app",
+        ":html",
+        "//rust:wasm_calc_bindgen",
+        "playwright.config.ts",
+        "e2e/smoke.spec.ts",
+    ],
+    local = True,
+    tags = [
+        "no-sandbox",
+        "e2e",
+    ],
     visibility = ["//visibility:public"],
 )
