@@ -15,7 +15,7 @@ and N-party shares. Educational/neutral stance unchanged.
   v1: fixed precinct partisanship+turnout; exact outcomes; tight causal loop
   Variance: explicit designed scenario events only — not ambient noise
   Each event → deterministic outcome (same map+event = same result every time)
-  Ensemble comparison (map vs. distribution of random valid maps): v2, read-only layer
+  Ensemble comparison (map vs. distribution of random valid maps): v2, read-only layer; runs against same deterministic core (see scenario-data-format spec Purpose section)
 
 2. Waves = demographic events, not partisan labels
   Partisan consequence always DERIVED from demographic event, never assumed

@@ -41,7 +41,9 @@ lesson from being obscured by luck.
 
 Ensemble comparison (showing a player's map against a distribution of randomly drawn
 valid maps) is deferred to v2 as a read-only analysis layer — it does not affect
-gameplay or success criteria.
+gameplay or success criteria. This planned v2 layer runs against the same deterministic
+simulation core; it is a separate analytical mode, not a different engine. (Cross-
+reference: the scenario data format spec notes this in its Purpose section.)
 
 ### 2. Waves expressed as demographic events, not partisan labels
 

@@ -28,6 +28,8 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 | `AGENT-NNN` | Agentic workflow and agent tooling changes |
 | `SPIKE-NNN` | Time-boxed proof-of-concept investigations |
 | `LEGAL-NNN` | Legal, content liability, and compliance research |
+| `DIST-NNN` | Distribution, deployment, and platform research |
+| `DESIGN-NNN` | Game design, UX, and ergonomics research |
 
 ---
 
@@ -38,6 +40,8 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 | `CI-001-github-action-ticket-close-sync.md` | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
 | `AGENT-002-pr-review-cycle-kotlin-tools.md` | agentic workflow | Update infra repo pr-review-cycle to use kotlin scripts in critique/response agent prompts instead of raw gh api |
 | `LEGAL-001-content-presentation-risks.md` | legal, content | Research legal risk from partial/no eligibility-restriction warnings in sim authoring tool |
+| `DIST-001-steam-deployment-research.md` | distribution, platform | Research Steam free/educational program, achievements API, web-vs-Steam tradeoffs |
+| `DESIGN-001-achievement-star-system.md` | design, UX | Game ergonomics research for star/achievement ranking system (required vs. optional criteria) |
 
 ---
 
