@@ -50,12 +50,20 @@ pc=precinct dist=district ET=election-type
   Zoomed-out view showing edited region in state context = v2
   Data model + rendering interface must not preclude it; adding it = new rendering mode, not refactor
 
+9. County borders as rendering overlay (flavor; not mechanics)
+  County borders drawn as visual overlay for realism; mechanically inert
+  No sim/scoring/assignment logic depends on county membership
+  $pc.county_id: metadata only; renderer uses it to draw county border layer
+  Rendering: county border overlay = independent toggleable layer alongside $dist boundary overlay
+  NOT modeled as game mechanic; county boundary changes remain OUT OF SCOPE
+  Random map gen(v2): generating county-like $pc groupings = secondary v2 goal; not v1
+
 §CONSEQUENCES
-Scenario format: neighboring_context_precincts[] first-class field
+Scenario format: neighboring_context_precincts[] first-class field; $pc.county_id metadata field
 Simulation API: simulate(allPrecincts, assignments, electionType) → ElectionResult
 District assignment: pc.assignments: Map<ElectionType, DistrictId> (not single ID)
-Rendering: MapRenderer interface; SVG+Canvas as implementations
-NOT modeled: county boundary changes; multi-type simultaneous editing
+Rendering: MapRenderer interface; SVG+Canvas as implementations; county border overlay layer
+NOT modeled: county boundary changes; multi-type simultaneous editing; county game mechanics
 
 §REFS
 Research: thoughts/shared/research/2026-04-24-precinct-count-calibration.md

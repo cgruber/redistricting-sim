@@ -95,6 +95,8 @@ $seg = contiguous blob of $pcs within a $dist; $dist may have multiple $segs(non
 
 View filters(color overlay; always show $dist boundaries on top):
   population density | partisan lean | any demographic dimension | district assignment
+County borders: separate toggleable overlay; flavor+orientation only; no game mechanic
+  $pc.county_id metadata; no effect on scoring/sim/$dist validity; random-gen county groups=$v2
 Hover: tooltip with all $pc metadata; pin for comparison
 
 Editing:
@@ -211,7 +213,7 @@ OUT: player-facing Custom Level UI + community sharing(post-$v1) |
 11. [RESOLVED] Map geography+rendering: scenario region(not county-bound) | State→Region→Precinct hierarchy |
     neighboring context $pcs first-class | one $ET/scenario | $pc.assignments:Map<$ET,$DistId> |
     pannable viewport; scoring not walls | $MapRend interface from $v1; Canvas+SVG hybrid >800 $pcs |
-    state-level view=$v2; county boundary changes=out of scope
+    state-level view=$v2; county boundary changes=out of scope | county borders=overlay only($pc.county_id metadata); random-gen county groups=$v2
     see decisions/2026-04-24-map-geography-and-rendering-architecture.md
 
 §REFS
