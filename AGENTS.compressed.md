@@ -63,7 +63,7 @@ ID categories (sequential within each):
   OPT = performance optimization
   AGENT = agentic workflow+tooling changes
   SPIKE = time-boxed proof-of-concept investigations
-check existing tickets in category for next number before creating new ticket
+check TICKETS.md Open+Resolved sections for highest existing ID in category before creating new ticket; files deleted on resolve but IDs stay in index permanently — filesystem check alone causes collisions
 
 ticket file conventions:
   filename: <ID>-<kebab>.md in $ts/tickets/

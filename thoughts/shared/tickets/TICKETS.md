@@ -38,6 +38,7 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 
 | File | Area | Summary |
 |---|---|---|
+| `BUILD-003-ts-rules-spawn-strategy-research.md` | build, typescript | Research optimal spawn_strategy config for aspect_rules_ts on macOS (darwin-sandbox + multi-target packages) |
 | `GAME-006-scenario-compression.md` | game, build | Compressed scenario delivery: HTTP gzip for bundled; `.scenarioz` format for future downloads |
 | `GAME-007-player-progress-persistence.md` | game, storage | Save/resume in-progress scenario + completion tracking; "Continue" menu; localStorage |
 | `CI-001-github-action-ticket-close-sync.md` | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
