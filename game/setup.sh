@@ -10,7 +10,7 @@
 #
 # Prerequisites (not installed by this script — must already be on PATH):
 #   node    >= 18
-#   pnpm    >= 8
+#   pnpm    >= 9
 #   python3 (any recent version — used by e2e_test.sh's http.server)
 #   bazel   (bazelisk wired as bazel)
 #
@@ -38,7 +38,7 @@ if ! command -v node >/dev/null 2>&1; then
   MISSING+=("node (>= 18) — install via nvm, Homebrew, or system package manager")
 fi
 if ! command -v pnpm >/dev/null 2>&1; then
-  MISSING+=("pnpm (>= 8) — install via 'npm install -g pnpm' or 'brew install pnpm'")
+  MISSING+=("pnpm (>= 9) — install via 'npm install -g pnpm@9' or 'brew install pnpm'")
 fi
 if ! command -v python3 >/dev/null 2>&1; then
   MISSING+=("python3 — required by the e2e test HTTP server")
