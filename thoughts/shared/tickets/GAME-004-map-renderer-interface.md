@@ -2,7 +2,7 @@
 id: GAME-004
 title: Extract MapRenderer interface from spike renderer
 area: game, rendering
-status: open
+status: resolved
 created: 2026-04-25
 github_issue: 32
 ---

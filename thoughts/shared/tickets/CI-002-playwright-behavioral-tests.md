@@ -26,14 +26,14 @@ TypeScript typechecks. Smoke-testing the app is manual.
 ## Goals / Acceptance Criteria
 
 **Phase 1 — Framework (Sprint 1, parallel with GAME-002–005):**
-- [ ] Playwright added to `game/web/` workspace (npm dev-dependency)
-- [ ] Bazel target `//web:e2e_test` (or equivalent) that:
-  - Starts the Vite dev server (or uses a pre-built static bundle)
+- [x] Playwright added to `game/web/` workspace (npm dev-dependency)
+- [x] Bazel target `//web:e2e_test` (or equivalent) that:
+  - Uses esbuild static bundle served via python3 http.server (no Vite dev server; esbuild is CI-friendly)
   - Runs the Playwright test suite
   - Tears down cleanly; passes in CI
-- [ ] Smoke test: app loads; `#map-svg` is present and contains at least one
+- [x] Smoke test: app loads; `#map-svg` is present and contains at least one
   `path.hex` element; no console errors on load
-- [ ] `bazel test //web/...` includes the e2e target and passes
+- [x] `bazel test //web/...` includes the e2e target and passes
 
 **Phase 2 — Sprint 1 demo behavioral tests (immediately after GAME-005 merges):**
 - [ ] Scenario load: `tutorial-001.json` loaded; precinct count in SVG matches
