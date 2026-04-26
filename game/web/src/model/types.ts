@@ -47,6 +47,8 @@ export interface Point {
 export interface Precinct {
 	/** Unique integer ID */
 	id: number;
+	/** Human-readable name from scenario (e.g. "Far West Ridge") */
+	name?: string;
 	/** Axial hex grid coordinates */
 	coord: HexCoord;
 	/** Pixel center (pre-computed for rendering) */

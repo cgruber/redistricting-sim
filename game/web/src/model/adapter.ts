@@ -72,7 +72,7 @@ export function scenarioToSpike(scenario: Scenario): {
 		const winner: "D" | "R" = partyShare.D >= partyShare.R ? "D" : "R";
 		const margin = Math.round(Math.abs(partyShare.D - partyShare.R) * 100) / 100;
 
-		return {
+		const spikePrecinct: import("./types.js").Precinct = {
 			id: i,
 			coord: { q, r },
 			center,
@@ -82,6 +82,8 @@ export function scenarioToSpike(scenario: Scenario): {
 			previousResult: { winner, margin },
 			demographics: { male: 0.49, female: 0.49, nonbinary: 0.02 },
 		};
+		if (pc.name !== undefined) spikePrecinct.name = pc.name;
+		return spikePrecinct;
 	});
 
 	// Build initial assignments from loader-filled initial_district_id values

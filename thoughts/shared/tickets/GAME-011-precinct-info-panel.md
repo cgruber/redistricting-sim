@@ -4,6 +4,7 @@ title: Precinct info panel — hover tooltip in sidebar
 area: game, rendering
 status: open
 created: 2026-04-25
+github_issue: 58
 ---
 
 ## Summary
@@ -28,15 +29,14 @@ did not notice it. Hover events are already wired via `initHoverEvents()` in
 
 ## Goals / Acceptance Criteria
 
-- [ ] Sidebar section `#precinct-info` added below the district buttons
-- [ ] Fixed-height container; does not shift layout when content changes
-- [ ] Shows placeholder text when no precinct is hovered
-- [ ] On precinct hover: displays precinct name, current district, population
-- [ ] Styling: distinct contrast from the rest of the sidebar so it is
-  noticeable; not so prominent it distracts from the map
-- [ ] Existing `#status-bar` removed (or repurposed if it serves another need)
-- [ ] `initHoverEvents()` updated to write to `#precinct-info` instead of
-  (or in addition to) `#status-bar`
+- [x] Sidebar section `#precinct-info` added at top of sidebar (above election results)
+- [x] Fixed-height container (min-height 80px); does not shift layout when content changes
+- [x] Shows placeholder text when no precinct is hovered
+- [x] On precinct hover: displays precinct name, current district, population (+ partisan lean)
+- [x] Styling: `#0a1f3a` background with border; distinct from rest of sidebar
+- [x] Existing `#status-bar` removed; instructions moved to placeholder text
+- [x] `initHoverEvents()` updated to write to `#precinct-info`; mouseout restores placeholder
+- [x] `name?: string` added to spike Precinct type (types.ts); adapter.ts populates from scenario
 
 ## Notes
 

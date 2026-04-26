@@ -379,13 +379,21 @@ export class SvgMapRenderer implements MapRenderer {
 
 				const { assignments } = this.getState();
 				const dId = assignments.get(d.id);
-				const bar = document.getElementById("status-bar");
-				if (bar !== null) {
+				const infoPanel = document.getElementById("precinct-info");
+				if (infoPanel !== null) {
+					const precinctLabel = d.name ?? `Precinct ${d.id}`;
 					const distLabel = dId != null ? `District ${dId}` : "Unassigned";
 					const topParty = (["D", "R", "L", "G", "I"] as const).reduce((a, b) =>
 						d.partyShare[a] > d.partyShare[b] ? a : b,
 					);
-					bar.textContent = `Precinct ${d.id} | ${distLabel} | Pop: ${d.population.toLocaleString()} | Lean: ${PARTY_LABELS[topParty]} (${(d.partyShare[topParty] * 100).toFixed(1)}%)`;
+					const leanLabel = `${PARTY_LABELS[topParty]} (${(d.partyShare[topParty] * 100).toFixed(1)}%)`;
+					infoPanel.innerHTML =
+						`<div class="precinct-name">${precinctLabel}</div>` +
+						`<div class="precinct-detail">` +
+						`${distLabel}<br>` +
+						`Pop: ${d.population.toLocaleString()}<br>` +
+						`Lean: ${leanLabel}` +
+						`</div>`;
 				}
 			}
 		});
@@ -393,8 +401,18 @@ export class SvgMapRenderer implements MapRenderer {
 		svgNode.addEventListener("mouseout", (event: MouseEvent) => {
 			if (!svgNode.contains(event.relatedTarget as Node | null)) {
 				this.clearHover();
+				this.clearPrecinctInfo();
 			}
 		});
+	}
+
+	/** Restore placeholder text when no precinct is hovered. */
+	private clearPrecinctInfo() {
+		const infoPanel = document.getElementById("precinct-info");
+		if (infoPanel !== null) {
+			infoPanel.innerHTML =
+				'<div class="precinct-placeholder">Hover over a precinct to see details.<br>Click and drag to paint districts.</div>';
+		}
 	}
 
 	/** Restores stroke/opacity only — never fill (hover never changes fill). */

@@ -175,13 +175,30 @@
         flex-shrink: 0;
       }
 
-      #status-bar {
-        padding: 4px 16px;
-        background: #16213e;
-        border-top: 1px solid #0f3460;
-        font-size: 0.75rem;
-        color: #606080;
-        flex-shrink: 0;
+      #precinct-info {
+        background: #0a1f3a;
+        border: 1px solid #1a3a5c;
+        border-radius: 6px;
+        padding: 10px;
+        min-height: 80px;
+        font-size: 0.82rem;
+      }
+
+      #precinct-info .precinct-name {
+        font-weight: 600;
+        color: #c0d0e8;
+        margin-bottom: 4px;
+      }
+
+      #precinct-info .precinct-detail {
+        color: #a0a0b0;
+        line-height: 1.5;
+      }
+
+      #precinct-info .precinct-placeholder {
+        color: #505070;
+        font-style: italic;
+        line-height: 1.5;
       }
 
       #wasm-status-bar {
@@ -211,6 +228,10 @@
         <svg id="map-svg"></svg>
       </div>
       <aside id="sidebar">
+        <h2>Precinct Info</h2>
+        <div id="precinct-info">
+          <div class="precinct-placeholder">Hover over a precinct to see details.<br>Click and drag to paint districts.</div>
+        </div>
         <h2>Election Results</h2>
         <div id="results-container">
           <div style="color:#606080;font-size:0.85rem;">Draw districts to see results</div>
@@ -220,7 +241,6 @@
       </aside>
     </div>
 
-    <div id="status-bar">Hover over a precinct to see details. Click and drag to paint districts.</div>
     <div id="wasm-status-bar">
       <span id="wasm-status"></span>
     </div>
