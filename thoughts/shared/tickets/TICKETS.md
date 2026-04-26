@@ -91,6 +91,8 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-003-districts-view-color-encoding.md` | design, UX | Districts view color/population gradient: decide encoding strategy for v1 |
 | `DESIGN-004-legend-layout.md` | design, UX | Move legend to horizontal strip above map; free sidebar space for data panels |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
+| `GAME-019-tutorial-002-winnability-and-e2e-solve.md` | game, content, testing | Verify tutorial-002 is winnable; adjust scenario if not; e2e test that legitimately solves the map |
+| `GAME-020-last-scenario-wrap-up-screen.md` | game, UX | Wrap-up/congratulations screen after completing the final scenario (instead of dead-end select screen) |
 
 ---
 

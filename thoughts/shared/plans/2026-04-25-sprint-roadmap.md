@@ -2,6 +2,7 @@
 date: 2026-04-25
 status: active
 type: sprint-roadmap
+last_updated: 2026-04-26
 ---
 
 # Sprint Roadmap — Redistricting Simulator v1
@@ -34,165 +35,161 @@ See `thoughts/shared/vision/game-vision.compressed.md` for full scope.
 
 | Sprint | Goal | Demo target | Status |
 |---|---|---|---|
-| 1 | Load and display a real scenario | Tutorial map renders from JSON; player can paint districts | planned |
-| 2 | Edit the map + live feedback | Live population balance, contiguity indicators, precinct tooltip | backlog |
-| 3 | Test the map | Hit Test → per-criterion pass/fail; real simulation engine | backlog |
-| 4 | One complete playable scenario | Tutorial scenario: intro → edit → test → pass/fail → retry | backlog |
-| 5 | More criteria + scenarios 2–4 | Demographic events; majority_minority/efficiency_gap criteria; 4 playable | backlog |
-| 6 | Game infrastructure + scenarios 5–7 | Scenario select, unlock, persistence ("Continue"); 7 playable | backlog |
+| 1 | Load and display a real scenario | Tutorial map renders from JSON; player can paint districts | complete — 2026-04-25 |
+| 2 | Edit the map + live feedback | Live population balance, contiguity indicators, precinct tooltip | complete — 2026-04-25 |
+| 3 | Test the map | Hit Test → per-criterion pass/fail; real simulation engine | complete — 2026-04-25 |
+| 4 | One complete playable scenario | Tutorial scenario: intro → edit → test → pass/fail → retry | complete — 2026-04-25 |
+| 5 | More scenarios + remaining criteria | tutorial-002 wired; scenarios 2–4 authored; majority_minority/gap/mean-median implemented | current |
+| 6 | Game infrastructure complete | In-progress save/resume (GAME-007); scenarios 5–7 authored | backlog |
 | 7 | Complete v1 | All 8–12 scenarios; achievements UX; test animation; about page; shippable | backlog |
 
 ---
 
-## Sprint 1 — Load and Display a Real Scenario
+## Sprint 1 — Load and Display a Real Scenario [COMPLETE 2026-04-25]
 
 **Goal**: The app renders a real scenario from a JSON file. The player can see
 the hex map, paint districts, undo/redo, and toggle the partisan lean view.
 No simulation or game loop yet.
 
-**Demo**: Open browser via `serve.sh`. Tutorial scenario loads, hex map visible,
-precincts rendered at correct positions. Player can paint districts and undo.
+**Outcome**: All tickets closed; demo held 2026-04-25; received as "awesome and
+successful". 30-hex map loads; paint/undo/redo/lean-view/boundaries all work.
+Demo observations: view toggle label ambiguous (→ DESIGN-002); districts view
+population gradient dominated district color (→ DESIGN-003); motivated
+GAME-008 (accessibility).
 
-**Tickets** (execute in dependency order):
-
-| Ticket | Title | Notes |
-|---|---|---|
-| GAME-001 | Scenario TypeScript types | No dependencies; do first |
-| GAME-004 | MapRenderer interface extraction | No dependencies; parallel with GAME-001 |
-| GAME-002 | Scenario JSON loader + validator | Depends on GAME-001 |
-| GAME-003 | Tutorial scenario content | Depends on GAME-001 (types), GAME-002 (validator); sketch proposal first |
-| GAME-005 | Sprint 1 integration | Depends on all above; this is the demo |
-
-**GAME-001 and GAME-004 can proceed in parallel.** Once GAME-001 is done,
-GAME-002 begins. GAME-003 Phase 1 (the written sketch) can also start once
-GAME-001 is done — it does not need the validator. GAME-003 Phase 2 (full JSON
-authoring) requires GAME-002 to be complete (so the scenario can be validated).
-GAME-005 is last.
-
-DAG: `GAME-001 ∥ GAME-004 → GAME-002 → GAME-003 (Phase 2) → GAME-005`
-Note: GAME-003 Phase 1 (sketch) can start alongside GAME-002.
+**Tickets**: GAME-001, GAME-004, GAME-002, GAME-003, GAME-005, CI-002 (Ph1+Ph2)
+PRs: #33 #34 #37 #38 #44 #46 #47 #49 #50 #51
 
 ---
 
-## Sprint 2 — Edit the Map + Live Feedback
+## Sprint 2 — Edit the Map + Live Feedback [COMPLETE]
 
 **Goal**: The editing experience is complete. The player gets real-time feedback
 on map validity without running the full simulation.
 
-**Planned scope** (tickets to be created at sprint planning):
-- Live population balance per district (% deviation from target shown per district)
-- Contiguity validation — highlight non-contiguous district segments
-- Precinct tooltip on hover (population, demographic summary, current district)
-- County border overlay toggle (wires up `setCountyBordersVisible` from GAME-004)
-- Brush size controls (already partially in spike; needs scenario-aware refinement)
-- Reset to initial state button
+**Outcome**: All tickets closed. Live population balance ±% per district,
+contiguity BFS check, unassigned count, precinct hover tooltip in sidebar,
+county border overlay toggle, reset-to-initial with confirmation, view toggle
+label convention fixed (destination not current state).
 
-**Not yet ticketed** — sprint plan written before Sprint 2 begins.
+**Tickets**: DESIGN-002, GAME-009, GAME-010, GAME-011, GAME-012, GAME-013
+PRs: #55 #57 #59 #61 #63 #65
 
 ---
 
-## Sprint 3 — Test the Map
+## Sprint 3 — Test the Map [COMPLETE]
 
 **Goal**: The player can run Test and see which success criteria pass or fail.
-Introduces the real simulation engine (demographic group model, events).
+Introduces the real simulation engine.
 
-**Planned scope**:
-- Election simulation engine replacing spike's simplified version
-  - Group model: `population_share × voter_eligible × turnout_rate × vote_shares`
-  - Demographic events applied before simulation
-  - Pure function; fully unit-testable
-- Criterion evaluators: `population_balance`, `seat_count`, `district_count`
-  (the types present in tutorial scenario — enough for Sprint 3 demo)
-- Basic Test sequence UI: per-criterion pass/fail list (placeholder animation;
-  real governor/legislature animation is Sprint 7)
-- Scenario compression (GAME-006) evaluated and addressed this sprint or deferred
+**Outcome**: All tickets closed. Election sim engine (population-weighted vote
+shares, seat plurality); criteria evaluators for `population_balance`,
+`seat_count`, `district_count`, `safe_seats`, `competitive_seats`,
+`compactness`. Submit button gated on submittability. Pass/fail result screen
+with per-criterion rows. Three criteria types remain as stubs for Sprint 5:
+`majority_minority`, `efficiency_gap`, `mean_median`.
 
-**Not yet ticketed.**
+**Tickets**: GAME-017 (covered sim engine + submit + result screen)
+PRs: #74
 
 ---
 
-## Sprint 4 — One Complete Playable Scenario
+## Sprint 4 — One Complete Playable Scenario [COMPLETE]
 
 **Goal**: The tutorial scenario is fully playable end-to-end. The game loop is
 complete for one scenario.
 
-**Planned scope**:
-- Scenario intro slides UI (character framing, narrative context)
-- Success screen (required criteria all passed; optional criteria status)
-- Failure/feedback screen (which criteria failed; return to editing)
-- Retry loop
-- MapRenderer interface: confirm Canvas+SVG hybrid threshold is not yet hit;
-  defer Canvas implementation if all scenarios stay ≤ 800 precincts
+**Outcome**: All tickets closed. Full-screen intro slides (narrative character,
+objective, slide sequence, Skip/Prev/Next/Start). Pass/fail screen with
+"Keep Drawing" and "Next Scenario" actions. **Scenario select screen, sequential
+unlock logic, and localStorage completion tracking were implemented here as
+well** — pulled forward from Sprint 6 as part of GAME-018. In-progress save
+(GAME-007) was explicitly deferred and remains open.
 
-**Not yet ticketed.**
-
----
-
-## Sprint 5 — More Criteria + Scenarios 2–4
-
-**Goal**: Four scenarios are playable. All common criterion types implemented.
-
-**Planned scope**:
-- Additional criterion evaluators: `majority_minority` (uses `min_eligible_share`
-  and eligibility_rules), `efficiency_gap`, `mean_median`, `compactness`,
-  `safe_seats`, `competitive_seats`
-- Scenarios 2 (Give the Governor a Win), 3 (The Packing Problem),
-  4 (Cracking the Opposition) — authored as JSON
-- Scenario-to-scenario transition (completing one shows the next is unlocked;
-  no persist yet — that's Sprint 6)
-
-**Not yet ticketed.**
+**Tickets**: GAME-016, GAME-018
+PRs: #71 #77
 
 ---
 
-## Sprint 6 — Game Infrastructure + Scenarios 5–7
+## Sprint 5 — More Scenarios + Remaining Criteria [CURRENT]
 
-**Goal**: The game feels like a real game. Progression, persistence, scenario
-select screen. Seven scenarios playable.
+**Goal**: At least three scenarios are playable. All planned criterion types
+implemented. tutorial-002 (196-precinct) wired into the manifest.
 
-**Planned scope**:
-- Scenario select screen (completed / next unlocked / locked visible)
-- Sequential unlock: completing scenario N unlocks N+1
-- Player progress persistence (GAME-007): in-progress session save/resume,
-  completion tracking, "Continue" from main menu
-- Main menu screen
-- Scenarios 5 (A Voice for the Valley), 6 (Harden the Map), 7 (The Reform Map)
+**Scope**:
 
-**Known tickets**: GAME-007. Remainder TBD.
+- Wire `tutorial-002.json` into `SCENARIO_MANIFEST` in `main.ts`; verify the
+  196-precinct scenario loads and the select screen shows two entries
+- Implement the three stub criterion evaluators:
+  - `majority_minority` (uses `min_eligible_share` + scenario eligibility_rules)
+  - `efficiency_gap`
+  - `mean_median`
+- Author scenarios 2–4 as JSON (scenario names from vision: "Give the Governor
+  a Win", "The Packing Problem", "Cracking the Opposition")
+- Scenario-to-scenario transition already works (select screen + unlock is done);
+  confirm it works with multiple real scenarios
+- Performance check: tutorial-002 has 196 precincts (well within 800 SVG limit);
+  note but do not act unless degraded
+
+**Open questions that must be resolved before authoring scenarios 2–4**:
+- OQ9: StateContext redesign — needed if any new scenario requires state-level
+  district view (may be deferrable if scenarios 2–4 don't require it)
+
+**Known tickets**: None open that map to this sprint yet — create at sprint start.
+Candidate IDs: GAME-019 (wire tutorial-002), GAME-020 (criterion stubs),
+GAME-021/022/023 (scenarios 2/3/4).
 
 ---
 
-## Sprint 7 — Complete v1
+## Sprint 6 — Game Infrastructure Complete [BACKLOG]
+
+**Goal**: The game feels like a real game. Player persistence; seven scenarios.
+
+**Scope**:
+- GAME-007: In-progress session save/resume — save draft district assignments
+  to localStorage; restore on return; distinguish from completion tracking
+- Scenarios 5–7: "A Voice for the Valley", "Harden the Map", "The Reform Map"
+- Main menu screen (optional: assess whether select screen already serves this)
+- Performance pass: confirm all scenarios ≤ 800 precincts
+
+**Known tickets**: GAME-007. Remainder TBD at sprint planning.
+
+**Note**: Scenario select screen, sequential unlock, and completion tracking
+were already implemented in Sprint 4. Sprint 6 scope is now narrower than
+originally planned.
+
+---
+
+## Sprint 7 — Complete v1 [BACKLOG]
 
 **Goal**: Shippable v1. All scenarios, polish, about page.
 
-**Planned scope**:
+**Scope**:
 - Remaining scenarios: 8 (Both Sides Unhappy), 9 (Cats vs. Dogs), plus
-  any additional scenarios needed to fill the design gap (see vision §SCENARIOS
-  note about needing 1+ scenarios complicating the reform narrative)
+  any additional scenarios needed to fill the design gap (see vision §SCENARIOS)
 - Test sequence animation (governor/legislature/lobby icons — see vision §TEST)
 - Achievement/optional criteria UX (star display or equivalent; see DESIGN-001)
 - About page
 - Performance pass: confirm all scenarios ≤ 800 precincts (pure SVG) or
   implement Canvas+SVG hybrid if needed
-- Scenario compression (GAME-006) confirmed/implemented if not done in Sprint 3
+- GAME-006 (scenario compression) if not resolved earlier
 
-**Known tickets**: GAME-006 (if not Sprint 3), DESIGN-001 (research informs UX).
-Remainder TBD.
+**Known tickets**: GAME-006 (if not Sprint 5/6), DESIGN-001.
+Remainder TBD at sprint planning.
 
 ---
 
-## Backlog (not yet sprint-assigned)
-
-These tickets exist but are not assigned to a sprint. They will be slotted in
-at sprint planning for the appropriate sprint.
+## Backlog (not sprint-assigned)
 
 | Ticket | Area | Sprint target |
 |---|---|---|
-| GAME-006 | Scenario compression | Sprint 3 or 7 |
-| GAME-007 | Player progress persistence | Sprint 6 |
-| CI-001 | GitHub Action ticket-close sync | Any (infrastructure; low priority) |
-| LEGAL-001 | Content presentation risk research | Before any public release |
+| GAME-006 | Scenario compression | Sprint 5, 6, or 7 |
+| GAME-007 | Player progress persistence (in-progress save) | Sprint 6 |
+| GAME-008 | Accessibility | Any sprint |
+| DESIGN-003 | Districts view color/population encoding | Any sprint |
+| DESIGN-004 | Legend layout (horizontal strip above map) | Any sprint |
+| CI-001 | GitHub Action ticket-close sync | Any (low priority) |
+| LEGAL-001 | Content presentation risk research | Before public release |
 | DIST-001 | Steam deployment research | Before distribution decision |
 | DESIGN-001 | Achievement/star system ergonomics | Before Sprint 7 UX work |
 
@@ -200,11 +197,10 @@ at sprint planning for the appropriate sprint.
 
 ## Open Spec Questions That Will Block Implementation
 
-These open questions from the scenario data format spec need resolution before
-the relevant sprint begins. Flagged here so they don't get lost.
-
 | Question | Blocks | ADR/spec reference |
 |---|---|---|
-| OQ4: Narrative asset resolution strategy (Slide.image path vs. key) | Sprint 4 (intro slides) | scenario-data-format.md OQ4 |
-| OQ9: StateContext redesign | Sprint 5/6 (state-level view infrastructure) | scenario-data-format.md OQ9 |
+| OQ9: StateContext redesign | Sprint 5/6 (state-level view infra; may be deferrable) | scenario-data-format.md OQ9 |
 | DESIGN-001: Star/achievement UX | Sprint 7 | DESIGN-001 ticket |
+
+**Resolved**: OQ4 (narrative asset resolution) — intro slides shipped in Sprint 4
+without image support; image handling deferred indefinitely.
