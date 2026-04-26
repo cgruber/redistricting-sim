@@ -2,8 +2,9 @@
 id: GAME-019
 title: "tutorial-002 winnability: verify solvable, adjust if needed, e2e test that solves the map"
 area: game, content, testing
-status: open
+status: resolved
 created: 2026-04-26
+github_issue: 84
 ---
 
 ## Summary

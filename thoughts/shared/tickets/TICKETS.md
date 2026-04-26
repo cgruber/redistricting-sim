@@ -91,7 +91,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-003-districts-view-color-encoding.md` | design, UX | Districts view color/population gradient: decide encoding strategy for v1 |
 | `DESIGN-004-legend-layout.md` | design, UX | Move legend to horizontal strip above map; free sidebar space for data panels |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
-| `GAME-019-tutorial-002-winnability-and-e2e-solve.md` | game, content, testing | Verify tutorial-002 is winnable; adjust scenario if not; e2e test that legitimately solves the map |
 | `GAME-020-last-scenario-wrap-up-screen.md` | game, UX | Wrap-up/congratulations screen after completing the final scenario (instead of dead-end select screen) |
 
 ---
@@ -100,6 +99,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-019: tutorial-002 winnability + e2e solve test | All AC met; county-aligned initial assignments (north→d1, central→d2, south→d3); painting p071–p075 (indices 70–74) solves the map; 39th e2e test verifies end-to-end pass; merged PR #83 |
 | GAME-014: Scale tutorial scenario | All AC met; 196-precinct tutorial-002 scenario (3 counties, 4 districts); merged PR #79 |
 | GAME-018: Progression | All AC met; scenario select screen + localStorage completion + AbortController intro; 18 unit tests + 5 e2e tests; merged PR #77 |
 | GAME-017: Evaluation phase | All AC met; Submit button + evaluateCriteria + pass/fail screen; 15 unit tests + 5 e2e tests; merged PR #74 |
