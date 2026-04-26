@@ -92,6 +92,11 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-004-legend-layout.md` | design, UX | Move legend to horizontal strip above map; free sidebar space for data panels |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
 | `GAME-020-last-scenario-wrap-up-screen.md` | game, UX | Wrap-up/congratulations screen after completing the final scenario (instead of dead-end select screen) |
+| `GAME-021-multi-scenario-manifest.md` | game, progression | Static manifest drives select screen; scenarios fetched on demand; sequential unlock works across 2+ scenarios |
+| `GAME-022-missing-evaluators.md` | game, simulation | Implement majority_minority, efficiency_gap, mean_median criterion evaluators with unit tests |
+| `GAME-023-scenario-give-the-governor-a-win.md` | game, content | Scenario 2: partisan gerrymandering — draw a map giving the governor's party a seat majority |
+| `GAME-024-scenario-the-packing-problem.md` | game, content | Scenario 3: packing tactic — concentrate opposition into fewest districts; efficiency gap optional criterion |
+| `GAME-025-scenario-cracking-the-opposition.md` | game, content | Scenario 4: cracking tactic — dilute opposition across many districts; mean-median optional criterion |
 
 ---
 
