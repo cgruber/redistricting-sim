@@ -169,6 +169,7 @@ export class SvgMapRenderer implements MapRenderer {
 					enter
 						.append("path")
 						.attr("class", "hex")
+						.attr("data-precinct-id", (d) => String(d.id))
 						.attr("d", (d) => hexPolygonPath(d))
 						.attr("stroke", "none")
 						.attr("stroke-width", 0.5)
