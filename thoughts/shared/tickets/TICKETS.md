@@ -91,7 +91,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-004-legend-layout.md` | design, UX | Move legend to horizontal strip above map; free sidebar space for data panels |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
 | `GAME-014-scenario-scale.md` | game, content | Scale tutorial scenario to 150–300 precincts across 3+ counties for Sprint 3 feature demo |
-| `GAME-017-evaluation-phase.md` | game, simulation | Submit button + criteria evaluation + pass/fail result screen |
 | `GAME-018-progression.md` | game, content | Scenario select screen + sequential unlock + localStorage completion persistence |
 
 ---
@@ -100,6 +99,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-017: Evaluation phase | All AC met; Submit button + evaluateCriteria + pass/fail screen; 15 unit tests + 5 e2e tests; merged PR #74 |
 | GAME-016: Scenario intro slides | All AC met; full-screen slide intro from scenario.narrative; Next/Prev/Start Drawing/Skip/Escape; 6 e2e tests; merged PR #71 |
 | GAME-015: Success criteria in scenario format | Already implemented: types, loader, validation, 3 criteria in tutorial-001.json — resolved on discovery |
 | GAME-013: Reset-to-initial district assignments | All AC met; reset button + confirm flow + undo/redo clear; e2e tests; merged PR #63 |
