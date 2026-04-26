@@ -40,6 +40,18 @@ is present in the scenario JSON (`county_id` per precinct) but is not rendered.
 - [NOTE] Zoom-invariant stroke width: will apply automatically when GAME-009 is merged
   (GAME-009's zoom handler scales all `line` elements including county-boundary)
 
+## Test Coverage
+
+### Unit tests
+None required — `computeCountySegments` is pure but has no meaningful edge cases beyond what the e2e smoke covers; segment deduplication logic is simple enough to defer.
+
+### E2e tests (`e2e/sprint2.spec.ts`)
+- [x] Initial button text is "Show County Borders"
+- [x] After click: button text is "Hide County Borders"
+- [x] After click: `svg g.county-borders` element is in the DOM (may be empty if scenario has no county_id data)
+- [x] After second click: button text returns to "Show County Borders"
+- [x] No console errors during toggle
+
 ## Notes
 
 - The `setCountyBordersVisible()` stub exists as a method on the renderer

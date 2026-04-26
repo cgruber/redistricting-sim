@@ -59,6 +59,17 @@ zoom-out-to-state-view transition is a v2 concern; the zoom floor should be
 the full-scenario view, not an arbitrary pixel level, so the transition can
 be added later without refactoring.
 
+## Test Coverage
+
+### Unit tests
+None required — all behavior is DOM/d3 interaction with no pure domain logic to isolate.
+
+### E2e tests (`e2e/sprint2.spec.ts`)
+- [x] Zoom layer: `svg g.zoom-layer` exists in DOM after load (confirms zoom group is wired)
+- [x] Keyboard reset: pressing `0` does not throw a console error (smoke test for key handler)
+- [N/A] Scroll-wheel zoom: cannot reliably simulate in Playwright headless Chromium
+- [N/A] Right-click drag pan: cannot reliably simulate in Playwright headless Chromium
+
 ## Notes
 
 - `d3.zoom()` applies a `transform` attribute to a wrapper `<g>` group inside

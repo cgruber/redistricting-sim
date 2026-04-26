@@ -38,6 +38,16 @@ did not notice it. Hover events are already wired via `initHoverEvents()` in
 - [x] `initHoverEvents()` updated to write to `#precinct-info`; mouseout restores placeholder
 - [x] `name?: string` added to spike Precinct type (types.ts); adapter.ts populates from scenario
 
+## Test Coverage
+
+### Unit tests
+None required — behavior is DOM mutation driven by hover events; no isolated domain logic.
+
+### E2e tests (`e2e/sprint2.spec.ts`)
+- [x] On load: `#precinct-info` contains the placeholder text
+- [x] On `mousemove` over a hex: placeholder disappears; precinct name/details are shown
+- [x] On `mouseout` from SVG: placeholder is restored
+
 ## Notes
 
 - The panel intentionally sits in the sidebar rather than as a floating tooltip

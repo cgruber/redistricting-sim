@@ -33,7 +33,7 @@ ts_project(
     srcs = ["types.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    visibility = ["//web:__pkg__", "//web/src/model:__pkg__"],
+    visibility = ["//web:__subpackages__"],
 )
 
 # ── generator_lib: generator.ts (spike/legacy procedural precinct generator) ──
@@ -44,7 +44,7 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [":types_lib"],
-    visibility = ["//web:__pkg__", "//web/src/model:__pkg__"],
+    visibility = ["//web:__subpackages__"],
 )
 
 # ── model_lib: scenario.ts types (GAME-001) ───────────────────────────────────
@@ -54,7 +54,7 @@ ts_project(
     srcs = ["scenario.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    visibility = ["//web:__pkg__", "//web/src/model:__pkg__"],
+    visibility = ["//web:__subpackages__"],
 )
 
 # ── loader_lib: loadScenario function ────────────────────────────────────────
@@ -76,7 +76,7 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [":model_lib", ":types_lib", ":generator_lib"],
-    visibility = ["//web:__pkg__", "//web/src/model:__pkg__"],
+    visibility = ["//web:__subpackages__"],
 )
 
 # ── loader_typecheck_test: type-check passes ──────────────────────────────────

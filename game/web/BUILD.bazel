@@ -25,6 +25,8 @@ ts_project(
         "//web/src/model:types_lib",
         "//web/src/model:generator_lib",
         "//web/src/model:adapter_lib",
+        "//web/src/simulation:election_lib",
+        "//web/src/simulation:validity_lib",
     ],
 )
 
@@ -51,6 +53,8 @@ esbuild(
         "//web/src/model:types_lib",
         "//web/src/model:generator_lib",
         "//web/src/model:adapter_lib",
+        "//web/src/simulation:election_lib",
+        "//web/src/simulation:validity_lib",
     ],
     output = "bundle.js",
     format = "esm",
@@ -88,6 +92,8 @@ sh_test(
         "//scenarios:scenario_files",
         "playwright.config.ts",
         "e2e/smoke.spec.ts",
+        "e2e/sprint1.spec.ts",
+        "e2e/sprint2.spec.ts",
     ],
     local = True,
     tags = [

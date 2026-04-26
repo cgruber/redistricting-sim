@@ -57,6 +57,16 @@ Simplest, most conventional for toggle buttons. No micro-decision doc needed —
 
 The Sprint 1 test (`sprint1.spec.ts`) checks fill changes on toggle, not button text — no test update required.
 
+## Test Coverage
+
+### Unit tests
+None required — label text logic is trivial ternary; covered adequately by e2e.
+
+### E2e tests (`e2e/sprint2.spec.ts`)
+- [x] Initial button text is "Switch to Partisan Lean"
+- [x] After one click: button text is "Switch to Districts"
+- [x] After second click: button text returns to "Switch to Partisan Lean"
+
 ## Notes
 
 - This is a quick implementation fix once the design decision is made.

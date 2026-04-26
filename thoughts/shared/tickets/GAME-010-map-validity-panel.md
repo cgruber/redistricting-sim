@@ -54,6 +54,34 @@ not computed at all.
   contrast to be noticed
 - [ ] Updates reactively on every store change (no manual refresh needed)
 
+## Test Coverage
+
+### Unit tests (`src/simulation/validity_test.ts`)
+
+`computeValidityStats` is pure (no DOM, no D3) and has real algorithmic logic — full unit coverage required.
+
+**Population balance**
+- [x] All precincts assigned to one district: deviation = 0%, status = "ok"
+- [x] Two districts with equal population: both at 0% deviation, both "ok"
+- [x] Two districts with unequal population: over/under computed correctly
+- [x] Deviation at exactly the tolerance boundary: "ok"
+- [x] Deviation just over tolerance: "over" / "under"
+
+**Unassigned count**
+- [x] All assigned: unassignedCount = 0
+- [x] Some null assignments: unassignedCount = N
+
+**Contiguity**
+- [x] `rules.contiguity === "allowed"`: returns null (no check run)
+- [x] Single precinct in a district: trivially contiguous
+- [x] Two adjacent precincts in same district: contiguous
+- [x] Two non-adjacent precincts in same district: non-contiguous
+
+### E2e tests (`e2e/sprint2.spec.ts`)
+- [x] Validity container is non-empty after app load
+- [x] At least one `.validity-row` is visible in the panel
+- [x] Painting a precinct to a new district updates the validity panel
+
 ## Notes
 
 - Contiguity algorithm: for each district, collect all precincts in that

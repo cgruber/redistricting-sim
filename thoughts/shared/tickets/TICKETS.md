@@ -16,6 +16,47 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 
 ---
 
+## What Makes a Good Ticket
+
+A ticket is done when both the **feature** and its **tests** are merged. Test coverage is not optional — it is part of the Definition of Done on every ticket.
+
+### Required sections
+
+| Section | What goes here |
+|---|---|
+| **Summary** | One paragraph: what, why, scope boundary |
+| **Current State** | What exists today; what gap this ticket closes |
+| **Goals / Acceptance Criteria** | Checkboxes for every behavioral requirement |
+| **Test Coverage** | Explicit test AC items (see below) |
+| **References** | File paths, related tickets, prior research |
+
+### Test Coverage AC — what to include
+
+Every ticket that touches logic or UI must include a **Test Coverage** section with acceptance criteria items. These are DoD requirements, not suggestions.
+
+**Pure functions / domain logic** (no DOM, no D3):
+- Unit test each distinct behavior: happy path, edge cases, error cases
+- Pattern: hand-rolled TAP runner in `*_test.ts`, run via `js_test` in BUILD.bazel
+- Examples: population deviation calculation, BFS contiguity, loader validation
+
+**UI interactions / behavioral flows**:
+- One Playwright e2e test per named interaction (button click, hover, paint, etc.)
+- Assert visible DOM outcomes: text changes, element visibility, attribute values
+- Pattern: `e2e/sprint<N>.spec.ts` or `e2e/<feature>.spec.ts`
+- Examples: button label changes, sidebar content updates, reset flow
+
+**What to skip** (explicitly note in ticket if skipping):
+- Tests that require browser-internal APIs unavailable in Playwright headless (e.g. WebGL readback)
+- Tests for rendering pixel-accuracy (use visual regression tools separately)
+- d3 internals or scroll/touch gesture simulation (note as out-of-scope, not forgotten)
+
+### Workflow note
+
+Follow the TDD intent from `thoughts/shared/research/2026-04-21-multi-agent-tdd-workflow.md`:
+tests should be written alongside or before implementation, not as a backfill. When creating a ticket, write the test AC before starting the implementation. When opening a PR, tests must be included — a PR with implementation but no tests is incomplete.
+
+---
+
 ## Ticket ID Categories
 
 | Prefix | Meaning |
