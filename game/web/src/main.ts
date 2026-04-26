@@ -1,15 +1,12 @@
 /**
  * Application entry point.
- * Fetches tutorial-001.json, validates it through loadScenario(), builds the
+ * Fetches the active scenario JSON, validates it through loadScenario(), builds the
  * Zustand store, wires D3 renderer and DOM controls.
  *
  * The WASM kernel (Rust → wasm-bindgen no-modules) is loaded by index.html
- * before this bundle. The global wasm_bindgen object is declared below.
+ * before this bundle executes.
  */
 
-// WASM kernel — provided by wasm_calc_bindgen.js (no-modules target).
-// index.html initialises the WASM binary before this bundle executes.
-declare const wasm_bindgen: { add(a: number, b: number): number };
 
 import { loadScenario } from "./model/loader.js";
 import type { Scenario } from "./model/scenario.js";
@@ -44,7 +41,6 @@ const btnResetConfirm = document.getElementById("btn-reset-confirm") as HTMLButt
 const btnResetCancel = document.getElementById("btn-reset-cancel") as HTMLButtonElement | null;
 const appHeader = document.getElementById("app-header") as HTMLElement | null;
 const mainEl = document.getElementById("main") as HTMLElement | null;
-const wasmStatusBar = document.getElementById("wasm-status-bar") as HTMLElement | null;
 
 // Scenario select refs (GAME-018)
 const scenarioSelectEl = document.getElementById("scenario-select") as HTMLElement | null;
@@ -88,19 +84,9 @@ if (
 	btnResetConfirm === null ||
 	btnResetCancel === null ||
 	appHeader === null ||
-	mainEl === null ||
-	wasmStatusBar === null
+	mainEl === null
 ) {
 	throw new Error("Required DOM elements not found");
-}
-
-// ─── WASM kernel diagnostic ───────────────────────────────────────────────────
-// Verifies the Rust→WASM pipeline is wired end-to-end.
-// wasm_bindgen is initialised by index.html before this bundle runs.
-
-const wasmEl = document.getElementById("wasm-status");
-if (wasmEl !== null) {
-	wasmEl.textContent = `WASM kernel: add(2, 3) = ${wasm_bindgen.add(2, 3)}`;
 }
 
 // ─── Async init ───────────────────────────────────────────────────────────────
@@ -155,7 +141,6 @@ if (wasmEl !== null) {
 		introScreen?.classList.add("hidden");
 		appHeader!.style.display = "";
 		mainEl!.style.display = "";
-		wasmStatusBar!.style.display = "";
 	}
 
 	function startScenarioIntro() {
