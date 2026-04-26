@@ -2,7 +2,7 @@
 id: GAME-016
 title: Scenario intro — narrative slides before map editing
 area: game, content
-status: open
+status: resolved
 created: 2026-04-26
 github_issue: 70
 ---
