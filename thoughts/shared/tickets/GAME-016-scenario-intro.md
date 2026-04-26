@@ -4,6 +4,7 @@ title: Scenario intro — narrative slides before map editing
 area: game, content
 status: open
 created: 2026-04-26
+github_issue: 70
 ---
 
 ## Summary
