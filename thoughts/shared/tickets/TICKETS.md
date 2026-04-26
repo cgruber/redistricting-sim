@@ -91,7 +91,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-004-legend-layout.md` | design, UX | Move legend to horizontal strip above map; free sidebar space for data panels |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
 | `GAME-014-scenario-scale.md` | game, content | Scale tutorial scenario to 150–300 precincts across 3+ counties for Sprint 3 feature demo |
-| `GAME-015-scenario-success-criteria.md` | game, content | Add criteria field to scenario format + types; prerequisite for evaluation phase |
 | `GAME-016-scenario-intro.md` | game, content | Narrative slide intro before map editor; wired into game flow |
 | `GAME-017-evaluation-phase.md` | game, simulation | Submit button + criteria evaluation + pass/fail result screen |
 | `GAME-018-progression.md` | game, content | Scenario select screen + sequential unlock + localStorage completion persistence |
@@ -102,6 +101,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-015: Success criteria in scenario format | Already implemented: types, loader, validation, 3 criteria in tutorial-001.json — resolved on discovery |
 | GAME-013: Reset-to-initial district assignments | All AC met; reset button + confirm flow + undo/redo clear; e2e tests; merged PR #63 |
 | GAME-012: County border overlay toggle | All AC met; county-borders SVG layer inside zoom group; toggle button; e2e tests; merged PR #61 |
 | GAME-011: Precinct info panel — hover tooltip in sidebar | All AC met; hover shows precinct detail, mouseout restores placeholder; e2e tests; merged PR #59 |

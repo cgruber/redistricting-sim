@@ -24,6 +24,11 @@ test("app loads and renders hex map", async ({ page }) => {
 
   await page.goto("/");
 
+  // Dismiss intro screen (GAME-016): skip button appears after scenario loads.
+  const skipBtn = page.locator("#btn-intro-skip");
+  await expect(skipBtn).toBeVisible({ timeout: 10_000 });
+  await skipBtn.click();
+
   // Wait for the SVG to be present (it is static in the HTML)
   const svg = page.locator("#map-svg");
   await expect(svg).toBeVisible();

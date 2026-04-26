@@ -94,6 +94,7 @@ sh_test(
         "e2e/smoke.spec.ts",
         "e2e/sprint1.spec.ts",
         "e2e/sprint2.spec.ts",
+        "e2e/sprint3.spec.ts",
     ],
     local = True,
     tags = [

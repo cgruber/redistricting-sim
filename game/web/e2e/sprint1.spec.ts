@@ -41,9 +41,13 @@ async function paintHex(
 	await page.evaluate(() => window.dispatchEvent(new MouseEvent("mouseup")));
 }
 
-/** Navigate and wait for the hex grid to be ready. */
+/** Navigate, dismiss the intro screen, and wait for the hex grid to be ready. */
 async function loadApp(page: import("@playwright/test").Page): Promise<void> {
 	await page.goto("/");
+	// Dismiss intro screen (GAME-016)
+	const skip = page.locator("#btn-intro-skip");
+	await expect(skip).toBeVisible({ timeout: 10_000 });
+	await skip.click();
 	// Wait for the first hex to be visible — WASM and store init complete at this point
 	await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
 }
