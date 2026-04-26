@@ -91,7 +91,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-003-districts-view-color-encoding.md` | design, UX | Districts view color/population gradient: decide encoding strategy for v1 |
 | `DESIGN-004-legend-layout.md` | design, UX | Move legend to horizontal strip above map; free sidebar space for data panels |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
-| `GAME-014-scenario-scale.md` | game, content | Scale tutorial scenario to 150–300 precincts across 3+ counties for Sprint 3 feature demo |
 
 ---
 
@@ -99,6 +98,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-014: Scale tutorial scenario | All AC met; 196-precinct tutorial-002 scenario (3 counties, 4 districts); merged PR #79 |
 | GAME-018: Progression | All AC met; scenario select screen + localStorage completion + AbortController intro; 18 unit tests + 5 e2e tests; merged PR #77 |
 | GAME-017: Evaluation phase | All AC met; Submit button + evaluateCriteria + pass/fail screen; 15 unit tests + 5 e2e tests; merged PR #74 |
 | GAME-016: Scenario intro slides | All AC met; full-screen slide intro from scenario.narrative; Next/Prev/Start Drawing/Skip/Escape; 6 e2e tests; merged PR #71 |
