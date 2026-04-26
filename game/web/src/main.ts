@@ -138,31 +138,39 @@ if (wasmEl !== null) {
 		return;
 	}
 
-	// ── Intro screen (GAME-016) ───────────────────────────────────────────────
-	const slides = scenario.narrative?.intro_slides ?? [];
+	// ── GAME-018: Scenario manifest + progress ───────────────────────────────
+	const SCENARIO_MANIFEST: Array<{ id: string; title: string }> = [
+		{ id: scenario.id, title: scenario.title },
+	];
+	let progress = loadProgress();
 
-	// escHandler declared here so showEditor() can remove it regardless of
-	// which dismissal path (Start Drawing, Skip, or Escape) fires first.
-	let escHandler: ((e: KeyboardEvent) => void) | null = null;
+	// ── Intro screen (GAME-016) + scenario routing (GAME-018) ────────────────
+	// AbortController lets startScenarioIntro() be safely called multiple times:
+	// each call cancels the previous intro's event listeners before re-wiring.
+	let introController: AbortController | null = null;
 
 	function showEditor() {
-		if (escHandler !== null) {
-			document.removeEventListener("keydown", escHandler);
-			escHandler = null;
-		}
+		introController?.abort();
+		introController = null;
 		introScreen?.classList.add("hidden");
 		appHeader!.style.display = "";
 		mainEl!.style.display = "";
 		wasmStatusBar!.style.display = "";
 	}
 
-	if (slides.length === 0 || introScreen === null) {
-		// No narrative slides — go straight to editor
-		showEditor();
-	} else {
-		const { character, objective } = scenario.narrative!;
+	function startScenarioIntro() {
+		const slides = scenario.narrative?.intro_slides ?? [];
 
-		// Populate static character info
+		if (slides.length === 0 || introScreen === null) {
+			showEditor();
+			return;
+		}
+
+		introController?.abort();
+		introController = new AbortController();
+		const { signal } = introController;
+
+		const { character, objective } = scenario.narrative!;
 		if (charNameEl) charNameEl.textContent = character.name;
 		if (charRoleEl) charRoleEl.textContent = character.role;
 		if (charMotivationEl) charMotivationEl.textContent = character.motivation ?? "";
@@ -176,33 +184,27 @@ if (wasmEl !== null) {
 			if (introSlideHeading) introSlideHeading.textContent = slide.heading ?? "";
 			if (introSlideBody) introSlideBody.textContent = slide.body;
 			if (introProgress) introProgress.textContent = `${index + 1} / ${slides.length}`;
-
 			if (btnIntroPrev) btnIntroPrev.disabled = index === 0;
-
 			const isLast = index === slides.length - 1;
 			if (btnIntroNext) btnIntroNext.style.display = isLast ? "none" : "";
 			if (btnIntroStart) btnIntroStart.classList.toggle("visible", isLast);
 		}
 
 		renderSlide(0);
+		introScreen.classList.remove("hidden");
 
 		btnIntroPrev?.addEventListener("click", () => {
 			if (currentSlide > 0) renderSlide(--currentSlide);
-		});
-
+		}, { signal });
 		btnIntroNext?.addEventListener("click", () => {
 			if (currentSlide < slides.length - 1) renderSlide(++currentSlide);
-		});
-
+		}, { signal });
 		const startHandler = () => showEditor();
-		btnIntroStart?.addEventListener("click", startHandler);
-		btnIntroSkip?.addEventListener("click", startHandler);
-
-		// Escape key skips intro; cleaned up by showEditor() on any dismissal path
-		escHandler = (e: KeyboardEvent) => {
+		btnIntroStart?.addEventListener("click", startHandler, { signal });
+		btnIntroSkip?.addEventListener("click", startHandler, { signal });
+		document.addEventListener("keydown", (e: KeyboardEvent) => {
 			if (e.key === "Escape") showEditor();
-		};
-		document.addEventListener("keydown", escHandler);
+		}, { signal });
 	}
 
 	// ── Build store from scenario ─────────────────────────────────────────────
@@ -370,6 +372,12 @@ if (wasmEl !== null) {
 		btnKeepDrawing!.style.display = "";
 		btnNextScenario!.style.display = evalResult.overallPass ? "" : "none";
 
+		// ── GAME-018: persist completion on pass ──────────────────────────────────
+		if (evalResult.overallPass) {
+			progress = markCompleted(progress, scenario.id);
+			saveProgress(progress);
+		}
+
 		resultScreen.classList.remove("hidden");
 	}
 
@@ -381,9 +389,53 @@ if (wasmEl !== null) {
 		resultScreen!.classList.add("hidden");
 	});
 
-	// "Next Scenario" is a placeholder until GAME-018 adds the select screen
+	// ── Scenario select screen (GAME-018) ─────────────────────────────────────
+	function renderScenarioCards() {
+		if (!scenarioCardsEl) return;
+		scenarioCardsEl.innerHTML = "";
+		SCENARIO_MANIFEST.forEach((entry, i) => {
+			const completed = isCompleted(progress, entry.id);
+			const unlocked = i === 0 || isCompleted(progress, SCENARIO_MANIFEST[i - 1]?.id ?? "");
+			const locked = !unlocked;
+
+			const card = document.createElement("div");
+			card.className = `scenario-card${locked ? " locked" : ""}`;
+
+			const titleEl = document.createElement("div");
+			titleEl.className = "sc-title";
+			titleEl.textContent = entry.title;
+
+			const statusEl = document.createElement("div");
+			statusEl.className = `sc-status ${completed ? "completed" : unlocked ? "unlocked" : "locked"}`;
+			statusEl.textContent = completed ? "Completed" : unlocked ? "Ready" : "Locked";
+
+			const playBtn = document.createElement("button");
+			playBtn.className = `sc-play-btn ${completed ? "replay" : unlocked ? "play" : "locked-btn"}`;
+			playBtn.textContent = completed ? "Play Again" : unlocked ? "Play" : "Locked";
+			playBtn.disabled = locked;
+			if (!locked) {
+				playBtn.addEventListener("click", () => {
+					scenarioSelectEl?.classList.add("hidden");
+					startScenarioIntro();
+				});
+			}
+
+			card.appendChild(titleEl);
+			card.appendChild(statusEl);
+			card.appendChild(playBtn);
+			scenarioCardsEl.appendChild(card);
+		});
+	}
+
+	function showScenarioSelect() {
+		renderScenarioCards();
+		scenarioSelectEl?.classList.remove("hidden");
+	}
+
+	// "Next Scenario" → re-render cards (progress updated) then show select
 	btnNextScenario!.addEventListener("click", () => {
 		resultScreen!.classList.add("hidden");
+		showScenarioSelect();
 	});
 
 	// ── Subscribe to state changes ────────────────────────────────────────────
@@ -392,4 +444,13 @@ if (wasmEl !== null) {
 
 	// ── Initial render ────────────────────────────────────────────────────────
 	updateUI();
+
+	// ── GAME-018: progress-aware startup routing ──────────────────────────────
+	// Returning players (any completed scenario) go to the select screen.
+	// New players go directly to the scenario intro.
+	if (progress.completed.length > 0 && scenarioSelectEl !== null) {
+		showScenarioSelect();
+	} else {
+		startScenarioIntro();
+	}
 })();
