@@ -4,6 +4,7 @@ title: View toggle button label convention
 area: design, UX
 status: open
 created: 2026-04-25
+github_issue: 54
 ---
 
 ## Summary
@@ -27,10 +28,10 @@ Source: `game/web/src/main.ts` around the `btnViewToggle` click handler.
 
 ## Goals / Acceptance Criteria
 
-- [ ] Decide on label convention (options below) — document the choice as a
+- [x] Decide on label convention (options below) — document the choice as a
   micro-decision in the ticket or in `thoughts/shared/decisions/`
-- [ ] Implement chosen convention in `main.ts`
-- [ ] Verify the label change is reflected in the `sprint1.spec.ts` view-toggle
+- [x] Implement chosen convention in `main.ts`
+- [x] Verify the label change is reflected in the `sprint1.spec.ts` view-toggle
   test (or update the test if it checks button text)
 
 ## Options
@@ -48,6 +49,13 @@ Source: `game/web/src/main.ts` around the `btnViewToggle` click handler.
 - Verbose; probably too long.
 
 Option A is the simplest and most conventional for toggle buttons.
+
+## Decision
+
+**Option A chosen** (imperative destination): "Switch to Partisan Lean" / "Switch to Districts".
+Simplest, most conventional for toggle buttons. No micro-decision doc needed — decision captured here.
+
+The Sprint 1 test (`sprint1.spec.ts`) checks fill changes on toggle, not button text — no test update required.
 
 ## Notes
 

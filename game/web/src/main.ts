@@ -133,7 +133,7 @@ if (wasmEl !== null) {
 		currentViewMode = currentViewMode === "districts" ? "lean" : "districts";
 		renderer.setViewMode(currentViewMode);
 		btnViewToggle!.textContent =
-			currentViewMode === "districts" ? "View: Partisan Lean" : "View: Districts";
+			currentViewMode === "districts" ? "Switch to Partisan Lean" : "Switch to Districts";
 	});
 
 	// ── Subscribe to state changes ────────────────────────────────────────────
