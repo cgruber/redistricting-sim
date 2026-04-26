@@ -40,9 +40,16 @@ tickets (all resolved):
   GAME-001 GAME-004 CI-002(Ph1) GAME-002 GAME-003 GAME-005 CI-002(Ph2)
   PRs: #33 #34 #37 #38 #44 #46 #47 #49 #50 #51
 
-§SPRINT2 (backlog; ticket on sprint-plan before S2 starts)
-live pop-balance per $dist | contiguity validation+highlight | $pc hover tooltip |
-county border overlay toggle | brush size controls | reset-to-initial
+§SPRINT2 (backlog)
+goal: edit map + live feedback
+tickets:
+  DESIGN-002 view-toggle label fix (destination not current)
+  GAME-009 pan+zoom (d3.zoom; scroll+keyboard; zoom-invariant strokes)
+  GAME-010 map validity panel (pop-balance ±%; contiguity; unassigned count)
+  GAME-011 precinct info panel (sidebar hover section; replaces status bar)
+  GAME-012 county border overlay toggle (flavor; computed from county_id)
+  GAME-013 reset-to-initial (confirmation; clears undo history)
+deferred: brush size controls (not sprint-assigned)
 
 §SPRINT3 (backlog)
 real sim engine: group model(pop_share×voter_eligible×turnout×vote_shares); events applied
