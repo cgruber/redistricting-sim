@@ -162,6 +162,7 @@ export class SvgMapRenderer implements MapRenderer {
 	// Base stroke widths (apparent px at any zoom level)
 	private static readonly BOUNDARY_BASE_WIDTH = 2;
 	private static readonly PREVIEW_BASE_WIDTH = 2.5;
+	private static readonly COUNTY_BASE_WIDTH = 3;
 
 	// County border overlay (GAME-012): computed once at load, toggled on/off
 	private countySegments: Segment[] = [];
@@ -180,11 +181,12 @@ export class SvgMapRenderer implements MapRenderer {
 		this.svg = d3.select(svgEl);
 
 		// Zoom group wraps all map layers so the single transform drives pan/zoom.
-		// Layer order (bottom → top inside zoomGroup): county borders, district borders, hexes, preview.
+		// Layer order (bottom → top inside zoomGroup): district borders, hexes, county borders, preview.
+		// County borders must sit above hexes so filled hex paths don't obscure them.
 		this.zoomGroup = this.svg.append("g").attr("class", "zoom-layer");
-		this.countyBorderGroup = this.zoomGroup.append("g").attr("class", "county-borders");
 		this.borderGroup = this.zoomGroup.append("g").attr("class", "borders");
 		this.hexGroup = this.zoomGroup.append("g").attr("class", "hexes");
+		this.countyBorderGroup = this.zoomGroup.append("g").attr("class", "county-borders");
 		this.previewBorderGroup = this.zoomGroup.append("g").attr("class", "preview-borders");
 
 		const pops = getState().precincts.map((p) => p.population);
@@ -229,10 +231,10 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("y1", (d) => d.y1)
 			.attr("x2", (d) => d.x2)
 			.attr("y2", (d) => d.y2)
-			.attr("stroke", "#a0a0a0")
-			.attr("stroke-width", 1)
-			.attr("stroke-dasharray", "4,4")
-			.attr("opacity", 0.5);
+			.attr("stroke", "#606060")
+			.attr("stroke-width", SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK)
+			.attr("stroke-dasharray", `${6 / this.currentK},${4 / this.currentK}`)
+			.attr("opacity", 0.7);
 	}
 
 	// ─── Zoom init (GAME-009) ─────────────────────────────────────────────────

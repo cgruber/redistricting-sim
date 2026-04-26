@@ -2,9 +2,11 @@
 set -euo pipefail
 
 PORT=58080
-if lsof -i :"${PORT}" -sTCP:LISTEN >/dev/null 2>&1; then
-  echo "ERROR: port ${PORT} already in use — kill the old server first (lsof -ti :${PORT} | xargs kill)" >&2
-  exit 1
+OLD_PID=$(lsof -ti :"${PORT}" 2>/dev/null || true)
+if [[ -n "${OLD_PID}" ]]; then
+  echo "Stopping previous server (pid ${OLD_PID})…"
+  kill "${OLD_PID}"
+  while lsof -i :"${PORT}" -sTCP:LISTEN >/dev/null 2>&1; do sleep 0.2; done
 fi
 
 # bazel run sets BUILD_WORKSPACE_DIRECTORY to the workspace root (game/).
