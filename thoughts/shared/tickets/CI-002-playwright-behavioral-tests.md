@@ -2,7 +2,7 @@
 id: CI-002
 title: Playwright behavioral test harness
 area: ci, testing, automation
-status: open
+status: resolved
 created: 2026-04-25
 ---
 
@@ -18,7 +18,20 @@ tested with Vitest unit tests in the tickets that implement that logic.
 Playwright covers everything that requires a browser: SVG rendering,
 mouse interaction, view-mode toggles, and end-to-end scenario loading.
 
-## Current State
+## Resolution
+
+All AC met. Phase 1 (smoke test + framework) merged PR #38. Phase 2 (5 behavioral
+tests) merged PR #50. Sprint 1 close condition satisfied.
+
+Key implementation notes:
+- `data-precinct-id` attribute added to hex paths in `SvgMapRenderer` enter selection
+  for reliable per-precinct targeting.
+- `locator.dispatchEvent("mousedown")` + `window.dispatchEvent(new MouseEvent("mouseup"))`
+  used instead of `page.mouse` — more reliable for SVG with large/negative viewBox.
+- All precincts start as District 1 (loader auto-fills null initial_district_id);
+  tests switch to District 2 before painting so strokes are real changes.
+
+## Current State (archived)
 
 No behavioral tests exist. CI runs `bazel test //web/...` which only exercises
 TypeScript typechecks. Smoke-testing the app is manual.
@@ -36,14 +49,14 @@ TypeScript typechecks. Smoke-testing the app is manual.
 - [x] `bazel test //web/...` includes the e2e target and passes
 
 **Phase 2 — Sprint 1 demo behavioral tests (immediately after GAME-005 merges):**
-- [ ] Scenario load: `tutorial-001.json` loaded; precinct count in SVG matches
+- [x] Scenario load: `tutorial-001.json` loaded; precinct count in SVG matches
   scenario precinct count; no validation errors in console
-- [ ] Paint interaction: mousedown+mousemove across precincts assigns them to
+- [x] Paint interaction: mousedown+mousemove across precincts assigns them to
   the active district (verified via DOM attribute or store state)
-- [ ] Undo: after a paint stroke, undo restores previous assignments
-- [ ] View toggle: clicking the view-toggle button changes hex fill colors
+- [x] Undo: after a paint stroke, undo restores previous assignments
+- [x] View toggle: clicking the view-toggle button changes hex fill colors
   (districts → lean mode produces RdBu interpolated fills)
-- [ ] District boundary rendering: adjacent precincts in different districts
+- [x] District boundary rendering: adjacent precincts in different districts
   have a boundary line between them
 
 **Ongoing convention (applies from this ticket forward):**
