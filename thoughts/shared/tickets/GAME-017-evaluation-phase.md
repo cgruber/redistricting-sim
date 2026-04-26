@@ -4,6 +4,7 @@ title: Evaluation phase — Test button, criteria check, pass/fail feedback
 area: game, simulation
 status: open
 created: 2026-04-26
+github_issue: 73
 ---
 
 ## Summary
