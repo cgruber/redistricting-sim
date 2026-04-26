@@ -4,6 +4,7 @@ title: Map validity panel — population balance, contiguity, unassigned
 area: game, rendering
 status: open
 created: 2026-04-25
+github_issue: 64
 ---
 
 ## Summary

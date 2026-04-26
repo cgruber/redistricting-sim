@@ -21,8 +21,10 @@
 
 import * as d3 from "d3";
 import { hexCorners, mapBounds } from "../model/generator.js";
+import type { ScenarioRules } from "../model/scenario.js";
 import type { Precinct } from "../model/types.js";
 import { DISTRICT_COLORS, PARTY_COLORS, PARTY_LABELS } from "../model/types.js";
+import { computeValidityStats } from "../simulation/validity.js";
 import type { GameStore } from "../store/gameStore.js";
 
 // ─── Public interface ─────────────────────────────────────────────────────────
@@ -587,4 +589,55 @@ export function renderDistrictButtons(
 		btn.addEventListener("click", () => onSelect(i));
 		container.appendChild(btn);
 	}
+}
+
+export function renderValidityPanel(
+	container: HTMLElement,
+	state: GameStore,
+	rules: ScenarioRules,
+): void {
+	const { precincts, assignments, districtCount } = state;
+	const stats = computeValidityStats(precincts, assignments, districtCount, rules);
+
+	let html = "";
+
+	// Unassigned count
+	const unassignedCls = stats.unassignedCount > 0 ? "validity-warn" : "validity-ok";
+	const unassignedLabel =
+		stats.unassignedCount === 1 ? "1 precinct" : `${stats.unassignedCount} precincts`;
+	html += `<div class="validity-row ${unassignedCls}">`;
+	html += `<span>Unassigned</span><span class="validity-badge">${unassignedLabel}</span>`;
+	html += `</div>`;
+
+	// Population balance
+	html += `<div class="validity-section-label">Population balance</div>`;
+	for (const d of stats.districtPop) {
+		const color = DISTRICT_COLORS[d.districtId - 1] ?? "#888";
+		const sign = d.deviationPct >= 0 ? "+" : "";
+		const cls = d.status === "ok" ? "validity-ok" : "validity-error";
+		const statusLabel = d.status === "ok" ? "ok" : d.status;
+		html += `<div class="validity-row ${cls}" style="border-left-color:${color}">`;
+		html += `<span>D${d.districtId}: ${d.population.toLocaleString()}</span>`;
+		html += `<span class="validity-badge">${sign}${d.deviationPct.toFixed(1)}% ${statusLabel}</span>`;
+		html += `</div>`;
+	}
+
+	// Contiguity (skipped when "allowed")
+	if (stats.contiguity !== null) {
+		html += `<div class="validity-section-label">Contiguity</div>`;
+		for (const [did, ok] of stats.contiguity) {
+			const color = DISTRICT_COLORS[did - 1] ?? "#888";
+			const cls = ok
+				? "validity-ok"
+				: rules.contiguity === "required"
+					? "validity-error"
+					: "validity-warn";
+			const label = ok ? "Connected" : "Non-contiguous";
+			html += `<div class="validity-row ${cls}" style="border-left-color:${color}">`;
+			html += `<span>D${did}</span><span class="validity-badge">${label}</span>`;
+			html += `</div>`;
+		}
+	}
+
+	container.innerHTML = html;
 }

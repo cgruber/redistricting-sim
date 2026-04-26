@@ -201,6 +201,34 @@
         line-height: 1.5;
       }
 
+      .validity-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 6px 4px 10px;
+        border-radius: 4px;
+        font-size: 0.78rem;
+        border-left: 3px solid transparent;
+        background: #0a1f3a;
+        margin-bottom: 3px;
+      }
+
+      .validity-ok { color: #80c080; }
+      .validity-warn { color: #e0c040; }
+      .validity-error { color: #e94560; }
+
+      .validity-section-label {
+        font-size: 0.72rem;
+        color: #606080;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin: 6px 0 3px;
+      }
+
+      .validity-badge {
+        font-weight: 600;
+      }
+
       #wasm-status-bar {
         padding: 2px 16px;
         background: #16213e;
@@ -236,6 +264,8 @@
         <div id="results-container">
           <div style="color:#606080;font-size:0.85rem;">Draw districts to see results</div>
         </div>
+        <h2>Map Validity</h2>
+        <div id="validity-container"></div>
         <h2>Legend</h2>
         <div id="legend-container" class="legend"></div>
       </aside>
