@@ -88,7 +88,9 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-001-achievement-star-system.md` | design, UX | Game ergonomics research for star/achievement ranking system (required vs. optional criteria) |
 | `AGENT-003-infra-pr-review-bot-comment-handling.md` | agentic workflow, infra | Propose bot comment handling (Copilot, CodeQL) to infra pr-review-cycle workflow |
 | `DESIGN-003-districts-view-color-encoding.md` | design, UX | Districts view color/population gradient: decide encoding strategy for v1 |
+| `DESIGN-004-legend-layout.md` | design, UX | Move legend to horizontal strip above map; free sidebar space for data panels |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
+| `GAME-014-scenario-scale.md` | game, content | Scale tutorial scenario to 150–300 precincts across 3+ counties for Sprint 3 feature demo |
 
 ---
 
