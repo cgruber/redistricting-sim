@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+PORT=58080
+if lsof -i :"${PORT}" -sTCP:LISTEN >/dev/null 2>&1; then
+  echo "ERROR: port ${PORT} already in use — kill the old server first (lsof -ti :${PORT} | xargs kill)" >&2
+  exit 1
+fi
+
 # bazel run sets BUILD_WORKSPACE_DIRECTORY to the workspace root (game/).
 DIST="${BUILD_WORKSPACE_DIRECTORY}/_serve_dist"
 BAZEL_BIN="${BUILD_WORKSPACE_DIRECTORY}/bazel-bin"
@@ -22,5 +28,5 @@ cp "${BUILD_WORKSPACE_DIRECTORY}/web/index.html" "${DIST}/"
 mkdir -p "${DIST}/scenarios"
 cp "${BUILD_WORKSPACE_DIRECTORY}/scenarios/"*.json "${DIST}/scenarios/"
 
-echo "Serving on http://localhost:58080 (Ctrl-C to stop)"
-cd "${DIST}" && python3 -m http.server 58080
+echo "Serving on http://localhost:${PORT} (Ctrl-C to stop)"
+cd "${DIST}" && python3 -m http.server "${PORT}"
