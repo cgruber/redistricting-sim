@@ -33,6 +33,17 @@ to return to the scenario starting state in one action. The undo store's
   (Undo disabled, Redo disabled)
 - [ ] Map re-renders to show initial assignment colors
 
+## Test Coverage
+
+### Unit tests
+None required — `resetToInitial` in the store depends on zustand/zundo which are not straightforwardly importable in the hand-rolled Node runner. Behavioral coverage via e2e is sufficient.
+
+### E2e tests (`e2e/sprint2.spec.ts`)
+- [x] Reset button is visible on load
+- [x] Clicking Reset: confirm row appears; map unchanged
+- [x] Clicking Cancel: confirm row hides; map unchanged; undo state preserved
+- [x] Full flow: paint a precinct → click Reset → confirm → fills restored to initial; undo disabled
+
 ## Notes
 
 - The confirmation gesture prevents accidental resets during play. An inline

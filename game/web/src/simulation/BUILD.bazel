@@ -1,0 +1,88 @@
+"""
+Bazel targets for the simulation layer:
+
+  election_lib  — election.ts (runElection function; GAME-005)
+  validity_lib  — validity.ts (computeValidityStats; GAME-010)
+
+Creating this BUILD.bazel makes src/simulation/ a separate Bazel package, so
+game/web/BUILD.bazel's glob(["src/**/*.ts"]) no longer covers this directory.
+game/web/BUILD.bazel lists both targets as explicit deps on app_typecheck_lib
+and the esbuild app bundle.
+"""
+
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
+load("@aspect_rules_js//js:defs.bzl", "js_test")
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
+
+ts_config(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    visibility = ["//web/src/simulation:__pkg__"],
+)
+
+# ── election_lib: runElection ─────────────────────────────────────────────────
+
+ts_project(
+    name = "election_lib",
+    srcs = ["election.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        "//web/src/model:types_lib",
+    ],
+    visibility = ["//web:__pkg__", "//web/src/simulation:__pkg__"],
+)
+
+# ── validity_lib: computeValidityStats ────────────────────────────────────────
+
+ts_project(
+    name = "validity_lib",
+    srcs = ["validity.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        "//web/src/model:types_lib",
+        "//web/src/model:model_lib",
+    ],
+    visibility = ["//web:__pkg__", "//web/src/simulation:__pkg__"],
+)
+
+# ── validity_typecheck_test: type-check passes ────────────────────────────────
+
+build_test(
+    name = "validity_typecheck_test",
+    targets = [":validity_lib"],
+    visibility = ["//visibility:public"],
+)
+
+# ── validity_test_lib: compile the test ───────────────────────────────────────
+
+ts_project(
+    name = "validity_test_lib",
+    srcs = ["validity_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":validity_lib",
+        "//web/src/model:types_lib",
+        "//web/src/model:model_lib",
+    ],
+    testonly = True,
+)
+
+# ── validity_test: run tests with Node ───────────────────────────────────────
+
+js_test(
+    name = "validity_test",
+    entry_point = "validity_test.js",
+    data = [
+        ":validity_test_lib",
+        ":validity_lib",
+        "//web/src/model:types_lib",
+        "//web/src/model:model_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
