@@ -2,7 +2,7 @@
 id: GAME-012
 title: County border overlay toggle
 area: game, rendering
-status: open
+status: resolved
 created: 2026-04-25
 github_issue: 60
 ---

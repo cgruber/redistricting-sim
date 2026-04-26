@@ -2,7 +2,7 @@
 id: DESIGN-002
 title: View toggle button label convention
 area: design, UX
-status: open
+status: resolved
 created: 2026-04-25
 github_issue: 54
 ---
