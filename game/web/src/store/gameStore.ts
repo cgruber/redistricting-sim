@@ -24,6 +24,8 @@ export interface GameStore extends GameState {
 	paintPrecinct: (precinctId: number) => void;
 	/** Assign a batch of precincts (one brush stroke) as a single undo step */
 	paintStroke: (precinctIds: number[], district: DistrictId) => void;
+	/** Restore all assignments to the scenario's initial state */
+	resetToInitial: () => void;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -41,6 +43,9 @@ function cloneAssignments(m: AssignmentMap): AssignmentMap {
  */
 export function createGameStore(scenario: Scenario) {
 	const { precincts, assignments, districtCount } = scenarioToSpike(scenario);
+
+	// Snapshot of initial assignments — used by resetToInitial() to restore scenario start state
+	const initialAssignments: AssignmentMap = new Map(assignments);
 
 	const initialState: GameState = {
 		precincts,
@@ -88,6 +93,14 @@ export function createGameStore(scenario: Scenario) {
 					set({
 						assignments: next,
 						simulationResult: runElection({ ...get(), assignments: next }),
+					});
+				},
+
+				resetToInitial() {
+					const restored = new Map(initialAssignments);
+					set({
+						assignments: restored,
+						simulationResult: runElection({ ...get(), assignments: restored }),
 					});
 				},
 			}),

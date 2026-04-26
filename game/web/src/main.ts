@@ -35,6 +35,10 @@ const btnUndo = document.getElementById("btn-undo") as HTMLButtonElement | null;
 const btnRedo = document.getElementById("btn-redo") as HTMLButtonElement | null;
 const btnViewToggle = document.getElementById("btn-view-toggle") as HTMLButtonElement | null;
 const btnCountyToggle = document.getElementById("btn-county-toggle") as HTMLButtonElement | null;
+const btnReset = document.getElementById("btn-reset") as HTMLButtonElement | null;
+const resetConfirm = document.getElementById("reset-confirm") as HTMLElement | null;
+const btnResetConfirm = document.getElementById("btn-reset-confirm") as HTMLButtonElement | null;
+const btnResetCancel = document.getElementById("btn-reset-cancel") as HTMLButtonElement | null;
 
 if (
 	svgEl === null ||
@@ -45,7 +49,11 @@ if (
 	btnUndo === null ||
 	btnRedo === null ||
 	btnViewToggle === null ||
-	btnCountyToggle === null
+	btnCountyToggle === null ||
+	btnReset === null ||
+	resetConfirm === null ||
+	btnResetConfirm === null ||
+	btnResetCancel === null
 ) {
 	throw new Error("Required DOM elements not found");
 }
@@ -150,6 +158,25 @@ if (wasmEl !== null) {
 		btnCountyToggle!.textContent = countyBordersVisible ? "Hide County Borders" : "Show County Borders";
 		btnCountyToggle!.classList.toggle("active", countyBordersVisible);
 	});
+
+	// ── Reset ─────────────────────────────────────────────────────────────────
+	btnReset!.addEventListener("click", () => {
+		resetConfirm!.classList.add("visible");
+		btnReset!.disabled = true;
+	});
+
+	btnResetCancel!.addEventListener("click", () => {
+		resetConfirm!.classList.remove("visible");
+		btnReset!.disabled = false;
+	});
+
+	btnResetConfirm!.addEventListener("click", () => {
+		store.getState().resetToInitial();
+		temporalStore.getState().clear();
+		resetConfirm!.classList.remove("visible");
+		btnReset!.disabled = false;
+	});
+
 
 	// ── Subscribe to state changes ────────────────────────────────────────────
 	store.subscribe(() => updateUI());
