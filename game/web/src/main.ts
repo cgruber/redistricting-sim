@@ -125,7 +125,15 @@ if (wasmEl !== null) {
 	// ── Intro screen (GAME-016) ───────────────────────────────────────────────
 	const slides = scenario.narrative?.intro_slides ?? [];
 
+	// escHandler declared here so showEditor() can remove it regardless of
+	// which dismissal path (Start Drawing, Skip, or Escape) fires first.
+	let escHandler: ((e: KeyboardEvent) => void) | null = null;
+
 	function showEditor() {
+		if (escHandler !== null) {
+			document.removeEventListener("keydown", escHandler);
+			escHandler = null;
+		}
 		introScreen?.classList.add("hidden");
 		appHeader!.style.display = "";
 		mainEl!.style.display = "";
@@ -174,12 +182,9 @@ if (wasmEl !== null) {
 		btnIntroStart?.addEventListener("click", startHandler);
 		btnIntroSkip?.addEventListener("click", startHandler);
 
-		// Escape key skips intro
-		const escHandler = (e: KeyboardEvent) => {
-			if (e.key === "Escape") {
-				document.removeEventListener("keydown", escHandler);
-				showEditor();
-			}
+		// Escape key skips intro; cleaned up by showEditor() on any dismissal path
+		escHandler = (e: KeyboardEvent) => {
+			if (e.key === "Escape") showEditor();
 		};
 		document.addEventListener("keydown", escHandler);
 	}
