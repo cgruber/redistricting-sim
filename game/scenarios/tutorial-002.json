@@ -167,7 +167,7 @@
         "r": 0
       },
       "total_population": 1955,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North A6",
       "demographic_groups": [
         {
@@ -191,7 +191,7 @@
         "r": 0
       },
       "total_population": 2031,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North A7",
       "demographic_groups": [
         {
@@ -215,7 +215,7 @@
         "r": 0
       },
       "total_population": 2058,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North A8",
       "demographic_groups": [
         {
@@ -239,7 +239,7 @@
         "r": 0
       },
       "total_population": 2031,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North A9",
       "demographic_groups": [
         {
@@ -263,7 +263,7 @@
         "r": 0
       },
       "total_population": 1955,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North A10",
       "demographic_groups": [
         {
@@ -287,7 +287,7 @@
         "r": 0
       },
       "total_population": 1846,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North A11",
       "demographic_groups": [
         {
@@ -311,7 +311,7 @@
         "r": 0
       },
       "total_population": 1724,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North A12",
       "demographic_groups": [
         {
@@ -335,7 +335,7 @@
         "r": 0
       },
       "total_population": 1612,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North A13",
       "demographic_groups": [
         {
@@ -359,7 +359,7 @@
         "r": 0
       },
       "total_population": 1531,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North A14",
       "demographic_groups": [
         {
@@ -503,7 +503,7 @@
         "r": 1
       },
       "total_population": 2348,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North B6",
       "demographic_groups": [
         {
@@ -527,7 +527,7 @@
         "r": 1
       },
       "total_population": 2466,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North B7",
       "demographic_groups": [
         {
@@ -551,7 +551,7 @@
         "r": 1
       },
       "total_population": 2509,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North B8",
       "demographic_groups": [
         {
@@ -575,7 +575,7 @@
         "r": 1
       },
       "total_population": 2466,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North B9",
       "demographic_groups": [
         {
@@ -599,7 +599,7 @@
         "r": 1
       },
       "total_population": 2348,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North B10",
       "demographic_groups": [
         {
@@ -623,7 +623,7 @@
         "r": 1
       },
       "total_population": 2175,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North B11",
       "demographic_groups": [
         {
@@ -647,7 +647,7 @@
         "r": 1
       },
       "total_population": 1979,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North B12",
       "demographic_groups": [
         {
@@ -671,7 +671,7 @@
         "r": 1
       },
       "total_population": 1790,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North B13",
       "demographic_groups": [
         {
@@ -695,7 +695,7 @@
         "r": 1
       },
       "total_population": 1633,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North B14",
       "demographic_groups": [
         {
@@ -839,7 +839,7 @@
         "r": 2
       },
       "total_population": 2852,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North C6",
       "demographic_groups": [
         {
@@ -863,7 +863,7 @@
         "r": 2
       },
       "total_population": 3028,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North C7",
       "demographic_groups": [
         {
@@ -887,7 +887,7 @@
         "r": 2
       },
       "total_population": 3092,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North C8",
       "demographic_groups": [
         {
@@ -911,7 +911,7 @@
         "r": 2
       },
       "total_population": 3028,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North C9",
       "demographic_groups": [
         {
@@ -935,7 +935,7 @@
         "r": 2
       },
       "total_population": 2852,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North C10",
       "demographic_groups": [
         {
@@ -959,7 +959,7 @@
         "r": 2
       },
       "total_population": 2598,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North C11",
       "demographic_groups": [
         {
@@ -983,7 +983,7 @@
         "r": 2
       },
       "total_population": 2311,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North C12",
       "demographic_groups": [
         {
@@ -1007,7 +1007,7 @@
         "r": 2
       },
       "total_population": 2031,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North C13",
       "demographic_groups": [
         {
@@ -1031,7 +1031,7 @@
         "r": 2
       },
       "total_population": 1790,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North C14",
       "demographic_groups": [
         {
@@ -1175,7 +1175,7 @@
         "r": 3
       },
       "total_population": 3454,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North D6",
       "demographic_groups": [
         {
@@ -1199,7 +1199,7 @@
         "r": 3
       },
       "total_population": 3713,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North D7",
       "demographic_groups": [
         {
@@ -1223,7 +1223,7 @@
         "r": 3
       },
       "total_population": 3808,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North D8",
       "demographic_groups": [
         {
@@ -1247,7 +1247,7 @@
         "r": 3
       },
       "total_population": 3713,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North D9",
       "demographic_groups": [
         {
@@ -1271,7 +1271,7 @@
         "r": 3
       },
       "total_population": 3454,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North D10",
       "demographic_groups": [
         {
@@ -1295,7 +1295,7 @@
         "r": 3
       },
       "total_population": 3092,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North D11",
       "demographic_groups": [
         {
@@ -1319,7 +1319,7 @@
         "r": 3
       },
       "total_population": 2694,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North D12",
       "demographic_groups": [
         {
@@ -1343,7 +1343,7 @@
         "r": 3
       },
       "total_population": 2311,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North D13",
       "demographic_groups": [
         {
@@ -1367,7 +1367,7 @@
         "r": 3
       },
       "total_population": 1979,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North D14",
       "demographic_groups": [
         {
@@ -1511,7 +1511,7 @@
         "r": 4
       },
       "total_population": 4127,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North E6",
       "demographic_groups": [
         {
@@ -1535,7 +1535,7 @@
         "r": 4
       },
       "total_population": 4511,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North E7",
       "demographic_groups": [
         {
@@ -1559,7 +1559,7 @@
         "r": 4
       },
       "total_population": 4657,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North E8",
       "demographic_groups": [
         {
@@ -1583,7 +1583,7 @@
         "r": 4
       },
       "total_population": 4511,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North E9",
       "demographic_groups": [
         {
@@ -1607,7 +1607,7 @@
         "r": 4
       },
       "total_population": 4127,
-      "initial_district_id": "d2",
+      "initial_district_id": "d1",
       "name": "North E10",
       "demographic_groups": [
         {
@@ -1631,7 +1631,7 @@
         "r": 4
       },
       "total_population": 3622,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North E11",
       "demographic_groups": [
         {
@@ -1655,7 +1655,7 @@
         "r": 4
       },
       "total_population": 3092,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North E12",
       "demographic_groups": [
         {
@@ -1679,7 +1679,7 @@
         "r": 4
       },
       "total_population": 2598,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North E13",
       "demographic_groups": [
         {
@@ -1703,7 +1703,7 @@
         "r": 4
       },
       "total_population": 2175,
-      "initial_district_id": "d3",
+      "initial_district_id": "d1",
       "name": "North E14",
       "demographic_groups": [
         {
@@ -1727,7 +1727,7 @@
         "r": 5
       },
       "total_population": 1955,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central F1",
       "demographic_groups": [
         {
@@ -1751,7 +1751,7 @@
         "r": 5
       },
       "total_population": 2348,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central F2",
       "demographic_groups": [
         {
@@ -1775,7 +1775,7 @@
         "r": 5
       },
       "total_population": 2852,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central F3",
       "demographic_groups": [
         {
@@ -1799,7 +1799,7 @@
         "r": 5
       },
       "total_population": 3454,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central F4",
       "demographic_groups": [
         {
@@ -1823,7 +1823,7 @@
         "r": 5
       },
       "total_population": 4127,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central F5",
       "demographic_groups": [
         {
@@ -1967,7 +1967,7 @@
         "r": 5
       },
       "total_population": 4127,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central F11",
       "demographic_groups": [
         {
@@ -1991,7 +1991,7 @@
         "r": 5
       },
       "total_population": 3454,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central F12",
       "demographic_groups": [
         {
@@ -2015,7 +2015,7 @@
         "r": 5
       },
       "total_population": 2852,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central F13",
       "demographic_groups": [
         {
@@ -2039,7 +2039,7 @@
         "r": 5
       },
       "total_population": 2348,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central F14",
       "demographic_groups": [
         {
@@ -2063,7 +2063,7 @@
         "r": 6
       },
       "total_population": 2031,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central G1",
       "demographic_groups": [
         {
@@ -2087,7 +2087,7 @@
         "r": 6
       },
       "total_population": 2466,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central G2",
       "demographic_groups": [
         {
@@ -2111,7 +2111,7 @@
         "r": 6
       },
       "total_population": 3028,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central G3",
       "demographic_groups": [
         {
@@ -2135,7 +2135,7 @@
         "r": 6
       },
       "total_population": 3713,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central G4",
       "demographic_groups": [
         {
@@ -2159,7 +2159,7 @@
         "r": 6
       },
       "total_population": 4511,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central G5",
       "demographic_groups": [
         {
@@ -2303,7 +2303,7 @@
         "r": 6
       },
       "total_population": 4511,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central G11",
       "demographic_groups": [
         {
@@ -2327,7 +2327,7 @@
         "r": 6
       },
       "total_population": 3713,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central G12",
       "demographic_groups": [
         {
@@ -2351,7 +2351,7 @@
         "r": 6
       },
       "total_population": 3028,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central G13",
       "demographic_groups": [
         {
@@ -2375,7 +2375,7 @@
         "r": 6
       },
       "total_population": 2466,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central G14",
       "demographic_groups": [
         {
@@ -2399,7 +2399,7 @@
         "r": 7
       },
       "total_population": 2058,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central H1",
       "demographic_groups": [
         {
@@ -2423,7 +2423,7 @@
         "r": 7
       },
       "total_population": 2509,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central H2",
       "demographic_groups": [
         {
@@ -2447,7 +2447,7 @@
         "r": 7
       },
       "total_population": 3092,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central H3",
       "demographic_groups": [
         {
@@ -2471,7 +2471,7 @@
         "r": 7
       },
       "total_population": 3808,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central H4",
       "demographic_groups": [
         {
@@ -2495,7 +2495,7 @@
         "r": 7
       },
       "total_population": 4657,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central H5",
       "demographic_groups": [
         {
@@ -2639,7 +2639,7 @@
         "r": 7
       },
       "total_population": 4657,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central H11",
       "demographic_groups": [
         {
@@ -2663,7 +2663,7 @@
         "r": 7
       },
       "total_population": 3808,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central H12",
       "demographic_groups": [
         {
@@ -2687,7 +2687,7 @@
         "r": 7
       },
       "total_population": 3092,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central H13",
       "demographic_groups": [
         {
@@ -2711,7 +2711,7 @@
         "r": 7
       },
       "total_population": 2509,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central H14",
       "demographic_groups": [
         {
@@ -2735,7 +2735,7 @@
         "r": 8
       },
       "total_population": 2031,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central I1",
       "demographic_groups": [
         {
@@ -2759,7 +2759,7 @@
         "r": 8
       },
       "total_population": 2466,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central I2",
       "demographic_groups": [
         {
@@ -2783,7 +2783,7 @@
         "r": 8
       },
       "total_population": 3028,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central I3",
       "demographic_groups": [
         {
@@ -2807,7 +2807,7 @@
         "r": 8
       },
       "total_population": 3713,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central I4",
       "demographic_groups": [
         {
@@ -2831,7 +2831,7 @@
         "r": 8
       },
       "total_population": 4511,
-      "initial_district_id": "d1",
+      "initial_district_id": "d2",
       "name": "Central I5",
       "demographic_groups": [
         {
@@ -2975,7 +2975,7 @@
         "r": 8
       },
       "total_population": 4511,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central I11",
       "demographic_groups": [
         {
@@ -2999,7 +2999,7 @@
         "r": 8
       },
       "total_population": 3713,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central I12",
       "demographic_groups": [
         {
@@ -3023,7 +3023,7 @@
         "r": 8
       },
       "total_population": 3028,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central I13",
       "demographic_groups": [
         {
@@ -3047,7 +3047,7 @@
         "r": 8
       },
       "total_population": 2466,
-      "initial_district_id": "d3",
+      "initial_district_id": "d2",
       "name": "Central I14",
       "demographic_groups": [
         {
@@ -3071,7 +3071,7 @@
         "r": 9
       },
       "total_population": 1955,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South J1",
       "demographic_groups": [
         {
@@ -3095,7 +3095,7 @@
         "r": 9
       },
       "total_population": 2348,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South J2",
       "demographic_groups": [
         {
@@ -3119,7 +3119,7 @@
         "r": 9
       },
       "total_population": 2852,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South J3",
       "demographic_groups": [
         {
@@ -3143,7 +3143,7 @@
         "r": 9
       },
       "total_population": 3454,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South J4",
       "demographic_groups": [
         {
@@ -3167,7 +3167,7 @@
         "r": 9
       },
       "total_population": 4127,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South J5",
       "demographic_groups": [
         {
@@ -3191,7 +3191,7 @@
         "r": 9
       },
       "total_population": 4816,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South J6",
       "demographic_groups": [
         {
@@ -3215,7 +3215,7 @@
         "r": 9
       },
       "total_population": 5395,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South J7",
       "demographic_groups": [
         {
@@ -3239,7 +3239,7 @@
         "r": 9
       },
       "total_population": 5639,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South J8",
       "demographic_groups": [
         {
@@ -3263,7 +3263,7 @@
         "r": 9
       },
       "total_population": 5395,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South J9",
       "demographic_groups": [
         {
@@ -3287,7 +3287,7 @@
         "r": 9
       },
       "total_population": 4816,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South J10",
       "demographic_groups": [
         {
@@ -3407,7 +3407,7 @@
         "r": 10
       },
       "total_population": 1846,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South A1",
       "demographic_groups": [
         {
@@ -3431,7 +3431,7 @@
         "r": 10
       },
       "total_population": 2175,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South A2",
       "demographic_groups": [
         {
@@ -3455,7 +3455,7 @@
         "r": 10
       },
       "total_population": 2598,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South A3",
       "demographic_groups": [
         {
@@ -3479,7 +3479,7 @@
         "r": 10
       },
       "total_population": 3092,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South A4",
       "demographic_groups": [
         {
@@ -3503,7 +3503,7 @@
         "r": 10
       },
       "total_population": 3622,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South A5",
       "demographic_groups": [
         {
@@ -3527,7 +3527,7 @@
         "r": 10
       },
       "total_population": 4127,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South A6",
       "demographic_groups": [
         {
@@ -3551,7 +3551,7 @@
         "r": 10
       },
       "total_population": 4511,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South A7",
       "demographic_groups": [
         {
@@ -3575,7 +3575,7 @@
         "r": 10
       },
       "total_population": 4657,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South A8",
       "demographic_groups": [
         {
@@ -3599,7 +3599,7 @@
         "r": 10
       },
       "total_population": 4511,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South A9",
       "demographic_groups": [
         {
@@ -3623,7 +3623,7 @@
         "r": 10
       },
       "total_population": 4127,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South A10",
       "demographic_groups": [
         {
@@ -3743,7 +3743,7 @@
         "r": 11
       },
       "total_population": 1724,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South B1",
       "demographic_groups": [
         {
@@ -3767,7 +3767,7 @@
         "r": 11
       },
       "total_population": 1979,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South B2",
       "demographic_groups": [
         {
@@ -3791,7 +3791,7 @@
         "r": 11
       },
       "total_population": 2311,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South B3",
       "demographic_groups": [
         {
@@ -3815,7 +3815,7 @@
         "r": 11
       },
       "total_population": 2694,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South B4",
       "demographic_groups": [
         {
@@ -3839,7 +3839,7 @@
         "r": 11
       },
       "total_population": 3092,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South B5",
       "demographic_groups": [
         {
@@ -3863,7 +3863,7 @@
         "r": 11
       },
       "total_population": 3454,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South B6",
       "demographic_groups": [
         {
@@ -3887,7 +3887,7 @@
         "r": 11
       },
       "total_population": 3713,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South B7",
       "demographic_groups": [
         {
@@ -3911,7 +3911,7 @@
         "r": 11
       },
       "total_population": 3808,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South B8",
       "demographic_groups": [
         {
@@ -3935,7 +3935,7 @@
         "r": 11
       },
       "total_population": 3713,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South B9",
       "demographic_groups": [
         {
@@ -3959,7 +3959,7 @@
         "r": 11
       },
       "total_population": 3454,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South B10",
       "demographic_groups": [
         {
@@ -4079,7 +4079,7 @@
         "r": 12
       },
       "total_population": 1612,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South C1",
       "demographic_groups": [
         {
@@ -4103,7 +4103,7 @@
         "r": 12
       },
       "total_population": 1790,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South C2",
       "demographic_groups": [
         {
@@ -4127,7 +4127,7 @@
         "r": 12
       },
       "total_population": 2031,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South C3",
       "demographic_groups": [
         {
@@ -4151,7 +4151,7 @@
         "r": 12
       },
       "total_population": 2311,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South C4",
       "demographic_groups": [
         {
@@ -4175,7 +4175,7 @@
         "r": 12
       },
       "total_population": 2598,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South C5",
       "demographic_groups": [
         {
@@ -4199,7 +4199,7 @@
         "r": 12
       },
       "total_population": 2852,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South C6",
       "demographic_groups": [
         {
@@ -4223,7 +4223,7 @@
         "r": 12
       },
       "total_population": 3028,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South C7",
       "demographic_groups": [
         {
@@ -4247,7 +4247,7 @@
         "r": 12
       },
       "total_population": 3092,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South C8",
       "demographic_groups": [
         {
@@ -4271,7 +4271,7 @@
         "r": 12
       },
       "total_population": 3028,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South C9",
       "demographic_groups": [
         {
@@ -4295,7 +4295,7 @@
         "r": 12
       },
       "total_population": 2852,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South C10",
       "demographic_groups": [
         {
@@ -4415,7 +4415,7 @@
         "r": 13
       },
       "total_population": 1531,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South D1",
       "demographic_groups": [
         {
@@ -4439,7 +4439,7 @@
         "r": 13
       },
       "total_population": 1633,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South D2",
       "demographic_groups": [
         {
@@ -4463,7 +4463,7 @@
         "r": 13
       },
       "total_population": 1790,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South D3",
       "demographic_groups": [
         {
@@ -4487,7 +4487,7 @@
         "r": 13
       },
       "total_population": 1979,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South D4",
       "demographic_groups": [
         {
@@ -4511,7 +4511,7 @@
         "r": 13
       },
       "total_population": 2175,
-      "initial_district_id": "d1",
+      "initial_district_id": "d3",
       "name": "South D5",
       "demographic_groups": [
         {
@@ -4535,7 +4535,7 @@
         "r": 13
       },
       "total_population": 2348,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South D6",
       "demographic_groups": [
         {
@@ -4559,7 +4559,7 @@
         "r": 13
       },
       "total_population": 2466,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South D7",
       "demographic_groups": [
         {
@@ -4583,7 +4583,7 @@
         "r": 13
       },
       "total_population": 2509,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South D8",
       "demographic_groups": [
         {
@@ -4607,7 +4607,7 @@
         "r": 13
       },
       "total_population": 2466,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South D9",
       "demographic_groups": [
         {
@@ -4631,7 +4631,7 @@
         "r": 13
       },
       "total_population": 2348,
-      "initial_district_id": "d2",
+      "initial_district_id": "d3",
       "name": "South D10",
       "demographic_groups": [
         {
