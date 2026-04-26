@@ -49,6 +49,11 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 | `DESIGN-002-view-toggle-ux.md` | design, UX | View toggle button label convention: show destination mode, not current mode |
 | `DESIGN-003-districts-view-color-encoding.md` | design, UX | Districts view color/population gradient: decide encoding strategy for v1 |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
+| `GAME-009-pan-zoom.md` | game, rendering | Pan + zoom via d3.zoom(); scroll wheel + keyboard shortcuts; zoom-invariant stroke widths |
+| `GAME-010-map-validity-panel.md` | game, rendering | Live validity panel: per-district pop balance ±%, unassigned count, contiguity status |
+| `GAME-011-precinct-info-panel.md` | game, rendering | Precinct hover info in sidebar (name, district, population); replaces status bar |
+| `GAME-012-county-border-overlay.md` | game, rendering | County border overlay toggle; flavor only; computed from county_id adjacency edges |
+| `GAME-013-reset-to-initial.md` | game, rendering | Reset all assignments to scenario initial state; clears undo history; confirmation required |
 
 ---
 
