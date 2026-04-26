@@ -20,7 +20,7 @@ see game-vision.compressed.md for full scope
 §SPRINT_OVERVIEW
 | $sp | goal | demo | status |
 |-----|------|------|--------|
-| S1 | load+display real scenario | tutorial JSON→hex map; player paints $dists; Playwright harness live | in-progress |
+| S1 | load+display real scenario | tutorial JSON→hex map; player paints $dists; Playwright harness live | complete — 2026-04-25 |
 | S2 | edit map + live feedback | live pop-balance, contiguity, $pc tooltip | backlog |
 | S3 | test the map | Test→per-criterion pass/fail; real sim engine | backlog |
 | S4 | one complete playable scenario | tutorial: intro→edit→test→pass/fail→retry | backlog |
@@ -28,18 +28,17 @@ see game-vision.compressed.md for full scope
 | S6 | game infra + scenarios 5-7 | $sp-select, unlock, persist (Continue); 7 playable | backlog |
 | S7 | complete $v1 | all 8-12 scenarios; achievements; test anim; about; shippable | backlog |
 
-§SPRINT1
+§SPRINT1 [COMPLETE 2026-04-25]
 goal: app renders tutorial-001.json; player paints+undoes; no sim/game-loop yet
-tickets (dependency order):
-  GAME-001 scenario TS types          [no deps; start here]
-  GAME-004 MapRenderer interface      [no deps; parallel w/ GAME-001]
-  CI-002 Phase1 Playwright harness    [no deps; parallel w/ GAME-001; smoke test only]
-  GAME-002 scenario loader+validator  [needs GAME-001]
-  GAME-003 tutorial scenario content  [needs GAME-001+002; sketch proposal FIRST]
-  GAME-005 sprint1 integration        [needs all above; this IS the demo]
-  CI-002 Phase2 behavioral tests      [needs GAME-005; closes CI-002]
-GAME-001 ∥ GAME-004 ∥ CI-002(Ph1) → GAME-002 → GAME-003(Phase2) → GAME-005 → CI-002(Ph2)
-  note: GAME-003 Phase1(sketch) can start alongside GAME-002
+outcome: all tickets closed; demo held 2026-04-25; received as "awesome and successful"
+demo observations:
+  + 30-hex map loads; paint/undo/redo/lean-view/boundaries all work; zippier than spike
+  - view toggle label ambiguous (current-state vs destination) → DESIGN-002
+  - districts view population gradient dominates district color → DESIGN-003
+  + motivated GAME-008 (accessibility) ticket for color-blind palettes + screen reader
+tickets (all resolved):
+  GAME-001 GAME-004 CI-002(Ph1) GAME-002 GAME-003 GAME-005 CI-002(Ph2)
+  PRs: #33 #34 #37 #38 #44 #46 #47 #49 #50 #51
 
 §SPRINT2 (backlog; ticket on sprint-plan before S2 starts)
 live pop-balance per $dist | contiguity validation+highlight | $pc hover tooltip |
