@@ -97,49 +97,46 @@ if [[ "${SERVER_READY}" -eq 0 ]]; then
   exit 1
 fi
 
-# ── Resolve workspace root (for playwright.config.ts) ────────────────────────
-# Playwright config is at game/web/playwright.config.ts.
-# BUILD_WORKSPACE_DIRECTORY is set when running via `bazel run`, but for
-# `bazel test` we need to find the workspace root another way.
-# The script lives at game/web/e2e_test.sh; under runfiles it's at:
-#   $RUNFILES/redistricting_sim/web/e2e_test.sh
-# The workspace root (game/) is the parent of web/ in the source tree.
-# We resolve it relative to the script's real location in the source tree,
-# falling back to BUILD_WORKSPACE_DIRECTORY if set.
-WORKSPACE_DIR="${BUILD_WORKSPACE_DIRECTORY:-}"
-if [[ -z "${WORKSPACE_DIR}" ]]; then
-  # Bazel invokes sh_test with a relative path, so BASH_SOURCE[0] is relative.
-  # We must make it absolute, then follow symlinks to reach the actual source
-  # file (the runfiles copy is a symlink to the source tree).
-  # Note: readlink without -f works on macOS BSD; we loop manually.
-  _s="${BASH_SOURCE[0]}"
-  [[ "${_s}" = /* ]] || _s="$(pwd)/${_s}"
-  while [[ -L "${_s}" ]]; do
-    _t="$(readlink "${_s}")"
-    [[ "${_t}" = /* ]] || _t="$(dirname "${_s}")/${_t}"
-    _s="${_t}"
-  done
-  SCRIPT_DIR="$(cd "$(dirname "${_s}")" && pwd -P)"
-  WORKSPACE_DIR="$(dirname "${SCRIPT_DIR}")"
+# ── Resolve workspace root ────────────────────────────────────────────────────
+# @playwright/test and its transitive deps are declared as Bazel data deps via
+# //:node_modules/@playwright/test, ensuring the cache key includes playwright's
+# version.  At runtime we use the physical node_modules installed by setup.sh
+# so that the playwright runner and spec files share a single module instance —
+# a prerequisite for playwright's internal test registry to work.
+#
+# We locate the workspace root (game/) via a single readlink on the declared
+# runfiles symlink for playwright.config.ts.  This is a one-hop resolution that
+# lands in the current workspace's source tree; it never escapes to a stale
+# workspace the way recursive BASH_SOURCE symlink-following can.
+PLAYWRIGHT_CONFIG_LINK="${RUNFILES_MOD}/web/playwright.config.ts"
+if [[ ! -L "${PLAYWRIGHT_CONFIG_LINK}" ]]; then
+  echo "ERROR: playwright.config.ts not found as a runfiles symlink: ${PLAYWRIGHT_CONFIG_LINK}" >&2
+  exit 1
 fi
+# Single readlink (not -f): resolves one symlink hop to the real source file.
+PLAYWRIGHT_CONFIG_REAL="$(readlink "${PLAYWRIGHT_CONFIG_LINK}")"
+WORKSPACE_DIR="$(dirname "$(dirname "${PLAYWRIGHT_CONFIG_REAL}")")"
 
-PLAYWRIGHT_CONFIG="${WORKSPACE_DIR}/web/playwright.config.ts"
-if [[ ! -f "${PLAYWRIGHT_CONFIG}" ]]; then
-  echo "ERROR: playwright.config.ts not found at ${PLAYWRIGHT_CONFIG}" >&2
+PLAYWRIGHT_BIN="${WORKSPACE_DIR}/node_modules/.bin/playwright"
+if [[ ! -f "${PLAYWRIGHT_BIN}" ]]; then
+  echo "ERROR: node_modules/.bin/playwright not found at ${PLAYWRIGHT_BIN}" >&2
+  echo "  Run: cd game && ./setup.sh" >&2
   exit 1
 fi
 
 # ── Run Playwright ────────────────────────────────────────────────────────────
 # Bazel test runner may strip the user's PATH (e.g. /opt/homebrew/bin absent).
-# Extend PATH with common node/pnpm locations so pnpm exec is accessible.
+# Extend PATH so node is reachable.
 export PATH="/opt/homebrew/bin:/usr/local/bin:${PATH}"
 
-# Bazel sandboxes $HOME to a tmpdir, so Playwright cannot find its browser
-# cache at $HOME/Library/Caches/ms-playwright.  $USER is not sandboxed;
-# reconstruct the real browser cache path from it.
-if [[ "${OSTYPE}" == darwin* ]]; then
-  export PLAYWRIGHT_BROWSERS_PATH="/Users/${USER}/Library/Caches/ms-playwright"
-fi
+# Bazel's test runner redirects $HOME to a sandbox temp dir for test isolation.
+# Playwright looks for its managed Chromium under $HOME/Library/Caches/ms-playwright
+# (macOS) or $HOME/.cache/ms-playwright (Linux), which resolves to the fake HOME.
+# Override PLAYWRIGHT_BROWSERS_PATH with the real user's cache.
+# ~$(id -un) expands via the OS password database, bypassing the $HOME variable.
+REAL_HOME="$(eval echo "~$(id -un)")"
+export PLAYWRIGHT_BROWSERS_PATH="${REAL_HOME}/Library/Caches/ms-playwright"
+
 cd "${WORKSPACE_DIR}"
-pnpm exec playwright test --config "web/playwright.config.ts"
+"${PLAYWRIGHT_BIN}" test --config "web/playwright.config.ts"
 exit $?

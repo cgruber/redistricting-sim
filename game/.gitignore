@@ -10,3 +10,6 @@ node_modules/
 
 # Local dev serve output
 _serve_dist/
+
+# Playwright test output (traces, HTML report, error contexts)
+web/test-results/

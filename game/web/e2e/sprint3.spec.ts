@@ -2,7 +2,10 @@ import { test, expect } from "@playwright/test";
 
 /**
  * Sprint 3 behavioral tests:
- *   GAME-016 (scenario intro), GAME-017 (evaluation), GAME-018 (progression).
+ *   GAME-014 (scenario scale), GAME-016 (intro), GAME-017 (evaluation), GAME-018 (progression).
+ *
+ * NOTE: The app loads tutorial-002.json (196-precinct three-county map) as the primary scenario.
+ * tutorial-001.json is retained for loader unit tests only.
  *
  * GAME-016: Intro slide flow:
  *   1. Intro screen is visible on initial load (before map editor) — new player
@@ -10,19 +13,23 @@ import { test, expect } from "@playwright/test";
  *   3. Slide navigation (Next / Previous) cycles through slides correctly
  *   4. "Start Drawing" appears on the last slide and reveals the editor
  *   5. "Skip intro" immediately reveals the editor
+ *   6. Objective text is shown from scenario narrative
  *
  * GAME-017: Evaluation phase:
- *   6. Submit button is disabled on initial (all-D1) state (district 2 empty)
- *   7. Submit button remains in DOM after painting precincts
- *   8. Clicking submit shows result screen with criteria
- *   9. "Keep Drawing" button hides the result screen
+ *   7. Submit button is disabled on initial state (one district empty)
+ *   8. Submit button remains in DOM after painting precincts
+ *   9. Clicking submit shows result screen with criteria
+ *   10. "Keep Drawing" button hides the result screen
  *
  * GAME-018: Progression:
- *   10. Scenario select screen is shown for returning players (localStorage has completion data)
- *   11. Scenario card shows "Completed" status and "Play Again" button for completed scenario
- *   12. "Play Again" from select screen shows intro then editor
- *   13. Page reload restores completion state from localStorage
- *   14. New player (no localStorage) sees intro, not scenario select
+ *   11. Scenario select screen is shown for returning players (localStorage has completion data)
+ *   12. Scenario card shows "Completed" status and "Play Again" button for completed scenario
+ *   13. "Play Again" from select screen shows intro then editor
+ *   14. Page reload restores completion state from localStorage
+ *   15. New player (no localStorage) sees intro, not scenario select
+ *
+ * GAME-014: Scenario scale:
+ *   16. tutorial-002 loads and renders 196 precincts (path.hex count)
  */
 
 /** Navigate, dismiss intro, wait for hex grid. */
@@ -56,7 +63,7 @@ test("intro: screen is visible on initial load before editor", async ({ page }) 
 test("intro: character name and role are shown from scenario narrative", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
-  // tutorial-001.json character: name="You", role="Redistricting Coordinator, Millbrook County"
+  // tutorial-002.json character: name="You", role="Redistricting Coordinator, Millbrook Tri-County Area"
   await expect(page.locator("#char-name")).toHaveText("You");
   await expect(page.locator("#char-role")).toContainText("Redistricting Coordinator");
 });
@@ -64,7 +71,7 @@ test("intro: character name and role are shown from scenario narrative", async (
 test("intro: first slide heading is shown and Previous is disabled", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator("#intro-slide-heading")).toHaveText("Welcome to Redistricting");
+  await expect(page.locator("#intro-slide-heading")).toHaveText("Three Counties. Three Districts.");
   await expect(page.locator("#btn-intro-prev")).toBeDisabled();
 });
 
@@ -74,12 +81,12 @@ test("intro: Next advances to second slide; Previous returns to first", async ({
 
   // Advance to slide 2
   await page.locator("#btn-intro-next").click();
-  await expect(page.locator("#intro-slide-heading")).toHaveText("Your job is simple (in theory)");
+  await expect(page.locator("#intro-slide-heading")).toHaveText("The rules are simple");
   await expect(page.locator("#btn-intro-prev")).toBeEnabled();
 
   // Return to slide 1
   await page.locator("#btn-intro-prev").click();
-  await expect(page.locator("#intro-slide-heading")).toHaveText("Welcome to Redistricting");
+  await expect(page.locator("#intro-slide-heading")).toHaveText("Three Counties. Three Districts.");
 });
 
 test("intro: Start Drawing button appears on last slide and reveals editor", async ({ page }) => {
@@ -114,14 +121,14 @@ test("intro: Skip intro immediately reveals editor without navigating slides", a
 test("intro: objective text is shown from scenario narrative", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator("#objective-text")).toContainText("Divide Millbrook County");
+  await expect(page.locator("#objective-text")).toContainText("Divide the Millbrook Tri-County Area");
 });
 
 // ─── GAME-017: Evaluation phase ───────────────────────────────────────────────
 
-test("submit: button is disabled on initial load (district 2 has no precincts)", async ({ page }) => {
+test("submit: button is disabled on initial load (population imbalance)", async ({ page }) => {
   await loadEditor(page);
-  // Initial state: all 30 precincts in district 1, district 2 empty → not submittable
+  // Initial state: precincts distributed unevenly across 3 districts → fails population balance
   await expect(page.locator("#btn-submit")).toBeDisabled();
 });
 
@@ -133,9 +140,9 @@ test("submit: result screen is hidden on initial load", async ({ page }) => {
 test("submit: button remains in DOM and is interactive after painting precincts across districts", async ({ page }) => {
   await loadEditor(page);
 
-  // Switch to district 2 and paint half the precincts (15 of 30)
+  // Switch to district 2 and paint some precincts to vary the assignment
   await page.locator("button.district-btn").nth(1).click();
-  // Paint precincts 0–14 to district 2 to create a rough half-half split
+  // Paint some precincts to district 2
   for (let i = 0; i <= 14; i++) {
     const hex = page.locator(`path.hex[data-precinct-id='${i}']`);
     const isPresent = await hex.count();
@@ -192,7 +199,7 @@ async function seedProgress(
 }
 
 test("progression: scenario select screen is shown for returning players", async ({ page }) => {
-  await seedProgress(page, ["tutorial-001"]);
+  await seedProgress(page, ["tutorial-002"]);
   await page.goto("/");
 
   // Scenario select must be visible; intro screen and editor must not be
@@ -202,7 +209,7 @@ test("progression: scenario select screen is shown for returning players", async
 });
 
 test("progression: scenario card shows Completed status for completed scenario", async ({ page }) => {
-  await seedProgress(page, ["tutorial-001"]);
+  await seedProgress(page, ["tutorial-002"]);
   await page.goto("/");
 
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
@@ -212,7 +219,7 @@ test("progression: scenario card shows Completed status for completed scenario",
 });
 
 test("progression: Play Again from select screen shows intro then editor", async ({ page }) => {
-  await seedProgress(page, ["tutorial-001"]);
+  await seedProgress(page, ["tutorial-002"]);
   await page.goto("/");
 
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
@@ -227,7 +234,7 @@ test("progression: Play Again from select screen shows intro then editor", async
 });
 
 test("progression: page reload restores completion state from localStorage", async ({ page }) => {
-  await seedProgress(page, ["tutorial-001"]);
+  await seedProgress(page, ["tutorial-002"]);
   await page.goto("/");
 
   // First load: scenario select visible with completed status
@@ -246,4 +253,23 @@ test("progression: new player (no localStorage) sees intro, not scenario select"
 
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator("#scenario-select")).not.toBeVisible();
+});
+
+// ─── GAME-014: Scenario scale ─────────────────────────────────────────────────
+
+test("scale: tutorial-002 loads and renders 196 precincts (path.hex count)", async ({ page }) => {
+  // tutorial-002 is the default scenario (196-precinct three-county map)
+  await page.goto("/");
+
+  // Skip intro to reveal editor
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+
+  // Wait for at least one hex to render
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
+
+  // Count all rendered hex paths — should match precinct count (196)
+  const hexCount = await page.locator("path.hex").count();
+  expect(hexCount).toBe(196);
 });
