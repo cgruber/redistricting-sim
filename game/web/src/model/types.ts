@@ -49,6 +49,8 @@ export interface Precinct {
 	id: number;
 	/** Human-readable name from scenario (e.g. "Far West Ridge") */
 	name?: string;
+	/** County identifier from scenario (used for county border overlay) */
+	county_id?: string;
 	/** Axial hex grid coordinates */
 	coord: HexCoord;
 	/** Pixel center (pre-computed for rendering) */

@@ -34,6 +34,7 @@ const districtBtnsEl = document.getElementById("district-buttons") as HTMLElemen
 const btnUndo = document.getElementById("btn-undo") as HTMLButtonElement | null;
 const btnRedo = document.getElementById("btn-redo") as HTMLButtonElement | null;
 const btnViewToggle = document.getElementById("btn-view-toggle") as HTMLButtonElement | null;
+const btnCountyToggle = document.getElementById("btn-county-toggle") as HTMLButtonElement | null;
 
 if (
 	svgEl === null ||
@@ -43,7 +44,8 @@ if (
 	districtBtnsEl === null ||
 	btnUndo === null ||
 	btnRedo === null ||
-	btnViewToggle === null
+	btnViewToggle === null ||
+	btnCountyToggle === null
 ) {
 	throw new Error("Required DOM elements not found");
 }
@@ -138,6 +140,15 @@ if (wasmEl !== null) {
 		renderer.setViewMode(currentViewMode);
 		btnViewToggle!.textContent =
 			currentViewMode === "districts" ? "Switch to Partisan Lean" : "Switch to Districts";
+	});
+
+	// ── County border toggle (GAME-012) ───────────────────────────────────────
+	let countyBordersVisible = false;
+	btnCountyToggle!.addEventListener("click", () => {
+		countyBordersVisible = !countyBordersVisible;
+		renderer.setCountyBordersVisible(countyBordersVisible);
+		btnCountyToggle!.textContent = countyBordersVisible ? "Hide County Borders" : "Show County Borders";
+		btnCountyToggle!.classList.toggle("active", countyBordersVisible);
 	});
 
 	// ── Subscribe to state changes ────────────────────────────────────────────

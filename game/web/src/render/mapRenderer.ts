@@ -5,6 +5,7 @@
  * Reads state from the Zustand store; does not mutate it.
  *
  * SVG layer order (bottom → top, all inside zoomGroup):
+ *   countyBorderGroup  — county boundary overlay (GAME-012; dashed gray; off by default)
  *   borderGroup        — committed district boundaries (solid white)
  *   hexGroup           — precinct fills
  *   previewBorderGroup — in-stroke boundary preview (dashed white)
@@ -95,11 +96,40 @@ function computeBoundarySegments(
 	return segments;
 }
 
+// ─── County boundary segment computation (GAME-012) ──────────────────────────
+
+/**
+ * Computes county boundary segments once at load time.
+ * An edge between two adjacent precincts is a county boundary if their county_id values differ.
+ * Each internal edge is counted once (lower-ID precinct draws the segment).
+ * Outer edges (nId === null) are not county boundaries.
+ */
+function computeCountySegments(precincts: Precinct[]): Segment[] {
+	const segments: Segment[] = [];
+	for (const p of precincts) {
+		const corners = hexCorners(p.center);
+		for (let i = 0; i < 6; i++) {
+			const nId = p.neighbors[i] ?? null;
+			if (nId === null || nId < p.id) continue; // skip outer edges and already-drawn edges
+			const neighbor = precincts[nId];
+			if (neighbor === undefined) continue;
+			if (p.county_id === undefined && neighbor.county_id === undefined) continue;
+			if (p.county_id === neighbor.county_id) continue;
+			const c0 = corners[i];
+			const c1 = corners[(i + 1) % 6];
+			if (c0 === undefined || c1 === undefined) continue;
+			segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
+		}
+	}
+	return segments;
+}
+
 // ─── Renderer class ──────────────────────────────────────────────────────────
 
 export class SvgMapRenderer implements MapRenderer {
 	private svg: SVGSel;
 	private zoomGroup: GSel;
+	private countyBorderGroup: GSel;
 	private borderGroup: GSel;
 	private hexGroup: GSel;
 	private previewBorderGroup: GSel;
@@ -133,6 +163,10 @@ export class SvgMapRenderer implements MapRenderer {
 	private static readonly BOUNDARY_BASE_WIDTH = 2;
 	private static readonly PREVIEW_BASE_WIDTH = 2.5;
 
+	// County border overlay (GAME-012): computed once at load, toggled on/off
+	private countySegments: Segment[] = [];
+	private countyBordersVisible = false;
+
 	constructor(
 		svgEl: SVGSVGElement,
 		getState: () => GameStore,
@@ -146,8 +180,9 @@ export class SvgMapRenderer implements MapRenderer {
 		this.svg = d3.select(svgEl);
 
 		// Zoom group wraps all map layers so the single transform drives pan/zoom.
-		// Layer order matters: borderGroup behind hexes, previewBorderGroup on top.
+		// Layer order (bottom → top inside zoomGroup): county borders, district borders, hexes, preview.
 		this.zoomGroup = this.svg.append("g").attr("class", "zoom-layer");
+		this.countyBorderGroup = this.zoomGroup.append("g").attr("class", "county-borders");
 		this.borderGroup = this.zoomGroup.append("g").attr("class", "borders");
 		this.hexGroup = this.zoomGroup.append("g").attr("class", "hexes");
 		this.previewBorderGroup = this.zoomGroup.append("g").attr("class", "preview-borders");
@@ -155,6 +190,8 @@ export class SvgMapRenderer implements MapRenderer {
 		const pops = getState().precincts.map((p) => p.population);
 		this.popMin = Math.min(...pops);
 		this.popMax = Math.max(...pops);
+
+		this.countySegments = computeCountySegments(getState().precincts);
 
 		this.initZoom();
 		this.initBrushEvents();
@@ -166,8 +203,36 @@ export class SvgMapRenderer implements MapRenderer {
 		this.render();
 	}
 
-	setCountyBordersVisible(_visible: boolean) {
-		// No-op until county_id data is present in scenarios.
+	setCountyBordersVisible(visible: boolean) {
+		this.countyBordersVisible = visible;
+		if (visible) {
+			this.renderCountyBorders();
+		} else {
+			this.countyBorderGroup.selectAll("line.county-boundary").remove();
+		}
+	}
+
+	private renderCountyBorders() {
+		this.countyBorderGroup
+			.selectAll<SVGLineElement, Segment>("line.county-boundary")
+			.data(this.countySegments)
+			.join(
+				(enter) =>
+					enter
+						.append("line")
+						.attr("class", "county-boundary")
+						.attr("stroke-linecap", "round"),
+				(update) => update,
+				(exit) => exit.remove(),
+			)
+			.attr("x1", (d) => d.x1)
+			.attr("y1", (d) => d.y1)
+			.attr("x2", (d) => d.x2)
+			.attr("y2", (d) => d.y2)
+			.attr("stroke", "#a0a0a0")
+			.attr("stroke-width", 1)
+			.attr("stroke-dasharray", "4,4")
+			.attr("opacity", 0.5);
 	}
 
 	// ─── Zoom init (GAME-009) ─────────────────────────────────────────────────

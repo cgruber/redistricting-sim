@@ -83,6 +83,7 @@ export function scenarioToSpike(scenario: Scenario): {
 			demographics: { male: 0.49, female: 0.49, nonbinary: 0.02 },
 		};
 		if (pc.name !== undefined) spikePrecinct.name = pc.name;
+		if (pc.county_id !== undefined) spikePrecinct.county_id = pc.county_id;
 		return spikePrecinct;
 	});
 

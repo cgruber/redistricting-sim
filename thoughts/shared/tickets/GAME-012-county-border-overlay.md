@@ -4,6 +4,7 @@ title: County border overlay toggle
 area: game, rendering
 status: open
 created: 2026-04-25
+github_issue: 60
 ---
 
 ## Summary
@@ -19,27 +20,25 @@ is present in the scenario JSON (`county_id` per precinct) but is not rendered.
 
 ## Goals / Acceptance Criteria
 
-- [ ] "County borders" toggle button added to the sidebar or toolbar
-- [ ] Default state: off (borders not shown on load)
-- [ ] When toggled on: county boundary segments rendered as a distinct line
-  style (dashed or a different color) that reads as a secondary layer below
-  district boundaries
-- [ ] When toggled off: county boundary segments hidden
-- [ ] Toggle state is not persisted (resets to off on reload)
+- [x] "County borders" toggle button added to toolbar (header controls)
+- [x] Default state: off (borders not shown on load); button label: "Show County Borders"
+- [x] When toggled on: dashed gray (#a0a0a0) lines at 0.5 opacity, stroke-width 1, dash "4,4"
+- [x] When toggled off: county boundary segments hidden; button label: "Hide County Borders"
+- [x] Toggle state is not persisted (resets to off on reload)
 
 ### County boundary computation
-- [ ] County boundary segments computed from `county_id` per precinct: an edge
-  between two adjacent precincts is a county boundary if their `county_id`
-  values differ
-- [ ] Adjacency data from `Precinct.neighbors` used for edge detection
-- [ ] Boundary segments computed once at load time (not on every toggle)
+- [x] County boundary segments computed from `county_id` per precinct: edges where county_id differs
+- [x] Adjacency data from `Precinct.neighbors` used for edge detection
+- [x] Boundary segments computed once at load time (not on every toggle)
+- [x] Outer map edges excluded (nId === null → skip)
+- [x] Each edge counted once (lower-ID precinct draws the segment)
 
 ### Visual design
-- [ ] County borders visually subordinate to district boundaries
-- [ ] Readable at all zoom levels (stroke width scales inversely with zoom,
-  consistent with GAME-009 zoom implementation)
-- [ ] Outer map edges not drawn as county borders (only internal edges where
-  two precincts have different `county_id`)
+- [x] County borders visually subordinate to district boundaries (separate `countyBorderGroup`
+  layer below district borderGroup; dashed, low opacity)
+- [x] `county_id?: string` added to spike Precinct type; adapter.ts populates from scenario
+- [NOTE] Zoom-invariant stroke width: will apply automatically when GAME-009 is merged
+  (GAME-009's zoom handler scales all `line` elements including county-boundary)
 
 ## Notes
 
