@@ -89,6 +89,40 @@ ts_project(
     visibility = ["//web:__subpackages__"],
 )
 
+# ── progress_typecheck_test: type-check passes ───────────────────────────────
+
+build_test(
+    name = "progress_typecheck_test",
+    targets = [":progress_lib"],
+    visibility = ["//visibility:public"],
+)
+
+# ── progress_test_lib: compile the test file ──────────────────────────────────
+
+ts_project(
+    name = "progress_test_lib",
+    srcs = ["progress_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [":progress_lib"],
+    testonly = True,
+)
+
+# ── progress_test: run tests with Node built-in test runner ──────────────────
+
+js_test(
+    name = "progress_test",
+    entry_point = "progress_test.js",
+    data = [
+        ":progress_test_lib",
+        ":progress_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 # ── loader_typecheck_test: type-check passes ──────────────────────────────────
 
 build_test(

@@ -1,10 +1,11 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * Sprint 3 behavioral tests — GAME-016 (scenario intro) + GAME-017 (evaluation).
+ * Sprint 3 behavioral tests:
+ *   GAME-016 (scenario intro), GAME-017 (evaluation), GAME-018 (progression).
  *
  * GAME-016: Intro slide flow:
- *   1. Intro screen is visible on initial load (before map editor)
+ *   1. Intro screen is visible on initial load (before map editor) — new player
  *   2. Character info is populated from scenario narrative
  *   3. Slide navigation (Next / Previous) cycles through slides correctly
  *   4. "Start Drawing" appears on the last slide and reveals the editor
@@ -12,10 +13,16 @@ import { test, expect } from "@playwright/test";
  *
  * GAME-017: Evaluation phase:
  *   6. Submit button is disabled on initial (all-D1) state (district 2 empty)
- *   7. Submit button enables after drawing a valid balanced map
- *   8. Submitting a passing map shows the pass result screen
- *   9. Submitting a failing map shows the fail result screen
- *   10. "Keep Drawing" button hides the result screen
+ *   7. Submit button remains in DOM after painting precincts
+ *   8. Clicking submit shows result screen with criteria
+ *   9. "Keep Drawing" button hides the result screen
+ *
+ * GAME-018: Progression:
+ *   10. Scenario select screen is shown for returning players (localStorage has completion data)
+ *   11. Scenario card shows "Completed" status and "Play Again" button for completed scenario
+ *   12. "Play Again" from select screen shows intro then editor
+ *   13. Page reload restores completion state from localStorage
+ *   14. New player (no localStorage) sees intro, not scenario select
  */
 
 /** Navigate, dismiss intro, wait for hex grid. */
@@ -166,4 +173,77 @@ test("submit: Keep Drawing button hides result screen", async ({ page }) => {
 
   await page.locator("#btn-keep-drawing").click();
   await expect(page.locator("#result-screen")).not.toBeVisible();
+});
+
+// ─── GAME-018: Progression ────────────────────────────────────────────────────
+
+/** Seed localStorage with completed scenario IDs before navigating. */
+async function seedProgress(
+  page: import("@playwright/test").Page,
+  completedIds: string[],
+): Promise<void> {
+  // Set localStorage before the page loads JS (use storageState or addInitScript)
+  await page.addInitScript((ids: string[]) => {
+    localStorage.setItem(
+      "redistricting-sim-progress",
+      JSON.stringify({ completed: ids }),
+    );
+  }, completedIds);
+}
+
+test("progression: scenario select screen is shown for returning players", async ({ page }) => {
+  await seedProgress(page, ["tutorial-001"]);
+  await page.goto("/");
+
+  // Scenario select must be visible; intro screen and editor must not be
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator("#intro-screen")).not.toBeVisible();
+  await expect(page.locator("#app-header")).not.toBeVisible();
+});
+
+test("progression: scenario card shows Completed status for completed scenario", async ({ page }) => {
+  await seedProgress(page, ["tutorial-001"]);
+  await page.goto("/");
+
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator(".sc-status.completed")).toBeVisible();
+  await expect(page.locator(".sc-status.completed")).toContainText("Completed");
+  await expect(page.locator(".sc-play-btn.replay")).toBeVisible();
+});
+
+test("progression: Play Again from select screen shows intro then editor", async ({ page }) => {
+  await seedProgress(page, ["tutorial-001"]);
+  await page.goto("/");
+
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await page.locator(".sc-play-btn.replay").click();
+
+  // Intro screen appears after clicking Play Again
+  await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 5_000 });
+
+  // Skip intro to get to editor
+  await page.locator("#btn-intro-skip").click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+});
+
+test("progression: page reload restores completion state from localStorage", async ({ page }) => {
+  await seedProgress(page, ["tutorial-001"]);
+  await page.goto("/");
+
+  // First load: scenario select visible with completed status
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator(".sc-status.completed")).toBeVisible();
+
+  // Reload: state should be restored from localStorage
+  await page.reload();
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator(".sc-status.completed")).toBeVisible();
+});
+
+test("progression: new player (no localStorage) sees intro, not scenario select", async ({ page }) => {
+  // No seedProgress call — fresh localStorage
+  await page.goto("/");
+
+  await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator("#scenario-select")).not.toBeVisible();
 });
