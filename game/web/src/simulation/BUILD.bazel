@@ -86,3 +86,63 @@ js_test(
     ],
     visibility = ["//visibility:public"],
 )
+
+# ── evaluate_lib: evaluateCriteria + isMapSubmittable ─────────────────────────
+
+ts_project(
+    name = "evaluate_lib",
+    srcs = ["evaluate.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":validity_lib",
+        ":election_lib",
+        "//web/src/model:model_lib",
+        "//web/src/model:types_lib",
+    ],
+    visibility = ["//web:__pkg__", "//web/src/simulation:__pkg__"],
+)
+
+# ── evaluate_typecheck_test ───────────────────────────────────────────────────
+
+build_test(
+    name = "evaluate_typecheck_test",
+    targets = [":evaluate_lib"],
+    visibility = ["//visibility:public"],
+)
+
+# ── evaluate_test_lib ─────────────────────────────────────────────────────────
+
+ts_project(
+    name = "evaluate_test_lib",
+    srcs = ["evaluate_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":evaluate_lib",
+        ":validity_lib",
+        ":election_lib",
+        "//web/src/model:types_lib",
+        "//web/src/model:model_lib",
+    ],
+    testonly = True,
+)
+
+# ── evaluate_test: run tests with Node ───────────────────────────────────────
+
+js_test(
+    name = "evaluate_test",
+    entry_point = "evaluate_test.js",
+    data = [
+        ":evaluate_test_lib",
+        ":evaluate_lib",
+        ":validity_lib",
+        ":election_lib",
+        "//web/src/model:types_lib",
+        "//web/src/model:model_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)

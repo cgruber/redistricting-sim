@@ -23,6 +23,8 @@ import {
 	renderValidityPanel,
 } from "./render/mapRenderer.js";
 import { createGameStore } from "./store/gameStore.js";
+import { evaluateCriteria, isMapSubmittable } from "./simulation/evaluate.js";
+import { computeValidityStats } from "./simulation/validity.js";
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
 
@@ -42,6 +44,15 @@ const btnResetCancel = document.getElementById("btn-reset-cancel") as HTMLButton
 const appHeader = document.getElementById("app-header") as HTMLElement | null;
 const mainEl = document.getElementById("main") as HTMLElement | null;
 const wasmStatusBar = document.getElementById("wasm-status-bar") as HTMLElement | null;
+
+// Submit + result screen refs (GAME-017)
+const btnSubmit = document.getElementById("btn-submit") as HTMLButtonElement | null;
+const resultScreen = document.getElementById("result-screen") as HTMLElement | null;
+const resultVerdict = document.getElementById("result-verdict") as HTMLElement | null;
+const resultSubtitle = document.getElementById("result-subtitle") as HTMLElement | null;
+const resultCriteriaList = document.getElementById("result-criteria-list") as HTMLElement | null;
+const btnKeepDrawing = document.getElementById("btn-keep-drawing") as HTMLButtonElement | null;
+const btnNextScenario = document.getElementById("btn-next-scenario") as HTMLButtonElement | null;
 
 // Intro screen refs (GAME-016)
 const introScreen = document.getElementById("intro-screen") as HTMLElement | null;
@@ -201,6 +212,14 @@ if (wasmEl !== null) {
 		(id) => store.getState().setActiveDistrict(id),
 	);
 
+	// ── Party ID → spike PartyKey mapping (for criteria evaluation) ──────────
+	// First scenario party → "R", second → "D", rest → "L"/"G"/"I"
+	const SPIKE_PARTY_KEYS = ["R", "D", "L", "G", "I"] as const;
+	const partyIdToKey = new Map<string, string>();
+	scenario.parties.forEach((p, i) => {
+		partyIdToKey.set(p.id, SPIKE_PARTY_KEYS[i] ?? "I");
+	});
+
 	// ── Update cycle ──────────────────────────────────────────────────────────
 	function updateUI() {
 		const state = store.getState();
@@ -217,6 +236,15 @@ if (wasmEl !== null) {
 
 		btnUndo!.disabled = pastStates.length === 0;
 		btnRedo!.disabled = futureStates.length === 0;
+
+		// Enable Submit only when the map meets all hard validity constraints
+		const validity = computeValidityStats(
+			state.precincts,
+			state.assignments,
+			state.districtCount,
+			scenario.rules,
+		);
+		btnSubmit!.disabled = !isMapSubmittable(validity, scenario.rules);
 	}
 
 	// ── Undo / Redo buttons ───────────────────────────────────────────────────
@@ -264,6 +292,79 @@ if (wasmEl !== null) {
 		btnReset!.disabled = false;
 	});
 
+	// ── Submit / Evaluation (GAME-017) ────────────────────────────────────────
+	function showResultScreen(pass: boolean) {
+		if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList) return;
+
+		const state = store.getState();
+		const validity = computeValidityStats(
+			state.precincts,
+			state.assignments,
+			state.districtCount,
+			scenario.rules,
+		);
+		const evalResult = evaluateCriteria(
+			scenario.success_criteria,
+			validity,
+			state.simulationResult!,
+			scenario.rules,
+			state.precincts,
+			state.assignments,
+			state.districtCount,
+			partyIdToKey,
+		);
+
+		resultVerdict.textContent = evalResult.overallPass ? "Map Passed!" : "Map Failed";
+		resultVerdict.className = evalResult.overallPass ? "pass" : "fail";
+		resultSubtitle.textContent = evalResult.overallPass
+			? "All required criteria met."
+			: "One or more required criteria were not met.";
+
+		let html = "";
+		for (const cr of evalResult.criterionResults) {
+			const cls = cr.passed
+				? "passed"
+				: cr.required
+					? "failed-required"
+					: "failed-optional";
+			const icon = cr.passed ? "✓" : "✗";
+			const badge = cr.passed ? "PASS" : cr.required ? "FAIL" : "OPTIONAL";
+			html += `<div class="result-criterion ${cls}">`;
+			html += `<span class="rc-icon">${icon}</span>`;
+			html += `<div class="rc-body">`;
+			html += `<div class="rc-desc">${cr.description}</div>`;
+			if (cr.detail) html += `<div class="rc-detail">${cr.detail}</div>`;
+			html += `</div>`;
+			html += `<span class="rc-badge">${badge}</span>`;
+			html += `</div>`;
+		}
+		resultCriteriaList.innerHTML = html;
+
+		btnKeepDrawing!.style.display = "";
+		btnNextScenario!.style.display = evalResult.overallPass ? "" : "none";
+
+		resultScreen.classList.remove("hidden");
+	}
+
+	btnSubmit!.addEventListener("click", () => {
+		const state = store.getState();
+		const validity = computeValidityStats(
+			state.precincts,
+			state.assignments,
+			state.districtCount,
+			scenario.rules,
+		);
+		showResultScreen(isMapSubmittable(validity, scenario.rules));
+	});
+
+	btnKeepDrawing!.addEventListener("click", () => {
+		resultScreen!.classList.add("hidden");
+	});
+
+	// "Next Scenario" is a placeholder until GAME-018 adds the select screen
+	btnNextScenario!.addEventListener("click", () => {
+		resultScreen!.classList.add("hidden");
+	});
 
 	// ── Subscribe to state changes ────────────────────────────────────────────
 	store.subscribe(() => updateUI());
