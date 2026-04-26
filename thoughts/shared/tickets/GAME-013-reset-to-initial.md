@@ -4,6 +4,7 @@ title: Reset-to-initial district assignments
 area: game, rendering
 status: open
 created: 2026-04-25
+github_issue: 62
 ---
 
 ## Summary
