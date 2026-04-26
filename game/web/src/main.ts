@@ -20,6 +20,7 @@ import {
 	renderDistrictButtons,
 	renderLegend,
 	renderResults,
+	renderValidityPanel,
 } from "./render/mapRenderer.js";
 import { createGameStore } from "./store/gameStore.js";
 
@@ -27,6 +28,7 @@ import { createGameStore } from "./store/gameStore.js";
 
 const svgEl = document.getElementById("map-svg") as SVGSVGElement | null;
 const resultsEl = document.getElementById("results-container") as HTMLElement | null;
+const validityEl = document.getElementById("validity-container") as HTMLElement | null;
 const legendEl = document.getElementById("legend-container") as HTMLElement | null;
 const districtBtnsEl = document.getElementById("district-buttons") as HTMLElement | null;
 const btnUndo = document.getElementById("btn-undo") as HTMLButtonElement | null;
@@ -36,6 +38,7 @@ const btnViewToggle = document.getElementById("btn-view-toggle") as HTMLButtonEl
 if (
 	svgEl === null ||
 	resultsEl === null ||
+	validityEl === null ||
 	legendEl === null ||
 	districtBtnsEl === null ||
 	btnUndo === null ||
@@ -109,6 +112,7 @@ if (wasmEl !== null) {
 		renderer.render();
 
 		renderResults(resultsEl!, state);
+		renderValidityPanel(validityEl!, state, scenario.rules);
 		renderLegend(legendEl!, state.districtCount);
 		renderDistrictButtons(districtBtnsEl!, state.districtCount, state.activeDistrict, (id) => {
 			store.getState().setActiveDistrict(id);
