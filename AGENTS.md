@@ -128,6 +128,10 @@ concrete action. The whole file should rarely exceed 30 lines.
 | `OPT-NNN` | Performance optimization |
 | `AGENT-NNN` | Agentic workflow and agent tooling changes |
 | `SPIKE-NNN` | Time-boxed proof-of-concept investigations |
+| `LEGAL-NNN` | Legal, content liability, and compliance research |
+| `DIST-NNN` | Distribution, deployment, and platform research |
+| `DESIGN-NNN` | Game design, UX, and ergonomics research |
+| `GAME-NNN` | Game implementation work (rendering, simulation, content, game loop) |
 
 Check **both** the Open and Resolved sections of `TICKETS.md` to find the highest existing number in a category before creating a new ticket. Ticket files are deleted when resolved, but their IDs remain in the index permanently — checking only the filesystem will miss them and cause collisions.
 
