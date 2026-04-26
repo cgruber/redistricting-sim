@@ -4,6 +4,7 @@ title: Viewport pan and zoom
 area: game, rendering
 status: open
 created: 2026-04-25
+github_issue: 56
 ---
 
 ## Summary
@@ -26,23 +27,23 @@ precincts) will not.
 ## Goals / Acceptance Criteria
 
 ### Core behaviour
-- [ ] `d3.zoom()` applied to the SVG; pan and zoom share the same transform
-- [ ] **Scroll wheel** zooms in/out
-- [ ] **Keyboard shortcuts**: `=` (zoom in), `-` (zoom out), `0` (reset to
+- [x] `d3.zoom()` applied to the SVG; pan and zoom share the same transform
+- [x] **Scroll wheel** zooms in/out
+- [x] **Keyboard shortcuts**: `=` (zoom in), `-` (zoom out), `0` (reset to
   default scenario view). `+` (Shift+=) aliased to zoom in.
-- [ ] **Right-click drag** pans (or two-finger trackpad drag — whichever feels
-  most natural in Chromium; document the choice)
-- [ ] Zoom-out **floor**: cannot zoom out past the full scenario boundary view
-- [ ] Zoom-in **ceiling**: reasonable upper limit (e.g. 3–4 precincts fill the
-  screen); prevent zooming in so far the map is a blur of geometry
-- [ ] Zoom/pan does not interfere with the left-click paint brush
+- [x] **Right-click drag** pans (document: right-click drag chosen; filters
+  mousedown button=2; prevents context menu)
+- [x] Zoom-out **floor**: cannot zoom out past the full scenario boundary view
+  (scaleExtent lower bound = fitScale)
+- [x] Zoom-in **ceiling**: 8× fitScale (3-4 precincts fill the screen)
+- [x] Zoom/pan does not interfere with the left-click paint brush
+  (zoom.filter() returns false for left-click mousedown)
 
 ### Stroke width
-- [ ] District boundary lines (`line.boundary`, `line.preview-boundary`) scale
+- [x] District boundary lines (`line.boundary`, `line.preview-boundary`) scale
   inversely with zoom so apparent width stays constant
-- [ ] Base boundary stroke width increased slightly from the Sprint 1 value
-  (exact value: visual judgement call during implementation; suggest 2px base)
-- [ ] Outer grid edges and interior district boundary edges remain visually
+- [x] Base boundary stroke width increased to 2px (from 1.5px); preview 2.5px
+- [x] Outer grid edges and interior district boundary edges remain visually
   distinguishable at all zoom levels
 
 ### Keyboard shortcut design decision

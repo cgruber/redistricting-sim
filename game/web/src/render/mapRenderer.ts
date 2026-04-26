@@ -4,10 +4,16 @@
  * Uses the data join pattern (selection.data(data).join(...)) — not manual append loops.
  * Reads state from the Zustand store; does not mutate it.
  *
- * SVG layer order (bottom → top):
- *   borderGroup      — committed district boundaries (solid white)
- *   hexGroup         — precinct fills
+ * SVG layer order (bottom → top, all inside zoomGroup):
+ *   borderGroup        — committed district boundaries (solid white)
+ *   hexGroup           — precinct fills
  *   previewBorderGroup — in-stroke boundary preview (dashed white)
+ *
+ * Pan/zoom (GAME-009):
+ *   d3.zoom() applied to the SVG; pan and zoom share one transform on zoomGroup.
+ *   Scroll wheel → zoom. Right-click drag → pan. Keyboard: =/+ zoom in, - zoom out, 0 reset.
+ *   Filter allows only scroll and right-click; left-click passes through to the paint brush.
+ *   Stroke widths scale inversely with zoom so apparent width stays constant.
  *
  * All persistent event listeners are registered once in the constructor via delegation
  * on the SVG node. Nothing is re-registered in render().
@@ -91,6 +97,7 @@ function computeBoundarySegments(
 
 export class SvgMapRenderer implements MapRenderer {
 	private svg: SVGSel;
+	private zoomGroup: GSel;
 	private borderGroup: GSel;
 	private hexGroup: GSel;
 	private previewBorderGroup: GSel;
@@ -115,6 +122,15 @@ export class SvgMapRenderer implements MapRenderer {
 	private popMin = 0;
 	private popMax = 1;
 
+	// Zoom state (GAME-009)
+	private zoomBehavior!: d3.ZoomBehavior<SVGSVGElement, unknown>;
+	private initialTransform: d3.ZoomTransform = d3.zoomIdentity;
+	private currentK = 1; // current zoom scale; stroke widths divided by this
+
+	// Base stroke widths (apparent px at any zoom level)
+	private static readonly BOUNDARY_BASE_WIDTH = 2;
+	private static readonly PREVIEW_BASE_WIDTH = 2.5;
+
 	constructor(
 		svgEl: SVGSVGElement,
 		getState: () => GameStore,
@@ -126,16 +142,19 @@ export class SvgMapRenderer implements MapRenderer {
 		this.setActiveDistrict = setActiveDistrict;
 
 		this.svg = d3.select(svgEl);
-		// Layer order matters: borderGroup behind hexes, previewBorderGroup on top
-		this.borderGroup = this.svg.append("g").attr("class", "borders");
-		this.hexGroup = this.svg.append("g").attr("class", "hexes");
-		this.previewBorderGroup = this.svg.append("g").attr("class", "preview-borders");
+
+		// Zoom group wraps all map layers so the single transform drives pan/zoom.
+		// Layer order matters: borderGroup behind hexes, previewBorderGroup on top.
+		this.zoomGroup = this.svg.append("g").attr("class", "zoom-layer");
+		this.borderGroup = this.zoomGroup.append("g").attr("class", "borders");
+		this.hexGroup = this.zoomGroup.append("g").attr("class", "hexes");
+		this.previewBorderGroup = this.zoomGroup.append("g").attr("class", "preview-borders");
 
 		const pops = getState().precincts.map((p) => p.population);
 		this.popMin = Math.min(...pops);
 		this.popMax = Math.max(...pops);
 
-		this.initViewBox();
+		this.initZoom();
 		this.initBrushEvents();
 		this.initHoverEvents();
 	}
@@ -149,10 +168,91 @@ export class SvgMapRenderer implements MapRenderer {
 		// No-op until county_id data is present in scenarios.
 	}
 
-	private initViewBox() {
+	// ─── Zoom init (GAME-009) ─────────────────────────────────────────────────
+
+	/**
+	 * Replaces the Sprint 1 viewBox approach. Computes an initial transform that
+	 * fits the scenario in the SVG container, then applies d3.zoom() to the SVG
+	 * with right-click-drag pan and scroll-wheel zoom. Left-click is filtered out
+	 * so the paint brush is unaffected. Keyboard: =+ zoom in, - zoom out, 0 reset.
+	 */
+	private initZoom() {
+		const svgNode = this.svg.node()!;
 		const { precincts } = this.getState();
 		const bounds = mapBounds(precincts);
-		this.svg.attr("viewBox", `${bounds.minX} ${bounds.minY} ${bounds.width} ${bounds.height}`);
+
+		// SVG element fills its container; getBoundingClientRect gives pixel dims.
+		const svgRect = svgNode.getBoundingClientRect();
+		const svgW = svgRect.width > 0 ? svgRect.width : 800;
+		const svgH = svgRect.height > 0 ? svgRect.height : 600;
+
+		const padding = 20; // screen-pixel padding around the scenario at min zoom
+
+		// Compute the scale that fits the scenario within the SVG with padding.
+		const fitScale = Math.min(
+			(svgW - padding * 2) / bounds.width,
+			(svgH - padding * 2) / bounds.height,
+		);
+
+		// Translate so the scenario is centered.
+		const tx = (svgW - bounds.width * fitScale) / 2 - bounds.minX * fitScale;
+		const ty = (svgH - bounds.height * fitScale) / 2 - bounds.minY * fitScale;
+
+		this.initialTransform = d3.zoomIdentity.translate(tx, ty).scale(fitScale);
+		this.currentK = fitScale;
+
+		this.zoomBehavior = d3
+			.zoom<SVGSVGElement, unknown>()
+			// Floor = full scenario view; ceiling = 8× (3-4 precincts fill screen)
+			.scaleExtent([fitScale, fitScale * 8])
+			// Only allow scroll-wheel zoom and right-click (button 2) drag pan.
+			// Left-click mousedown passes through to the paint brush unchanged.
+			.filter((event: Event) => {
+				if (event.type === "wheel") return true;
+				if (event instanceof MouseEvent && event.type === "mousedown") {
+					return event.button === 2;
+				}
+				return false;
+			})
+			.on("zoom", (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
+				this.currentK = event.transform.k;
+				this.zoomGroup.attr("transform", event.transform.toString());
+				// Scale stroke widths inversely so apparent width stays constant.
+				const bw = SvgMapRenderer.BOUNDARY_BASE_WIDTH / this.currentK;
+				this.borderGroup
+					.selectAll<SVGLineElement, Segment>("line.boundary")
+					.attr("stroke-width", bw);
+				const pw = SvgMapRenderer.PREVIEW_BASE_WIDTH / this.currentK;
+				this.previewBorderGroup
+					.selectAll<SVGLineElement, Segment>("line.preview-boundary")
+					.attr("stroke-width", pw);
+			});
+
+		// Prevent context menu on right-click so drag-pan isn't interrupted.
+		svgNode.addEventListener("contextmenu", (e) => e.preventDefault());
+
+		// Apply zoom behavior; set the initial transform (fits scenario to viewport).
+		this.svg.call(this.zoomBehavior);
+		this.svg.call(this.zoomBehavior.transform, this.initialTransform);
+
+		// Keyboard shortcuts: =+ zoom in, - zoom out, 0 reset to fit view.
+		document.addEventListener("keydown", (e: KeyboardEvent) => {
+			const target = e.target as Element;
+			if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
+			if (e.key === "=" || e.key === "+") {
+				e.preventDefault();
+				this.svg.transition().duration(200).call(this.zoomBehavior.scaleBy, 1.3);
+			} else if (e.key === "-") {
+				e.preventDefault();
+				this.svg.transition().duration(200).call(this.zoomBehavior.scaleBy, 1 / 1.3);
+			} else if (e.key === "0") {
+				e.preventDefault();
+				this.svg
+					.transition()
+					.duration(300)
+					.call(this.zoomBehavior.transform, this.initialTransform);
+			}
+		});
 	}
 
 	// ─── Main render ──────────────────────────────────────────────────────────
@@ -184,6 +284,7 @@ export class SvgMapRenderer implements MapRenderer {
 	}
 
 	private renderBoundaries(segments: Segment[]) {
+		const strokeWidth = SvgMapRenderer.BOUNDARY_BASE_WIDTH / this.currentK;
 		this.borderGroup
 			.selectAll<SVGLineElement, Segment>("line.boundary")
 			.data(segments)
@@ -197,7 +298,7 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("x2", (d) => d.x2)
 			.attr("y2", (d) => d.y2)
 			.attr("stroke", "#ffffff")
-			.attr("stroke-width", 1.5)
+			.attr("stroke-width", strokeWidth)
 			.attr("opacity", 0.6)
 			.attr("stroke-dasharray", null);
 	}
@@ -220,6 +321,7 @@ export class SvgMapRenderer implements MapRenderer {
 		}
 
 		const segments = computeBoundarySegments(precincts, previewAssignments);
+		const strokeWidth = SvgMapRenderer.PREVIEW_BASE_WIDTH / this.currentK;
 
 		this.previewBorderGroup
 			.selectAll<SVGLineElement, Segment>("line.preview-boundary")
@@ -238,8 +340,8 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("x2", (d) => d.x2)
 			.attr("y2", (d) => d.y2)
 			.attr("stroke", "#ffffff")
-			.attr("stroke-width", 2)
-			.attr("stroke-dasharray", "5,4")
+			.attr("stroke-width", strokeWidth)
+			.attr("stroke-dasharray", `${5 / this.currentK},${4 / this.currentK}`)
 			.attr("opacity", 0.85);
 	}
 
@@ -270,7 +372,10 @@ export class SvgMapRenderer implements MapRenderer {
 			if (this.hoveredPath !== path) {
 				this.clearHover();
 				this.hoveredPath = path;
-				d3.select(path).attr("stroke", "#ffffff").attr("stroke-width", 1.5).attr("opacity", 0.95);
+				d3.select(path)
+					.attr("stroke", "#ffffff")
+					.attr("stroke-width", 1.5 / this.currentK)
+					.attr("opacity", 0.95);
 
 				const { assignments } = this.getState();
 				const dId = assignments.get(d.id);
@@ -314,6 +419,8 @@ export class SvgMapRenderer implements MapRenderer {
 		const svgNode = this.svg.node()!;
 
 		svgNode.addEventListener("mousedown", (event: MouseEvent) => {
+			// Only handle left-click (button 0); right-click is consumed by d3.zoom pan.
+			if (event.button !== 0) return;
 			const target = event.target as Element;
 			if (!target.classList.contains("hex")) return;
 			const path = target as SVGPathElement;
