@@ -295,10 +295,193 @@
         color: #404060;
         flex-shrink: 0;
       }
+
+      /* ── Intro screen ──────────────────────────────────────────────────────── */
+
+      #intro-screen {
+        position: fixed;
+        inset: 0;
+        background: #0d1b2e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+      }
+
+      #intro-screen.hidden {
+        display: none;
+      }
+
+      #intro-card {
+        background: #16213e;
+        border: 1px solid #0f3460;
+        border-radius: 10px;
+        padding: 36px 40px 28px;
+        max-width: 560px;
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      #intro-character {
+        border-bottom: 1px solid #0f3460;
+        padding-bottom: 16px;
+      }
+
+      #intro-character .char-name {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #e94560;
+      }
+
+      #intro-character .char-role {
+        font-size: 0.82rem;
+        color: #8090a8;
+        margin-top: 2px;
+      }
+
+      #intro-character .char-motivation {
+        font-size: 0.82rem;
+        color: #a0a8b8;
+        margin-top: 8px;
+        line-height: 1.5;
+        font-style: italic;
+      }
+
+      #intro-slide-heading {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #c8d8f0;
+        min-height: 1.4em;
+      }
+
+      #intro-slide-body {
+        font-size: 0.88rem;
+        color: #a0a8b8;
+        line-height: 1.65;
+        white-space: pre-line;
+        min-height: 6em;
+      }
+
+      #intro-objective {
+        background: #0a1f3a;
+        border-left: 3px solid #e94560;
+        border-radius: 4px;
+        padding: 10px 14px;
+        font-size: 0.84rem;
+        color: #c0d0e8;
+        line-height: 1.5;
+      }
+
+      #intro-objective .obj-label {
+        font-size: 0.72rem;
+        color: #606080;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 4px;
+      }
+
+      #intro-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      #intro-progress {
+        font-size: 0.78rem;
+        color: #505070;
+      }
+
+      #intro-nav .nav-btns {
+        display: flex;
+        gap: 8px;
+      }
+
+      #btn-intro-prev, #btn-intro-next {
+        padding: 6px 14px;
+        background: #0f3460;
+        color: #e0e0e0;
+        border: 1px solid #1a4a7a;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.85rem;
+      }
+
+      #btn-intro-prev:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      #btn-intro-prev:not(:disabled):hover, #btn-intro-next:hover {
+        background: #1a4a7a;
+      }
+
+      #btn-intro-start {
+        padding: 6px 18px;
+        background: #e94560;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.88rem;
+        font-weight: 600;
+        display: none;
+      }
+
+      #btn-intro-start.visible {
+        display: block;
+      }
+
+      #btn-intro-start:hover {
+        background: #c73050;
+      }
+
+      #btn-intro-skip {
+        position: absolute;
+        top: 16px;
+        right: 20px;
+        background: none;
+        border: none;
+        color: #404060;
+        font-size: 0.78rem;
+        cursor: pointer;
+      }
+
+      #btn-intro-skip:hover {
+        color: #808090;
+      }
     </style>
   </head>
   <body>
-    <header id="app-header">
+    <!-- ── Intro screen (GAME-016) ──────────────────────────────────────── -->
+    <div id="intro-screen">
+      <button id="btn-intro-skip">Skip intro</button>
+      <div id="intro-card">
+        <div id="intro-character">
+          <div class="char-name" id="char-name"></div>
+          <div class="char-role" id="char-role"></div>
+          <div class="char-motivation" id="char-motivation"></div>
+        </div>
+        <div id="intro-slide-heading"></div>
+        <div id="intro-slide-body"></div>
+        <div id="intro-objective">
+          <div class="obj-label">Your objective</div>
+          <div id="objective-text"></div>
+        </div>
+        <div id="intro-nav">
+          <span id="intro-progress"></span>
+          <div class="nav-btns">
+            <button id="btn-intro-prev" disabled>← Previous</button>
+            <button id="btn-intro-next">Next →</button>
+            <button id="btn-intro-start">Start Drawing</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <header id="app-header" style="display:none">
       <h1>Redistricting Simulator</h1>
       <div id="controls">
         <span style="font-size:0.8rem;color:#888;">Draw district:</span>
@@ -316,7 +499,7 @@
       </div>
     </header>
 
-    <div id="main">
+    <div id="main" style="display:none">
       <div id="map-container">
         <svg id="map-svg"></svg>
       </div>
@@ -336,7 +519,7 @@
       </aside>
     </div>
 
-    <div id="wasm-status-bar">
+    <div id="wasm-status-bar" style="display:none">
       <span id="wasm-status"></span>
     </div>
 

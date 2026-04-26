@@ -2,7 +2,7 @@
 id: GAME-015
 title: Success criteria in scenario format and data model
 area: game, content
-status: open
+status: resolved
 created: 2026-04-26
 ---
 

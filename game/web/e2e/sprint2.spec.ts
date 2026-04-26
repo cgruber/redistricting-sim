@@ -13,9 +13,13 @@ import { test, expect } from "@playwright/test";
  * (same approach as sprint1.spec.ts) to avoid coordinate-mapping issues.
  */
 
-/** Navigate and wait for the hex grid to be ready. */
+/** Navigate, dismiss the intro screen, and wait for the hex grid to be ready. */
 async function loadApp(page: import("@playwright/test").Page): Promise<void> {
   await page.goto("/");
+  // Dismiss intro screen (GAME-016)
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
   await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
 }
 

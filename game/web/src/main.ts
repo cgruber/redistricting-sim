@@ -39,6 +39,23 @@ const btnReset = document.getElementById("btn-reset") as HTMLButtonElement | nul
 const resetConfirm = document.getElementById("reset-confirm") as HTMLElement | null;
 const btnResetConfirm = document.getElementById("btn-reset-confirm") as HTMLButtonElement | null;
 const btnResetCancel = document.getElementById("btn-reset-cancel") as HTMLButtonElement | null;
+const appHeader = document.getElementById("app-header") as HTMLElement | null;
+const mainEl = document.getElementById("main") as HTMLElement | null;
+const wasmStatusBar = document.getElementById("wasm-status-bar") as HTMLElement | null;
+
+// Intro screen refs (GAME-016)
+const introScreen = document.getElementById("intro-screen") as HTMLElement | null;
+const charNameEl = document.getElementById("char-name") as HTMLElement | null;
+const charRoleEl = document.getElementById("char-role") as HTMLElement | null;
+const charMotivationEl = document.getElementById("char-motivation") as HTMLElement | null;
+const introSlideHeading = document.getElementById("intro-slide-heading") as HTMLElement | null;
+const introSlideBody = document.getElementById("intro-slide-body") as HTMLElement | null;
+const objectiveText = document.getElementById("objective-text") as HTMLElement | null;
+const introProgress = document.getElementById("intro-progress") as HTMLElement | null;
+const btnIntroPrev = document.getElementById("btn-intro-prev") as HTMLButtonElement | null;
+const btnIntroNext = document.getElementById("btn-intro-next") as HTMLButtonElement | null;
+const btnIntroStart = document.getElementById("btn-intro-start") as HTMLButtonElement | null;
+const btnIntroSkip = document.getElementById("btn-intro-skip") as HTMLButtonElement | null;
 
 if (
 	svgEl === null ||
@@ -53,7 +70,10 @@ if (
 	btnReset === null ||
 	resetConfirm === null ||
 	btnResetConfirm === null ||
-	btnResetCancel === null
+	btnResetCancel === null ||
+	appHeader === null ||
+	mainEl === null ||
+	wasmStatusBar === null
 ) {
 	throw new Error("Required DOM elements not found");
 }
@@ -100,6 +120,73 @@ if (wasmEl !== null) {
       </div>`,
 		);
 		return;
+	}
+
+	// ── Intro screen (GAME-016) ───────────────────────────────────────────────
+	const slides = scenario.narrative?.intro_slides ?? [];
+
+	// escHandler declared here so showEditor() can remove it regardless of
+	// which dismissal path (Start Drawing, Skip, or Escape) fires first.
+	let escHandler: ((e: KeyboardEvent) => void) | null = null;
+
+	function showEditor() {
+		if (escHandler !== null) {
+			document.removeEventListener("keydown", escHandler);
+			escHandler = null;
+		}
+		introScreen?.classList.add("hidden");
+		appHeader!.style.display = "";
+		mainEl!.style.display = "";
+		wasmStatusBar!.style.display = "";
+	}
+
+	if (slides.length === 0 || introScreen === null) {
+		// No narrative slides — go straight to editor
+		showEditor();
+	} else {
+		const { character, objective } = scenario.narrative!;
+
+		// Populate static character info
+		if (charNameEl) charNameEl.textContent = character.name;
+		if (charRoleEl) charRoleEl.textContent = character.role;
+		if (charMotivationEl) charMotivationEl.textContent = character.motivation ?? "";
+		if (objectiveText) objectiveText.textContent = objective;
+
+		let currentSlide = 0;
+
+		function renderSlide(index: number) {
+			const slide = slides[index];
+			if (!slide) return;
+			if (introSlideHeading) introSlideHeading.textContent = slide.heading ?? "";
+			if (introSlideBody) introSlideBody.textContent = slide.body;
+			if (introProgress) introProgress.textContent = `${index + 1} / ${slides.length}`;
+
+			if (btnIntroPrev) btnIntroPrev.disabled = index === 0;
+
+			const isLast = index === slides.length - 1;
+			if (btnIntroNext) btnIntroNext.style.display = isLast ? "none" : "";
+			if (btnIntroStart) btnIntroStart.classList.toggle("visible", isLast);
+		}
+
+		renderSlide(0);
+
+		btnIntroPrev?.addEventListener("click", () => {
+			if (currentSlide > 0) renderSlide(--currentSlide);
+		});
+
+		btnIntroNext?.addEventListener("click", () => {
+			if (currentSlide < slides.length - 1) renderSlide(++currentSlide);
+		});
+
+		const startHandler = () => showEditor();
+		btnIntroStart?.addEventListener("click", startHandler);
+		btnIntroSkip?.addEventListener("click", startHandler);
+
+		// Escape key skips intro; cleaned up by showEditor() on any dismissal path
+		escHandler = (e: KeyboardEvent) => {
+			if (e.key === "Escape") showEditor();
+		};
+		document.addEventListener("keydown", escHandler);
 	}
 
 	// ── Build store from scenario ─────────────────────────────────────────────
