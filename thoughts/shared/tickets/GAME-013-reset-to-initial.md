@@ -2,7 +2,7 @@
 id: GAME-013
 title: Reset-to-initial district assignments
 area: game, rendering
-status: open
+status: resolved
 created: 2026-04-25
 github_issue: 62
 ---

@@ -2,7 +2,7 @@
 id: GAME-009
 title: Viewport pan and zoom
 area: game, rendering
-status: open
+status: resolved
 created: 2026-04-25
 github_issue: 56
 ---

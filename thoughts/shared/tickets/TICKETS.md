@@ -87,14 +87,8 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DIST-001-steam-deployment-research.md` | distribution, platform | Research Steam free/educational program, achievements API, web-vs-Steam tradeoffs |
 | `DESIGN-001-achievement-star-system.md` | design, UX | Game ergonomics research for star/achievement ranking system (required vs. optional criteria) |
 | `AGENT-003-infra-pr-review-bot-comment-handling.md` | agentic workflow, infra | Propose bot comment handling (Copilot, CodeQL) to infra pr-review-cycle workflow |
-| `DESIGN-002-view-toggle-ux.md` | design, UX | View toggle button label convention: show destination mode, not current mode |
 | `DESIGN-003-districts-view-color-encoding.md` | design, UX | Districts view color/population gradient: decide encoding strategy for v1 |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
-| `GAME-009-pan-zoom.md` | game, rendering | Pan + zoom via d3.zoom(); scroll wheel + keyboard shortcuts; zoom-invariant stroke widths |
-| `GAME-010-map-validity-panel.md` | game, rendering | Live validity panel: per-district pop balance ±%, unassigned count, contiguity status |
-| `GAME-011-precinct-info-panel.md` | game, rendering | Precinct hover info in sidebar (name, district, population); replaces status bar |
-| `GAME-012-county-border-overlay.md` | game, rendering | County border overlay toggle; flavor only; computed from county_id adjacency edges |
-| `GAME-013-reset-to-initial.md` | game, rendering | Reset all assignments to scenario initial state; clears undo history; confirmation required |
 
 ---
 
@@ -102,6 +96,12 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-013: Reset-to-initial district assignments | All AC met; reset button + confirm flow + undo/redo clear; e2e tests; merged PR #63 |
+| GAME-012: County border overlay toggle | All AC met; county-borders SVG layer inside zoom group; toggle button; e2e tests; merged PR #61 |
+| GAME-011: Precinct info panel — hover tooltip in sidebar | All AC met; hover shows precinct detail, mouseout restores placeholder; e2e tests; merged PR #59 |
+| GAME-010: Map validity panel | All AC met; population balance ±%, unassigned count, BFS contiguity; unit + e2e tests; merged PR #65 |
+| GAME-009: Viewport pan and zoom | All AC met; d3.zoom() on zoom-layer group; keyboard shortcut 0 to reset; e2e tests; merged PR #55 |
+| DESIGN-002: View toggle button label convention | All AC met; label shows destination mode; cycles districts↔lean; e2e tests; merged PR #57 |
 | GAME-003: Author tutorial scenario JSON | All AC met; 30-precinct Kalanoa/Westford scenario; proposal + full JSON; merged PR #37 |
 | CI-002: Playwright behavioral test harness | All AC met; Phase 1 smoke test (PR #38) + Phase 2 five behavioral tests (PR #50); Sprint 1 close condition satisfied |
 | GAME-005: Sprint 1 integration — render scenario from JSON | All AC met; adapter + async store init + serve.sh wiring; Sprint 1 demo complete; merged PR #38 |

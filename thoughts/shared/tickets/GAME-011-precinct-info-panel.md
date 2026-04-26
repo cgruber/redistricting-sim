@@ -2,7 +2,7 @@
 id: GAME-011
 title: Precinct info panel — hover tooltip in sidebar
 area: game, rendering
-status: open
+status: resolved
 created: 2026-04-25
 github_issue: 58
 ---
