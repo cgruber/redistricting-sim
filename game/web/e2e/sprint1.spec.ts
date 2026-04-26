@@ -54,7 +54,7 @@ async function loadApp(page: import("@playwright/test").Page): Promise<void> {
 
 // ─── Test 1: Scenario load ────────────────────────────────────────────────────
 
-test("scenario load: 30 precincts rendered with no console errors", async ({ page }) => {
+test("scenario load: 196 precincts rendered with no console errors", async ({ page }) => {
 	const consoleErrors: string[] = [];
 	page.on("console", (msg) => {
 		if (msg.type() === "error") consoleErrors.push(msg.text());
@@ -66,7 +66,7 @@ test("scenario load: 30 precincts rendered with no console errors", async ({ pag
 	await loadApp(page);
 
 	const hexCount = await page.locator("path.hex").count();
-	expect(hexCount).toBe(30);
+	expect(hexCount).toBe(196);
 
 	expect(consoleErrors).toHaveLength(0);
 });

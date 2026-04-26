@@ -25,6 +25,11 @@ export default defineConfig({
 
   projects: [
     {
+      // Use Playwright's managed Chromium download rather than system Chrome.
+      // setup.sh runs `playwright install chromium` to download it once per
+      // machine into ~/.cache/ms-playwright (macOS: ~/Library/Caches/ms-playwright).
+      // This works on any machine that has run setup.sh — including CI agents
+      // that don't have a system Chrome installed.
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },

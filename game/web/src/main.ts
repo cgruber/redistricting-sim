@@ -109,7 +109,7 @@ if (wasmEl !== null) {
 	// ── Load scenario JSON ────────────────────────────────────────────────────
 	let json: unknown;
 	try {
-		const resp = await fetch("/scenarios/tutorial-001.json");
+		const resp = await fetch("/scenarios/tutorial-002.json");
 		if (!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
 		json = (await resp.json()) as unknown;
 	} catch (e) {

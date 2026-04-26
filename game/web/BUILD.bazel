@@ -80,9 +80,9 @@ filegroup(
 # Assembles Bazel-built artifacts into a temp dir, starts python3 http.server
 # on port 58173, and runs pnpm exec playwright test against it.
 #
-# local = True: Playwright requires a host Chromium browser binary installed
-# outside the Bazel sandbox. Run `./setup.sh` once per machine/workspace to
-# install node_modules and Playwright browsers via pnpm exec playwright install.
+# local = True: Playwright requires a Chromium browser binary installed
+# outside the Bazel sandbox. Run `./setup.sh` once per machine to install
+# node_modules and download the managed Playwright Chromium.
 #
 # One-time setup outside Bazel:
 #   cd game && ./setup.sh
@@ -99,6 +99,9 @@ sh_test(
         "e2e/sprint1.spec.ts",
         "e2e/sprint2.spec.ts",
         "e2e/sprint3.spec.ts",
+        # Playwright packages as declared Bazel deps — ensures the cache key includes
+        # the playwright version and the files are available in runfiles.
+        "//:node_modules/@playwright/test",
     ],
     local = True,
     tags = [

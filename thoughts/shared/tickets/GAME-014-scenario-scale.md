@@ -4,6 +4,7 @@ title: Scale tutorial scenario to prove out UI features
 area: game, content
 status: open
 created: 2026-04-26
+github_issue: 78
 ---
 
 ## Summary

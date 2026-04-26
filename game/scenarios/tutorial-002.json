@@ -1,0 +1,4797 @@
+{
+  "format_version": "1",
+  "id": "tutorial-002",
+  "title": "Millbrook County: Three-District Challenge",
+  "election_type": "state_house",
+  "region": {
+    "id": "millbrook_tri_county",
+    "name": "Millbrook Tri-County Area"
+  },
+  "geometry": {
+    "type": "hex_axial"
+  },
+  "parties": [
+    {
+      "id": "ken",
+      "name": "Ken Party",
+      "abbreviation": "KEN"
+    },
+    {
+      "id": "ryu",
+      "name": "Ryu Party",
+      "abbreviation": "RYU"
+    }
+  ],
+  "districts": [
+    {
+      "id": "d1",
+      "name": "District 1"
+    },
+    {
+      "id": "d2",
+      "name": "District 2"
+    },
+    {
+      "id": "d3",
+      "name": "District 3"
+    }
+  ],
+  "default_district_id": "d1",
+  "precincts": [
+    {
+      "id": "p001",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 0,
+        "r": 0
+      },
+      "total_population": 1500,
+      "initial_district_id": "d1",
+      "name": "North A1",
+      "demographic_groups": [
+        {
+          "id": "p001-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6,
+            "ryu": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "p002",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 1,
+        "r": 0
+      },
+      "total_population": 1531,
+      "initial_district_id": "d1",
+      "name": "North A2",
+      "demographic_groups": [
+        {
+          "id": "p002-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6076923076923076,
+            "ryu": 0.39230769230769236
+          }
+        }
+      ]
+    },
+    {
+      "id": "p003",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 2,
+        "r": 0
+      },
+      "total_population": 1612,
+      "initial_district_id": "d1",
+      "name": "North A3",
+      "demographic_groups": [
+        {
+          "id": "p003-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6153846153846154,
+            "ryu": 0.3846153846153846
+          }
+        }
+      ]
+    },
+    {
+      "id": "p004",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 3,
+        "r": 0
+      },
+      "total_population": 1724,
+      "initial_district_id": "d1",
+      "name": "North A4",
+      "demographic_groups": [
+        {
+          "id": "p004-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6230769230769231,
+            "ryu": 0.3769230769230769
+          }
+        }
+      ]
+    },
+    {
+      "id": "p005",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 4,
+        "r": 0
+      },
+      "total_population": 1846,
+      "initial_district_id": "d1",
+      "name": "North A5",
+      "demographic_groups": [
+        {
+          "id": "p005-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6307692307692307,
+            "ryu": 0.36923076923076925
+          }
+        }
+      ]
+    },
+    {
+      "id": "p006",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 5,
+        "r": 0
+      },
+      "total_population": 1955,
+      "initial_district_id": "d2",
+      "name": "North A6",
+      "demographic_groups": [
+        {
+          "id": "p006-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6384615384615384,
+            "ryu": 0.3615384615384616
+          }
+        }
+      ]
+    },
+    {
+      "id": "p007",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 6,
+        "r": 0
+      },
+      "total_population": 2031,
+      "initial_district_id": "d2",
+      "name": "North A7",
+      "demographic_groups": [
+        {
+          "id": "p007-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6461538461538461,
+            "ryu": 0.3538461538461539
+          }
+        }
+      ]
+    },
+    {
+      "id": "p008",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 7,
+        "r": 0
+      },
+      "total_population": 2058,
+      "initial_district_id": "d2",
+      "name": "North A8",
+      "demographic_groups": [
+        {
+          "id": "p008-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6538461538461539,
+            "ryu": 0.34615384615384615
+          }
+        }
+      ]
+    },
+    {
+      "id": "p009",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 8,
+        "r": 0
+      },
+      "total_population": 2031,
+      "initial_district_id": "d2",
+      "name": "North A9",
+      "demographic_groups": [
+        {
+          "id": "p009-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6615384615384615,
+            "ryu": 0.3384615384615385
+          }
+        }
+      ]
+    },
+    {
+      "id": "p010",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 9,
+        "r": 0
+      },
+      "total_population": 1955,
+      "initial_district_id": "d2",
+      "name": "North A10",
+      "demographic_groups": [
+        {
+          "id": "p010-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6692307692307692,
+            "ryu": 0.3307692307692308
+          }
+        }
+      ]
+    },
+    {
+      "id": "p011",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 10,
+        "r": 0
+      },
+      "total_population": 1846,
+      "initial_district_id": "d3",
+      "name": "North A11",
+      "demographic_groups": [
+        {
+          "id": "p011-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.676923076923077,
+            "ryu": 0.32307692307692304
+          }
+        }
+      ]
+    },
+    {
+      "id": "p012",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 11,
+        "r": 0
+      },
+      "total_population": 1724,
+      "initial_district_id": "d3",
+      "name": "North A12",
+      "demographic_groups": [
+        {
+          "id": "p012-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6846153846153846,
+            "ryu": 0.3153846153846154
+          }
+        }
+      ]
+    },
+    {
+      "id": "p013",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 12,
+        "r": 0
+      },
+      "total_population": 1612,
+      "initial_district_id": "d3",
+      "name": "North A13",
+      "demographic_groups": [
+        {
+          "id": "p013-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6923076923076923,
+            "ryu": 0.3076923076923077
+          }
+        }
+      ]
+    },
+    {
+      "id": "p014",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 13,
+        "r": 0
+      },
+      "total_population": 1531,
+      "initial_district_id": "d3",
+      "name": "North A14",
+      "demographic_groups": [
+        {
+          "id": "p014-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.7,
+            "ryu": 0.30000000000000004
+          }
+        }
+      ]
+    },
+    {
+      "id": "p015",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 0,
+        "r": 1
+      },
+      "total_population": 1531,
+      "initial_district_id": "d1",
+      "name": "North B1",
+      "demographic_groups": [
+        {
+          "id": "p015-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5807692307692307,
+            "ryu": 0.4192307692307693
+          }
+        }
+      ]
+    },
+    {
+      "id": "p016",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 1,
+        "r": 1
+      },
+      "total_population": 1633,
+      "initial_district_id": "d1",
+      "name": "North B2",
+      "demographic_groups": [
+        {
+          "id": "p016-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5884615384615384,
+            "ryu": 0.41153846153846163
+          }
+        }
+      ]
+    },
+    {
+      "id": "p017",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 2,
+        "r": 1
+      },
+      "total_population": 1790,
+      "initial_district_id": "d1",
+      "name": "North B3",
+      "demographic_groups": [
+        {
+          "id": "p017-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.596153846153846,
+            "ryu": 0.40384615384615397
+          }
+        }
+      ]
+    },
+    {
+      "id": "p018",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 3,
+        "r": 1
+      },
+      "total_population": 1979,
+      "initial_district_id": "d1",
+      "name": "North B4",
+      "demographic_groups": [
+        {
+          "id": "p018-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6038461538461538,
+            "ryu": 0.3961538461538462
+          }
+        }
+      ]
+    },
+    {
+      "id": "p019",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 4,
+        "r": 1
+      },
+      "total_population": 2175,
+      "initial_district_id": "d1",
+      "name": "North B5",
+      "demographic_groups": [
+        {
+          "id": "p019-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6115384615384615,
+            "ryu": 0.3884615384615385
+          }
+        }
+      ]
+    },
+    {
+      "id": "p020",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 5,
+        "r": 1
+      },
+      "total_population": 2348,
+      "initial_district_id": "d2",
+      "name": "North B6",
+      "demographic_groups": [
+        {
+          "id": "p020-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6192307692307691,
+            "ryu": 0.38076923076923086
+          }
+        }
+      ]
+    },
+    {
+      "id": "p021",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 6,
+        "r": 1
+      },
+      "total_population": 2466,
+      "initial_district_id": "d2",
+      "name": "North B7",
+      "demographic_groups": [
+        {
+          "id": "p021-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6269230769230769,
+            "ryu": 0.3730769230769231
+          }
+        }
+      ]
+    },
+    {
+      "id": "p022",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 7,
+        "r": 1
+      },
+      "total_population": 2509,
+      "initial_district_id": "d2",
+      "name": "North B8",
+      "demographic_groups": [
+        {
+          "id": "p022-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6346153846153846,
+            "ryu": 0.3653846153846154
+          }
+        }
+      ]
+    },
+    {
+      "id": "p023",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 8,
+        "r": 1
+      },
+      "total_population": 2466,
+      "initial_district_id": "d2",
+      "name": "North B9",
+      "demographic_groups": [
+        {
+          "id": "p023-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6423076923076922,
+            "ryu": 0.35769230769230775
+          }
+        }
+      ]
+    },
+    {
+      "id": "p024",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 9,
+        "r": 1
+      },
+      "total_population": 2348,
+      "initial_district_id": "d2",
+      "name": "North B10",
+      "demographic_groups": [
+        {
+          "id": "p024-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6499999999999999,
+            "ryu": 0.3500000000000001
+          }
+        }
+      ]
+    },
+    {
+      "id": "p025",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 10,
+        "r": 1
+      },
+      "total_population": 2175,
+      "initial_district_id": "d3",
+      "name": "North B11",
+      "demographic_groups": [
+        {
+          "id": "p025-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6576923076923076,
+            "ryu": 0.3423076923076924
+          }
+        }
+      ]
+    },
+    {
+      "id": "p026",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 11,
+        "r": 1
+      },
+      "total_population": 1979,
+      "initial_district_id": "d3",
+      "name": "North B12",
+      "demographic_groups": [
+        {
+          "id": "p026-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6653846153846154,
+            "ryu": 0.33461538461538465
+          }
+        }
+      ]
+    },
+    {
+      "id": "p027",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 12,
+        "r": 1
+      },
+      "total_population": 1790,
+      "initial_district_id": "d3",
+      "name": "North B13",
+      "demographic_groups": [
+        {
+          "id": "p027-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.673076923076923,
+            "ryu": 0.326923076923077
+          }
+        }
+      ]
+    },
+    {
+      "id": "p028",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 13,
+        "r": 1
+      },
+      "total_population": 1633,
+      "initial_district_id": "d3",
+      "name": "North B14",
+      "demographic_groups": [
+        {
+          "id": "p028-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6807692307692307,
+            "ryu": 0.3192307692307693
+          }
+        }
+      ]
+    },
+    {
+      "id": "p029",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 0,
+        "r": 2
+      },
+      "total_population": 1612,
+      "initial_district_id": "d1",
+      "name": "North C1",
+      "demographic_groups": [
+        {
+          "id": "p029-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5615384615384615,
+            "ryu": 0.43846153846153846
+          }
+        }
+      ]
+    },
+    {
+      "id": "p030",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 1,
+        "r": 2
+      },
+      "total_population": 1790,
+      "initial_district_id": "d1",
+      "name": "North C2",
+      "demographic_groups": [
+        {
+          "id": "p030-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5692307692307692,
+            "ryu": 0.4307692307692308
+          }
+        }
+      ]
+    },
+    {
+      "id": "p031",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 2,
+        "r": 2
+      },
+      "total_population": 2031,
+      "initial_district_id": "d1",
+      "name": "North C3",
+      "demographic_groups": [
+        {
+          "id": "p031-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5769230769230769,
+            "ryu": 0.42307692307692313
+          }
+        }
+      ]
+    },
+    {
+      "id": "p032",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 3,
+        "r": 2
+      },
+      "total_population": 2311,
+      "initial_district_id": "d1",
+      "name": "North C4",
+      "demographic_groups": [
+        {
+          "id": "p032-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5846153846153846,
+            "ryu": 0.41538461538461535
+          }
+        }
+      ]
+    },
+    {
+      "id": "p033",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 4,
+        "r": 2
+      },
+      "total_population": 2598,
+      "initial_district_id": "d1",
+      "name": "North C5",
+      "demographic_groups": [
+        {
+          "id": "p033-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5923076923076923,
+            "ryu": 0.4076923076923077
+          }
+        }
+      ]
+    },
+    {
+      "id": "p034",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 5,
+        "r": 2
+      },
+      "total_population": 2852,
+      "initial_district_id": "d2",
+      "name": "North C6",
+      "demographic_groups": [
+        {
+          "id": "p034-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6,
+            "ryu": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "p035",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 6,
+        "r": 2
+      },
+      "total_population": 3028,
+      "initial_district_id": "d2",
+      "name": "North C7",
+      "demographic_groups": [
+        {
+          "id": "p035-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6076923076923078,
+            "ryu": 0.39230769230769225
+          }
+        }
+      ]
+    },
+    {
+      "id": "p036",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 7,
+        "r": 2
+      },
+      "total_population": 3092,
+      "initial_district_id": "d2",
+      "name": "North C8",
+      "demographic_groups": [
+        {
+          "id": "p036-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6153846153846154,
+            "ryu": 0.3846153846153846
+          }
+        }
+      ]
+    },
+    {
+      "id": "p037",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 8,
+        "r": 2
+      },
+      "total_population": 3028,
+      "initial_district_id": "d2",
+      "name": "North C9",
+      "demographic_groups": [
+        {
+          "id": "p037-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6230769230769231,
+            "ryu": 0.3769230769230769
+          }
+        }
+      ]
+    },
+    {
+      "id": "p038",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 9,
+        "r": 2
+      },
+      "total_population": 2852,
+      "initial_district_id": "d2",
+      "name": "North C10",
+      "demographic_groups": [
+        {
+          "id": "p038-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6307692307692307,
+            "ryu": 0.36923076923076925
+          }
+        }
+      ]
+    },
+    {
+      "id": "p039",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 10,
+        "r": 2
+      },
+      "total_population": 2598,
+      "initial_district_id": "d3",
+      "name": "North C11",
+      "demographic_groups": [
+        {
+          "id": "p039-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6384615384615384,
+            "ryu": 0.3615384615384616
+          }
+        }
+      ]
+    },
+    {
+      "id": "p040",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 11,
+        "r": 2
+      },
+      "total_population": 2311,
+      "initial_district_id": "d3",
+      "name": "North C12",
+      "demographic_groups": [
+        {
+          "id": "p040-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6461538461538462,
+            "ryu": 0.3538461538461538
+          }
+        }
+      ]
+    },
+    {
+      "id": "p041",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 12,
+        "r": 2
+      },
+      "total_population": 2031,
+      "initial_district_id": "d3",
+      "name": "North C13",
+      "demographic_groups": [
+        {
+          "id": "p041-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6538461538461539,
+            "ryu": 0.34615384615384615
+          }
+        }
+      ]
+    },
+    {
+      "id": "p042",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 13,
+        "r": 2
+      },
+      "total_population": 1790,
+      "initial_district_id": "d3",
+      "name": "North C14",
+      "demographic_groups": [
+        {
+          "id": "p042-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6615384615384615,
+            "ryu": 0.3384615384615385
+          }
+        }
+      ]
+    },
+    {
+      "id": "p043",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 0,
+        "r": 3
+      },
+      "total_population": 1724,
+      "initial_district_id": "d1",
+      "name": "North D1",
+      "demographic_groups": [
+        {
+          "id": "p043-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5423076923076923,
+            "ryu": 0.45769230769230773
+          }
+        }
+      ]
+    },
+    {
+      "id": "p044",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 1,
+        "r": 3
+      },
+      "total_population": 1979,
+      "initial_district_id": "d1",
+      "name": "North D2",
+      "demographic_groups": [
+        {
+          "id": "p044-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5499999999999999,
+            "ryu": 0.45000000000000007
+          }
+        }
+      ]
+    },
+    {
+      "id": "p045",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 2,
+        "r": 3
+      },
+      "total_population": 2311,
+      "initial_district_id": "d1",
+      "name": "North D3",
+      "demographic_groups": [
+        {
+          "id": "p045-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5576923076923077,
+            "ryu": 0.4423076923076923
+          }
+        }
+      ]
+    },
+    {
+      "id": "p046",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 3,
+        "r": 3
+      },
+      "total_population": 2694,
+      "initial_district_id": "d1",
+      "name": "North D4",
+      "demographic_groups": [
+        {
+          "id": "p046-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5653846153846154,
+            "ryu": 0.4346153846153846
+          }
+        }
+      ]
+    },
+    {
+      "id": "p047",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 4,
+        "r": 3
+      },
+      "total_population": 3092,
+      "initial_district_id": "d1",
+      "name": "North D5",
+      "demographic_groups": [
+        {
+          "id": "p047-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.573076923076923,
+            "ryu": 0.42692307692307696
+          }
+        }
+      ]
+    },
+    {
+      "id": "p048",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 5,
+        "r": 3
+      },
+      "total_population": 3454,
+      "initial_district_id": "d2",
+      "name": "North D6",
+      "demographic_groups": [
+        {
+          "id": "p048-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5807692307692307,
+            "ryu": 0.4192307692307693
+          }
+        }
+      ]
+    },
+    {
+      "id": "p049",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 6,
+        "r": 3
+      },
+      "total_population": 3713,
+      "initial_district_id": "d2",
+      "name": "North D7",
+      "demographic_groups": [
+        {
+          "id": "p049-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5884615384615384,
+            "ryu": 0.41153846153846163
+          }
+        }
+      ]
+    },
+    {
+      "id": "p050",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 7,
+        "r": 3
+      },
+      "total_population": 3808,
+      "initial_district_id": "d2",
+      "name": "North D8",
+      "demographic_groups": [
+        {
+          "id": "p050-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5961538461538461,
+            "ryu": 0.40384615384615385
+          }
+        }
+      ]
+    },
+    {
+      "id": "p051",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 8,
+        "r": 3
+      },
+      "total_population": 3713,
+      "initial_district_id": "d2",
+      "name": "North D9",
+      "demographic_groups": [
+        {
+          "id": "p051-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6038461538461538,
+            "ryu": 0.3961538461538462
+          }
+        }
+      ]
+    },
+    {
+      "id": "p052",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 9,
+        "r": 3
+      },
+      "total_population": 3454,
+      "initial_district_id": "d2",
+      "name": "North D10",
+      "demographic_groups": [
+        {
+          "id": "p052-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6115384615384615,
+            "ryu": 0.3884615384615385
+          }
+        }
+      ]
+    },
+    {
+      "id": "p053",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 10,
+        "r": 3
+      },
+      "total_population": 3092,
+      "initial_district_id": "d3",
+      "name": "North D11",
+      "demographic_groups": [
+        {
+          "id": "p053-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6192307692307693,
+            "ryu": 0.38076923076923075
+          }
+        }
+      ]
+    },
+    {
+      "id": "p054",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 11,
+        "r": 3
+      },
+      "total_population": 2694,
+      "initial_district_id": "d3",
+      "name": "North D12",
+      "demographic_groups": [
+        {
+          "id": "p054-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6269230769230769,
+            "ryu": 0.3730769230769231
+          }
+        }
+      ]
+    },
+    {
+      "id": "p055",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 12,
+        "r": 3
+      },
+      "total_population": 2311,
+      "initial_district_id": "d3",
+      "name": "North D13",
+      "demographic_groups": [
+        {
+          "id": "p055-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6346153846153846,
+            "ryu": 0.3653846153846154
+          }
+        }
+      ]
+    },
+    {
+      "id": "p056",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 13,
+        "r": 3
+      },
+      "total_population": 1979,
+      "initial_district_id": "d3",
+      "name": "North D14",
+      "demographic_groups": [
+        {
+          "id": "p056-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6423076923076922,
+            "ryu": 0.35769230769230775
+          }
+        }
+      ]
+    },
+    {
+      "id": "p057",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 0,
+        "r": 4
+      },
+      "total_population": 1846,
+      "initial_district_id": "d1",
+      "name": "North E1",
+      "demographic_groups": [
+        {
+          "id": "p057-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.523076923076923,
+            "ryu": 0.476923076923077
+          }
+        }
+      ]
+    },
+    {
+      "id": "p058",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 1,
+        "r": 4
+      },
+      "total_population": 2175,
+      "initial_district_id": "d1",
+      "name": "North E2",
+      "demographic_groups": [
+        {
+          "id": "p058-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5307692307692307,
+            "ryu": 0.46923076923076934
+          }
+        }
+      ]
+    },
+    {
+      "id": "p059",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 2,
+        "r": 4
+      },
+      "total_population": 2598,
+      "initial_district_id": "d1",
+      "name": "North E3",
+      "demographic_groups": [
+        {
+          "id": "p059-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5384615384615383,
+            "ryu": 0.4615384615384617
+          }
+        }
+      ]
+    },
+    {
+      "id": "p060",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 3,
+        "r": 4
+      },
+      "total_population": 3092,
+      "initial_district_id": "d1",
+      "name": "North E4",
+      "demographic_groups": [
+        {
+          "id": "p060-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5461538461538461,
+            "ryu": 0.4538461538461539
+          }
+        }
+      ]
+    },
+    {
+      "id": "p061",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 4,
+        "r": 4
+      },
+      "total_population": 3622,
+      "initial_district_id": "d1",
+      "name": "North E5",
+      "demographic_groups": [
+        {
+          "id": "p061-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5538461538461538,
+            "ryu": 0.44615384615384623
+          }
+        }
+      ]
+    },
+    {
+      "id": "p062",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 5,
+        "r": 4
+      },
+      "total_population": 4127,
+      "initial_district_id": "d2",
+      "name": "North E6",
+      "demographic_groups": [
+        {
+          "id": "p062-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5615384615384614,
+            "ryu": 0.43846153846153857
+          }
+        }
+      ]
+    },
+    {
+      "id": "p063",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 6,
+        "r": 4
+      },
+      "total_population": 4511,
+      "initial_district_id": "d2",
+      "name": "North E7",
+      "demographic_groups": [
+        {
+          "id": "p063-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5692307692307692,
+            "ryu": 0.4307692307692308
+          }
+        }
+      ]
+    },
+    {
+      "id": "p064",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 7,
+        "r": 4
+      },
+      "total_population": 4657,
+      "initial_district_id": "d2",
+      "name": "North E8",
+      "demographic_groups": [
+        {
+          "id": "p064-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5769230769230769,
+            "ryu": 0.42307692307692313
+          }
+        }
+      ]
+    },
+    {
+      "id": "p065",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 8,
+        "r": 4
+      },
+      "total_population": 4511,
+      "initial_district_id": "d2",
+      "name": "North E9",
+      "demographic_groups": [
+        {
+          "id": "p065-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5846153846153845,
+            "ryu": 0.41538461538461546
+          }
+        }
+      ]
+    },
+    {
+      "id": "p066",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 9,
+        "r": 4
+      },
+      "total_population": 4127,
+      "initial_district_id": "d2",
+      "name": "North E10",
+      "demographic_groups": [
+        {
+          "id": "p066-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5923076923076922,
+            "ryu": 0.4076923076923078
+          }
+        }
+      ]
+    },
+    {
+      "id": "p067",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 10,
+        "r": 4
+      },
+      "total_population": 3622,
+      "initial_district_id": "d3",
+      "name": "North E11",
+      "demographic_groups": [
+        {
+          "id": "p067-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5999999999999999,
+            "ryu": 0.40000000000000013
+          }
+        }
+      ]
+    },
+    {
+      "id": "p068",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 11,
+        "r": 4
+      },
+      "total_population": 3092,
+      "initial_district_id": "d3",
+      "name": "North E12",
+      "demographic_groups": [
+        {
+          "id": "p068-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6076923076923076,
+            "ryu": 0.39230769230769236
+          }
+        }
+      ]
+    },
+    {
+      "id": "p069",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 12,
+        "r": 4
+      },
+      "total_population": 2598,
+      "initial_district_id": "d3",
+      "name": "North E13",
+      "demographic_groups": [
+        {
+          "id": "p069-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6153846153846153,
+            "ryu": 0.3846153846153847
+          }
+        }
+      ]
+    },
+    {
+      "id": "p070",
+      "editable": true,
+      "county_id": "north",
+      "position": {
+        "q": 13,
+        "r": 4
+      },
+      "total_population": 2175,
+      "initial_district_id": "d3",
+      "name": "North E14",
+      "demographic_groups": [
+        {
+          "id": "p070-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.623076923076923,
+            "ryu": 0.376923076923077
+          }
+        }
+      ]
+    },
+    {
+      "id": "p071",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 0,
+        "r": 5
+      },
+      "total_population": 1955,
+      "initial_district_id": "d1",
+      "name": "Central F1",
+      "demographic_groups": [
+        {
+          "id": "p071-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5038461538461538,
+            "ryu": 0.49615384615384617
+          }
+        }
+      ]
+    },
+    {
+      "id": "p072",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 1,
+        "r": 5
+      },
+      "total_population": 2348,
+      "initial_district_id": "d1",
+      "name": "Central F2",
+      "demographic_groups": [
+        {
+          "id": "p072-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5115384615384615,
+            "ryu": 0.4884615384615385
+          }
+        }
+      ]
+    },
+    {
+      "id": "p073",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 2,
+        "r": 5
+      },
+      "total_population": 2852,
+      "initial_district_id": "d1",
+      "name": "Central F3",
+      "demographic_groups": [
+        {
+          "id": "p073-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5192307692307692,
+            "ryu": 0.48076923076923084
+          }
+        }
+      ]
+    },
+    {
+      "id": "p074",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 3,
+        "r": 5
+      },
+      "total_population": 3454,
+      "initial_district_id": "d1",
+      "name": "Central F4",
+      "demographic_groups": [
+        {
+          "id": "p074-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5269230769230769,
+            "ryu": 0.47307692307692306
+          }
+        }
+      ]
+    },
+    {
+      "id": "p075",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 4,
+        "r": 5
+      },
+      "total_population": 4127,
+      "initial_district_id": "d1",
+      "name": "Central F5",
+      "demographic_groups": [
+        {
+          "id": "p075-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5346153846153846,
+            "ryu": 0.4653846153846154
+          }
+        }
+      ]
+    },
+    {
+      "id": "p076",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 5,
+        "r": 5
+      },
+      "total_population": 4816,
+      "initial_district_id": "d2",
+      "name": "Central F6",
+      "demographic_groups": [
+        {
+          "id": "p076-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5423076923076923,
+            "ryu": 0.45769230769230773
+          }
+        }
+      ]
+    },
+    {
+      "id": "p077",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 6,
+        "r": 5
+      },
+      "total_population": 5395,
+      "initial_district_id": "d2",
+      "name": "Central F7",
+      "demographic_groups": [
+        {
+          "id": "p077-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.55,
+            "ryu": 0.44999999999999996
+          }
+        }
+      ]
+    },
+    {
+      "id": "p078",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 7,
+        "r": 5
+      },
+      "total_population": 5639,
+      "initial_district_id": "d2",
+      "name": "Central F8",
+      "demographic_groups": [
+        {
+          "id": "p078-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5576923076923077,
+            "ryu": 0.4423076923076923
+          }
+        }
+      ]
+    },
+    {
+      "id": "p079",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 8,
+        "r": 5
+      },
+      "total_population": 5395,
+      "initial_district_id": "d2",
+      "name": "Central F9",
+      "demographic_groups": [
+        {
+          "id": "p079-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5653846153846154,
+            "ryu": 0.4346153846153846
+          }
+        }
+      ]
+    },
+    {
+      "id": "p080",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 9,
+        "r": 5
+      },
+      "total_population": 4816,
+      "initial_district_id": "d2",
+      "name": "Central F10",
+      "demographic_groups": [
+        {
+          "id": "p080-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.573076923076923,
+            "ryu": 0.42692307692307696
+          }
+        }
+      ]
+    },
+    {
+      "id": "p081",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 10,
+        "r": 5
+      },
+      "total_population": 4127,
+      "initial_district_id": "d3",
+      "name": "Central F11",
+      "demographic_groups": [
+        {
+          "id": "p081-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5807692307692307,
+            "ryu": 0.4192307692307693
+          }
+        }
+      ]
+    },
+    {
+      "id": "p082",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 11,
+        "r": 5
+      },
+      "total_population": 3454,
+      "initial_district_id": "d3",
+      "name": "Central F12",
+      "demographic_groups": [
+        {
+          "id": "p082-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5884615384615385,
+            "ryu": 0.4115384615384615
+          }
+        }
+      ]
+    },
+    {
+      "id": "p083",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 12,
+        "r": 5
+      },
+      "total_population": 2852,
+      "initial_district_id": "d3",
+      "name": "Central F13",
+      "demographic_groups": [
+        {
+          "id": "p083-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5961538461538461,
+            "ryu": 0.40384615384615385
+          }
+        }
+      ]
+    },
+    {
+      "id": "p084",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 13,
+        "r": 5
+      },
+      "total_population": 2348,
+      "initial_district_id": "d3",
+      "name": "Central F14",
+      "demographic_groups": [
+        {
+          "id": "p084-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.6038461538461538,
+            "ryu": 0.3961538461538462
+          }
+        }
+      ]
+    },
+    {
+      "id": "p085",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 0,
+        "r": 6
+      },
+      "total_population": 2031,
+      "initial_district_id": "d1",
+      "name": "Central G1",
+      "demographic_groups": [
+        {
+          "id": "p085-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.48461538461538456,
+            "ryu": 0.5153846153846154
+          }
+        }
+      ]
+    },
+    {
+      "id": "p086",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 1,
+        "r": 6
+      },
+      "total_population": 2466,
+      "initial_district_id": "d1",
+      "name": "Central G2",
+      "demographic_groups": [
+        {
+          "id": "p086-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4923076923076922,
+            "ryu": 0.5076923076923078
+          }
+        }
+      ]
+    },
+    {
+      "id": "p087",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 2,
+        "r": 6
+      },
+      "total_population": 3028,
+      "initial_district_id": "d1",
+      "name": "Central G3",
+      "demographic_groups": [
+        {
+          "id": "p087-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.49999999999999994,
+            "ryu": 0.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "p088",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 3,
+        "r": 6
+      },
+      "total_population": 3713,
+      "initial_district_id": "d1",
+      "name": "Central G4",
+      "demographic_groups": [
+        {
+          "id": "p088-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5076923076923077,
+            "ryu": 0.49230769230769234
+          }
+        }
+      ]
+    },
+    {
+      "id": "p089",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 4,
+        "r": 6
+      },
+      "total_population": 4511,
+      "initial_district_id": "d1",
+      "name": "Central G5",
+      "demographic_groups": [
+        {
+          "id": "p089-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5153846153846153,
+            "ryu": 0.48461538461538467
+          }
+        }
+      ]
+    },
+    {
+      "id": "p090",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 5,
+        "r": 6
+      },
+      "total_population": 5395,
+      "initial_district_id": "d2",
+      "name": "Central G6",
+      "demographic_groups": [
+        {
+          "id": "p090-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.523076923076923,
+            "ryu": 0.476923076923077
+          }
+        }
+      ]
+    },
+    {
+      "id": "p091",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 6,
+        "r": 6
+      },
+      "total_population": 6276,
+      "initial_district_id": "d2",
+      "name": "Central G7",
+      "demographic_groups": [
+        {
+          "id": "p091-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5307692307692307,
+            "ryu": 0.46923076923076934
+          }
+        }
+      ]
+    },
+    {
+      "id": "p092",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 7,
+        "r": 6
+      },
+      "total_population": 6753,
+      "initial_district_id": "d2",
+      "name": "Central G8",
+      "demographic_groups": [
+        {
+          "id": "p092-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5384615384615384,
+            "ryu": 0.46153846153846156
+          }
+        }
+      ]
+    },
+    {
+      "id": "p093",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 8,
+        "r": 6
+      },
+      "total_population": 6276,
+      "initial_district_id": "d2",
+      "name": "Central G9",
+      "demographic_groups": [
+        {
+          "id": "p093-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5461538461538461,
+            "ryu": 0.4538461538461539
+          }
+        }
+      ]
+    },
+    {
+      "id": "p094",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 9,
+        "r": 6
+      },
+      "total_population": 5395,
+      "initial_district_id": "d2",
+      "name": "Central G10",
+      "demographic_groups": [
+        {
+          "id": "p094-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5538461538461538,
+            "ryu": 0.44615384615384623
+          }
+        }
+      ]
+    },
+    {
+      "id": "p095",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 10,
+        "r": 6
+      },
+      "total_population": 4511,
+      "initial_district_id": "d3",
+      "name": "Central G11",
+      "demographic_groups": [
+        {
+          "id": "p095-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5615384615384615,
+            "ryu": 0.43846153846153846
+          }
+        }
+      ]
+    },
+    {
+      "id": "p096",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 11,
+        "r": 6
+      },
+      "total_population": 3713,
+      "initial_district_id": "d3",
+      "name": "Central G12",
+      "demographic_groups": [
+        {
+          "id": "p096-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5692307692307692,
+            "ryu": 0.4307692307692308
+          }
+        }
+      ]
+    },
+    {
+      "id": "p097",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 12,
+        "r": 6
+      },
+      "total_population": 3028,
+      "initial_district_id": "d3",
+      "name": "Central G13",
+      "demographic_groups": [
+        {
+          "id": "p097-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5769230769230769,
+            "ryu": 0.42307692307692313
+          }
+        }
+      ]
+    },
+    {
+      "id": "p098",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 13,
+        "r": 6
+      },
+      "total_population": 2466,
+      "initial_district_id": "d3",
+      "name": "Central G14",
+      "demographic_groups": [
+        {
+          "id": "p098-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5846153846153845,
+            "ryu": 0.41538461538461546
+          }
+        }
+      ]
+    },
+    {
+      "id": "p099",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 0,
+        "r": 7
+      },
+      "total_population": 2058,
+      "initial_district_id": "d1",
+      "name": "Central H1",
+      "demographic_groups": [
+        {
+          "id": "p099-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4653846153846154,
+            "ryu": 0.5346153846153846
+          }
+        }
+      ]
+    },
+    {
+      "id": "p100",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 1,
+        "r": 7
+      },
+      "total_population": 2509,
+      "initial_district_id": "d1",
+      "name": "Central H2",
+      "demographic_groups": [
+        {
+          "id": "p100-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.47307692307692306,
+            "ryu": 0.5269230769230769
+          }
+        }
+      ]
+    },
+    {
+      "id": "p101",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 2,
+        "r": 7
+      },
+      "total_population": 3092,
+      "initial_district_id": "d1",
+      "name": "Central H3",
+      "demographic_groups": [
+        {
+          "id": "p101-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4807692307692308,
+            "ryu": 0.5192307692307692
+          }
+        }
+      ]
+    },
+    {
+      "id": "p102",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 3,
+        "r": 7
+      },
+      "total_population": 3808,
+      "initial_district_id": "d1",
+      "name": "Central H4",
+      "demographic_groups": [
+        {
+          "id": "p102-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4884615384615385,
+            "ryu": 0.5115384615384615
+          }
+        }
+      ]
+    },
+    {
+      "id": "p103",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 4,
+        "r": 7
+      },
+      "total_population": 4657,
+      "initial_district_id": "d1",
+      "name": "Central H5",
+      "demographic_groups": [
+        {
+          "id": "p103-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.49615384615384617,
+            "ryu": 0.5038461538461538
+          }
+        }
+      ]
+    },
+    {
+      "id": "p104",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 5,
+        "r": 7
+      },
+      "total_population": 5639,
+      "initial_district_id": "d2",
+      "name": "Central H6",
+      "demographic_groups": [
+        {
+          "id": "p104-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5038461538461538,
+            "ryu": 0.49615384615384617
+          }
+        }
+      ]
+    },
+    {
+      "id": "p105",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 6,
+        "r": 7
+      },
+      "total_population": 6753,
+      "initial_district_id": "d2",
+      "name": "Central H7",
+      "demographic_groups": [
+        {
+          "id": "p105-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5115384615384615,
+            "ryu": 0.4884615384615385
+          }
+        }
+      ]
+    },
+    {
+      "id": "p106",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 7,
+        "r": 7
+      },
+      "total_population": 8000,
+      "initial_district_id": "d2",
+      "name": "Central H8",
+      "demographic_groups": [
+        {
+          "id": "p106-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5192307692307693,
+            "ryu": 0.4807692307692307
+          }
+        }
+      ]
+    },
+    {
+      "id": "p107",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 8,
+        "r": 7
+      },
+      "total_population": 6753,
+      "initial_district_id": "d2",
+      "name": "Central H9",
+      "demographic_groups": [
+        {
+          "id": "p107-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5269230769230769,
+            "ryu": 0.47307692307692306
+          }
+        }
+      ]
+    },
+    {
+      "id": "p108",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 9,
+        "r": 7
+      },
+      "total_population": 5639,
+      "initial_district_id": "d2",
+      "name": "Central H10",
+      "demographic_groups": [
+        {
+          "id": "p108-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5346153846153846,
+            "ryu": 0.4653846153846154
+          }
+        }
+      ]
+    },
+    {
+      "id": "p109",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 10,
+        "r": 7
+      },
+      "total_population": 4657,
+      "initial_district_id": "d3",
+      "name": "Central H11",
+      "demographic_groups": [
+        {
+          "id": "p109-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5423076923076924,
+            "ryu": 0.4576923076923076
+          }
+        }
+      ]
+    },
+    {
+      "id": "p110",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 11,
+        "r": 7
+      },
+      "total_population": 3808,
+      "initial_district_id": "d3",
+      "name": "Central H12",
+      "demographic_groups": [
+        {
+          "id": "p110-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.55,
+            "ryu": 0.44999999999999996
+          }
+        }
+      ]
+    },
+    {
+      "id": "p111",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 12,
+        "r": 7
+      },
+      "total_population": 3092,
+      "initial_district_id": "d3",
+      "name": "Central H13",
+      "demographic_groups": [
+        {
+          "id": "p111-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5576923076923077,
+            "ryu": 0.4423076923076923
+          }
+        }
+      ]
+    },
+    {
+      "id": "p112",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 13,
+        "r": 7
+      },
+      "total_population": 2509,
+      "initial_district_id": "d3",
+      "name": "Central H14",
+      "demographic_groups": [
+        {
+          "id": "p112-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5653846153846154,
+            "ryu": 0.4346153846153846
+          }
+        }
+      ]
+    },
+    {
+      "id": "p113",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 0,
+        "r": 8
+      },
+      "total_population": 2031,
+      "initial_district_id": "d1",
+      "name": "Central I1",
+      "demographic_groups": [
+        {
+          "id": "p113-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4461538461538461,
+            "ryu": 0.5538461538461539
+          }
+        }
+      ]
+    },
+    {
+      "id": "p114",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 1,
+        "r": 8
+      },
+      "total_population": 2466,
+      "initial_district_id": "d1",
+      "name": "Central I2",
+      "demographic_groups": [
+        {
+          "id": "p114-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4538461538461538,
+            "ryu": 0.5461538461538462
+          }
+        }
+      ]
+    },
+    {
+      "id": "p115",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 2,
+        "r": 8
+      },
+      "total_population": 3028,
+      "initial_district_id": "d1",
+      "name": "Central I3",
+      "demographic_groups": [
+        {
+          "id": "p115-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4615384615384615,
+            "ryu": 0.5384615384615385
+          }
+        }
+      ]
+    },
+    {
+      "id": "p116",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 3,
+        "r": 8
+      },
+      "total_population": 3713,
+      "initial_district_id": "d1",
+      "name": "Central I4",
+      "demographic_groups": [
+        {
+          "id": "p116-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.46923076923076923,
+            "ryu": 0.5307692307692308
+          }
+        }
+      ]
+    },
+    {
+      "id": "p117",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 4,
+        "r": 8
+      },
+      "total_population": 4511,
+      "initial_district_id": "d1",
+      "name": "Central I5",
+      "demographic_groups": [
+        {
+          "id": "p117-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4769230769230769,
+            "ryu": 0.5230769230769231
+          }
+        }
+      ]
+    },
+    {
+      "id": "p118",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 5,
+        "r": 8
+      },
+      "total_population": 5395,
+      "initial_district_id": "d2",
+      "name": "Central I6",
+      "demographic_groups": [
+        {
+          "id": "p118-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.48461538461538456,
+            "ryu": 0.5153846153846154
+          }
+        }
+      ]
+    },
+    {
+      "id": "p119",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 6,
+        "r": 8
+      },
+      "total_population": 6276,
+      "initial_district_id": "d2",
+      "name": "Central I7",
+      "demographic_groups": [
+        {
+          "id": "p119-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4923076923076923,
+            "ryu": 0.5076923076923077
+          }
+        }
+      ]
+    },
+    {
+      "id": "p120",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 7,
+        "r": 8
+      },
+      "total_population": 6753,
+      "initial_district_id": "d2",
+      "name": "Central I8",
+      "demographic_groups": [
+        {
+          "id": "p120-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5,
+            "ryu": 0.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "p121",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 8,
+        "r": 8
+      },
+      "total_population": 6276,
+      "initial_district_id": "d2",
+      "name": "Central I9",
+      "demographic_groups": [
+        {
+          "id": "p121-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5076923076923077,
+            "ryu": 0.49230769230769234
+          }
+        }
+      ]
+    },
+    {
+      "id": "p122",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 9,
+        "r": 8
+      },
+      "total_population": 5395,
+      "initial_district_id": "d2",
+      "name": "Central I10",
+      "demographic_groups": [
+        {
+          "id": "p122-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5153846153846153,
+            "ryu": 0.48461538461538467
+          }
+        }
+      ]
+    },
+    {
+      "id": "p123",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 10,
+        "r": 8
+      },
+      "total_population": 4511,
+      "initial_district_id": "d3",
+      "name": "Central I11",
+      "demographic_groups": [
+        {
+          "id": "p123-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.523076923076923,
+            "ryu": 0.476923076923077
+          }
+        }
+      ]
+    },
+    {
+      "id": "p124",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 11,
+        "r": 8
+      },
+      "total_population": 3713,
+      "initial_district_id": "d3",
+      "name": "Central I12",
+      "demographic_groups": [
+        {
+          "id": "p124-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5307692307692308,
+            "ryu": 0.46923076923076923
+          }
+        }
+      ]
+    },
+    {
+      "id": "p125",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 12,
+        "r": 8
+      },
+      "total_population": 3028,
+      "initial_district_id": "d3",
+      "name": "Central I13",
+      "demographic_groups": [
+        {
+          "id": "p125-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5384615384615384,
+            "ryu": 0.46153846153846156
+          }
+        }
+      ]
+    },
+    {
+      "id": "p126",
+      "editable": true,
+      "county_id": "central",
+      "position": {
+        "q": 13,
+        "r": 8
+      },
+      "total_population": 2466,
+      "initial_district_id": "d3",
+      "name": "Central I14",
+      "demographic_groups": [
+        {
+          "id": "p126-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5461538461538461,
+            "ryu": 0.4538461538461539
+          }
+        }
+      ]
+    },
+    {
+      "id": "p127",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 0,
+        "r": 9
+      },
+      "total_population": 1955,
+      "initial_district_id": "d1",
+      "name": "South J1",
+      "demographic_groups": [
+        {
+          "id": "p127-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4269230769230769,
+            "ryu": 0.573076923076923
+          }
+        }
+      ]
+    },
+    {
+      "id": "p128",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 1,
+        "r": 9
+      },
+      "total_population": 2348,
+      "initial_district_id": "d1",
+      "name": "South J2",
+      "demographic_groups": [
+        {
+          "id": "p128-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4346153846153846,
+            "ryu": 0.5653846153846154
+          }
+        }
+      ]
+    },
+    {
+      "id": "p129",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 2,
+        "r": 9
+      },
+      "total_population": 2852,
+      "initial_district_id": "d1",
+      "name": "South J3",
+      "demographic_groups": [
+        {
+          "id": "p129-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4423076923076923,
+            "ryu": 0.5576923076923077
+          }
+        }
+      ]
+    },
+    {
+      "id": "p130",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 3,
+        "r": 9
+      },
+      "total_population": 3454,
+      "initial_district_id": "d1",
+      "name": "South J4",
+      "demographic_groups": [
+        {
+          "id": "p130-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.44999999999999996,
+            "ryu": 0.55
+          }
+        }
+      ]
+    },
+    {
+      "id": "p131",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 4,
+        "r": 9
+      },
+      "total_population": 4127,
+      "initial_district_id": "d1",
+      "name": "South J5",
+      "demographic_groups": [
+        {
+          "id": "p131-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4576923076923077,
+            "ryu": 0.5423076923076924
+          }
+        }
+      ]
+    },
+    {
+      "id": "p132",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 5,
+        "r": 9
+      },
+      "total_population": 4816,
+      "initial_district_id": "d2",
+      "name": "South J6",
+      "demographic_groups": [
+        {
+          "id": "p132-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4653846153846154,
+            "ryu": 0.5346153846153846
+          }
+        }
+      ]
+    },
+    {
+      "id": "p133",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 6,
+        "r": 9
+      },
+      "total_population": 5395,
+      "initial_district_id": "d2",
+      "name": "South J7",
+      "demographic_groups": [
+        {
+          "id": "p133-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.47307692307692306,
+            "ryu": 0.5269230769230769
+          }
+        }
+      ]
+    },
+    {
+      "id": "p134",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 7,
+        "r": 9
+      },
+      "total_population": 5639,
+      "initial_district_id": "d2",
+      "name": "South J8",
+      "demographic_groups": [
+        {
+          "id": "p134-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4807692307692307,
+            "ryu": 0.5192307692307693
+          }
+        }
+      ]
+    },
+    {
+      "id": "p135",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 8,
+        "r": 9
+      },
+      "total_population": 5395,
+      "initial_district_id": "d2",
+      "name": "South J9",
+      "demographic_groups": [
+        {
+          "id": "p135-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.48846153846153845,
+            "ryu": 0.5115384615384615
+          }
+        }
+      ]
+    },
+    {
+      "id": "p136",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 9,
+        "r": 9
+      },
+      "total_population": 4816,
+      "initial_district_id": "d2",
+      "name": "South J10",
+      "demographic_groups": [
+        {
+          "id": "p136-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.49615384615384617,
+            "ryu": 0.5038461538461538
+          }
+        }
+      ]
+    },
+    {
+      "id": "p137",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 10,
+        "r": 9
+      },
+      "total_population": 4127,
+      "initial_district_id": "d3",
+      "name": "South J11",
+      "demographic_groups": [
+        {
+          "id": "p137-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5038461538461538,
+            "ryu": 0.49615384615384617
+          }
+        }
+      ]
+    },
+    {
+      "id": "p138",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 11,
+        "r": 9
+      },
+      "total_population": 3454,
+      "initial_district_id": "d3",
+      "name": "South J12",
+      "demographic_groups": [
+        {
+          "id": "p138-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5115384615384615,
+            "ryu": 0.4884615384615385
+          }
+        }
+      ]
+    },
+    {
+      "id": "p139",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 12,
+        "r": 9
+      },
+      "total_population": 2852,
+      "initial_district_id": "d3",
+      "name": "South J13",
+      "demographic_groups": [
+        {
+          "id": "p139-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5192307692307692,
+            "ryu": 0.48076923076923084
+          }
+        }
+      ]
+    },
+    {
+      "id": "p140",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 13,
+        "r": 9
+      },
+      "total_population": 2348,
+      "initial_district_id": "d3",
+      "name": "South J14",
+      "demographic_groups": [
+        {
+          "id": "p140-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5269230769230769,
+            "ryu": 0.47307692307692306
+          }
+        }
+      ]
+    },
+    {
+      "id": "p141",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 0,
+        "r": 10
+      },
+      "total_population": 1846,
+      "initial_district_id": "d1",
+      "name": "South A1",
+      "demographic_groups": [
+        {
+          "id": "p141-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4076923076923077,
+            "ryu": 0.5923076923076923
+          }
+        }
+      ]
+    },
+    {
+      "id": "p142",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 1,
+        "r": 10
+      },
+      "total_population": 2175,
+      "initial_district_id": "d1",
+      "name": "South A2",
+      "demographic_groups": [
+        {
+          "id": "p142-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.41538461538461535,
+            "ryu": 0.5846153846153846
+          }
+        }
+      ]
+    },
+    {
+      "id": "p143",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 2,
+        "r": 10
+      },
+      "total_population": 2598,
+      "initial_district_id": "d1",
+      "name": "South A3",
+      "demographic_groups": [
+        {
+          "id": "p143-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4230769230769231,
+            "ryu": 0.5769230769230769
+          }
+        }
+      ]
+    },
+    {
+      "id": "p144",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 3,
+        "r": 10
+      },
+      "total_population": 3092,
+      "initial_district_id": "d1",
+      "name": "South A4",
+      "demographic_groups": [
+        {
+          "id": "p144-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4307692307692308,
+            "ryu": 0.5692307692307692
+          }
+        }
+      ]
+    },
+    {
+      "id": "p145",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 4,
+        "r": 10
+      },
+      "total_population": 3622,
+      "initial_district_id": "d1",
+      "name": "South A5",
+      "demographic_groups": [
+        {
+          "id": "p145-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.43846153846153846,
+            "ryu": 0.5615384615384615
+          }
+        }
+      ]
+    },
+    {
+      "id": "p146",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 5,
+        "r": 10
+      },
+      "total_population": 4127,
+      "initial_district_id": "d2",
+      "name": "South A6",
+      "demographic_groups": [
+        {
+          "id": "p146-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4461538461538461,
+            "ryu": 0.5538461538461539
+          }
+        }
+      ]
+    },
+    {
+      "id": "p147",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 6,
+        "r": 10
+      },
+      "total_population": 4511,
+      "initial_district_id": "d2",
+      "name": "South A7",
+      "demographic_groups": [
+        {
+          "id": "p147-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.45384615384615384,
+            "ryu": 0.5461538461538462
+          }
+        }
+      ]
+    },
+    {
+      "id": "p148",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 7,
+        "r": 10
+      },
+      "total_population": 4657,
+      "initial_district_id": "d2",
+      "name": "South A8",
+      "demographic_groups": [
+        {
+          "id": "p148-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.46153846153846156,
+            "ryu": 0.5384615384615384
+          }
+        }
+      ]
+    },
+    {
+      "id": "p149",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 8,
+        "r": 10
+      },
+      "total_population": 4511,
+      "initial_district_id": "d2",
+      "name": "South A9",
+      "demographic_groups": [
+        {
+          "id": "p149-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.46923076923076923,
+            "ryu": 0.5307692307692308
+          }
+        }
+      ]
+    },
+    {
+      "id": "p150",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 9,
+        "r": 10
+      },
+      "total_population": 4127,
+      "initial_district_id": "d2",
+      "name": "South A10",
+      "demographic_groups": [
+        {
+          "id": "p150-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4769230769230769,
+            "ryu": 0.5230769230769231
+          }
+        }
+      ]
+    },
+    {
+      "id": "p151",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 10,
+        "r": 10
+      },
+      "total_population": 3622,
+      "initial_district_id": "d3",
+      "name": "South A11",
+      "demographic_groups": [
+        {
+          "id": "p151-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4846153846153846,
+            "ryu": 0.5153846153846153
+          }
+        }
+      ]
+    },
+    {
+      "id": "p152",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 11,
+        "r": 10
+      },
+      "total_population": 3092,
+      "initial_district_id": "d3",
+      "name": "South A12",
+      "demographic_groups": [
+        {
+          "id": "p152-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.49230769230769234,
+            "ryu": 0.5076923076923077
+          }
+        }
+      ]
+    },
+    {
+      "id": "p153",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 12,
+        "r": 10
+      },
+      "total_population": 2598,
+      "initial_district_id": "d3",
+      "name": "South A13",
+      "demographic_groups": [
+        {
+          "id": "p153-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5,
+            "ryu": 0.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "p154",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 13,
+        "r": 10
+      },
+      "total_population": 2175,
+      "initial_district_id": "d3",
+      "name": "South A14",
+      "demographic_groups": [
+        {
+          "id": "p154-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.5076923076923077,
+            "ryu": 0.49230769230769234
+          }
+        }
+      ]
+    },
+    {
+      "id": "p155",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 0,
+        "r": 11
+      },
+      "total_population": 1724,
+      "initial_district_id": "d1",
+      "name": "South B1",
+      "demographic_groups": [
+        {
+          "id": "p155-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.3884615384615384,
+            "ryu": 0.6115384615384616
+          }
+        }
+      ]
+    },
+    {
+      "id": "p156",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 1,
+        "r": 11
+      },
+      "total_population": 1979,
+      "initial_district_id": "d1",
+      "name": "South B2",
+      "demographic_groups": [
+        {
+          "id": "p156-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.3961538461538461,
+            "ryu": 0.6038461538461539
+          }
+        }
+      ]
+    },
+    {
+      "id": "p157",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 2,
+        "r": 11
+      },
+      "total_population": 2311,
+      "initial_district_id": "d1",
+      "name": "South B3",
+      "demographic_groups": [
+        {
+          "id": "p157-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4038461538461538,
+            "ryu": 0.5961538461538463
+          }
+        }
+      ]
+    },
+    {
+      "id": "p158",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 3,
+        "r": 11
+      },
+      "total_population": 2694,
+      "initial_district_id": "d1",
+      "name": "South B4",
+      "demographic_groups": [
+        {
+          "id": "p158-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4115384615384615,
+            "ryu": 0.5884615384615385
+          }
+        }
+      ]
+    },
+    {
+      "id": "p159",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 4,
+        "r": 11
+      },
+      "total_population": 3092,
+      "initial_district_id": "d1",
+      "name": "South B5",
+      "demographic_groups": [
+        {
+          "id": "p159-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4192307692307692,
+            "ryu": 0.5807692307692308
+          }
+        }
+      ]
+    },
+    {
+      "id": "p160",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 5,
+        "r": 11
+      },
+      "total_population": 3454,
+      "initial_district_id": "d2",
+      "name": "South B6",
+      "demographic_groups": [
+        {
+          "id": "p160-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.42692307692307685,
+            "ryu": 0.5730769230769232
+          }
+        }
+      ]
+    },
+    {
+      "id": "p161",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 6,
+        "r": 11
+      },
+      "total_population": 3713,
+      "initial_district_id": "d2",
+      "name": "South B7",
+      "demographic_groups": [
+        {
+          "id": "p161-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.43461538461538457,
+            "ryu": 0.5653846153846154
+          }
+        }
+      ]
+    },
+    {
+      "id": "p162",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 7,
+        "r": 11
+      },
+      "total_population": 3808,
+      "initial_district_id": "d2",
+      "name": "South B8",
+      "demographic_groups": [
+        {
+          "id": "p162-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4423076923076923,
+            "ryu": 0.5576923076923077
+          }
+        }
+      ]
+    },
+    {
+      "id": "p163",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 8,
+        "r": 11
+      },
+      "total_population": 3713,
+      "initial_district_id": "d2",
+      "name": "South B9",
+      "demographic_groups": [
+        {
+          "id": "p163-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.44999999999999996,
+            "ryu": 0.55
+          }
+        }
+      ]
+    },
+    {
+      "id": "p164",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 9,
+        "r": 11
+      },
+      "total_population": 3454,
+      "initial_district_id": "d2",
+      "name": "South B10",
+      "demographic_groups": [
+        {
+          "id": "p164-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4576923076923076,
+            "ryu": 0.5423076923076924
+          }
+        }
+      ]
+    },
+    {
+      "id": "p165",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 10,
+        "r": 11
+      },
+      "total_population": 3092,
+      "initial_district_id": "d3",
+      "name": "South B11",
+      "demographic_groups": [
+        {
+          "id": "p165-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.46538461538461534,
+            "ryu": 0.5346153846153847
+          }
+        }
+      ]
+    },
+    {
+      "id": "p166",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 11,
+        "r": 11
+      },
+      "total_population": 2694,
+      "initial_district_id": "d3",
+      "name": "South B12",
+      "demographic_groups": [
+        {
+          "id": "p166-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.47307692307692306,
+            "ryu": 0.5269230769230769
+          }
+        }
+      ]
+    },
+    {
+      "id": "p167",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 12,
+        "r": 11
+      },
+      "total_population": 2311,
+      "initial_district_id": "d3",
+      "name": "South B13",
+      "demographic_groups": [
+        {
+          "id": "p167-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4807692307692307,
+            "ryu": 0.5192307692307693
+          }
+        }
+      ]
+    },
+    {
+      "id": "p168",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 13,
+        "r": 11
+      },
+      "total_population": 1979,
+      "initial_district_id": "d3",
+      "name": "South B14",
+      "demographic_groups": [
+        {
+          "id": "p168-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4884615384615384,
+            "ryu": 0.5115384615384616
+          }
+        }
+      ]
+    },
+    {
+      "id": "p169",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 0,
+        "r": 12
+      },
+      "total_population": 1612,
+      "initial_district_id": "d1",
+      "name": "South C1",
+      "demographic_groups": [
+        {
+          "id": "p169-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.3692307692307692,
+            "ryu": 0.6307692307692307
+          }
+        }
+      ]
+    },
+    {
+      "id": "p170",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 1,
+        "r": 12
+      },
+      "total_population": 1790,
+      "initial_district_id": "d1",
+      "name": "South C2",
+      "demographic_groups": [
+        {
+          "id": "p170-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.3769230769230769,
+            "ryu": 0.6230769230769231
+          }
+        }
+      ]
+    },
+    {
+      "id": "p171",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 2,
+        "r": 12
+      },
+      "total_population": 2031,
+      "initial_district_id": "d1",
+      "name": "South C3",
+      "demographic_groups": [
+        {
+          "id": "p171-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.3846153846153846,
+            "ryu": 0.6153846153846154
+          }
+        }
+      ]
+    },
+    {
+      "id": "p172",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 3,
+        "r": 12
+      },
+      "total_population": 2311,
+      "initial_district_id": "d1",
+      "name": "South C4",
+      "demographic_groups": [
+        {
+          "id": "p172-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.39230769230769225,
+            "ryu": 0.6076923076923078
+          }
+        }
+      ]
+    },
+    {
+      "id": "p173",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 4,
+        "r": 12
+      },
+      "total_population": 2598,
+      "initial_district_id": "d1",
+      "name": "South C5",
+      "demographic_groups": [
+        {
+          "id": "p173-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.39999999999999997,
+            "ryu": 0.6000000000000001
+          }
+        }
+      ]
+    },
+    {
+      "id": "p174",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 5,
+        "r": 12
+      },
+      "total_population": 2852,
+      "initial_district_id": "d2",
+      "name": "South C6",
+      "demographic_groups": [
+        {
+          "id": "p174-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4076923076923077,
+            "ryu": 0.5923076923076923
+          }
+        }
+      ]
+    },
+    {
+      "id": "p175",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 6,
+        "r": 12
+      },
+      "total_population": 3028,
+      "initial_district_id": "d2",
+      "name": "South C7",
+      "demographic_groups": [
+        {
+          "id": "p175-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.41538461538461535,
+            "ryu": 0.5846153846153846
+          }
+        }
+      ]
+    },
+    {
+      "id": "p176",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 7,
+        "r": 12
+      },
+      "total_population": 3092,
+      "initial_district_id": "d2",
+      "name": "South C8",
+      "demographic_groups": [
+        {
+          "id": "p176-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.423076923076923,
+            "ryu": 0.576923076923077
+          }
+        }
+      ]
+    },
+    {
+      "id": "p177",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 8,
+        "r": 12
+      },
+      "total_population": 3028,
+      "initial_district_id": "d2",
+      "name": "South C9",
+      "demographic_groups": [
+        {
+          "id": "p177-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.43076923076923074,
+            "ryu": 0.5692307692307692
+          }
+        }
+      ]
+    },
+    {
+      "id": "p178",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 9,
+        "r": 12
+      },
+      "total_population": 2852,
+      "initial_district_id": "d2",
+      "name": "South C10",
+      "demographic_groups": [
+        {
+          "id": "p178-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.43846153846153846,
+            "ryu": 0.5615384615384615
+          }
+        }
+      ]
+    },
+    {
+      "id": "p179",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 10,
+        "r": 12
+      },
+      "total_population": 2598,
+      "initial_district_id": "d3",
+      "name": "South C11",
+      "demographic_groups": [
+        {
+          "id": "p179-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4461538461538461,
+            "ryu": 0.5538461538461539
+          }
+        }
+      ]
+    },
+    {
+      "id": "p180",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 11,
+        "r": 12
+      },
+      "total_population": 2311,
+      "initial_district_id": "d3",
+      "name": "South C12",
+      "demographic_groups": [
+        {
+          "id": "p180-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4538461538461538,
+            "ryu": 0.5461538461538462
+          }
+        }
+      ]
+    },
+    {
+      "id": "p181",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 12,
+        "r": 12
+      },
+      "total_population": 2031,
+      "initial_district_id": "d3",
+      "name": "South C13",
+      "demographic_groups": [
+        {
+          "id": "p181-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4615384615384615,
+            "ryu": 0.5384615384615385
+          }
+        }
+      ]
+    },
+    {
+      "id": "p182",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 13,
+        "r": 12
+      },
+      "total_population": 1790,
+      "initial_district_id": "d3",
+      "name": "South C14",
+      "demographic_groups": [
+        {
+          "id": "p182-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.46923076923076923,
+            "ryu": 0.5307692307692308
+          }
+        }
+      ]
+    },
+    {
+      "id": "p183",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 0,
+        "r": 13
+      },
+      "total_population": 1531,
+      "initial_district_id": "d1",
+      "name": "South D1",
+      "demographic_groups": [
+        {
+          "id": "p183-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.35,
+            "ryu": 0.65
+          }
+        }
+      ]
+    },
+    {
+      "id": "p184",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 1,
+        "r": 13
+      },
+      "total_population": 1633,
+      "initial_district_id": "d1",
+      "name": "South D2",
+      "demographic_groups": [
+        {
+          "id": "p184-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.35769230769230764,
+            "ryu": 0.6423076923076924
+          }
+        }
+      ]
+    },
+    {
+      "id": "p185",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 2,
+        "r": 13
+      },
+      "total_population": 1790,
+      "initial_district_id": "d1",
+      "name": "South D3",
+      "demographic_groups": [
+        {
+          "id": "p185-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.36538461538461536,
+            "ryu": 0.6346153846153846
+          }
+        }
+      ]
+    },
+    {
+      "id": "p186",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 3,
+        "r": 13
+      },
+      "total_population": 1979,
+      "initial_district_id": "d1",
+      "name": "South D4",
+      "demographic_groups": [
+        {
+          "id": "p186-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.3730769230769231,
+            "ryu": 0.6269230769230769
+          }
+        }
+      ]
+    },
+    {
+      "id": "p187",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 4,
+        "r": 13
+      },
+      "total_population": 2175,
+      "initial_district_id": "d1",
+      "name": "South D5",
+      "demographic_groups": [
+        {
+          "id": "p187-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.38076923076923075,
+            "ryu": 0.6192307692307693
+          }
+        }
+      ]
+    },
+    {
+      "id": "p188",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 5,
+        "r": 13
+      },
+      "total_population": 2348,
+      "initial_district_id": "d2",
+      "name": "South D6",
+      "demographic_groups": [
+        {
+          "id": "p188-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.3884615384615384,
+            "ryu": 0.6115384615384616
+          }
+        }
+      ]
+    },
+    {
+      "id": "p189",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 6,
+        "r": 13
+      },
+      "total_population": 2466,
+      "initial_district_id": "d2",
+      "name": "South D7",
+      "demographic_groups": [
+        {
+          "id": "p189-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.39615384615384613,
+            "ryu": 0.6038461538461539
+          }
+        }
+      ]
+    },
+    {
+      "id": "p190",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 7,
+        "r": 13
+      },
+      "total_population": 2509,
+      "initial_district_id": "d2",
+      "name": "South D8",
+      "demographic_groups": [
+        {
+          "id": "p190-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.40384615384615385,
+            "ryu": 0.5961538461538461
+          }
+        }
+      ]
+    },
+    {
+      "id": "p191",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 8,
+        "r": 13
+      },
+      "total_population": 2466,
+      "initial_district_id": "d2",
+      "name": "South D9",
+      "demographic_groups": [
+        {
+          "id": "p191-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4115384615384615,
+            "ryu": 0.5884615384615385
+          }
+        }
+      ]
+    },
+    {
+      "id": "p192",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 9,
+        "r": 13
+      },
+      "total_population": 2348,
+      "initial_district_id": "d2",
+      "name": "South D10",
+      "demographic_groups": [
+        {
+          "id": "p192-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4192307692307692,
+            "ryu": 0.5807692307692308
+          }
+        }
+      ]
+    },
+    {
+      "id": "p193",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 10,
+        "r": 13
+      },
+      "total_population": 2175,
+      "initial_district_id": "d3",
+      "name": "South D11",
+      "demographic_groups": [
+        {
+          "id": "p193-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4269230769230769,
+            "ryu": 0.573076923076923
+          }
+        }
+      ]
+    },
+    {
+      "id": "p194",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 11,
+        "r": 13
+      },
+      "total_population": 1979,
+      "initial_district_id": "d3",
+      "name": "South D12",
+      "demographic_groups": [
+        {
+          "id": "p194-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4346153846153846,
+            "ryu": 0.5653846153846154
+          }
+        }
+      ]
+    },
+    {
+      "id": "p195",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 12,
+        "r": 13
+      },
+      "total_population": 1790,
+      "initial_district_id": "d3",
+      "name": "South D13",
+      "demographic_groups": [
+        {
+          "id": "p195-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.4423076923076923,
+            "ryu": 0.5576923076923077
+          }
+        }
+      ]
+    },
+    {
+      "id": "p196",
+      "editable": true,
+      "county_id": "south",
+      "position": {
+        "q": 13,
+        "r": 13
+      },
+      "total_population": 1633,
+      "initial_district_id": "d3",
+      "name": "South D14",
+      "demographic_groups": [
+        {
+          "id": "p196-base",
+          "name": "Registered voters",
+          "population_share": 1,
+          "turnout_rate": 0.55,
+          "vote_shares": {
+            "ken": 0.44999999999999996,
+            "ryu": 0.55
+          }
+        }
+      ]
+    }
+  ],
+  "events": [],
+  "rules": {
+    "population_tolerance": 0.1,
+    "contiguity": "required"
+  },
+  "success_criteria": [
+    {
+      "id": "sc-district-count",
+      "required": true,
+      "description": "Every precinct is assigned to a district, and all three districts are in use.",
+      "criterion": {
+        "type": "district_count"
+      }
+    },
+    {
+      "id": "sc-population-balance",
+      "required": true,
+      "description": "All three districts have roughly equal population (within 10%).",
+      "criterion": {
+        "type": "population_balance"
+      }
+    },
+    {
+      "id": "sc-compactness",
+      "required": false,
+      "description": "Districts have reasonable, compact shapes.",
+      "criterion": {
+        "type": "compactness",
+        "operator": "gte",
+        "threshold": 0.4
+      }
+    }
+  ],
+  "narrative": {
+    "character": {
+      "name": "You",
+      "role": "Redistricting Coordinator, Millbrook Tri-County Area",
+      "motivation": "The tri-county commission needs three State House districts for the upcoming election. Equal population, contiguous boundaries — by Friday."
+    },
+    "intro_slides": [
+      {
+        "heading": "Three Counties. Three Districts.",
+        "body": "North County, Central County, and South County are being redrawn into three State House districts.\n\nThe challenge: population is unevenly distributed. You'll need to split counties to balance the numbers."
+      },
+      {
+        "heading": "The rules are simple",
+        "body": "Each district must be contiguous — no islands. Population must be within 10% of equal. Party politics? Not your problem.\n\nDraw the lines."
+      }
+    ],
+    "objective": "Divide the Millbrook Tri-County Area into 3 contiguous districts with roughly equal population."
+  }
+}
