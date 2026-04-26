@@ -255,6 +255,62 @@ test("progression: new player (no localStorage) sees intro, not scenario select"
   await expect(page.locator("#scenario-select")).not.toBeVisible();
 });
 
+// ─── GAME-019: Tutorial-002 winnability ───────────────────────────────────────
+
+test("winnability: painting 5 boundary precincts enables submit and produces a passing map", async ({ page }) => {
+  /**
+   * tutorial-002 initial state: county-aligned (north→d1, central→d2, south→d3).
+   *   d1 = 174,473  (too low)
+   *   d2 = 235,676  (too high)
+   *   d3 = 203,095  (valid)
+   * Submit is disabled; population imbalance prevents submission.
+   *
+   * Winning move: paint precincts p071–p075 (q=0–4 at r=5, the north edge of the
+   * central county) from d2 → d1. This transfers 14,736 population:
+   *   d1 → 189,209  ✓  (target 204,415 ± 10% = [183,973, 224,856])
+   *   d2 → 220,940  ✓
+   *   d3 → 203,095  ✓
+   * All districts are contiguous. Compactness threshold (≥ 0.4, optional) should
+   * be satisfied by the resulting compact rectangular shapes.
+   */
+  await loadEditor(page);
+
+  // Initial state: submit must be disabled (d1 under-populated, d2 over-populated)
+  await expect(page.locator("#btn-submit")).toBeDisabled();
+
+  // Activate district 1 (the default, but be explicit)
+  await page.locator("button.district-btn").first().click();
+
+  // Paint the 5 boundary precincts into district 1.
+  // The adapter uses 0-based array indices as DOM data-precinct-id values,
+  // not the string IDs from the JSON (p071→70, p072→71, …, p075→74).
+  // Uses page.evaluate + direct DOM dispatch rather than Playwright locator
+  // resolution, which can be unreliable for SVG data attributes.
+  for (const idx of [70, 71, 72, 73, 74]) {
+    await page.evaluate((id) => {
+      const path = document.querySelector(`path.hex[data-precinct-id='${id}']`);
+      if (!path) throw new Error(`Precinct path not found for index: ${id}`);
+      path.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, cancelable: true }));
+      window.dispatchEvent(new MouseEvent("mouseup", { bubbles: true, cancelable: true }));
+    }, idx);
+  }
+
+  // Submit should now be enabled (all districts within tolerance, contiguous)
+  await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
+
+  // Submit and assert pass
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#result-screen")).toBeVisible();
+  await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+
+  // All required criteria must show PASS badges
+  const requiredBadges = page.locator(".result-criterion:not(.failed-optional) .rc-badge");
+  const badgeCount = await requiredBadges.count();
+  for (let i = 0; i < badgeCount; i++) {
+    await expect(requiredBadges.nth(i)).toHaveText("PASS");
+  }
+});
+
 // ─── GAME-014: Scenario scale ─────────────────────────────────────────────────
 
 test("scale: tutorial-002 loads and renders 196 precincts (path.hex count)", async ({ page }) => {
