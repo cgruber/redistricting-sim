@@ -58,7 +58,7 @@
         border-color: white;
       }
 
-      #btn-undo, #btn-redo {
+      #btn-undo, #btn-redo, #btn-county-toggle {
         padding: 4px 10px;
         background: #0f3460;
         color: #e0e0e0;
@@ -68,13 +68,18 @@
         font-size: 0.85rem;
       }
 
-      #btn-undo:hover, #btn-redo:hover {
+      #btn-undo:hover, #btn-redo:hover, #btn-county-toggle:hover {
         background: #1a4a7a;
       }
 
       #btn-undo:disabled, #btn-redo:disabled {
         opacity: 0.4;
         cursor: not-allowed;
+      }
+
+      #btn-county-toggle.active {
+        background: #1a4a7a;
+        border-color: #3a7abd;
       }
 
       #main {
@@ -248,6 +253,7 @@
         <button id="btn-undo" disabled>↩ Undo</button>
         <button id="btn-redo" disabled>↪ Redo</button>
         <button id="btn-view-toggle">Switch to Partisan Lean</button>
+        <button id="btn-county-toggle">Show County Borders</button>
       </div>
     </header>
 
