@@ -123,7 +123,7 @@ test("submit: result screen is hidden on initial load", async ({ page }) => {
   await expect(page.locator("#result-screen")).not.toBeVisible();
 });
 
-test("submit: button enables after painting enough precincts to create a valid 2-district map", async ({ page }) => {
+test("submit: button remains in DOM and is interactive after painting precincts across districts", async ({ page }) => {
   await loadEditor(page);
 
   // Switch to district 2 and paint half the precincts (15 of 30)
@@ -135,11 +135,8 @@ test("submit: button enables after painting enough precincts to create a valid 2
     if (isPresent > 0) await paintHex(page, `path.hex[data-precinct-id='${i}']`);
   }
 
-  // Submit may or may not be enabled depending on balance — just verify it is interactive
-  // The key check: Submit is not permanently disabled
-  const submitBtn = page.locator("#btn-submit");
-  // Either enabled (balanced) or still disabled (imbalanced) — test that it exists and isn't crashed
-  await expect(submitBtn).toBeAttached();
+  // Verify the button is still attached and functional (not crashed or removed)
+  await expect(page.locator("#btn-submit")).toBeAttached();
 });
 
 test("submit: clicking submit shows result screen with criteria", async ({ page }) => {

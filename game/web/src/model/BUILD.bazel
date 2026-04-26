@@ -79,6 +79,16 @@ ts_project(
     visibility = ["//web:__subpackages__"],
 )
 
+# ── progress_lib: player progress persistence (GAME-018) ─────────────────────
+
+ts_project(
+    name = "progress_lib",
+    srcs = ["progress.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    visibility = ["//web:__subpackages__"],
+)
+
 # ── loader_typecheck_test: type-check passes ──────────────────────────────────
 
 build_test(

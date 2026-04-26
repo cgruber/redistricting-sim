@@ -25,6 +25,7 @@ import {
 import { createGameStore } from "./store/gameStore.js";
 import { evaluateCriteria, isMapSubmittable } from "./simulation/evaluate.js";
 import { computeValidityStats } from "./simulation/validity.js";
+import { loadProgress, saveProgress, markCompleted, isCompleted } from "./model/progress.js";
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
 
@@ -44,6 +45,10 @@ const btnResetCancel = document.getElementById("btn-reset-cancel") as HTMLButton
 const appHeader = document.getElementById("app-header") as HTMLElement | null;
 const mainEl = document.getElementById("main") as HTMLElement | null;
 const wasmStatusBar = document.getElementById("wasm-status-bar") as HTMLElement | null;
+
+// Scenario select refs (GAME-018)
+const scenarioSelectEl = document.getElementById("scenario-select") as HTMLElement | null;
+const scenarioCardsEl = document.getElementById("scenario-cards") as HTMLElement | null;
 
 // Submit + result screen refs (GAME-017)
 const btnSubmit = document.getElementById("btn-submit") as HTMLButtonElement | null;
@@ -293,10 +298,12 @@ if (wasmEl !== null) {
 	});
 
 	// ── Submit / Evaluation (GAME-017) ────────────────────────────────────────
-	function showResultScreen(pass: boolean) {
+	function showResultScreen() {
 		if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList) return;
 
 		const state = store.getState();
+		if (state.simulationResult === null) return;
+
 		const validity = computeValidityStats(
 			state.precincts,
 			state.assignments,
@@ -306,7 +313,7 @@ if (wasmEl !== null) {
 		const evalResult = evaluateCriteria(
 			scenario.success_criteria,
 			validity,
-			state.simulationResult!,
+			state.simulationResult,
 			scenario.rules,
 			state.precincts,
 			state.assignments,
@@ -320,25 +327,45 @@ if (wasmEl !== null) {
 			? "All required criteria met."
 			: "One or more required criteria were not met.";
 
-		let html = "";
+		resultCriteriaList.innerHTML = "";
 		for (const cr of evalResult.criterionResults) {
 			const cls = cr.passed
 				? "passed"
 				: cr.required
 					? "failed-required"
 					: "failed-optional";
-			const icon = cr.passed ? "✓" : "✗";
-			const badge = cr.passed ? "PASS" : cr.required ? "FAIL" : "OPTIONAL";
-			html += `<div class="result-criterion ${cls}">`;
-			html += `<span class="rc-icon">${icon}</span>`;
-			html += `<div class="rc-body">`;
-			html += `<div class="rc-desc">${cr.description}</div>`;
-			if (cr.detail) html += `<div class="rc-detail">${cr.detail}</div>`;
-			html += `</div>`;
-			html += `<span class="rc-badge">${badge}</span>`;
-			html += `</div>`;
+
+			const row = document.createElement("div");
+			row.className = `result-criterion ${cls}`;
+
+			const iconEl = document.createElement("span");
+			iconEl.className = "rc-icon";
+			iconEl.textContent = cr.passed ? "✓" : "✗";
+
+			const body = document.createElement("div");
+			body.className = "rc-body";
+
+			const desc = document.createElement("div");
+			desc.className = "rc-desc";
+			desc.textContent = cr.description;
+			body.appendChild(desc);
+
+			if (cr.detail) {
+				const detail = document.createElement("div");
+				detail.className = "rc-detail";
+				detail.textContent = cr.detail;
+				body.appendChild(detail);
+			}
+
+			const badge = document.createElement("span");
+			badge.className = "rc-badge";
+			badge.textContent = cr.passed ? "PASS" : cr.required ? "FAIL" : "OPTIONAL";
+
+			row.appendChild(iconEl);
+			row.appendChild(body);
+			row.appendChild(badge);
+			resultCriteriaList.appendChild(row);
 		}
-		resultCriteriaList.innerHTML = html;
 
 		btnKeepDrawing!.style.display = "";
 		btnNextScenario!.style.display = evalResult.overallPass ? "" : "none";
@@ -347,14 +374,7 @@ if (wasmEl !== null) {
 	}
 
 	btnSubmit!.addEventListener("click", () => {
-		const state = store.getState();
-		const validity = computeValidityStats(
-			state.precincts,
-			state.assignments,
-			state.districtCount,
-			scenario.rules,
-		);
-		showResultScreen(isMapSubmittable(validity, scenario.rules));
+		showResultScreen();
 	});
 
 	btnKeepDrawing!.addEventListener("click", () => {
