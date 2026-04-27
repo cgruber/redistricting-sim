@@ -2,7 +2,7 @@
 id: GAME-022
 title: "Implement missing criterion evaluators: majority_minority, efficiency_gap, mean_median"
 area: game, simulation
-status: open
+status: resolved
 created: 2026-04-26
 github_issue: 91
 ---
