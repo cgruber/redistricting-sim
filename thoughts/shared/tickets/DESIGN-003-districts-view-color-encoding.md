@@ -2,9 +2,13 @@
 id: DESIGN-003
 title: Districts view color encoding — population gradient design decision
 area: design, UX
-status: open
+status: resolved
 created: 2026-04-25
 ---
+
+## Resolution
+
+Superseded. Decision made: Districts view uses flat district fills (no population gradient). Population density is addressed by new tickets DESIGN-005 (dot density overlay) and DESIGN-006 (zoom-adaptive dot scaling). See research: `thoughts/shared/research/2026-04-27-design-003-color-encoding-research.md`
 
 ## Summary
 
