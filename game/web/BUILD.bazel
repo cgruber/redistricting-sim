@@ -99,6 +99,7 @@ sh_test(
         "e2e/sprint1.spec.ts",
         "e2e/sprint2.spec.ts",
         "e2e/sprint3.spec.ts",
+        "e2e/scenarios.spec.ts",
         # Playwright packages as declared Bazel deps — ensures the cache key includes
         # the playwright version and the files are available in runfiles.
         "//:node_modules/@playwright/test",

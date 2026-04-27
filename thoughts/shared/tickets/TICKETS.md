@@ -92,9 +92,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-004-legend-layout.md` | design, UX | Move legend to horizontal strip above map; free sidebar space for data panels |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
 | `GAME-020-last-scenario-wrap-up-screen.md` | game, UX | Wrap-up/congratulations screen after completing the final scenario (instead of dead-end select screen) |
-| `GAME-023-scenario-give-the-governor-a-win.md` | game, content | Scenario 2: partisan gerrymandering — draw a map giving the governor's party a seat majority |
-| `GAME-024-scenario-the-packing-problem.md` | game, content | Scenario 3: packing tactic — concentrate opposition into fewest districts; efficiency gap optional criterion |
-| `GAME-025-scenario-cracking-the-opposition.md` | game, content | Scenario 4: cracking tactic — dilute opposition across many districts; mean-median optional criterion |
 
 ---
 
@@ -102,6 +99,9 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-025: cracking the opposition | All AC met; 120-precinct Lakeview scenario, horizontal-band initial failing ≥5K, vertical-strip crack wins all 5; mean_median optional criterion; 9 new e2e tests (48 total pass); merged PR #97 |
+| GAME-024: packing problem | All AC met; 120-precinct Riverport scenario, urban core initial failing ≥4K, pack-into-D3 wins 4; efficiency_gap optional criterion; merged PR #97 |
+| GAME-023: give the governor a win | All AC met; 96-precinct Clearwater scenario, vertical-strip initial 2K/2R failing ≥3K, D3/D4 redistribution wins 3; compactness optional criterion; merged PR #97 |
 | GAME-022: missing evaluators | All AC met; efficiency_gap (wasted-vote), mean_median, majority_minority implemented; 22/22 unit tests; 39/39 e2e pass; merged PR #92 |
 | GAME-021: multi-scenario manifest | All AC met; static manifest + URL routing (?s=id); select screen shows all entries; on-demand JSON fetch; 39/39 e2e tests pass; merged PR #90 |
 | GAME-019: tutorial-002 winnability + e2e solve test | All AC met; county-aligned initial assignments (north→d1, central→d2, south→d3); painting p071–p075 (indices 70–74) solves the map; 39th e2e test verifies end-to-end pass; merged PR #83 |

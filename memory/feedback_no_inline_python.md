@@ -1,11 +1,11 @@
 ---
-name: No inline Python in PR workflow
-description: Never use inline Python (python3, subprocess, etc.) in PR-related operations; use kotlin scripts or jq
+name: No Python; use Kotlin scripts for tooling
+description: Never use Python for any project tooling or scripting; use Kotlin (.main.kts) scripts; jq for JSON parsing
 type: feedback
 ---
 
-Never use inline Python for any PR-related work or JSON parsing.
+Never use Python for project tooling — no inline python3, no /tmp Python scripts, no generator scripts in Python.
 
-**Why:** Explicitly forbidden for PR use. Kotlin scripts in /opt/geekinasuit/agents/tools/ are the sanctioned tools for all PR operations (comments, threads, diff summaries). jq is the sanctioned tool for JSON parsing.
+**Why:** User explicitly prefers Kotlin scripts. Applies to all project tooling including scenario generators, data processors, and PR workflow scripts.
 
-**How to apply:** For PR comment posting, thread replies, and status checks — use the .main.kts scripts. For JSON parsing — use jq. Never call python3 inline in a Bash tool call for these purposes.
+**How to apply:** Write Kotlin `.main.kts` scripts for any data generation or tooling task. Place them in the project (e.g. `game/scenarios/` for scenario generators), not in /tmp. For JSON parsing in shell — use jq. For PR operations — use the .main.kts scripts in /opt/geekinasuit/agents/tools/.
