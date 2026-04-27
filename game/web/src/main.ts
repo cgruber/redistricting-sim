@@ -1,12 +1,12 @@
 /**
  * Application entry point.
- * Fetches the active scenario JSON, validates it through loadScenario(), builds the
- * Zustand store, wires D3 renderer and DOM controls.
+ * Fetches the active scenario JSON on demand (chosen via URL ?s= param or
+ * manifest position), validates it through loadScenario(), builds the Zustand
+ * store, wires D3 renderer and DOM controls.
  *
  * The WASM kernel (Rust → wasm-bindgen no-modules) is loaded by index.html
  * before this bundle executes.
  */
-
 
 import { loadScenario } from "./model/loader.js";
 import type { Scenario } from "./model/scenario.js";
@@ -23,6 +23,16 @@ import { createGameStore } from "./store/gameStore.js";
 import { evaluateCriteria, isMapSubmittable } from "./simulation/evaluate.js";
 import { computeValidityStats } from "./simulation/validity.js";
 import { loadProgress, saveProgress, markCompleted, isCompleted } from "./model/progress.js";
+
+// ─── Scenario manifest (GAME-021) ─────────────────────────────────────────────
+// Static list of all available scenarios in play order.
+// Add an entry here + drop the JSON in /scenarios/ to wire a new scenario.
+
+const SCENARIO_MANIFEST = [
+	{ id: "tutorial-002", title: "Millbrook County: Three-District Challenge" },
+] as const;
+
+type ManifestEntry = (typeof SCENARIO_MANIFEST)[number];
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
 
@@ -92,10 +102,80 @@ if (
 // ─── Async init ───────────────────────────────────────────────────────────────
 
 (async () => {
-	// ── Load scenario JSON ────────────────────────────────────────────────────
+	let progress = loadProgress();
+
+	// ── Scenario select screen (GAME-018 / GAME-021) ──────────────────────────
+	// Rendered from the static manifest + localStorage progress.
+	// Card clicks navigate to /?s=<id> so the page reloads cleanly with the
+	// chosen scenario — avoids tearing down and rebuilding store + renderer in-place.
+
+	function renderScenarioCards() {
+		if (!scenarioCardsEl) return;
+		scenarioCardsEl.innerHTML = "";
+		SCENARIO_MANIFEST.forEach((entry, i) => {
+			const completed = isCompleted(progress, entry.id);
+			const unlocked = i === 0 || isCompleted(progress, SCENARIO_MANIFEST[i - 1]?.id ?? "");
+			const locked = !unlocked;
+
+			const card = document.createElement("div");
+			card.className = `scenario-card${locked ? " locked" : ""}`;
+
+			const titleEl = document.createElement("div");
+			titleEl.className = "sc-title";
+			titleEl.textContent = entry.title;
+
+			const statusEl = document.createElement("div");
+			statusEl.className = `sc-status ${completed ? "completed" : unlocked ? "unlocked" : "locked"}`;
+			statusEl.textContent = completed ? "Completed" : unlocked ? "Ready" : "Locked";
+
+			const playBtn = document.createElement("button");
+			playBtn.className = `sc-play-btn ${completed ? "replay" : unlocked ? "play" : "locked-btn"}`;
+			playBtn.textContent = completed ? "Play Again" : unlocked ? "Play" : "Locked";
+			playBtn.disabled = locked;
+			if (!locked) {
+				playBtn.addEventListener("click", () => {
+					window.location.assign(`/?s=${entry.id}`);
+				});
+			}
+
+			card.appendChild(titleEl);
+			card.appendChild(statusEl);
+			card.appendChild(playBtn);
+			scenarioCardsEl.appendChild(card);
+		});
+	}
+
+	function showScenarioSelect() {
+		renderScenarioCards();
+		scenarioSelectEl?.classList.remove("hidden");
+	}
+
+	// ── Startup routing (GAME-021) ────────────────────────────────────────────
+	// Priority: explicit ?s= param > returning-player select screen > first scenario.
+
+	const urlParams = new URLSearchParams(window.location.search);
+	const requestedId = urlParams.get("s") ?? "";
+	const requestedEntry: ManifestEntry | undefined = SCENARIO_MANIFEST.find(
+		(e) => e.id === requestedId,
+	);
+
+	let entryToLoad: ManifestEntry;
+	if (requestedEntry !== undefined) {
+		// Explicit scenario requested via URL — play it directly
+		entryToLoad = requestedEntry;
+	} else if (progress.completed.length > 0) {
+		// Returning player with no explicit request — show select screen
+		showScenarioSelect();
+		return;
+	} else {
+		// New player — start with the first scenario
+		entryToLoad = SCENARIO_MANIFEST[0];
+	}
+
+	// ── Fetch + validate scenario JSON ────────────────────────────────────────
 	let json: unknown;
 	try {
-		const resp = await fetch("/scenarios/tutorial-002.json");
+		const resp = await fetch(`/scenarios/${entryToLoad.id}.json`);
 		if (!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
 		json = (await resp.json()) as unknown;
 	} catch (e) {
@@ -109,7 +189,6 @@ if (
 		return;
 	}
 
-	// ── Validate + parse ──────────────────────────────────────────────────────
 	let scenario: Scenario;
 	try {
 		scenario = loadScenario(json);
@@ -124,13 +203,53 @@ if (
 		return;
 	}
 
-	// ── GAME-018: Scenario manifest + progress ───────────────────────────────
-	const SCENARIO_MANIFEST: Array<{ id: string; title: string }> = [
-		{ id: scenario.id, title: scenario.title },
-	];
-	let progress = loadProgress();
+	// ── Build store from scenario ─────────────────────────────────────────────
+	const { store } = createGameStore(scenario);
+	const temporalStore = store.temporal;
 
-	// ── Intro screen (GAME-016) + scenario routing (GAME-018) ────────────────
+	// ── Create renderer ───────────────────────────────────────────────────────
+	const renderer: MapRenderer = new SvgMapRenderer(
+		svgEl!,
+		() => store.getState(),
+		(ids, district) => store.getState().paintStroke(ids, district),
+		(id) => store.getState().setActiveDistrict(id),
+	);
+
+	// ── Party ID → spike PartyKey mapping (for criteria evaluation) ──────────
+	// First scenario party → "R", second → "D", rest → "L"/"G"/"I"
+	const SPIKE_PARTY_KEYS = ["R", "D", "L", "G", "I"] as const;
+	const partyIdToKey = new Map<string, string>();
+	scenario.parties.forEach((p, i) => {
+		partyIdToKey.set(p.id, SPIKE_PARTY_KEYS[i] ?? "I");
+	});
+
+	// ── Update cycle ──────────────────────────────────────────────────────────
+	function updateUI() {
+		const state = store.getState();
+		const { pastStates, futureStates } = temporalStore.getState();
+
+		renderer.render();
+
+		renderResults(resultsEl!, state);
+		renderValidityPanel(validityEl!, state, scenario.rules);
+		renderLegend(legendEl!, state.districtCount);
+		renderDistrictButtons(districtBtnsEl!, state.districtCount, state.activeDistrict, (id) => {
+			store.getState().setActiveDistrict(id);
+		});
+
+		btnUndo!.disabled = pastStates.length === 0;
+		btnRedo!.disabled = futureStates.length === 0;
+
+		const validity = computeValidityStats(
+			state.precincts,
+			state.assignments,
+			state.districtCount,
+			scenario.rules,
+		);
+		btnSubmit!.disabled = !isMapSubmittable(validity, scenario.rules);
+	}
+
+	// ── Intro screen (GAME-016) ───────────────────────────────────────────────
 	// AbortController lets startScenarioIntro() be safely called multiple times:
 	// each call cancels the previous intro's event listeners before re-wiring.
 	let introController: AbortController | null = null;
@@ -190,53 +309,6 @@ if (
 		document.addEventListener("keydown", (e: KeyboardEvent) => {
 			if (e.key === "Escape") showEditor();
 		}, { signal });
-	}
-
-	// ── Build store from scenario ─────────────────────────────────────────────
-	const { store } = createGameStore(scenario);
-	const temporalStore = store.temporal;
-
-	// ── Create renderer ───────────────────────────────────────────────────────
-	const renderer: MapRenderer = new SvgMapRenderer(
-		svgEl!,
-		() => store.getState(),
-		(ids, district) => store.getState().paintStroke(ids, district),
-		(id) => store.getState().setActiveDistrict(id),
-	);
-
-	// ── Party ID → spike PartyKey mapping (for criteria evaluation) ──────────
-	// First scenario party → "R", second → "D", rest → "L"/"G"/"I"
-	const SPIKE_PARTY_KEYS = ["R", "D", "L", "G", "I"] as const;
-	const partyIdToKey = new Map<string, string>();
-	scenario.parties.forEach((p, i) => {
-		partyIdToKey.set(p.id, SPIKE_PARTY_KEYS[i] ?? "I");
-	});
-
-	// ── Update cycle ──────────────────────────────────────────────────────────
-	function updateUI() {
-		const state = store.getState();
-		const { pastStates, futureStates } = temporalStore.getState();
-
-		renderer.render();
-
-		renderResults(resultsEl!, state);
-		renderValidityPanel(validityEl!, state, scenario.rules);
-		renderLegend(legendEl!, state.districtCount);
-		renderDistrictButtons(districtBtnsEl!, state.districtCount, state.activeDistrict, (id) => {
-			store.getState().setActiveDistrict(id);
-		});
-
-		btnUndo!.disabled = pastStates.length === 0;
-		btnRedo!.disabled = futureStates.length === 0;
-
-		// Enable Submit only when the map meets all hard validity constraints
-		const validity = computeValidityStats(
-			state.precincts,
-			state.assignments,
-			state.districtCount,
-			scenario.rules,
-		);
-		btnSubmit!.disabled = !isMapSubmittable(validity, scenario.rules);
 	}
 
 	// ── Undo / Redo buttons ───────────────────────────────────────────────────
@@ -374,68 +446,17 @@ if (
 		resultScreen!.classList.add("hidden");
 	});
 
-	// ── Scenario select screen (GAME-018) ─────────────────────────────────────
-	function renderScenarioCards() {
-		if (!scenarioCardsEl) return;
-		scenarioCardsEl.innerHTML = "";
-		SCENARIO_MANIFEST.forEach((entry, i) => {
-			const completed = isCompleted(progress, entry.id);
-			const unlocked = i === 0 || isCompleted(progress, SCENARIO_MANIFEST[i - 1]?.id ?? "");
-			const locked = !unlocked;
-
-			const card = document.createElement("div");
-			card.className = `scenario-card${locked ? " locked" : ""}`;
-
-			const titleEl = document.createElement("div");
-			titleEl.className = "sc-title";
-			titleEl.textContent = entry.title;
-
-			const statusEl = document.createElement("div");
-			statusEl.className = `sc-status ${completed ? "completed" : unlocked ? "unlocked" : "locked"}`;
-			statusEl.textContent = completed ? "Completed" : unlocked ? "Ready" : "Locked";
-
-			const playBtn = document.createElement("button");
-			playBtn.className = `sc-play-btn ${completed ? "replay" : unlocked ? "play" : "locked-btn"}`;
-			playBtn.textContent = completed ? "Play Again" : unlocked ? "Play" : "Locked";
-			playBtn.disabled = locked;
-			if (!locked) {
-				playBtn.addEventListener("click", () => {
-					scenarioSelectEl?.classList.add("hidden");
-					startScenarioIntro();
-				});
-			}
-
-			card.appendChild(titleEl);
-			card.appendChild(statusEl);
-			card.appendChild(playBtn);
-			scenarioCardsEl.appendChild(card);
-		});
-	}
-
-	function showScenarioSelect() {
-		renderScenarioCards();
-		scenarioSelectEl?.classList.remove("hidden");
-	}
-
-	// "Next Scenario" → re-render cards (progress updated) then show select
+	// "Next Scenario" → navigate back to root so routing re-evaluates with
+	// updated progress and shows the select screen (or next unlocked scenario).
 	btnNextScenario!.addEventListener("click", () => {
-		resultScreen!.classList.add("hidden");
-		showScenarioSelect();
+		window.location.assign("/");
 	});
 
 	// ── Subscribe to state changes ────────────────────────────────────────────
 	store.subscribe(() => updateUI());
 	temporalStore.subscribe(() => updateUI());
 
-	// ── Initial render ────────────────────────────────────────────────────────
+	// ── Initial render + intro ────────────────────────────────────────────────
 	updateUI();
-
-	// ── GAME-018: progress-aware startup routing ──────────────────────────────
-	// Returning players (any completed scenario) go to the select screen.
-	// New players go directly to the scenario intro.
-	if (progress.completed.length > 0 && scenarioSelectEl !== null) {
-		showScenarioSelect();
-	} else {
-		startScenarioIntro();
-	}
+	startScenarioIntro();
 })();
