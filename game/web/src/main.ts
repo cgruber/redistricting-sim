@@ -378,6 +378,7 @@ if (
 			state.assignments,
 			state.districtCount,
 			partyIdToKey,
+			scenario.precincts,
 		);
 
 		resultVerdict.textContent = evalResult.overallPass ? "Map Passed!" : "Map Failed";

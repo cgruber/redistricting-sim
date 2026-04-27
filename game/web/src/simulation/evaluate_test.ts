@@ -27,7 +27,7 @@ import { evaluateCriteria, isMapSubmittable } from "./evaluate.js";
 import { computeValidityStats } from "./validity.js";
 import { runElection } from "./election.js";
 import type { Precinct, GameState, AssignmentMap } from "../model/types.js";
-import type { ScenarioRules, SuccessCriterion } from "../model/scenario.js";
+import type { ScenarioRules, SuccessCriterion, Precinct as ScenarioPrecinct } from "../model/scenario.js";
 
 // ─── Minimal test runner ──────────────────────────────────────────────────────
 
@@ -150,6 +150,7 @@ function runEval(
   assignments: AssignmentMap,
   districtCount: number,
   rules = RULES,
+  scenarioPrecincts: ScenarioPrecinct[] = [],
 ) {
   const validityStats = computeValidityStats(precincts, assignments, districtCount, rules);
   const state: GameState = {
@@ -169,6 +170,7 @@ function runEval(
     assignments,
     districtCount,
     PARTY_MAP,
+    scenarioPrecincts,
   );
 }
 
@@ -327,6 +329,229 @@ test("isMapSubmittable: contiguity required + non-contiguous district → false"
   const assignments = new Map([[0, 1], [1, 2], [2, 1], [3, 2]]);
   const stats = computeValidityStats(FOUR_PRECINCTS, assignments, 2, RULES);
   assertFalse(isMapSubmittable(stats, RULES), "non-contiguous → not submittable");
+});
+
+// ─── efficiency_gap tests ─────────────────────────────────────────────────────
+//
+// Fixture: 3 districts (1 precinct each, pop=1000), all R+D only.
+//   D1 (R wins 70/30): R_wasted=200, D_wasted=300
+//   D2 (D wins 30/70): R_wasted=300, D_wasted=200
+//   D3 (D wins 30/70): R_wasted=300, D_wasted=200
+//   Total: R_wasted=800, D_wasted=700, allVotes=3000
+//   abs(EG) = |800-700|/3000 = 100/3000 ≈ 0.0333
+
+function makeEfficiencyGapCriterion(
+  op: import("../model/scenario.js").CompareOp,
+  threshold: number,
+  required = true,
+): SuccessCriterion {
+  return {
+    id: "sc-eg" as import("../model/scenario.js").CriterionId,
+    required,
+    description: "Efficiency gap bounded",
+    criterion: { type: "efficiency_gap", operator: op, threshold },
+  };
+}
+
+const EG_PRECINCTS = [
+  makePrecinct(0, 1000, 0.7, 0.3, [null, null, null, null, null, null]), // D1: R wins
+  makePrecinct(1, 1000, 0.3, 0.7, [null, null, null, null, null, null]), // D2: D wins
+  makePrecinct(2, 1000, 0.3, 0.7, [null, null, null, null, null, null]), // D3: D wins
+];
+const EG_ASSIGNMENTS = new Map([[0, 1], [1, 2], [2, 3]]);
+
+test("efficiency_gap: abs(gap)≈0.033 ≤ 0.05 → pass", () => {
+  const result = runEval(
+    [makeEfficiencyGapCriterion("lte", 0.05)],
+    EG_PRECINCTS,
+    EG_ASSIGNMENTS,
+    3,
+    RULES_LENIENT,
+  );
+  assertTrue(result.criterionResults[0]!.passed, "gap 0.033 ≤ 0.05 should pass");
+  assertTrue(result.overallPass, "overall pass");
+});
+
+test("efficiency_gap: abs(gap)≈0.033 > 0.02 → fail", () => {
+  const result = runEval(
+    [makeEfficiencyGapCriterion("lte", 0.02)],
+    EG_PRECINCTS,
+    EG_ASSIGNMENTS,
+    3,
+    RULES_LENIENT,
+  );
+  assertFalse(result.criterionResults[0]!.passed, "gap 0.033 > 0.02 should fail");
+  assertFalse(result.overallPass, "overall fail");
+});
+
+// ─── mean_median tests ────────────────────────────────────────────────────────
+//
+// Balanced fixture: R shares = [0.4, 0.5, 0.6] → mean=0.5, median=0.5, diff=0.0
+// Gerrymandered fixture: R shares = [0.3, 0.35, 0.9] → mean≈0.517, median=0.35, diff≈+0.167
+
+function makeMeanMedianCriterion(
+  party: string,
+  op: import("../model/scenario.js").CompareOp,
+  threshold: number,
+  required = true,
+): SuccessCriterion {
+  return {
+    id: "sc-mm" as import("../model/scenario.js").CriterionId,
+    required,
+    description: "Mean-median difference bounded",
+    criterion: {
+      type: "mean_median",
+      party: party as import("../model/scenario.js").PartyId,
+      operator: op,
+      threshold,
+    },
+  };
+}
+
+const MM_BALANCED_PRECINCTS = [
+  makePrecinct(0, 1000, 0.4, 0.6, [null, null, null, null, null, null]),
+  makePrecinct(1, 1000, 0.5, 0.5, [null, null, null, null, null, null]),
+  makePrecinct(2, 1000, 0.6, 0.4, [null, null, null, null, null, null]),
+];
+const MM_GERRYMANDER_PRECINCTS = [
+  makePrecinct(0, 1000, 0.3, 0.7, [null, null, null, null, null, null]),
+  makePrecinct(1, 1000, 0.35, 0.65, [null, null, null, null, null, null]),
+  makePrecinct(2, 1000, 0.9, 0.1, [null, null, null, null, null, null]),
+];
+const MM_ASSIGNMENTS = new Map([[0, 1], [1, 2], [2, 3]]);
+
+test("mean_median: balanced districts (diff=0) ≤ 0.05 → pass", () => {
+  const result = runEval(
+    [makeMeanMedianCriterion("ken", "lte", 0.05)],
+    MM_BALANCED_PRECINCTS,
+    MM_ASSIGNMENTS,
+    3,
+    RULES_LENIENT,
+  );
+  assertTrue(result.criterionResults[0]!.passed, "diff=0 ≤ 0.05 should pass");
+  assertTrue(result.overallPass, "overall pass");
+});
+
+test("mean_median: gerrymandered (diff≈+0.167) > 0.05 → fail", () => {
+  const result = runEval(
+    [makeMeanMedianCriterion("ken", "lte", 0.05)],
+    MM_GERRYMANDER_PRECINCTS,
+    MM_ASSIGNMENTS,
+    3,
+    RULES_LENIENT,
+  );
+  assertFalse(result.criterionResults[0]!.passed, "diff 0.167 > 0.05 should fail");
+  assertFalse(result.overallPass, "overall fail");
+});
+
+// ─── majority_minority tests ──────────────────────────────────────────────────
+//
+// Fixture: 4 precincts, 2 districts (2 precincts each), pop=1000 each.
+//   D1 precincts: minority group share = 0.3  → district share = 0.3
+//   D2 precincts: minority group share = 0.6  → district share = 0.6
+//
+// group_filter: { group_ids: ["minority"] }
+// min_eligible_share: 0.50
+//   D1 fails (0.3 < 0.50), D2 passes (0.6 ≥ 0.50) → qualifying = 1
+
+function makeScenarioPrecinct(
+  idx: number,
+  pop: number,
+  minorityShare: number,
+): ScenarioPrecinct {
+  const majorityShare = 1 - minorityShare;
+  return {
+    id: `p${idx}` as import("../model/scenario.js").PrecinctId,
+    editable: true,
+    position: { q: 0, r: idx },
+    total_population: pop,
+    demographic_groups: [
+      {
+        id: "minority" as import("../model/scenario.js").GroupId,
+        population_share: minorityShare,
+        vote_shares: { ken: 0.3, ryu: 0.7 } as Record<import("../model/scenario.js").PartyId, number>,
+        turnout_rate: 0.6,
+      },
+      {
+        id: "majority" as import("../model/scenario.js").GroupId,
+        population_share: majorityShare,
+        vote_shares: { ken: 0.55, ryu: 0.45 } as Record<import("../model/scenario.js").PartyId, number>,
+        turnout_rate: 0.7,
+      },
+    ],
+  };
+}
+
+function makeMajorityMinorityCriterion(
+  minShare: number,
+  minDistricts: number,
+  required = true,
+): SuccessCriterion {
+  return {
+    id: "sc-mjm" as import("../model/scenario.js").CriterionId,
+    required,
+    description: `At least ${minDistricts} majority-minority district(s)`,
+    criterion: {
+      type: "majority_minority",
+      group_filter: { group_ids: ["minority" as import("../model/scenario.js").GroupId] },
+      min_eligible_share: minShare,
+      min_districts: minDistricts,
+    },
+  };
+}
+
+// Spike precincts for the 4-precinct map (majority_minority only reads scenario precincts)
+const MJM_SPIKE_PRECINCTS = [
+  makePrecinct(0, 1000, 0.55, 0.45, [null, null, null, null, null, null]),
+  makePrecinct(1, 1000, 0.55, 0.45, [null, null, null, null, null, null]),
+  makePrecinct(2, 1000, 0.3, 0.7, [null, null, null, null, null, null]),
+  makePrecinct(3, 1000, 0.3, 0.7, [null, null, null, null, null, null]),
+];
+// Scenario precincts: D1 (idx 0,1) have 30% minority; D2 (idx 2,3) have 60% minority
+const MJM_SCENARIO_PRECINCTS = [
+  makeScenarioPrecinct(0, 1000, 0.3),
+  makeScenarioPrecinct(1, 1000, 0.3),
+  makeScenarioPrecinct(2, 1000, 0.6),
+  makeScenarioPrecinct(3, 1000, 0.6),
+];
+const MJM_ASSIGNMENTS = new Map([[0, 1], [1, 1], [2, 2], [3, 2]]);
+
+test("majority_minority: 1 qualifying district ≥ min_districts=1 → pass", () => {
+  const result = runEval(
+    [makeMajorityMinorityCriterion(0.50, 1)],
+    MJM_SPIKE_PRECINCTS,
+    MJM_ASSIGNMENTS,
+    2,
+    RULES_LENIENT,
+    MJM_SCENARIO_PRECINCTS,
+  );
+  assertTrue(result.criterionResults[0]!.passed, "1 ≥ 1 qualifying districts should pass");
+  assertTrue(result.overallPass, "overall pass");
+});
+
+test("majority_minority: 1 qualifying district < min_districts=2 → fail", () => {
+  const result = runEval(
+    [makeMajorityMinorityCriterion(0.50, 2)],
+    MJM_SPIKE_PRECINCTS,
+    MJM_ASSIGNMENTS,
+    2,
+    RULES_LENIENT,
+    MJM_SCENARIO_PRECINCTS,
+  );
+  assertFalse(result.criterionResults[0]!.passed, "1 < 2 qualifying districts should fail");
+  assertFalse(result.overallPass, "overall fail");
+});
+
+test("majority_minority: no scenario precincts provided → fail with message", () => {
+  const result = runEval(
+    [makeMajorityMinorityCriterion(0.50, 1)],
+    MJM_SPIKE_PRECINCTS,
+    MJM_ASSIGNMENTS,
+    2,
+    RULES_LENIENT,
+    // no scenarioPrecincts → default []
+  );
+  assertFalse(result.criterionResults[0]!.passed, "missing scenario precincts → fail");
 });
 
 // ─── TAP summary ─────────────────────────────────────────────────────────────
