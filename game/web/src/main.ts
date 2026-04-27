@@ -42,6 +42,7 @@ const SCENARIO_MANIFEST = [
 	{ id: "scenario-002", title: "Clearwater County: The Governor's Map" },
 	{ id: "scenario-003", title: "Riverport: The Packing Problem" },
 	{ id: "scenario-004", title: "Lakeview: Cracking the Opposition" },
+	{ id: "scenario-005", title: "Valle Verde: A Voice for the Valley" },
 ] as const;
 
 type ManifestEntry = (typeof SCENARIO_MANIFEST)[number];

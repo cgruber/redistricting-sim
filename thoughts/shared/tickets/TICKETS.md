@@ -94,6 +94,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-007-dimensional-dot-map-demographic-overlay.md` | design, rendering | Dimensional dot map: demographic dimension switching (Option B adaptive encoding) + sorted placement toggle |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
 | `GAME-020-last-scenario-wrap-up-screen.md` | game, UX | Wrap-up/congratulations screen after completing the final scenario (instead of dead-end select screen) |
+| `GAME-026-scenario-005-valle-verde.md` | game, content | Scenario 005: Valle Verde — VRA/majority-minority district lesson; 120-precinct valley cracking puzzle |
 
 ---
 
