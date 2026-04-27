@@ -92,7 +92,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-004-legend-layout.md` | design, UX | Move legend to horizontal strip above map; free sidebar space for data panels |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
 | `GAME-020-last-scenario-wrap-up-screen.md` | game, UX | Wrap-up/congratulations screen after completing the final scenario (instead of dead-end select screen) |
-| `GAME-022-missing-evaluators.md` | game, simulation | Implement majority_minority, efficiency_gap, mean_median criterion evaluators with unit tests |
 | `GAME-023-scenario-give-the-governor-a-win.md` | game, content | Scenario 2: partisan gerrymandering — draw a map giving the governor's party a seat majority |
 | `GAME-024-scenario-the-packing-problem.md` | game, content | Scenario 3: packing tactic — concentrate opposition into fewest districts; efficiency gap optional criterion |
 | `GAME-025-scenario-cracking-the-opposition.md` | game, content | Scenario 4: cracking tactic — dilute opposition across many districts; mean-median optional criterion |
@@ -103,6 +102,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-022: missing evaluators | All AC met; efficiency_gap (wasted-vote), mean_median, majority_minority implemented; 22/22 unit tests; 39/39 e2e pass; merged PR #92 |
 | GAME-021: multi-scenario manifest | All AC met; static manifest + URL routing (?s=id); select screen shows all entries; on-demand JSON fetch; 39/39 e2e tests pass; merged PR #90 |
 | GAME-019: tutorial-002 winnability + e2e solve test | All AC met; county-aligned initial assignments (north→d1, central→d2, south→d3); painting p071–p075 (indices 70–74) solves the map; 39th e2e test verifies end-to-end pass; merged PR #83 |
 | GAME-014: Scale tutorial scenario | All AC met; 196-precinct tutorial-002 scenario (3 counties, 4 districts); merged PR #79 |
