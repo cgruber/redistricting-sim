@@ -2,8 +2,9 @@
 id: GAME-021
 title: "Multi-scenario manifest: load all scenarios and drive select screen from it"
 area: game, progression
-status: open
+status: resolved
 created: 2026-04-26
+github_issue: 89
 ---
 
 ## Summary

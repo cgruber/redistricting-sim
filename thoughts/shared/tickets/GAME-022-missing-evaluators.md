@@ -4,6 +4,7 @@ title: "Implement missing criterion evaluators: majority_minority, efficiency_ga
 area: game, simulation
 status: open
 created: 2026-04-26
+github_issue: 91
 ---
 
 ## Summary
@@ -47,20 +48,20 @@ using the simulated partisan vote share per district.
 
 ## Goals / Acceptance Criteria
 
-- [ ] `majority_minority` evaluator implemented; criterion config specifies `min_eligible_share`
-      and `group_ids` (list of demographic group IDs to count)
-- [ ] `efficiency_gap` evaluator implemented; config specifies `max_gap` (fraction, e.g. 0.08)
-- [ ] `mean_median` evaluator implemented; config specifies `max_diff` (fraction, e.g. 0.05)
-- [ ] All three produce a human-readable `detail` string on both pass and fail
-- [ ] `tutorial-002.json` criteria updated if any currently use these types (currently none do)
-- [ ] No regression in existing passing criteria (population_balance, seat_count, etc.)
+- [x] `majority_minority` evaluator implemented; criterion config specifies `min_eligible_share`
+      and `group_filter` (group_ids or dimension/value filter); `evaluateCriteria` accepts optional
+      `scenarioPrecincts` parameter for group population data
+- [x] `efficiency_gap` evaluator implemented; config specifies `operator` + `threshold`; abs(gap) used
+- [x] `mean_median` evaluator implemented; config specifies `party`, `operator`, `threshold`; raw signed diff
+- [x] All three produce a human-readable `detail` string on both pass and fail
+- [x] `tutorial-002.json` criteria unchanged (no regression — none used these types)
+- [x] No regression in existing passing criteria (population_balance, seat_count, etc.)
 
 ## Test Coverage
 
-- [ ] Unit tests for each evaluator: happy path (passes), boundary case (exactly at threshold),
-      fail case (exceeds threshold)
-- [ ] Unit tests use synthetic precinct + assignment data — no JSON fixture dependency
-- [ ] Tests run via existing `js_test` harness in `web/simulation/`
+- [x] 7 new unit tests across all three evaluators: pass cases, fail cases, edge (missing data)
+- [x] Unit tests use synthetic precinct + assignment data — no JSON fixture dependency
+- [x] Tests run via existing `js_test` harness in `web/simulation/`; 22/22 passing
 
 ## References
 
