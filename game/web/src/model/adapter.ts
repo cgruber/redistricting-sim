@@ -5,7 +5,7 @@
  * Strategy:
  *  - Stable numeric IDs from array position (precincts[i].id = i)
  *  - District IDs: 1-based integers (scenario.districts[i] → i+1)
- *  - partyShare: population-weighted vote shares; ken→R, ryu→D; L/G/I=0
+ *  - partyShare: population-weighted vote shares; first party→R, second→D; L/G/I=0
  *  - neighbors: computed from hex axial positions via HEX_DIRECTIONS
  *  - center: hexToPixel(q, r)
  *  - initial assignments from loader-filled initial_district_id
@@ -52,18 +52,20 @@ export function scenarioToSpike(scenario: Scenario): {
 		});
 
 		// Population-weighted vote shares (turnout ignored until Sprint 3)
-		let kenShare = 0;
-		let ryuShare = 0;
+		// Map first scenario party → R, second → D (matches partyIdToKey in main.ts)
+		const firstPartyId = scenario.parties[0]?.id as string | undefined;
+		const secondPartyId = scenario.parties[1]?.id as string | undefined;
+		let firstShare = 0;
+		let secondShare = 0;
 		for (const g of pc.demographic_groups) {
 			const vs = g.vote_shares as unknown as VoteShareRecord;
-			kenShare += g.population_share * (vs["ken"] ?? 0);
-			ryuShare += g.population_share * (vs["ryu"] ?? 0);
+			if (firstPartyId) firstShare += g.population_share * (vs[firstPartyId] ?? 0);
+			if (secondPartyId) secondShare += g.population_share * (vs[secondPartyId] ?? 0);
 		}
 
-		// Map to spike PartyShare: ken→R, ryu→D, minor parties=0
 		const partyShare = {
-			R: Math.round(kenShare * 1000) / 1000,
-			D: Math.round(ryuShare * 1000) / 1000,
+			R: Math.round(firstShare * 1000) / 1000,
+			D: Math.round(secondShare * 1000) / 1000,
 			L: 0,
 			G: 0,
 			I: 0,
