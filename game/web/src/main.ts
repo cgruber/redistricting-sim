@@ -22,7 +22,16 @@ import {
 import { createGameStore } from "./store/gameStore.js";
 import { evaluateCriteria, isMapSubmittable } from "./simulation/evaluate.js";
 import { computeValidityStats } from "./simulation/validity.js";
-import { loadProgress, saveProgress, markCompleted, isCompleted } from "./model/progress.js";
+import {
+	loadProgress,
+	saveProgress,
+	markCompleted,
+	isCompleted,
+	loadWip,
+	saveWip,
+	clearWip,
+	type WipState,
+} from "./model/progress.js";
 
 // ─── Scenario manifest (GAME-021) ─────────────────────────────────────────────
 // Static list of all available scenarios in play order.
@@ -114,11 +123,13 @@ if (
 
 	function renderScenarioCards() {
 		if (!scenarioCardsEl) return;
+		const wip = loadWip();
 		scenarioCardsEl.innerHTML = "";
 		SCENARIO_MANIFEST.forEach((entry, i) => {
 			const completed = isCompleted(progress, entry.id);
 			const unlocked = i === 0 || isCompleted(progress, SCENARIO_MANIFEST[i - 1]?.id ?? "");
 			const locked = !unlocked;
+			const inProgress = !completed && wip?.scenarioId === entry.id;
 
 			const card = document.createElement("div");
 			card.className = `scenario-card${locked ? " locked" : ""}`;
@@ -128,12 +139,14 @@ if (
 			titleEl.textContent = entry.title;
 
 			const statusEl = document.createElement("div");
-			statusEl.className = `sc-status ${completed ? "completed" : unlocked ? "unlocked" : "locked"}`;
-			statusEl.textContent = completed ? "Completed" : unlocked ? "Ready" : "Locked";
+			const statusLabel = completed ? "Completed" : inProgress ? "In Progress" : unlocked ? "Ready" : "Locked";
+			const statusClass = completed ? "completed" : inProgress ? "in-progress" : unlocked ? "unlocked" : "locked";
+			statusEl.className = `sc-status ${statusClass}`;
+			statusEl.textContent = statusLabel;
 
 			const playBtn = document.createElement("button");
-			playBtn.className = `sc-play-btn ${completed ? "replay" : unlocked ? "play" : "locked-btn"}`;
-			playBtn.textContent = completed ? "Play Again" : unlocked ? "Play" : "Locked";
+			playBtn.className = `sc-play-btn ${completed ? "replay" : inProgress ? "continue" : unlocked ? "play" : "locked-btn"}`;
+			playBtn.textContent = completed ? "Play Again" : inProgress ? "Continue" : unlocked ? "Play" : "Locked";
 			playBtn.disabled = locked;
 			if (!locked) {
 				playBtn.addEventListener("click", () => {
@@ -166,8 +179,8 @@ if (
 	if (requestedEntry !== undefined) {
 		// Explicit scenario requested via URL — play it directly
 		entryToLoad = requestedEntry;
-	} else if (progress.completed.length > 0) {
-		// Returning player with no explicit request — show select screen
+	} else if (progress.completed.length > 0 || loadWip() !== null) {
+		// Returning player (has completed or in-progress scenario) — show select screen
 		showScenarioSelect();
 		return;
 	} else {
@@ -215,6 +228,45 @@ if (
 	// Gated to localhost so production deployments do not expose a solve shortcut.
 	if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
 		(window as unknown as Record<string, unknown>)["__gameStore"] = store;
+	}
+
+	// ── WIP save/restore (GAME-007) ───────────────────────────────────────────
+
+	// isRestoringWip prevents scheduleWipSave() from firing during the restore call.
+	// (store.subscribe is wired later, so this guard is defensive — it makes the
+	// invariant explicit regardless of future code reordering.)
+	let isRestoringWip = false;
+	let wipTimer: ReturnType<typeof setTimeout> | null = null;
+
+	// Restore in-progress state from a previous session if it matches this scenario.
+	const savedWip = loadWip();
+	if (savedWip !== null && savedWip.scenarioId === scenario.id) {
+		isRestoringWip = true;
+		const restoredMap = new Map<number, number | null>(
+			Object.entries(savedWip.assignments).map(([k, v]) => [Number(k), v]),
+		);
+		store.getState().restoreAssignments(restoredMap, savedWip.activeDistrict);
+		// Wipe undo history so the player doesn't undo back before the restored state.
+		temporalStore.getState().clear();
+		isRestoringWip = false;
+	}
+	function scheduleWipSave() {
+		if (isRestoringWip) return;
+		if (wipTimer !== null) clearTimeout(wipTimer);
+		wipTimer = setTimeout(() => {
+			wipTimer = null;
+			const { assignments, activeDistrict } = store.getState();
+			const assignmentsRecord: Record<string, number> = {};
+			for (const [k, v] of assignments) {
+				if (v !== null) assignmentsRecord[String(k)] = v;
+			}
+			const wip: WipState = {
+				scenarioId: scenario.id,
+				assignments: assignmentsRecord,
+				activeDistrict,
+			};
+			saveWip(wip);
+		}, 800);
 	}
 
 	// ── Create renderer ───────────────────────────────────────────────────────
@@ -444,6 +496,8 @@ if (
 		if (evalResult.overallPass) {
 			progress = markCompleted(progress, scenario.id);
 			saveProgress(progress);
+			// GAME-007: clear the WIP for this scenario — it's done.
+			clearWip();
 		}
 
 		resultScreen.classList.remove("hidden");
@@ -464,7 +518,10 @@ if (
 	});
 
 	// ── Subscribe to state changes ────────────────────────────────────────────
-	store.subscribe(() => updateUI());
+	store.subscribe(() => {
+		updateUI();
+		scheduleWipSave();
+	});
 	temporalStore.subscribe(() => updateUI());
 
 	// ── Initial render + intro ────────────────────────────────────────────────

@@ -1,15 +1,74 @@
 /**
- * Player progress persistence (GAME-018).
+ * Player progress persistence (GAME-018 / GAME-007).
  *
- * Tracks which scenario IDs the player has completed. Persisted to
- * localStorage under STORAGE_KEY as JSON.
+ * Two concerns:
+ *   1. Completion tracking — which scenarios the player has finished.
+ *      Persisted under PROGRESS_KEY as JSON (GAME-018).
+ *   2. In-progress WIP state — the current assignment map for an active
+ *      scenario so the player can resume after a page reload (GAME-007).
+ *      Persisted under WIP_KEY as JSON. One WIP at a time; overwritten
+ *      when the player switches scenarios.
  *
- * Pure serialization functions (serializeProgress / deserializeProgress)
- * take/return plain values — testable in Node without mocking localStorage.
- * The loadProgress / saveProgress functions call localStorage directly.
+ * Pure serialization functions take/return plain values — testable in Node
+ * without mocking localStorage. The load/save/clear functions call
+ * localStorage directly.
  */
 
-const STORAGE_KEY = "redistricting-sim-progress";
+const PROGRESS_KEY = "redistricting-sim-progress";
+const WIP_KEY = "redistricting-sim-wip";
+
+// ─── WIP types + I/O ─────────────────────────────────────────────────────────
+
+export interface WipState {
+	/** Which scenario the player was in the middle of */
+	scenarioId: string;
+	/**
+	 * Serialized assignment map: precinct ID (as string key, JSON requirement)
+	 * → district ID (number).
+	 */
+	assignments: Record<string, number>;
+	/** Which district button was active when the state was saved */
+	activeDistrict: number;
+}
+
+export function saveWip(wip: WipState): void {
+	try {
+		localStorage.setItem(WIP_KEY, JSON.stringify(wip));
+	} catch {
+		// storage unavailable (private browsing quota, etc.) — silently ignore
+	}
+}
+
+export function loadWip(): WipState | null {
+	try {
+		const raw = localStorage.getItem(WIP_KEY);
+		if (raw === null) return null;
+		const parsed = JSON.parse(raw) as unknown;
+		if (
+			typeof parsed === "object" &&
+			parsed !== null &&
+			typeof (parsed as { scenarioId?: unknown }).scenarioId === "string" &&
+			typeof (parsed as { assignments?: unknown }).assignments === "object" &&
+			(parsed as { assignments?: unknown }).assignments !== null &&
+			typeof (parsed as { activeDistrict?: unknown }).activeDistrict === "number"
+		) {
+			return parsed as WipState;
+		}
+		return null;
+	} catch {
+		return null;
+	}
+}
+
+export function clearWip(): void {
+	try {
+		localStorage.removeItem(WIP_KEY);
+	} catch {
+		// ignore
+	}
+}
+
+// ─── Completion tracking ──────────────────────────────────────────────────────
 
 export interface Progress {
 	/** Set of scenario IDs that have been completed at least once */
@@ -53,7 +112,7 @@ export function isCompleted(progress: Progress, scenarioId: string): boolean {
 
 export function loadProgress(): Progress {
 	try {
-		const raw = localStorage.getItem(STORAGE_KEY);
+		const raw = localStorage.getItem(PROGRESS_KEY);
 		if (raw === null) return { completed: [] };
 		return deserializeProgress(raw);
 	} catch {
@@ -63,7 +122,7 @@ export function loadProgress(): Progress {
 
 export function saveProgress(progress: Progress): void {
 	try {
-		localStorage.setItem(STORAGE_KEY, serializeProgress(progress));
+		localStorage.setItem(PROGRESS_KEY, serializeProgress(progress));
 	} catch {
 		// storage quota exceeded or private browsing — silently ignore
 	}

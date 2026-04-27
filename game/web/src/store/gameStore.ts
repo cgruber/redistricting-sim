@@ -26,6 +26,8 @@ export interface GameStore extends GameState {
 	paintStroke: (precinctIds: number[], district: DistrictId) => void;
 	/** Restore all assignments to the scenario's initial state */
 	resetToInitial: () => void;
+	/** Restore a previously saved assignment map (e.g. from WIP storage) */
+	restoreAssignments: (assignments: AssignmentMap, activeDistrict: DistrictId) => void;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -100,6 +102,15 @@ export function createGameStore(scenario: Scenario) {
 					const restored = new Map(initialAssignments);
 					set({
 						assignments: restored,
+						simulationResult: runElection({ ...get(), assignments: restored }),
+					});
+				},
+
+				restoreAssignments(assignments: AssignmentMap, activeDistrict: DistrictId) {
+					const restored = new Map(assignments);
+					set({
+						assignments: restored,
+						activeDistrict,
 						simulationResult: runElection({ ...get(), assignments: restored }),
 					});
 				},

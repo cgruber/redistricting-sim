@@ -255,6 +255,137 @@ test("progression: new player (no localStorage) sees intro, not scenario select"
   await expect(page.locator("#scenario-select")).not.toBeVisible();
 });
 
+// ─── GAME-007: WIP save/resume ───────────────────────────────────────────────
+
+/** Seed a WIP save in localStorage before the page loads. */
+async function seedWip(
+  page: import("@playwright/test").Page,
+  scenarioId: string,
+  assignments: Record<string, number>,
+  activeDistrict: number,
+): Promise<void> {
+  await page.addInitScript(
+    (args: { scenarioId: string; assignments: Record<string, number>; activeDistrict: number }) => {
+      localStorage.setItem("redistricting-sim-wip", JSON.stringify(args));
+    },
+    { scenarioId, assignments, activeDistrict },
+  );
+}
+
+test("wip: scenario select shows 'In Progress' for scenario with saved WIP", async ({ page }) => {
+  // Seed completion for tutorial-002 so select screen appears, plus WIP for scenario-002
+  await seedProgress(page, ["tutorial-002"]);
+  await seedWip(page, "scenario-002", { "0": 1, "1": 2 }, 2);
+  await page.goto("/");
+
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  // scenario-002 card must show "In Progress" status and "Continue" button
+  const cards = page.locator(".scenario-card");
+  const scenario002Card = cards.nth(1); // second card in manifest
+  await expect(scenario002Card.locator(".sc-status.in-progress")).toBeVisible();
+  await expect(scenario002Card.locator(".sc-status.in-progress")).toContainText("In Progress");
+  await expect(scenario002Card.locator(".sc-play-btn.continue")).toBeVisible();
+  await expect(scenario002Card.locator(".sc-play-btn.continue")).toContainText("Continue");
+});
+
+test("wip: select screen shown when WIP exists even for new player", async ({ page }) => {
+  // No completed scenarios, but a WIP exists — should show select screen
+  await seedWip(page, "tutorial-002", { "0": 1 }, 1);
+  await page.goto("/");
+
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator("#intro-screen")).not.toBeVisible();
+});
+
+test("wip: saved assignment map is restored on scenario load", async ({ page }) => {
+  // Pre-paint precinct 0 → district 2, precinct 1 → district 3 in the WIP
+  // Then load tutorial-002 and verify via window.__gameStore that assignments match
+  const wipAssignments: Record<string, number> = {};
+  // tutorial-002 has 196 precincts; build a complete assignment with index 0 → 2 (district 2)
+  for (let i = 0; i < 196; i++) wipAssignments[String(i)] = i === 0 ? 2 : 1;
+
+  await seedWip(page, "tutorial-002", wipAssignments, 2);
+  await page.goto("/?s=tutorial-002");
+
+  // Wait for editor to be ready (intro appears because it's a fresh load without completed state)
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+  // Verify that precinct 0 is assigned to district 2 via the exposed store
+  const district = await page.evaluate(() => {
+    const store = (window as unknown as Record<string, unknown>)["__gameStore"] as
+      | { getState: () => { assignments: Map<number, number> } }
+      | undefined;
+    return store?.getState().assignments.get(0);
+  });
+  expect(district).toBe(2);
+});
+
+test("wip: painting precincts triggers a debounced WIP save to localStorage", async ({ page }) => {
+  // Load tutorial-002, skip intro, paint precinct 0 → district 2 via store shortcut,
+  // then wait > 800ms and confirm the WIP key was written with the expected assignment.
+  await page.goto("/?s=tutorial-002");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+  // Paint precinct 0 into district 2 (it starts in district 1).
+  await page.evaluate(() => {
+    const store = (window as unknown as Record<string, unknown>)["__gameStore"] as
+      | { getState: () => { paintStroke: (ids: number[], d: number) => void; setActiveDistrict: (d: number) => void } }
+      | undefined;
+    if (!store) throw new Error("__gameStore not exposed");
+    store.getState().setActiveDistrict(2);
+    store.getState().paintStroke([0], 2);
+  });
+
+  // Wait 1100ms for the 800ms debounce to fire.
+  await page.waitForTimeout(1100);
+
+  // WIP key must now exist in localStorage.
+  const wipRaw = await page.evaluate(() => localStorage.getItem("redistricting-sim-wip"));
+  expect(wipRaw).not.toBeNull();
+
+  // Precinct 0 must be stored as district 2.
+  const wip = JSON.parse(wipRaw!) as { scenarioId: string; assignments: Record<string, number>; activeDistrict: number };
+  expect(wip.scenarioId).toBe("tutorial-002");
+  expect(wip.assignments["0"]).toBe(2);
+  expect(wip.activeDistrict).toBe(2);
+});
+
+test("wip: WIP is cleared from localStorage after scenario completion", async ({ page }) => {
+  // Load tutorial-002 fresh (no pre-seeded WIP), skip intro, paint winning move,
+  // submit, then verify the WIP key is absent from localStorage.
+  await page.goto("/?s=tutorial-002");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+  // Paint the 5 boundary precincts (indices 70-74) from d2→d1 — same winning move
+  // as the winnability test. After this the map is valid and submit is enabled.
+  await page.evaluate(() => {
+    const store = (window as unknown as Record<string, unknown>)["__gameStore"] as
+      | { getState: () => { paintStroke: (ids: number[], d: number) => void; setActiveDistrict: (d: number) => void } }
+      | undefined;
+    if (!store) throw new Error("__gameStore not exposed");
+    store.getState().setActiveDistrict(1);
+    store.getState().paintStroke([70, 71, 72, 73, 74], 1);
+  });
+
+  await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#result-screen")).toBeVisible();
+  await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+
+  // WIP key must be gone from localStorage after a successful pass
+  const wipAfter = await page.evaluate(() => localStorage.getItem("redistricting-sim-wip"));
+  expect(wipAfter).toBeNull();
+});
+
 // ─── GAME-019: Tutorial-002 winnability ───────────────────────────────────────
 
 test("winnability: painting 5 boundary precincts enables submit and produces a passing map", async ({ page }) => {
