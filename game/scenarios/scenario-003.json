@@ -1,0 +1,2243 @@
+{
+  "format_version": "1",
+  "id": "scenario-003",
+  "title": "Riverport: The Packing Problem",
+  "election_type": "state_house",
+  "region": {
+    "id": "riverport_county",
+    "name": "Riverport County"
+  },
+  "geometry": { "type": "hex_axial" },
+  "parties": [
+    { "id": "ken", "name": "Ken Party", "abbreviation": "KEN" },
+    { "id": "ryu", "name": "Ryu Party", "abbreviation": "RYU" }
+  ],
+  "districts": [
+    { "id": "d1", "name": "District 1" },
+    { "id": "d2", "name": "District 2" },
+    { "id": "d3", "name": "District 3" },
+    { "id": "d4", "name": "District 4" },
+    { "id": "d5", "name": "District 5" }
+  ],
+  "default_district_id": "d1",
+  "precincts": [
+    {
+      "id": "p001",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 0, "r": 0 },
+      "total_population": 1559,
+      "initial_district_id": "d1",
+      "name": "Rural A1",
+      "demographic_groups": [
+        {
+          "id": "p001-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.6545, "ryu": 0.3455 }
+        }
+      ]
+    },
+    {
+      "id": "p002",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 1, "r": 0 },
+      "total_population": 1509,
+      "initial_district_id": "d1",
+      "name": "Rural B1",
+      "demographic_groups": [
+        {
+          "id": "p002-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.54,
+          "vote_shares": { "ken": 0.6377, "ryu": 0.3623 }
+        }
+      ]
+    },
+    {
+      "id": "p003",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 2, "r": 0 },
+      "total_population": 1491,
+      "initial_district_id": "d2",
+      "name": "Rural C1",
+      "demographic_groups": [
+        {
+          "id": "p003-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.6718, "ryu": 0.3282 }
+        }
+      ]
+    },
+    {
+      "id": "p004",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 3, "r": 0 },
+      "total_population": 1434,
+      "initial_district_id": "d2",
+      "name": "Rural D1",
+      "demographic_groups": [
+        {
+          "id": "p004-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.56,
+          "vote_shares": { "ken": 0.6449, "ryu": 0.3551 }
+        }
+      ]
+    },
+    {
+      "id": "p005",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 4, "r": 0 },
+      "total_population": 1464,
+      "initial_district_id": "d3",
+      "name": "Rural E1",
+      "demographic_groups": [
+        {
+          "id": "p005-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.6575, "ryu": 0.3425 }
+        }
+      ]
+    },
+    {
+      "id": "p006",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 5, "r": 0 },
+      "total_population": 1499,
+      "initial_district_id": "d3",
+      "name": "Rural F1",
+      "demographic_groups": [
+        {
+          "id": "p006-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.50,
+          "vote_shares": { "ken": 0.6269, "ryu": 0.3731 }
+        }
+      ]
+    },
+    {
+      "id": "p007",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 6, "r": 0 },
+      "total_population": 1539,
+      "initial_district_id": "d4",
+      "name": "Rural G1",
+      "demographic_groups": [
+        {
+          "id": "p007-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.6341, "ryu": 0.3659 }
+        }
+      ]
+    },
+    {
+      "id": "p008",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 7, "r": 0 },
+      "total_population": 1400,
+      "initial_district_id": "d4",
+      "name": "Rural H1",
+      "demographic_groups": [
+        {
+          "id": "p008-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.55,
+          "vote_shares": { "ken": 0.6517, "ryu": 0.3483 }
+        }
+      ]
+    },
+    {
+      "id": "p009",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 8, "r": 0 },
+      "total_population": 1499,
+      "initial_district_id": "d5",
+      "name": "Rural I1",
+      "demographic_groups": [
+        {
+          "id": "p009-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.52,
+          "vote_shares": { "ken": 0.6776, "ryu": 0.3224 }
+        }
+      ]
+    },
+    {
+      "id": "p010",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 9, "r": 0 },
+      "total_population": 1594,
+      "initial_district_id": "d5",
+      "name": "Rural J1",
+      "demographic_groups": [
+        {
+          "id": "p010-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.55,
+          "vote_shares": { "ken": 0.6372, "ryu": 0.3628 }
+        }
+      ]
+    },
+    {
+      "id": "p011",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 0, "r": 1 },
+      "total_population": 1569,
+      "initial_district_id": "d1",
+      "name": "Rural A2",
+      "demographic_groups": [
+        {
+          "id": "p011-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.55,
+          "vote_shares": { "ken": 0.6663, "ryu": 0.3337 }
+        }
+      ]
+    },
+    {
+      "id": "p012",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 1, "r": 1 },
+      "total_population": 1434,
+      "initial_district_id": "d1",
+      "name": "Rural B2",
+      "demographic_groups": [
+        {
+          "id": "p012-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.59,
+          "vote_shares": { "ken": 0.6516, "ryu": 0.3484 }
+        }
+      ]
+    },
+    {
+      "id": "p013",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 2, "r": 1 },
+      "total_population": 1428,
+      "initial_district_id": "d2",
+      "name": "Rural C2",
+      "demographic_groups": [
+        {
+          "id": "p013-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.51,
+          "vote_shares": { "ken": 0.6646, "ryu": 0.3354 }
+        }
+      ]
+    },
+    {
+      "id": "p014",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 3, "r": 1 },
+      "total_population": 1460,
+      "initial_district_id": "d2",
+      "name": "Rural D2",
+      "demographic_groups": [
+        {
+          "id": "p014-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.52,
+          "vote_shares": { "ken": 0.6770, "ryu": 0.3230 }
+        }
+      ]
+    },
+    {
+      "id": "p015",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 4, "r": 1 },
+      "total_population": 1565,
+      "initial_district_id": "d3",
+      "name": "Rural E2",
+      "demographic_groups": [
+        {
+          "id": "p015-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.6440, "ryu": 0.3560 }
+        }
+      ]
+    },
+    {
+      "id": "p016",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 5, "r": 1 },
+      "total_population": 1517,
+      "initial_district_id": "d3",
+      "name": "Rural F2",
+      "demographic_groups": [
+        {
+          "id": "p016-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.57,
+          "vote_shares": { "ken": 0.6273, "ryu": 0.3727 }
+        }
+      ]
+    },
+    {
+      "id": "p017",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 6, "r": 1 },
+      "total_population": 1431,
+      "initial_district_id": "d4",
+      "name": "Rural G2",
+      "demographic_groups": [
+        {
+          "id": "p017-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.57,
+          "vote_shares": { "ken": 0.6788, "ryu": 0.3212 }
+        }
+      ]
+    },
+    {
+      "id": "p018",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 7, "r": 1 },
+      "total_population": 1514,
+      "initial_district_id": "d4",
+      "name": "Rural H2",
+      "demographic_groups": [
+        {
+          "id": "p018-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.59,
+          "vote_shares": { "ken": 0.6457, "ryu": 0.3543 }
+        }
+      ]
+    },
+    {
+      "id": "p019",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 8, "r": 1 },
+      "total_population": 1566,
+      "initial_district_id": "d5",
+      "name": "Rural I2",
+      "demographic_groups": [
+        {
+          "id": "p019-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.53,
+          "vote_shares": { "ken": 0.6364, "ryu": 0.3636 }
+        }
+      ]
+    },
+    {
+      "id": "p020",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 9, "r": 1 },
+      "total_population": 1544,
+      "initial_district_id": "d5",
+      "name": "Rural J2",
+      "demographic_groups": [
+        {
+          "id": "p020-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.6216, "ryu": 0.3784 }
+        }
+      ]
+    },
+    {
+      "id": "p021",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 0, "r": 2 },
+      "total_population": 1569,
+      "initial_district_id": "d1",
+      "name": "Rural A3",
+      "demographic_groups": [
+        {
+          "id": "p021-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.60,
+          "vote_shares": { "ken": 0.6529, "ryu": 0.3471 }
+        }
+      ]
+    },
+    {
+      "id": "p022",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 1, "r": 2 },
+      "total_population": 1557,
+      "initial_district_id": "d1",
+      "name": "Rural B3",
+      "demographic_groups": [
+        {
+          "id": "p022-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.53,
+          "vote_shares": { "ken": 0.6312, "ryu": 0.3688 }
+        }
+      ]
+    },
+    {
+      "id": "p023",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 2, "r": 2 },
+      "total_population": 1538,
+      "initial_district_id": "d2",
+      "name": "Suburban C3",
+      "demographic_groups": [
+        {
+          "id": "p023-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.51,
+          "vote_shares": { "ken": 0.4472, "ryu": 0.5528 }
+        }
+      ]
+    },
+    {
+      "id": "p024",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 3, "r": 2 },
+      "total_population": 1592,
+      "initial_district_id": "d2",
+      "name": "Suburban D3",
+      "demographic_groups": [
+        {
+          "id": "p024-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.59,
+          "vote_shares": { "ken": 0.4004, "ryu": 0.5996 }
+        }
+      ]
+    },
+    {
+      "id": "p025",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 4, "r": 2 },
+      "total_population": 1501,
+      "initial_district_id": "d3",
+      "name": "Suburban E3",
+      "demographic_groups": [
+        {
+          "id": "p025-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.3995, "ryu": 0.6005 }
+        }
+      ]
+    },
+    {
+      "id": "p026",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 5, "r": 2 },
+      "total_population": 1490,
+      "initial_district_id": "d3",
+      "name": "Suburban F3",
+      "demographic_groups": [
+        {
+          "id": "p026-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.52,
+          "vote_shares": { "ken": 0.4191, "ryu": 0.5809 }
+        }
+      ]
+    },
+    {
+      "id": "p027",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 6, "r": 2 },
+      "total_population": 1565,
+      "initial_district_id": "d4",
+      "name": "Suburban G3",
+      "demographic_groups": [
+        {
+          "id": "p027-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.55,
+          "vote_shares": { "ken": 0.4446, "ryu": 0.5554 }
+        }
+      ]
+    },
+    {
+      "id": "p028",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 7, "r": 2 },
+      "total_population": 1556,
+      "initial_district_id": "d4",
+      "name": "Suburban H3",
+      "demographic_groups": [
+        {
+          "id": "p028-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.59,
+          "vote_shares": { "ken": 0.4456, "ryu": 0.5544 }
+        }
+      ]
+    },
+    {
+      "id": "p029",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 8, "r": 2 },
+      "total_population": 1484,
+      "initial_district_id": "d5",
+      "name": "Rural I3",
+      "demographic_groups": [
+        {
+          "id": "p029-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.51,
+          "vote_shares": { "ken": 0.6778, "ryu": 0.3222 }
+        }
+      ]
+    },
+    {
+      "id": "p030",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 9, "r": 2 },
+      "total_population": 1407,
+      "initial_district_id": "d5",
+      "name": "Rural J3",
+      "demographic_groups": [
+        {
+          "id": "p030-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.53,
+          "vote_shares": { "ken": 0.6212, "ryu": 0.3788 }
+        }
+      ]
+    },
+    {
+      "id": "p031",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 0, "r": 3 },
+      "total_population": 1590,
+      "initial_district_id": "d1",
+      "name": "Rural A4",
+      "demographic_groups": [
+        {
+          "id": "p031-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.53,
+          "vote_shares": { "ken": 0.6540, "ryu": 0.3460 }
+        }
+      ]
+    },
+    {
+      "id": "p032",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 1, "r": 3 },
+      "total_population": 1479,
+      "initial_district_id": "d1",
+      "name": "Rural B4",
+      "demographic_groups": [
+        {
+          "id": "p032-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.59,
+          "vote_shares": { "ken": 0.6685, "ryu": 0.3315 }
+        }
+      ]
+    },
+    {
+      "id": "p033",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 2, "r": 3 },
+      "total_population": 1460,
+      "initial_district_id": "d2",
+      "name": "Suburban C4",
+      "demographic_groups": [
+        {
+          "id": "p033-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.55,
+          "vote_shares": { "ken": 0.4243, "ryu": 0.5757 }
+        }
+      ]
+    },
+    {
+      "id": "p034",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 3, "r": 3 },
+      "total_population": 1584,
+      "initial_district_id": "d2",
+      "name": "Urban D4",
+      "demographic_groups": [
+        {
+          "id": "p034-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.73,
+          "vote_shares": { "ken": 0.1448, "ryu": 0.8552 }
+        }
+      ]
+    },
+    {
+      "id": "p035",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 4, "r": 3 },
+      "total_population": 1592,
+      "initial_district_id": "d3",
+      "name": "Urban E4",
+      "demographic_groups": [
+        {
+          "id": "p035-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.67,
+          "vote_shares": { "ken": 0.1412, "ryu": 0.8588 }
+        }
+      ]
+    },
+    {
+      "id": "p036",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 5, "r": 3 },
+      "total_population": 1424,
+      "initial_district_id": "d3",
+      "name": "Urban F4",
+      "demographic_groups": [
+        {
+          "id": "p036-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.66,
+          "vote_shares": { "ken": 0.1318, "ryu": 0.8682 }
+        }
+      ]
+    },
+    {
+      "id": "p037",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 6, "r": 3 },
+      "total_population": 1505,
+      "initial_district_id": "d4",
+      "name": "Urban G4",
+      "demographic_groups": [
+        {
+          "id": "p037-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.68,
+          "vote_shares": { "ken": 0.1551, "ryu": 0.8449 }
+        }
+      ]
+    },
+    {
+      "id": "p038",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 7, "r": 3 },
+      "total_population": 1570,
+      "initial_district_id": "d4",
+      "name": "Suburban H4",
+      "demographic_groups": [
+        {
+          "id": "p038-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.54,
+          "vote_shares": { "ken": 0.4144, "ryu": 0.5856 }
+        }
+      ]
+    },
+    {
+      "id": "p039",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 8, "r": 3 },
+      "total_population": 1583,
+      "initial_district_id": "d5",
+      "name": "Rural I4",
+      "demographic_groups": [
+        {
+          "id": "p039-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.6304, "ryu": 0.3696 }
+        }
+      ]
+    },
+    {
+      "id": "p040",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 9, "r": 3 },
+      "total_population": 1560,
+      "initial_district_id": "d5",
+      "name": "Rural J4",
+      "demographic_groups": [
+        {
+          "id": "p040-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.54,
+          "vote_shares": { "ken": 0.6486, "ryu": 0.3514 }
+        }
+      ]
+    },
+    {
+      "id": "p041",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 0, "r": 4 },
+      "total_population": 1548,
+      "initial_district_id": "d1",
+      "name": "Rural A5",
+      "demographic_groups": [
+        {
+          "id": "p041-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.57,
+          "vote_shares": { "ken": 0.6330, "ryu": 0.3670 }
+        }
+      ]
+    },
+    {
+      "id": "p042",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 1, "r": 4 },
+      "total_population": 1596,
+      "initial_district_id": "d1",
+      "name": "Rural B5",
+      "demographic_groups": [
+        {
+          "id": "p042-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.50,
+          "vote_shares": { "ken": 0.6260, "ryu": 0.3740 }
+        }
+      ]
+    },
+    {
+      "id": "p043",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 2, "r": 4 },
+      "total_population": 1541,
+      "initial_district_id": "d2",
+      "name": "Suburban C5",
+      "demographic_groups": [
+        {
+          "id": "p043-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.56,
+          "vote_shares": { "ken": 0.4483, "ryu": 0.5517 }
+        }
+      ]
+    },
+    {
+      "id": "p044",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 3, "r": 4 },
+      "total_population": 1437,
+      "initial_district_id": "d2",
+      "name": "Urban D5",
+      "demographic_groups": [
+        {
+          "id": "p044-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.73,
+          "vote_shares": { "ken": 0.1248, "ryu": 0.8752 }
+        }
+      ]
+    },
+    {
+      "id": "p045",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 4, "r": 4 },
+      "total_population": 1594,
+      "initial_district_id": "d3",
+      "name": "Urban E5",
+      "demographic_groups": [
+        {
+          "id": "p045-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.66,
+          "vote_shares": { "ken": 0.1558, "ryu": 0.8442 }
+        }
+      ]
+    },
+    {
+      "id": "p046",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 5, "r": 4 },
+      "total_population": 1538,
+      "initial_district_id": "d3",
+      "name": "Urban F5",
+      "demographic_groups": [
+        {
+          "id": "p046-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.74,
+          "vote_shares": { "ken": 0.1231, "ryu": 0.8769 }
+        }
+      ]
+    },
+    {
+      "id": "p047",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 6, "r": 4 },
+      "total_population": 1477,
+      "initial_district_id": "d4",
+      "name": "Urban G5",
+      "demographic_groups": [
+        {
+          "id": "p047-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.68,
+          "vote_shares": { "ken": 0.1404, "ryu": 0.8596 }
+        }
+      ]
+    },
+    {
+      "id": "p048",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 7, "r": 4 },
+      "total_population": 1499,
+      "initial_district_id": "d4",
+      "name": "Suburban H5",
+      "demographic_groups": [
+        {
+          "id": "p048-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.54,
+          "vote_shares": { "ken": 0.4247, "ryu": 0.5753 }
+        }
+      ]
+    },
+    {
+      "id": "p049",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 8, "r": 4 },
+      "total_population": 1446,
+      "initial_district_id": "d5",
+      "name": "Rural I5",
+      "demographic_groups": [
+        {
+          "id": "p049-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.52,
+          "vote_shares": { "ken": 0.6305, "ryu": 0.3695 }
+        }
+      ]
+    },
+    {
+      "id": "p050",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 9, "r": 4 },
+      "total_population": 1569,
+      "initial_district_id": "d5",
+      "name": "Rural J5",
+      "demographic_groups": [
+        {
+          "id": "p050-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.52,
+          "vote_shares": { "ken": 0.6460, "ryu": 0.3540 }
+        }
+      ]
+    },
+    {
+      "id": "p051",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 0, "r": 5 },
+      "total_population": 1582,
+      "initial_district_id": "d1",
+      "name": "Rural A6",
+      "demographic_groups": [
+        {
+          "id": "p051-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.54,
+          "vote_shares": { "ken": 0.6506, "ryu": 0.3494 }
+        }
+      ]
+    },
+    {
+      "id": "p052",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 1, "r": 5 },
+      "total_population": 1442,
+      "initial_district_id": "d1",
+      "name": "Rural B6",
+      "demographic_groups": [
+        {
+          "id": "p052-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.54,
+          "vote_shares": { "ken": 0.6537, "ryu": 0.3463 }
+        }
+      ]
+    },
+    {
+      "id": "p053",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 2, "r": 5 },
+      "total_population": 1413,
+      "initial_district_id": "d2",
+      "name": "Suburban C6",
+      "demographic_groups": [
+        {
+          "id": "p053-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.59,
+          "vote_shares": { "ken": 0.4136, "ryu": 0.5864 }
+        }
+      ]
+    },
+    {
+      "id": "p054",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 3, "r": 5 },
+      "total_population": 1504,
+      "initial_district_id": "d2",
+      "name": "Urban D6",
+      "demographic_groups": [
+        {
+          "id": "p054-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.68,
+          "vote_shares": { "ken": 0.1569, "ryu": 0.8431 }
+        }
+      ]
+    },
+    {
+      "id": "p055",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 4, "r": 5 },
+      "total_population": 1512,
+      "initial_district_id": "d3",
+      "name": "Urban E6",
+      "demographic_groups": [
+        {
+          "id": "p055-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.72,
+          "vote_shares": { "ken": 0.1729, "ryu": 0.8271 }
+        }
+      ]
+    },
+    {
+      "id": "p056",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 5, "r": 5 },
+      "total_population": 1442,
+      "initial_district_id": "d3",
+      "name": "Urban F6",
+      "demographic_groups": [
+        {
+          "id": "p056-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.70,
+          "vote_shares": { "ken": 0.1657, "ryu": 0.8343 }
+        }
+      ]
+    },
+    {
+      "id": "p057",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 6, "r": 5 },
+      "total_population": 1541,
+      "initial_district_id": "d4",
+      "name": "Urban G6",
+      "demographic_groups": [
+        {
+          "id": "p057-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.75,
+          "vote_shares": { "ken": 0.1610, "ryu": 0.8390 }
+        }
+      ]
+    },
+    {
+      "id": "p058",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 7, "r": 5 },
+      "total_population": 1563,
+      "initial_district_id": "d4",
+      "name": "Suburban H6",
+      "demographic_groups": [
+        {
+          "id": "p058-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.51,
+          "vote_shares": { "ken": 0.4080, "ryu": 0.5920 }
+        }
+      ]
+    },
+    {
+      "id": "p059",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 8, "r": 5 },
+      "total_population": 1569,
+      "initial_district_id": "d5",
+      "name": "Rural I6",
+      "demographic_groups": [
+        {
+          "id": "p059-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.56,
+          "vote_shares": { "ken": 0.6512, "ryu": 0.3488 }
+        }
+      ]
+    },
+    {
+      "id": "p060",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 9, "r": 5 },
+      "total_population": 1592,
+      "initial_district_id": "d5",
+      "name": "Rural J6",
+      "demographic_groups": [
+        {
+          "id": "p060-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.53,
+          "vote_shares": { "ken": 0.6641, "ryu": 0.3359 }
+        }
+      ]
+    },
+    {
+      "id": "p061",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 0, "r": 6 },
+      "total_population": 1593,
+      "initial_district_id": "d1",
+      "name": "Rural A7",
+      "demographic_groups": [
+        {
+          "id": "p061-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.6301, "ryu": 0.3699 }
+        }
+      ]
+    },
+    {
+      "id": "p062",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 1, "r": 6 },
+      "total_population": 1538,
+      "initial_district_id": "d1",
+      "name": "Rural B7",
+      "demographic_groups": [
+        {
+          "id": "p062-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.60,
+          "vote_shares": { "ken": 0.6394, "ryu": 0.3606 }
+        }
+      ]
+    },
+    {
+      "id": "p063",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 2, "r": 6 },
+      "total_population": 1557,
+      "initial_district_id": "d2",
+      "name": "Suburban C7",
+      "demographic_groups": [
+        {
+          "id": "p063-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.4033, "ryu": 0.5967 }
+        }
+      ]
+    },
+    {
+      "id": "p064",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 3, "r": 6 },
+      "total_population": 1431,
+      "initial_district_id": "d2",
+      "name": "Urban D7",
+      "demographic_groups": [
+        {
+          "id": "p064-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.67,
+          "vote_shares": { "ken": 0.1652, "ryu": 0.8348 }
+        }
+      ]
+    },
+    {
+      "id": "p065",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 4, "r": 6 },
+      "total_population": 1448,
+      "initial_district_id": "d3",
+      "name": "Urban E7",
+      "demographic_groups": [
+        {
+          "id": "p065-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.66,
+          "vote_shares": { "ken": 0.1677, "ryu": 0.8323 }
+        }
+      ]
+    },
+    {
+      "id": "p066",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 5, "r": 6 },
+      "total_population": 1410,
+      "initial_district_id": "d3",
+      "name": "Urban F7",
+      "demographic_groups": [
+        {
+          "id": "p066-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.70,
+          "vote_shares": { "ken": 0.1345, "ryu": 0.8655 }
+        }
+      ]
+    },
+    {
+      "id": "p067",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 6, "r": 6 },
+      "total_population": 1538,
+      "initial_district_id": "d4",
+      "name": "Urban G7",
+      "demographic_groups": [
+        {
+          "id": "p067-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.68,
+          "vote_shares": { "ken": 0.1396, "ryu": 0.8604 }
+        }
+      ]
+    },
+    {
+      "id": "p068",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 7, "r": 6 },
+      "total_population": 1579,
+      "initial_district_id": "d4",
+      "name": "Suburban H7",
+      "demographic_groups": [
+        {
+          "id": "p068-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.56,
+          "vote_shares": { "ken": 0.3925, "ryu": 0.6075 }
+        }
+      ]
+    },
+    {
+      "id": "p069",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 8, "r": 6 },
+      "total_population": 1533,
+      "initial_district_id": "d5",
+      "name": "Rural I7",
+      "demographic_groups": [
+        {
+          "id": "p069-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.51,
+          "vote_shares": { "ken": 0.6731, "ryu": 0.3269 }
+        }
+      ]
+    },
+    {
+      "id": "p070",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 9, "r": 6 },
+      "total_population": 1411,
+      "initial_district_id": "d5",
+      "name": "Rural J7",
+      "demographic_groups": [
+        {
+          "id": "p070-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.57,
+          "vote_shares": { "ken": 0.6235, "ryu": 0.3765 }
+        }
+      ]
+    },
+    {
+      "id": "p071",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 0, "r": 7 },
+      "total_population": 1540,
+      "initial_district_id": "d1",
+      "name": "Rural A8",
+      "demographic_groups": [
+        {
+          "id": "p071-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.60,
+          "vote_shares": { "ken": 0.6536, "ryu": 0.3464 }
+        }
+      ]
+    },
+    {
+      "id": "p072",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 1, "r": 7 },
+      "total_population": 1419,
+      "initial_district_id": "d1",
+      "name": "Rural B8",
+      "demographic_groups": [
+        {
+          "id": "p072-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.52,
+          "vote_shares": { "ken": 0.6703, "ryu": 0.3297 }
+        }
+      ]
+    },
+    {
+      "id": "p073",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 2, "r": 7 },
+      "total_population": 1588,
+      "initial_district_id": "d2",
+      "name": "Suburban C8",
+      "demographic_groups": [
+        {
+          "id": "p073-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.52,
+          "vote_shares": { "ken": 0.4344, "ryu": 0.5656 }
+        }
+      ]
+    },
+    {
+      "id": "p074",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 3, "r": 7 },
+      "total_population": 1515,
+      "initial_district_id": "d2",
+      "name": "Urban D8",
+      "demographic_groups": [
+        {
+          "id": "p074-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.67,
+          "vote_shares": { "ken": 0.1312, "ryu": 0.8688 }
+        }
+      ]
+    },
+    {
+      "id": "p075",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 4, "r": 7 },
+      "total_population": 1464,
+      "initial_district_id": "d3",
+      "name": "Urban E8",
+      "demographic_groups": [
+        {
+          "id": "p075-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.74,
+          "vote_shares": { "ken": 0.1676, "ryu": 0.8324 }
+        }
+      ]
+    },
+    {
+      "id": "p076",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 5, "r": 7 },
+      "total_population": 1579,
+      "initial_district_id": "d3",
+      "name": "Urban F8",
+      "demographic_groups": [
+        {
+          "id": "p076-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.69,
+          "vote_shares": { "ken": 0.1291, "ryu": 0.8709 }
+        }
+      ]
+    },
+    {
+      "id": "p077",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 6, "r": 7 },
+      "total_population": 1521,
+      "initial_district_id": "d4",
+      "name": "Urban G8",
+      "demographic_groups": [
+        {
+          "id": "p077-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.74,
+          "vote_shares": { "ken": 0.1615, "ryu": 0.8385 }
+        }
+      ]
+    },
+    {
+      "id": "p078",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 7, "r": 7 },
+      "total_population": 1516,
+      "initial_district_id": "d4",
+      "name": "Suburban H8",
+      "demographic_groups": [
+        {
+          "id": "p078-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.55,
+          "vote_shares": { "ken": 0.4398, "ryu": 0.5602 }
+        }
+      ]
+    },
+    {
+      "id": "p079",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 8, "r": 7 },
+      "total_population": 1547,
+      "initial_district_id": "d5",
+      "name": "Rural I8",
+      "demographic_groups": [
+        {
+          "id": "p079-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.52,
+          "vote_shares": { "ken": 0.6406, "ryu": 0.3594 }
+        }
+      ]
+    },
+    {
+      "id": "p080",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 9, "r": 7 },
+      "total_population": 1420,
+      "initial_district_id": "d5",
+      "name": "Rural J8",
+      "demographic_groups": [
+        {
+          "id": "p080-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.60,
+          "vote_shares": { "ken": 0.6330, "ryu": 0.3670 }
+        }
+      ]
+    },
+    {
+      "id": "p081",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 0, "r": 8 },
+      "total_population": 1572,
+      "initial_district_id": "d1",
+      "name": "Rural A9",
+      "demographic_groups": [
+        {
+          "id": "p081-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.52,
+          "vote_shares": { "ken": 0.6419, "ryu": 0.3581 }
+        }
+      ]
+    },
+    {
+      "id": "p082",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 1, "r": 8 },
+      "total_population": 1546,
+      "initial_district_id": "d1",
+      "name": "Rural B9",
+      "demographic_groups": [
+        {
+          "id": "p082-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.52,
+          "vote_shares": { "ken": 0.6537, "ryu": 0.3463 }
+        }
+      ]
+    },
+    {
+      "id": "p083",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 2, "r": 8 },
+      "total_population": 1491,
+      "initial_district_id": "d2",
+      "name": "Suburban C9",
+      "demographic_groups": [
+        {
+          "id": "p083-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.54,
+          "vote_shares": { "ken": 0.4474, "ryu": 0.5526 }
+        }
+      ]
+    },
+    {
+      "id": "p084",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 3, "r": 8 },
+      "total_population": 1430,
+      "initial_district_id": "d2",
+      "name": "Urban D9",
+      "demographic_groups": [
+        {
+          "id": "p084-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.73,
+          "vote_shares": { "ken": 0.1624, "ryu": 0.8376 }
+        }
+      ]
+    },
+    {
+      "id": "p085",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 4, "r": 8 },
+      "total_population": 1437,
+      "initial_district_id": "d3",
+      "name": "Urban E9",
+      "demographic_groups": [
+        {
+          "id": "p085-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.71,
+          "vote_shares": { "ken": 0.1258, "ryu": 0.8742 }
+        }
+      ]
+    },
+    {
+      "id": "p086",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 5, "r": 8 },
+      "total_population": 1540,
+      "initial_district_id": "d3",
+      "name": "Urban F9",
+      "demographic_groups": [
+        {
+          "id": "p086-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.71,
+          "vote_shares": { "ken": 0.1797, "ryu": 0.8203 }
+        }
+      ]
+    },
+    {
+      "id": "p087",
+      "editable": true,
+      "county_id": "riverport_city",
+      "position": { "q": 6, "r": 8 },
+      "total_population": 1569,
+      "initial_district_id": "d4",
+      "name": "Urban G9",
+      "demographic_groups": [
+        {
+          "id": "p087-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.68,
+          "vote_shares": { "ken": 0.1298, "ryu": 0.8702 }
+        }
+      ]
+    },
+    {
+      "id": "p088",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 7, "r": 8 },
+      "total_population": 1450,
+      "initial_district_id": "d4",
+      "name": "Suburban H9",
+      "demographic_groups": [
+        {
+          "id": "p088-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.52,
+          "vote_shares": { "ken": 0.4102, "ryu": 0.5898 }
+        }
+      ]
+    },
+    {
+      "id": "p089",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 8, "r": 8 },
+      "total_population": 1465,
+      "initial_district_id": "d5",
+      "name": "Rural I9",
+      "demographic_groups": [
+        {
+          "id": "p089-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.55,
+          "vote_shares": { "ken": 0.6507, "ryu": 0.3493 }
+        }
+      ]
+    },
+    {
+      "id": "p090",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 9, "r": 8 },
+      "total_population": 1402,
+      "initial_district_id": "d5",
+      "name": "Rural J9",
+      "demographic_groups": [
+        {
+          "id": "p090-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.54,
+          "vote_shares": { "ken": 0.6615, "ryu": 0.3385 }
+        }
+      ]
+    },
+    {
+      "id": "p091",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 0, "r": 9 },
+      "total_population": 1401,
+      "initial_district_id": "d1",
+      "name": "Rural A10",
+      "demographic_groups": [
+        {
+          "id": "p091-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.52,
+          "vote_shares": { "ken": 0.6241, "ryu": 0.3759 }
+        }
+      ]
+    },
+    {
+      "id": "p092",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 1, "r": 9 },
+      "total_population": 1597,
+      "initial_district_id": "d1",
+      "name": "Rural B10",
+      "demographic_groups": [
+        {
+          "id": "p092-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.55,
+          "vote_shares": { "ken": 0.6318, "ryu": 0.3682 }
+        }
+      ]
+    },
+    {
+      "id": "p093",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 2, "r": 9 },
+      "total_population": 1494,
+      "initial_district_id": "d2",
+      "name": "Suburban C10",
+      "demographic_groups": [
+        {
+          "id": "p093-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.54,
+          "vote_shares": { "ken": 0.4444, "ryu": 0.5556 }
+        }
+      ]
+    },
+    {
+      "id": "p094",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 3, "r": 9 },
+      "total_population": 1594,
+      "initial_district_id": "d2",
+      "name": "Suburban D10",
+      "demographic_groups": [
+        {
+          "id": "p094-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.54,
+          "vote_shares": { "ken": 0.4075, "ryu": 0.5925 }
+        }
+      ]
+    },
+    {
+      "id": "p095",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 4, "r": 9 },
+      "total_population": 1519,
+      "initial_district_id": "d3",
+      "name": "Suburban E10",
+      "demographic_groups": [
+        {
+          "id": "p095-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.57,
+          "vote_shares": { "ken": 0.4198, "ryu": 0.5802 }
+        }
+      ]
+    },
+    {
+      "id": "p096",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 5, "r": 9 },
+      "total_population": 1504,
+      "initial_district_id": "d3",
+      "name": "Suburban F10",
+      "demographic_groups": [
+        {
+          "id": "p096-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.4279, "ryu": 0.5721 }
+        }
+      ]
+    },
+    {
+      "id": "p097",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 6, "r": 9 },
+      "total_population": 1529,
+      "initial_district_id": "d4",
+      "name": "Suburban G10",
+      "demographic_groups": [
+        {
+          "id": "p097-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.53,
+          "vote_shares": { "ken": 0.4299, "ryu": 0.5701 }
+        }
+      ]
+    },
+    {
+      "id": "p098",
+      "editable": true,
+      "county_id": "riverport_suburbs",
+      "position": { "q": 7, "r": 9 },
+      "total_population": 1528,
+      "initial_district_id": "d4",
+      "name": "Suburban H10",
+      "demographic_groups": [
+        {
+          "id": "p098-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.59,
+          "vote_shares": { "ken": 0.4196, "ryu": 0.5804 }
+        }
+      ]
+    },
+    {
+      "id": "p099",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 8, "r": 9 },
+      "total_population": 1511,
+      "initial_district_id": "d5",
+      "name": "Rural I10",
+      "demographic_groups": [
+        {
+          "id": "p099-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.56,
+          "vote_shares": { "ken": 0.6299, "ryu": 0.3701 }
+        }
+      ]
+    },
+    {
+      "id": "p100",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 9, "r": 9 },
+      "total_population": 1453,
+      "initial_district_id": "d5",
+      "name": "Rural J10",
+      "demographic_groups": [
+        {
+          "id": "p100-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.55,
+          "vote_shares": { "ken": 0.6323, "ryu": 0.3677 }
+        }
+      ]
+    },
+    {
+      "id": "p101",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 0, "r": 10 },
+      "total_population": 1595,
+      "initial_district_id": "d1",
+      "name": "Rural A11",
+      "demographic_groups": [
+        {
+          "id": "p101-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.55,
+          "vote_shares": { "ken": 0.6237, "ryu": 0.3763 }
+        }
+      ]
+    },
+    {
+      "id": "p102",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 1, "r": 10 },
+      "total_population": 1594,
+      "initial_district_id": "d1",
+      "name": "Rural B11",
+      "demographic_groups": [
+        {
+          "id": "p102-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.53,
+          "vote_shares": { "ken": 0.6363, "ryu": 0.3637 }
+        }
+      ]
+    },
+    {
+      "id": "p103",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 2, "r": 10 },
+      "total_population": 1415,
+      "initial_district_id": "d2",
+      "name": "Rural C11",
+      "demographic_groups": [
+        {
+          "id": "p103-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.51,
+          "vote_shares": { "ken": 0.6439, "ryu": 0.3561 }
+        }
+      ]
+    },
+    {
+      "id": "p104",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 3, "r": 10 },
+      "total_population": 1523,
+      "initial_district_id": "d2",
+      "name": "Rural D11",
+      "demographic_groups": [
+        {
+          "id": "p104-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.50,
+          "vote_shares": { "ken": 0.6268, "ryu": 0.3732 }
+        }
+      ]
+    },
+    {
+      "id": "p105",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 4, "r": 10 },
+      "total_population": 1406,
+      "initial_district_id": "d3",
+      "name": "Rural E11",
+      "demographic_groups": [
+        {
+          "id": "p105-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.6350, "ryu": 0.3650 }
+        }
+      ]
+    },
+    {
+      "id": "p106",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 5, "r": 10 },
+      "total_population": 1544,
+      "initial_district_id": "d3",
+      "name": "Rural F11",
+      "demographic_groups": [
+        {
+          "id": "p106-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.55,
+          "vote_shares": { "ken": 0.6454, "ryu": 0.3546 }
+        }
+      ]
+    },
+    {
+      "id": "p107",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 6, "r": 10 },
+      "total_population": 1511,
+      "initial_district_id": "d4",
+      "name": "Rural G11",
+      "demographic_groups": [
+        {
+          "id": "p107-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.60,
+          "vote_shares": { "ken": 0.6317, "ryu": 0.3683 }
+        }
+      ]
+    },
+    {
+      "id": "p108",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 7, "r": 10 },
+      "total_population": 1421,
+      "initial_district_id": "d4",
+      "name": "Rural H11",
+      "demographic_groups": [
+        {
+          "id": "p108-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.52,
+          "vote_shares": { "ken": 0.6664, "ryu": 0.3336 }
+        }
+      ]
+    },
+    {
+      "id": "p109",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 8, "r": 10 },
+      "total_population": 1562,
+      "initial_district_id": "d5",
+      "name": "Rural I11",
+      "demographic_groups": [
+        {
+          "id": "p109-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.6732, "ryu": 0.3268 }
+        }
+      ]
+    },
+    {
+      "id": "p110",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 9, "r": 10 },
+      "total_population": 1475,
+      "initial_district_id": "d5",
+      "name": "Rural J11",
+      "demographic_groups": [
+        {
+          "id": "p110-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.51,
+          "vote_shares": { "ken": 0.6541, "ryu": 0.3459 }
+        }
+      ]
+    },
+    {
+      "id": "p111",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 0, "r": 11 },
+      "total_population": 1404,
+      "initial_district_id": "d1",
+      "name": "Rural A12",
+      "demographic_groups": [
+        {
+          "id": "p111-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.53,
+          "vote_shares": { "ken": 0.6483, "ryu": 0.3517 }
+        }
+      ]
+    },
+    {
+      "id": "p112",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 1, "r": 11 },
+      "total_population": 1447,
+      "initial_district_id": "d1",
+      "name": "Rural B12",
+      "demographic_groups": [
+        {
+          "id": "p112-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.55,
+          "vote_shares": { "ken": 0.6215, "ryu": 0.3785 }
+        }
+      ]
+    },
+    {
+      "id": "p113",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 2, "r": 11 },
+      "total_population": 1576,
+      "initial_district_id": "d2",
+      "name": "Rural C12",
+      "demographic_groups": [
+        {
+          "id": "p113-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.52,
+          "vote_shares": { "ken": 0.6278, "ryu": 0.3722 }
+        }
+      ]
+    },
+    {
+      "id": "p114",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 3, "r": 11 },
+      "total_population": 1567,
+      "initial_district_id": "d2",
+      "name": "Rural D12",
+      "demographic_groups": [
+        {
+          "id": "p114-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.59,
+          "vote_shares": { "ken": 0.6547, "ryu": 0.3453 }
+        }
+      ]
+    },
+    {
+      "id": "p115",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 4, "r": 11 },
+      "total_population": 1500,
+      "initial_district_id": "d3",
+      "name": "Rural E12",
+      "demographic_groups": [
+        {
+          "id": "p115-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.59,
+          "vote_shares": { "ken": 0.6417, "ryu": 0.3583 }
+        }
+      ]
+    },
+    {
+      "id": "p116",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 5, "r": 11 },
+      "total_population": 1493,
+      "initial_district_id": "d3",
+      "name": "Rural F12",
+      "demographic_groups": [
+        {
+          "id": "p116-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.55,
+          "vote_shares": { "ken": 0.6689, "ryu": 0.3311 }
+        }
+      ]
+    },
+    {
+      "id": "p117",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 6, "r": 11 },
+      "total_population": 1531,
+      "initial_district_id": "d4",
+      "name": "Rural G12",
+      "demographic_groups": [
+        {
+          "id": "p117-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.56,
+          "vote_shares": { "ken": 0.6490, "ryu": 0.3510 }
+        }
+      ]
+    },
+    {
+      "id": "p118",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 7, "r": 11 },
+      "total_population": 1557,
+      "initial_district_id": "d4",
+      "name": "Rural H12",
+      "demographic_groups": [
+        {
+          "id": "p118-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.57,
+          "vote_shares": { "ken": 0.6449, "ryu": 0.3551 }
+        }
+      ]
+    },
+    {
+      "id": "p119",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 8, "r": 11 },
+      "total_population": 1581,
+      "initial_district_id": "d5",
+      "name": "Rural I12",
+      "demographic_groups": [
+        {
+          "id": "p119-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.56,
+          "vote_shares": { "ken": 0.6521, "ryu": 0.3479 }
+        }
+      ]
+    },
+    {
+      "id": "p120",
+      "editable": true,
+      "county_id": "riverport_rural",
+      "position": { "q": 9, "r": 11 },
+      "total_population": 1430,
+      "initial_district_id": "d5",
+      "name": "Rural J12",
+      "demographic_groups": [
+        {
+          "id": "p120-base",
+          "name": "Registered voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.59,
+          "vote_shares": { "ken": 0.6723, "ryu": 0.3277 }
+        }
+      ]
+    }
+  ],
+  "events": [],
+  "rules": {
+    "population_tolerance": 0.10,
+    "contiguity": "required"
+  },
+  "success_criteria": [
+    {
+      "id": "sc-district-count",
+      "required": true,
+      "description": "All five districts are in use and every precinct is assigned.",
+      "criterion": { "type": "district_count" }
+    },
+    {
+      "id": "sc-population-balance",
+      "required": true,
+      "description": "All five districts have roughly equal population (within 10%).",
+      "criterion": { "type": "population_balance" }
+    },
+    {
+      "id": "sc-ken-seats",
+      "required": true,
+      "description": "The Ken Party wins at least 4 of the 5 districts.",
+      "criterion": {
+        "type": "seat_count",
+        "party": "ken",
+        "operator": "gte",
+        "count": 4
+      }
+    },
+    {
+      "id": "sc-efficiency-gap",
+      "required": false,
+      "description": "The efficiency gap is 15% or less — a statistically efficient gerrymander.",
+      "criterion": {
+        "type": "efficiency_gap",
+        "operator": "lte",
+        "threshold": 0.15
+      }
+    }
+  ],
+  "narrative": {
+    "character": {
+      "name": "You",
+      "role": "Redistricting Consultant, Ken Party Majority Caucus",
+      "motivation": "Riverport has a large urban core that votes overwhelmingly Ryu. Your job is to contain that bloc — concentrate it into one district, and let Ken dominate the rest."
+    },
+    "intro_slides": [
+      {
+        "heading": "The City Votes Ryu",
+        "body": "Riverport's urban core is a Ryu stronghold. In the current map, that bloc is spread across three districts — pulling each one toward Ryu.\n\nYour job: stop spreading those votes around."
+      },
+      {
+        "heading": "Pack Them In",
+        "body": "Packing means drawing one district to absorb as many opposition voters as possible.\n\nWhen you pack Ryu voters into a single district, they win it by a landslide — but all those extra votes are wasted. The other four districts become safe Ken territory."
+      }
+    ],
+    "objective": "Pack the Ryu stronghold into one district so the Ken Party wins at least 4 of the 5 seats."
+  }
+}

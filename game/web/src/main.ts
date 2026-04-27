@@ -30,6 +30,9 @@ import { loadProgress, saveProgress, markCompleted, isCompleted } from "./model/
 
 const SCENARIO_MANIFEST = [
 	{ id: "tutorial-002", title: "Millbrook County: Three-District Challenge" },
+	{ id: "scenario-002", title: "Clearwater County: The Governor's Map" },
+	{ id: "scenario-003", title: "Riverport: The Packing Problem" },
+	{ id: "scenario-004", title: "Lakeview: Cracking the Opposition" },
 ] as const;
 
 type ManifestEntry = (typeof SCENARIO_MANIFEST)[number];
@@ -206,6 +209,13 @@ if (
 	// ── Build store from scenario ─────────────────────────────────────────────
 	const { store } = createGameStore(scenario);
 	const temporalStore = store.temporal;
+
+	// Expose store for e2e tests on localhost — lets tests call paintStroke/setActiveDistrict
+	// without simulating individual mouse events on every precinct.
+	// Gated to localhost so production deployments do not expose a solve shortcut.
+	if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+		(window as unknown as Record<string, unknown>)["__gameStore"] = store;
+	}
 
 	// ── Create renderer ───────────────────────────────────────────────────────
 	const renderer: MapRenderer = new SvgMapRenderer(
