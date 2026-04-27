@@ -99,9 +99,9 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
-| GAME-025: cracking the opposition | All AC met; 120-precinct Lakeview scenario, horizontal-band initial failing ≥5K, vertical-strip crack wins all 5; mean_median optional criterion; 9 new e2e tests (48 total pass); merged PR #97 |
-| GAME-024: packing problem | All AC met; 120-precinct Riverport scenario, urban core initial failing ≥4K, pack-into-D3 wins 4; efficiency_gap optional criterion; merged PR #97 |
-| GAME-023: give the governor a win | All AC met; 96-precinct Clearwater scenario, vertical-strip initial 2K/2R failing ≥3K, D3/D4 redistribution wins 3; compactness optional criterion; merged PR #97 |
+| GAME-025: cracking the opposition | All AC met; 120-precinct Lakeview scenario; merged PR #97 |
+| GAME-024: packing problem | All AC met; 120-precinct Riverport scenario; merged PR #97 |
+| GAME-023: give the governor a win | All AC met; 96-precinct Clearwater scenario; merged PR #97 |
 | GAME-022: missing evaluators | All AC met; efficiency_gap (wasted-vote), mean_median, majority_minority implemented; 22/22 unit tests; 39/39 e2e pass; merged PR #92 |
 | GAME-021: multi-scenario manifest | All AC met; static manifest + URL routing (?s=id); select screen shows all entries; on-demand JSON fetch; 39/39 e2e tests pass; merged PR #90 |
 | GAME-019: tutorial-002 winnability + e2e solve test | All AC met; county-aligned initial assignments (north→d1, central→d2, south→d3); painting p071–p075 (indices 70–74) solves the map; 39th e2e test verifies end-to-end pass; merged PR #83 |
