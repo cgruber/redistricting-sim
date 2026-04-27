@@ -1,10 +1,11 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * E2e tests for GAME-023, GAME-024, GAME-025:
+ * E2e tests for GAME-023, GAME-024, GAME-025, GAME-026:
  *   - scenario-002: "Give the Governor a Win" (partisan gerrymandering)
  *   - scenario-003: "The Packing Problem" (packing tactic)
  *   - scenario-004: "Cracking the Opposition" (cracking tactic)
+ *   - scenario-005: "Valle Verde: A Voice for the Valley" (VRA / majority-minority)
  *
  * Each scenario has:
  *   1. A smoke test: loads scenario, verifies precinct count and intro text.
@@ -265,6 +266,90 @@ test("scenario-004 winnability: cracking the corridor across all 5 districts pas
       }
       getState().paintStroke(ids, districts[d]);
     }
+  });
+
+  await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#result-screen")).toBeVisible();
+  await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+});
+
+// ─── scenario-005: "Valle Verde: A Voice for the Valley" ─────────────────────
+
+test("scenario-005 smoke: loads and renders 120 precincts", async ({ page }) => {
+  await page.goto("/?s=scenario-005");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
+
+  const hexCount = await page.locator("path.hex").count();
+  expect(hexCount).toBe(120);
+});
+
+test("scenario-005 smoke: intro shows VRA character and objective", async ({ page }) => {
+  await page.goto("/?s=scenario-005");
+  await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator("#char-role")).toContainText("Redistricting Coordinator");
+  await expect(page.locator("#objective-text")).toContainText("majority-Latino district");
+});
+
+test("scenario-005 winnability: consolidating the valley into one district passes", async ({ page }) => {
+  /**
+   * Layout: 10 cols (q=0..9) × 12 rows (r=0..11) = 120 precincts, 5 districts × 24.
+   * Index formula: r * 10 + q  (0-based).
+   *
+   * Valley zone: q=3..8, r=5..8 = 24 precincts (~70% Latino).
+   * Initial (vertical 2-col strips): no district reaches 50% Latino → criterion fails.
+   *
+   * Winning redistribution — give the valley its own district (D3):
+   *   D1: q=0-1, all rows (unchanged — 24 pcts)
+   *   D2: q=2, all rows (12) + q=3-8, r=0-1 (12) = 24
+   *   D3: q=3-8, r=5-8 (valley, 24 pcts, ~70% Latino → majority_minority passes)
+   *   D4: q=3-8, r=2-4 (18) + q=9, r=0-5 (6) = 24
+   *   D5: q=9, r=6-11 (6) + q=3-8, r=9-11 (18) = 24
+   *
+   * All districts contiguous; population balanced (BASE_POP=1500 ±150, variance
+   * within 10% across all 24-precinct districts).
+   */
+  await loadScenario(page, "scenario-005");
+
+  await page.evaluate(() => {
+    const store = (window as unknown as Record<string, { getState: () => {
+      paintStroke: (ids: number[], district: number) => void;
+    } }>)["__gameStore"];
+    if (!store) throw new Error("__gameStore not found on window");
+    const { paintStroke } = store.getState();
+
+    const d1: number[] = [];
+    const d2: number[] = [];
+    const d3: number[] = [];
+    const d4: number[] = [];
+    const d5: number[] = [];
+
+    // D1: q=0-1, all rows
+    for (let r = 0; r < 12; r++) for (let q = 0; q <= 1; q++) d1.push(r * 10 + q);
+
+    // D2: q=2 (all rows) + q=3-8 (r=0-1)
+    for (let r = 0; r < 12; r++) d2.push(r * 10 + 2);
+    for (let r = 0; r <= 1; r++) for (let q = 3; q <= 8; q++) d2.push(r * 10 + q);
+
+    // D3: valley q=3-8, r=5-8
+    for (let r = 5; r <= 8; r++) for (let q = 3; q <= 8; q++) d3.push(r * 10 + q);
+
+    // D4: q=3-8, r=2-4 + q=9, r=0-5
+    for (let r = 2; r <= 4; r++) for (let q = 3; q <= 8; q++) d4.push(r * 10 + q);
+    for (let r = 0; r <= 5; r++) d4.push(r * 10 + 9);
+
+    // D5: q=9, r=6-11 + q=3-8, r=9-11
+    for (let r = 6; r <= 11; r++) d5.push(r * 10 + 9);
+    for (let r = 9; r <= 11; r++) for (let q = 3; q <= 8; q++) d5.push(r * 10 + q);
+
+    paintStroke(d1, 1);
+    paintStroke(d2, 2);
+    paintStroke(d3, 3);
+    paintStroke(d4, 4);
+    paintStroke(d5, 5);
   });
 
   await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
