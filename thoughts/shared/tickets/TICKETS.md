@@ -94,7 +94,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-007-dimensional-dot-map-demographic-overlay.md` | design, rendering | Dimensional dot map: demographic dimension switching (Option B adaptive encoding) + sorted placement toggle |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
 | `GAME-020-last-scenario-wrap-up-screen.md` | game, UX | Wrap-up/congratulations screen after completing the final scenario (instead of dead-end select screen) |
-| `GAME-026-scenario-005-valle-verde.md` | game, content | Scenario 005: Valle Verde — VRA/majority-minority district lesson; 120-precinct valley cracking puzzle |
 
 ---
 
@@ -103,6 +102,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | Summary | Resolution |
 |---|---|
 | DESIGN-003: districts view color encoding | Superseded — flat fills decided; population density → DESIGN-005 + DESIGN-006 |
+| GAME-026: Valle Verde (VRA / majority-minority) | All AC met; 120-precinct Valle Verde scenario; group_schema + ethnicity dimension; 3 e2e tests; merged PR #102 |
 | GAME-025: cracking the opposition | All AC met; 120-precinct Lakeview scenario; merged PR #97 |
 | GAME-024: packing problem | All AC met; 120-precinct Riverport scenario; merged PR #97 |
 | GAME-023: give the governor a win | All AC met; 96-precinct Clearwater scenario; merged PR #97 |
