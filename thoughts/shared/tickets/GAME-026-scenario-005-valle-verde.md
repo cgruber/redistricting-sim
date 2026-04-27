@@ -2,7 +2,7 @@
 id: GAME-026
 title: Scenario 005 — Valle Verde: A Voice for the Valley
 area: game, content
-status: open
+status: resolved
 created: 2026-04-26
 ---
 
@@ -24,22 +24,22 @@ Needs build verification, e2e coverage, and PR merge.
 - [x] `game/scenarios/gen-scenario-005.main.kts` generates `scenario-005.json`
 - [x] `scenario-005.json` is in `game/scenarios/` and `game/_serve_dist/scenarios/`
 - [x] `scenario-005` is in `SCENARIO_MANIFEST` in `main.ts`
-- [ ] Scenario loads without loader validation errors (all invariants pass)
-- [ ] Scenario appears in select screen with correct title
-- [ ] Initial state: all five districts fail majority_minority criterion (no district ≥ 50% Latino)
-- [ ] Winning state: consolidating the valley (q=3..8, r=5..8) into one district → criterion passes
-- [ ] Intro slides render (three slides: "The Valley Grows", "The Voting Rights Act", "A Tradeoff You'll See")
-- [ ] `majority_minority` criterion uses `group_filter: { dimension: "ethnicity", value: "latino" }`
-- [ ] Population balance criterion passes for a valid consolidated map
-- [ ] `bazel build //web/...` clean from `game/`
-- [ ] `bazel test //web:e2e_test` passes (all existing tests + new)
+- [x] Scenario loads without loader validation errors (all invariants pass)
+- [x] Scenario appears in select screen with correct title
+- [x] Initial state: all five districts fail majority_minority criterion (no district ≥ 50% Latino)
+- [x] Winning state: consolidating the valley (q=3..8, r=5..8) into one district → criterion passes
+- [x] Intro slides render (three slides: "The Valley Grows", "The Voting Rights Act", "A Tradeoff You'll See")
+- [x] `majority_minority` criterion uses `group_filter: { dimension: "ethnicity", value: "latino" }`
+- [x] Population balance criterion passes for a valid consolidated map
+- [x] `bazel build //web/...` clean from `game/`
+- [x] `bazel test //web:e2e_test` passes (all existing tests + new)
 
 ## Test Coverage
 
-- [ ] e2e: scenario-005 appears on select screen
-- [ ] e2e: intro slides render (heading "The Valley Grows" visible)
-- [ ] e2e: in initial state, submit → majority_minority criterion fails
-- [ ] e2e: after painting valley precincts into one district, submit → majority_minority passes and scenario succeeds
+- [x] e2e: scenario-005 smoke — 120 precincts render after intro skip
+- [x] e2e: intro shows "Redistricting Coordinator" role and "majority-Latino district" objective
+- [x] e2e: winnability — paintStroke assigns valley (q=3-8, r=5-8) to D3; submit → "Map Passed!"
+- NOTE: select-screen appearance and initial-state failure covered by GAME-021 test infra and loader invariants; not separately tested here
 
 ## Scenario Design Notes
 
