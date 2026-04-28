@@ -2,7 +2,7 @@
 id: GAME-020
 title: "Last scenario: wrap-up screen / completion animation after all scenarios finished"
 area: game, UX
-status: open
+status: resolved
 created: 2026-04-26
 ---
 

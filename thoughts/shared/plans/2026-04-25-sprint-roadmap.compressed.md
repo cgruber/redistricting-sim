@@ -26,7 +26,7 @@ see game-vision.compressed.md for full scope
 | S4 | one complete playable scenario | tutorial: intro→edit→test→pass/fail→retry | complete — 2026-04-25 |
 | S5 | more scenarios + remaining criteria | tutorial-002 wired; scenarios 2–4; majority_minority/gap/mean-median | complete — 2026-04-26 |
 | S6 | game infra + scenarios 5–7 | GAME-007 save/resume; scenarios 5–9; hex-of-hexes; demo feedback fixes | complete — 2026-04-27 |
-| S7 | shippable $v1 | about page; wrap-up screen; hex backport 002–006; visual consistency | current |
+| S7 | shippable $v1 | about page; wrap-up screen; hex backport 002–006; visual consistency | complete — 2026-04-28 |
 | S8 | polish | test anim; achievements; compression; accessibility; animated criteria eval | backlog |
 
 §SPRINT1 [COMPLETE 2026-04-25]
@@ -69,13 +69,13 @@ outcome: all tickets closed; GAME-007 save/resume; scenarios 005-009 authored (V
 tickets (all resolved): GAME-007 GAME-026 GAME-027
 PRs: #102 #103 #104 #105
 
-§SPRINT7 [CURRENT]
+§SPRINT7 [COMPLETE 2026-04-28]
 goal: shippable $v1 — player can visit and have complete consistent experience
-scope:
-  about page: educational framing, designer intent, non-partisan stance, resource links
-  GAME-020: wrap-up screen after final scenario (currently dead-end select screen)
-  GAME-028: backport hex-of-hexes to scenarios 002-006 + tutorial (visual consistency)
-known tickets: GAME-020 GAME-028; about page needs ticket
+outcome: all tickets closed; about page w/ educational framing+designer credit (GAME-029);
+  wrap-up screen after final scenario (GAME-020); hex backport to scenarios 002-006+tutorial-002
+  (GAME-028); corridor narrowed for s004; GAME-032 filed for loader errors
+tickets (all resolved): GAME-020 GAME-028 GAME-029
+PRs: #107 #108 #109 #110 #114
 
 §SPRINT8 (backlog)
 goal: polish — animations, achievements, optimization, accessibility
