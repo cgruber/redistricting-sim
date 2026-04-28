@@ -28,11 +28,11 @@
     {
       "id": "p001",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 0, "r": 0 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 0, "r": -6 },
       "total_population": 1386,
       "initial_district_id": "d1",
-      "name": "Rim A1",
+      "name": "Rim (0,-6)",
       "demographic_groups": [
         {
           "id": "p001-latino",
@@ -55,11 +55,11 @@
     {
       "id": "p002",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 1, "r": 0 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 1, "r": -6 },
       "total_population": 1597,
       "initial_district_id": "d1",
-      "name": "Rim B1",
+      "name": "Rim (1,-6)",
       "demographic_groups": [
         {
           "id": "p002-latino",
@@ -82,11 +82,11 @@
     {
       "id": "p003",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 2, "r": 0 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 2, "r": -6 },
       "total_population": 1496,
-      "initial_district_id": "d2",
-      "name": "Rim C1",
+      "initial_district_id": "d1",
+      "name": "Rim (2,-6)",
       "demographic_groups": [
         {
           "id": "p003-latino",
@@ -109,11 +109,11 @@
     {
       "id": "p004",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 3, "r": 0 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 3, "r": -6 },
       "total_population": 1387,
-      "initial_district_id": "d2",
-      "name": "Rim D1",
+      "initial_district_id": "d1",
+      "name": "Rim (3,-6)",
       "demographic_groups": [
         {
           "id": "p004-latino",
@@ -136,11 +136,11 @@
     {
       "id": "p005",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 4, "r": 0 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 4, "r": -6 },
       "total_population": 1591,
-      "initial_district_id": "d3",
-      "name": "Rim E1",
+      "initial_district_id": "d2",
+      "name": "Rim (4,-6)",
       "demographic_groups": [
         {
           "id": "p005-latino",
@@ -163,11 +163,11 @@
     {
       "id": "p006",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 5, "r": 0 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 5, "r": -6 },
       "total_population": 1600,
-      "initial_district_id": "d3",
-      "name": "Rim F1",
+      "initial_district_id": "d2",
+      "name": "Rim (5,-6)",
       "demographic_groups": [
         {
           "id": "p006-latino",
@@ -190,11 +190,11 @@
     {
       "id": "p007",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 6, "r": 0 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 6, "r": -6 },
       "total_population": 1499,
-      "initial_district_id": "d4",
-      "name": "Rim G1",
+      "initial_district_id": "d3",
+      "name": "Rim (6,-6)",
       "demographic_groups": [
         {
           "id": "p007-latino",
@@ -217,11 +217,11 @@
     {
       "id": "p008",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 7, "r": 0 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -1, "r": -5 },
       "total_population": 1431,
-      "initial_district_id": "d4",
-      "name": "Rim H1",
+      "initial_district_id": "d1",
+      "name": "Rim (-1,-5)",
       "demographic_groups": [
         {
           "id": "p008-latino",
@@ -244,11 +244,11 @@
     {
       "id": "p009",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 8, "r": 0 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 0, "r": -5 },
       "total_population": 1502,
-      "initial_district_id": "d5",
-      "name": "Rim I1",
+      "initial_district_id": "d1",
+      "name": "Rim (0,-5)",
       "demographic_groups": [
         {
           "id": "p009-latino",
@@ -271,11 +271,11 @@
     {
       "id": "p010",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 9, "r": 0 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 1, "r": -5 },
       "total_population": 1430,
-      "initial_district_id": "d5",
-      "name": "Rim J1",
+      "initial_district_id": "d1",
+      "name": "Rim (1,-5)",
       "demographic_groups": [
         {
           "id": "p010-latino",
@@ -298,11 +298,11 @@
     {
       "id": "p011",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 0, "r": 1 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 2, "r": -5 },
       "total_population": 1550,
       "initial_district_id": "d1",
-      "name": "Rim A2",
+      "name": "Rim (2,-5)",
       "demographic_groups": [
         {
           "id": "p011-latino",
@@ -325,11 +325,11 @@
     {
       "id": "p012",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 1, "r": 1 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 3, "r": -5 },
       "total_population": 1640,
-      "initial_district_id": "d1",
-      "name": "Rim B2",
+      "initial_district_id": "d2",
+      "name": "Rim (3,-5)",
       "demographic_groups": [
         {
           "id": "p012-latino",
@@ -352,11 +352,11 @@
     {
       "id": "p013",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 2, "r": 1 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 4, "r": -5 },
       "total_population": 1626,
       "initial_district_id": "d2",
-      "name": "Rim C2",
+      "name": "Rim (4,-5)",
       "demographic_groups": [
         {
           "id": "p013-latino",
@@ -379,11 +379,11 @@
     {
       "id": "p014",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 3, "r": 1 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 5, "r": -5 },
       "total_population": 1487,
-      "initial_district_id": "d2",
-      "name": "Rim D2",
+      "initial_district_id": "d3",
+      "name": "Rim (5,-5)",
       "demographic_groups": [
         {
           "id": "p014-latino",
@@ -406,11 +406,11 @@
     {
       "id": "p015",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 4, "r": 1 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 6, "r": -5 },
       "total_population": 1560,
-      "initial_district_id": "d3",
-      "name": "Rim E2",
+      "initial_district_id": "d4",
+      "name": "Rim (6,-5)",
       "demographic_groups": [
         {
           "id": "p015-latino",
@@ -433,11 +433,11 @@
     {
       "id": "p016",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 5, "r": 1 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -2, "r": -4 },
       "total_population": 1552,
-      "initial_district_id": "d3",
-      "name": "Rim F2",
+      "initial_district_id": "d1",
+      "name": "Rim (-2,-4)",
       "demographic_groups": [
         {
           "id": "p016-latino",
@@ -460,11 +460,11 @@
     {
       "id": "p017",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 6, "r": 1 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -1, "r": -4 },
       "total_population": 1426,
-      "initial_district_id": "d4",
-      "name": "Rim G2",
+      "initial_district_id": "d1",
+      "name": "Rim (-1,-4)",
       "demographic_groups": [
         {
           "id": "p017-latino",
@@ -487,11 +487,11 @@
     {
       "id": "p018",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 7, "r": 1 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 0, "r": -4 },
       "total_population": 1534,
-      "initial_district_id": "d4",
-      "name": "Rim H2",
+      "initial_district_id": "d1",
+      "name": "Rim (0,-4)",
       "demographic_groups": [
         {
           "id": "p018-latino",
@@ -514,11 +514,11 @@
     {
       "id": "p019",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 8, "r": 1 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 1, "r": -4 },
       "total_population": 1366,
-      "initial_district_id": "d5",
-      "name": "Rim I2",
+      "initial_district_id": "d1",
+      "name": "Rim (1,-4)",
       "demographic_groups": [
         {
           "id": "p019-latino",
@@ -541,11 +541,11 @@
     {
       "id": "p020",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 9, "r": 1 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 2, "r": -4 },
       "total_population": 1440,
-      "initial_district_id": "d5",
-      "name": "Rim J2",
+      "initial_district_id": "d2",
+      "name": "Rim (2,-4)",
       "demographic_groups": [
         {
           "id": "p020-latino",
@@ -568,11 +568,11 @@
     {
       "id": "p021",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 0, "r": 2 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 3, "r": -4 },
       "total_population": 1527,
-      "initial_district_id": "d1",
-      "name": "Rim A3",
+      "initial_district_id": "d2",
+      "name": "Rim (3,-4)",
       "demographic_groups": [
         {
           "id": "p021-latino",
@@ -595,11 +595,11 @@
     {
       "id": "p022",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 1, "r": 2 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 4, "r": -4 },
       "total_population": 1564,
-      "initial_district_id": "d1",
-      "name": "Rim B3",
+      "initial_district_id": "d3",
+      "name": "Rim (4,-4)",
       "demographic_groups": [
         {
           "id": "p022-latino",
@@ -622,11 +622,11 @@
     {
       "id": "p023",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 2, "r": 2 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 5, "r": -4 },
       "total_population": 1365,
-      "initial_district_id": "d2",
-      "name": "Rim C3",
+      "initial_district_id": "d4",
+      "name": "Rim (5,-4)",
       "demographic_groups": [
         {
           "id": "p023-latino",
@@ -649,11 +649,11 @@
     {
       "id": "p024",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 3, "r": 2 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 6, "r": -4 },
       "total_population": 1437,
-      "initial_district_id": "d2",
-      "name": "Rim D3",
+      "initial_district_id": "d4",
+      "name": "Rim (6,-4)",
       "demographic_groups": [
         {
           "id": "p024-latino",
@@ -676,11 +676,11 @@
     {
       "id": "p025",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 4, "r": 2 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -3, "r": -3 },
       "total_population": 1417,
-      "initial_district_id": "d3",
-      "name": "Rim E3",
+      "initial_district_id": "d1",
+      "name": "Rim (-3,-3)",
       "demographic_groups": [
         {
           "id": "p025-latino",
@@ -703,11 +703,11 @@
     {
       "id": "p026",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 5, "r": 2 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -2, "r": -3 },
       "total_population": 1554,
-      "initial_district_id": "d3",
-      "name": "Rim F3",
+      "initial_district_id": "d1",
+      "name": "Rim (-2,-3)",
       "demographic_groups": [
         {
           "id": "p026-latino",
@@ -730,11 +730,11 @@
     {
       "id": "p027",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 6, "r": 2 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -1, "r": -3 },
       "total_population": 1643,
-      "initial_district_id": "d4",
-      "name": "Rim G3",
+      "initial_district_id": "d1",
+      "name": "Rim (-1,-3)",
       "demographic_groups": [
         {
           "id": "p027-latino",
@@ -757,11 +757,11 @@
     {
       "id": "p028",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 7, "r": 2 },
+      "county_id": "valle_verde_central",
+      "position": { "q": 0, "r": -3 },
       "total_population": 1511,
-      "initial_district_id": "d4",
-      "name": "Rim H3",
+      "initial_district_id": "d1",
+      "name": "Rim (0,-3)",
       "demographic_groups": [
         {
           "id": "p028-latino",
@@ -784,11 +784,11 @@
     {
       "id": "p029",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 8, "r": 2 },
+      "county_id": "valle_verde_central",
+      "position": { "q": 1, "r": -3 },
       "total_population": 1397,
-      "initial_district_id": "d5",
-      "name": "Rim I3",
+      "initial_district_id": "d2",
+      "name": "Rim (1,-3)",
       "demographic_groups": [
         {
           "id": "p029-latino",
@@ -811,11 +811,11 @@
     {
       "id": "p030",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 9, "r": 2 },
+      "county_id": "valle_verde_central",
+      "position": { "q": 2, "r": -3 },
       "total_population": 1507,
-      "initial_district_id": "d5",
-      "name": "Rim J3",
+      "initial_district_id": "d2",
+      "name": "Rim (2,-3)",
       "demographic_groups": [
         {
           "id": "p030-latino",
@@ -838,11 +838,11 @@
     {
       "id": "p031",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 0, "r": 3 },
+      "county_id": "valle_verde_central",
+      "position": { "q": 3, "r": -3 },
       "total_population": 1429,
-      "initial_district_id": "d1",
-      "name": "Rim A4",
+      "initial_district_id": "d3",
+      "name": "Rim (3,-3)",
       "demographic_groups": [
         {
           "id": "p031-latino",
@@ -865,11 +865,11 @@
     {
       "id": "p032",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 1, "r": 3 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 4, "r": -3 },
       "total_population": 1625,
-      "initial_district_id": "d1",
-      "name": "Rim B4",
+      "initial_district_id": "d4",
+      "name": "Rim (4,-3)",
       "demographic_groups": [
         {
           "id": "p032-latino",
@@ -892,11 +892,11 @@
     {
       "id": "p033",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 2, "r": 3 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 5, "r": -3 },
       "total_population": 1491,
-      "initial_district_id": "d2",
-      "name": "Rim C4",
+      "initial_district_id": "d4",
+      "name": "Rim (5,-3)",
       "demographic_groups": [
         {
           "id": "p033-latino",
@@ -919,11 +919,11 @@
     {
       "id": "p034",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 3, "r": 3 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 6, "r": -3 },
       "total_population": 1585,
-      "initial_district_id": "d2",
-      "name": "Rim D4",
+      "initial_district_id": "d5",
+      "name": "Rim (6,-3)",
       "demographic_groups": [
         {
           "id": "p034-latino",
@@ -946,11 +946,11 @@
     {
       "id": "p035",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 4, "r": 3 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -4, "r": -2 },
       "total_population": 1499,
-      "initial_district_id": "d3",
-      "name": "Rim E4",
+      "initial_district_id": "d1",
+      "name": "Rim (-4,-2)",
       "demographic_groups": [
         {
           "id": "p035-latino",
@@ -973,11 +973,11 @@
     {
       "id": "p036",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 5, "r": 3 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -3, "r": -2 },
       "total_population": 1649,
-      "initial_district_id": "d3",
-      "name": "Rim F4",
+      "initial_district_id": "d1",
+      "name": "Rim (-3,-2)",
       "demographic_groups": [
         {
           "id": "p036-latino",
@@ -1000,11 +1000,11 @@
     {
       "id": "p037",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 6, "r": 3 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -2, "r": -2 },
       "total_population": 1482,
-      "initial_district_id": "d4",
-      "name": "Rim G4",
+      "initial_district_id": "d1",
+      "name": "Rim (-2,-2)",
       "demographic_groups": [
         {
           "id": "p037-latino",
@@ -1027,11 +1027,11 @@
     {
       "id": "p038",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 7, "r": 3 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -1, "r": -2 },
       "total_population": 1473,
-      "initial_district_id": "d4",
-      "name": "Rim H4",
+      "initial_district_id": "d1",
+      "name": "Rim (-1,-2)",
       "demographic_groups": [
         {
           "id": "p038-latino",
@@ -1054,11 +1054,11 @@
     {
       "id": "p039",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 8, "r": 3 },
+      "county_id": "valle_verde_central",
+      "position": { "q": 0, "r": -2 },
       "total_population": 1559,
-      "initial_district_id": "d5",
-      "name": "Rim I4",
+      "initial_district_id": "d2",
+      "name": "Rim (0,-2)",
       "demographic_groups": [
         {
           "id": "p039-latino",
@@ -1081,16 +1081,16 @@
     {
       "id": "p040",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 9, "r": 3 },
+      "county_id": "valle_verde_valley",
+      "position": { "q": 1, "r": -2 },
       "total_population": 1494,
-      "initial_district_id": "d5",
-      "name": "Rim J4",
+      "initial_district_id": "d2",
+      "name": "Valley (1,-2)",
       "demographic_groups": [
         {
           "id": "p040-latino",
           "name": "Latino residents",
-          "population_share": 0.2133,
+          "population_share": 0.7133,
           "turnout_rate": 0.57,
           "vote_shares": { "ken": 0.7567, "ryu": 0.2433 },
           "dimensions": { "ethnicity": "latino" }
@@ -1098,7 +1098,7 @@
         {
           "id": "p040-anglo",
           "name": "Anglo residents",
-          "population_share": 0.7867,
+          "population_share": 0.2867,
           "turnout_rate": 0.59,
           "vote_shares": { "ken": 0.3661, "ryu": 0.6339 },
           "dimensions": { "ethnicity": "anglo" }
@@ -1108,16 +1108,16 @@
     {
       "id": "p041",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 0, "r": 4 },
+      "county_id": "valle_verde_valley",
+      "position": { "q": 2, "r": -2 },
       "total_population": 1492,
-      "initial_district_id": "d1",
-      "name": "Rim A5",
+      "initial_district_id": "d3",
+      "name": "Valley (2,-2)",
       "demographic_groups": [
         {
           "id": "p041-latino",
           "name": "Latino residents",
-          "population_share": 0.2063,
+          "population_share": 0.7063,
           "turnout_rate": 0.54,
           "vote_shares": { "ken": 0.7619, "ryu": 0.2381 },
           "dimensions": { "ethnicity": "latino" }
@@ -1125,7 +1125,7 @@
         {
           "id": "p041-anglo",
           "name": "Anglo residents",
-          "population_share": 0.7937,
+          "population_share": 0.2937,
           "turnout_rate": 0.66,
           "vote_shares": { "ken": 0.3710, "ryu": 0.6290 },
           "dimensions": { "ethnicity": "anglo" }
@@ -1135,16 +1135,16 @@
     {
       "id": "p042",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 1, "r": 4 },
+      "county_id": "valle_verde_valley",
+      "position": { "q": 3, "r": -2 },
       "total_population": 1611,
-      "initial_district_id": "d1",
-      "name": "Rim B5",
+      "initial_district_id": "d4",
+      "name": "Valley (3,-2)",
       "demographic_groups": [
         {
           "id": "p042-latino",
           "name": "Latino residents",
-          "population_share": 0.1836,
+          "population_share": 0.6836,
           "turnout_rate": 0.52,
           "vote_shares": { "ken": 0.7835, "ryu": 0.2165 },
           "dimensions": { "ethnicity": "latino" }
@@ -1152,7 +1152,7 @@
         {
           "id": "p042-anglo",
           "name": "Anglo residents",
-          "population_share": 0.8164,
+          "population_share": 0.3164,
           "turnout_rate": 0.66,
           "vote_shares": { "ken": 0.3542, "ryu": 0.6458 },
           "dimensions": { "ethnicity": "anglo" }
@@ -1162,16 +1162,16 @@
     {
       "id": "p043",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 2, "r": 4 },
+      "county_id": "valle_verde_valley",
+      "position": { "q": 4, "r": -2 },
       "total_population": 1604,
-      "initial_district_id": "d2",
-      "name": "Rim C5",
+      "initial_district_id": "d4",
+      "name": "Valley (4,-2)",
       "demographic_groups": [
         {
           "id": "p043-latino",
           "name": "Latino residents",
-          "population_share": 0.2049,
+          "population_share": 0.7049,
           "turnout_rate": 0.53,
           "vote_shares": { "ken": 0.7609, "ryu": 0.2391 },
           "dimensions": { "ethnicity": "latino" }
@@ -1179,7 +1179,7 @@
         {
           "id": "p043-anglo",
           "name": "Anglo residents",
-          "population_share": 0.7951,
+          "population_share": 0.2951,
           "turnout_rate": 0.64,
           "vote_shares": { "ken": 0.4076, "ryu": 0.5924 },
           "dimensions": { "ethnicity": "anglo" }
@@ -1189,16 +1189,16 @@
     {
       "id": "p044",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 3, "r": 4 },
+      "county_id": "valle_verde_valley",
+      "position": { "q": 5, "r": -2 },
       "total_population": 1413,
-      "initial_district_id": "d2",
-      "name": "Rim D5",
+      "initial_district_id": "d5",
+      "name": "Valley (5,-2)",
       "demographic_groups": [
         {
           "id": "p044-latino",
           "name": "Latino residents",
-          "population_share": 0.2109,
+          "population_share": 0.7109,
           "turnout_rate": 0.60,
           "vote_shares": { "ken": 0.7798, "ryu": 0.2202 },
           "dimensions": { "ethnicity": "latino" }
@@ -1206,7 +1206,7 @@
         {
           "id": "p044-anglo",
           "name": "Anglo residents",
-          "population_share": 0.7891,
+          "population_share": 0.2891,
           "turnout_rate": 0.64,
           "vote_shares": { "ken": 0.3949, "ryu": 0.6051 },
           "dimensions": { "ethnicity": "anglo" }
@@ -1216,11 +1216,11 @@
     {
       "id": "p045",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 4, "r": 4 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 6, "r": -2 },
       "total_population": 1389,
-      "initial_district_id": "d3",
-      "name": "Rim E5",
+      "initial_district_id": "d5",
+      "name": "Rim (6,-2)",
       "demographic_groups": [
         {
           "id": "p045-latino",
@@ -1243,11 +1243,11 @@
     {
       "id": "p046",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 5, "r": 4 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -5, "r": -1 },
       "total_population": 1524,
-      "initial_district_id": "d3",
-      "name": "Rim F5",
+      "initial_district_id": "d1",
+      "name": "Rim (-5,-1)",
       "demographic_groups": [
         {
           "id": "p046-latino",
@@ -1270,11 +1270,11 @@
     {
       "id": "p047",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 6, "r": 4 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -4, "r": -1 },
       "total_population": 1497,
-      "initial_district_id": "d4",
-      "name": "Rim G5",
+      "initial_district_id": "d1",
+      "name": "Rim (-4,-1)",
       "demographic_groups": [
         {
           "id": "p047-latino",
@@ -1297,11 +1297,11 @@
     {
       "id": "p048",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 7, "r": 4 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -3, "r": -1 },
       "total_population": 1562,
-      "initial_district_id": "d4",
-      "name": "Rim H5",
+      "initial_district_id": "d1",
+      "name": "Rim (-3,-1)",
       "demographic_groups": [
         {
           "id": "p048-latino",
@@ -1324,11 +1324,11 @@
     {
       "id": "p049",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 8, "r": 4 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -2, "r": -1 },
       "total_population": 1400,
-      "initial_district_id": "d5",
-      "name": "Rim I5",
+      "initial_district_id": "d1",
+      "name": "Rim (-2,-1)",
       "demographic_groups": [
         {
           "id": "p049-latino",
@@ -1351,11 +1351,11 @@
     {
       "id": "p050",
       "editable": true,
-      "county_id": "valle_verde_north",
-      "position": { "q": 9, "r": 4 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -1, "r": -1 },
       "total_population": 1572,
-      "initial_district_id": "d5",
-      "name": "Rim J5",
+      "initial_district_id": "d2",
+      "name": "Rim (-1,-1)",
       "demographic_groups": [
         {
           "id": "p050-latino",
@@ -1378,11 +1378,11 @@
     {
       "id": "p051",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 0, "r": 5 },
+      "county_id": "valle_verde_central",
+      "position": { "q": 0, "r": -1 },
       "total_population": 1482,
-      "initial_district_id": "d1",
-      "name": "Rim A6",
+      "initial_district_id": "d2",
+      "name": "Rim (0,-1)",
       "demographic_groups": [
         {
           "id": "p051-latino",
@@ -1405,16 +1405,16 @@
     {
       "id": "p052",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 1, "r": 5 },
+      "county_id": "valle_verde_valley",
+      "position": { "q": 1, "r": -1 },
       "total_population": 1623,
-      "initial_district_id": "d1",
-      "name": "Rim B6",
+      "initial_district_id": "d3",
+      "name": "Valley (1,-1)",
       "demographic_groups": [
         {
           "id": "p052-latino",
           "name": "Latino residents",
-          "population_share": 0.1724,
+          "population_share": 0.6724,
           "turnout_rate": 0.55,
           "vote_shares": { "ken": 0.7657, "ryu": 0.2343 },
           "dimensions": { "ethnicity": "latino" }
@@ -1422,7 +1422,7 @@
         {
           "id": "p052-anglo",
           "name": "Anglo residents",
-          "population_share": 0.8276,
+          "population_share": 0.3276,
           "turnout_rate": 0.63,
           "vote_shares": { "ken": 0.3676, "ryu": 0.6324 },
           "dimensions": { "ethnicity": "anglo" }
@@ -1432,16 +1432,16 @@
     {
       "id": "p053",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 2, "r": 5 },
+      "county_id": "valle_verde_valley",
+      "position": { "q": 2, "r": -1 },
       "total_population": 1430,
-      "initial_district_id": "d2",
-      "name": "Rim C6",
+      "initial_district_id": "d4",
+      "name": "Valley (2,-1)",
       "demographic_groups": [
         {
           "id": "p053-latino",
           "name": "Latino residents",
-          "population_share": 0.1680,
+          "population_share": 0.6680,
           "turnout_rate": 0.56,
           "vote_shares": { "ken": 0.7756, "ryu": 0.2244 },
           "dimensions": { "ethnicity": "latino" }
@@ -1449,7 +1449,7 @@
         {
           "id": "p053-anglo",
           "name": "Anglo residents",
-          "population_share": 0.8320,
+          "population_share": 0.3320,
           "turnout_rate": 0.66,
           "vote_shares": { "ken": 0.3805, "ryu": 0.6195 },
           "dimensions": { "ethnicity": "anglo" }
@@ -1460,10 +1460,10 @@
       "id": "p054",
       "editable": true,
       "county_id": "valle_verde_valley",
-      "position": { "q": 3, "r": 5 },
+      "position": { "q": 3, "r": -1 },
       "total_population": 1498,
-      "initial_district_id": "d2",
-      "name": "Valley D6",
+      "initial_district_id": "d4",
+      "name": "Valley (3,-1)",
       "demographic_groups": [
         {
           "id": "p054-latino",
@@ -1487,10 +1487,10 @@
       "id": "p055",
       "editable": true,
       "county_id": "valle_verde_valley",
-      "position": { "q": 4, "r": 5 },
+      "position": { "q": 4, "r": -1 },
       "total_population": 1618,
-      "initial_district_id": "d3",
-      "name": "Valley E6",
+      "initial_district_id": "d5",
+      "name": "Valley (4,-1)",
       "demographic_groups": [
         {
           "id": "p055-latino",
@@ -1514,10 +1514,10 @@
       "id": "p056",
       "editable": true,
       "county_id": "valle_verde_valley",
-      "position": { "q": 5, "r": 5 },
+      "position": { "q": 5, "r": -1 },
       "total_population": 1555,
-      "initial_district_id": "d3",
-      "name": "Valley F6",
+      "initial_district_id": "d5",
+      "name": "Valley (5,-1)",
       "demographic_groups": [
         {
           "id": "p056-latino",
@@ -1540,16 +1540,16 @@
     {
       "id": "p057",
       "editable": true,
-      "county_id": "valle_verde_valley",
-      "position": { "q": 6, "r": 5 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 6, "r": -1 },
       "total_population": 1510,
-      "initial_district_id": "d4",
-      "name": "Valley G6",
+      "initial_district_id": "d5",
+      "name": "Rim (6,-1)",
       "demographic_groups": [
         {
           "id": "p057-latino",
           "name": "Latino residents",
-          "population_share": 0.7233,
+          "population_share": 0.2233,
           "turnout_rate": 0.54,
           "vote_shares": { "ken": 0.8009, "ryu": 0.1991 },
           "dimensions": { "ethnicity": "latino" }
@@ -1557,7 +1557,7 @@
         {
           "id": "p057-anglo",
           "name": "Anglo residents",
-          "population_share": 0.2767,
+          "population_share": 0.7767,
           "turnout_rate": 0.64,
           "vote_shares": { "ken": 0.3669, "ryu": 0.6331 },
           "dimensions": { "ethnicity": "anglo" }
@@ -1567,16 +1567,16 @@
     {
       "id": "p058",
       "editable": true,
-      "county_id": "valle_verde_valley",
-      "position": { "q": 7, "r": 5 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -6, "r": 0 },
       "total_population": 1645,
-      "initial_district_id": "d4",
-      "name": "Valley H6",
+      "initial_district_id": "d1",
+      "name": "Rim (-6,0)",
       "demographic_groups": [
         {
           "id": "p058-latino",
           "name": "Latino residents",
-          "population_share": 0.6604,
+          "population_share": 0.1604,
           "turnout_rate": 0.58,
           "vote_shares": { "ken": 0.8090, "ryu": 0.1910 },
           "dimensions": { "ethnicity": "latino" }
@@ -1584,7 +1584,7 @@
         {
           "id": "p058-anglo",
           "name": "Anglo residents",
-          "population_share": 0.3396,
+          "population_share": 0.8396,
           "turnout_rate": 0.65,
           "vote_shares": { "ken": 0.3837, "ryu": 0.6163 },
           "dimensions": { "ethnicity": "anglo" }
@@ -1594,16 +1594,16 @@
     {
       "id": "p059",
       "editable": true,
-      "county_id": "valle_verde_valley",
-      "position": { "q": 8, "r": 5 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -5, "r": 0 },
       "total_population": 1530,
-      "initial_district_id": "d5",
-      "name": "Valley I6",
+      "initial_district_id": "d1",
+      "name": "Rim (-5,0)",
       "demographic_groups": [
         {
           "id": "p059-latino",
           "name": "Latino residents",
-          "population_share": 0.6976,
+          "population_share": 0.1976,
           "turnout_rate": 0.60,
           "vote_shares": { "ken": 0.7820, "ryu": 0.2180 },
           "dimensions": { "ethnicity": "latino" }
@@ -1611,7 +1611,7 @@
         {
           "id": "p059-anglo",
           "name": "Anglo residents",
-          "population_share": 0.3024,
+          "population_share": 0.8024,
           "turnout_rate": 0.59,
           "vote_shares": { "ken": 0.3976, "ryu": 0.6024 },
           "dimensions": { "ethnicity": "anglo" }
@@ -1621,11 +1621,11 @@
     {
       "id": "p060",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 9, "r": 5 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -4, "r": 0 },
       "total_population": 1565,
-      "initial_district_id": "d5",
-      "name": "Rim J6",
+      "initial_district_id": "d1",
+      "name": "Rim (-4,0)",
       "demographic_groups": [
         {
           "id": "p060-latino",
@@ -1648,11 +1648,11 @@
     {
       "id": "p061",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 0, "r": 6 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -3, "r": 0 },
       "total_population": 1633,
       "initial_district_id": "d1",
-      "name": "Rim A7",
+      "name": "Rim (-3,0)",
       "demographic_groups": [
         {
           "id": "p061-latino",
@@ -1675,11 +1675,11 @@
     {
       "id": "p062",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 1, "r": 6 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -2, "r": 0 },
       "total_population": 1530,
-      "initial_district_id": "d1",
-      "name": "Rim B7",
+      "initial_district_id": "d2",
+      "name": "Rim (-2,0)",
       "demographic_groups": [
         {
           "id": "p062-latino",
@@ -1702,11 +1702,11 @@
     {
       "id": "p063",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 2, "r": 6 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -1, "r": 0 },
       "total_population": 1388,
       "initial_district_id": "d2",
-      "name": "Rim C7",
+      "name": "Rim (-1,0)",
       "demographic_groups": [
         {
           "id": "p063-latino",
@@ -1729,16 +1729,16 @@
     {
       "id": "p064",
       "editable": true,
-      "county_id": "valle_verde_valley",
-      "position": { "q": 3, "r": 6 },
+      "county_id": "valle_verde_central",
+      "position": { "q": 0, "r": 0 },
       "total_population": 1468,
-      "initial_district_id": "d2",
-      "name": "Valley D7",
+      "initial_district_id": "d3",
+      "name": "Rim (0,0)",
       "demographic_groups": [
         {
           "id": "p064-latino",
           "name": "Latino residents",
-          "population_share": 0.6922,
+          "population_share": 0.1922,
           "turnout_rate": 0.55,
           "vote_shares": { "ken": 0.7600, "ryu": 0.2400 },
           "dimensions": { "ethnicity": "latino" }
@@ -1746,7 +1746,7 @@
         {
           "id": "p064-anglo",
           "name": "Anglo residents",
-          "population_share": 0.3078,
+          "population_share": 0.8078,
           "turnout_rate": 0.59,
           "vote_shares": { "ken": 0.3609, "ryu": 0.6391 },
           "dimensions": { "ethnicity": "anglo" }
@@ -1757,10 +1757,10 @@
       "id": "p065",
       "editable": true,
       "county_id": "valle_verde_valley",
-      "position": { "q": 4, "r": 6 },
+      "position": { "q": 1, "r": 0 },
       "total_population": 1626,
-      "initial_district_id": "d3",
-      "name": "Valley E7",
+      "initial_district_id": "d4",
+      "name": "Valley (1,0)",
       "demographic_groups": [
         {
           "id": "p065-latino",
@@ -1784,10 +1784,10 @@
       "id": "p066",
       "editable": true,
       "county_id": "valle_verde_valley",
-      "position": { "q": 5, "r": 6 },
+      "position": { "q": 2, "r": 0 },
       "total_population": 1568,
-      "initial_district_id": "d3",
-      "name": "Valley F7",
+      "initial_district_id": "d4",
+      "name": "Valley (2,0)",
       "demographic_groups": [
         {
           "id": "p066-latino",
@@ -1811,10 +1811,10 @@
       "id": "p067",
       "editable": true,
       "county_id": "valle_verde_valley",
-      "position": { "q": 6, "r": 6 },
+      "position": { "q": 3, "r": 0 },
       "total_population": 1506,
-      "initial_district_id": "d4",
-      "name": "Valley G7",
+      "initial_district_id": "d5",
+      "name": "Valley (3,0)",
       "demographic_groups": [
         {
           "id": "p067-latino",
@@ -1838,10 +1838,10 @@
       "id": "p068",
       "editable": true,
       "county_id": "valle_verde_valley",
-      "position": { "q": 7, "r": 6 },
+      "position": { "q": 4, "r": 0 },
       "total_population": 1428,
-      "initial_district_id": "d4",
-      "name": "Valley H7",
+      "initial_district_id": "d5",
+      "name": "Valley (4,0)",
       "demographic_groups": [
         {
           "id": "p068-latino",
@@ -1865,10 +1865,10 @@
       "id": "p069",
       "editable": true,
       "county_id": "valle_verde_valley",
-      "position": { "q": 8, "r": 6 },
+      "position": { "q": 5, "r": 0 },
       "total_population": 1373,
       "initial_district_id": "d5",
-      "name": "Valley I7",
+      "name": "Valley (5,0)",
       "demographic_groups": [
         {
           "id": "p069-latino",
@@ -1891,11 +1891,11 @@
     {
       "id": "p070",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 9, "r": 6 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 6, "r": 0 },
       "total_population": 1450,
       "initial_district_id": "d5",
-      "name": "Rim J7",
+      "name": "Rim (6,0)",
       "demographic_groups": [
         {
           "id": "p070-latino",
@@ -1918,11 +1918,11 @@
     {
       "id": "p071",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 0, "r": 7 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -6, "r": 1 },
       "total_population": 1577,
       "initial_district_id": "d1",
-      "name": "Rim A8",
+      "name": "Rim (-6,1)",
       "demographic_groups": [
         {
           "id": "p071-latino",
@@ -1945,11 +1945,11 @@
     {
       "id": "p072",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 1, "r": 7 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -5, "r": 1 },
       "total_population": 1416,
       "initial_district_id": "d1",
-      "name": "Rim B8",
+      "name": "Rim (-5,1)",
       "demographic_groups": [
         {
           "id": "p072-latino",
@@ -1972,11 +1972,11 @@
     {
       "id": "p073",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 2, "r": 7 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -4, "r": 1 },
       "total_population": 1445,
-      "initial_district_id": "d2",
-      "name": "Rim C8",
+      "initial_district_id": "d1",
+      "name": "Rim (-4,1)",
       "demographic_groups": [
         {
           "id": "p073-latino",
@@ -1999,16 +1999,16 @@
     {
       "id": "p074",
       "editable": true,
-      "county_id": "valle_verde_valley",
-      "position": { "q": 3, "r": 7 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -3, "r": 1 },
       "total_population": 1424,
       "initial_district_id": "d2",
-      "name": "Valley D8",
+      "name": "Rim (-3,1)",
       "demographic_groups": [
         {
           "id": "p074-latino",
           "name": "Latino residents",
-          "population_share": 0.6628,
+          "population_share": 0.1628,
           "turnout_rate": 0.58,
           "vote_shares": { "ken": 0.7539, "ryu": 0.2461 },
           "dimensions": { "ethnicity": "latino" }
@@ -2016,7 +2016,7 @@
         {
           "id": "p074-anglo",
           "name": "Anglo residents",
-          "population_share": 0.3372,
+          "population_share": 0.8372,
           "turnout_rate": 0.66,
           "vote_shares": { "ken": 0.3849, "ryu": 0.6151 },
           "dimensions": { "ethnicity": "anglo" }
@@ -2026,16 +2026,16 @@
     {
       "id": "p075",
       "editable": true,
-      "county_id": "valle_verde_valley",
-      "position": { "q": 4, "r": 7 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -2, "r": 1 },
       "total_population": 1492,
-      "initial_district_id": "d3",
-      "name": "Valley E8",
+      "initial_district_id": "d2",
+      "name": "Rim (-2,1)",
       "demographic_groups": [
         {
           "id": "p075-latino",
           "name": "Latino residents",
-          "population_share": 0.7026,
+          "population_share": 0.2026,
           "turnout_rate": 0.60,
           "vote_shares": { "ken": 0.7809, "ryu": 0.2191 },
           "dimensions": { "ethnicity": "latino" }
@@ -2043,7 +2043,7 @@
         {
           "id": "p075-anglo",
           "name": "Anglo residents",
-          "population_share": 0.2974,
+          "population_share": 0.7974,
           "turnout_rate": 0.65,
           "vote_shares": { "ken": 0.3800, "ryu": 0.6200 },
           "dimensions": { "ethnicity": "anglo" }
@@ -2053,16 +2053,16 @@
     {
       "id": "p076",
       "editable": true,
-      "county_id": "valle_verde_valley",
-      "position": { "q": 5, "r": 7 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -1, "r": 1 },
       "total_population": 1538,
       "initial_district_id": "d3",
-      "name": "Valley F8",
+      "name": "Rim (-1,1)",
       "demographic_groups": [
         {
           "id": "p076-latino",
           "name": "Latino residents",
-          "population_share": 0.7186,
+          "population_share": 0.2186,
           "turnout_rate": 0.55,
           "vote_shares": { "ken": 0.7872, "ryu": 0.2128 },
           "dimensions": { "ethnicity": "latino" }
@@ -2070,7 +2070,7 @@
         {
           "id": "p076-anglo",
           "name": "Anglo residents",
-          "population_share": 0.2814,
+          "population_share": 0.7814,
           "turnout_rate": 0.62,
           "vote_shares": { "ken": 0.3507, "ryu": 0.6493 },
           "dimensions": { "ethnicity": "anglo" }
@@ -2080,16 +2080,16 @@
     {
       "id": "p077",
       "editable": true,
-      "county_id": "valle_verde_valley",
-      "position": { "q": 6, "r": 7 },
+      "county_id": "valle_verde_central",
+      "position": { "q": 0, "r": 1 },
       "total_population": 1631,
       "initial_district_id": "d4",
-      "name": "Valley G8",
+      "name": "Rim (0,1)",
       "demographic_groups": [
         {
           "id": "p077-latino",
           "name": "Latino residents",
-          "population_share": 0.6850,
+          "population_share": 0.1850,
           "turnout_rate": 0.59,
           "vote_shares": { "ken": 0.7613, "ryu": 0.2387 },
           "dimensions": { "ethnicity": "latino" }
@@ -2097,7 +2097,7 @@
         {
           "id": "p077-anglo",
           "name": "Anglo residents",
-          "population_share": 0.3150,
+          "population_share": 0.8150,
           "turnout_rate": 0.59,
           "vote_shares": { "ken": 0.3955, "ryu": 0.6045 },
           "dimensions": { "ethnicity": "anglo" }
@@ -2108,10 +2108,10 @@
       "id": "p078",
       "editable": true,
       "county_id": "valle_verde_valley",
-      "position": { "q": 7, "r": 7 },
+      "position": { "q": 1, "r": 1 },
       "total_population": 1621,
       "initial_district_id": "d4",
-      "name": "Valley H8",
+      "name": "Valley (1,1)",
       "demographic_groups": [
         {
           "id": "p078-latino",
@@ -2135,10 +2135,10 @@
       "id": "p079",
       "editable": true,
       "county_id": "valle_verde_valley",
-      "position": { "q": 8, "r": 7 },
+      "position": { "q": 2, "r": 1 },
       "total_population": 1357,
       "initial_district_id": "d5",
-      "name": "Valley I8",
+      "name": "Valley (2,1)",
       "demographic_groups": [
         {
           "id": "p079-latino",
@@ -2161,16 +2161,16 @@
     {
       "id": "p080",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 9, "r": 7 },
+      "county_id": "valle_verde_valley",
+      "position": { "q": 3, "r": 1 },
       "total_population": 1366,
       "initial_district_id": "d5",
-      "name": "Rim J8",
+      "name": "Valley (3,1)",
       "demographic_groups": [
         {
           "id": "p080-latino",
           "name": "Latino residents",
-          "population_share": 0.2036,
+          "population_share": 0.7036,
           "turnout_rate": 0.57,
           "vote_shares": { "ken": 0.7773, "ryu": 0.2227 },
           "dimensions": { "ethnicity": "latino" }
@@ -2178,7 +2178,7 @@
         {
           "id": "p080-anglo",
           "name": "Anglo residents",
-          "population_share": 0.7964,
+          "population_share": 0.2964,
           "turnout_rate": 0.63,
           "vote_shares": { "ken": 0.4037, "ryu": 0.5963 },
           "dimensions": { "ethnicity": "anglo" }
@@ -2188,16 +2188,16 @@
     {
       "id": "p081",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 0, "r": 8 },
+      "county_id": "valle_verde_valley",
+      "position": { "q": 4, "r": 1 },
       "total_population": 1492,
-      "initial_district_id": "d1",
-      "name": "Rim A9",
+      "initial_district_id": "d5",
+      "name": "Valley (4,1)",
       "demographic_groups": [
         {
           "id": "p081-latino",
           "name": "Latino residents",
-          "population_share": 0.1721,
+          "population_share": 0.6721,
           "turnout_rate": 0.53,
           "vote_shares": { "ken": 0.7572, "ryu": 0.2428 },
           "dimensions": { "ethnicity": "latino" }
@@ -2205,7 +2205,7 @@
         {
           "id": "p081-anglo",
           "name": "Anglo residents",
-          "population_share": 0.8279,
+          "population_share": 0.3279,
           "turnout_rate": 0.61,
           "vote_shares": { "ken": 0.3710, "ryu": 0.6290 },
           "dimensions": { "ethnicity": "anglo" }
@@ -2215,16 +2215,16 @@
     {
       "id": "p082",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 1, "r": 8 },
+      "county_id": "valle_verde_valley",
+      "position": { "q": 5, "r": 1 },
       "total_population": 1649,
-      "initial_district_id": "d1",
-      "name": "Rim B9",
+      "initial_district_id": "d5",
+      "name": "Valley (5,1)",
       "demographic_groups": [
         {
           "id": "p082-latino",
           "name": "Latino residents",
-          "population_share": 0.2324,
+          "population_share": 0.7324,
           "turnout_rate": 0.55,
           "vote_shares": { "ken": 0.7860, "ryu": 0.2140 },
           "dimensions": { "ethnicity": "latino" }
@@ -2232,7 +2232,7 @@
         {
           "id": "p082-anglo",
           "name": "Anglo residents",
-          "population_share": 0.7676,
+          "population_share": 0.2676,
           "turnout_rate": 0.60,
           "vote_shares": { "ken": 0.4003, "ryu": 0.5997 },
           "dimensions": { "ethnicity": "anglo" }
@@ -2242,11 +2242,11 @@
     {
       "id": "p083",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 2, "r": 8 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -6, "r": 2 },
       "total_population": 1558,
-      "initial_district_id": "d2",
-      "name": "Rim C9",
+      "initial_district_id": "d1",
+      "name": "Rim (-6,2)",
       "demographic_groups": [
         {
           "id": "p083-latino",
@@ -2269,16 +2269,16 @@
     {
       "id": "p084",
       "editable": true,
-      "county_id": "valle_verde_valley",
-      "position": { "q": 3, "r": 8 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -5, "r": 2 },
       "total_population": 1523,
-      "initial_district_id": "d2",
-      "name": "Valley D9",
+      "initial_district_id": "d1",
+      "name": "Rim (-5,2)",
       "demographic_groups": [
         {
           "id": "p084-latino",
           "name": "Latino residents",
-          "population_share": 0.6816,
+          "population_share": 0.1816,
           "turnout_rate": 0.60,
           "vote_shares": { "ken": 0.8082, "ryu": 0.1918 },
           "dimensions": { "ethnicity": "latino" }
@@ -2286,7 +2286,7 @@
         {
           "id": "p084-anglo",
           "name": "Anglo residents",
-          "population_share": 0.3184,
+          "population_share": 0.8184,
           "turnout_rate": 0.61,
           "vote_shares": { "ken": 0.4020, "ryu": 0.5980 },
           "dimensions": { "ethnicity": "anglo" }
@@ -2296,16 +2296,16 @@
     {
       "id": "p085",
       "editable": true,
-      "county_id": "valle_verde_valley",
-      "position": { "q": 4, "r": 8 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -4, "r": 2 },
       "total_population": 1367,
-      "initial_district_id": "d3",
-      "name": "Valley E9",
+      "initial_district_id": "d2",
+      "name": "Rim (-4,2)",
       "demographic_groups": [
         {
           "id": "p085-latino",
           "name": "Latino residents",
-          "population_share": 0.6749,
+          "population_share": 0.1749,
           "turnout_rate": 0.61,
           "vote_shares": { "ken": 0.7961, "ryu": 0.2039 },
           "dimensions": { "ethnicity": "latino" }
@@ -2313,7 +2313,7 @@
         {
           "id": "p085-anglo",
           "name": "Anglo residents",
-          "population_share": 0.3251,
+          "population_share": 0.8251,
           "turnout_rate": 0.63,
           "vote_shares": { "ken": 0.3975, "ryu": 0.6025 },
           "dimensions": { "ethnicity": "anglo" }
@@ -2323,16 +2323,16 @@
     {
       "id": "p086",
       "editable": true,
-      "county_id": "valle_verde_valley",
-      "position": { "q": 5, "r": 8 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -3, "r": 2 },
       "total_population": 1357,
-      "initial_district_id": "d3",
-      "name": "Valley F9",
+      "initial_district_id": "d2",
+      "name": "Rim (-3,2)",
       "demographic_groups": [
         {
           "id": "p086-latino",
           "name": "Latino residents",
-          "population_share": 0.7067,
+          "population_share": 0.2067,
           "turnout_rate": 0.60,
           "vote_shares": { "ken": 0.8023, "ryu": 0.1977 },
           "dimensions": { "ethnicity": "latino" }
@@ -2340,7 +2340,7 @@
         {
           "id": "p086-anglo",
           "name": "Anglo residents",
-          "population_share": 0.2933,
+          "population_share": 0.7933,
           "turnout_rate": 0.59,
           "vote_shares": { "ken": 0.3897, "ryu": 0.6103 },
           "dimensions": { "ethnicity": "anglo" }
@@ -2350,16 +2350,16 @@
     {
       "id": "p087",
       "editable": true,
-      "county_id": "valle_verde_valley",
-      "position": { "q": 6, "r": 8 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -2, "r": 2 },
       "total_population": 1595,
-      "initial_district_id": "d4",
-      "name": "Valley G9",
+      "initial_district_id": "d3",
+      "name": "Rim (-2,2)",
       "demographic_groups": [
         {
           "id": "p087-latino",
           "name": "Latino residents",
-          "population_share": 0.7119,
+          "population_share": 0.2119,
           "turnout_rate": 0.61,
           "vote_shares": { "ken": 0.7785, "ryu": 0.2215 },
           "dimensions": { "ethnicity": "latino" }
@@ -2367,7 +2367,7 @@
         {
           "id": "p087-anglo",
           "name": "Anglo residents",
-          "population_share": 0.2881,
+          "population_share": 0.7881,
           "turnout_rate": 0.61,
           "vote_shares": { "ken": 0.3968, "ryu": 0.6032 },
           "dimensions": { "ethnicity": "anglo" }
@@ -2377,16 +2377,16 @@
     {
       "id": "p088",
       "editable": true,
-      "county_id": "valle_verde_valley",
-      "position": { "q": 7, "r": 8 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -1, "r": 2 },
       "total_population": 1541,
       "initial_district_id": "d4",
-      "name": "Valley H9",
+      "name": "Rim (-1,2)",
       "demographic_groups": [
         {
           "id": "p088-latino",
           "name": "Latino residents",
-          "population_share": 0.6617,
+          "population_share": 0.1617,
           "turnout_rate": 0.58,
           "vote_shares": { "ken": 0.7805, "ryu": 0.2195 },
           "dimensions": { "ethnicity": "latino" }
@@ -2394,7 +2394,7 @@
         {
           "id": "p088-anglo",
           "name": "Anglo residents",
-          "population_share": 0.3383,
+          "population_share": 0.8383,
           "turnout_rate": 0.68,
           "vote_shares": { "ken": 0.3780, "ryu": 0.6220 },
           "dimensions": { "ethnicity": "anglo" }
@@ -2404,16 +2404,16 @@
     {
       "id": "p089",
       "editable": true,
-      "county_id": "valle_verde_valley",
-      "position": { "q": 8, "r": 8 },
+      "county_id": "valle_verde_central",
+      "position": { "q": 0, "r": 2 },
       "total_population": 1579,
-      "initial_district_id": "d5",
-      "name": "Valley I9",
+      "initial_district_id": "d4",
+      "name": "Rim (0,2)",
       "demographic_groups": [
         {
           "id": "p089-latino",
           "name": "Latino residents",
-          "population_share": 0.7392,
+          "population_share": 0.2392,
           "turnout_rate": 0.58,
           "vote_shares": { "ken": 0.7885, "ryu": 0.2115 },
           "dimensions": { "ethnicity": "latino" }
@@ -2421,7 +2421,7 @@
         {
           "id": "p089-anglo",
           "name": "Anglo residents",
-          "population_share": 0.2608,
+          "population_share": 0.7608,
           "turnout_rate": 0.64,
           "vote_shares": { "ken": 0.4020, "ryu": 0.5980 },
           "dimensions": { "ethnicity": "anglo" }
@@ -2431,11 +2431,11 @@
     {
       "id": "p090",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 9, "r": 8 },
+      "county_id": "valle_verde_central",
+      "position": { "q": 1, "r": 2 },
       "total_population": 1510,
       "initial_district_id": "d5",
-      "name": "Rim J9",
+      "name": "Rim (1,2)",
       "demographic_groups": [
         {
           "id": "p090-latino",
@@ -2458,11 +2458,11 @@
     {
       "id": "p091",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 0, "r": 9 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 2, "r": 2 },
       "total_population": 1562,
-      "initial_district_id": "d1",
-      "name": "Rim A10",
+      "initial_district_id": "d5",
+      "name": "Rim (2,2)",
       "demographic_groups": [
         {
           "id": "p091-latino",
@@ -2485,11 +2485,11 @@
     {
       "id": "p092",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 1, "r": 9 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 3, "r": 2 },
       "total_population": 1483,
-      "initial_district_id": "d1",
-      "name": "Rim B10",
+      "initial_district_id": "d5",
+      "name": "Rim (3,2)",
       "demographic_groups": [
         {
           "id": "p092-latino",
@@ -2512,11 +2512,11 @@
     {
       "id": "p093",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 2, "r": 9 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 4, "r": 2 },
       "total_population": 1462,
-      "initial_district_id": "d2",
-      "name": "Rim C10",
+      "initial_district_id": "d5",
+      "name": "Rim (4,2)",
       "demographic_groups": [
         {
           "id": "p093-latino",
@@ -2539,11 +2539,11 @@
     {
       "id": "p094",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 3, "r": 9 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -6, "r": 3 },
       "total_population": 1428,
-      "initial_district_id": "d2",
-      "name": "Rim D10",
+      "initial_district_id": "d1",
+      "name": "Rim (-6,3)",
       "demographic_groups": [
         {
           "id": "p094-latino",
@@ -2566,11 +2566,11 @@
     {
       "id": "p095",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 4, "r": 9 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -5, "r": 3 },
       "total_population": 1439,
-      "initial_district_id": "d3",
-      "name": "Rim E10",
+      "initial_district_id": "d2",
+      "name": "Rim (-5,3)",
       "demographic_groups": [
         {
           "id": "p095-latino",
@@ -2593,11 +2593,11 @@
     {
       "id": "p096",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 5, "r": 9 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -4, "r": 3 },
       "total_population": 1411,
-      "initial_district_id": "d3",
-      "name": "Rim F10",
+      "initial_district_id": "d2",
+      "name": "Rim (-4,3)",
       "demographic_groups": [
         {
           "id": "p096-latino",
@@ -2620,11 +2620,11 @@
     {
       "id": "p097",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 6, "r": 9 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -3, "r": 3 },
       "total_population": 1508,
-      "initial_district_id": "d4",
-      "name": "Rim G10",
+      "initial_district_id": "d3",
+      "name": "Rim (-3,3)",
       "demographic_groups": [
         {
           "id": "p097-latino",
@@ -2647,11 +2647,11 @@
     {
       "id": "p098",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 7, "r": 9 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -2, "r": 3 },
       "total_population": 1469,
       "initial_district_id": "d4",
-      "name": "Rim H10",
+      "name": "Rim (-2,3)",
       "demographic_groups": [
         {
           "id": "p098-latino",
@@ -2674,11 +2674,11 @@
     {
       "id": "p099",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 8, "r": 9 },
+      "county_id": "valle_verde_central",
+      "position": { "q": -1, "r": 3 },
       "total_population": 1444,
-      "initial_district_id": "d5",
-      "name": "Rim I10",
+      "initial_district_id": "d4",
+      "name": "Rim (-1,3)",
       "demographic_groups": [
         {
           "id": "p099-latino",
@@ -2701,11 +2701,11 @@
     {
       "id": "p100",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 9, "r": 9 },
+      "county_id": "valle_verde_central",
+      "position": { "q": 0, "r": 3 },
       "total_population": 1352,
       "initial_district_id": "d5",
-      "name": "Rim J10",
+      "name": "Rim (0,3)",
       "demographic_groups": [
         {
           "id": "p100-latino",
@@ -2728,11 +2728,11 @@
     {
       "id": "p101",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 0, "r": 10 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 1, "r": 3 },
       "total_population": 1397,
-      "initial_district_id": "d1",
-      "name": "Rim A11",
+      "initial_district_id": "d5",
+      "name": "Rim (1,3)",
       "demographic_groups": [
         {
           "id": "p101-latino",
@@ -2755,11 +2755,11 @@
     {
       "id": "p102",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 1, "r": 10 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 2, "r": 3 },
       "total_population": 1555,
-      "initial_district_id": "d1",
-      "name": "Rim B11",
+      "initial_district_id": "d5",
+      "name": "Rim (2,3)",
       "demographic_groups": [
         {
           "id": "p102-latino",
@@ -2782,11 +2782,11 @@
     {
       "id": "p103",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 2, "r": 10 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 3, "r": 3 },
       "total_population": 1385,
-      "initial_district_id": "d2",
-      "name": "Rim C11",
+      "initial_district_id": "d5",
+      "name": "Rim (3,3)",
       "demographic_groups": [
         {
           "id": "p103-latino",
@@ -2809,11 +2809,11 @@
     {
       "id": "p104",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 3, "r": 10 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -6, "r": 4 },
       "total_population": 1559,
       "initial_district_id": "d2",
-      "name": "Rim D11",
+      "name": "Rim (-6,4)",
       "demographic_groups": [
         {
           "id": "p104-latino",
@@ -2836,11 +2836,11 @@
     {
       "id": "p105",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 4, "r": 10 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -5, "r": 4 },
       "total_population": 1573,
-      "initial_district_id": "d3",
-      "name": "Rim E11",
+      "initial_district_id": "d2",
+      "name": "Rim (-5,4)",
       "demographic_groups": [
         {
           "id": "p105-latino",
@@ -2863,11 +2863,11 @@
     {
       "id": "p106",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 5, "r": 10 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -4, "r": 4 },
       "total_population": 1458,
       "initial_district_id": "d3",
-      "name": "Rim F11",
+      "name": "Rim (-4,4)",
       "demographic_groups": [
         {
           "id": "p106-latino",
@@ -2890,11 +2890,11 @@
     {
       "id": "p107",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 6, "r": 10 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -3, "r": 4 },
       "total_population": 1501,
       "initial_district_id": "d4",
-      "name": "Rim G11",
+      "name": "Rim (-3,4)",
       "demographic_groups": [
         {
           "id": "p107-latino",
@@ -2917,11 +2917,11 @@
     {
       "id": "p108",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 7, "r": 10 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -2, "r": 4 },
       "total_population": 1467,
       "initial_district_id": "d4",
-      "name": "Rim H11",
+      "name": "Rim (-2,4)",
       "demographic_groups": [
         {
           "id": "p108-latino",
@@ -2944,11 +2944,11 @@
     {
       "id": "p109",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 8, "r": 10 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -1, "r": 4 },
       "total_population": 1637,
       "initial_district_id": "d5",
-      "name": "Rim I11",
+      "name": "Rim (-1,4)",
       "demographic_groups": [
         {
           "id": "p109-latino",
@@ -2971,11 +2971,11 @@
     {
       "id": "p110",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 9, "r": 10 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 0, "r": 4 },
       "total_population": 1414,
       "initial_district_id": "d5",
-      "name": "Rim J11",
+      "name": "Rim (0,4)",
       "demographic_groups": [
         {
           "id": "p110-latino",
@@ -2998,11 +2998,11 @@
     {
       "id": "p111",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 0, "r": 11 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 1, "r": 4 },
       "total_population": 1631,
-      "initial_district_id": "d1",
-      "name": "Rim A12",
+      "initial_district_id": "d5",
+      "name": "Rim (1,4)",
       "demographic_groups": [
         {
           "id": "p111-latino",
@@ -3025,11 +3025,11 @@
     {
       "id": "p112",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 1, "r": 11 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 2, "r": 4 },
       "total_population": 1629,
-      "initial_district_id": "d1",
-      "name": "Rim B12",
+      "initial_district_id": "d5",
+      "name": "Rim (2,4)",
       "demographic_groups": [
         {
           "id": "p112-latino",
@@ -3052,11 +3052,11 @@
     {
       "id": "p113",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 2, "r": 11 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -6, "r": 5 },
       "total_population": 1616,
       "initial_district_id": "d2",
-      "name": "Rim C12",
+      "name": "Rim (-6,5)",
       "demographic_groups": [
         {
           "id": "p113-latino",
@@ -3079,11 +3079,11 @@
     {
       "id": "p114",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 3, "r": 11 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -5, "r": 5 },
       "total_population": 1419,
-      "initial_district_id": "d2",
-      "name": "Rim D12",
+      "initial_district_id": "d3",
+      "name": "Rim (-5,5)",
       "demographic_groups": [
         {
           "id": "p114-latino",
@@ -3106,11 +3106,11 @@
     {
       "id": "p115",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 4, "r": 11 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -4, "r": 5 },
       "total_population": 1586,
-      "initial_district_id": "d3",
-      "name": "Rim E12",
+      "initial_district_id": "d4",
+      "name": "Rim (-4,5)",
       "demographic_groups": [
         {
           "id": "p115-latino",
@@ -3133,11 +3133,11 @@
     {
       "id": "p116",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 5, "r": 11 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -3, "r": 5 },
       "total_population": 1609,
-      "initial_district_id": "d3",
-      "name": "Rim F12",
+      "initial_district_id": "d4",
+      "name": "Rim (-3,5)",
       "demographic_groups": [
         {
           "id": "p116-latino",
@@ -3160,11 +3160,11 @@
     {
       "id": "p117",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 6, "r": 11 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -2, "r": 5 },
       "total_population": 1414,
-      "initial_district_id": "d4",
-      "name": "Rim G12",
+      "initial_district_id": "d5",
+      "name": "Rim (-2,5)",
       "demographic_groups": [
         {
           "id": "p117-latino",
@@ -3187,11 +3187,11 @@
     {
       "id": "p118",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 7, "r": 11 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": -1, "r": 5 },
       "total_population": 1406,
-      "initial_district_id": "d4",
-      "name": "Rim H12",
+      "initial_district_id": "d5",
+      "name": "Rim (-1,5)",
       "demographic_groups": [
         {
           "id": "p118-latino",
@@ -3214,11 +3214,11 @@
     {
       "id": "p119",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 8, "r": 11 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 0, "r": 5 },
       "total_population": 1605,
       "initial_district_id": "d5",
-      "name": "Rim I12",
+      "name": "Rim (0,5)",
       "demographic_groups": [
         {
           "id": "p119-latino",
@@ -3241,11 +3241,11 @@
     {
       "id": "p120",
       "editable": true,
-      "county_id": "valle_verde_south",
-      "position": { "q": 9, "r": 11 },
+      "county_id": "valle_verde_rim",
+      "position": { "q": 1, "r": 5 },
       "total_population": 1485,
       "initial_district_id": "d5",
-      "name": "Rim J12",
+      "name": "Rim (1,5)",
       "demographic_groups": [
         {
           "id": "p120-latino",
@@ -3261,6 +3261,195 @@
           "population_share": 0.8238,
           "turnout_rate": 0.68,
           "vote_shares": { "ken": 0.3689, "ryu": 0.6311 },
+          "dimensions": { "ethnicity": "anglo" }
+        }
+      ]
+    },
+    {
+      "id": "p121",
+      "editable": true,
+      "county_id": "valle_verde_rim",
+      "position": { "q": -6, "r": 6 },
+      "total_population": 1414,
+      "initial_district_id": "d3",
+      "name": "Rim (-6,6)",
+      "demographic_groups": [
+        {
+          "id": "p121-latino",
+          "name": "Latino residents",
+          "population_share": 0.2313,
+          "turnout_rate": 0.62,
+          "vote_shares": { "ken": 0.7603, "ryu": 0.2397 },
+          "dimensions": { "ethnicity": "latino" }
+        },
+        {
+          "id": "p121-anglo",
+          "name": "Anglo residents",
+          "population_share": 0.7687,
+          "turnout_rate": 0.68,
+          "vote_shares": { "ken": 0.3590, "ryu": 0.6410 },
+          "dimensions": { "ethnicity": "anglo" }
+        }
+      ]
+    },
+    {
+      "id": "p122",
+      "editable": true,
+      "county_id": "valle_verde_rim",
+      "position": { "q": -5, "r": 6 },
+      "total_population": 1571,
+      "initial_district_id": "d4",
+      "name": "Rim (-5,6)",
+      "demographic_groups": [
+        {
+          "id": "p122-latino",
+          "name": "Latino residents",
+          "population_share": 0.2203,
+          "turnout_rate": 0.55,
+          "vote_shares": { "ken": 0.7977, "ryu": 0.2023 },
+          "dimensions": { "ethnicity": "latino" }
+        },
+        {
+          "id": "p122-anglo",
+          "name": "Anglo residents",
+          "population_share": 0.7797,
+          "turnout_rate": 0.63,
+          "vote_shares": { "ken": 0.4090, "ryu": 0.5910 },
+          "dimensions": { "ethnicity": "anglo" }
+        }
+      ]
+    },
+    {
+      "id": "p123",
+      "editable": true,
+      "county_id": "valle_verde_rim",
+      "position": { "q": -4, "r": 6 },
+      "total_population": 1642,
+      "initial_district_id": "d4",
+      "name": "Rim (-4,6)",
+      "demographic_groups": [
+        {
+          "id": "p123-latino",
+          "name": "Latino residents",
+          "population_share": 0.2362,
+          "turnout_rate": 0.56,
+          "vote_shares": { "ken": 0.7767, "ryu": 0.2233 },
+          "dimensions": { "ethnicity": "latino" }
+        },
+        {
+          "id": "p123-anglo",
+          "name": "Anglo residents",
+          "population_share": 0.7638,
+          "turnout_rate": 0.63,
+          "vote_shares": { "ken": 0.3538, "ryu": 0.6462 },
+          "dimensions": { "ethnicity": "anglo" }
+        }
+      ]
+    },
+    {
+      "id": "p124",
+      "editable": true,
+      "county_id": "valle_verde_rim",
+      "position": { "q": -3, "r": 6 },
+      "total_population": 1627,
+      "initial_district_id": "d5",
+      "name": "Rim (-3,6)",
+      "demographic_groups": [
+        {
+          "id": "p124-latino",
+          "name": "Latino residents",
+          "population_share": 0.2169,
+          "turnout_rate": 0.59,
+          "vote_shares": { "ken": 0.7795, "ryu": 0.2205 },
+          "dimensions": { "ethnicity": "latino" }
+        },
+        {
+          "id": "p124-anglo",
+          "name": "Anglo residents",
+          "population_share": 0.7831,
+          "turnout_rate": 0.65,
+          "vote_shares": { "ken": 0.4063, "ryu": 0.5937 },
+          "dimensions": { "ethnicity": "anglo" }
+        }
+      ]
+    },
+    {
+      "id": "p125",
+      "editable": true,
+      "county_id": "valle_verde_rim",
+      "position": { "q": -2, "r": 6 },
+      "total_population": 1648,
+      "initial_district_id": "d5",
+      "name": "Rim (-2,6)",
+      "demographic_groups": [
+        {
+          "id": "p125-latino",
+          "name": "Latino residents",
+          "population_share": 0.1806,
+          "turnout_rate": 0.61,
+          "vote_shares": { "ken": 0.7577, "ryu": 0.2423 },
+          "dimensions": { "ethnicity": "latino" }
+        },
+        {
+          "id": "p125-anglo",
+          "name": "Anglo residents",
+          "population_share": 0.8194,
+          "turnout_rate": 0.66,
+          "vote_shares": { "ken": 0.3821, "ryu": 0.6179 },
+          "dimensions": { "ethnicity": "anglo" }
+        }
+      ]
+    },
+    {
+      "id": "p126",
+      "editable": true,
+      "county_id": "valle_verde_rim",
+      "position": { "q": -1, "r": 6 },
+      "total_population": 1523,
+      "initial_district_id": "d5",
+      "name": "Rim (-1,6)",
+      "demographic_groups": [
+        {
+          "id": "p126-latino",
+          "name": "Latino residents",
+          "population_share": 0.2223,
+          "turnout_rate": 0.62,
+          "vote_shares": { "ken": 0.8095, "ryu": 0.1905 },
+          "dimensions": { "ethnicity": "latino" }
+        },
+        {
+          "id": "p126-anglo",
+          "name": "Anglo residents",
+          "population_share": 0.7777,
+          "turnout_rate": 0.64,
+          "vote_shares": { "ken": 0.4081, "ryu": 0.5919 },
+          "dimensions": { "ethnicity": "anglo" }
+        }
+      ]
+    },
+    {
+      "id": "p127",
+      "editable": true,
+      "county_id": "valle_verde_rim",
+      "position": { "q": 0, "r": 6 },
+      "total_population": 1374,
+      "initial_district_id": "d5",
+      "name": "Rim (0,6)",
+      "demographic_groups": [
+        {
+          "id": "p127-latino",
+          "name": "Latino residents",
+          "population_share": 0.1905,
+          "turnout_rate": 0.57,
+          "vote_shares": { "ken": 0.7611, "ryu": 0.2389 },
+          "dimensions": { "ethnicity": "latino" }
+        },
+        {
+          "id": "p127-anglo",
+          "name": "Anglo residents",
+          "population_share": 0.8095,
+          "turnout_rate": 0.68,
+          "vote_shares": { "ken": 0.3605, "ryu": 0.6395 },
           "dimensions": { "ethnicity": "anglo" }
         }
       ]
@@ -3310,12 +3499,12 @@
     "character": {
       "name": "You",
       "role": "Court-Appointed Redistricting Coordinator, Valle Verde County",
-      "motivation": "A federal court found that the current district map violates the Voting Rights Act. The Valley's Latino community has been cracked across four districts — diluted so thoroughly that they cannot elect their preferred candidate anywhere. You must draw a new map that complies with the law."
+      "motivation": "A federal court found that the current district map violates the Voting Rights Act. The Valley's Latino community has been cracked across multiple districts — diluted so thoroughly that they cannot elect their preferred candidate anywhere. You must draw a new map that complies with the law."
     },
     "intro_slides": [
       {
         "heading": "The Valley Grows",
-        "body": "Over the past decade, Valle Verde County's Valley has seen significant population growth. The Latino community, concentrated in this area, now makes up a meaningful share of the county's total population.\n\nBut on the current map, drawn ten years ago, the Valley is sliced into four strips — each one a piece of a different district, none large enough to matter."
+        "body": "Over the past decade, Valle Verde County's Valley has seen significant population growth. The Latino community, concentrated in this area, now makes up a meaningful share of the county's total population.\n\nBut on the current map, drawn ten years ago, the Valley is sliced across multiple districts — each one a piece of a different district, none large enough to matter."
       },
       {
         "heading": "The Voting Rights Act",

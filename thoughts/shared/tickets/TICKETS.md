@@ -98,6 +98,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-028-hex-shape-backport.md` | game, content | Backport hex-of-hexes shape to scenarios 002–006 + tutorial; regenerate JSON + rewrite e2e indices |
 | `GAME-029-about-page.md` | game, UX | About page: educational framing, designer intent, non-partisan stance, resource links |
 | `GAME-030-main-menu-and-campaigns.md` | game, UX, architecture | Main menu, campaign model, campaign select, layered navigation; replaces scenario-select-as-home |
+| `GAME-032-scenario-loader-error-handling.md` | game, reliability | Improve loader validation: user-visible error screen, collect all errors, helpful messages |
 | `GAME-031-gameplay-critique-followup.md` | game, content, balance | Review and act on external gameplay critique research (scenario difficulty, eval balance, design) |
 | `DESIGN-008-geographic-features.md` | design, rendering | Geographic features (lakes=aqua+wave, mountains=grey+hatch) as decorative non-precinct tiles; blocks contiguity |
 

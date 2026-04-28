@@ -2,156 +2,104 @@
 /**
  * Generator for scenario-004.json: "Cracking the Opposition"
  *
- * Layout: 10 columns (q=0..9) × 12 rows (r=0..11) = 120 precincts, 5 districts of 24.
+ * Lesson: Cracking — dilute a concentrated opposition group by splitting
+ * it across multiple districts so it can't form a majority anywhere.
  *
- * Zones:
- *   Opposition corridor (r=5..6, all q): 18% Ken / 82% Ryu — a horizontal Ryu band
- *   Upper band  (r=0..4, all q):          65% Ken / 35% Ryu — reliable Ken
- *   Lower band  (r=7..11, all q):         65% Ken / 35% Ryu — reliable Ken
+ * Shape: hex-of-hexes, radius 6 → 127 precincts, 5 districts of ~25-26.
+ * Coordinates: axial, centered at (0,0); range q,r in [-6,6].
  *
- * Initial assignment (vertical 2-column strips):
- *   D1=q0-1, D2=q2-3, D3=q4-5, D4=q6-7, D5=q8-9
+ * Partisan geography (corridor through center):
+ *   Corridor (r = 0, 13 hexes): ~18% Ken / 82% Ryu — narrow Ryu band
+ *   Upper/lower (r ≠ 0, 114 hexes): ~65% Ken / 35% Ryu — Ken territory
  *
- * Each initial district spans all rows → each gets 4 corridor precincts (r=5-6) out of 24.
- *   Corridor weight: (4×0.18 + 20×0.65)/24 ≈ (0.72+13)/24 ≈ 57.2% Ken → KEN wins all 5
- *   That's too easy — initial state already passes. Need different initial to make it a puzzle.
+ * Initial assignment: horizontal r-band slabs that consolidate the corridor.
+ *   D3 gets r=-1..1 (37 hexes) — too many, but contains the corridor → Ryu wins.
+ *   D1,D2,D4,D5 are upper/lower bands → Ken wins.
+ *   Result: 4 Ken / 1 Ryu — fails the ≥5 Ken (all seats) criterion.
+ *   Also fails population_balance (37 vs 11 hexes per slab).
  *
- * Alternative initial: horizontal strips (row bands)
- *   D1=r=0-1 all cols    (2×10=20 precincts — too few, need 24)
- *   Better: D1=r=0..2 + 4 from r=3 (uneven, hard to reason about)
+ * Winning gerrymander: crack the corridor across all 5 districts.
+ *   Vertical-ish strips or angular sectors: each crosses the corridor,
+ *   picking up only ~7 Ryu precincts out of ~25.
+ *   Average Ken per district ≈ (7×0.18 + 18×0.65)/25 ≈ 52% → Ken wins all 5.
  *
- * Cleaner approach: use 5 horizontal bands of r width 2.4 — not integer.
- * Simplest: group into horizontal bands with slight overlap:
- *   D1=r=0..2 (all q, 30 precincts — too many)
- *
- * Best approach: make corridor wider (r=4..7, 4 rows × 10 cols = 40 precincts).
- * 5 districts of 24: if each district gets 8 corridor precincts → corridor swamps them:
- *   (8×0.18 + 16×0.65)/24 ≈ (1.44+10.4)/24 ≈ 49.3% Ken → RYU wins all 5 (too many Ryu)
- *
- * Best design: corridor r=5..6 (2 rows, 20 precincts total).
- * Initial = horizontal bands:
- *   D1 = r=0..1 all q   = 20 precincts → need 4 more → add r=2, q=0..3 = 4 precincts → 24 ✓
- *   D2 = r=2,q=4..9 + r=3 all q = 6+10 = 16 → + r=4,q=0..7 = 8 → 24 ✓
- *   D3 = r=4,q=8..9 + r=5..6 all q + r=7,q=0..1 = 2+20+2 = 24 ✓
- *   D4 = r=7,q=2..9 + r=8..9 all q = 8+20 = 28 → too many
- *
- * This is getting complex. Let's just go with vertical strips as initial (so the puzzle is to
- * switch to horizontal to crack), and make the corridor wide enough that vertical strips lead
- * to a losing initial outcome.
- *
- * Design revision: corridor r=4..7 (4 rows × 10 cols = 40 precincts, 1/3 of the map).
- * 5 districts of 24 with vertical strips:
- *   Each district (2 cols) gets: r=4-7 = 4 rows × 2 cols = 8 corridor precincts
- *   Avg Ken = (8×0.18 + 16×0.65)/24 = (1.44+10.4)/24 = 0.493 → ~49.3% → RYU wins (barely)
- *   Result: 0 Ken / 5 Ryu → too extreme, no challenge
- *
- * Final design: corridor r=5..6 (narrow), initial = horizontal bands creating 3 Ken + 2 Ryu,
- * and the winning crack moves to vertical strips. But then vertical strips give 5 Ken (all win).
- *
- * Simplest coherent design:
- *   Corridor r=5..6, 20 precincts total (Ryu-heavy).
- *   Initial = 3 horizontal bands + corridor isolated:
- *     D1 = r=0..2 all q = 30 → too many
- *
- * Let's just use: initial = horizontal band districts where the corridor forms D3 (all Ryu),
- * and upper + lower bands are D1,D2 (upper) and D4,D5 (lower), all Ken.
- * That's initial 4 Ken / 1 Ryu → already wins. Not a puzzle.
- *
- * FINAL FINAL DESIGN: Make it genuinely difficult.
- * Opposition corridor: r=5..6 (2 rows × 10 cols = 20 precincts, 80% Ryu).
- * Non-corridor: 100 precincts, 65% Ken.
- * 5 districts of 24 precincts each.
- *
- * Initial (horizontal bands, deliberately unhelpful):
- *   D1 = r=0..1, all q            = 20 precincts
- *   Add r=2, q=0..3               = 4 precincts → D1 total = 24 ✓ (all upper → 65% Ken → KEN)
- *   D2 = r=2,q=4..9 + r=3 all q  = 6+10 = 16 + r=4,q=0..7 = 8 → 24 ✓ (upper → 65% Ken → KEN)
- *   D3 = r=4,q=8..9 + r=5..6 all q + r=7,q=0..1 = 2+20+2 = 24 ✓ (corridor-heavy → 30% Ken → RYU)
- *   D4 = r=7,q=2..9 + r=8..9 all q = 8+20 = 28 → need to remove 4
- *        Use r=7,q=2..7 + r=8..9 all q = 6+20 = 26 → still 2 too many
- *        Use r=7,q=2..5 + r=8..9 all q = 4+20 = 24 ✓ (lower → 65% Ken → KEN)
- *   D5 = r=7,q=6..9 + r=10..11 all q = 4+20 = 24 ✓ (lower → 65% Ken → KEN)
- *
- * Initial outcome: D1 KEN, D2 KEN, D3 RYU, D4 KEN, D5 KEN → 4 Ken / 1 Ryu. Already wins!
- *
- * I need the initial to fail the "opposition wins zero districts" criterion. Let me use a
- * different required criterion: Ken wins ALL 5 seats.
- * Initial 4/5 → fails ≥5. Player must crack the corridor to win all 5.
- *
- * Winning crack: vertical strips (each district crosses the corridor):
- *   D1=q0-1 all rows: 4 corridor + 20 non-corridor → (4×0.18+20×0.65)/24 ≈ 57% Ken → KEN ✓
- *   Same for all 5 vertical strips.
- *   Result: 5 Ken / 0 Ryu ✓
+ * Success criteria:
+ *   Required: district_count, population_balance (±10%), seat_count Ken = 5
+ *   Optional: mean_median ≤ 10%
  *
  * Run from repo root:
  *   kotlin game/scenarios/gen-scenario-004.main.kts
  */
 
+import kotlin.math.abs
+import kotlin.math.atan2
+import kotlin.math.PI
 import kotlin.random.Random
 
 val rng = Random(44)
-val NUM_Q = 10
-val NUM_R = 12
-val BASE_POP = 1500
+val R = 6
 
-fun isCorridor(q: Int, r: Int) = r in 5..6
+fun hexDist(q: Int, r: Int): Int = (abs(q) + abs(r) + abs(q + r)) / 2
 
-fun zone(q: Int, r: Int) = if (isCorridor(q, r)) "corridor" else if (r <= 4) "upper" else "lower"
+fun isCorridor(q: Int, r: Int): Boolean = r == 0 && hexDist(q, r) <= R
 
-// Initial horizontal-band assignment (deliberately non-cracking so player must discover crack)
+fun baseKenShare(q: Int, r: Int): Double = when {
+    isCorridor(q, r) -> 0.18  // corridor: strong Ryu
+    else              -> 0.65  // upper/lower: reliable Ken
+}
+
+// Initial: horizontal r-band slabs that consolidate the corridor into D3.
 fun initialDistrict(q: Int, r: Int): String = when {
-    r <= 1                          -> "d1"
-    r == 2 && q <= 3                -> "d1"
-    r == 2 && q >= 4                -> "d2"
-    r == 3                          -> "d2"
-    r == 4 && q <= 7                -> "d2"
-    r == 4 && q >= 8                -> "d3"
-    r in 5..6                       -> "d3"
-    r == 7 && q <= 1                -> "d3"
-    r == 7 && q in 2..5             -> "d4"
-    r in 8..9                       -> "d4"
-    r == 7 && q >= 6                -> "d5"
-    else                            -> "d5"   // r=10..11
+    r >= 3  -> "d1"
+    r == 2  -> "d2"
+    r >= -1 -> "d3"
+    r == -2 -> "d4"
+    else    -> "d5"
 }
 
-fun countyId(q: Int, r: Int) = when {
-    isCorridor(q, r) -> "lakeview_city"
-    r <= 4           -> "lakeview_north"
-    else             -> "lakeview_south"
+fun countyId(q: Int, r: Int): String = when {
+    abs(r) <= 1 -> "lakeview_central"
+    r > 0       -> "lakeview_north"
+    else        -> "lakeview_south"
 }
-
-fun colLetter(q: Int) = "ABCDEFGHIJ"[q].toString()
 
 fun Double.fmt(decimals: Int = 4) = "%.${decimals}f".format(this)
+
+data class Hex(val q: Int, val r: Int)
+val hexes = buildList {
+    for (q in -R..R) {
+        val rMin = maxOf(-R, -q - R)
+        val rMax = minOf(R, -q + R)
+        for (r in rMin..rMax) { add(Hex(q, r)) }
+    }
+}.sortedWith(compareBy({ it.r }, { it.q }))
+
+val BASE_POP = 1500
 
 val precincts = StringBuilder()
 var first = true
 
-for (r in 0 until NUM_R) {
-    for (q in 0 until NUM_Q) {
-        val idx = r * NUM_Q + q
-        val pid = "p%03d".format(idx + 1)
-        val z = zone(q, r)
+for ((idx, hex) in hexes.withIndex()) {
+    val (q, r) = hex
+    val pid = "p%03d".format(idx + 1)
 
-        val baseKen = when (z) {
-            "corridor" -> 0.18
-            else       -> 0.65
-        }
-        val delta = rng.nextDouble(-0.03, 0.03)
-        val kenShare = (baseKen + delta).coerceIn(0.05, 0.95)
-        val ryuShare = 1.0 - kenShare
+    val pop = BASE_POP + rng.nextInt(-150, 151)
 
-        val pop = BASE_POP + rng.nextInt(-100, 101)
-        val turnout = rng.nextDouble(0.52, 0.62)
-        val districtId = initialDistrict(q, r)
-        val county = countyId(q, r)
-        val zoneName = z.replaceFirstChar { it.uppercase() }
-        val name = "$zoneName ${colLetter(q)}${r + 1}"
+    val kenShare = (baseKenShare(q, r) + rng.nextDouble(-0.04, 0.04)).coerceIn(0.05, 0.95)
+    val kenStr = kenShare.fmt(4)
+    val ryuStr = (1.0 - kenStr.toDouble()).fmt(4)
+    val turnout = rng.nextDouble(0.55, 0.70)
 
-        if (!first) precincts.append(",\n")
-        first = false
+    val districtId = initialDistrict(q, r)
+    val county = countyId(q, r)
+    val corridor = isCorridor(q, r)
+    val zoneName = if (corridor) "Lakeshore" else if (r > 0) "North" else "South"
+    val name = "$zoneName ($q,$r)"
 
-        precincts.append("""    {
+    if (!first) precincts.append(",\n")
+    first = false
+
+    precincts.append("""    {
       "id": "$pid",
       "editable": true,
       "county_id": "$county",
@@ -161,15 +109,14 @@ for (r in 0 until NUM_R) {
       "name": "$name",
       "demographic_groups": [
         {
-          "id": "${pid}-base",
-          "name": "Registered voters",
+          "id": "${pid}-all",
+          "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": ${turnout.fmt(2)},
-          "vote_shares": { "ken": ${kenShare.fmt(4)}, "ryu": ${ryuShare.fmt(4)} }
+          "vote_shares": { "ken": $kenStr, "ryu": $ryuStr }
         }
       ]
     }""")
-    }
 }
 
 val json = """{
@@ -216,9 +163,9 @@ $precincts
       "criterion": { "type": "population_balance" }
     },
     {
-      "id": "sc-ken-seats",
+      "id": "sc-ken-all-seats",
       "required": true,
-      "description": "The Ken Party wins all 5 districts — leave the Ryu corridor nowhere to win.",
+      "description": "Ken Party wins every seat — all 5 districts.",
       "criterion": {
         "type": "seat_count",
         "party": "ken",
@@ -229,7 +176,7 @@ $precincts
     {
       "id": "sc-mean-median",
       "required": false,
-      "description": "Mean-median difference is 10% or less — a statistically uniform crack.",
+      "description": "How skewed is your map? Mean-median gap ≤ 10%.",
       "criterion": {
         "type": "mean_median",
         "party": "ken",
@@ -241,24 +188,28 @@ $precincts
   "narrative": {
     "character": {
       "name": "You",
-      "role": "Political Director, Ken Party Legislative Caucus",
-      "motivation": "Last time you packed the opposition into one district. This time, the goal is different — dilute them so thoroughly they can't win anywhere."
+      "role": "Ken Party Redistricting Director, Lakeview County",
+      "motivation": "Last cycle, the Ryu Party won a seat in Lakeview by concentrating their voters along the lakeshore corridor. The Ken Party wants that seat back — and every other seat too. Your job: split the corridor so Ryu voters can't form a majority anywhere."
     },
     "intro_slides": [
       {
-        "heading": "The Ryu Corridor",
-        "body": "A band of Ryu-leaning precincts runs through the middle of Lakeview County. In the current map, they're grouped together — and they win District 3.\n\nYour job: make sure that never happens."
+        "heading": "The Corridor",
+        "body": "A narrow band of Ryu voters runs through the center of Lakeview County — along the lakeshore, where the apartments are dense and the politics lean hard Ryu.\n\nRight now, if those voters are in one district, they win it. Your predecessor let that happen. You won't."
       },
       {
-        "heading": "Crack the Bloc",
-        "body": "Cracking means splitting a concentrated voting bloc across multiple districts — diluting their power so they can't win any of them.\n\nDraw lines that cut across the corridor. Give each district a slice of Ryu voters — too few to tip any district Ryu, but just enough to waste their votes."
+        "heading": "The Cracking Play",
+        "body": "Cracking is the opposite of packing. Instead of concentrating the opposition, you split them. Draw district lines that cut through the corridor, dividing Ryu voters across multiple districts.\n\nIn each district, the corridor's Ryu precincts are outnumbered by the surrounding Ken territory. Ryu voters still vote — but they lose everywhere."
+      },
+      {
+        "heading": "The Disappearing Voice",
+        "body": "Notice what happens: a community that could win one seat now wins zero. Their total vote count hasn't changed. Their turnout hasn't dropped. But the lines moved, and their voice vanished.\n\nThis is what cracking does. It doesn't silence voters — it dilutes them until they don't matter."
       }
     ],
-    "objective": "Crack the Ryu corridor across all 5 districts so the Ken Party wins every seat."
+    "objective": "Crack the Ryu corridor across all 5 districts. Ken Party must win every seat."
   }
 }
 """
 
 val outFile = java.io.File("game/scenarios/scenario-004.json")
 outFile.writeText(json)
-println("Wrote ${NUM_Q * NUM_R} precincts to ${outFile.path}")
+println("Wrote ${hexes.size} precincts to ${outFile.path}")

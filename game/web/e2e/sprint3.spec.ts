@@ -63,15 +63,15 @@ test("intro: screen is visible on initial load before editor", async ({ page }) 
 test("intro: character name and role are shown from scenario narrative", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
-  // tutorial-002.json character: name="You", role="Redistricting Coordinator, Millbrook Tri-County Area"
+  // tutorial-002.json character: name="You", role="Redistricting Commissioner, Millbrook County"
   await expect(page.locator("#char-name")).toHaveText("You");
-  await expect(page.locator("#char-role")).toContainText("Redistricting Coordinator");
+  await expect(page.locator("#char-role")).toContainText("Redistricting Commissioner");
 });
 
 test("intro: first slide heading is shown and Previous is disabled", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator("#intro-slide-heading")).toHaveText("Three Counties. Three Districts.");
+  await expect(page.locator("#intro-slide-heading")).toHaveText("Welcome to Millbrook County");
   await expect(page.locator("#btn-intro-prev")).toBeDisabled();
 });
 
@@ -81,12 +81,12 @@ test("intro: Next advances to second slide; Previous returns to first", async ({
 
   // Advance to slide 2
   await page.locator("#btn-intro-next").click();
-  await expect(page.locator("#intro-slide-heading")).toHaveText("The rules are simple");
+  await expect(page.locator("#intro-slide-heading")).toHaveText("The Tools");
   await expect(page.locator("#btn-intro-prev")).toBeEnabled();
 
   // Return to slide 1
   await page.locator("#btn-intro-prev").click();
-  await expect(page.locator("#intro-slide-heading")).toHaveText("Three Counties. Three Districts.");
+  await expect(page.locator("#intro-slide-heading")).toHaveText("Welcome to Millbrook County");
 });
 
 test("intro: Start Drawing button appears on last slide and reveals editor", async ({ page }) => {
@@ -121,7 +121,7 @@ test("intro: Skip intro immediately reveals editor without navigating slides", a
 test("intro: objective text is shown from scenario narrative", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator("#objective-text")).toContainText("Divide the Millbrook Tri-County Area");
+  await expect(page.locator("#objective-text")).toContainText("Balance the three districts");
 });
 
 // ─── GAME-017: Evaluation phase ───────────────────────────────────────────────
@@ -365,15 +365,25 @@ test("wip: WIP is cleared from localStorage after scenario completion", async ({
   await skip.click();
   await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
 
-  // Paint the 5 boundary precincts (indices 70-74) from d2→d1 — same winning move
-  // as the winnability test. After this the map is valid and submit is enabled.
+  // Paint 7 boundary precincts at r=-2, q=-6..0 from d2 (central) → d1 (north).
+  // Same winning move as the winnability test. After this the map is balanced.
   await page.evaluate(() => {
     const store = (window as unknown as Record<string, unknown>)["__gameStore"] as
-      | { getState: () => { paintStroke: (ids: number[], d: number) => void; setActiveDistrict: (d: number) => void } }
+      | { getState: () => { paintStroke: (ids: number[], d: number) => void; setActiveDistrict: (d: number) => void; precincts: { coord: { q: number; r: number } }[] } }
       | undefined;
     if (!store) throw new Error("__gameStore not exposed");
-    store.getState().setActiveDistrict(1);
-    store.getState().paintStroke([70, 71, 72, 73, 74], 1);
+    const state = store.getState();
+    state.setActiveDistrict(1);
+    const coordToIdx = new Map<string, number>();
+    state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
+      coordToIdx.set(`${p.coord.q},${p.coord.r}`, i);
+    });
+    const ids: number[] = [];
+    for (let q = -6; q <= 0; q++) {
+      const idx = coordToIdx.get(`${q},-2`);
+      if (idx !== undefined) ids.push(idx);
+    }
+    state.paintStroke(ids, 1);
   });
 
   await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
@@ -388,21 +398,17 @@ test("wip: WIP is cleared from localStorage after scenario completion", async ({
 
 // ─── GAME-019: Tutorial-002 winnability ───────────────────────────────────────
 
-test("winnability: painting 5 boundary precincts enables submit and produces a passing map", async ({ page }) => {
+test("winnability: painting boundary precincts enables submit and produces a passing map", async ({ page }) => {
   /**
    * tutorial-002 initial state: county-aligned (north→d1, central→d2, south→d3).
-   *   d1 = 174,473  (too low)
-   *   d2 = 235,676  (too high)
-   *   d3 = 203,095  (valid)
+   * Hex-of-hexes R=8 trimmed to 196. Counties split at r=-2/r=2.
+   *   d1 (north, r<-2): ~57 hexes, underpopulated (~-14%)
+   *   d2 (central, |r|≤2): ~74 hexes, overpopulated (~+13%)
+   *   d3 (south, r>2): ~65 hexes, about right (~+0.4%)
    * Submit is disabled; population imbalance prevents submission.
    *
-   * Winning move: paint precincts p071–p075 (q=0–4 at r=5, the north edge of the
-   * central county) from d2 → d1. This transfers 14,736 population:
-   *   d1 → 189,209  ✓  (target 204,415 ± 10% = [183,973, 224,856])
-   *   d2 → 220,940  ✓
-   *   d3 → 203,095  ✓
-   * All districts are contiguous. Compactness threshold (≥ 0.4, optional) should
-   * be satisfied by the resulting compact rectangular shapes.
+   * Winning move: paint 7 hexes at r=-2, q=-6..0 from d2 → d1.
+   * This transfers ~21k population, bringing all three districts within ±3%.
    */
   await loadEditor(page);
 
@@ -412,19 +418,28 @@ test("winnability: painting 5 boundary precincts enables submit and produces a p
   // Activate district 1 (the default, but be explicit)
   await page.locator("button.district-btn").first().click();
 
-  // Paint the 5 boundary precincts into district 1.
-  // The adapter uses 0-based array indices as DOM data-precinct-id values,
-  // not the string IDs from the JSON (p071→70, p072→71, …, p075→74).
-  // Uses page.evaluate + direct DOM dispatch rather than Playwright locator
-  // resolution, which can be unreliable for SVG data attributes.
-  for (const idx of [70, 71, 72, 73, 74]) {
-    await page.evaluate((id) => {
-      const path = document.querySelector(`path.hex[data-precinct-id='${id}']`);
-      if (!path) throw new Error(`Precinct path not found for index: ${id}`);
-      path.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, cancelable: true }));
-      window.dispatchEvent(new MouseEvent("mouseup", { bubbles: true, cancelable: true }));
-    }, idx);
-  }
+  // Paint 7 boundary precincts (r=-2, q=-6..0) from central (d2) into north (d1).
+  // These hexes are at the boundary between the north and central counties.
+  // Uses paintHexes helper for hex-coordinate-based painting.
+  await page.evaluate(() => {
+    const store = (window as unknown as Record<string, { getState: () => {
+      paintStroke: (ids: number[], district: number) => void;
+      precincts: { coord: { q: number; r: number } }[];
+    } }>)["__gameStore"];
+    if (!store) throw new Error("__gameStore not found on window");
+    const state = store.getState();
+    const coordToIdx = new Map<string, number>();
+    state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
+      coordToIdx.set(`${p.coord.q},${p.coord.r}`, i);
+    });
+    // Move 7 hexes at r=-2, q=-6 through q=0 from d2 (central) into d1 (north)
+    const ids: number[] = [];
+    for (let q = -6; q <= 0; q++) {
+      const idx = coordToIdx.get(`${q},-2`);
+      if (idx !== undefined) ids.push(idx);
+    }
+    state.paintStroke(ids, 1);  // district 1 (north)
+  });
 
   // Submit should now be enabled (all districts within tolerance, contiguous)
   await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });

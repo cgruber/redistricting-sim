@@ -2,114 +2,132 @@
 /**
  * Generator for scenario-003.json: "The Packing Problem"
  *
- * Layout: 10 columns (q=0..9) × 12 rows (r=0..11) = 120 precincts, 5 districts of 24.
+ * Lesson: Packing — concentrate opposition voters into as few districts as
+ * possible, wasting their votes in landslide wins.
  *
- * Zones:
- *   Urban core   (q=3..6, r=3..8): 15% Ken / 85% Ryu — dense Ryu stronghold to pack
- *   Suburban     (one step outside core, approx q=2..7 excl. core OR r=2..9 excl. core):
- *                                   42% Ken / 58% Ryu — competitive Ryu-lean
- *   Rural        (everything else): 65% Ken / 35% Ryu — reliable Ken
+ * Shape: hex-of-hexes, radius 6 → 127 precincts, 5 districts of ~25-26.
+ * Coordinates: axial, centered at (0,0); range q,r in [-6,6].
  *
- * Initial assignment (vertical 2-column strips):
- *   D1=q0-1, D2=q2-3, D3=q4-5, D4=q6-7, D5=q8-9
+ * Partisan geography (concentric):
+ *   Urban core (d ≤ 2, 19 hexes): ~15% Ken / 85% Ryu — dense Ryu stronghold
+ *   Suburban   (d = 3-4, 42 hexes): ~42% Ken / 58% Ryu — competitive Ryu-lean
+ *   Rural      (d = 5-6, 66 hexes): ~65% Ken / 35% Ryu — reliable Ken
  *
- * Initial outcome: each district has a slice of urban core + suburbs + rural.
- *   Urban core slice → each district ~4-5 Ryu precincts out of 24 → not enough to flip most.
- *   Actually the core is 4 cols × 6 rows = 24 precincts = entire D3 could be packed.
- *   With vertical strips: D2 gets q=2-3∩core (r=3-8 for q=3 only → 6 precincts),
- *                         D3 gets q=4-5∩core (r=3-8 → 12 precincts),
- *                         D4 gets q=6-7∩core (r=3-8 for q=6 only → 6 precincts).
- *   D2: 6 urban + 18 rural/suburban → enough rural to pull Ken over 50%? Roughly:
- *     suburban ≈ 8 precincts, rural ≈ 10 precincts
- *     avg ≈ (6×0.15 + 8×0.42 + 10×0.65)/24 ≈ (0.9+3.36+6.5)/24 ≈ 10.76/24 ≈ 0.45 → RYU wins
- *   D3: 12 urban + 12 rural/suburban → avg ≈ (12×0.15 + 6×0.42 + 6×0.65)/24 ≈ (1.8+2.52+3.9)/24
- *     ≈ 8.22/24 ≈ 0.34 → RYU wins
- *   D4: similar to D2 → 0.45 → RYU wins
- *   D1, D5: no urban core → mostly rural + outer suburban → ~62% Ken → KEN wins
- *   Result: 2 Ken / 3 Ryu (fails ≥3 Ken required criterion)
+ * Urban voters have higher turnout (65-75%) vs. rural/suburban (50-60%).
  *
- * Winning gerrymander (pack the urban core):
- *   Pack all urban core (q=3..6, r=3..8) into D3 = 24 precincts, all Ryu → D3 is the sacrifice
- *   Remaining 4 districts share: rural + suburban only → all Ken-majority → 4 Ken / 1 Ryu ✓
- *   But q=3..6 r=3..8 = 4×6 = 24 precincts exactly — one full district.
- *   Need to move: q=3∩non-core from D2 → swap with some of D3's non-core precincts.
- *   Simpler approach: player paints q=3-6, r=3-8 into D3 (the core), then rebalances D2 and D4.
+ * Initial assignment: 5 angular wedge sectors from center to edge.
+ *   Each sector spans all three zones → mixes urban+suburban+rural.
+ *   D2/D3/D4 each get some urban core → ~45% Ken → Ryu wins.
+ *   D1/D5 get mostly rural → ~62% Ken → Ken wins.
+ *   Result: 2 Ken / 3 Ryu — fails ≥4 Ken seats criterion.
+ *
+ * Winning gerrymander: pack the urban core into one district.
+ *   Pack all d ≤ 2 (19 hexes) + 6 nearby suburban hexes into D3 = 25 hexes.
+ *   D3 → ~20% Ken → Ryu landslide (the sacrifice district).
+ *   Remaining 4 districts: suburban + rural only → all Ken-majority.
+ *   Result: 4 Ken / 1 Ryu ✓.
+ *
+ * Success criteria:
+ *   Required: district_count, population_balance (±10%), seat_count Ken ≥ 4
+ *   Optional: efficiency_gap ≤ 15%
  *
  * Run from repo root:
  *   kotlin game/scenarios/gen-scenario-003.main.kts
  */
 
+import kotlin.math.abs
+import kotlin.math.atan2
+import kotlin.math.PI
 import kotlin.random.Random
 
 val rng = Random(43)
-val NUM_Q = 10
-val NUM_R = 12
-val BASE_POP = 1500
+val R = 6
 
-fun isUrbanCore(q: Int, r: Int) = q in 3..6 && r in 3..8
+fun hexDist(q: Int, r: Int): Int = (abs(q) + abs(r) + abs(q + r)) / 2
 
-fun isSuburban(q: Int, r: Int): Boolean {
-    if (isUrbanCore(q, r)) return false
-    // One hex ring outside the core bounding box
-    return q in 2..7 && r in 2..9
+fun baseKenShare(q: Int, r: Int): Double {
+    val d = hexDist(q, r)
+    return when {
+        d <= 2 -> 0.15  // urban core: strong Ryu
+        d <= 4 -> 0.42  // suburban: competitive Ryu-lean
+        else   -> 0.65  // rural: reliable Ken
+    }
 }
 
-fun zone(q: Int, r: Int) = when {
-    isUrbanCore(q, r) -> "urban"
-    isSuburban(q, r)  -> "suburban"
-    else              -> "rural"
+fun baseTurnout(q: Int, r: Int): Double {
+    val d = hexDist(q, r)
+    return when {
+        d <= 2 -> 0.70  // urban: higher turnout
+        d <= 4 -> 0.55  // suburban
+        else   -> 0.55  // rural
+    }
 }
 
-fun initialDistrict(q: Int, r: Int) = when {
-    q <= 1 -> "d1"
-    q <= 3 -> "d2"
-    q <= 5 -> "d3"
-    q <= 7 -> "d4"
-    else   -> "d5"
+// Initial: 5 angular wedge sectors — each spans all zones → mixed results.
+fun initialDistrict(q: Int, r: Int): String {
+    if (q == 0 && r == 0) return "d3"
+    val x = q.toDouble() + r.toDouble() * 0.5
+    val y = r.toDouble() * 0.8660254
+    val norm = (atan2(y, x) + PI) / (2.0 * PI)
+    return when ((norm * 5).toInt().coerceIn(0, 4)) {
+        0 -> "d1"
+        1 -> "d2"
+        2 -> "d3"
+        3 -> "d4"
+        else -> "d5"
+    }
 }
 
-fun countyId(q: Int, r: Int) = when {
-    isUrbanCore(q, r) -> "riverport_city"
-    isSuburban(q, r)  -> "riverport_suburbs"
-    else              -> "riverport_rural"
+fun countyId(q: Int, r: Int): String {
+    val d = hexDist(q, r)
+    return when {
+        d <= 2 -> "riverport_city"
+        d <= 4 -> "riverport_suburbs"
+        else   -> "greenfield_county"
+    }
 }
-
-fun colLetter(q: Int) = "ABCDEFGHIJ"[q].toString()
 
 fun Double.fmt(decimals: Int = 4) = "%.${decimals}f".format(this)
+
+data class Hex(val q: Int, val r: Int)
+val hexes = buildList {
+    for (q in -R..R) {
+        val rMin = maxOf(-R, -q - R)
+        val rMax = minOf(R, -q + R)
+        for (r in rMin..rMax) { add(Hex(q, r)) }
+    }
+}.sortedWith(compareBy({ it.r }, { it.q }))
+
+val BASE_POP = 1500
 
 val precincts = StringBuilder()
 var first = true
 
-for (r in 0 until NUM_R) {
-    for (q in 0 until NUM_Q) {
-        val idx = r * NUM_Q + q
-        val pid = "p%03d".format(idx + 1)
-        val z = zone(q, r)
+for ((idx, hex) in hexes.withIndex()) {
+    val (q, r) = hex
+    val pid = "p%03d".format(idx + 1)
 
-        val baseKen = when (z) {
-            "urban"    -> 0.15
-            "suburban" -> 0.42
-            else       -> 0.65
-        }
-        val delta = rng.nextDouble(-0.03, 0.03)
-        val kenShare = (baseKen + delta).coerceIn(0.05, 0.95)
-        val ryuShare = 1.0 - kenShare
+    val pop = BASE_POP + rng.nextInt(-150, 151)
 
-        val pop = BASE_POP + rng.nextInt(-100, 101)
-        val turnout = when (z) {
-            "urban" -> rng.nextDouble(0.65, 0.75)  // higher urban turnout
-            else    -> rng.nextDouble(0.50, 0.60)
-        }
-        val districtId = initialDistrict(q, r)
-        val county = countyId(q, r)
-        val zoneName = z.replaceFirstChar { it.uppercase() }
-        val name = "$zoneName ${colLetter(q)}${r + 1}"
+    val kenShare = (baseKenShare(q, r) + rng.nextDouble(-0.04, 0.04)).coerceIn(0.05, 0.95)
+    val kenStr = kenShare.fmt(4)
+    val ryuStr = (1.0 - kenStr.toDouble()).fmt(4)
+    val turnout = baseTurnout(q, r) + rng.nextDouble(-0.05, 0.05)
 
-        if (!first) precincts.append(",\n")
-        first = false
+    val districtId = initialDistrict(q, r)
+    val county = countyId(q, r)
+    val d = hexDist(q, r)
+    val zoneName = when {
+        d <= 2 -> "Downtown"
+        d <= 4 -> "Suburbs"
+        else   -> "Rural"
+    }
+    val name = "$zoneName ($q,$r)"
 
-        precincts.append("""    {
+    if (!first) precincts.append(",\n")
+    first = false
+
+    precincts.append("""    {
       "id": "$pid",
       "editable": true,
       "county_id": "$county",
@@ -119,15 +137,14 @@ for (r in 0 until NUM_R) {
       "name": "$name",
       "demographic_groups": [
         {
-          "id": "${pid}-base",
-          "name": "Registered voters",
+          "id": "${pid}-all",
+          "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": ${turnout.fmt(2)},
-          "vote_shares": { "ken": ${kenShare.fmt(4)}, "ryu": ${ryuShare.fmt(4)} }
+          "vote_shares": { "ken": $kenStr, "ryu": $ryuStr }
         }
       ]
     }""")
-    }
 }
 
 val json = """{
@@ -136,8 +153,8 @@ val json = """{
   "title": "Riverport: The Packing Problem",
   "election_type": "state_house",
   "region": {
-    "id": "riverport_county",
-    "name": "Riverport County"
+    "id": "riverport_metro",
+    "name": "Riverport Metro Area"
   },
   "geometry": { "type": "hex_axial" },
   "parties": [
@@ -176,7 +193,7 @@ $precincts
     {
       "id": "sc-ken-seats",
       "required": true,
-      "description": "The Ken Party wins at least 4 of the 5 districts.",
+      "description": "Ken Party wins at least 4 of the 5 districts.",
       "criterion": {
         "type": "seat_count",
         "party": "ken",
@@ -187,7 +204,7 @@ $precincts
     {
       "id": "sc-efficiency-gap",
       "required": false,
-      "description": "The efficiency gap is 15% or less — a statistically efficient gerrymander.",
+      "description": "Packing creates a large efficiency gap — can you keep it under 15%?",
       "criterion": {
         "type": "efficiency_gap",
         "operator": "lte",
@@ -198,24 +215,28 @@ $precincts
   "narrative": {
     "character": {
       "name": "You",
-      "role": "Redistricting Consultant, Ken Party Majority Caucus",
-      "motivation": "Riverport has a large urban core that votes overwhelmingly Ryu. Your job is to contain that bloc — concentrate it into one district, and let Ken dominate the rest."
+      "role": "Ken Party Campaign Strategist, Riverport Metro",
+      "motivation": "The Ken Party controls the state legislature but is losing ground in Riverport's urban core. The Ryu Party's voters are concentrated downtown — a liability if you know how to exploit it. Your job: draw a map that locks in 4 of 5 seats by packing their voters into one unwinnable district."
     },
     "intro_slides": [
       {
-        "heading": "The City Votes Ryu",
-        "body": "Riverport's urban core is a Ryu stronghold. In the current map, that bloc is spread across three districts — pulling each one toward Ryu.\n\nYour job: stop spreading those votes around."
+        "heading": "The Urban Problem",
+        "body": "Riverport's downtown is a Ryu stronghold — dense, politically active, and growing. If you let those voters spread across multiple districts, they could flip seats.\n\nBut concentration is a weakness. If all those Ryu voters end up in the same district, they win it by a landslide — and waste thousands of votes that could have helped them elsewhere."
       },
       {
-        "heading": "Pack Them In",
-        "body": "Packing means drawing one district to absorb as many opposition voters as possible.\n\nWhen you pack Ryu voters into a single district, they win it by a landslide — but all those extra votes are wasted. The other four districts become safe Ken territory."
+        "heading": "The Packing Play",
+        "body": "Packing means drawing one district that your opponents win overwhelmingly — 80%, 85%, even 90%. Every vote above 50%+1 is wasted. Meanwhile, you spread your own voters efficiently across the remaining districts, winning each by a comfortable but not wasteful margin.\n\nThe result: they win one seat by a landslide. You win four seats by steady margins."
+      },
+      {
+        "heading": "The Efficiency Gap",
+        "body": "Political scientists measure this with the efficiency gap — the difference in wasted votes between the two parties. A packed map has a huge efficiency gap: the opposition wastes votes in their landslide district, while the mapmaker wastes very few.\n\nDraw your map. Then look at the efficiency gap and see what packing costs."
       }
     ],
-    "objective": "Pack the Ryu stronghold into one district so the Ken Party wins at least 4 of the 5 seats."
+    "objective": "Pack Ryu voters into as few districts as possible. Ken Party must win at least 4 of 5 seats."
   }
 }
 """
 
 val outFile = java.io.File("game/scenarios/scenario-003.json")
 outFile.writeText(json)
-println("Wrote ${NUM_Q * NUM_R} precincts to ${outFile.path}")
+println("Wrote ${hexes.size} precincts to ${outFile.path}")
