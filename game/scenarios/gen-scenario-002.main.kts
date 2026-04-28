@@ -2,26 +2,29 @@
 /**
  * Generator for scenario-002.json: "Give the Governor a Win"
  *
- * Layout: 8 columns (q=0..7) × 12 rows (r=0..11) = 96 precincts, 4 districts of 24.
+ * Lesson: Basic partisan gerrymandering — redraw to give one party more seats.
  *
- * Zones:
- *   North     (r=0..5, all q):    60% Ken / 40% Ryu — Ken-leaning
- *   Southwest (q=0..3, r=6..11):  52% Ken / 48% Ryu — competitive Ken-lean
- *   Southeast (q=4..7, r=6..11):  25% Ken / 75% Ryu — strong Ryu
+ * Shape: hex-of-hexes, radius 5 → 91 precincts, 4 districts of ~22-23.
+ * Coordinates: axial, centered at (0,0); range q,r in [-5,5].
  *
- * Initial assignment (vertical 2-column strips):
- *   D1=q0-1, D2=q2-3, D3=q4-5, D4=q6-7
+ * Partisan geography (angle-based, three zones):
+ *   North  (r < 0 or r=0 and q<0, roughly upper half): ~60% Ken — Ken-leaning
+ *   Southwest (q ≤ 0 and r > 0): ~52% Ken — competitive Ken-lean
+ *   Southeast (q > 0 and r > 0): ~25% Ken — strong Ryu stronghold
  *
- * Initial outcome:
- *   D1,D2 each get north+SW → ~56% Ken → KEN wins
- *   D3,D4 each get north+SE → ~42% Ken → RYU wins
- *   Result: 2 Ken / 2 Ryu (fails the ≥3 Ken criterion)
+ * Initial assignment: diagonal strips (k=q+r constant).
+ *   Each strip crosses all three zones → D1,D2 get north+SW (~56% Ken → Ken wins),
+ *   D3,D4 get north+SE (~42% Ken → Ryu wins).
+ *   Result: 2 Ken / 2 Ryu — fails ≥3 Ken criterion.
  *
- * Winning gerrymander (what player must discover):
- *   D1=q0-1 all rows,  D2=q2-3 all rows  → 56% Ken each
- *   D3=q4-7 r=0-5      (all-north band)   → 60% Ken
- *   D4=q4-7 r=6-11     (all-SE band)      → 25% Ken (Ryu sacrificed district)
+ * Winning gerrymander: pack the southeast Ryu stronghold into one district.
+ *   3 districts from north+southwest (Ken-majority) → 3 Ken ✓
+ *   1 district absorbs the southeast Ryu bloc → Ryu sacrifice
  *   Result: 3 Ken / 1 Ryu ✓
+ *
+ * Success criteria:
+ *   Required: district_count, population_balance (±10%), Ken ≥ 3 seats
+ *   Optional: compactness ≥ 0.40
  *
  * Run from repo root:
  *   kotlin game/scenarios/gen-scenario-002.main.kts
@@ -31,62 +34,81 @@ import kotlin.math.abs
 import kotlin.random.Random
 
 val rng = Random(42)
-val NUM_Q = 8
-val NUM_R = 12
-val BASE_POP = 1500
+val R = 5
 
-fun zone(q: Int, r: Int) = when {
-    r <= 5 -> "north"
-    q <= 3 -> "southwest"
-    else   -> "southeast"
+fun hexDist(q: Int, r: Int): Int = (abs(q) + abs(r) + abs(q + r)) / 2
+
+// Two zones: most of the hex is Ken territory, but a compact Ryu stronghold
+// occupies the inner-east region (q ≥ 1, d ≤ 3, ~18 hexes). The surrounding
+// area leans Ken, creating a natural "pack the Ryu bloc" puzzle.
+fun baseKenShare(q: Int, r: Int): Double {
+    val d = hexDist(q, r)
+    return when {
+        q >= 1 && d <= 3 -> 0.25  // inner-east: strong Ryu stronghold (~18 hexes)
+        q >= 1           -> 0.52  // outer-east: competitive, slight Ken
+        else             -> 0.62  // west: reliable Ken territory
+    }
 }
 
-fun initialDistrict(q: Int, r: Int) = when {
-    q <= 1 -> "d1"
-    q <= 3 -> "d2"
-    q <= 5 -> "d3"
-    else   -> "d4"
+// Initial: diagonal strips (k = q+r constant) — mixes zones.
+//   k ≤ -3: d1, k=-2..-1: d2, k=0..1: d3, k≥2: d4
+fun initialDistrict(q: Int, r: Int): String {
+    val k = q + r
+    return when {
+        k <= -3 -> "d1"
+        k <= -1 -> "d2"
+        k <= 1  -> "d3"
+        else    -> "d4"
+    }
 }
 
-fun countyId(q: Int, r: Int) = when {
-    r <= 5 -> "clearwater_north"
-    q <= 3 -> "clearwater_west"
-    else   -> "clearwater_east"
+fun countyId(q: Int, r: Int): String = when {
+    q >= 1 && hexDist(q, r) <= 3 -> "clearwater_east"
+    q <= 0                       -> "clearwater_west"
+    else                         -> "clearwater_central"
 }
-
-fun colLetter(q: Int) = "ABCDEFGH"[q].toString()
 
 fun Double.fmt(decimals: Int = 4) = "%.${decimals}f".format(this)
+
+data class Hex(val q: Int, val r: Int)
+val hexes = buildList {
+    for (q in -R..R) {
+        val rMin = maxOf(-R, -q - R)
+        val rMax = minOf(R, -q + R)
+        for (r in rMin..rMax) { add(Hex(q, r)) }
+    }
+}.sortedWith(compareBy({ it.r }, { it.q }))
+
+val BASE_POP = 1500
 
 val precincts = StringBuilder()
 var first = true
 
-for (r in 0 until NUM_R) {
-    for (q in 0 until NUM_Q) {
-        val idx = r * NUM_Q + q
-        val pid = "p%03d".format(idx + 1)
-        val z = zone(q, r)
+for ((idx, hex) in hexes.withIndex()) {
+    val (q, r) = hex
+    val pid = "p%03d".format(idx + 1)
 
-        val baseKen = when (z) {
-            "north"     -> 0.60
-            "southwest" -> 0.52
-            else        -> 0.25
-        }
-        val delta = rng.nextDouble(-0.03, 0.03)
-        val kenShare = (baseKen + delta).coerceIn(0.05, 0.95)
-        val ryuShare = 1.0 - kenShare
+    val pop = BASE_POP + rng.nextInt(-150, 151)
 
-        val pop = BASE_POP + rng.nextInt(-100, 101)
-        val turnout = rng.nextDouble(0.52, 0.62)
-        val districtId = initialDistrict(q, r)
-        val county = countyId(q, r)
-        val zoneName = z.split("_").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
-        val name = "$zoneName ${colLetter(q)}${r + 1}"
+    val kenShare = (baseKenShare(q, r) + rng.nextDouble(-0.04, 0.04)).coerceIn(0.05, 0.95)
+    val kenStr = kenShare.fmt(4)
+    val ryuStr = (1.0 - kenStr.toDouble()).fmt(4)
+    val turnout = rng.nextDouble(0.55, 0.70)
 
-        if (!first) precincts.append(",\n")
-        first = false
+    val districtId = initialDistrict(q, r)
+    val county = countyId(q, r)
+    val d = hexDist(q, r)
+    val zoneName = when {
+        q >= 1 && d <= 3 -> "East"
+        q <= 0           -> "West"
+        else             -> "Central"
+    }
+    val name = "$zoneName ($q,$r)"
 
-        precincts.append("""    {
+    if (!first) precincts.append(",\n")
+    first = false
+
+    precincts.append("""    {
       "id": "$pid",
       "editable": true,
       "county_id": "$county",
@@ -96,15 +118,14 @@ for (r in 0 until NUM_R) {
       "name": "$name",
       "demographic_groups": [
         {
-          "id": "${pid}-base",
-          "name": "Registered voters",
+          "id": "${pid}-all",
+          "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": ${turnout.fmt(2)},
-          "vote_shares": { "ken": ${kenShare.fmt(4)}, "ryu": ${ryuShare.fmt(4)} }
+          "vote_shares": { "ken": $kenStr, "ryu": $ryuStr }
         }
       ]
     }""")
-    }
 }
 
 val json = """{
@@ -152,7 +173,7 @@ $precincts
     {
       "id": "sc-ken-seats",
       "required": true,
-      "description": "The Ken Party wins at least 3 of the 4 districts.",
+      "description": "The governor's Ken Party wins at least 3 of the 4 districts.",
       "criterion": {
         "type": "seat_count",
         "party": "ken",
@@ -161,37 +182,41 @@ $precincts
       }
     },
     {
-      "id": "sc-compact",
+      "id": "sc-compactness",
       "required": false,
-      "description": "Districts have compact, reasonable shapes — a clean gerrymander.",
+      "description": "All districts are reasonably compact (≥ 40%).",
       "criterion": {
         "type": "compactness",
         "operator": "gte",
-        "threshold": 0.4
+        "threshold": 0.40
       }
     }
   ],
   "narrative": {
     "character": {
       "name": "You",
-      "role": "Campaign Strategist, Ken Party State Committee",
-      "motivation": "The Governor's party needs a State House majority. The votes are there — if the lines are drawn right."
+      "role": "Ken Party Campaign Strategist, Clearwater County",
+      "motivation": "The governor wants a reliable majority in Clearwater County. The current map splits the vote evenly — two Ken, two Ryu. That's not good enough. You've been brought in to redraw the lines so Ken wins three of four seats."
     },
     "intro_slides": [
       {
-        "heading": "The Governor Needs a Win",
-        "body": "Clearwater County is up for redistricting. The current map gives each party two of the four seats — a stalemate.\n\nThe Governor's party, the Ken Party, wants three seats. Your job: draw the lines to make it happen."
+        "heading": "The Governor's Problem",
+        "body": "Clearwater County elects four representatives. Right now, the map gives each party two seats. The governor — a Ken partisan — wants three.\n\nThe population hasn't changed. The voters haven't changed. But the lines can change."
       },
       {
-        "heading": "Same Votes. Different Lines.",
-        "body": "The county's voters haven't changed. But where you draw the district boundaries determines which party wins each seat.\n\nThe north leans Ken. The southeast leans Ryu. The trick is deciding which precincts end up together — and who gets packed into a losing district."
+        "heading": "How Redistricting Works",
+        "body": "Every ten years, district boundaries are redrawn. The official reason is to reflect population changes. The real reason, often, is to change who wins.\n\nYou're looking at a map of precincts — small geographic units with known voting patterns. Your job is to group them into districts that favor the Ken Party."
+      },
+      {
+        "heading": "Your First Gerrymander",
+        "body": "Look at the map. The southeast corner votes heavily Ryu. The north and southwest lean Ken.\n\nIf you can contain the Ryu stronghold in one district and spread Ken voters across the other three, the governor gets the majority. The tools are simple — the consequences are not."
       }
     ],
-    "objective": "Draw 4 districts so the Ken Party wins at least 3 seats."
+    "objective": "Redraw the map so the Ken Party wins at least 3 of 4 districts."
   }
 }
 """
 
 val outFile = java.io.File("game/scenarios/scenario-002.json")
 outFile.writeText(json)
-println("Wrote ${NUM_Q * NUM_R} precincts to ${outFile.path}")
+println("Wrote ${hexes.size} precincts to ${outFile.path}")

@@ -4,28 +4,25 @@
  *
  * Lesson: Voting Rights Act (VRA) / majority-minority districts.
  *
- * Layout: 10 columns (q=0..9) × 12 rows (r=0..11) = 120 precincts, 5 districts of 24.
+ * Shape: hex-of-hexes, radius 6 → 127 precincts, 5 districts of ~25-26.
+ * Coordinates: axial, centered at (0,0); range q,r in [-6,6].
  *
- * Zones:
- *   Valley (q=3..8, r=5..8): 6 cols × 4 rows = 24 precincts — Latino-concentrated
- *     Latino share: ~70%; Anglo share: ~30%
- *     Ken-leaning community (~78% Ken)
- *   Rim (everything else): 96 precincts — Anglo-majority
- *     Latino share: ~20%; Anglo share: ~80%
- *     Ryu-leaning (~62% Ryu)
+ * Partisan geography:
+ *   Valley (compact hex cluster offset from center, ~25 hexes):
+ *     ~70% Latino, ~30% Anglo. Latino community votes ~78% Ken.
+ *   Rim (everything else, ~102 hexes):
+ *     ~20% Latino, ~80% Anglo. Anglo community leans Ryu (~62% Ryu).
  *
- * Initial assignment: vertical 2-column strips (q=0–1, q=2–3, q=4–5, q=6–7, q=8–9)
- *   Cracks the valley across D2, D3, D4, D5 — no district reaches 50% Latino:
- *     D1 (q=0–1): 0 valley pcts   → ~20% Latino   ← fails VRA ✓
- *     D2 (q=2–3): 4 valley pcts   → ~28% Latino   ← fails VRA ✓
- *     D3 (q=4–5): 8 valley pcts   → ~37% Latino   ← fails VRA ✓
- *     D4 (q=6–7): 8 valley pcts   → ~37% Latino   ← fails VRA ✓
- *     D5 (q=8–9): 4 valley pcts   → ~28% Latino   ← fails VRA ✓
+ * Valley definition: hexes where q ∈ [1,5] AND r ∈ [-2,1] AND hexDist ≤ 6.
+ *   This creates a compact cluster in the east, roughly 24 hexes.
  *
- * Winning solution: consolidate the valley into one district (q=3..8, r=5..8)
+ * Initial assignment: diagonal strips (k=q+r constant).
+ *   Cracks the valley across multiple districts — no district reaches 50% Latino.
+ *
+ * Winning solution: consolidate the valley into one district.
  *   → 70% Latino → majority-minority criterion satisfied ✓
- *   Educational note: this also packs Ken votes into one district — the remaining
- *   four districts become more Ryu-leaning. VRA compliance creates a tradeoff.
+ *   Educational note: packs Ken votes into one district; remaining four
+ *   become more Ryu-leaning. VRA compliance creates a partisan tradeoff.
  *
  * demographic_groups schema:
  *   group_schema: { dimensions: { ethnicity: [latino, anglo] } }
@@ -36,77 +33,89 @@
  *   kotlin game/scenarios/gen-scenario-005.main.kts
  */
 
+import kotlin.math.abs
 import kotlin.random.Random
 
 val rng = Random(55)
-val NUM_Q = 10
-val NUM_R = 12
-val BASE_POP = 1500
+val R = 6
 
-fun isValley(q: Int, r: Int) = q in 3..8 && r in 5..8
+fun hexDist(q: Int, r: Int): Int = (abs(q) + abs(r) + abs(q + r)) / 2
 
-// Initial assignment: vertical 2-column strips
-fun initialDistrict(q: Int, r: Int): String = when {
-    q <= 1 -> "d1"
-    q <= 3 -> "d2"
-    q <= 5 -> "d3"
-    q <= 7 -> "d4"
-    else   -> "d5"
+// Valley: a compact cluster in the eastern part of the hex
+fun isValley(q: Int, r: Int): Boolean =
+    q in 1..5 && r in -2..1 && hexDist(q, r) <= R
+
+// Initial: diagonal strips (k = q+r constant) — cracks the valley.
+//   k ≤ -3: d1, k=-2..-1: d2, k=0: d3, k=1..2: d4, k≥3: d5
+fun initialDistrict(q: Int, r: Int): String {
+    val k = q + r
+    return when {
+        k <= -3 -> "d1"
+        k <= -1 -> "d2"
+        k == 0  -> "d3"
+        k <= 2  -> "d4"
+        else    -> "d5"
+    }
 }
 
 fun countyId(q: Int, r: Int) = when {
-    isValley(q, r) -> "valle_verde_valley"
-    r <= 4         -> "valle_verde_north"
-    else           -> "valle_verde_south"
+    isValley(q, r)  -> "valle_verde_valley"
+    hexDist(q, r) <= 3 -> "valle_verde_central"
+    else            -> "valle_verde_rim"
 }
 
-fun colLetter(q: Int) = "ABCDEFGHIJ"[q].toString()
-
 fun Double.fmt(decimals: Int = 4) = "%.${decimals}f".format(this)
+
+data class Hex(val q: Int, val r: Int)
+val hexes = buildList {
+    for (q in -R..R) {
+        val rMin = maxOf(-R, -q - R)
+        val rMax = minOf(R, -q + R)
+        for (r in rMin..rMax) { add(Hex(q, r)) }
+    }
+}.sortedWith(compareBy({ it.r }, { it.q }))
+
+val BASE_POP = 1500
 
 val precincts = StringBuilder()
 var first = true
 
-for (r in 0 until NUM_R) {
-    for (q in 0 until NUM_Q) {
-        val idx = r * NUM_Q + q
-        val pid = "p%03d".format(idx + 1)
-        val valley = isValley(q, r)
+for ((idx, hex) in hexes.withIndex()) {
+    val (q, r) = hex
+    val pid = "p%03d".format(idx + 1)
+    val valley = isValley(q, r)
 
-        val pop = BASE_POP + rng.nextInt(-150, 151)
+    val pop = BASE_POP + rng.nextInt(-150, 151)
 
-        // Latino population share (of total_population)
-        val latinoShare = if (valley) {
-            (0.70 + rng.nextDouble(-0.04, 0.04)).coerceIn(0.60, 0.80)
-        } else {
-            (0.20 + rng.nextDouble(-0.04, 0.04)).coerceIn(0.10, 0.32)
-        }
-        // Ensure shares sum exactly to 1.0 (avoid floating-point accumulation in loader)
-        val latinoShareStr = latinoShare.fmt(4)
-        val angloShare = 1.0 - latinoShareStr.toDouble()
-        val angloShareStr = angloShare.fmt(4)
+    val latinoShare = if (valley) {
+        (0.70 + rng.nextDouble(-0.04, 0.04)).coerceIn(0.60, 0.80)
+    } else {
+        (0.20 + rng.nextDouble(-0.04, 0.04)).coerceIn(0.10, 0.32)
+    }
+    val latinoShareStr = latinoShare.fmt(4)
+    val angloShare = 1.0 - latinoShareStr.toDouble()
+    val angloShareStr = angloShare.fmt(4)
 
-        // Vote shares: Latino community strongly Ken-leaning; Anglo community leans Ryu
-        val latinoKen = (0.78 + rng.nextDouble(-0.03, 0.03)).coerceIn(0.05, 0.95)
-        val latinoKenStr = latinoKen.fmt(4)
-        val latinoRyuStr = (1.0 - latinoKenStr.toDouble()).fmt(4)
+    val latinoKen = (0.78 + rng.nextDouble(-0.03, 0.03)).coerceIn(0.05, 0.95)
+    val latinoKenStr = latinoKen.fmt(4)
+    val latinoRyuStr = (1.0 - latinoKenStr.toDouble()).fmt(4)
 
-        val angloKen = (0.38 + rng.nextDouble(-0.03, 0.03)).coerceIn(0.05, 0.95)
-        val angloKenStr = angloKen.fmt(4)
-        val angloRyuStr = (1.0 - angloKenStr.toDouble()).fmt(4)
+    val angloKen = (0.38 + rng.nextDouble(-0.03, 0.03)).coerceIn(0.05, 0.95)
+    val angloKenStr = angloKen.fmt(4)
+    val angloRyuStr = (1.0 - angloKenStr.toDouble()).fmt(4)
 
-        val latinoTurnout = rng.nextDouble(0.52, 0.62)
-        val angloTurnout = rng.nextDouble(0.58, 0.68)
+    val latinoTurnout = rng.nextDouble(0.52, 0.62)
+    val angloTurnout = rng.nextDouble(0.58, 0.68)
 
-        val districtId = initialDistrict(q, r)
-        val county = countyId(q, r)
-        val zoneName = if (valley) "Valley" else "Rim"
-        val name = "$zoneName ${colLetter(q)}${r + 1}"
+    val districtId = initialDistrict(q, r)
+    val county = countyId(q, r)
+    val zoneName = if (valley) "Valley" else "Rim"
+    val name = "$zoneName ($q,$r)"
 
-        if (!first) precincts.append(",\n")
-        first = false
+    if (!first) precincts.append(",\n")
+    first = false
 
-        precincts.append("""    {
+    precincts.append("""    {
       "id": "$pid",
       "editable": true,
       "county_id": "$county",
@@ -133,8 +142,9 @@ for (r in 0 until NUM_R) {
         }
       ]
     }""")
-    }
 }
+
+val valleyCount = hexes.count { isValley(it.q, it.r) }
 
 val json = """{
   "format_version": "1",
@@ -209,12 +219,12 @@ $precincts
     "character": {
       "name": "You",
       "role": "Court-Appointed Redistricting Coordinator, Valle Verde County",
-      "motivation": "A federal court found that the current district map violates the Voting Rights Act. The Valley's Latino community has been cracked across four districts — diluted so thoroughly that they cannot elect their preferred candidate anywhere. You must draw a new map that complies with the law."
+      "motivation": "A federal court found that the current district map violates the Voting Rights Act. The Valley's Latino community has been cracked across multiple districts — diluted so thoroughly that they cannot elect their preferred candidate anywhere. You must draw a new map that complies with the law."
     },
     "intro_slides": [
       {
         "heading": "The Valley Grows",
-        "body": "Over the past decade, Valle Verde County's Valley has seen significant population growth. The Latino community, concentrated in this area, now makes up a meaningful share of the county's total population.\n\nBut on the current map, drawn ten years ago, the Valley is sliced into four strips — each one a piece of a different district, none large enough to matter."
+        "body": "Over the past decade, Valle Verde County's Valley has seen significant population growth. The Latino community, concentrated in this area, now makes up a meaningful share of the county's total population.\n\nBut on the current map, drawn ten years ago, the Valley is sliced across multiple districts — each one a piece of a different district, none large enough to matter."
       },
       {
         "heading": "The Voting Rights Act",
@@ -232,4 +242,4 @@ $precincts
 
 val outFile = java.io.File("game/scenarios/scenario-005.json")
 outFile.writeText(json)
-println("Wrote ${NUM_Q * NUM_R} precincts to ${outFile.path}")
+println("Wrote ${hexes.size} precincts ($valleyCount valley) to ${outFile.path}")

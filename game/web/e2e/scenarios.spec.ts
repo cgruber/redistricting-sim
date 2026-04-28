@@ -55,67 +55,110 @@ async function selectDistrict(
   await page.locator("button.district-btn").nth(nth).click();
 }
 
+/**
+ * Paint a set of hexes (given as [q,r] pairs) into a district using paintStroke.
+ * Resolves hex coordinates to precinct indices at runtime via the game store.
+ * This keeps tests readable: callers specify hex positions, not opaque index arrays.
+ */
+async function paintHexes(
+  page: import("@playwright/test").Page,
+  hexes: [number, number][],
+  district: number,
+): Promise<void> {
+  await page.evaluate(({ hexes, district }) => {
+    const store = (window as unknown as Record<string, { getState: () => {
+      paintStroke: (ids: number[], district: number) => void;
+      precincts: { coord: { q: number; r: number } }[];
+    } }>)["__gameStore"];
+    if (!store) throw new Error("__gameStore not found on window");
+    const state = store.getState();
+    // Build (q,r) → index lookup from precincts
+    const coordToIdx = new Map<string, number>();
+    state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
+      coordToIdx.set(`${p.coord.q},${p.coord.r}`, i);
+    });
+    const ids = hexes.map(([q, r]: [number, number]) => {
+      const idx = coordToIdx.get(`${q},${r}`);
+      if (idx === undefined) throw new Error(`Hex (${q},${r}) not found in precincts`);
+      return idx;
+    });
+    state.paintStroke(ids, district);
+  }, { hexes, district });
+}
+
 // ─── scenario-002: "Give the Governor a Win" ─────────────────────────────────
 
-test("scenario-002 smoke: loads and renders 96 precincts", async ({ page }) => {
+test("scenario-002 smoke: loads and renders 91 precincts", async ({ page }) => {
   await page.goto("/?s=scenario-002&debug");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
   await skip.click();
   await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
-
-  const hexCount = await page.locator("path.hex").count();
-  expect(hexCount).toBe(96);
+  expect(await page.locator("path.hex").count()).toBe(91);
 });
 
 test("scenario-002 smoke: intro shows correct character and objective", async ({ page }) => {
   await page.goto("/?s=scenario-002&debug");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
   await expect(page.locator("#char-role")).toContainText("Ken Party");
-  await expect(page.locator("#objective-text")).toContainText("Ken Party wins at least 3 seats");
+  await expect(page.locator("#objective-text")).toContainText("Ken Party wins at least 3");
 });
 
-test("scenario-002 winnability: gerrymandering 3/4 Ken districts passes the map", async ({ page }) => {
+test("scenario-002 winnability: packing east Ryu bloc into one district passes", async ({ page }) => {
   /**
-   * Layout: 8 cols (q=0..7) × 12 rows (r=0..11) = 96 precincts, 4 districts × 24.
-   * Index formula: r * 8 + q  (0-based).
+   * Hex-of-hexes R=5: 91 precincts, 4 districts of ~23.
+   * Geography: inner-east (q≥1, d≤3) = 25% Ken (Ryu stronghold),
+   *            west (q≤0) = 62% Ken, outer-east = 52% Ken.
    *
-   * Initial (2-col vertical strips):
-   *   D1=q0-1, D2=q2-3, D3=q4-5, D4=q6-7
-   *   D1,D2 → north+SW → ~56% Ken → KEN
-   *   D3,D4 → north+SE → ~42% Ken → RYU
-   *   Result: 2 Ken / 2 Ryu → fails ≥3 Ken criterion
-   *
-   * Winning gerrymander:
-   *   Step 1: Select D3; paint q=6-7, r=0-5 (currently D4) → D3 gains North strip
-   *     Indices: r=0..5, q=6..7 → [6,7,14,15,22,23,30,31,38,39,46,47]
-   *   Step 2: Select D4; paint q=4-5, r=6-11 (currently D3) → D4 gets SE zone
-   *     Indices: r=6..11, q=4..5 → [52,53,60,61,68,69,76,77,84,85,92,93]
-   *
-   * Final:
-   *   D1=q0-1 all rows (56% Ken → KEN)
-   *   D2=q2-3 all rows (56% Ken → KEN)
-   *   D3=q4-7 r=0-5   (60% Ken North → KEN)
-   *   D4=q4-7 r=6-11  (25% Ken SE → RYU, sacrificed)
-   *   3 Ken / 1 Ryu ✓
+   * Winning strategy: pack the Ryu stronghold into D4, spread Ken across D1-D3.
+   *   D1 (23): west-center blob — Ken territory
+   *   D2 (22): southwest + south — Ken territory
+   *   D3 (23): northeast arc + outer-east — competitive Ken
+   *   D4 (23): inner-east Ryu core + nearby expansion — Ryu sacrifice
+   * Result: 3 Ken / 1 Ryu ✓
    */
   await loadScenario(page, "scenario-002");
 
-  // Initial map is valid (contiguous, balanced) — submit is enabled but criteria fail.
-  // No need to assert disabled; just apply the winning redistribution.
+  // Initial diagonal-strip assignment should fail (≤2 Ken seats)
+  await expect(page.locator("#btn-submit")).toBeDisabled();
 
-  // Step 1: D3 claims the northern strip from D4
-  await selectDistrict(page, 2); // D3
-  for (const idx of [6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 46, 47]) {
-    await paintPrecinct(page, idx);
-  }
+  // D1: west-center Ken blob (23 hexes)
+  await paintHexes(page, [
+    [-3,-2],[-2,-2],[-1,-2], [-4,-1],[-3,-1],[-2,-1],[-1,-1],
+    [-5,0],[-4,0],[-3,0],[-2,0],[-1,0],[0,0],
+    [-5,1],[-4,1],[-3,1],[-2,1],[-1,1],[0,1],
+    [-5,2],[-4,2],[-3,2],[-2,2],
+  ], 1);
 
-  // Step 2: D4 claims the SE zone from D3
-  await selectDistrict(page, 3); // D4
-  for (const idx of [52, 53, 60, 61, 68, 69, 76, 77, 84, 85, 92, 93]) {
-    await paintPrecinct(page, idx);
-  }
+  // D2: south + southwest Ken territory (22 hexes)
+  await paintHexes(page, [
+    [-1,2],[0,2],
+    [-5,3],[-4,3],[-3,3],[-2,3],[-1,3],[0,3],[2,3],
+    [-5,4],[-4,4],[-3,4],[-2,4],[-1,4],[0,4],[1,4],
+    [-5,5],[-4,5],[-3,5],[-2,5],[-1,5],[0,5],
+  ], 2);
 
+  // D3: north + outer-east Ken arc (23 hexes)
+  await paintHexes(page, [
+    [0,-5],[1,-5],[2,-5],[3,-5],[4,-5],[5,-5],
+    [-1,-4],[0,-4],[5,-4],
+    [-2,-3],[-1,-3],[5,-3],
+    [4,-2],[5,-2], [4,-1],[5,-1],
+    [4,0],[5,0], [3,1],[4,1],
+    [2,2],[3,2], [1,3],
+  ], 3);
+
+  // D4: inner-east Ryu sacrifice — stronghold packed into one district (23 hexes)
+  await paintHexes(page, [
+    [1,-4],[2,-4],[3,-4],[4,-4],
+    [0,-3],[1,-3],[2,-3],[3,-3],[4,-3],
+    [0,-2],[1,-2],[2,-2],[3,-2],
+    [0,-1],[1,-1],[2,-1],[3,-1],
+    [1,0],[2,0],[3,0],
+    [1,1],[2,1], [1,2],
+  ], 4);
+
+  await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
   await page.locator("#btn-submit").click();
   await expect(page.locator("#result-screen")).toBeVisible();
   await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
@@ -123,78 +166,94 @@ test("scenario-002 winnability: gerrymandering 3/4 Ken districts passes the map"
 
 // ─── scenario-003: "The Packing Problem" ─────────────────────────────────────
 
-test("scenario-003 smoke: loads and renders 120 precincts", async ({ page }) => {
+test("scenario-003 smoke: loads and renders 127 precincts", async ({ page }) => {
   await page.goto("/?s=scenario-003&debug");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
   await skip.click();
   await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
-
-  const hexCount = await page.locator("path.hex").count();
-  expect(hexCount).toBe(120);
+  expect(await page.locator("path.hex").count()).toBe(127);
 });
 
 test("scenario-003 smoke: intro shows packing character and objective", async ({ page }) => {
   await page.goto("/?s=scenario-003&debug");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
   await expect(page.locator("#char-role")).toContainText("Ken Party");
-  await expect(page.locator("#objective-text")).toContainText("4 of the 5 seats");
+  await expect(page.locator("#objective-text")).toContainText("at least 4 of 5 seats");
 });
 
-test("scenario-003 winnability: packing urban core into one district passes the map", async ({ page }) => {
+test("scenario-003 winnability: packing urban core into one district passes", async ({ page }) => {
   /**
-   * Layout: 10 cols (q=0..9) × 12 rows (r=0..11) = 120 precincts, 5 districts × 24.
-   * Index formula: r * 10 + q  (0-based).
+   * Hex-of-hexes R=6: 127 precincts, 5 districts of ~25.
+   * Geography: concentric — urban core (d≤2) = 15% Ken, suburban (d=3-4) = 42%,
+   *            rural (d=5-6) = 65%.
    *
-   * Urban core: q=3..6, r=3..8 = 24 precincts (15% Ken → strong Ryu).
-   * Initial (2-col vertical strips): D1=q0-1, D2=q2-3, D3=q4-5, D4=q6-7, D5=q8-9
-   *   D2 gets 6 core precincts (q=3, r=3-8) → leans Ryu → RYU
-   *   D3 gets 12 core precincts (q=4-5, r=3-8) → strongly Ryu → RYU
-   *   D4 gets 6 core precincts (q=6, r=3-8) → leans Ryu → RYU
-   *   D1, D5 are all rural (65% Ken) → KEN
-   *   Result: 2 Ken / 3 Ryu → fails ≥4 Ken
-   *
-   * Winning pack — consolidate all 24 core precincts into D3:
-   *   Step 1: Select D3; paint D2's core (q=3, r=3-8) → [33,43,53,63,73,83]
-   *   Step 2:            paint D4's core (q=6, r=3-8) → [36,46,56,66,76,86]
-   *     D3 now has 24+6+6=36 (over). Need to shed 12 non-core to D2 and D4.
-   *   Step 3: Select D2; paint q=4, r=0-2 and r=9-11 from D3 → [4,14,24,94,104,114]
-   *   Step 4: Select D4; paint q=5, r=0-2 and r=9-11 from D3 → [5,15,25,95,105,115]
-   *
-   * Final:
-   *   D1=q0-1 all rows (rural, 65% Ken → KEN)
-   *   D2=q2-3 non-core + q=4 r=0-2,r=9-11 (rural/suburban, ~59% Ken → KEN)
-   *   D3=q3-6 r=3-8 exactly (all urban core, 15% Ken → RYU, sacrifice)
-   *   D4=q5 r=0-2,r=9-11 + q=6-7 non-core (rural/suburban, ~59% Ken → KEN)
-   *   D5=q8-9 all rows (rural, 65% Ken → KEN)
-   *   4 Ken / 1 Ryu ✓
+   * Winning strategy: pack the urban Ryu core (d≤2, 19 hexes) + nearby
+   * suburban hexes into D3 as the sacrifice district (~22% Ken → Ryu landslide).
+   * Remaining 4 districts are suburban+rural → all Ken-majority (53-59% Ken).
+   *   D1 (26): northeast arc — rural/suburban Ken
+   *   D2 (26): northwest — rural/suburban Ken
+   *   D3 (25): urban core sacrifice — packed Ryu (~22% Ken)
+   *   D4 (25): southwest — suburban/rural Ken
+   *   D5 (25): southeast — suburban/rural Ken
+   * Result: 4 Ken / 1 Ryu ✓
    */
   await loadScenario(page, "scenario-003");
 
-  // Initial map is valid (contiguous, balanced) — submit is enabled but criteria fail.
-  // No need to assert disabled; just apply the winning redistribution.
+  // Initial angular-wedge assignment should fail (sectors mix urban+rural → ≤2 Ken seats)
+  await expect(page.locator("#btn-submit")).toBeDisabled();
 
-  // Step 1+2: Pack all core precincts into D3
-  await selectDistrict(page, 2); // D3
-  for (const idx of [33, 43, 53, 63, 73, 83]) {  // q=3, r=3-8 from D2
-    await paintPrecinct(page, idx);
-  }
-  for (const idx of [36, 46, 56, 66, 76, 86]) {  // q=6, r=3-8 from D4
-    await paintPrecinct(page, idx);
-  }
+  // D1: northeast arc — rural + suburban Ken territory (26 hexes)
+  await paintHexes(page, [
+    [0,-6],[1,-6],[2,-6],[3,-6],[4,-6],[5,-6],[6,-6],
+    [-1,-5],[0,-5],[1,-5],[2,-5],[3,-5],[4,-5],[5,-5],[6,-5],
+    [0,-4],[1,-4],[2,-4],[3,-4],[4,-4],[5,-4],[6,-4],
+    [4,-3],[5,-3],[6,-3],[4,-2],
+  ], 1);
 
-  // Step 3: Shed D3's non-core northern/southern q=4 column into D2
-  await selectDistrict(page, 1); // D2
-  for (const idx of [4, 14, 24, 94, 104, 114]) {  // q=4, r=0-2 and r=9-11
-    await paintPrecinct(page, idx);
-  }
+  // D2: northwest — rural + suburban Ken territory (26 hexes)
+  await paintHexes(page, [
+    [-2,-4],[-1,-4],
+    [-3,-3],[-2,-3],[-1,-3],
+    [-4,-2],[-3,-2],[-2,-2],
+    [-5,-1],[-4,-1],[-3,-1],[-2,-1],
+    [-6,0],[-5,0],[-4,0],[-3,0],
+    [-6,1],[-5,1],[-4,1],[-3,1],
+    [-6,2],[-5,2],[-4,2],
+    [-6,3],[-5,3],[-6,4],
+  ], 2);
 
-  // Step 4: Shed D3's non-core northern/southern q=5 column into D4
-  await selectDistrict(page, 3); // D4
-  for (const idx of [5, 15, 25, 95, 105, 115]) {  // q=5, r=0-2 and r=9-11
-    await paintPrecinct(page, idx);
-  }
+  // D3: urban core sacrifice — packed Ryu (25 hexes, ~22% Ken)
+  await paintHexes(page, [
+    [0,-3],[1,-3],[2,-3],[3,-3],
+    [-1,-2],[0,-2],[1,-2],[2,-2],[3,-2],
+    [-1,-1],[0,-1],[1,-1],[2,-1],
+    [-2,0],[-1,0],[0,0],[1,0],[2,0],
+    [-2,1],[-1,1],[0,1],[1,1],
+    [-2,2],[-1,2],[0,2],
+  ], 3);
 
+  // D4: southwest — suburban + rural Ken territory (25 hexes)
+  await paintHexes(page, [
+    [-3,2],
+    [-4,3],[-3,3],[-2,3],[-1,3],
+    [-5,4],[-4,4],[-3,4],[-2,4],[0,4],[1,4],
+    [-6,5],[-5,5],[-4,5],[-3,5],[-1,5],[0,5],[1,5],
+    [-6,6],[-5,6],[-4,6],[-3,6],[-2,6],[-1,6],[0,6],
+  ], 4);
+
+  // D5: southeast — suburban + rural Ken territory (25 hexes)
+  await paintHexes(page, [
+    [5,-2],[6,-2],
+    [3,-1],[4,-1],[5,-1],[6,-1],
+    [3,0],[4,0],[5,0],[6,0],
+    [2,1],[3,1],[4,1],[5,1],
+    [1,2],[2,2],[3,2],[4,2],
+    [0,3],[1,3],[2,3],[3,3],
+    [-1,4],[2,4],[-2,5],
+  ], 5);
+
+  await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
   await page.locator("#btn-submit").click();
   await expect(page.locator("#result-screen")).toBeVisible();
   await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
@@ -202,71 +261,115 @@ test("scenario-003 winnability: packing urban core into one district passes the 
 
 // ─── scenario-004: "Cracking the Opposition" ─────────────────────────────────
 
-test("scenario-004 smoke: loads and renders 120 precincts", async ({ page }) => {
+test("scenario-004 smoke: loads and renders 127 precincts", async ({ page }) => {
   await page.goto("/?s=scenario-004&debug");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
   await skip.click();
   await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
-
-  const hexCount = await page.locator("path.hex").count();
-  expect(hexCount).toBe(120);
+  expect(await page.locator("path.hex").count()).toBe(127);
 });
 
-test("scenario-004 smoke: intro references cracking tactic and prior scenario", async ({ page }) => {
+test("scenario-004 smoke: intro references cracking tactic", async ({ page }) => {
   await page.goto("/?s=scenario-004&debug");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
   await expect(page.locator("#char-role")).toContainText("Ken Party");
-  await expect(page.locator("#objective-text")).toContainText("Ken Party wins every seat");
+  await expect(page.locator("#objective-text")).toContainText("Ken Party must win every seat");
 });
 
 test("scenario-004 winnability: cracking the corridor across all 5 districts passes", async ({ page }) => {
   /**
-   * Layout: 10 cols (q=0..9) × 12 rows (r=0..11) = 120 precincts, 5 districts × 24.
-   * Index formula: r * 10 + q  (0-based).
+   * Hex-of-hexes R=6: 127 precincts, 5 districts of ~25.
+   * Geography: corridor (r=0, 13 hexes) = 18% Ken (Ryu band),
+   *            rest = 65% Ken (reliable Ken territory).
+   * Initial: horizontal slabs consolidating corridor in D3 → 4 Ken / 1 Ryu.
    *
-   * Corridor: r=5..6 (2 rows × 10 cols = 20 precincts, 18% Ken → strong Ryu).
-   * Upper: r=0..4 (50 precincts, 65% Ken). Lower: r=7..11 (50 precincts, 65% Ken).
-   *
-   * Initial (horizontal bands, corridor isolated in D3):
-   *   D3 = r=4,q=8-9 + r=5-6(all) + r=7,q=0-1 → corridor-heavy → 25% Ken → RYU
-   *   D1,D2,D4,D5 are upper/lower → 65% Ken → KEN
-   *   Result: 4 Ken / 1 Ryu → fails "all 5" (≥5 Ken) criterion
-   *
-   * Winning crack: vertical 2-col strips (each district gets 4 corridor precincts).
-   *   Each district (q=2k..2k+1, all rows): (4×0.18 + 20×0.65)/24 ≈ 57% Ken → KEN
-   *   Result: 5 Ken / 0 Ryu ✓
-   *
-   * Because the full redistribution spans 96+ precinct operations, we use
-   * window.__gameStore.paintStroke() to set assignments directly.
+   * Winning crack: 5 vertical q-column strips. Each crosses the corridor,
+   * picking up 2-4 Ryu hexes diluted among 24-27 Ken hexes → all Ken.
+   *   D1 (24): q≤-4 — far west strip, 3 corridor hexes (~59% Ken)
+   *   D2 (25): q=-3,-2 — west strip, 2 corridor hexes (~61% Ken)
+   *   D3 (25): q=-1,0 — center strip, 2 corridor hexes (~61% Ken)
+   *   D4 (26): q=1,2 — east strip, 2 corridor hexes (~62% Ken)
+   *   D5 (27): q≥3 — far east strip, 4 corridor hexes (~58% Ken)
+   * Result: 5 Ken / 0 Ryu ✓
    */
   await loadScenario(page, "scenario-004");
 
+  // Initial horizontal-slab assignment consolidates corridor → fails all-5 criterion
   await expect(page.locator("#btn-submit")).toBeDisabled();
 
-  // Build complete vertical-strip assignment via store.paintStroke()
-  // Each district d (0-based index) owns columns q=2d..2d+1, all rows.
-  await page.evaluate(() => {
-    const store = (window as unknown as Record<string, { getState: () => {
-      paintStroke: (ids: number[], district: number) => void;
-    } }>)["__gameStore"];
-    if (!store) throw new Error("__gameStore not found on window");
-    const getState = store.getState.bind(store);
-    const numQ = 10;
-    const numR = 12;
-    const districts = [1, 2, 3, 4, 5];
+  // D1: far west strip q≤-4 (24 hexes, crosses corridor at q=-6..-4 r=0)
+  await paintHexes(page, [
+    [-4,-2],
+    [-5,-1],[-4,-1],
+    [-6,0],[-5,0],[-4,0],
+    [-6,1],[-5,1],[-4,1],
+    [-6,2],[-5,2],[-4,2],
+    [-6,3],[-5,3],[-4,3],
+    [-6,4],[-5,4],[-4,4],
+    [-6,5],[-5,5],[-4,5],
+    [-6,6],[-5,6],[-4,6],
+  ], 1);
 
-    for (let d = 0; d < 5; d++) {
-      const ids: number[] = [];
-      for (let r = 0; r < numR; r++) {
-        for (let qOffset = 0; qOffset < 2; qOffset++) {
-          const q = d * 2 + qOffset;
-          ids.push(r * numQ + q);
-        }
-      }
-      getState().paintStroke(ids, districts[d]);
-    }
-  });
+  // D2: west strip q=-3,-2 (25 hexes, crosses corridor at q=-3,-2 r=0)
+  await paintHexes(page, [
+    [-2,-4],[-1,-4],
+    [-3,-3],[-2,-3],[-1,-3],
+    [-3,-2],[-2,-2],[-1,-2],
+    [-3,-1],[-2,-1],[-1,-1],
+    [-3,0],[-2,0],
+    [-3,1],[-2,1],
+    [-3,2],[-2,2],
+    [-3,3],[-2,3],
+    [-3,4],[-2,4],
+    [-3,5],[-2,5],
+    [-3,6],[-2,6],
+  ], 2);
+
+  // D3: center strip q=-1,0 (25 hexes, crosses corridor at q=-1,0 r=0)
+  await paintHexes(page, [
+    [0,-6],
+    [-1,-5],[0,-5],[1,-5],
+    [0,-4],[1,-4],
+    [0,-3],[1,-3],
+    [0,-2],[1,-2],
+    [0,-1],
+    [-1,0],[0,0],
+    [-1,1],[0,1],
+    [-1,2],[0,2],
+    [-1,3],[0,3],
+    [-1,4],[0,4],
+    [-1,5],[0,5],
+    [-1,6],[0,6],
+  ], 3);
+
+  // D4: east strip q=1,2 (26 hexes, crosses corridor at q=1,2 r=0)
+  await paintHexes(page, [
+    [1,-6],[2,-6],[3,-6],[4,-6],[5,-6],[6,-6],
+    [2,-5],[3,-5],[4,-5],
+    [2,-4],
+    [2,-3],[3,-3],
+    [2,-2],
+    [1,-1],[2,-1],
+    [1,0],[2,0],
+    [1,1],[2,1],
+    [1,2],[2,2],
+    [1,3],[2,3],
+    [1,4],[2,4],
+    [1,5],
+  ], 4);
+
+  // D5: far east strip q≥3 (27 hexes, crosses corridor at q=3..6 r=0)
+  await paintHexes(page, [
+    [5,-5],[6,-5],
+    [3,-4],[4,-4],[5,-4],[6,-4],
+    [4,-3],[5,-3],[6,-3],
+    [3,-2],[4,-2],[5,-2],[6,-2],
+    [3,-1],[4,-1],[5,-1],[6,-1],
+    [3,0],[4,0],[5,0],[6,0],
+    [3,1],[4,1],[5,1],
+    [3,2],[4,2],[3,3],
+  ], 5);
 
   await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
   await page.locator("#btn-submit").click();
@@ -276,15 +379,13 @@ test("scenario-004 winnability: cracking the corridor across all 5 districts pas
 
 // ─── scenario-005: "Valle Verde: A Voice for the Valley" ─────────────────────
 
-test("scenario-005 smoke: loads and renders 120 precincts", async ({ page }) => {
+test("scenario-005 smoke: loads and renders 127 precincts", async ({ page }) => {
   await page.goto("/?s=scenario-005&debug");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
   await skip.click();
   await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
-
-  const hexCount = await page.locator("path.hex").count();
-  expect(hexCount).toBe(120);
+  expect(await page.locator("path.hex").count()).toBe(127);
 });
 
 test("scenario-005 smoke: intro shows VRA character and objective", async ({ page }) => {
@@ -296,61 +397,66 @@ test("scenario-005 smoke: intro shows VRA character and objective", async ({ pag
 
 test("scenario-005 winnability: consolidating the valley into one district passes", async ({ page }) => {
   /**
-   * Layout: 10 cols (q=0..9) × 12 rows (r=0..11) = 120 precincts, 5 districts × 24.
-   * Index formula: r * 10 + q  (0-based).
+   * Hex-of-hexes R=6: 127 precincts, 5 districts of ~25.
+   * Geography: valley (q=1..5, r=-2..1) = ~70% Latino, rim = ~20% Latino.
+   * Initial: diagonal strips crack the valley → no district ≥50% Latino.
    *
-   * Valley zone: q=3..8, r=5..8 = 24 precincts (~70% Latino).
-   * Initial (vertical 2-col strips): no district reaches 50% Latino → criterion fails.
-   *
-   * Winning redistribution — give the valley its own district (D3):
-   *   D1: q=0-1, all rows (unchanged — 24 pcts)
-   *   D2: q=2, all rows (12) + q=3-8, r=0-1 (12) = 24
-   *   D3: q=3-8, r=5-8 (valley, 24 pcts, ~70% Latino → majority_minority passes)
-   *   D4: q=3-8, r=2-4 (18) + q=9, r=0-5 (6) = 24
-   *   D5: q=9, r=6-11 (6) + q=3-8, r=9-11 (18) = 24
-   *
-   * All districts contiguous; population balanced (BASE_POP=1500 ±150, variance
-   * within 10% across all 24-precinct districts).
+   * Winning strategy: consolidate valley into D1 (20 valley + 5 nearby = 25).
+   *   D1 (25): valley hexes + nearby expansion → ~60% Latino ✓
+   *   D2-D5: rim hexes split into 4 contiguous districts
+   * Result: 1 majority-Latino district ✓
    */
   await loadScenario(page, "scenario-005");
 
-  await page.evaluate(() => {
-    const store = (window as unknown as Record<string, { getState: () => {
-      paintStroke: (ids: number[], district: number) => void;
-    } }>)["__gameStore"];
-    if (!store) throw new Error("__gameStore not found on window");
-    const { paintStroke } = store.getState();
+  // Initial diagonal-strip assignment cracks the valley → fails VRA criterion
+  await expect(page.locator("#btn-submit")).toBeDisabled();
 
-    const d1: number[] = [];
-    const d2: number[] = [];
-    const d3: number[] = [];
-    const d4: number[] = [];
-    const d5: number[] = [];
+  // D1: valley consolidated — all valley hexes (q=1..5, r=-2..1) + nearby (25 hexes, ~60% Latino)
+  await paintHexes(page, [
+    [1,-3],[2,-3],[3,-3],
+    [0,-2],[1,-2],[2,-2],[3,-2],[4,-2],[5,-2],
+    [0,-1],[1,-1],[2,-1],[3,-1],[4,-1],[5,-1],
+    [1,0],[2,0],[3,0],[4,0],[5,0],
+    [1,1],[2,1],[3,1],[4,1],[5,1],
+  ], 1);
 
-    // D1: q=0-1, all rows
-    for (let r = 0; r < 12; r++) for (let q = 0; q <= 1; q++) d1.push(r * 10 + q);
+  // D2: west rim (26 hexes)
+  await paintHexes(page, [
+    [-6,1],[-5,1],[-4,1],[-3,1],[-2,1],[-1,1],
+    [-6,2],[-5,2],[-4,2],[-3,2],[-2,2],[-1,2],
+    [-6,3],[-5,3],[-4,3],[-3,3],[-2,3],
+    [-6,4],[-5,4],[-4,4],[-3,4],
+    [-6,5],[-5,5],[-4,5],
+    [-6,6],[-5,6],
+  ], 2);
 
-    // D2: q=2 (all rows) + q=3-8 (r=0-1)
-    for (let r = 0; r < 12; r++) d2.push(r * 10 + 2);
-    for (let r = 0; r <= 1; r++) for (let q = 3; q <= 8; q++) d2.push(r * 10 + q);
+  // D3: northwest rim (25 hexes)
+  await paintHexes(page, [
+    [-1,-5],
+    [-2,-4],[-1,-4],[0,-4],[1,-4],
+    [-3,-3],[-2,-3],[-1,-3],[0,-3],
+    [-4,-2],[-3,-2],[-2,-2],[-1,-2],
+    [-5,-1],[-4,-1],[-3,-1],[-2,-1],[-1,-1],
+    [-6,0],[-5,0],[-4,0],[-3,0],[-2,0],[-1,0],[0,0],
+  ], 3);
 
-    // D3: valley q=3-8, r=5-8
-    for (let r = 5; r <= 8; r++) for (let q = 3; q <= 8; q++) d3.push(r * 10 + q);
+  // D4: south rim (26 hexes)
+  await paintHexes(page, [
+    [0,1],[0,2],[1,2],[2,2],[3,2],[4,2],
+    [-1,3],[0,3],[1,3],[2,3],[3,3],
+    [-2,4],[-1,4],[0,4],[1,4],[2,4],
+    [-3,5],[-2,5],[-1,5],[0,5],[1,5],
+    [-4,6],[-3,6],[-2,6],[-1,6],[0,6],
+  ], 4);
 
-    // D4: q=3-8, r=2-4 + q=9, r=0-5
-    for (let r = 2; r <= 4; r++) for (let q = 3; q <= 8; q++) d4.push(r * 10 + q);
-    for (let r = 0; r <= 5; r++) d4.push(r * 10 + 9);
-
-    // D5: q=9, r=6-11 + q=3-8, r=9-11
-    for (let r = 6; r <= 11; r++) d5.push(r * 10 + 9);
-    for (let r = 9; r <= 11; r++) for (let q = 3; q <= 8; q++) d5.push(r * 10 + q);
-
-    paintStroke(d1, 1);
-    paintStroke(d2, 2);
-    paintStroke(d3, 3);
-    paintStroke(d4, 4);
-    paintStroke(d5, 5);
-  });
+  // D5: northeast rim (25 hexes)
+  await paintHexes(page, [
+    [0,-6],[1,-6],[2,-6],[3,-6],[4,-6],[5,-6],[6,-6],
+    [0,-5],[1,-5],[2,-5],[3,-5],[4,-5],[5,-5],[6,-5],
+    [2,-4],[3,-4],[4,-4],[5,-4],[6,-4],
+    [4,-3],[5,-3],[6,-3],
+    [6,-2],[6,-1],[6,0],
+  ], 5);
 
   await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
   await page.locator("#btn-submit").click();
@@ -360,13 +466,13 @@ test("scenario-005 winnability: consolidating the valley into one district passe
 
 // ─── scenario-006: "Harden the Map" ─────────────────────────────────────────
 
-test("scenario-006 smoke: loads and renders 120 precincts", async ({ page }) => {
+test("scenario-006 smoke: loads and renders 127 precincts", async ({ page }) => {
   await page.goto("/?s=scenario-006&debug");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
   await skip.click();
   await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
-  expect(await page.locator("path.hex").count()).toBe(120);
+  expect(await page.locator("path.hex").count()).toBe(127);
 });
 
 test("scenario-006 smoke: intro shows bipartisan consultant role", async ({ page }) => {
@@ -376,30 +482,100 @@ test("scenario-006 smoke: intro shows bipartisan consultant role", async ({ page
   await expect(page.locator("#objective-text")).toContainText("safe seats");
 });
 
-test("scenario-006 winnability: separating partisan flanks into safe districts passes", async ({ page }) => {
+test("scenario-006 winnability: column strips separate partisan flanks into safe seats", async ({ page }) => {
   /**
-   * Geography: q=0-5 Ken flank (~62%); q=6-9 Ryu flank (~62% Ryu).
-   * Winning: vertical 2-col strips — D1=q0-1, D2=q2-3, D3=q4-5 (Ken safe x3),
-   *          D4=q6-7, D5=q8-9 (Ryu safe x2). All margins ~24% > 15% threshold.
+   * Hex-of-hexes R=6: 127 precincts, 5 districts of ~25.
+   * Geography: left (q≤0) = 62% Ken, right (q≥1) = 38% Ken.
+   * Initial: angular wedges mixing both sides → all competitive.
+   *
+   * Winning strategy: vertical column strips that keep flanks separated.
+   * Boundary columns (q=-1, q=1, q=3) are shared between adjacent districts.
+   *   D1 (24): q=-6,-5,-4 — pure Ken (62%, margin 25% → safe Ken)
+   *   D2 (25): q=-3,-2 + upper q=-1 — pure Ken (62%, margin 24% → safe Ken)
+   *   D3 (25): lower q=-1 + q=0 + upper q=1 — mostly Ken (59%, margin 18% → safe Ken)
+   *   D4 (25): lower q=1 + q=2 + upper q=3 — Ryu territory (38%, margin 25% → safe Ryu)
+   *   D5 (28): lower q=3 + q=4,5,6 — Ryu territory (38%, margin 24% → safe Ryu)
+   * Result: 3 Ken safe + 2 Ryu safe ✓
    */
   await loadScenario(page, "scenario-006");
 
-  await page.evaluate(() => {
-    const store = (window as unknown as Record<string, { getState: () => {
-      paintStroke: (ids: number[], district: number) => void;
-    } }>)["__gameStore"];
-    if (!store) throw new Error("__gameStore not found on window");
-    const { paintStroke } = store.getState();
-    const numQ = 10, numR = 12;
-    for (let d = 0; d < 5; d++) {
-      const ids: number[] = [];
-      for (let r = 0; r < numR; r++) {
-        ids.push(r * numQ + d * 2);
-        ids.push(r * numQ + d * 2 + 1);
-      }
-      paintStroke(ids, d + 1);
-    }
-  });
+  // Initial angular-wedge assignment mixes left+right → all competitive → fails safe_seats
+  await expect(page.locator("#btn-submit")).toBeDisabled();
+
+  // D1: far-left Ken strip q=-6,-5,-4 (24 hexes)
+  await paintHexes(page, [
+    [-4,-2],
+    [-5,-1],[-4,-1],
+    [-6,0],[-5,0],[-4,0],
+    [-6,1],[-5,1],[-4,1],
+    [-6,2],[-5,2],[-4,2],
+    [-6,3],[-5,3],[-4,3],
+    [-6,4],[-5,4],[-4,4],
+    [-6,5],[-5,5],[-4,5],
+    [-6,6],[-5,6],[-4,6],
+  ], 1);
+
+  // D2: left Ken strip q=-3,-2 + upper 4 of q=-1 (25 hexes)
+  await paintHexes(page, [
+    [-1,-5],
+    [-2,-4],[-1,-4],
+    [-3,-3],[-2,-3],[-1,-3],
+    [-3,-2],[-2,-2],[-1,-2],
+    [-3,-1],[-2,-1],
+    [-3,0],[-2,0],
+    [-3,1],[-2,1],
+    [-3,2],[-2,2],
+    [-3,3],[-2,3],
+    [-3,4],[-2,4],
+    [-3,5],[-2,5],
+    [-3,6],[-2,6],
+  ], 2);
+
+  // D3: center Ken strip — lower q=-1 + q=0 + upper 4 of q=1 (25 hexes)
+  await paintHexes(page, [
+    [0,-6],[1,-6],
+    [0,-5],[1,-5],
+    [0,-4],[1,-4],
+    [0,-3],[1,-3],
+    [0,-2],
+    [-1,-1],[0,-1],
+    [-1,0],[0,0],
+    [-1,1],[0,1],
+    [-1,2],[0,2],
+    [-1,3],[0,3],
+    [-1,4],[0,4],
+    [-1,5],[0,5],
+    [-1,6],[0,6],
+  ], 3);
+
+  // D4: right Ryu strip — lower q=1 + q=2 + upper 6 of q=3 (25 hexes)
+  await paintHexes(page, [
+    [2,-6],[3,-6],
+    [2,-5],[3,-5],
+    [2,-4],[3,-4],
+    [2,-3],[3,-3],
+    [1,-2],[2,-2],[3,-2],
+    [1,-1],[2,-1],[3,-1],
+    [1,0],[2,0],
+    [1,1],[2,1],
+    [1,2],[2,2],
+    [1,3],[2,3],
+    [1,4],[2,4],
+    [1,5],
+  ], 4);
+
+  // D5: far-right Ryu strip — lower q=3 + q=4,5,6 (28 hexes)
+  await paintHexes(page, [
+    [4,-6],[5,-6],[6,-6],
+    [4,-5],[5,-5],[6,-5],
+    [4,-4],[5,-4],[6,-4],
+    [4,-3],[5,-3],[6,-3],
+    [4,-2],[5,-2],[6,-2],
+    [4,-1],[5,-1],[6,-1],
+    [3,0],[4,0],[5,0],[6,0],
+    [3,1],[4,1],[5,1],
+    [3,2],[4,2],[3,3],
+  ], 5);
 
   await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
   await page.locator("#btn-submit").click();

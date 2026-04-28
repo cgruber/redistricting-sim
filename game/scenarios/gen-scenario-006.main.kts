@@ -4,26 +4,20 @@
  *
  * Lesson: Incumbency protection — the bipartisan gerrymander.
  *
- * Layout: 10 columns (q=0..9) × 12 rows (r=0..11) = 120 precincts, 5 districts of 24.
+ * Shape: hex-of-hexes, radius 6 → 127 precincts, 5 districts of ~25-26.
+ * Coordinates: axial, centered at (0,0); range q,r in [-6,6].
  *
- * Partisan geography:
- *   Left flank  (q=0..5): ~62% Ken (6 cols × 12 rows = 72 precincts = 3 districts exactly)
- *   Right flank (q=6..9): ~38% Ken / ~62% Ryu (4 cols × 12 rows = 48 = 2 districts exactly)
+ * Partisan geography (left/right split via q coordinate):
+ *   Left flank  (q ≤ 0, ~70 hexes): ~62% Ken
+ *   Right flank (q ≥ 1, ~57 hexes): ~38% Ken / ~62% Ryu
  *
- * Initial assignment: "mirror pair" — each district pairs one left col with one right col.
- *   D1: q=0 + q=9 → (62%+38%)/2 = 50% Ken → margin ≈0% → COMPETITIVE
- *   D2: q=1 + q=8 → same → COMPETITIVE
- *   D3: q=2 + q=7 → same → COMPETITIVE
- *   D4: q=3 + q=6 → same → COMPETITIVE
- *   D5: q=4 + q=5 → (62%+62%)/2 = 62% Ken → safe for Ken only (1 safe seat)
- *   → safe_seats_ken criterion (≥3) fails; safe_seats_ryu (≥2) fails ✓
+ * Initial assignment: angular wedge sectors that mix left and right flanks.
+ *   Each sector spans from center to edge, crossing the partisan divide.
+ *   Average ≈ 50% Ken → all districts competitive → fails safe_seats criteria.
  *
- * Winning solution: vertical strips — separate the flanks
- *   D1: q=0-1, all rows (62% Ken → margin ~24% → SAFE Ken ✓)
- *   D2: q=2-3, all rows (62% Ken → SAFE Ken ✓)
- *   D3: q=4-5, all rows (62% Ken → SAFE Ken ✓)
- *   D4: q=6-7, all rows (62% Ryu → SAFE Ryu ✓)
- *   D5: q=8-9, all rows (62% Ryu → SAFE Ryu ✓)
+ * Winning solution: separate the flanks into vertical-ish blocks.
+ *   3 districts from left flank (62% Ken → safe Ken ✓)
+ *   2 districts from right flank (62% Ryu → safe Ryu ✓)
  *   → Ken: 3 safe seats ✓; Ryu: 2 safe seats ✓
  *
  * safe_seats margin threshold: 0.15 (winner needs ≥57.5% to qualify as "safe")
@@ -32,53 +26,76 @@
  *   kotlin game/scenarios/gen-scenario-006.main.kts
  */
 
+import kotlin.math.abs
+import kotlin.math.atan2
+import kotlin.math.PI
 import kotlin.random.Random
 
 val rng = Random(66)
-val NUM_Q = 10
-val NUM_R = 12
-val BASE_POP = 1500
+val R = 6
 
-// Partisan geography: clean left/right split, no battleground column
-fun baseKenShare(q: Int): Double = if (q <= 5) 0.62 else 0.38
+fun hexDist(q: Int, r: Int): Int = (abs(q) + abs(r) + abs(q + r)) / 2
 
-// Initial: mirror pairs — each district gets one col from each flank
-fun initialDistrict(q: Int): String = when (q) {
-    0, 9 -> "d1"
-    1, 8 -> "d2"
-    2, 7 -> "d3"
-    3, 6 -> "d4"
-    else -> "d5"  // q=4, q=5
+// Left = Ken territory, right = Ryu territory
+fun baseKenShare(q: Int, r: Int): Double = when {
+    q <= 0 -> 0.62  // left flank: Ken-majority
+    else   -> 0.38  // right flank: Ryu-majority
 }
 
-fun countyId(q: Int): String = if (q <= 5) "westbrook" else "eastbrook"
-fun colLetter(q: Int) = "ABCDEFGHIJ"[q].toString()
+// Initial: 5 angular wedge sectors — each mixes left and right flanks.
+// All districts end up competitive (~50% Ken) → fails safe_seats for both parties.
+fun initialDistrict(q: Int, r: Int): String {
+    if (q == 0 && r == 0) return "d3"
+    val x = q.toDouble() + r.toDouble() * 0.5
+    val y = r.toDouble() * 0.8660254
+    val norm = (atan2(y, x) + PI) / (2.0 * PI)
+    return when ((norm * 5).toInt().coerceIn(0, 4)) {
+        0 -> "d1"
+        1 -> "d2"
+        2 -> "d3"
+        3 -> "d4"
+        else -> "d5"
+    }
+}
+
+fun countyId(q: Int, r: Int): String = if (q <= 0) "westbrook" else "eastbrook"
+
 fun Double.fmt(decimals: Int = 4) = "%.${decimals}f".format(this)
+
+data class Hex(val q: Int, val r: Int)
+val hexes = buildList {
+    for (q in -R..R) {
+        val rMin = maxOf(-R, -q - R)
+        val rMax = minOf(R, -q + R)
+        for (r in rMin..rMax) { add(Hex(q, r)) }
+    }
+}.sortedWith(compareBy({ it.r }, { it.q }))
+
+val BASE_POP = 1500
 
 val precincts = StringBuilder()
 var first = true
 
-for (r in 0 until NUM_R) {
-    for (q in 0 until NUM_Q) {
-        val idx = r * NUM_Q + q
-        val pid = "p%03d".format(idx + 1)
+for ((idx, hex) in hexes.withIndex()) {
+    val (q, r) = hex
+    val pid = "p%03d".format(idx + 1)
 
-        val pop = BASE_POP + rng.nextInt(-150, 151)
+    val pop = BASE_POP + rng.nextInt(-150, 151)
 
-        val kenShare = (baseKenShare(q) + rng.nextDouble(-0.04, 0.04)).coerceIn(0.05, 0.95)
-        val kenStr = kenShare.fmt(4)
-        val ryuStr = (1.0 - kenStr.toDouble()).fmt(4)
-        val turnout = rng.nextDouble(0.55, 0.70)
+    val kenShare = (baseKenShare(q, r) + rng.nextDouble(-0.04, 0.04)).coerceIn(0.05, 0.95)
+    val kenStr = kenShare.fmt(4)
+    val ryuStr = (1.0 - kenStr.toDouble()).fmt(4)
+    val turnout = rng.nextDouble(0.55, 0.70)
 
-        val districtId = initialDistrict(q)
-        val county = countyId(q)
-        val side = if (q <= 5) "West" else "East"
-        val name = "$side ${colLetter(q)}${r + 1}"
+    val districtId = initialDistrict(q, r)
+    val county = countyId(q, r)
+    val side = if (q <= 0) "West" else "East"
+    val name = "$side ($q,$r)"
 
-        if (!first) precincts.append(",\n")
-        first = false
+    if (!first) precincts.append(",\n")
+    first = false
 
-        precincts.append("""    {
+    precincts.append("""    {
       "id": "$pid",
       "editable": true,
       "county_id": "$county",
@@ -96,7 +113,6 @@ for (r in 0 until NUM_R) {
         }
       ]
     }""")
-    }
 }
 
 val json = """{
@@ -202,4 +218,4 @@ $precincts
 
 val outFile = java.io.File("game/scenarios/scenario-006.json")
 outFile.writeText(json)
-println("Wrote ${NUM_Q * NUM_R} precincts to ${outFile.path}")
+println("Wrote ${hexes.size} precincts to ${outFile.path}")

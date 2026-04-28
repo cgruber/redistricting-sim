@@ -25,10 +25,10 @@
       "id": "p001",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 0, "r": 0 },
+      "position": { "q": 0, "r": -6 },
       "total_population": 1562,
       "initial_district_id": "d1",
-      "name": "West A1",
+      "name": "West (0,-6)",
       "demographic_groups": [
         {
           "id": "p001-all",
@@ -42,90 +42,90 @@
     {
       "id": "p002",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 1, "r": 0 },
+      "county_id": "eastbrook",
+      "position": { "q": 1, "r": -6 },
       "total_population": 1611,
-      "initial_district_id": "d2",
-      "name": "West B1",
+      "initial_district_id": "d1",
+      "name": "East (1,-6)",
       "demographic_groups": [
         {
           "id": "p002-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.61,
-          "vote_shares": { "ken": 0.6277, "ryu": 0.3723 }
+          "vote_shares": { "ken": 0.3877, "ryu": 0.6123 }
         }
       ]
     },
     {
       "id": "p003",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 2, "r": 0 },
+      "county_id": "eastbrook",
+      "position": { "q": 2, "r": -6 },
       "total_population": 1490,
-      "initial_district_id": "d3",
-      "name": "West C1",
+      "initial_district_id": "d2",
+      "name": "East (2,-6)",
       "demographic_groups": [
         {
           "id": "p003-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.59,
-          "vote_shares": { "ken": 0.5943, "ryu": 0.4057 }
+          "vote_shares": { "ken": 0.3543, "ryu": 0.6457 }
         }
       ]
     },
     {
       "id": "p004",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 3, "r": 0 },
+      "county_id": "eastbrook",
+      "position": { "q": 3, "r": -6 },
       "total_population": 1581,
-      "initial_district_id": "d4",
-      "name": "West D1",
+      "initial_district_id": "d2",
+      "name": "East (3,-6)",
       "demographic_groups": [
         {
           "id": "p004-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.57,
-          "vote_shares": { "ken": 0.6174, "ryu": 0.3826 }
+          "vote_shares": { "ken": 0.3774, "ryu": 0.6226 }
         }
       ]
     },
     {
       "id": "p005",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 4, "r": 0 },
+      "county_id": "eastbrook",
+      "position": { "q": 4, "r": -6 },
       "total_population": 1574,
-      "initial_district_id": "d5",
-      "name": "West E1",
+      "initial_district_id": "d2",
+      "name": "East (4,-6)",
       "demographic_groups": [
         {
           "id": "p005-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.67,
-          "vote_shares": { "ken": 0.6077, "ryu": 0.3923 }
+          "vote_shares": { "ken": 0.3677, "ryu": 0.6323 }
         }
       ]
     },
     {
       "id": "p006",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 5, "r": 0 },
+      "county_id": "eastbrook",
+      "position": { "q": 5, "r": -6 },
       "total_population": 1480,
-      "initial_district_id": "d5",
-      "name": "West F1",
+      "initial_district_id": "d2",
+      "name": "East (5,-6)",
       "demographic_groups": [
         {
           "id": "p006-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.59,
-          "vote_shares": { "ken": 0.6347, "ryu": 0.3653 }
+          "vote_shares": { "ken": 0.3947, "ryu": 0.6053 }
         }
       ]
     },
@@ -133,10 +133,10 @@
       "id": "p007",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 6, "r": 0 },
+      "position": { "q": 6, "r": -6 },
       "total_population": 1548,
-      "initial_district_id": "d4",
-      "name": "East G1",
+      "initial_district_id": "d2",
+      "name": "East (6,-6)",
       "demographic_groups": [
         {
           "id": "p007-all",
@@ -150,36 +150,36 @@
     {
       "id": "p008",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 7, "r": 0 },
+      "county_id": "westbrook",
+      "position": { "q": -1, "r": -5 },
       "total_population": 1376,
-      "initial_district_id": "d3",
-      "name": "East H1",
+      "initial_district_id": "d1",
+      "name": "West (-1,-5)",
       "demographic_groups": [
         {
           "id": "p008-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.68,
-          "vote_shares": { "ken": 0.3412, "ryu": 0.6588 }
+          "vote_shares": { "ken": 0.5812, "ryu": 0.4188 }
         }
       ]
     },
     {
       "id": "p009",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 8, "r": 0 },
+      "county_id": "westbrook",
+      "position": { "q": 0, "r": -5 },
       "total_population": 1431,
-      "initial_district_id": "d2",
-      "name": "East I1",
+      "initial_district_id": "d1",
+      "name": "West (0,-5)",
       "demographic_groups": [
         {
           "id": "p009-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.70,
-          "vote_shares": { "ken": 0.3748, "ryu": 0.6252 }
+          "vote_shares": { "ken": 0.6148, "ryu": 0.3852 }
         }
       ]
     },
@@ -187,10 +187,10 @@
       "id": "p010",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 9, "r": 0 },
+      "position": { "q": 1, "r": -5 },
       "total_population": 1571,
       "initial_district_id": "d1",
-      "name": "East J1",
+      "name": "East (1,-5)",
       "demographic_groups": [
         {
           "id": "p010-all",
@@ -204,90 +204,90 @@
     {
       "id": "p011",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 0, "r": 1 },
+      "county_id": "eastbrook",
+      "position": { "q": 2, "r": -5 },
       "total_population": 1574,
-      "initial_district_id": "d1",
-      "name": "West A2",
+      "initial_district_id": "d2",
+      "name": "East (2,-5)",
       "demographic_groups": [
         {
           "id": "p011-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.68,
-          "vote_shares": { "ken": 0.6166, "ryu": 0.3834 }
+          "vote_shares": { "ken": 0.3766, "ryu": 0.6234 }
         }
       ]
     },
     {
       "id": "p012",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 1, "r": 1 },
+      "county_id": "eastbrook",
+      "position": { "q": 3, "r": -5 },
       "total_population": 1378,
       "initial_district_id": "d2",
-      "name": "West B2",
+      "name": "East (3,-5)",
       "demographic_groups": [
         {
           "id": "p012-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.60,
-          "vote_shares": { "ken": 0.6016, "ryu": 0.3984 }
+          "vote_shares": { "ken": 0.3616, "ryu": 0.6384 }
         }
       ]
     },
     {
       "id": "p013",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 2, "r": 1 },
+      "county_id": "eastbrook",
+      "position": { "q": 4, "r": -5 },
       "total_population": 1593,
-      "initial_district_id": "d3",
-      "name": "West C2",
+      "initial_district_id": "d2",
+      "name": "East (4,-5)",
       "demographic_groups": [
         {
           "id": "p013-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.64,
-          "vote_shares": { "ken": 0.5897, "ryu": 0.4103 }
+          "vote_shares": { "ken": 0.3497, "ryu": 0.6503 }
         }
       ]
     },
     {
       "id": "p014",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 3, "r": 1 },
+      "county_id": "eastbrook",
+      "position": { "q": 5, "r": -5 },
       "total_population": 1597,
-      "initial_district_id": "d4",
-      "name": "West D2",
+      "initial_district_id": "d2",
+      "name": "East (5,-5)",
       "demographic_groups": [
         {
           "id": "p014-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.55,
-          "vote_shares": { "ken": 0.5823, "ryu": 0.4177 }
+          "vote_shares": { "ken": 0.3423, "ryu": 0.6577 }
         }
       ]
     },
     {
       "id": "p015",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 4, "r": 1 },
+      "county_id": "eastbrook",
+      "position": { "q": 6, "r": -5 },
       "total_population": 1456,
-      "initial_district_id": "d5",
-      "name": "West E2",
+      "initial_district_id": "d2",
+      "name": "East (6,-5)",
       "demographic_groups": [
         {
           "id": "p015-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.66,
-          "vote_shares": { "ken": 0.6457, "ryu": 0.3543 }
+          "vote_shares": { "ken": 0.4057, "ryu": 0.5943 }
         }
       ]
     },
@@ -295,10 +295,10 @@
       "id": "p016",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 5, "r": 1 },
+      "position": { "q": -2, "r": -4 },
       "total_population": 1511,
-      "initial_district_id": "d5",
-      "name": "West F2",
+      "initial_district_id": "d1",
+      "name": "West (-2,-4)",
       "demographic_groups": [
         {
           "id": "p016-all",
@@ -312,36 +312,36 @@
     {
       "id": "p017",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 6, "r": 1 },
+      "county_id": "westbrook",
+      "position": { "q": -1, "r": -4 },
       "total_population": 1511,
-      "initial_district_id": "d4",
-      "name": "East G2",
+      "initial_district_id": "d1",
+      "name": "West (-1,-4)",
       "demographic_groups": [
         {
           "id": "p017-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.60,
-          "vote_shares": { "ken": 0.3968, "ryu": 0.6032 }
+          "vote_shares": { "ken": 0.6368, "ryu": 0.3632 }
         }
       ]
     },
     {
       "id": "p018",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 7, "r": 1 },
+      "county_id": "westbrook",
+      "position": { "q": 0, "r": -4 },
       "total_population": 1535,
-      "initial_district_id": "d3",
-      "name": "East H2",
+      "initial_district_id": "d1",
+      "name": "West (0,-4)",
       "demographic_groups": [
         {
           "id": "p018-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.61,
-          "vote_shares": { "ken": 0.3915, "ryu": 0.6085 }
+          "vote_shares": { "ken": 0.6315, "ryu": 0.3685 }
         }
       ]
     },
@@ -349,10 +349,10 @@
       "id": "p019",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 8, "r": 1 },
+      "position": { "q": 1, "r": -4 },
       "total_population": 1431,
       "initial_district_id": "d2",
-      "name": "East I2",
+      "name": "East (1,-4)",
       "demographic_groups": [
         {
           "id": "p019-all",
@@ -367,10 +367,10 @@
       "id": "p020",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 9, "r": 1 },
+      "position": { "q": 2, "r": -4 },
       "total_population": 1353,
-      "initial_district_id": "d1",
-      "name": "East J2",
+      "initial_district_id": "d2",
+      "name": "East (2,-4)",
       "demographic_groups": [
         {
           "id": "p020-all",
@@ -384,72 +384,72 @@
     {
       "id": "p021",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 0, "r": 2 },
+      "county_id": "eastbrook",
+      "position": { "q": 3, "r": -4 },
       "total_population": 1528,
-      "initial_district_id": "d1",
-      "name": "West A3",
+      "initial_district_id": "d2",
+      "name": "East (3,-4)",
       "demographic_groups": [
         {
           "id": "p021-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.63,
-          "vote_shares": { "ken": 0.6437, "ryu": 0.3563 }
+          "vote_shares": { "ken": 0.4037, "ryu": 0.5963 }
         }
       ]
     },
     {
       "id": "p022",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 1, "r": 2 },
+      "county_id": "eastbrook",
+      "position": { "q": 4, "r": -4 },
       "total_population": 1397,
       "initial_district_id": "d2",
-      "name": "West B3",
+      "name": "East (4,-4)",
       "demographic_groups": [
         {
           "id": "p022-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.65,
-          "vote_shares": { "ken": 0.6163, "ryu": 0.3837 }
+          "vote_shares": { "ken": 0.3763, "ryu": 0.6237 }
         }
       ]
     },
     {
       "id": "p023",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 2, "r": 2 },
+      "county_id": "eastbrook",
+      "position": { "q": 5, "r": -4 },
       "total_population": 1385,
-      "initial_district_id": "d3",
-      "name": "West C3",
+      "initial_district_id": "d2",
+      "name": "East (5,-4)",
       "demographic_groups": [
         {
           "id": "p023-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.67,
-          "vote_shares": { "ken": 0.6574, "ryu": 0.3426 }
+          "vote_shares": { "ken": 0.4174, "ryu": 0.5826 }
         }
       ]
     },
     {
       "id": "p024",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 3, "r": 2 },
+      "county_id": "eastbrook",
+      "position": { "q": 6, "r": -4 },
       "total_population": 1378,
-      "initial_district_id": "d4",
-      "name": "West D3",
+      "initial_district_id": "d2",
+      "name": "East (6,-4)",
       "demographic_groups": [
         {
           "id": "p024-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.62,
-          "vote_shares": { "ken": 0.6301, "ryu": 0.3699 }
+          "vote_shares": { "ken": 0.3901, "ryu": 0.6099 }
         }
       ]
     },
@@ -457,10 +457,10 @@
       "id": "p025",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 4, "r": 2 },
+      "position": { "q": -3, "r": -3 },
       "total_population": 1500,
-      "initial_district_id": "d5",
-      "name": "West E3",
+      "initial_district_id": "d1",
+      "name": "West (-3,-3)",
       "demographic_groups": [
         {
           "id": "p025-all",
@@ -475,10 +475,10 @@
       "id": "p026",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 5, "r": 2 },
+      "position": { "q": -2, "r": -3 },
       "total_population": 1501,
-      "initial_district_id": "d5",
-      "name": "West F3",
+      "initial_district_id": "d1",
+      "name": "West (-2,-3)",
       "demographic_groups": [
         {
           "id": "p026-all",
@@ -492,36 +492,36 @@
     {
       "id": "p027",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 6, "r": 2 },
+      "county_id": "westbrook",
+      "position": { "q": -1, "r": -3 },
       "total_population": 1373,
-      "initial_district_id": "d4",
-      "name": "East G3",
+      "initial_district_id": "d1",
+      "name": "West (-1,-3)",
       "demographic_groups": [
         {
           "id": "p027-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.59,
-          "vote_shares": { "ken": 0.3875, "ryu": 0.6125 }
+          "vote_shares": { "ken": 0.6275, "ryu": 0.3725 }
         }
       ]
     },
     {
       "id": "p028",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 7, "r": 2 },
+      "county_id": "westbrook",
+      "position": { "q": 0, "r": -3 },
       "total_population": 1569,
-      "initial_district_id": "d3",
-      "name": "East H3",
+      "initial_district_id": "d1",
+      "name": "West (0,-3)",
       "demographic_groups": [
         {
           "id": "p028-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.55,
-          "vote_shares": { "ken": 0.3603, "ryu": 0.6397 }
+          "vote_shares": { "ken": 0.6003, "ryu": 0.3997 }
         }
       ]
     },
@@ -529,10 +529,10 @@
       "id": "p029",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 8, "r": 2 },
+      "position": { "q": 1, "r": -3 },
       "total_population": 1535,
       "initial_district_id": "d2",
-      "name": "East I3",
+      "name": "East (1,-3)",
       "demographic_groups": [
         {
           "id": "p029-all",
@@ -547,10 +547,10 @@
       "id": "p030",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 9, "r": 2 },
+      "position": { "q": 2, "r": -3 },
       "total_population": 1452,
-      "initial_district_id": "d1",
-      "name": "East J3",
+      "initial_district_id": "d2",
+      "name": "East (2,-3)",
       "demographic_groups": [
         {
           "id": "p030-all",
@@ -564,72 +564,72 @@
     {
       "id": "p031",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 0, "r": 3 },
+      "county_id": "eastbrook",
+      "position": { "q": 3, "r": -3 },
       "total_population": 1524,
-      "initial_district_id": "d1",
-      "name": "West A4",
+      "initial_district_id": "d2",
+      "name": "East (3,-3)",
       "demographic_groups": [
         {
           "id": "p031-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.61,
-          "vote_shares": { "ken": 0.5998, "ryu": 0.4002 }
+          "vote_shares": { "ken": 0.3598, "ryu": 0.6402 }
         }
       ]
     },
     {
       "id": "p032",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 1, "r": 3 },
+      "county_id": "eastbrook",
+      "position": { "q": 4, "r": -3 },
       "total_population": 1471,
       "initial_district_id": "d2",
-      "name": "West B4",
+      "name": "East (4,-3)",
       "demographic_groups": [
         {
           "id": "p032-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.63,
-          "vote_shares": { "ken": 0.6056, "ryu": 0.3944 }
+          "vote_shares": { "ken": 0.3656, "ryu": 0.6344 }
         }
       ]
     },
     {
       "id": "p033",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 2, "r": 3 },
+      "county_id": "eastbrook",
+      "position": { "q": 5, "r": -3 },
       "total_population": 1613,
-      "initial_district_id": "d3",
-      "name": "West C4",
+      "initial_district_id": "d2",
+      "name": "East (5,-3)",
       "demographic_groups": [
         {
           "id": "p033-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.61,
-          "vote_shares": { "ken": 0.6052, "ryu": 0.3948 }
+          "vote_shares": { "ken": 0.3652, "ryu": 0.6348 }
         }
       ]
     },
     {
       "id": "p034",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 3, "r": 3 },
+      "county_id": "eastbrook",
+      "position": { "q": 6, "r": -3 },
       "total_population": 1377,
-      "initial_district_id": "d4",
-      "name": "West D4",
+      "initial_district_id": "d3",
+      "name": "East (6,-3)",
       "demographic_groups": [
         {
           "id": "p034-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.61,
-          "vote_shares": { "ken": 0.6205, "ryu": 0.3795 }
+          "vote_shares": { "ken": 0.3805, "ryu": 0.6195 }
         }
       ]
     },
@@ -637,10 +637,10 @@
       "id": "p035",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 4, "r": 3 },
+      "position": { "q": -4, "r": -2 },
       "total_population": 1475,
-      "initial_district_id": "d5",
-      "name": "West E4",
+      "initial_district_id": "d1",
+      "name": "West (-4,-2)",
       "demographic_groups": [
         {
           "id": "p035-all",
@@ -655,10 +655,10 @@
       "id": "p036",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 5, "r": 3 },
+      "position": { "q": -3, "r": -2 },
       "total_population": 1519,
-      "initial_district_id": "d5",
-      "name": "West F4",
+      "initial_district_id": "d1",
+      "name": "West (-3,-2)",
       "demographic_groups": [
         {
           "id": "p036-all",
@@ -672,54 +672,54 @@
     {
       "id": "p037",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 6, "r": 3 },
+      "county_id": "westbrook",
+      "position": { "q": -2, "r": -2 },
       "total_population": 1553,
-      "initial_district_id": "d4",
-      "name": "East G4",
+      "initial_district_id": "d1",
+      "name": "West (-2,-2)",
       "demographic_groups": [
         {
           "id": "p037-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.67,
-          "vote_shares": { "ken": 0.3585, "ryu": 0.6415 }
+          "vote_shares": { "ken": 0.5985, "ryu": 0.4015 }
         }
       ]
     },
     {
       "id": "p038",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 7, "r": 3 },
+      "county_id": "westbrook",
+      "position": { "q": -1, "r": -2 },
       "total_population": 1546,
-      "initial_district_id": "d3",
-      "name": "East H4",
+      "initial_district_id": "d1",
+      "name": "West (-1,-2)",
       "demographic_groups": [
         {
           "id": "p038-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.60,
-          "vote_shares": { "ken": 0.4096, "ryu": 0.5904 }
+          "vote_shares": { "ken": 0.6496, "ryu": 0.3504 }
         }
       ]
     },
     {
       "id": "p039",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 8, "r": 3 },
+      "county_id": "westbrook",
+      "position": { "q": 0, "r": -2 },
       "total_population": 1599,
-      "initial_district_id": "d2",
-      "name": "East I4",
+      "initial_district_id": "d1",
+      "name": "West (0,-2)",
       "demographic_groups": [
         {
           "id": "p039-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.58,
-          "vote_shares": { "ken": 0.4019, "ryu": 0.5981 }
+          "vote_shares": { "ken": 0.6419, "ryu": 0.3581 }
         }
       ]
     },
@@ -727,10 +727,10 @@
       "id": "p040",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 9, "r": 3 },
+      "position": { "q": 1, "r": -2 },
       "total_population": 1547,
-      "initial_district_id": "d1",
-      "name": "East J4",
+      "initial_district_id": "d2",
+      "name": "East (1,-2)",
       "demographic_groups": [
         {
           "id": "p040-all",
@@ -744,90 +744,90 @@
     {
       "id": "p041",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 0, "r": 4 },
+      "county_id": "eastbrook",
+      "position": { "q": 2, "r": -2 },
       "total_population": 1567,
-      "initial_district_id": "d1",
-      "name": "West A5",
+      "initial_district_id": "d2",
+      "name": "East (2,-2)",
       "demographic_groups": [
         {
           "id": "p041-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.61,
-          "vote_shares": { "ken": 0.6398, "ryu": 0.3602 }
+          "vote_shares": { "ken": 0.3998, "ryu": 0.6002 }
         }
       ]
     },
     {
       "id": "p042",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 1, "r": 4 },
+      "county_id": "eastbrook",
+      "position": { "q": 3, "r": -2 },
       "total_population": 1619,
       "initial_district_id": "d2",
-      "name": "West B5",
+      "name": "East (3,-2)",
       "demographic_groups": [
         {
           "id": "p042-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.65,
-          "vote_shares": { "ken": 0.6265, "ryu": 0.3735 }
+          "vote_shares": { "ken": 0.3865, "ryu": 0.6135 }
         }
       ]
     },
     {
       "id": "p043",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 2, "r": 4 },
+      "county_id": "eastbrook",
+      "position": { "q": 4, "r": -2 },
       "total_population": 1362,
       "initial_district_id": "d3",
-      "name": "West C5",
+      "name": "East (4,-2)",
       "demographic_groups": [
         {
           "id": "p043-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.55,
-          "vote_shares": { "ken": 0.6038, "ryu": 0.3962 }
+          "vote_shares": { "ken": 0.3638, "ryu": 0.6362 }
         }
       ]
     },
     {
       "id": "p044",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 3, "r": 4 },
+      "county_id": "eastbrook",
+      "position": { "q": 5, "r": -2 },
       "total_population": 1374,
-      "initial_district_id": "d4",
-      "name": "West D5",
+      "initial_district_id": "d3",
+      "name": "East (5,-2)",
       "demographic_groups": [
         {
           "id": "p044-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.55,
-          "vote_shares": { "ken": 0.6554, "ryu": 0.3446 }
+          "vote_shares": { "ken": 0.4154, "ryu": 0.5846 }
         }
       ]
     },
     {
       "id": "p045",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 4, "r": 4 },
+      "county_id": "eastbrook",
+      "position": { "q": 6, "r": -2 },
       "total_population": 1614,
-      "initial_district_id": "d5",
-      "name": "West E5",
+      "initial_district_id": "d3",
+      "name": "East (6,-2)",
       "demographic_groups": [
         {
           "id": "p045-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.67,
-          "vote_shares": { "ken": 0.6483, "ryu": 0.3517 }
+          "vote_shares": { "ken": 0.4083, "ryu": 0.5917 }
         }
       ]
     },
@@ -835,10 +835,10 @@
       "id": "p046",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 5, "r": 4 },
+      "position": { "q": -5, "r": -1 },
       "total_population": 1371,
-      "initial_district_id": "d5",
-      "name": "West F5",
+      "initial_district_id": "d1",
+      "name": "West (-5,-1)",
       "demographic_groups": [
         {
           "id": "p046-all",
@@ -852,72 +852,72 @@
     {
       "id": "p047",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 6, "r": 4 },
+      "county_id": "westbrook",
+      "position": { "q": -4, "r": -1 },
       "total_population": 1617,
-      "initial_district_id": "d4",
-      "name": "East G5",
+      "initial_district_id": "d1",
+      "name": "West (-4,-1)",
       "demographic_groups": [
         {
           "id": "p047-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.67,
-          "vote_shares": { "ken": 0.4086, "ryu": 0.5914 }
+          "vote_shares": { "ken": 0.6486, "ryu": 0.3514 }
         }
       ]
     },
     {
       "id": "p048",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 7, "r": 4 },
+      "county_id": "westbrook",
+      "position": { "q": -3, "r": -1 },
       "total_population": 1570,
-      "initial_district_id": "d3",
-      "name": "East H5",
+      "initial_district_id": "d1",
+      "name": "West (-3,-1)",
       "demographic_groups": [
         {
           "id": "p048-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.55,
-          "vote_shares": { "ken": 0.3744, "ryu": 0.6256 }
+          "vote_shares": { "ken": 0.6144, "ryu": 0.3856 }
         }
       ]
     },
     {
       "id": "p049",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 8, "r": 4 },
+      "county_id": "westbrook",
+      "position": { "q": -2, "r": -1 },
       "total_population": 1480,
-      "initial_district_id": "d2",
-      "name": "East I5",
+      "initial_district_id": "d1",
+      "name": "West (-2,-1)",
       "demographic_groups": [
         {
           "id": "p049-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.58,
-          "vote_shares": { "ken": 0.3856, "ryu": 0.6144 }
+          "vote_shares": { "ken": 0.6256, "ryu": 0.3744 }
         }
       ]
     },
     {
       "id": "p050",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 9, "r": 4 },
+      "county_id": "westbrook",
+      "position": { "q": -1, "r": -1 },
       "total_population": 1533,
       "initial_district_id": "d1",
-      "name": "East J5",
+      "name": "West (-1,-1)",
       "demographic_groups": [
         {
           "id": "p050-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.56,
-          "vote_shares": { "ken": 0.3669, "ryu": 0.6331 }
+          "vote_shares": { "ken": 0.6069, "ryu": 0.3931 }
         }
       ]
     },
@@ -925,10 +925,10 @@
       "id": "p051",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 0, "r": 5 },
+      "position": { "q": 0, "r": -1 },
       "total_population": 1377,
       "initial_district_id": "d1",
-      "name": "West A6",
+      "name": "West (0,-1)",
       "demographic_groups": [
         {
           "id": "p051-all",
@@ -942,90 +942,90 @@
     {
       "id": "p052",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 1, "r": 5 },
+      "county_id": "eastbrook",
+      "position": { "q": 1, "r": -1 },
       "total_population": 1592,
       "initial_district_id": "d2",
-      "name": "West B6",
+      "name": "East (1,-1)",
       "demographic_groups": [
         {
           "id": "p052-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.70,
-          "vote_shares": { "ken": 0.5894, "ryu": 0.4106 }
+          "vote_shares": { "ken": 0.3494, "ryu": 0.6506 }
         }
       ]
     },
     {
       "id": "p053",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 2, "r": 5 },
+      "county_id": "eastbrook",
+      "position": { "q": 2, "r": -1 },
       "total_population": 1501,
       "initial_district_id": "d3",
-      "name": "West C6",
+      "name": "East (2,-1)",
       "demographic_groups": [
         {
           "id": "p053-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.64,
-          "vote_shares": { "ken": 0.6370, "ryu": 0.3630 }
+          "vote_shares": { "ken": 0.3970, "ryu": 0.6030 }
         }
       ]
     },
     {
       "id": "p054",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 3, "r": 5 },
+      "county_id": "eastbrook",
+      "position": { "q": 3, "r": -1 },
       "total_population": 1473,
-      "initial_district_id": "d4",
-      "name": "West D6",
+      "initial_district_id": "d3",
+      "name": "East (3,-1)",
       "demographic_groups": [
         {
           "id": "p054-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.57,
-          "vote_shares": { "ken": 0.5923, "ryu": 0.4077 }
+          "vote_shares": { "ken": 0.3523, "ryu": 0.6477 }
         }
       ]
     },
     {
       "id": "p055",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 4, "r": 5 },
+      "county_id": "eastbrook",
+      "position": { "q": 4, "r": -1 },
       "total_population": 1381,
-      "initial_district_id": "d5",
-      "name": "West E6",
+      "initial_district_id": "d3",
+      "name": "East (4,-1)",
       "demographic_groups": [
         {
           "id": "p055-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.64,
-          "vote_shares": { "ken": 0.6063, "ryu": 0.3937 }
+          "vote_shares": { "ken": 0.3663, "ryu": 0.6337 }
         }
       ]
     },
     {
       "id": "p056",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 5, "r": 5 },
+      "county_id": "eastbrook",
+      "position": { "q": 5, "r": -1 },
       "total_population": 1359,
-      "initial_district_id": "d5",
-      "name": "West F6",
+      "initial_district_id": "d3",
+      "name": "East (5,-1)",
       "demographic_groups": [
         {
           "id": "p056-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.57,
-          "vote_shares": { "ken": 0.6104, "ryu": 0.3896 }
+          "vote_shares": { "ken": 0.3704, "ryu": 0.6296 }
         }
       ]
     },
@@ -1033,10 +1033,10 @@
       "id": "p057",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 6, "r": 5 },
+      "position": { "q": 6, "r": -1 },
       "total_population": 1627,
-      "initial_district_id": "d4",
-      "name": "East G6",
+      "initial_district_id": "d3",
+      "name": "East (6,-1)",
       "demographic_groups": [
         {
           "id": "p057-all",
@@ -1050,54 +1050,54 @@
     {
       "id": "p058",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 7, "r": 5 },
+      "county_id": "westbrook",
+      "position": { "q": -6, "r": 0 },
       "total_population": 1411,
-      "initial_district_id": "d3",
-      "name": "East H6",
+      "initial_district_id": "d5",
+      "name": "West (-6,0)",
       "demographic_groups": [
         {
           "id": "p058-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.62,
-          "vote_shares": { "ken": 0.4077, "ryu": 0.5923 }
+          "vote_shares": { "ken": 0.6477, "ryu": 0.3523 }
         }
       ]
     },
     {
       "id": "p059",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 8, "r": 5 },
+      "county_id": "westbrook",
+      "position": { "q": -5, "r": 0 },
       "total_population": 1420,
-      "initial_district_id": "d2",
-      "name": "East I6",
+      "initial_district_id": "d5",
+      "name": "West (-5,0)",
       "demographic_groups": [
         {
           "id": "p059-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.67,
-          "vote_shares": { "ken": 0.3609, "ryu": 0.6391 }
+          "vote_shares": { "ken": 0.6009, "ryu": 0.3991 }
         }
       ]
     },
     {
       "id": "p060",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 9, "r": 5 },
+      "county_id": "westbrook",
+      "position": { "q": -4, "r": 0 },
       "total_population": 1524,
-      "initial_district_id": "d1",
-      "name": "East J6",
+      "initial_district_id": "d5",
+      "name": "West (-4,0)",
       "demographic_groups": [
         {
           "id": "p060-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.55,
-          "vote_shares": { "ken": 0.3793, "ryu": 0.6207 }
+          "vote_shares": { "ken": 0.6193, "ryu": 0.3807 }
         }
       ]
     },
@@ -1105,10 +1105,10 @@
       "id": "p061",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 0, "r": 6 },
+      "position": { "q": -3, "r": 0 },
       "total_population": 1394,
-      "initial_district_id": "d1",
-      "name": "West A7",
+      "initial_district_id": "d5",
+      "name": "West (-3,0)",
       "demographic_groups": [
         {
           "id": "p061-all",
@@ -1123,10 +1123,10 @@
       "id": "p062",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 1, "r": 6 },
+      "position": { "q": -2, "r": 0 },
       "total_population": 1353,
-      "initial_district_id": "d2",
-      "name": "West B7",
+      "initial_district_id": "d5",
+      "name": "West (-2,0)",
       "demographic_groups": [
         {
           "id": "p062-all",
@@ -1141,10 +1141,10 @@
       "id": "p063",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 2, "r": 6 },
+      "position": { "q": -1, "r": 0 },
       "total_population": 1611,
-      "initial_district_id": "d3",
-      "name": "West C7",
+      "initial_district_id": "d5",
+      "name": "West (-1,0)",
       "demographic_groups": [
         {
           "id": "p063-all",
@@ -1159,10 +1159,10 @@
       "id": "p064",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 3, "r": 6 },
+      "position": { "q": 0, "r": 0 },
       "total_population": 1603,
-      "initial_district_id": "d4",
-      "name": "West D7",
+      "initial_district_id": "d3",
+      "name": "West (0,0)",
       "demographic_groups": [
         {
           "id": "p064-all",
@@ -1176,36 +1176,36 @@
     {
       "id": "p065",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 4, "r": 6 },
+      "county_id": "eastbrook",
+      "position": { "q": 1, "r": 0 },
       "total_population": 1573,
-      "initial_district_id": "d5",
-      "name": "West E7",
+      "initial_district_id": "d3",
+      "name": "East (1,0)",
       "demographic_groups": [
         {
           "id": "p065-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.61,
-          "vote_shares": { "ken": 0.6148, "ryu": 0.3852 }
+          "vote_shares": { "ken": 0.3748, "ryu": 0.6252 }
         }
       ]
     },
     {
       "id": "p066",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 5, "r": 6 },
+      "county_id": "eastbrook",
+      "position": { "q": 2, "r": 0 },
       "total_population": 1625,
-      "initial_district_id": "d5",
-      "name": "West F7",
+      "initial_district_id": "d3",
+      "name": "East (2,0)",
       "demographic_groups": [
         {
           "id": "p066-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.60,
-          "vote_shares": { "ken": 0.6481, "ryu": 0.3519 }
+          "vote_shares": { "ken": 0.4081, "ryu": 0.5919 }
         }
       ]
     },
@@ -1213,10 +1213,10 @@
       "id": "p067",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 6, "r": 6 },
+      "position": { "q": 3, "r": 0 },
       "total_population": 1474,
-      "initial_district_id": "d4",
-      "name": "East G7",
+      "initial_district_id": "d3",
+      "name": "East (3,0)",
       "demographic_groups": [
         {
           "id": "p067-all",
@@ -1231,10 +1231,10 @@
       "id": "p068",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 7, "r": 6 },
+      "position": { "q": 4, "r": 0 },
       "total_population": 1443,
       "initial_district_id": "d3",
-      "name": "East H7",
+      "name": "East (4,0)",
       "demographic_groups": [
         {
           "id": "p068-all",
@@ -1249,10 +1249,10 @@
       "id": "p069",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 8, "r": 6 },
+      "position": { "q": 5, "r": 0 },
       "total_population": 1568,
-      "initial_district_id": "d2",
-      "name": "East I7",
+      "initial_district_id": "d3",
+      "name": "East (5,0)",
       "demographic_groups": [
         {
           "id": "p069-all",
@@ -1267,10 +1267,10 @@
       "id": "p070",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 9, "r": 6 },
+      "position": { "q": 6, "r": 0 },
       "total_population": 1474,
-      "initial_district_id": "d1",
-      "name": "East J7",
+      "initial_district_id": "d3",
+      "name": "East (6,0)",
       "demographic_groups": [
         {
           "id": "p070-all",
@@ -1285,10 +1285,10 @@
       "id": "p071",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 0, "r": 7 },
+      "position": { "q": -6, "r": 1 },
       "total_population": 1411,
-      "initial_district_id": "d1",
-      "name": "West A8",
+      "initial_district_id": "d5",
+      "name": "West (-6,1)",
       "demographic_groups": [
         {
           "id": "p071-all",
@@ -1303,10 +1303,10 @@
       "id": "p072",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 1, "r": 7 },
+      "position": { "q": -5, "r": 1 },
       "total_population": 1430,
-      "initial_district_id": "d2",
-      "name": "West B8",
+      "initial_district_id": "d5",
+      "name": "West (-5,1)",
       "demographic_groups": [
         {
           "id": "p072-all",
@@ -1321,10 +1321,10 @@
       "id": "p073",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 2, "r": 7 },
+      "position": { "q": -4, "r": 1 },
       "total_population": 1571,
-      "initial_district_id": "d3",
-      "name": "West C8",
+      "initial_district_id": "d5",
+      "name": "West (-4,1)",
       "demographic_groups": [
         {
           "id": "p073-all",
@@ -1339,10 +1339,10 @@
       "id": "p074",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 3, "r": 7 },
+      "position": { "q": -3, "r": 1 },
       "total_population": 1556,
-      "initial_district_id": "d4",
-      "name": "West D8",
+      "initial_district_id": "d5",
+      "name": "West (-3,1)",
       "demographic_groups": [
         {
           "id": "p074-all",
@@ -1357,10 +1357,10 @@
       "id": "p075",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 4, "r": 7 },
+      "position": { "q": -2, "r": 1 },
       "total_population": 1597,
       "initial_district_id": "d5",
-      "name": "West E8",
+      "name": "West (-2,1)",
       "demographic_groups": [
         {
           "id": "p075-all",
@@ -1375,10 +1375,10 @@
       "id": "p076",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 5, "r": 7 },
+      "position": { "q": -1, "r": 1 },
       "total_population": 1354,
       "initial_district_id": "d5",
-      "name": "West F8",
+      "name": "West (-1,1)",
       "demographic_groups": [
         {
           "id": "p076-all",
@@ -1392,18 +1392,18 @@
     {
       "id": "p077",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 6, "r": 7 },
+      "county_id": "westbrook",
+      "position": { "q": 0, "r": 1 },
       "total_population": 1541,
       "initial_district_id": "d4",
-      "name": "East G8",
+      "name": "West (0,1)",
       "demographic_groups": [
         {
           "id": "p077-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.69,
-          "vote_shares": { "ken": 0.4026, "ryu": 0.5974 }
+          "vote_shares": { "ken": 0.6426, "ryu": 0.3574 }
         }
       ]
     },
@@ -1411,10 +1411,10 @@
       "id": "p078",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 7, "r": 7 },
+      "position": { "q": 1, "r": 1 },
       "total_population": 1607,
       "initial_district_id": "d3",
-      "name": "East H8",
+      "name": "East (1,1)",
       "demographic_groups": [
         {
           "id": "p078-all",
@@ -1429,10 +1429,10 @@
       "id": "p079",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 8, "r": 7 },
+      "position": { "q": 2, "r": 1 },
       "total_population": 1632,
-      "initial_district_id": "d2",
-      "name": "East I8",
+      "initial_district_id": "d3",
+      "name": "East (2,1)",
       "demographic_groups": [
         {
           "id": "p079-all",
@@ -1447,10 +1447,10 @@
       "id": "p080",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 9, "r": 7 },
+      "position": { "q": 3, "r": 1 },
       "total_population": 1495,
-      "initial_district_id": "d1",
-      "name": "East J8",
+      "initial_district_id": "d3",
+      "name": "East (3,1)",
       "demographic_groups": [
         {
           "id": "p080-all",
@@ -1464,36 +1464,36 @@
     {
       "id": "p081",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 0, "r": 8 },
+      "county_id": "eastbrook",
+      "position": { "q": 4, "r": 1 },
       "total_population": 1384,
-      "initial_district_id": "d1",
-      "name": "West A9",
+      "initial_district_id": "d3",
+      "name": "East (4,1)",
       "demographic_groups": [
         {
           "id": "p081-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.61,
-          "vote_shares": { "ken": 0.6323, "ryu": 0.3677 }
+          "vote_shares": { "ken": 0.3923, "ryu": 0.6077 }
         }
       ]
     },
     {
       "id": "p082",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 1, "r": 8 },
+      "county_id": "eastbrook",
+      "position": { "q": 5, "r": 1 },
       "total_population": 1400,
-      "initial_district_id": "d2",
-      "name": "West B9",
+      "initial_district_id": "d3",
+      "name": "East (5,1)",
       "demographic_groups": [
         {
           "id": "p082-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.66,
-          "vote_shares": { "ken": 0.6369, "ryu": 0.3631 }
+          "vote_shares": { "ken": 0.3969, "ryu": 0.6031 }
         }
       ]
     },
@@ -1501,10 +1501,10 @@
       "id": "p083",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 2, "r": 8 },
+      "position": { "q": -6, "r": 2 },
       "total_population": 1389,
-      "initial_district_id": "d3",
-      "name": "West C9",
+      "initial_district_id": "d5",
+      "name": "West (-6,2)",
       "demographic_groups": [
         {
           "id": "p083-all",
@@ -1519,10 +1519,10 @@
       "id": "p084",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 3, "r": 8 },
+      "position": { "q": -5, "r": 2 },
       "total_population": 1542,
-      "initial_district_id": "d4",
-      "name": "West D9",
+      "initial_district_id": "d5",
+      "name": "West (-5,2)",
       "demographic_groups": [
         {
           "id": "p084-all",
@@ -1537,10 +1537,10 @@
       "id": "p085",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 4, "r": 8 },
+      "position": { "q": -4, "r": 2 },
       "total_population": 1650,
       "initial_district_id": "d5",
-      "name": "West E9",
+      "name": "West (-4,2)",
       "demographic_groups": [
         {
           "id": "p085-all",
@@ -1555,10 +1555,10 @@
       "id": "p086",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 5, "r": 8 },
+      "position": { "q": -3, "r": 2 },
       "total_population": 1430,
       "initial_district_id": "d5",
-      "name": "West F9",
+      "name": "West (-3,2)",
       "demographic_groups": [
         {
           "id": "p086-all",
@@ -1572,54 +1572,54 @@
     {
       "id": "p087",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 6, "r": 8 },
+      "county_id": "westbrook",
+      "position": { "q": -2, "r": 2 },
       "total_population": 1357,
-      "initial_district_id": "d4",
-      "name": "East G9",
+      "initial_district_id": "d5",
+      "name": "West (-2,2)",
       "demographic_groups": [
         {
           "id": "p087-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.64,
-          "vote_shares": { "ken": 0.3713, "ryu": 0.6287 }
+          "vote_shares": { "ken": 0.6113, "ryu": 0.3887 }
         }
       ]
     },
     {
       "id": "p088",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 7, "r": 8 },
+      "county_id": "westbrook",
+      "position": { "q": -1, "r": 2 },
       "total_population": 1437,
-      "initial_district_id": "d3",
-      "name": "East H9",
+      "initial_district_id": "d4",
+      "name": "West (-1,2)",
       "demographic_groups": [
         {
           "id": "p088-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.70,
-          "vote_shares": { "ken": 0.4199, "ryu": 0.5801 }
+          "vote_shares": { "ken": 0.6599, "ryu": 0.3401 }
         }
       ]
     },
     {
       "id": "p089",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 8, "r": 8 },
+      "county_id": "westbrook",
+      "position": { "q": 0, "r": 2 },
       "total_population": 1589,
-      "initial_district_id": "d2",
-      "name": "East I9",
+      "initial_district_id": "d4",
+      "name": "West (0,2)",
       "demographic_groups": [
         {
           "id": "p089-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.59,
-          "vote_shares": { "ken": 0.3921, "ryu": 0.6079 }
+          "vote_shares": { "ken": 0.6321, "ryu": 0.3679 }
         }
       ]
     },
@@ -1627,10 +1627,10 @@
       "id": "p090",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 9, "r": 8 },
+      "position": { "q": 1, "r": 2 },
       "total_population": 1488,
-      "initial_district_id": "d1",
-      "name": "East J9",
+      "initial_district_id": "d4",
+      "name": "East (1,2)",
       "demographic_groups": [
         {
           "id": "p090-all",
@@ -1644,54 +1644,54 @@
     {
       "id": "p091",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 0, "r": 9 },
+      "county_id": "eastbrook",
+      "position": { "q": 2, "r": 2 },
       "total_population": 1581,
-      "initial_district_id": "d1",
-      "name": "West A10",
+      "initial_district_id": "d3",
+      "name": "East (2,2)",
       "demographic_groups": [
         {
           "id": "p091-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.56,
-          "vote_shares": { "ken": 0.5863, "ryu": 0.4137 }
+          "vote_shares": { "ken": 0.3463, "ryu": 0.6537 }
         }
       ]
     },
     {
       "id": "p092",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 1, "r": 9 },
+      "county_id": "eastbrook",
+      "position": { "q": 3, "r": 2 },
       "total_population": 1422,
-      "initial_district_id": "d2",
-      "name": "West B10",
+      "initial_district_id": "d3",
+      "name": "East (3,2)",
       "demographic_groups": [
         {
           "id": "p092-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.67,
-          "vote_shares": { "ken": 0.6176, "ryu": 0.3824 }
+          "vote_shares": { "ken": 0.3776, "ryu": 0.6224 }
         }
       ]
     },
     {
       "id": "p093",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 2, "r": 9 },
+      "county_id": "eastbrook",
+      "position": { "q": 4, "r": 2 },
       "total_population": 1398,
       "initial_district_id": "d3",
-      "name": "West C10",
+      "name": "East (4,2)",
       "demographic_groups": [
         {
           "id": "p093-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.63,
-          "vote_shares": { "ken": 0.6055, "ryu": 0.3945 }
+          "vote_shares": { "ken": 0.3655, "ryu": 0.6345 }
         }
       ]
     },
@@ -1699,10 +1699,10 @@
       "id": "p094",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 3, "r": 9 },
+      "position": { "q": -6, "r": 3 },
       "total_population": 1560,
-      "initial_district_id": "d4",
-      "name": "West D10",
+      "initial_district_id": "d5",
+      "name": "West (-6,3)",
       "demographic_groups": [
         {
           "id": "p094-all",
@@ -1717,10 +1717,10 @@
       "id": "p095",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 4, "r": 9 },
+      "position": { "q": -5, "r": 3 },
       "total_population": 1618,
       "initial_district_id": "d5",
-      "name": "West E10",
+      "name": "West (-5,3)",
       "demographic_groups": [
         {
           "id": "p095-all",
@@ -1735,10 +1735,10 @@
       "id": "p096",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 5, "r": 9 },
+      "position": { "q": -4, "r": 3 },
       "total_population": 1536,
       "initial_district_id": "d5",
-      "name": "West F10",
+      "name": "West (-4,3)",
       "demographic_groups": [
         {
           "id": "p096-all",
@@ -1752,126 +1752,126 @@
     {
       "id": "p097",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 6, "r": 9 },
+      "county_id": "westbrook",
+      "position": { "q": -3, "r": 3 },
       "total_population": 1489,
-      "initial_district_id": "d4",
-      "name": "East G10",
+      "initial_district_id": "d5",
+      "name": "West (-3,3)",
       "demographic_groups": [
         {
           "id": "p097-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.62,
-          "vote_shares": { "ken": 0.3897, "ryu": 0.6103 }
+          "vote_shares": { "ken": 0.6297, "ryu": 0.3703 }
         }
       ]
     },
     {
       "id": "p098",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 7, "r": 9 },
+      "county_id": "westbrook",
+      "position": { "q": -2, "r": 3 },
       "total_population": 1509,
-      "initial_district_id": "d3",
-      "name": "East H10",
+      "initial_district_id": "d4",
+      "name": "West (-2,3)",
       "demographic_groups": [
         {
           "id": "p098-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.58,
-          "vote_shares": { "ken": 0.4130, "ryu": 0.5870 }
+          "vote_shares": { "ken": 0.6530, "ryu": 0.3470 }
         }
       ]
     },
     {
       "id": "p099",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 8, "r": 9 },
+      "county_id": "westbrook",
+      "position": { "q": -1, "r": 3 },
       "total_population": 1497,
-      "initial_district_id": "d2",
-      "name": "East I10",
+      "initial_district_id": "d4",
+      "name": "West (-1,3)",
       "demographic_groups": [
         {
           "id": "p099-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.60,
-          "vote_shares": { "ken": 0.3959, "ryu": 0.6041 }
+          "vote_shares": { "ken": 0.6359, "ryu": 0.3641 }
         }
       ]
     },
     {
       "id": "p100",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 9, "r": 9 },
+      "county_id": "westbrook",
+      "position": { "q": 0, "r": 3 },
       "total_population": 1359,
-      "initial_district_id": "d1",
-      "name": "East J10",
+      "initial_district_id": "d4",
+      "name": "West (0,3)",
       "demographic_groups": [
         {
           "id": "p100-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.57,
-          "vote_shares": { "ken": 0.4187, "ryu": 0.5813 }
+          "vote_shares": { "ken": 0.6587, "ryu": 0.3413 }
         }
       ]
     },
     {
       "id": "p101",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 0, "r": 10 },
+      "county_id": "eastbrook",
+      "position": { "q": 1, "r": 3 },
       "total_population": 1645,
-      "initial_district_id": "d1",
-      "name": "West A11",
+      "initial_district_id": "d4",
+      "name": "East (1,3)",
       "demographic_groups": [
         {
           "id": "p101-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.68,
-          "vote_shares": { "ken": 0.6007, "ryu": 0.3993 }
+          "vote_shares": { "ken": 0.3607, "ryu": 0.6393 }
         }
       ]
     },
     {
       "id": "p102",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 1, "r": 10 },
+      "county_id": "eastbrook",
+      "position": { "q": 2, "r": 3 },
       "total_population": 1571,
-      "initial_district_id": "d2",
-      "name": "West B11",
+      "initial_district_id": "d4",
+      "name": "East (2,3)",
       "demographic_groups": [
         {
           "id": "p102-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.64,
-          "vote_shares": { "ken": 0.6181, "ryu": 0.3819 }
+          "vote_shares": { "ken": 0.3781, "ryu": 0.6219 }
         }
       ]
     },
     {
       "id": "p103",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 2, "r": 10 },
+      "county_id": "eastbrook",
+      "position": { "q": 3, "r": 3 },
       "total_population": 1482,
       "initial_district_id": "d3",
-      "name": "West C11",
+      "name": "East (3,3)",
       "demographic_groups": [
         {
           "id": "p103-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.70,
-          "vote_shares": { "ken": 0.5903, "ryu": 0.4097 }
+          "vote_shares": { "ken": 0.3503, "ryu": 0.6497 }
         }
       ]
     },
@@ -1879,10 +1879,10 @@
       "id": "p104",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 3, "r": 10 },
+      "position": { "q": -6, "r": 4 },
       "total_population": 1615,
-      "initial_district_id": "d4",
-      "name": "West D11",
+      "initial_district_id": "d5",
+      "name": "West (-6,4)",
       "demographic_groups": [
         {
           "id": "p104-all",
@@ -1897,10 +1897,10 @@
       "id": "p105",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 4, "r": 10 },
+      "position": { "q": -5, "r": 4 },
       "total_population": 1544,
       "initial_district_id": "d5",
-      "name": "West E11",
+      "name": "West (-5,4)",
       "demographic_groups": [
         {
           "id": "p105-all",
@@ -1915,10 +1915,10 @@
       "id": "p106",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 5, "r": 10 },
+      "position": { "q": -4, "r": 4 },
       "total_population": 1641,
       "initial_district_id": "d5",
-      "name": "West F11",
+      "name": "West (-4,4)",
       "demographic_groups": [
         {
           "id": "p106-all",
@@ -1932,108 +1932,108 @@
     {
       "id": "p107",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 6, "r": 10 },
+      "county_id": "westbrook",
+      "position": { "q": -3, "r": 4 },
       "total_population": 1537,
       "initial_district_id": "d4",
-      "name": "East G11",
+      "name": "West (-3,4)",
       "demographic_groups": [
         {
           "id": "p107-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.62,
-          "vote_shares": { "ken": 0.3830, "ryu": 0.6170 }
+          "vote_shares": { "ken": 0.6230, "ryu": 0.3770 }
         }
       ]
     },
     {
       "id": "p108",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 7, "r": 10 },
+      "county_id": "westbrook",
+      "position": { "q": -2, "r": 4 },
       "total_population": 1400,
-      "initial_district_id": "d3",
-      "name": "East H11",
+      "initial_district_id": "d4",
+      "name": "West (-2,4)",
       "demographic_groups": [
         {
           "id": "p108-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.67,
-          "vote_shares": { "ken": 0.4129, "ryu": 0.5871 }
+          "vote_shares": { "ken": 0.6529, "ryu": 0.3471 }
         }
       ]
     },
     {
       "id": "p109",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 8, "r": 10 },
+      "county_id": "westbrook",
+      "position": { "q": -1, "r": 4 },
       "total_population": 1559,
-      "initial_district_id": "d2",
-      "name": "East I11",
+      "initial_district_id": "d4",
+      "name": "West (-1,4)",
       "demographic_groups": [
         {
           "id": "p109-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.61,
-          "vote_shares": { "ken": 0.3531, "ryu": 0.6469 }
+          "vote_shares": { "ken": 0.5931, "ryu": 0.4069 }
         }
       ]
     },
     {
       "id": "p110",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 9, "r": 10 },
+      "county_id": "westbrook",
+      "position": { "q": 0, "r": 4 },
       "total_population": 1423,
-      "initial_district_id": "d1",
-      "name": "East J11",
+      "initial_district_id": "d4",
+      "name": "West (0,4)",
       "demographic_groups": [
         {
           "id": "p110-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.59,
-          "vote_shares": { "ken": 0.3934, "ryu": 0.6066 }
+          "vote_shares": { "ken": 0.6334, "ryu": 0.3666 }
         }
       ]
     },
     {
       "id": "p111",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 0, "r": 11 },
+      "county_id": "eastbrook",
+      "position": { "q": 1, "r": 4 },
       "total_population": 1572,
-      "initial_district_id": "d1",
-      "name": "West A12",
+      "initial_district_id": "d4",
+      "name": "East (1,4)",
       "demographic_groups": [
         {
           "id": "p111-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.70,
-          "vote_shares": { "ken": 0.5810, "ryu": 0.4190 }
+          "vote_shares": { "ken": 0.3410, "ryu": 0.6590 }
         }
       ]
     },
     {
       "id": "p112",
       "editable": true,
-      "county_id": "westbrook",
-      "position": { "q": 1, "r": 11 },
+      "county_id": "eastbrook",
+      "position": { "q": 2, "r": 4 },
       "total_population": 1433,
-      "initial_district_id": "d2",
-      "name": "West B12",
+      "initial_district_id": "d4",
+      "name": "East (2,4)",
       "demographic_groups": [
         {
           "id": "p112-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.55,
-          "vote_shares": { "ken": 0.6071, "ryu": 0.3929 }
+          "vote_shares": { "ken": 0.3671, "ryu": 0.6329 }
         }
       ]
     },
@@ -2041,10 +2041,10 @@
       "id": "p113",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 2, "r": 11 },
+      "position": { "q": -6, "r": 5 },
       "total_population": 1419,
-      "initial_district_id": "d3",
-      "name": "West C12",
+      "initial_district_id": "d5",
+      "name": "West (-6,5)",
       "demographic_groups": [
         {
           "id": "p113-all",
@@ -2059,10 +2059,10 @@
       "id": "p114",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 3, "r": 11 },
+      "position": { "q": -5, "r": 5 },
       "total_population": 1402,
-      "initial_district_id": "d4",
-      "name": "West D12",
+      "initial_district_id": "d5",
+      "name": "West (-5,5)",
       "demographic_groups": [
         {
           "id": "p114-all",
@@ -2077,10 +2077,10 @@
       "id": "p115",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 4, "r": 11 },
+      "position": { "q": -4, "r": 5 },
       "total_population": 1615,
       "initial_district_id": "d5",
-      "name": "West E12",
+      "name": "West (-4,5)",
       "demographic_groups": [
         {
           "id": "p115-all",
@@ -2095,10 +2095,10 @@
       "id": "p116",
       "editable": true,
       "county_id": "westbrook",
-      "position": { "q": 5, "r": 11 },
+      "position": { "q": -3, "r": 5 },
       "total_population": 1586,
-      "initial_district_id": "d5",
-      "name": "West F12",
+      "initial_district_id": "d4",
+      "name": "West (-3,5)",
       "demographic_groups": [
         {
           "id": "p116-all",
@@ -2112,54 +2112,54 @@
     {
       "id": "p117",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 6, "r": 11 },
+      "county_id": "westbrook",
+      "position": { "q": -2, "r": 5 },
       "total_population": 1353,
       "initial_district_id": "d4",
-      "name": "East G12",
+      "name": "West (-2,5)",
       "demographic_groups": [
         {
           "id": "p117-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.55,
-          "vote_shares": { "ken": 0.3586, "ryu": 0.6414 }
+          "vote_shares": { "ken": 0.5986, "ryu": 0.4014 }
         }
       ]
     },
     {
       "id": "p118",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 7, "r": 11 },
+      "county_id": "westbrook",
+      "position": { "q": -1, "r": 5 },
       "total_population": 1508,
-      "initial_district_id": "d3",
-      "name": "East H12",
+      "initial_district_id": "d4",
+      "name": "West (-1,5)",
       "demographic_groups": [
         {
           "id": "p118-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.61,
-          "vote_shares": { "ken": 0.3666, "ryu": 0.6334 }
+          "vote_shares": { "ken": 0.6066, "ryu": 0.3934 }
         }
       ]
     },
     {
       "id": "p119",
       "editable": true,
-      "county_id": "eastbrook",
-      "position": { "q": 8, "r": 11 },
+      "county_id": "westbrook",
+      "position": { "q": 0, "r": 5 },
       "total_population": 1480,
-      "initial_district_id": "d2",
-      "name": "East I12",
+      "initial_district_id": "d4",
+      "name": "West (0,5)",
       "demographic_groups": [
         {
           "id": "p119-all",
           "name": "All voters",
           "population_share": 1.0,
           "turnout_rate": 0.57,
-          "vote_shares": { "ken": 0.3959, "ryu": 0.6041 }
+          "vote_shares": { "ken": 0.6359, "ryu": 0.3641 }
         }
       ]
     },
@@ -2167,10 +2167,10 @@
       "id": "p120",
       "editable": true,
       "county_id": "eastbrook",
-      "position": { "q": 9, "r": 11 },
+      "position": { "q": 1, "r": 5 },
       "total_population": 1590,
-      "initial_district_id": "d1",
-      "name": "East J12",
+      "initial_district_id": "d4",
+      "name": "East (1,5)",
       "demographic_groups": [
         {
           "id": "p120-all",
@@ -2178,6 +2178,132 @@
           "population_share": 1.0,
           "turnout_rate": 0.66,
           "vote_shares": { "ken": 0.3693, "ryu": 0.6307 }
+        }
+      ]
+    },
+    {
+      "id": "p121",
+      "editable": true,
+      "county_id": "westbrook",
+      "position": { "q": -6, "r": 6 },
+      "total_population": 1450,
+      "initial_district_id": "d5",
+      "name": "West (-6,6)",
+      "demographic_groups": [
+        {
+          "id": "p121-all",
+          "name": "All voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.6448, "ryu": 0.3552 }
+        }
+      ]
+    },
+    {
+      "id": "p122",
+      "editable": true,
+      "county_id": "westbrook",
+      "position": { "q": -5, "r": 6 },
+      "total_population": 1610,
+      "initial_district_id": "d5",
+      "name": "West (-5,6)",
+      "demographic_groups": [
+        {
+          "id": "p122-all",
+          "name": "All voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.64,
+          "vote_shares": { "ken": 0.6469, "ryu": 0.3531 }
+        }
+      ]
+    },
+    {
+      "id": "p123",
+      "editable": true,
+      "county_id": "westbrook",
+      "position": { "q": -4, "r": 6 },
+      "total_population": 1497,
+      "initial_district_id": "d4",
+      "name": "West (-4,6)",
+      "demographic_groups": [
+        {
+          "id": "p123-all",
+          "name": "All voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.58,
+          "vote_shares": { "ken": 0.5982, "ryu": 0.4018 }
+        }
+      ]
+    },
+    {
+      "id": "p124",
+      "editable": true,
+      "county_id": "westbrook",
+      "position": { "q": -3, "r": 6 },
+      "total_population": 1470,
+      "initial_district_id": "d4",
+      "name": "West (-3,6)",
+      "demographic_groups": [
+        {
+          "id": "p124-all",
+          "name": "All voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.69,
+          "vote_shares": { "ken": 0.5898, "ryu": 0.4102 }
+        }
+      ]
+    },
+    {
+      "id": "p125",
+      "editable": true,
+      "county_id": "westbrook",
+      "position": { "q": -2, "r": 6 },
+      "total_population": 1377,
+      "initial_district_id": "d4",
+      "name": "West (-2,6)",
+      "demographic_groups": [
+        {
+          "id": "p125-all",
+          "name": "All voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.61,
+          "vote_shares": { "ken": 0.6372, "ryu": 0.3628 }
+        }
+      ]
+    },
+    {
+      "id": "p126",
+      "editable": true,
+      "county_id": "westbrook",
+      "position": { "q": -1, "r": 6 },
+      "total_population": 1351,
+      "initial_district_id": "d4",
+      "name": "West (-1,6)",
+      "demographic_groups": [
+        {
+          "id": "p126-all",
+          "name": "All voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.60,
+          "vote_shares": { "ken": 0.6524, "ryu": 0.3476 }
+        }
+      ]
+    },
+    {
+      "id": "p127",
+      "editable": true,
+      "county_id": "westbrook",
+      "position": { "q": 0, "r": 6 },
+      "total_population": 1607,
+      "initial_district_id": "d4",
+      "name": "West (0,6)",
+      "demographic_groups": [
+        {
+          "id": "p127-all",
+          "name": "All voters",
+          "population_share": 1.0,
+          "turnout_rate": 0.63,
+          "vote_shares": { "ken": 0.5845, "ryu": 0.4155 }
         }
       ]
     }
