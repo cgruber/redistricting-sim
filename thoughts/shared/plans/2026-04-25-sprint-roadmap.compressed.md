@@ -28,7 +28,8 @@ see game-vision.compressed.md for full scope
 | S6 | game infra + scenarios 5–7 | GAME-007 save/resume; scenarios 5–9; hex-of-hexes; demo feedback fixes | complete — 2026-04-27 |
 | S7 | shippable $v1 | about page; wrap-up screen; hex backport 002–006; visual consistency | complete — 2026-04-28 |
 | S8 | hardening | CSP; extract CSS; loader errors; scenario compression | complete — 2026-04-28 |
-| S9 | design research+polish | achievement UX; demographic overlays; geo features; accessibility | backlog |
+| S9 | first release | deploy pastthepost.org; legal review; basic a11y | current |
+| S10 | design research+polish | achievement UX; demographic overlays; geo features; full a11y | backlog |
 
 §SPRINT1 [COMPLETE 2026-04-25]
 goal: app renders tutorial-001.json; player paints+undoes; no sim/game-loop yet
@@ -86,22 +87,23 @@ outcome: all tickets closed; CSP meta tag w/ temp unsafe-inline (BUILD-005); inl
 tickets (all resolved): BUILD-005 BUILD-006 GAME-032 GAME-006
 PRs: #119 #120 #121 #122
 
-§SPRINT9 (backlog)
+§SPRINT9 [CURRENT]
+goal: first release — ship v1 to public
+scope:
+  DIST-001: deploy to pastthepost.org (static hosting; DNS config)
+  LEGAL-001: content presentation risk review (disclaimers/framing)
+  GAME-008 (partial): basic a11y — keyboard nav, ARIA labels; release-blocking subset only
+known tickets: DIST-001 LEGAL-001 GAME-008(partial)
+
+§SPRINT10 (backlog)
 goal: design research+polish — resolve open design questions then implement
 scope:
-  DESIGN-001 achievement/star UX research (blocks animated criteria eval)
-  DESIGN-005/006/007 demographic overlays
-  DESIGN-008 geographic features (lakes, mountains)
-  GAME-008 accessibility pass
-  GAME-031 gameplay critique followup
-  animated criteria eval+party reactions (needs ticket; blocked on DESIGN-001)
-  electoral outcome visual diff (needs ticket)
-known tickets: DESIGN-001 DESIGN-005 DESIGN-006 DESIGN-007 DESIGN-008 GAME-008 GAME-031
+  DESIGN-001 achievement/star UX; DESIGN-005/006/007 demographic overlays
+  DESIGN-008 geographic features; GAME-008 full a11y; GAME-031 gameplay critique
+  animated criteria eval (needs ticket); electoral outcome diff (needs ticket)
 
-§SPRINT10+ (later)
+§SPRINT11+ (later)
 GAME-030 main menu+campaigns (architecture; own sprint)
-DIST-001 Steam deployment research
-LEGAL-001 content presentation risk
 
 §BACKLOG (not sprint-assigned)
 BUILD-003 ts-rules spawn strategy          any
@@ -120,6 +122,6 @@ AGENT-003 infra PR review bot              any
 DESIGN-004 legend layout                   any
 
 §BLOCKING_OPEN_QUESTIONS
-DESIGN-001 star/achievement UX → blocks S9
+DESIGN-001 star/achievement UX → blocks S10
 RESOLVED: OQ4 narrative asset resolution — deferred indefinitely
 RESOLVED: OQ9 StateContext redesign — deferrable past $v1

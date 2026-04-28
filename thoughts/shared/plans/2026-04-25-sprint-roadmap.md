@@ -43,7 +43,8 @@ See `thoughts/shared/vision/game-vision.compressed.md` for full scope.
 | 6 | Game infrastructure + scenarios 5–7 | In-progress save/resume; scenarios 5–7 authored; hex-of-hexes for 007–009 | complete — 2026-04-27 |
 | 7 | Shippable v1 | About page; wrap-up screen; hex backport to 002–006; all scenarios visually consistent | complete — 2026-04-28 |
 | 8 | Hardening | CSP, extract CSS, loader error handling, scenario compression | complete — 2026-04-28 |
-| 9 | Design research + polish | Achievement UX, demographic overlays, geographic features, accessibility | backlog |
+| 9 | First release | Deploy to pastthepost.org; legal review; basic accessibility | current |
+| 10 | Design research + polish | Achievement UX, demographic overlays, geographic features, full accessibility | backlog |
 
 ---
 
@@ -187,7 +188,26 @@ PRs: #119 #120 #121 #122
 
 ---
 
-## Sprint 9 — Design Research + Polish [BACKLOG]
+## Sprint 9 — First Release [CURRENT]
+
+**Goal**: Ship v1 to the public. Deploy, legal review, basic accessibility.
+
+**Scope**:
+- **DIST-001**: Deploy to pastthepost.org (or GH Pages as staging). Static
+  hosting; gzip served automatically. Configure DNS for pastthepost.org +
+  pastthepost.gg redirect.
+- **LEGAL-001**: Quick review of content presentation risks. The game is
+  educational, non-partisan, fictional regions — assess what disclaimers or
+  framing are needed before public release.
+- **Basic accessibility**: Keyboard navigation for district selection and
+  precinct painting. ARIA labels on interactive elements. Subset of GAME-008
+  scoped to release-blocking items only.
+
+**Known tickets**: DIST-001, LEGAL-001, GAME-008 (partial).
+
+---
+
+## Sprint 10 — Design Research + Polish [BACKLOG]
 
 **Goal**: Research-first sprint — resolve open design questions, then implement.
 
@@ -195,7 +215,7 @@ PRs: #119 #120 #121 #122
 - DESIGN-001: Achievement/star UX research (blocks animated criteria eval)
 - DESIGN-005/006/007: Demographic overlay research → implementation
 - DESIGN-008: Geographic features (lakes, mountains as decorative tiles)
-- GAME-008: Accessibility pass (color-blind palettes, ARIA, keyboard nav)
+- GAME-008: Full accessibility pass (remainder after S9 basics)
 - GAME-031: Gameplay critique followup (review + act on external feedback)
 - Animated criteria evaluation + party reactions (needs ticket; blocked on DESIGN-001)
 - Electoral outcome visual diff (needs ticket)
@@ -205,13 +225,11 @@ GAME-008, GAME-031. Two new tickets needed for animated criteria + electoral dif
 
 ---
 
-## Sprint 10+ (later)
+## Sprint 11+ (later)
 
 | Ticket | Area | Notes |
 |---|---|---|
 | GAME-030 | Main menu + campaigns | Architecture overhaul; own sprint |
-| DIST-001 | Steam deployment research | Before distribution decision |
-| LEGAL-001 | Content presentation risk | Before public release |
 
 ---
 
