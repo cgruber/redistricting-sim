@@ -14429,6 +14429,10 @@ var require_main = __commonJS({
     init_evaluate();
     init_validity();
     init_progress();
+    var BASE_PATH = window.location.pathname.replace(/\/[^/]*$/, "/");
+    function baseUrl(path2) {
+      return BASE_PATH + path2.replace(/^\//, "");
+    }
     var SCENARIO_MANIFEST = [
       { id: "tutorial-002", title: "Millbrook County: Three-District Challenge" },
       { id: "scenario-002", title: "Clearwater County: The Governor's Map" },
@@ -14527,7 +14531,7 @@ var require_main = __commonJS({
               if (currentWip && currentWip.scenarioId !== entry.id) {
                 showWipWarning(currentWip.scenarioId, entry.id);
               } else {
-                window.location.assign(`/?s=${entry.id}`);
+                window.location.assign(`${BASE_PATH}?s=${entry.id}`);
               }
             });
           }
@@ -14551,7 +14555,7 @@ var require_main = __commonJS({
         const onConfirm = () => {
           cleanup();
           clearWip();
-          window.location.assign(`/?s=${targetId}`);
+          window.location.assign(`${BASE_PATH}?s=${targetId}`);
         };
         const onCancel = () => {
           cleanup();
@@ -14612,7 +14616,7 @@ var require_main = __commonJS({
       }
       let json;
       try {
-        const resp = yield fetch(`/scenarios/${entryToLoad.id}.json`);
+        const resp = yield fetch(baseUrl(`scenarios/${entryToLoad.id}.json`));
         if (!resp.ok)
           throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
         json = yield resp.json();
@@ -14625,7 +14629,7 @@ var require_main = __commonJS({
 				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
 				<p style="max-width:600px;text-align:center;">Could not fetch scenario <strong>${entryToLoad.id}</strong>.</p>
 				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${msg}</pre>
-				<button onclick="window.location.assign('/')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">\u2190 Back to Scenarios</button>
+				<button onclick="window.location.assign(window.location.pathname.replace(/\\/[^/]*$/,'/'))" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">\u2190 Back to Scenarios</button>
 			</div>`
         );
         return;
@@ -14642,7 +14646,7 @@ var require_main = __commonJS({
 				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
 				<p style="max-width:600px;text-align:center;">Scenario <strong>${entryToLoad.id}</strong> could not be loaded due to a validation error.</p>
 				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${msg}</pre>
-				<button onclick="window.location.assign('/')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">\u2190 Back to Scenarios</button>
+				<button onclick="window.location.assign(window.location.pathname.replace(/\\/[^/]*$/,'/'))" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">\u2190 Back to Scenarios</button>
 			</div>`
         );
         return;
@@ -14899,7 +14903,7 @@ var require_main = __commonJS({
           if (allComplete) {
             (_a2 = document.getElementById("wrap-up-screen")) == null ? void 0 : _a2.classList.remove("hidden");
           } else {
-            window.location.assign("/");
+            window.location.assign(BASE_PATH);
           }
         });
       }
@@ -14908,7 +14912,7 @@ var require_main = __commonJS({
       });
       (_d = document.getElementById("btn-back-to-scenarios")) == null ? void 0 : _d.addEventListener("click", () => {
         flushWipSave();
-        window.location.assign("/");
+        window.location.assign(BASE_PATH);
       });
       btnNextScenario.addEventListener("click", () => {
         var _a2;
@@ -14917,11 +14921,11 @@ var require_main = __commonJS({
           resultScreen.classList.add("hidden");
           (_a2 = document.getElementById("wrap-up-screen")) == null ? void 0 : _a2.classList.remove("hidden");
         } else {
-          window.location.assign("/");
+          window.location.assign(BASE_PATH);
         }
       });
       (_e = document.getElementById("btn-wrap-up-replay")) == null ? void 0 : _e.addEventListener("click", () => {
-        window.location.assign("/");
+        window.location.assign(BASE_PATH);
       });
       store.subscribe(() => {
         updateUI();
