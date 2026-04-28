@@ -27,7 +27,7 @@ see game-vision.compressed.md for full scope
 | S5 | more scenarios + remaining criteria | tutorial-002 wired; scenarios 2–4; majority_minority/gap/mean-median | complete — 2026-04-26 |
 | S6 | game infra + scenarios 5–7 | GAME-007 save/resume; scenarios 5–9; hex-of-hexes; demo feedback fixes | complete — 2026-04-27 |
 | S7 | shippable $v1 | about page; wrap-up screen; hex backport 002–006; visual consistency | complete — 2026-04-28 |
-| S8 | hardening | CSP; extract CSS; loader errors; scenario compression | current |
+| S8 | hardening | CSP; extract CSS; loader errors; scenario compression | complete — 2026-04-28 |
 | S9 | design research+polish | achievement UX; demographic overlays; geo features; accessibility | backlog |
 
 §SPRINT1 [COMPLETE 2026-04-25]
@@ -78,14 +78,13 @@ outcome: all tickets closed; about page w/ educational framing+designer credit (
 tickets (all resolved): GAME-020 GAME-028 GAME-029
 PRs: #107 #108 #109 #110 #114
 
-§SPRINT8 [CURRENT]
-goal: hardening — security, error handling, optimization; no new features, no research
-scope:
-  BUILD-005: CSP meta tag (restrict scripts/styles/fetches to self)
-  BUILD-006: extract inline styles to external CSS (enables strict CSP)
-  GAME-032: scenario loader error handling (user-visible errors, collect all)
-  GAME-006: scenario compression (HTTP gzip for bundled)
-known tickets: BUILD-005 BUILD-006 GAME-032 GAME-006
+§SPRINT8 [COMPLETE 2026-04-28]
+goal: hardening — security, error handling, optimization; no new features
+outcome: all tickets closed; CSP meta tag w/ temp unsafe-inline (BUILD-005); inline styles→styles.css
+  (BUILD-006); user-visible error screen for load failures (GAME-032); HTTP gzip sufficient for v1,
+  no code changes (GAME-006)
+tickets (all resolved): BUILD-005 BUILD-006 GAME-032 GAME-006
+PRs: #119 #120 #121 #122
 
 §SPRINT9 (backlog)
 goal: design research+polish — resolve open design questions then implement
