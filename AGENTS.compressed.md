@@ -80,6 +80,15 @@ GitHub Issues:
     kotlin $opt/tools/gh-ticket.main.kts -- create <ticket-path>
   PR ref: "see #N" — NEVER fixes|closes; close manually at full DoD
 
+§PROCESS [MANDATORY READ — especially after context compaction]
+sprint-based + TDD-informed workflow; two docs govern planning+execution:
+1. sprint roadmap: $ts/plans/2026-04-25-sprint-roadmap.compressed.md
+   checkpoint-based(not time-boxed); current sprint scope+backlog+blocking questions
+   updated at sprint close(outcomes)+start(scope); check before starting work
+2. TDD workflow: $ts/research/2026-04-21-multi-agent-tdd-workflow.compressed.md
+   tests alongside/before impl; every ticket includes test AC as DoD; PRs w/o tests=incomplete
+READ BOTH on every context load; after compaction process context is lost
+
 §TESTING
 prefer unit tests first; pure domain functions need no infrastructure
 prefer fakes|stubs over mock frameworks; mocks couple to impl; fakes test behavior

@@ -2,7 +2,7 @@
 id: GAME-027
 title: Hex-of-hexes map shape for new scenarios
 area: game, content
-status: open
+status: resolved
 created: 2026-04-27
 ---
 
