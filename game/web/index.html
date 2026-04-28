@@ -421,6 +421,29 @@
 
       /* ── Result screen (GAME-017) ────────────────────────────────────────── */
 
+      /* ── Wrap-up screen (GAME-020) ─────────────────────────────────────── */
+      #wrap-up-screen {
+        position: fixed; inset: 0;
+        background: #0d1b2e;
+        display: flex; align-items: center; justify-content: center;
+        z-index: 95;
+      }
+      #wrap-up-screen.hidden { display: none; }
+      #wrap-up-card {
+        background: #16213e; border: 1px solid #0f3460;
+        border-radius: 10px; padding: 40px 44px;
+        max-width: 560px; width: 90%; text-align: center;
+        color: #c0d0e8;
+      }
+      #wrap-up-card h1 {
+        font-size: 1.6rem; color: #4caf80; margin-bottom: 16px;
+      }
+      #btn-wrap-up-replay {
+        background: #1a3a5c; color: #c0d0e8; border: 1px solid #2a5a8c;
+        padding: 10px 24px; border-radius: 6px; cursor: pointer; font-size: 1rem;
+      }
+      #btn-wrap-up-replay:hover { background: #1a4a7a; }
+
       #result-screen {
         position: fixed;
         inset: 0;
@@ -732,6 +755,18 @@
         <div id="result-actions">
           <button id="btn-keep-drawing">← Keep Drawing</button>
           <button id="btn-next-scenario" style="display:none">Next Scenario →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Wrap-up screen (GAME-020) ─────────────────────────────────────── -->
+    <div id="wrap-up-screen" class="hidden">
+      <div id="wrap-up-card">
+        <h1>Congratulations</h1>
+        <p id="wrap-up-text">You've completed every scenario. You've drawn maps that packed voters, cracked communities, protected incumbents, satisfied reformers, and proven that no set of rules can make redistricting apolitical.</p>
+        <p style="color:#8898b0;margin-top:12px;">The lines always matter. Now you know why.</p>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+          <button id="btn-wrap-up-replay">Play Again</button>
         </div>
       </div>
     </div>
