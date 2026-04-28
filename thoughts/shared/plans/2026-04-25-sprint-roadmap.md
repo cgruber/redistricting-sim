@@ -2,7 +2,7 @@
 date: 2026-04-25
 status: active
 type: sprint-roadmap
-last_updated: 2026-04-27
+last_updated: 2026-04-28
 ---
 
 # Sprint Roadmap — Redistricting Simulator v1
@@ -41,8 +41,9 @@ See `thoughts/shared/vision/game-vision.compressed.md` for full scope.
 | 4 | One complete playable scenario | Tutorial scenario: intro → edit → test → pass/fail → retry | complete — 2026-04-25 |
 | 5 | More scenarios + remaining criteria | tutorial-002 wired; scenarios 2–4 authored; majority_minority/gap/mean-median implemented | complete — 2026-04-26 |
 | 6 | Game infrastructure + scenarios 5–7 | In-progress save/resume; scenarios 5–7 authored; hex-of-hexes for 007–009 | complete — 2026-04-27 |
-| 7 | Shippable v1 | About page; wrap-up screen; hex backport to 002–006; all scenarios visually consistent | current |
-| 8 | Polish | Test animation; achievements UX; compression; accessibility; animated criteria evaluation | backlog |
+| 7 | Shippable v1 | About page; wrap-up screen; hex backport to 002–006; all scenarios visually consistent | complete — 2026-04-28 |
+| 8 | Hardening | CSP, extract CSS, loader error handling, scenario compression | current |
+| 9 | Design research + polish | Achievement UX, demographic overlays, geographic features, accessibility | backlog |
 
 ---
 
@@ -168,28 +169,47 @@ PRs: #107 #108 #109 #110 #114
 
 ---
 
-## Sprint 8 — Polish [BACKLOG]
+## Sprint 8 — Hardening [CURRENT]
 
-**Goal**: The game feels polished. Animations, achievements, optimization,
-accessibility.
+**Goal**: Production-ready infrastructure — security, error handling,
+optimization. No new features, no research. Four tickets, no blockers.
 
 **Scope**:
-- Test sequence animation (governor/legislature/lobby icons — see vision §TEST)
-- Achievement/optional criteria UX (star display; see DESIGN-001)
-- Animated criteria evaluation with party reactions + election result wind-up
-  (demo feedback 2026-04-27; needs ticket)
-- Electoral outcome visual diff — show what changed before/after
-  (demo feedback 2026-04-27; needs ticket)
-- GAME-006: scenario compression (HTTP gzip for bundled; .scenarioz for downloads)
-- GAME-008: accessibility pass (color-blind palettes, ARIA, keyboard nav)
-- DESIGN-005/006/007: demographic overlay views (dot density, zoom-adaptive,
-  dimensional switching)
-- DESIGN-008: geographic features (lakes, mountains as decorative tiles)
-- Performance pass: confirm all scenarios ≤ 800 precincts (pure SVG) or
-  implement Canvas+SVG hybrid
+- **BUILD-005**: CSP meta tag — restrict scripts/styles/fetches to self
+- **BUILD-006**: Extract inline styles to external CSS — enables strict CSP
+- **GAME-032**: Scenario loader error handling — user-visible error screen,
+  collect all errors, helpful messages
+- **GAME-006**: Scenario compression — HTTP gzip for bundled delivery
 
-**Known tickets**: GAME-006, GAME-008, DESIGN-001, DESIGN-005, DESIGN-006,
-DESIGN-007, DESIGN-008. Animated criteria + electoral diff need new tickets.
+**Known tickets**: BUILD-005, BUILD-006, GAME-032, GAME-006.
+
+---
+
+## Sprint 9 — Design Research + Polish [BACKLOG]
+
+**Goal**: Research-first sprint — resolve open design questions, then implement.
+
+**Scope**:
+- DESIGN-001: Achievement/star UX research (blocks animated criteria eval)
+- DESIGN-005/006/007: Demographic overlay research → implementation
+- DESIGN-008: Geographic features (lakes, mountains as decorative tiles)
+- GAME-008: Accessibility pass (color-blind palettes, ARIA, keyboard nav)
+- GAME-031: Gameplay critique followup (review + act on external feedback)
+- Animated criteria evaluation + party reactions (needs ticket; blocked on DESIGN-001)
+- Electoral outcome visual diff (needs ticket)
+
+**Known tickets**: DESIGN-001, DESIGN-005, DESIGN-006, DESIGN-007, DESIGN-008,
+GAME-008, GAME-031. Two new tickets needed for animated criteria + electoral diff.
+
+---
+
+## Sprint 10+ (later)
+
+| Ticket | Area | Notes |
+|---|---|---|
+| GAME-030 | Main menu + campaigns | Architecture overhaul; own sprint |
+| DIST-001 | Steam deployment research | Before distribution decision |
+| LEGAL-001 | Content presentation risk | Before public release |
 
 ---
 
@@ -202,8 +222,6 @@ DESIGN-007, DESIGN-008. Animated criteria + electoral diff need new tickets.
 | CI-001 | GitHub Action ticket-close sync | Any (low priority) |
 | AGENT-003 | Infra PR review bot comment handling | Any |
 | DESIGN-004 | Legend layout (horizontal strip above map) | Any |
-| LEGAL-001 | Content presentation risk research | Before public release |
-| DIST-001 | Steam deployment research | Before distribution decision |
 
 ---
 
@@ -211,7 +229,7 @@ DESIGN-007, DESIGN-008. Animated criteria + electoral diff need new tickets.
 
 | Question | Blocks | ADR/spec reference |
 |---|---|---|
-| DESIGN-001: Star/achievement UX | Sprint 8 | DESIGN-001 ticket |
+| DESIGN-001: Star/achievement UX | Sprint 9 | DESIGN-001 ticket |
 
 **Resolved**:
 - OQ4 (narrative asset resolution) — intro slides shipped in Sprint 4 without image support; deferred indefinitely.
