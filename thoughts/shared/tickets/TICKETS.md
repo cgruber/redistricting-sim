@@ -94,6 +94,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
 | `GAME-020-last-scenario-wrap-up-screen.md` | game, UX | Wrap-up/congratulations screen after completing the final scenario (instead of dead-end select screen) |
 | `GAME-028-hex-shape-backport.md` | game, content | Backport hex-of-hexes shape to scenarios 002–006 + tutorial; regenerate JSON + rewrite e2e indices |
+| `GAME-029-about-page.md` | game, UX | About page: educational framing, designer intent, non-partisan stance, resource links |
 | `DESIGN-008-geographic-features.md` | design, rendering | Geographic features (lakes=aqua+wave, mountains=grey+hatch) as decorative non-precinct tiles; blocks contiguity |
 
 ---
