@@ -42,7 +42,7 @@ See `thoughts/shared/vision/game-vision.compressed.md` for full scope.
 | 5 | More scenarios + remaining criteria | tutorial-002 wired; scenarios 2–4 authored; majority_minority/gap/mean-median implemented | complete — 2026-04-26 |
 | 6 | Game infrastructure + scenarios 5–7 | In-progress save/resume; scenarios 5–7 authored; hex-of-hexes for 007–009 | complete — 2026-04-27 |
 | 7 | Shippable v1 | About page; wrap-up screen; hex backport to 002–006; all scenarios visually consistent | complete — 2026-04-28 |
-| 8 | Hardening | CSP, extract CSS, loader error handling, scenario compression | current |
+| 8 | Hardening | CSP, extract CSS, loader error handling, scenario compression | complete — 2026-04-28 |
 | 9 | Design research + polish | Achievement UX, demographic overlays, geographic features, accessibility | backlog |
 
 ---
@@ -169,19 +169,21 @@ PRs: #107 #108 #109 #110 #114
 
 ---
 
-## Sprint 8 — Hardening [CURRENT]
+## Sprint 8 — Hardening [COMPLETE 2026-04-28]
 
 **Goal**: Production-ready infrastructure — security, error handling,
-optimization. No new features, no research. Four tickets, no blockers.
+optimization. No new features, no research.
 
-**Scope**:
-- **BUILD-005**: CSP meta tag — restrict scripts/styles/fetches to self
-- **BUILD-006**: Extract inline styles to external CSS — enables strict CSP
-- **GAME-032**: Scenario loader error handling — user-visible error screen,
-  collect all errors, helpful messages
-- **GAME-006**: Scenario compression — HTTP gzip for bundled delivery
+**Outcome**: All tickets closed. CSP meta tag added with temporary
+`'unsafe-inline'` for scripts and styles (BUILD-005). Inline `<style>` block
+(747 lines) extracted to external `styles.css` (BUILD-006). User-visible error
+screen for scenario load failures with scenario ID, error message, and back
+button (GAME-032). Scenario compression resolved as no-code-change: HTTP gzip
+is sufficient for v1 delivery; `.scenarioz` deferred to community scenarios
+(GAME-006).
 
-**Known tickets**: BUILD-005, BUILD-006, GAME-032, GAME-006.
+**Tickets**: BUILD-005, BUILD-006, GAME-032, GAME-006
+PRs: #119 #120 #121 #122
 
 ---
 
