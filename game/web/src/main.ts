@@ -274,12 +274,16 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		if (!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
 		json = (await resp.json()) as unknown;
 	} catch (e) {
-		console.error("[GAME-005] Failed to fetch scenario:", e);
+		const msg = e instanceof Error ? e.message : String(e);
+		console.error(`[GAME-032] Failed to fetch scenario "${entryToLoad.id}":`, e);
 		document.body.insertAdjacentHTML(
 			"afterbegin",
-			`<div style="color:#e94560;padding:1em;font-family:monospace">
-        Scenario load failed — check console for details.
-      </div>`,
+			`<div style="position:fixed;inset:0;background:#0d1b2e;color:#c0d0e8;padding:2em;font-family:system-ui;z-index:999;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;">
+				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
+				<p style="max-width:600px;text-align:center;">Could not fetch scenario <strong>${entryToLoad.id}</strong>.</p>
+				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${msg}</pre>
+				<button onclick="window.location.assign('/')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">← Back to Scenarios</button>
+			</div>`,
 		);
 		return;
 	}
@@ -288,12 +292,16 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	try {
 		scenario = loadScenario(json);
 	} catch (e) {
-		console.error("[GAME-005] Scenario validation failed:", e);
+		const msg = e instanceof Error ? e.message : String(e);
+		console.error(`[GAME-032] Scenario "${entryToLoad.id}" validation failed:`, e);
 		document.body.insertAdjacentHTML(
 			"afterbegin",
-			`<div style="color:#e94560;padding:1em;font-family:monospace">
-        Scenario validation failed — check console for details.
-      </div>`,
+			`<div style="position:fixed;inset:0;background:#0d1b2e;color:#c0d0e8;padding:2em;font-family:system-ui;z-index:999;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;">
+				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
+				<p style="max-width:600px;text-align:center;">Scenario <strong>${entryToLoad.id}</strong> could not be loaded due to a validation error.</p>
+				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${msg}</pre>
+				<button onclick="window.location.assign('/')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">← Back to Scenarios</button>
+			</div>`,
 		);
 		return;
 	}
