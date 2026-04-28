@@ -2,7 +2,7 @@
 id: GAME-006
 title: Compressed scenario format and efficient delivery
 area: game, build
-status: open
+status: resolved
 created: 2026-04-25
 ---
 
@@ -52,6 +52,20 @@ Can be deferred to Sprint 3–4 if HTTP compression satisfies v1 delivery needs.
 - Community scenario sharing (post-v1) will use the `.scenarioz` format defined here.
 - Avoid MessagePack, CBOR, or other binary formats — JSON is human-readable and
   debuggable; gzip compression ratios on JSON are already very good (~70–80%).
+
+## Resolution (2026-04-28)
+
+**Part A resolved**: HTTP compression is sufficient for v1. Scenario JSON files
+range from 19KB (tutorial-001) to 106KB (scenario-005, 2 demographic groups).
+With gzip, these compress to ~3-15KB each. Any production static host
+(GH Pages, Netlify, Vercel) serves gzip automatically. The dev server
+(python3 http.server) doesn't, but that's acceptable for development.
+
+**Part B deferred**: `.scenarioz` format deferred to when community scenario
+sharing is implemented. No loader changes needed for v1.
+
+**Decision**: No code changes required. HTTP gzip handles delivery; JSON stays
+as the canonical format. Document this in the scenario data format spec.
 
 ## References
 
