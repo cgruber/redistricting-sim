@@ -157,6 +157,25 @@ Reference issues from PRs with `see #N` — never `fixes #N` or `closes #N`.
 
 ---
 
+## Development Process
+
+This project follows a **sprint-based development process** and **TDD-informed workflow**. Two documents govern how work is planned and executed — read both on every context load:
+
+1. **Sprint roadmap**: `thoughts/shared/plans/2026-04-25-sprint-roadmap.compressed.md`
+   - Checkpoint-based sprints (not time-boxed); sprint is done when demo target is met
+   - Current sprint scope, backlog, and open blocking questions live here
+   - Updated at sprint close (outcomes) and sprint start (scope planning)
+   - **Before starting work**: check which sprint is current and what's in scope
+
+2. **TDD workflow**: `thoughts/shared/research/2026-04-21-multi-agent-tdd-workflow.compressed.md`
+   - Tests written alongside or before implementation, not as backfill
+   - Every ticket includes test acceptance criteria as part of the Definition of Done
+   - PRs without tests for changed behavior are incomplete
+
+These are **mandatory reads** — especially after context compaction, where process context is lost. If you've just been loaded into a compacted context, read both before resuming work.
+
+---
+
 ## Testing Philosophy
 
 - Write unit tests first. Pure functions need no infrastructure.

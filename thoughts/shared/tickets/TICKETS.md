@@ -82,7 +82,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `BUILD-003-ts-rules-spawn-strategy-research.md` | build, typescript | Research optimal spawn_strategy config for aspect_rules_ts on macOS (darwin-sandbox + multi-target packages) |
 | `BUILD-004-playwright-bzl-macro.md` | build, testing | Playwright sh_test macro: proper Bazel rule for virtual store path resolution, replacing ad-hoc readlink discovery |
 | `GAME-006-scenario-compression.md` | game, build | Compressed scenario delivery: HTTP gzip for bundled; `.scenarioz` format for future downloads |
-| `GAME-007-player-progress-persistence.md` | game, storage | Save/resume in-progress scenario + completion tracking; "Continue" menu; localStorage |
 | `CI-001-github-action-ticket-close-sync.md` | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
 | `LEGAL-001-content-presentation-risks.md` | legal, content | Research legal risk from partial/no eligibility-restriction warnings in sim authoring tool |
 | `DIST-001-steam-deployment-research.md` | distribution, platform | Research Steam free/educational program, achievements API, web-vs-Steam tradeoffs |
@@ -94,7 +93,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-007-dimensional-dot-map-demographic-overlay.md` | design, rendering | Dimensional dot map: demographic dimension switching (Option B adaptive encoding) + sorted placement toggle |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
 | `GAME-020-last-scenario-wrap-up-screen.md` | game, UX | Wrap-up/congratulations screen after completing the final scenario (instead of dead-end select screen) |
-| `GAME-027-hex-map-shape.md` | game, content | Hex-of-hexes map shape (R=6, 127 hexes) for new scenarios 007–009; replaces rhomboid rectangular grid |
 | `GAME-028-hex-shape-backport.md` | game, content | Backport hex-of-hexes shape to scenarios 002–006 + tutorial; regenerate JSON + rewrite e2e indices |
 | `DESIGN-008-geographic-features.md` | design, rendering | Geographic features (lakes=aqua+wave, mountains=grey+hatch) as decorative non-precinct tiles; blocks contiguity |
 
@@ -104,6 +102,8 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-027: hex-of-hexes map shape | All AC met; scenarios 007-009 hex-of-hexes R=6 (127 precincts); generators + JSON + 9 e2e tests; dynamic party adapter fix; merged PR #104 |
+| GAME-007: player progress persistence | All AC met; WIP save/resume + completion tracking; localStorage; merged (prior session) |
 | DESIGN-003: districts view color encoding | Superseded — flat fills decided; population density → DESIGN-005 + DESIGN-006 |
 | GAME-026: Valle Verde (VRA / majority-minority) | All AC met; 120-precinct Valle Verde scenario; group_schema + ethnicity dimension; 3 e2e tests; merged PR #102 |
 | GAME-025: cracking the opposition | All AC met; 120-precinct Lakeview scenario; merged PR #97 |
