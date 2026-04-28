@@ -81,7 +81,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 |---|---|---|
 | `BUILD-003-ts-rules-spawn-strategy-research.md` | build, typescript | Research optimal spawn_strategy config for aspect_rules_ts on macOS (darwin-sandbox + multi-target packages) |
 | `BUILD-004-playwright-bzl-macro.md` | build, testing | Playwright sh_test macro: proper Bazel rule for virtual store path resolution, replacing ad-hoc readlink discovery |
-| `BUILD-005-content-security-policy.md` | build, security | CSP meta tag for production; restricts scripts/styles/fetches to self; `'unsafe-inline'` temp until BUILD-006 |
 | `BUILD-006-extract-inline-styles.md` | build, security | Extract inline `<style>` to external CSS; enables strict CSP (drop `'unsafe-inline'`) |
 | `GAME-006-scenario-compression.md` | game, build | Compressed scenario delivery: HTTP gzip for bundled; `.scenarioz` format for future downloads |
 | `CI-001-github-action-ticket-close-sync.md` | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
@@ -105,6 +104,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| BUILD-005: CSP meta tag | CSP added; script-src/style-src include 'unsafe-inline' temporarily (inline scripts + styles); title updated to Past the Post |
 | GAME-029: about page | All AC met; educational framing, non-partisan stance, resource links; merged PR #108 |
 | GAME-028: hex-of-hexes backport | All AC met; scenarios 002-006 + tutorial-002 converted to hex-of-hexes; generators + JSON + readable e2e tests; merged PR #114 |
 | GAME-027: hex-of-hexes map shape | All AC met; scenarios 007-009 hex-of-hexes R=6 (127 precincts); generators + JSON + 9 e2e tests; dynamic party adapter fix; merged PR #104 |

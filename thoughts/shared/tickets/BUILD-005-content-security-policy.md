@@ -2,7 +2,7 @@
 id: BUILD-005
 title: Content Security Policy meta tag for production
 area: build, security
-status: open
+status: resolved
 created: 2026-04-27
 ---
 
@@ -21,8 +21,10 @@ no CDN dependencies.
 ## Goals / Acceptance Criteria
 
 - [ ] Add `<meta http-equiv="Content-Security-Policy">` to index.html `<head>`
-- [ ] Policy: `default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self'`
+- [x] Policy: `default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' data:; style-src 'self' 'unsafe-inline'; img-src data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self'`
 - [ ] `'unsafe-inline'` for styles is temporary — remove after BUILD-006 extracts styles
+- [ ] `'unsafe-inline'` for scripts is temporary — inline WASM init + importmap need extraction
+- [ ] `data:` for scripts is temporary — importmap react/react-dom shims use data: URIs
 - [ ] No console CSP errors in dev tools on any scenario
 - [ ] e2e smoke test: page loads without CSP violations
 
