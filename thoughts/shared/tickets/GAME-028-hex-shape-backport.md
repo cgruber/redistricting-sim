@@ -2,7 +2,7 @@
 id: GAME-028
 title: Backport hex-of-hexes map shape to scenarios 002–006
 area: game, content
-status: open
+status: resolved
 created: 2026-04-27
 ---
 

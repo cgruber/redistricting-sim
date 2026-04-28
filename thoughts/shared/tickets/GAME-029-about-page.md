@@ -2,7 +2,7 @@
 id: GAME-029
 title: About page — educational framing, designer intent, resource links
 area: game, UX
-status: open
+status: resolved
 created: 2026-04-27
 ---
 

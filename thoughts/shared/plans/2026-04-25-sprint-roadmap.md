@@ -149,21 +149,22 @@ PRs: #102 #103 #104 #105
 
 ---
 
-## Sprint 7 — Shippable v1 [CURRENT]
+## Sprint 7 — Shippable v1 [COMPLETE 2026-04-28]
 
 **Goal**: A player can download/visit this and have a complete, consistent
 experience. No dead ends, no missing context, no visual inconsistencies.
 
-**Scope**:
-- **About page**: educational framing, designer intent, non-partisan stance,
-  links to resources (see vision §MENU). Without this the game has no context.
-- **GAME-020**: Wrap-up/congratulations screen after completing the final
-  scenario. Currently the player hits a dead-end select screen.
-- **GAME-028**: Backport hex-of-hexes shape to scenarios 002–006 + tutorial.
-  Currently 002–006 render as rhomboid parallelograms while 007–009 are
-  hexagonal — visually inconsistent.
+**Outcome**: All tickets closed. About page with educational framing, designer
+credit ("Christian Edward Jackson-Gruber and Claude"), and resource links
+(GAME-029). Wrap-up/congratulations screen after completing the final scenario
+(GAME-020). Hex-of-hexes backport to scenarios 002–006 + tutorial-002: all maps
+now render as hexagonal/circular shapes (GAME-028). Tutorial-001 left as-is
+(already compact at 30 precincts). Scenario-004 corridor narrowed from |r|≤1 to
+r=0 to make cracking mechanically viable. GAME-032 filed for loader error handling
+improvements discovered during backport.
 
-**Known tickets**: GAME-020, GAME-028. About page needs a ticket.
+**Tickets**: GAME-020, GAME-028, GAME-029
+PRs: #107 #108 #109 #110 #114
 
 ---
 

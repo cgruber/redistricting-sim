@@ -94,9 +94,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-006-zoom-adaptive-dot-density.md` | design, rendering | Zoom-adaptive dot density scaling + person glyph threshold (refinement on DESIGN-005, possibly post-v1) |
 | `DESIGN-007-dimensional-dot-map-demographic-overlay.md` | design, rendering | Dimensional dot map: demographic dimension switching (Option B adaptive encoding) + sorted placement toggle |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
-| `GAME-020-last-scenario-wrap-up-screen.md` | game, UX | Wrap-up/congratulations screen after completing the final scenario (instead of dead-end select screen) |
-| `GAME-028-hex-shape-backport.md` | game, content | Backport hex-of-hexes shape to scenarios 002–006 + tutorial; regenerate JSON + rewrite e2e indices |
-| `GAME-029-about-page.md` | game, UX | About page: educational framing, designer intent, non-partisan stance, resource links |
 | `GAME-030-main-menu-and-campaigns.md` | game, UX, architecture | Main menu, campaign model, campaign select, layered navigation; replaces scenario-select-as-home |
 | `GAME-032-scenario-loader-error-handling.md` | game, reliability | Improve loader validation: user-visible error screen, collect all errors, helpful messages |
 | `GAME-031-gameplay-critique-followup.md` | game, content, balance | Review and act on external gameplay critique research (scenario difficulty, eval balance, design) |
@@ -108,7 +105,10 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-029: about page | All AC met; educational framing, non-partisan stance, resource links; merged PR #108 |
+| GAME-028: hex-of-hexes backport | All AC met; scenarios 002-006 + tutorial-002 converted to hex-of-hexes; generators + JSON + readable e2e tests; merged PR #114 |
 | GAME-027: hex-of-hexes map shape | All AC met; scenarios 007-009 hex-of-hexes R=6 (127 precincts); generators + JSON + 9 e2e tests; dynamic party adapter fix; merged PR #104 |
+| GAME-020: wrap-up screen | All AC met; congratulations screen after completing final scenario; merged PR #107 |
 | GAME-007: player progress persistence | All AC met; WIP save/resume + completion tracking; localStorage; merged (prior session) |
 | DESIGN-003: districts view color encoding | Superseded — flat fills decided; population density → DESIGN-005 + DESIGN-006 |
 | GAME-026: Valle Verde (VRA / majority-minority) | All AC met; 120-precinct Valle Verde scenario; group_schema + ethnicity dimension; 3 e2e tests; merged PR #102 |
