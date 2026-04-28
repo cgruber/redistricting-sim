@@ -421,6 +421,33 @@
 
       /* ── Result screen (GAME-017) ────────────────────────────────────────── */
 
+      /* ── About screen (GAME-029) ───────────────────────────────────────── */
+      #about-screen {
+        position: fixed; inset: 0;
+        background: #0d1b2e;
+        display: flex; align-items: center; justify-content: center;
+        z-index: 95; overflow-y: auto; padding: 32px 0;
+      }
+      #about-screen.hidden { display: none; }
+      #about-card {
+        background: #16213e; border: 1px solid #0f3460;
+        border-radius: 10px; padding: 36px 40px;
+        max-width: 600px; width: 90%; color: #c0d0e8;
+        line-height: 1.6;
+      }
+      #about-card h1 { font-size: 1.5rem; color: #e94560; margin-bottom: 12px; }
+      #about-card h2 { font-size: 1.1rem; color: #8898b0; margin-top: 20px; margin-bottom: 8px; }
+      #about-card p { margin-bottom: 10px; }
+      #about-links { padding-left: 20px; margin-bottom: 12px; }
+      #about-links li { margin-bottom: 6px; }
+      #about-links a { color: #5b9bd5; text-decoration: none; }
+      #about-links a:hover { text-decoration: underline; }
+      #btn-about-close {
+        background: #1a3a5c; color: #c0d0e8; border: 1px solid #2a5a8c;
+        padding: 8px 20px; border-radius: 6px; cursor: pointer;
+      }
+      #btn-about-close:hover { background: #1a4a7a; }
+
       /* ── Wrap-up screen (GAME-020) ─────────────────────────────────────── */
       #wrap-up-screen {
         position: fixed; inset: 0;
@@ -730,9 +757,29 @@
   <body>
     <!-- ── Scenario select screen (GAME-018) ────────────────────────────── -->
     <div id="scenario-select" class="hidden">
-      <h1>Redistricting Simulator</h1>
+      <h1>Past the Post</h1>
       <div id="scenario-cards"></div>
-      <button id="btn-reset-campaign" style="margin-top:16px;background:none;border:1px solid #555;color:#888;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:0.75rem;">Reset Campaign</button>
+      <div style="display:flex;gap:16px;margin-top:16px;align-items:center;">
+        <button id="btn-about" style="background:none;border:1px solid #2a5a8c;color:#8898b0;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:0.75rem;">About</button>
+        <button id="btn-reset-campaign" style="background:none;border:1px solid #555;color:#888;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:0.75rem;">Reset Campaign</button>
+      </div>
+    </div>
+
+    <!-- ── About page (GAME-029) ──────────────────────────────────────────── -->
+    <div id="about-screen" class="hidden">
+      <div id="about-card">
+        <h1>Past the Post</h1>
+        <p>An educational redistricting simulator. Draw district boundaries, simulate elections, and discover how the same voters can produce wildly different outcomes depending on where the lines are drawn.</p>
+        <p>This game is not advocacy for or against any political party, position, or reform proposal. It presents multiple perspectives — partisan operatives, reform commissioners, bipartisan dealmakers — so that players leave with better questions, not predetermined answers.</p>
+        <h2>Learn More</h2>
+        <ul id="about-links">
+          <li><a href="https://www.brennancenter.org/issues/gerrymandering-fair-representation" target="_blank" rel="noopener">Brennan Center — Gerrymandering &amp; Fair Representation</a></li>
+          <li><a href="https://redistricting.lls.edu/" target="_blank" rel="noopener">Loyola Law School — All About Redistricting</a></li>
+          <li><a href="https://www.fairvote.org/redistricting" target="_blank" rel="noopener">FairVote — Redistricting</a></li>
+        </ul>
+        <p style="color:#606878;font-size:0.8rem;margin-top:16px;">Designed by Christian Gruber. Built with Claude.</p>
+        <button id="btn-about-close" style="margin-top:16px;">← Back</button>
+      </div>
     </div>
 
     <!-- ── WIP discard warning modal ──────────────────────────────────── -->
