@@ -86,6 +86,16 @@ export function scenarioToSpike(scenario: Scenario): {
 		};
 		if (pc.name !== undefined) spikePrecinct.name = pc.name;
 		if (pc.county_id !== undefined) spikePrecinct.county_id = pc.county_id;
+		if (pc.demographic_groups.length > 1) {
+			spikePrecinct.groupShares = pc.demographic_groups.map((g) => {
+				const entry: { name: string; share: number; dimensions?: Record<string, string> } = {
+					name: g.name ?? g.id,
+					share: g.population_share,
+				};
+				if (g.dimensions) entry.dimensions = g.dimensions as Record<string, string>;
+				return entry;
+			});
+		}
 		return spikePrecinct;
 	});
 

@@ -19,12 +19,12 @@ import { test, expect } from "@playwright/test";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-/** Navigate to a scenario, skip intro, wait for hex grid. */
+/** Navigate to a scenario, skip intro, wait for hex grid. Uses &debug to bypass lock gate. */
 async function loadScenario(
   page: import("@playwright/test").Page,
   id: string,
 ): Promise<void> {
-  await page.goto(`/?s=${id}`);
+  await page.goto(`/?s=${id}&debug`);
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
   await skip.click();
@@ -58,7 +58,7 @@ async function selectDistrict(
 // ─── scenario-002: "Give the Governor a Win" ─────────────────────────────────
 
 test("scenario-002 smoke: loads and renders 96 precincts", async ({ page }) => {
-  await page.goto("/?s=scenario-002");
+  await page.goto("/?s=scenario-002&debug");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
   await skip.click();
@@ -69,7 +69,7 @@ test("scenario-002 smoke: loads and renders 96 precincts", async ({ page }) => {
 });
 
 test("scenario-002 smoke: intro shows correct character and objective", async ({ page }) => {
-  await page.goto("/?s=scenario-002");
+  await page.goto("/?s=scenario-002&debug");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
   await expect(page.locator("#char-role")).toContainText("Ken Party");
   await expect(page.locator("#objective-text")).toContainText("Ken Party wins at least 3 seats");
@@ -124,7 +124,7 @@ test("scenario-002 winnability: gerrymandering 3/4 Ken districts passes the map"
 // ─── scenario-003: "The Packing Problem" ─────────────────────────────────────
 
 test("scenario-003 smoke: loads and renders 120 precincts", async ({ page }) => {
-  await page.goto("/?s=scenario-003");
+  await page.goto("/?s=scenario-003&debug");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
   await skip.click();
@@ -135,7 +135,7 @@ test("scenario-003 smoke: loads and renders 120 precincts", async ({ page }) => 
 });
 
 test("scenario-003 smoke: intro shows packing character and objective", async ({ page }) => {
-  await page.goto("/?s=scenario-003");
+  await page.goto("/?s=scenario-003&debug");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
   await expect(page.locator("#char-role")).toContainText("Ken Party");
   await expect(page.locator("#objective-text")).toContainText("4 of the 5 seats");
@@ -203,7 +203,7 @@ test("scenario-003 winnability: packing urban core into one district passes the 
 // ─── scenario-004: "Cracking the Opposition" ─────────────────────────────────
 
 test("scenario-004 smoke: loads and renders 120 precincts", async ({ page }) => {
-  await page.goto("/?s=scenario-004");
+  await page.goto("/?s=scenario-004&debug");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
   await skip.click();
@@ -214,7 +214,7 @@ test("scenario-004 smoke: loads and renders 120 precincts", async ({ page }) => 
 });
 
 test("scenario-004 smoke: intro references cracking tactic and prior scenario", async ({ page }) => {
-  await page.goto("/?s=scenario-004");
+  await page.goto("/?s=scenario-004&debug");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
   await expect(page.locator("#char-role")).toContainText("Ken Party");
   await expect(page.locator("#objective-text")).toContainText("Ken Party wins every seat");
@@ -277,7 +277,7 @@ test("scenario-004 winnability: cracking the corridor across all 5 districts pas
 // ─── scenario-005: "Valle Verde: A Voice for the Valley" ─────────────────────
 
 test("scenario-005 smoke: loads and renders 120 precincts", async ({ page }) => {
-  await page.goto("/?s=scenario-005");
+  await page.goto("/?s=scenario-005&debug");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
   await skip.click();
@@ -288,7 +288,7 @@ test("scenario-005 smoke: loads and renders 120 precincts", async ({ page }) => 
 });
 
 test("scenario-005 smoke: intro shows VRA character and objective", async ({ page }) => {
-  await page.goto("/?s=scenario-005");
+  await page.goto("/?s=scenario-005&debug");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
   await expect(page.locator("#char-role")).toContainText("Redistricting Coordinator");
   await expect(page.locator("#objective-text")).toContainText("majority-Latino district");
@@ -361,7 +361,7 @@ test("scenario-005 winnability: consolidating the valley into one district passe
 // ─── scenario-006: "Harden the Map" ─────────────────────────────────────────
 
 test("scenario-006 smoke: loads and renders 120 precincts", async ({ page }) => {
-  await page.goto("/?s=scenario-006");
+  await page.goto("/?s=scenario-006&debug");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
   await skip.click();
@@ -370,7 +370,7 @@ test("scenario-006 smoke: loads and renders 120 precincts", async ({ page }) => 
 });
 
 test("scenario-006 smoke: intro shows bipartisan consultant role", async ({ page }) => {
-  await page.goto("/?s=scenario-006");
+  await page.goto("/?s=scenario-006&debug");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
   await expect(page.locator("#char-role")).toContainText("Bipartisan Redistricting Consultant");
   await expect(page.locator("#objective-text")).toContainText("safe seats");
@@ -410,7 +410,7 @@ test("scenario-006 winnability: separating partisan flanks into safe districts p
 // ─── scenario-007: "The Reform Map" ─────────────────────────────────────────
 
 test("scenario-007 smoke: loads and renders 127 precincts", async ({ page }) => {
-  await page.goto("/?s=scenario-007");
+  await page.goto("/?s=scenario-007&debug");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
   await skip.click();
@@ -419,7 +419,7 @@ test("scenario-007 smoke: loads and renders 127 precincts", async ({ page }) => 
 });
 
 test("scenario-007 smoke: intro shows reform commissioner role", async ({ page }) => {
-  await page.goto("/?s=scenario-007");
+  await page.goto("/?s=scenario-007&debug");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
   await expect(page.locator("#char-role")).toContainText("Reform Commissioner");
   await expect(page.locator("#objective-text")).toContainText("compact");
@@ -468,12 +468,12 @@ test("scenario-007 winnability: five compact blobs pass reform criteria", async 
 // ─── scenario-008: "Both Sides Unhappy" ─────────────────────────────────────
 
 test("scenario-008 smoke: loads and renders 127 precincts", async ({ page }) => {
-  await page.goto("/?s=scenario-008");
+  await page.goto("/?s=scenario-008&debug");
   await expect(page.locator("path.hex")).toHaveCount(127);
 });
 
 test("scenario-008 smoke: intro shows independent commissioner role", async ({ page }) => {
-  await page.goto("/?s=scenario-008");
+  await page.goto("/?s=scenario-008&debug");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
   await expect(page.locator("#char-role")).toContainText("Independent Commissioner");
   await expect(page.locator("#objective-text")).toContainText("compact");
@@ -515,12 +515,12 @@ test("scenario-008 winnability: compact Voronoi blobs pass neutral criteria", as
 // ─── scenario-009: "Cats vs. Dogs" ──────────────────────────────────────────
 
 test("scenario-009 smoke: loads and renders 127 precincts", async ({ page }) => {
-  await page.goto("/?s=scenario-009");
+  await page.goto("/?s=scenario-009&debug");
   await expect(page.locator("path.hex")).toHaveCount(127);
 });
 
 test("scenario-009 smoke: intro shows Cat Party strategist role", async ({ page }) => {
-  await page.goto("/?s=scenario-009");
+  await page.goto("/?s=scenario-009&debug");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
   await expect(page.locator("#char-role")).toContainText("Cat Party");
   await expect(page.locator("#objective-text")).toContainText("Cat Party");
@@ -560,4 +560,88 @@ test("scenario-009 winnability: ring-based split gives 3 Cat-safe districts", as
   await page.locator("#btn-submit").click();
   await expect(page.locator("#result-screen")).toBeVisible();
   await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+});
+
+// ─── Cross-cutting: demo feedback fixes ─────────────────────────────────────
+
+test("scenario select: all cards visible and scrollable", async ({ page }) => {
+  // Navigate first so localStorage is accessible, then seed progress and reload
+  await page.goto("/");
+  await page.evaluate(() => {
+    localStorage.setItem("redistricting-sim-progress", JSON.stringify({ completed: ["tutorial-002"] }));
+  });
+  await page.reload();
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  const cards = page.locator(".scenario-card");
+  const count = await cards.count();
+  expect(count).toBeGreaterThanOrEqual(9);
+  // The last card should be scrollable into view, not clipped
+  const lastCard = cards.last();
+  await lastCard.scrollIntoViewIfNeeded();
+  await expect(lastCard).toBeVisible();
+});
+
+test("scenario-005 precinct hover shows demographic group breakdown", async ({ page }) => {
+  await loadScenario(page, "scenario-005");
+  const hex = page.locator("path.hex").first();
+  await hex.hover();
+  const infoPanel = page.locator("#precinct-info");
+  await expect(infoPanel).toContainText("%", { timeout: 3_000 });
+  // Multiple % signs = lean + per-group breakdown (Valle Verde has 3+ groups)
+  const text = await infoPanel.textContent();
+  const percentCount = (text?.match(/%/g) ?? []).length;
+  expect(percentCount).toBeGreaterThanOrEqual(3);
+});
+
+test("debug force-win button: visible with ?debug param, marks scenario complete", async ({ page }) => {
+  await page.goto("/?s=tutorial-002&debug");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
+  const debugBtn = page.locator("#btn-debug-win");
+  await expect(debugBtn).toBeVisible();
+  await debugBtn.click();
+  // Should navigate to select screen after force-win
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  const completed = await page.evaluate(() => {
+    const raw = localStorage.getItem("redistricting-sim-progress");
+    return raw ? JSON.parse(raw) : null;
+  });
+  expect(completed?.completed).toContain("tutorial-002");
+});
+
+test("debug force-win button: hidden without ?debug param", async ({ page }) => {
+  // Navigate WITHOUT &debug (can't use loadScenario which adds it)
+  await page.goto("/?s=tutorial-002");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
+  const debugBtn = page.locator("#btn-debug-win");
+  await expect(debugBtn).not.toBeVisible();
+});
+
+test("lock gate: direct URL to locked scenario redirects to select screen", async ({ page }) => {
+  // Ensure no progress — scenario-002 requires tutorial-002 completed
+  await page.goto("/");
+  await page.evaluate(() => {
+    localStorage.removeItem("redistricting-sim-progress");
+    localStorage.removeItem("redistricting-sim-wip");
+  });
+  await page.goto("/?s=scenario-002");
+  // Should NOT show the intro or hex grid — should show the select screen
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator("path.hex")).toHaveCount(0);
+});
+
+test("lock gate: debug param bypasses lock on locked scenario", async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() => {
+    localStorage.removeItem("redistricting-sim-progress");
+    localStorage.removeItem("redistricting-sim-wip");
+  });
+  await page.goto("/?s=scenario-002&debug");
+  // Should load the scenario, not redirect
+  await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
 });

@@ -134,7 +134,7 @@ if (
 			const completed = isCompleted(progress, entry.id);
 			const unlocked = i === 0 || isCompleted(progress, SCENARIO_MANIFEST[i - 1]?.id ?? "");
 			const locked = !unlocked;
-			const inProgress = !completed && wip?.scenarioId === entry.id;
+			const inProgress = wip?.scenarioId === entry.id;
 
 			const card = document.createElement("div");
 			card.className = `scenario-card${locked ? " locked" : ""}`;
@@ -144,18 +144,24 @@ if (
 			titleEl.textContent = entry.title;
 
 			const statusEl = document.createElement("div");
-			const statusLabel = completed ? "Completed" : inProgress ? "In Progress" : unlocked ? "Ready" : "Locked";
-			const statusClass = completed ? "completed" : inProgress ? "in-progress" : unlocked ? "unlocked" : "locked";
+			const statusLabel = inProgress ? "In Progress" : completed ? "Completed" : unlocked ? "Ready" : "Locked";
+			const statusClass = inProgress ? "in-progress" : completed ? "completed" : unlocked ? "unlocked" : "locked";
 			statusEl.className = `sc-status ${statusClass}`;
 			statusEl.textContent = statusLabel;
 
 			const playBtn = document.createElement("button");
-			playBtn.className = `sc-play-btn ${completed ? "replay" : inProgress ? "continue" : unlocked ? "play" : "locked-btn"}`;
-			playBtn.textContent = completed ? "Play Again" : inProgress ? "Continue" : unlocked ? "Play" : "Locked";
+			playBtn.className = `sc-play-btn ${inProgress ? "continue" : completed ? "replay" : unlocked ? "play" : "locked-btn"}`;
+			playBtn.textContent = inProgress ? "Continue" : completed ? "Play Again" : unlocked ? "Play" : "Locked";
 			playBtn.disabled = locked;
 			if (!locked) {
 				playBtn.addEventListener("click", () => {
-					window.location.assign(`/?s=${entry.id}`);
+					const currentWip = loadWip();
+					if (currentWip && currentWip.scenarioId !== entry.id) {
+						// Warn: switching will discard in-progress work on a different scenario
+						showWipWarning(currentWip.scenarioId, entry.id);
+					} else {
+						window.location.assign(`/?s=${entry.id}`);
+					}
 				});
 			}
 
@@ -166,9 +172,44 @@ if (
 		});
 	}
 
+	function showWipWarning(wipScenarioId: string, targetId: string) {
+		const modal = document.getElementById("wip-warning-modal");
+		const text = document.getElementById("wip-warning-text");
+		const confirmBtn = document.getElementById("wip-warning-confirm");
+		const cancelBtn = document.getElementById("wip-warning-cancel");
+		if (!modal || !text || !confirmBtn || !cancelBtn) return;
+		const wipTitle = SCENARIO_MANIFEST.find((e) => e.id === wipScenarioId)?.title ?? wipScenarioId;
+		text.textContent = `You have unsaved progress in "${wipTitle}". Switching scenarios will discard it.`;
+		modal.classList.remove("hidden");
+		const onConfirm = () => {
+			cleanup();
+			clearWip();
+			window.location.assign(`/?s=${targetId}`);
+		};
+		const onCancel = () => {
+			cleanup();
+			modal.classList.add("hidden");
+		};
+		function cleanup() {
+			confirmBtn!.removeEventListener("click", onConfirm);
+			cancelBtn!.removeEventListener("click", onCancel);
+		}
+		confirmBtn.addEventListener("click", onConfirm);
+		cancelBtn.addEventListener("click", onCancel);
+	}
+
 	function showScenarioSelect() {
 		renderScenarioCards();
 		scenarioSelectEl?.classList.remove("hidden");
+
+		// Reset campaign button — clears all progress and WIP
+		document.getElementById("btn-reset-campaign")?.addEventListener("click", () => {
+			if (!confirm("Reset all progress? This will erase completion status and any in-progress work.")) return;
+			progress = { completed: [] };
+			saveProgress(progress);
+			clearWip();
+			renderScenarioCards();
+		});
 	}
 
 	// ── Startup routing (GAME-021) ────────────────────────────────────────────
@@ -181,8 +222,15 @@ if (
 	);
 
 	let entryToLoad: ManifestEntry;
+	const isDebug = urlParams.has("debug");
 	if (requestedEntry !== undefined) {
-		// Explicit scenario requested via URL — play it directly
+		// Check unlock: scenario must be first, or previous scenario completed (unless debug)
+		const idx = SCENARIO_MANIFEST.indexOf(requestedEntry);
+		const locked = idx > 0 && !isCompleted(progress, SCENARIO_MANIFEST[idx - 1]?.id ?? "");
+		if (locked && !isDebug) {
+			showScenarioSelect();
+			return;
+		}
 		entryToLoad = requestedEntry;
 	} else if (progress.completed.length > 0 || loadWip() !== null) {
 		// Returning player (has completed or in-progress scenario) — show select screen
@@ -255,22 +303,28 @@ if (
 		temporalStore.getState().clear();
 		isRestoringWip = false;
 	}
+	function flushWipSave() {
+		if (wipTimer !== null) clearTimeout(wipTimer);
+		wipTimer = null;
+		const { assignments, activeDistrict } = store.getState();
+		const assignmentsRecord: Record<string, number> = {};
+		for (const [k, v] of assignments) {
+			if (v !== null) assignmentsRecord[String(k)] = v;
+		}
+		const wip: WipState = {
+			scenarioId: scenario.id,
+			assignments: assignmentsRecord,
+			activeDistrict,
+		};
+		saveWip(wip);
+	}
+
 	function scheduleWipSave() {
 		if (isRestoringWip) return;
 		if (wipTimer !== null) clearTimeout(wipTimer);
 		wipTimer = setTimeout(() => {
 			wipTimer = null;
-			const { assignments, activeDistrict } = store.getState();
-			const assignmentsRecord: Record<string, number> = {};
-			for (const [k, v] of assignments) {
-				if (v !== null) assignmentsRecord[String(k)] = v;
-			}
-			const wip: WipState = {
-				scenarioId: scenario.id,
-				assignments: assignmentsRecord,
-				activeDistrict,
-			};
-			saveWip(wip);
+			flushWipSave();
 		}, 800);
 	}
 
@@ -512,8 +566,26 @@ if (
 		showResultScreen();
 	});
 
+	// ── Debug force-win: visible only with ?debug in URL ─────────────────────
+	const btnDebugWin = document.getElementById("btn-debug-win") as HTMLButtonElement | null;
+	if (btnDebugWin && new URLSearchParams(window.location.search).has("debug")) {
+		btnDebugWin.style.display = "";
+		btnDebugWin.addEventListener("click", () => {
+			progress = markCompleted(progress, scenario.id);
+			saveProgress(progress);
+			clearWip();
+			window.location.assign("/");
+		});
+	}
+
 	btnKeepDrawing!.addEventListener("click", () => {
 		resultScreen!.classList.add("hidden");
+	});
+
+	// "← Scenarios" button → flush WIP then return to scenario select
+	document.getElementById("btn-back-to-scenarios")?.addEventListener("click", () => {
+		flushWipSave();
+		window.location.assign("/");
 	});
 
 	// "Next Scenario" → navigate back to root so routing re-evaluates with
