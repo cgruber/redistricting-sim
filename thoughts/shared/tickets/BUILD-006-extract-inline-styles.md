@@ -2,7 +2,7 @@
 id: BUILD-006
 title: Extract inline styles to external CSS file
 area: build, security
-status: open
+status: resolved
 created: 2026-04-27
 ---
 
