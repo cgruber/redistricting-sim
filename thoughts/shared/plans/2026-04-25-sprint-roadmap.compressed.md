@@ -1,6 +1,6 @@
 <!--COMPRESSED v1; source:2026-04-25-sprint-roadmap.md-->
 §META
-date:2026-04-25 last_updated:2026-04-27 status:active type:sprint-roadmap
+date:2026-04-25 last_updated:2026-04-28 status:active type:sprint-roadmap
 LIVING DOC — update at sprint start (fill tickets) + after demo (outcomes, re-evaluate next)
 
 §ABBREV
@@ -27,7 +27,8 @@ see game-vision.compressed.md for full scope
 | S5 | more scenarios + remaining criteria | tutorial-002 wired; scenarios 2–4; majority_minority/gap/mean-median | complete — 2026-04-26 |
 | S6 | game infra + scenarios 5–7 | GAME-007 save/resume; scenarios 5–9; hex-of-hexes; demo feedback fixes | complete — 2026-04-27 |
 | S7 | shippable $v1 | about page; wrap-up screen; hex backport 002–006; visual consistency | complete — 2026-04-28 |
-| S8 | polish | test anim; achievements; compression; accessibility; animated criteria eval | backlog |
+| S8 | hardening | CSP; extract CSS; loader errors; scenario compression | current |
+| S9 | design research+polish | achievement UX; demographic overlays; geo features; accessibility | backlog |
 
 §SPRINT1 [COMPLETE 2026-04-25]
 goal: app renders tutorial-001.json; player paints+undoes; no sim/game-loop yet
@@ -77,19 +78,31 @@ outcome: all tickets closed; about page w/ educational framing+designer credit (
 tickets (all resolved): GAME-020 GAME-028 GAME-029
 PRs: #107 #108 #109 #110 #114
 
-§SPRINT8 (backlog)
-goal: polish — animations, achievements, optimization, accessibility
+§SPRINT8 [CURRENT]
+goal: hardening — security, error handling, optimization; no new features, no research
 scope:
-  test sequence animation (governor/legislature/lobby icons)
-  achievement/star UX (blocked on DESIGN-001 research)
-  animated criteria evaluation + party reactions + election wind-up (needs ticket)
-  electoral outcome visual diff (needs ticket)
-  GAME-006 scenario compression
-  GAME-008 accessibility pass
+  BUILD-005: CSP meta tag (restrict scripts/styles/fetches to self)
+  BUILD-006: extract inline styles to external CSS (enables strict CSP)
+  GAME-032: scenario loader error handling (user-visible errors, collect all)
+  GAME-006: scenario compression (HTTP gzip for bundled)
+known tickets: BUILD-005 BUILD-006 GAME-032 GAME-006
+
+§SPRINT9 (backlog)
+goal: design research+polish — resolve open design questions then implement
+scope:
+  DESIGN-001 achievement/star UX research (blocks animated criteria eval)
   DESIGN-005/006/007 demographic overlays
   DESIGN-008 geographic features (lakes, mountains)
-  performance pass (≤800 $pcs SVG | Canvas+SVG hybrid)
-known tickets: GAME-006 GAME-008 DESIGN-001 DESIGN-005 DESIGN-006 DESIGN-007 DESIGN-008
+  GAME-008 accessibility pass
+  GAME-031 gameplay critique followup
+  animated criteria eval+party reactions (needs ticket; blocked on DESIGN-001)
+  electoral outcome visual diff (needs ticket)
+known tickets: DESIGN-001 DESIGN-005 DESIGN-006 DESIGN-007 DESIGN-008 GAME-008 GAME-031
+
+§SPRINT10+ (later)
+GAME-030 main menu+campaigns (architecture; own sprint)
+DIST-001 Steam deployment research
+LEGAL-001 content presentation risk
 
 §BACKLOG (not sprint-assigned)
 BUILD-003 ts-rules spawn strategy          any
@@ -100,7 +113,14 @@ DESIGN-004 legend layout                   any
 LEGAL-001 content presentation risk        before public release
 DIST-001  Steam deployment research        before distribution decision
 
+§BACKLOG (not sprint-assigned)
+BUILD-003 ts-rules spawn strategy          any
+BUILD-004 playwright bzl macro             any
+CI-001    GH Action ticket-close sync      any (low priority)
+AGENT-003 infra PR review bot              any
+DESIGN-004 legend layout                   any
+
 §BLOCKING_OPEN_QUESTIONS
-DESIGN-001 star/achievement UX → blocks S8
+DESIGN-001 star/achievement UX → blocks S9
 RESOLVED: OQ4 narrative asset resolution — deferred indefinitely
 RESOLVED: OQ9 StateContext redesign — deferrable past $v1
