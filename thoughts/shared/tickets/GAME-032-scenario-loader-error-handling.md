@@ -2,7 +2,7 @@
 id: GAME-032
 title: Improve scenario loader validation and error handling
 area: game, reliability
-status: open
+status: resolved
 created: 2026-04-27
 ---
 

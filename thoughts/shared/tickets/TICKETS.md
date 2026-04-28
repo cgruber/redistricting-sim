@@ -93,7 +93,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-007-dimensional-dot-map-demographic-overlay.md` | design, rendering | Dimensional dot map: demographic dimension switching (Option B adaptive encoding) + sorted placement toggle |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
 | `GAME-030-main-menu-and-campaigns.md` | game, UX, architecture | Main menu, campaign model, campaign select, layered navigation; replaces scenario-select-as-home |
-| `GAME-032-scenario-loader-error-handling.md` | game, reliability | Improve loader validation: user-visible error screen, collect all errors, helpful messages |
 | `GAME-031-gameplay-critique-followup.md` | game, content, balance | Review and act on external gameplay critique research (scenario difficulty, eval balance, design) |
 | `DESIGN-008-geographic-features.md` | design, rendering | Geographic features (lakes=aqua+wave, mountains=grey+hatch) as decorative non-precinct tiles; blocks contiguity |
 
@@ -103,6 +102,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-032: loader error handling | User-visible error screen with scenario ID, error message, and back button; replaces blank page on validation/fetch failures |
 | BUILD-006: extract inline styles | Inline `<style>` block extracted to styles.css; `'unsafe-inline'` remains in style-src for HTML element inline styles; serve + e2e updated |
 | BUILD-005: CSP meta tag | CSP added; script-src/style-src include 'unsafe-inline' temporarily (inline scripts + styles); title updated to Past the Post |
 | GAME-029: about page | All AC met; educational framing, non-partisan stance, resource links; merged PR #108 |
