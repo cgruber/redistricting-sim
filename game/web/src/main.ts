@@ -210,6 +210,7 @@ if (
 			clearWip();
 			renderScenarioCards();
 		});
+
 	}
 
 	// ── Startup routing (GAME-021) ────────────────────────────────────────────
@@ -588,9 +589,19 @@ if (
 		window.location.assign("/");
 	});
 
-	// "Next Scenario" → navigate back to root so routing re-evaluates with
-	// updated progress and shows the select screen (or next unlocked scenario).
+	// "Next Scenario" → if all scenarios complete, show wrap-up; else select screen.
 	btnNextScenario!.addEventListener("click", () => {
+		const allComplete = SCENARIO_MANIFEST.every((e) => isCompleted(progress, e.id));
+		if (allComplete) {
+			resultScreen!.classList.add("hidden");
+			document.getElementById("wrap-up-screen")?.classList.remove("hidden");
+		} else {
+			window.location.assign("/");
+		}
+	});
+
+	// Wrap-up "Play Again" → back to select screen
+	document.getElementById("btn-wrap-up-replay")?.addEventListener("click", () => {
 		window.location.assign("/");
 	});
 

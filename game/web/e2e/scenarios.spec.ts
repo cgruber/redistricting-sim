@@ -645,3 +645,46 @@ test("lock gate: debug param bypasses lock on locked scenario", async ({ page })
   // Should load the scenario, not redirect
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
 });
+
+// ─── GAME-020: Wrap-up screen after final scenario ──────────────────────────
+
+test("wrap-up screen: completing last scenario shows wrap-up on Next Scenario", async ({ page }) => {
+  // Seed all but scenario-009 as complete
+  await page.goto("/");
+  const allButLast = [
+    "tutorial-002", "scenario-002", "scenario-003", "scenario-004",
+    "scenario-005", "scenario-006", "scenario-007", "scenario-008",
+  ];
+  await page.evaluate((ids) => {
+    localStorage.setItem("redistricting-sim-progress", JSON.stringify({ completed: ids }));
+  }, allButLast);
+  // Load scenario-009 and complete it
+  await loadScenario(page, "scenario-009");
+  // Use paintStroke to apply the known winning assignment
+  await page.evaluate(() => {
+    const store = (window as unknown as Record<string, { getState: () => {
+      paintStroke: (ids: number[], district: number) => void;
+    } }>)["__gameStore"];
+    if (!store) throw new Error("__gameStore not found on window");
+    const { paintStroke } = store.getState();
+    const assignment: number[][] = [
+      [27,28,29,30,37,38,39,40,41,49,50,51,52,61,62,63,64,65,74,75,76,77,86,87,88],
+      [55,66,67,68,72,73,78,79,80,83,84,85,89,90,95,96,97,98,99,100,105,106,107,108,109],
+      [8,9,10,11,12,13,16,17,18,19,20,21,22,25,26,31,32,36,42,47,48,53,54,59,60],
+      [82,91,92,93,94,101,102,103,104,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126],
+      [0,1,2,3,4,5,6,7,14,15,23,24,33,34,35,43,44,45,46,56,57,58,69,70,71,81],
+    ];
+    assignment.forEach((ids, d) => paintStroke(ids, d + 1));
+  });
+  await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+  // Click "Next Scenario" — should show wrap-up, not select screen
+  await page.locator("#btn-next-scenario").click();
+  await expect(page.locator("#wrap-up-screen")).toBeVisible({ timeout: 5_000 });
+  await expect(page.locator("#wrap-up-screen")).toContainText("Congratulations");
+  // Select screen should NOT be visible
+  await expect(page.locator("#scenario-select")).not.toBeVisible();
+});
+
+// (GAME-029 about page tests will be added in a separate PR)
