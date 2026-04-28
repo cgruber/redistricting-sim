@@ -245,7 +245,11 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	);
 
 	let entryToLoad: ManifestEntry;
-	if (requestedEntry !== undefined) {
+	if (requestedId !== "" && requestedEntry === undefined) {
+		// Unknown scenario ID in URL — redirect to select screen
+		showScenarioSelect();
+		return;
+	} else if (requestedEntry !== undefined) {
 		// Check unlock: scenario must be first, or previous scenario completed (unless debug)
 		const idx = SCENARIO_MANIFEST.indexOf(requestedEntry);
 		const locked = idx > 0 && !isCompleted(progress, SCENARIO_MANIFEST[idx - 1]?.id ?? "");
