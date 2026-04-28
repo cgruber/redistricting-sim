@@ -71,7 +71,7 @@ esbuild(
 
 filegroup(
     name = "html",
-    srcs = ["index.html"],
+    srcs = ["index.html", "styles.css"],
     visibility = ["//visibility:public"],
 )
 

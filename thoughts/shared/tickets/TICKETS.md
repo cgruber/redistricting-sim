@@ -81,7 +81,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 |---|---|---|
 | `BUILD-003-ts-rules-spawn-strategy-research.md` | build, typescript | Research optimal spawn_strategy config for aspect_rules_ts on macOS (darwin-sandbox + multi-target packages) |
 | `BUILD-004-playwright-bzl-macro.md` | build, testing | Playwright sh_test macro: proper Bazel rule for virtual store path resolution, replacing ad-hoc readlink discovery |
-| `BUILD-006-extract-inline-styles.md` | build, security | Extract inline `<style>` to external CSS; enables strict CSP (drop `'unsafe-inline'`) |
 | `GAME-006-scenario-compression.md` | game, build | Compressed scenario delivery: HTTP gzip for bundled; `.scenarioz` format for future downloads |
 | `CI-001-github-action-ticket-close-sync.md` | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
 | `LEGAL-001-content-presentation-risks.md` | legal, content | Research legal risk from partial/no eligibility-restriction warnings in sim authoring tool |
@@ -104,6 +103,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| BUILD-006: extract inline styles | Inline `<style>` block extracted to styles.css; `'unsafe-inline'` remains in style-src for HTML element inline styles; serve + e2e updated |
 | BUILD-005: CSP meta tag | CSP added; script-src/style-src include 'unsafe-inline' temporarily (inline scripts + styles); title updated to Past the Post |
 | GAME-029: about page | All AC met; educational framing, non-partisan stance, resource links; merged PR #108 |
 | GAME-028: hex-of-hexes backport | All AC met; scenarios 002-006 + tutorial-002 converted to hex-of-hexes; generators + JSON + readable e2e tests; merged PR #114 |

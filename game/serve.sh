@@ -23,8 +23,9 @@ cp "${BAZEL_BIN}/rust/wasm_calc_bindgen/wasm_calc_bindgen_bg.wasm" "${DIST}/"
 # esbuild bundle (TypeScript + npm deps bundled into a single file)
 cp "${BAZEL_BIN}/web/bundle.js" "${DIST}/"
 
-# HTML entry point (served from source)
+# HTML entry point + CSS (served from source)
 cp "${BUILD_WORKSPACE_DIRECTORY}/web/index.html" "${DIST}/"
+cp "${BUILD_WORKSPACE_DIRECTORY}/web/styles.css" "${DIST}/"
 
 # Scenario JSON files (fetched at runtime; not bundled by esbuild)
 mkdir -p "${DIST}/scenarios"

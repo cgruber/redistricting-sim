@@ -42,6 +42,7 @@ else
 fi
 WEB_BUNDLE="${RUNFILES_MOD}/web/bundle.js"
 WEB_HTML="${RUNFILES_MOD}/web/index.html"
+WEB_CSS="${RUNFILES_MOD}/web/styles.css"
 WASM_JS="${RUNFILES_MOD}/rust/wasm_calc_bindgen/wasm_calc_bindgen.js"
 WASM_BG="${RUNFILES_MOD}/rust/wasm_calc_bindgen/wasm_calc_bindgen_bg.wasm"
 SCENARIOS_DIR="${RUNFILES_MOD}/scenarios"
@@ -68,6 +69,7 @@ cleanup() {
 trap cleanup EXIT
 
 cp "${WEB_HTML}"   "${SERVE_DIR}/index.html"
+cp "${WEB_CSS}"    "${SERVE_DIR}/styles.css"
 cp "${WEB_BUNDLE}" "${SERVE_DIR}/bundle.js"
 cp "${WASM_JS}"    "${SERVE_DIR}/wasm_calc_bindgen.js"
 cp "${WASM_BG}"    "${SERVE_DIR}/wasm_calc_bindgen_bg.wasm"
