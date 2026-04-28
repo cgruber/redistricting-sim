@@ -456,12 +456,20 @@ export class SvgMapRenderer implements MapRenderer {
 						d.partyShare[a] > d.partyShare[b] ? a : b,
 					);
 					const leanLabel = `${PARTY_LABELS[topParty]} (${(d.partyShare[topParty] * 100).toFixed(1)}%)`;
+					let groupsHtml = "";
+					if (d.groupShares && d.groupShares.length > 1) {
+						const lines = d.groupShares.map(
+							(g) => `${g.name}: ${(g.share * 100).toFixed(0)}%`,
+						);
+						groupsHtml = `<br><span style="color:#8898b0">` + lines.join("<br>") + `</span>`;
+					}
 					infoPanel.innerHTML =
 						`<div class="precinct-name">${precinctLabel}</div>` +
 						`<div class="precinct-detail">` +
 						`${distLabel}<br>` +
 						`Pop: ${d.population.toLocaleString()}<br>` +
 						`Lean: ${leanLabel}` +
+						groupsHtml +
 						`</div>`;
 				}
 			}

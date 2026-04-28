@@ -317,18 +317,42 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
         gap: 32px;
+        padding: 32px 0;
+        overflow-y: auto;
         z-index: 85;
       }
 
       #scenario-select.hidden { display: none; }
+
+      /* ── WIP discard warning modal ──────────────────────────────────────── */
+      #wip-warning-modal {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.7);
+        display: flex; align-items: center; justify-content: center;
+        z-index: 200;
+      }
+      #wip-warning-modal.hidden { display: none; }
+      #wip-warning-card {
+        background: #162a45; border: 1px solid #e94560;
+        border-radius: 10px; padding: 24px 32px;
+        max-width: 420px; text-align: center; color: #c0d0e8;
+      }
+      #wip-warning-confirm {
+        background: #e94560; color: #fff; border: none;
+        padding: 8px 20px; border-radius: 6px; cursor: pointer;
+      }
+      #wip-warning-cancel {
+        background: #1a3a5c; color: #c0d0e8; border: 1px solid #2a5a8c;
+        padding: 8px 20px; border-radius: 6px; cursor: pointer;
+      }
 
       #scenario-select h1 {
         font-size: 1.6rem;
         font-weight: 700;
         color: #e94560;
         letter-spacing: 0.03em;
+        flex-shrink: 0;
       }
 
       #scenario-cards {
@@ -336,8 +360,9 @@
         gap: 20px;
         flex-wrap: wrap;
         justify-content: center;
-        max-width: 800px;
+        max-width: 1200px;
         padding: 0 16px;
+        flex-shrink: 0;
       }
 
       .scenario-card {
@@ -684,6 +709,18 @@
     <div id="scenario-select" class="hidden">
       <h1>Redistricting Simulator</h1>
       <div id="scenario-cards"></div>
+      <button id="btn-reset-campaign" style="margin-top:16px;background:none;border:1px solid #555;color:#888;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:0.75rem;">Reset Campaign</button>
+    </div>
+
+    <!-- ── WIP discard warning modal ──────────────────────────────────── -->
+    <div id="wip-warning-modal" class="hidden">
+      <div id="wip-warning-card">
+        <p id="wip-warning-text"></p>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:16px;">
+          <button id="wip-warning-confirm">Switch Scenario</button>
+          <button id="wip-warning-cancel">Cancel</button>
+        </div>
+      </div>
     </div>
 
     <!-- ── Result screen (GAME-017) ─────────────────────────────────────── -->
@@ -726,6 +763,7 @@
     </div>
 
     <header id="app-header" style="display:none">
+      <button id="btn-back-to-scenarios" style="background:none;border:1px solid #2a5a8c;color:#8898b0;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.8rem;">← Scenarios</button>
       <h1>Redistricting Simulator</h1>
       <div id="controls">
         <span style="font-size:0.8rem;color:#888;">Draw district:</span>
@@ -735,6 +773,7 @@
         <button id="btn-view-toggle">Switch to Partisan Lean</button>
         <button id="btn-county-toggle">Show County Borders</button>
         <button id="btn-submit" disabled>Submit Map</button>
+        <button id="btn-debug-win" style="display:none;background:#8b4513;color:#ffa;">⚡ Force Win (debug)</button>
         <button id="btn-reset">Reset</button>
         <span id="reset-confirm">
           Reset to start?

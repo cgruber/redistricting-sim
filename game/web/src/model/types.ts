@@ -69,6 +69,8 @@ export interface Precinct {
 	previousResult: PreviousResult;
 	/** Demographic breakdown */
 	demographics: Demographics;
+	/** Per-group population shares from scenario demographic_groups (for info panel) */
+	groupShares?: { name: string; share: number; dimensions?: Record<string, string> }[];
 }
 
 /** A district is identified by a 1-based integer index */
