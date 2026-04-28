@@ -2,7 +2,7 @@
 id: GAME-007
 title: Player progress persistence — save/resume game state
 area: game, storage
-status: open
+status: resolved
 created: 2026-04-25
 github_issue: 99
 ---
