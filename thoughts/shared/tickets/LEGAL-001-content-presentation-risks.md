@@ -2,7 +2,7 @@
 id: LEGAL-001
 title: Content presentation legal risk research
 area: legal, content, presentation
-status: open
+status: resolved
 created: 2026-04-24
 ---
 
