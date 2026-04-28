@@ -116,6 +116,19 @@ if (
 	throw new Error("Required DOM elements not found");
 }
 
+// ─── Debug mode: sticky via sessionStorage ───────────────────────────────────
+// Once ?debug is used, it stays active for the tab session so navigations
+// (force-win → select → next scenario) don't lose it.
+const DEBUG_KEY = "redistricting-sim-debug";
+const debugParam = new URLSearchParams(window.location.search).get("debug");
+if (debugParam === "off") {
+	try { sessionStorage.removeItem(DEBUG_KEY); } catch { /* ignore */ }
+} else if (debugParam !== null) {
+	try { sessionStorage.setItem(DEBUG_KEY, "1"); } catch { /* ignore */ }
+}
+const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
+	sessionStorage.getItem(DEBUG_KEY) === "1";
+
 // ─── Async init ───────────────────────────────────────────────────────────────
 
 (async () => {
@@ -232,12 +245,11 @@ if (
 	);
 
 	let entryToLoad: ManifestEntry;
-	const isDebug = urlParams.has("debug");
 	if (requestedEntry !== undefined) {
 		// Check unlock: scenario must be first, or previous scenario completed (unless debug)
 		const idx = SCENARIO_MANIFEST.indexOf(requestedEntry);
 		const locked = idx > 0 && !isCompleted(progress, SCENARIO_MANIFEST[idx - 1]?.id ?? "");
-		if (locked && !isDebug) {
+		if (locked && !IS_DEBUG) {
 			showScenarioSelect();
 			return;
 		}
@@ -578,13 +590,18 @@ if (
 
 	// ── Debug force-win: visible only with ?debug in URL ─────────────────────
 	const btnDebugWin = document.getElementById("btn-debug-win") as HTMLButtonElement | null;
-	if (btnDebugWin && new URLSearchParams(window.location.search).has("debug")) {
+	if (btnDebugWin && IS_DEBUG) {
 		btnDebugWin.style.display = "";
 		btnDebugWin.addEventListener("click", () => {
 			progress = markCompleted(progress, scenario.id);
 			saveProgress(progress);
 			clearWip();
-			window.location.assign("/");
+			const allComplete = SCENARIO_MANIFEST.every((e) => isCompleted(progress, e.id));
+			if (allComplete) {
+				document.getElementById("wrap-up-screen")?.classList.remove("hidden");
+			} else {
+				window.location.assign("/");
+			}
 		});
 	}
 
