@@ -270,7 +270,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	// ── Fetch + validate scenario JSON ────────────────────────────────────────
 	let json: unknown;
 	try {
-		const resp = await fetch(`scenarios/${entryToLoad.id}.json`);
+		const resp = await fetch(`./scenarios/${entryToLoad.id}.json`);
 		if (!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
 		json = (await resp.json()) as unknown;
 	} catch (e) {
