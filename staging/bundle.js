@@ -14786,6 +14786,17 @@ var require_main = __commonJS({
             showEditor();
         }, { signal });
       }
+      document.addEventListener("keydown", (e) => {
+        const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+        const isCtrlOrCmd = isMac ? e.metaKey : e.ctrlKey;
+        if (isCtrlOrCmd && e.key === "z") {
+          e.preventDefault();
+          temporalStore.getState().undo();
+        } else if (isCtrlOrCmd && (e.key === "y" || isMac && e.shiftKey && e.key === "z")) {
+          e.preventDefault();
+          temporalStore.getState().redo();
+        }
+      });
       btnUndo.addEventListener("click", () => {
         temporalStore.getState().undo();
       });
