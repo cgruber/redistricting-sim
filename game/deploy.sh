@@ -139,7 +139,7 @@ while [[ $(($(date +%s) - VERIFICATION_START)) -lt $VERIFICATION_TIMEOUT ]]; do
     break
   fi
 
-  sleep 1
+  sleep 5
 done
 
 if [[ "${VERIFIED}" != "true" ]]; then
