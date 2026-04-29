@@ -30,11 +30,13 @@ case "${ENVIRONMENT}" in
   staging)
     DEPLOY_WORKSPACE_DIR="${SCRIPT_DIR}/.deploy_staging"
     DEPLOY_BOOKMARK="web_deploy"
+    DEPLOY_LOCATION="staging"
     DEPLOY_URL="https://staging.pastthepost.gg"
     ;;
   prod)
     DEPLOY_WORKSPACE_DIR="${SCRIPT_DIR}/.deploy_prod"
-    DEPLOY_BOOKMARK="web_deploy_prod"
+    DEPLOY_BOOKMARK="web_deploy"
+    DEPLOY_LOCATION="."
     DEPLOY_URL="https://pastthepost.gg"
     ;;
   *)
@@ -98,8 +100,8 @@ jj new "${DEPLOY_BOOKMARK}"
 # Step 6: Write deployment metadata (version tag, commit ID, and timestamp)
 echo "Writing deployment metadata..."
 TIMESTAMP="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-mkdir -p staging
-cat > staging/deployment-metadata.json <<EOF
+mkdir -p "${DEPLOY_LOCATION}"
+cat > "${DEPLOY_LOCATION}/deployment-metadata.json" <<EOF
 {
   "version": "${VERSION_TAG}",
   "commit_id": "${TAG_COMMIT}",
@@ -107,9 +109,9 @@ cat > staging/deployment-metadata.json <<EOF
 }
 EOF
 
-# Step 7: Extract release artifact into staging folder
+# Step 7: Extract release artifact into deploy location
 echo "Extracting release artifact..."
-unzip -q -o "${DEPLOYABLE_ZIP}" -d staging
+unzip -q -o "${DEPLOYABLE_ZIP}" -d "${DEPLOY_LOCATION}"
 
 # Step 8: Commit the deployment (with built artifacts and metadata)
 echo "Committing ${ENVIRONMENT} deploy..."
