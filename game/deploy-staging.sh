@@ -29,21 +29,23 @@ cd "${SCRIPT_DIR}"
 bazel build //web:deployable 2>&1 | tail -3
 DEPLOYABLE_ZIP="$(pwd)/bazel-bin/web/deployable.zip"
 
-# Step 2: Extract to deploy workspace /staging/
-echo "Extracting to ${DEPLOY_DIR}/staging/..."
-rm -rf "${DEPLOY_DIR}/staging"
-mkdir -p "${DEPLOY_DIR}/staging"
-unzip -q "${DEPLOYABLE_ZIP}" -d "${DEPLOY_DIR}/staging"
-
-# Step 3: Commit and push from the deploy workspace
-echo "Committing and pushing staging deploy..."
+# Step 2: Prepare deploy workspace with staging files
+echo "Preparing deploy workspace..."
 MAIN_HASH="$(jj log --no-graph -r main -T 'commit_id.short(12)')"
 
 cd "${DEPLOY_DIR}"
-jj describe -m "staging: ${MAIN_HASH}" 2>&1 | grep "Working copy"
-jj new 2>&1 | grep "Working copy"
+# Create new commit on top of current contents
+jj new web_deploy 2>&1 | tail -1
+# Extract deployable into staging/
+rm -rf staging
+mkdir -p staging
+unzip -q "${SCRIPT_DIR}/bazel-bin/web/deployable.zip" -d staging
 
-# Set bookmark in the deploy workspace to the staging commit (parent of current empty)
+# Step 3: Commit and push from the deploy workspace
+echo "Committing staging deploy..."
+jj commit -m "staging: ${MAIN_HASH}" 2>&1 | tail -1
+
+# Set bookmark to point to the commit we just made (parent of current empty working copy)
 jj bookmark set web_deploy -r "@-" --allow-backwards 2>&1
 
 echo "Pushing web_deploy..."
