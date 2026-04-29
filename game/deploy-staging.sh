@@ -83,12 +83,12 @@ EOF
 echo "Extracting release artifact..."
 unzip -q -o "${DEPLOYABLE_ZIP}" -d staging
 
-# Step 8: Commit the changes and capture the commit hash
+# Step 8: Commit the deployment (with built artifacts and metadata)
 echo "Committing staging deploy..."
 jj commit -m "staging: ${VERSION_TAG} (${TAG_COMMIT})" 2>&1
 DEPLOY_COMMIT="$(jj log --no-graph -r "@-" -T 'commit_id.short(12)')"
 
-# Step 9: Move web_deploy bookmark to this commit (from root workspace)
+# Step 9: Move web_deploy bookmark to the deployment commit (from root workspace)
 echo "Setting web_deploy bookmark..."
 cd "${REPO_ROOT}"
 jj bookmark set web_deploy -r "${DEPLOY_COMMIT}" --allow-backwards 2>&1
