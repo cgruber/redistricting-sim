@@ -23,15 +23,17 @@ if [[ ! -d "${DEPLOY_DIR}/.jj" ]]; then
   exit 1
 fi
 
-# Step 1: Build and assemble
-STAGING_DIR="${SCRIPT_DIR}/_deploy_out"
-"${SCRIPT_DIR}/deploy-assemble.sh" "${STAGING_DIR}"
+# Step 1: Build deployable zip via Bazel
+echo "Building deployable zip..."
+cd "${REPO_ROOT}"
+bazel build //web:deployable 2>&1 | tail -3
+DEPLOYABLE_ZIP="${REPO_ROOT}/bazel-bin/web/deployable.zip"
 
-# Step 2: Copy to deploy workspace /staging/ (preserve .jj and root files)
-echo "Copying to ${DEPLOY_DIR}/staging/..."
+# Step 2: Extract to deploy workspace /staging/
+echo "Extracting to ${DEPLOY_DIR}/staging/..."
 rm -rf "${DEPLOY_DIR}/staging"
 mkdir -p "${DEPLOY_DIR}/staging"
-cp -R "${STAGING_DIR}/"* "${DEPLOY_DIR}/staging/"
+unzip -q "${DEPLOYABLE_ZIP}" -d "${DEPLOY_DIR}/staging"
 
 # Step 3: Commit from the deploy workspace directory
 echo "Committing staging deploy..."

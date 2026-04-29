@@ -8,7 +8,7 @@
 # and pushes. Porkbun serves pastthepost.org from the root.
 #
 # Prerequisites:
-#   - Staging must have been deployed first (deploy-staging.sh)
+#   - Staging must have been deployed first via ./deploy-staging.sh
 #   - jj workspace "redistricting_sim_deploy" must exist
 
 set -euo pipefail
