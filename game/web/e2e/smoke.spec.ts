@@ -24,6 +24,10 @@ test("app loads and renders hex map", async ({ page }) => {
 
   await page.goto("/");
 
+  // New player sees scenario select first; click first scenario
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
+
   // Dismiss intro screen (GAME-016): skip button appears after scenario loads.
   const skipBtn = page.locator("#btn-intro-skip");
   await expect(skipBtn).toBeVisible({ timeout: 10_000 });

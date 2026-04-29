@@ -35,6 +35,9 @@ import { test, expect } from "@playwright/test";
 /** Navigate, dismiss intro, wait for hex grid. */
 async function loadEditor(page: import("@playwright/test").Page): Promise<void> {
   await page.goto("/");
+  // New player sees scenario select first; click first scenario
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 10_000 });
   await skip.click();
@@ -54,6 +57,9 @@ async function paintHex(
 
 test("intro: screen is visible on initial load before editor", async ({ page }) => {
   await page.goto("/");
+  // Scenario select must be visible first; click to proceed to intro
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
   // Intro screen must be visible; editor elements must be hidden
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator("#app-header")).not.toBeVisible();
@@ -62,6 +68,8 @@ test("intro: screen is visible on initial load before editor", async ({ page }) 
 
 test("intro: character name and role are shown from scenario narrative", async ({ page }) => {
   await page.goto("/");
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
   // tutorial-002.json character: name="You", role="Redistricting Commissioner, Millbrook County"
   await expect(page.locator("#char-name")).toHaveText("You");
@@ -70,6 +78,8 @@ test("intro: character name and role are shown from scenario narrative", async (
 
 test("intro: first slide heading is shown and Previous is disabled", async ({ page }) => {
   await page.goto("/");
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator("#intro-slide-heading")).toHaveText("Welcome to Millbrook County");
   await expect(page.locator("#btn-intro-prev")).toBeDisabled();
@@ -77,6 +87,8 @@ test("intro: first slide heading is shown and Previous is disabled", async ({ pa
 
 test("intro: Next advances to second slide; Previous returns to first", async ({ page }) => {
   await page.goto("/");
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
 
   // Advance to slide 2
@@ -91,6 +103,8 @@ test("intro: Next advances to second slide; Previous returns to first", async ({
 
 test("intro: Start Drawing button appears on last slide and reveals editor", async ({ page }) => {
   await page.goto("/");
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
 
   // Start Drawing should not be visible on first slide
@@ -110,6 +124,8 @@ test("intro: Start Drawing button appears on last slide and reveals editor", asy
 
 test("intro: Skip intro immediately reveals editor without navigating slides", async ({ page }) => {
   await page.goto("/");
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
   await expect(page.locator("#btn-intro-skip")).toBeVisible({ timeout: 10_000 });
 
   await page.locator("#btn-intro-skip").click();
@@ -120,6 +136,8 @@ test("intro: Skip intro immediately reveals editor without navigating slides", a
 
 test("intro: objective text is shown from scenario narrative", async ({ page }) => {
   await page.goto("/");
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator("#objective-text")).toContainText("Balance the three districts");
 });
@@ -462,6 +480,10 @@ test("winnability: painting boundary precincts enables submit and produces a pas
 test("scale: tutorial-002 loads and renders 196 precincts (path.hex count)", async ({ page }) => {
   // tutorial-002 is the default scenario (196-precinct three-county map)
   await page.goto("/");
+
+  // New player sees scenario select first; click first scenario
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
 
   // Skip intro to reveal editor
   const skip = page.locator("#btn-intro-skip");
