@@ -247,12 +247,12 @@ test("progression: page reload restores completion state from localStorage", asy
   await expect(page.locator(".sc-status.completed")).toBeVisible();
 });
 
-test("progression: new player (no localStorage) sees intro, not scenario select", async ({ page }) => {
+test("progression: new player (no localStorage) sees scenario select", async ({ page }) => {
   // No seedProgress call — fresh localStorage
   await page.goto("/");
 
-  await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator("#scenario-select")).not.toBeVisible();
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator("#intro-screen")).not.toBeVisible();
 });
 
 // ─── GAME-007: WIP save/resume ───────────────────────────────────────────────
