@@ -14,5 +14,9 @@ _serve_dist/
 # Deploy assembly output
 _deploy_out/
 
+# Deploy workspaces
+.deploy_staging/
+.deploy_prod/
+
 # Playwright test output (traces, HTML report, error contexts)
 web/test-results/
