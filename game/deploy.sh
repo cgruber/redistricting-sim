@@ -124,8 +124,8 @@ echo "Pushing ${DEPLOY_BOOKMARK}..."
 jj git push -b "${DEPLOY_BOOKMARK}" 2>&1
 
 # Step 10: Verify the deployment (with polling for hosting sync delay)
-echo "Verifying deployment (polling for up to 60 seconds)..."
-VERIFICATION_TIMEOUT=60
+echo "Verifying deployment (polling for up to 120 seconds)..."
+VERIFICATION_TIMEOUT=120
 VERIFICATION_START=$(date +%s)
 VERIFIED=false
 
