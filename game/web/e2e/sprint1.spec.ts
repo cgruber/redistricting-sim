@@ -44,6 +44,9 @@ async function paintHex(
 /** Navigate, dismiss the intro screen, and wait for the hex grid to be ready. */
 async function loadApp(page: import("@playwright/test").Page): Promise<void> {
 	await page.goto("/");
+	// New player sees scenario select first; click first scenario
+	await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+	await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
 	// Dismiss intro screen (GAME-016)
 	const skip = page.locator("#btn-intro-skip");
 	await expect(skip).toBeVisible({ timeout: 10_000 });

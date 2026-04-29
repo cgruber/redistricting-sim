@@ -11,7 +11,8 @@ node_modules/
 # Local dev serve output
 _serve_dist/
 
-# Deploy assembly output
+# Deploy workspace and temporary build artifacts
+.deploy/
 _deploy_out/
 
 # Playwright test output (traces, HTML report, error contexts)

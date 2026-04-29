@@ -236,7 +236,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	}
 
 	// ── Startup routing (GAME-021) ────────────────────────────────────────────
-	// Priority: explicit ?s= param > returning-player select screen > first scenario.
+	// Priority: explicit ?s= param > scenario select screen (for all other cases).
 
 	const urlParams = new URLSearchParams(window.location.search);
 	const requestedId = urlParams.get("s") ?? "";
@@ -258,13 +258,11 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			return;
 		}
 		entryToLoad = requestedEntry;
-	} else if (progress.completed.length > 0 || loadWip() !== null) {
-		// Returning player (has completed or in-progress scenario) — show select screen
+	} else {
+		// No explicit ?s= param — show scenario select screen
+		// (new players, returning players, everyone)
 		showScenarioSelect();
 		return;
-	} else {
-		// New player — start with the first scenario
-		entryToLoad = SCENARIO_MANIFEST[0];
 	}
 
 	// ── Fetch + validate scenario JSON ────────────────────────────────────────
