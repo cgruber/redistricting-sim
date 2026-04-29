@@ -97,13 +97,27 @@ jj bookmark set web_deploy -r "${DEPLOY_COMMIT}" --allow-backwards 2>&1
 echo "Pushing web_deploy..."
 jj git push -b web_deploy 2>&1
 
-# Step 11: Verify the deployment
-echo "Verifying deployment..."
-DEPLOYED_VERSION=$(curl -s https://staging.pastthepost.gg/deployment-metadata.json | jq -r '.version' 2>/dev/null || echo "")
-DEPLOYED_COMMIT=$(curl -s https://staging.pastthepost.gg/deployment-metadata.json | jq -r '.commit_id' 2>/dev/null || echo "")
+# Step 11: Verify the deployment (with polling for hosting sync delay)
+echo "Verifying deployment (polling for up to 30 seconds)..."
+VERIFICATION_TIMEOUT=30
+VERIFICATION_START=$(date +%s)
+VERIFIED=false
 
-if [[ "${DEPLOYED_VERSION}" != "${VERSION_TAG}" ]] || [[ "${DEPLOYED_COMMIT}" != "${TAG_COMMIT}" ]]; then
-  echo "ERROR: Deployment verification failed" >&2
+while [[ $(($(date +%s) - VERIFICATION_START)) -lt $VERIFICATION_TIMEOUT ]]; do
+  DEPLOYED_VERSION=$(curl -s https://staging.pastthepost.gg/deployment-metadata.json | jq -r '.version' 2>/dev/null || echo "")
+  DEPLOYED_COMMIT=$(curl -s https://staging.pastthepost.gg/deployment-metadata.json | jq -r '.commit_id' 2>/dev/null || echo "")
+
+  if [[ "${DEPLOYED_VERSION}" == "${VERSION_TAG}" ]] && [[ "${DEPLOYED_COMMIT}" == "${TAG_COMMIT}" ]]; then
+    VERIFIED=true
+    echo "  ✓ Deployment verified"
+    break
+  fi
+
+  sleep 1
+done
+
+if [[ "${VERIFIED}" != "true" ]]; then
+  echo "ERROR: Deployment verification failed after ${VERIFICATION_TIMEOUT} seconds" >&2
   echo "  Expected version: ${VERSION_TAG}" >&2
   echo "  Deployed version: ${DEPLOYED_VERSION}" >&2
   echo "  Expected commit: ${TAG_COMMIT}" >&2
