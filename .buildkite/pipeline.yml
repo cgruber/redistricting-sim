@@ -4,7 +4,7 @@
 # Bazel workspace; all build and test commands run from there.
 #
 # Dependency graph:
-#   build ──── test
+#   build ──── test ──── deploy-staging (main only)
 #
 # Setup (node_modules + Playwright Chromium) runs as part of the build step
 # via game/setup.sh. It is idempotent — on a warm agent it exits quickly.
@@ -49,3 +49,19 @@ steps:
       cd game
       ./setup.sh
       bazel test --config=ci //...
+
+  ##############################################################################
+  # DEPLOY STAGING — assemble and push to web_deploy branch /staging/
+  # Only runs on main branch after tests pass.
+  ##############################################################################
+
+  - label: ":rocket: Deploy Staging"
+    key: deploy-staging
+    depends_on: test
+    if: build.branch == "main"
+    agents:
+      os: macos
+    command: |
+      cd game
+      ./setup.sh
+      ./deploy-staging.sh

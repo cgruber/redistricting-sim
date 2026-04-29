@@ -173,7 +173,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 						// Warn: switching will discard in-progress work on a different scenario
 						showWipWarning(currentWip.scenarioId, entry.id);
 					} else {
-						window.location.assign(`/?s=${entry.id}`);
+						window.location.assign(`./?s=${entry.id}`);
 					}
 				});
 			}
@@ -197,7 +197,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		const onConfirm = () => {
 			cleanup();
 			clearWip();
-			window.location.assign(`/?s=${targetId}`);
+			window.location.assign(`./?s=${targetId}`);
 		};
 		const onCancel = () => {
 			cleanup();
@@ -270,7 +270,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	// ── Fetch + validate scenario JSON ────────────────────────────────────────
 	let json: unknown;
 	try {
-		const resp = await fetch(`/scenarios/${entryToLoad.id}.json`);
+		const resp = await fetch(`./scenarios/${entryToLoad.id}.json`);
 		if (!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
 		json = (await resp.json()) as unknown;
 	} catch (e) {
@@ -282,7 +282,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
 				<p style="max-width:600px;text-align:center;">Could not fetch scenario <strong>${entryToLoad.id}</strong>.</p>
 				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${msg}</pre>
-				<button onclick="window.location.assign('/')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">← Back to Scenarios</button>
+				<button onclick="window.location.assign('./')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">← Back to Scenarios</button>
 			</div>`,
 		);
 		return;
@@ -300,7 +300,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
 				<p style="max-width:600px;text-align:center;">Scenario <strong>${entryToLoad.id}</strong> could not be loaded due to a validation error.</p>
 				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${msg}</pre>
-				<button onclick="window.location.assign('/')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">← Back to Scenarios</button>
+				<button onclick="window.location.assign('./')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">← Back to Scenarios</button>
 			</div>`,
 		);
 		return;
@@ -612,7 +612,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			if (allComplete) {
 				document.getElementById("wrap-up-screen")?.classList.remove("hidden");
 			} else {
-				window.location.assign("/");
+				window.location.assign("./");
 			}
 		});
 	}
@@ -624,7 +624,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	// "← Scenarios" button → flush WIP then return to scenario select
 	document.getElementById("btn-back-to-scenarios")?.addEventListener("click", () => {
 		flushWipSave();
-		window.location.assign("/");
+		window.location.assign("./");
 	});
 
 	// "Next Scenario" → if all scenarios complete, show wrap-up; else select screen.
@@ -634,13 +634,13 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			resultScreen!.classList.add("hidden");
 			document.getElementById("wrap-up-screen")?.classList.remove("hidden");
 		} else {
-			window.location.assign("/");
+			window.location.assign("./");
 		}
 	});
 
 	// Wrap-up "Play Again" → back to select screen
 	document.getElementById("btn-wrap-up-replay")?.addEventListener("click", () => {
-		window.location.assign("/");
+		window.location.assign("./");
 	});
 
 	// ── Subscribe to state changes ────────────────────────────────────────────
