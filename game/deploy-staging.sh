@@ -98,8 +98,8 @@ echo "Pushing web_deploy..."
 jj git push -b web_deploy 2>&1
 
 # Step 11: Verify the deployment (with polling for hosting sync delay)
-echo "Verifying deployment (polling for up to 30 seconds)..."
-VERIFICATION_TIMEOUT=30
+echo "Verifying deployment (polling for up to 60 seconds)..."
+VERIFICATION_TIMEOUT=60
 VERIFICATION_START=$(date +%s)
 VERIFIED=false
 
