@@ -11,9 +11,9 @@
   </head>
   <body>
     <!-- ── Scenario select screen (GAME-018) ────────────────────────────── -->
-    <div id="scenario-select" class="hidden">
+    <div id="scenario-select" class="hidden" role="region" aria-label="Scenario Selection">
       <h1>Past the Post</h1>
-      <div id="scenario-cards"></div>
+      <div id="scenario-cards" role="list"></div>
       <div style="display:flex;gap:16px;margin-top:16px;align-items:center;">
         <button id="btn-about" style="background:none;border:1px solid #2a5a8c;color:#8898b0;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:0.75rem;">About</button>
         <button id="btn-reset-campaign" style="background:none;border:1px solid #555;color:#888;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:0.75rem;">Reset Campaign</button>
@@ -105,14 +105,14 @@
       <h1>Redistricting Simulator</h1>
       <div id="controls">
         <span style="font-size:0.8rem;color:#888;">Draw district:</span>
-        <div id="district-buttons"></div>
-        <button id="btn-undo" disabled>↩ Undo</button>
-        <button id="btn-redo" disabled>↪ Redo</button>
-        <button id="btn-view-toggle">Switch to Partisan Lean</button>
-        <button id="btn-county-toggle">Show County Borders</button>
-        <button id="btn-submit" disabled>Submit Map</button>
+        <div id="district-buttons" role="group" aria-label="District Selection"></div>
+        <button id="btn-undo" disabled aria-label="Undo last action">↩ Undo</button>
+        <button id="btn-redo" disabled aria-label="Redo last action">↪ Redo</button>
+        <button id="btn-view-toggle" aria-label="Toggle between districts and partisan lean view">Switch to Partisan Lean</button>
+        <button id="btn-county-toggle" aria-label="Toggle county borders display">Show County Borders</button>
+        <button id="btn-submit" disabled aria-label="Submit map for evaluation">Submit Map</button>
         <button id="btn-debug-win" style="display:none;background:#8b4513;color:#ffa;">⚡ Force Win (debug)</button>
-        <button id="btn-reset">Reset</button>
+        <button id="btn-reset" aria-label="Reset map to initial state">Reset</button>
         <span id="reset-confirm">
           Reset to start?
           <button id="btn-reset-confirm">Yes</button>
@@ -123,7 +123,7 @@
 
     <div id="main" style="display:none">
       <div id="map-container">
-        <svg id="map-svg"></svg>
+        <svg id="map-svg" role="image" aria-label="District map. Use mouse to paint precincts into districts. Current assignments shown as colored hexagons."></svg>
       </div>
       <aside id="sidebar">
         <h2>Precinct Info</h2>
@@ -131,7 +131,7 @@
           <div class="precinct-placeholder">Hover over a precinct to see details.<br>Click and drag to paint districts.</div>
         </div>
         <h2>Election Results</h2>
-        <div id="results-container">
+        <div id="results-container" aria-live="polite" aria-label="Election results">
           <div style="color:#606080;font-size:0.85rem;">Draw districts to see results</div>
         </div>
         <h2>Map Validity</h2>

@@ -464,6 +464,19 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		}, { signal });
 	}
 
+	// ── Keyboard shortcuts for undo/redo (GAME-008 accessibility) ──────────────
+	document.addEventListener("keydown", (e: KeyboardEvent) => {
+		const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+		const isCtrlOrCmd = isMac ? e.metaKey : e.ctrlKey;
+		if (isCtrlOrCmd && e.key === "z") {
+			e.preventDefault();
+			temporalStore.getState().undo();
+		} else if (isCtrlOrCmd && (e.key === "y" || (isMac && e.shiftKey && e.key === "z"))) {
+			e.preventDefault();
+			temporalStore.getState().redo();
+		}
+	});
+
 	// ── Undo / Redo buttons ───────────────────────────────────────────────────
 	btnUndo!.addEventListener("click", () => {
 		temporalStore.getState().undo();
