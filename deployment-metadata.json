@@ -1,6 +1,6 @@
 {
-  "version": "a0ede03787f0",
-  "environment": "staging",
-  "timestamp": "2026-04-29T22:48:45Z",
-  "deployed_from": "/Users/cgruber/Projects/github/cgruber/redistricting-sim/game/.deploy"
+  "version": "v0.0.10-one-zero-hero",
+  "commit": "a0ede03787f0",
+  "environment": "production",
+  "timestamp": "2026-04-29T23:40:29Z"
 }
