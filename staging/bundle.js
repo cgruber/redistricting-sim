@@ -14604,15 +14604,13 @@ var require_main = __commonJS({
           return;
         }
         entryToLoad = requestedEntry;
-      } else if (progress.completed.length > 0 || loadWip() !== null) {
+      } else {
         showScenarioSelect();
         return;
-      } else {
-        entryToLoad = SCENARIO_MANIFEST[0];
       }
       let json;
       try {
-        const resp = yield fetch(`scenarios/${entryToLoad.id}.json`);
+        const resp = yield fetch(`./scenarios/${entryToLoad.id}.json`);
         if (!resp.ok)
           throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
         json = yield resp.json();
@@ -14788,6 +14786,17 @@ var require_main = __commonJS({
             showEditor();
         }, { signal });
       }
+      document.addEventListener("keydown", (e) => {
+        const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+        const isCtrlOrCmd = isMac ? e.metaKey : e.ctrlKey;
+        if (isCtrlOrCmd && e.key === "z") {
+          e.preventDefault();
+          temporalStore.getState().undo();
+        } else if (isCtrlOrCmd && (e.key === "y" || isMac && e.shiftKey && e.key === "z")) {
+          e.preventDefault();
+          temporalStore.getState().redo();
+        }
+      });
       btnUndo.addEventListener("click", () => {
         temporalStore.getState().undo();
       });
