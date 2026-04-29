@@ -18,11 +18,17 @@ REPO_ROOT="${SCRIPT_DIR}"
 if [[ $# -gt 0 ]]; then
   VERSION_TAG="$1"
 else
-  # Auto-bump from most recent tag
-  LATEST_TAG=$(jj tag list 2>/dev/null | head -1 | awk '{print $1}' || echo "v0.0.0")
+  # Auto-bump from highest version tag
+  # Extract all tags, remove pre-release suffixes, sort numerically, take highest
+  HIGHEST_TAG=$(jj tag list 2>/dev/null | \
+    awk '{print $1}' | \
+    grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' | \
+    sed 's/-.*$//' | \
+    sort -V | \
+    tail -1 || echo "v0.0.0")
 
   # Parse version and increment patch
-  if [[ "${LATEST_TAG}" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+  if [[ "${HIGHEST_TAG}" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
     MAJOR="${BASH_REMATCH[1]}"
     MINOR="${BASH_REMATCH[2]}"
     PATCH="${BASH_REMATCH[3]}"
@@ -32,7 +38,7 @@ else
     VERSION_TAG="v0.0.1"
   fi
 
-  echo "Auto-bumped version: ${LATEST_TAG} → ${VERSION_TAG}"
+  echo "Auto-bumped version: ${HIGHEST_TAG} → ${VERSION_TAG}"
 fi
 
 echo "Preparing release: ${VERSION_TAG}"
