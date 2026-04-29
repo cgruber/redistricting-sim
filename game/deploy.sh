@@ -58,6 +58,19 @@ echo "  ✓ Tag ${VERSION_TAG} points to commit: ${TAG_COMMIT}"
 # Fetch to ensure we have latest remote state
 jj git fetch &>/dev/null || true
 
+# Check what version is currently deployed
+CURRENT_REMOTE_COMMIT=$(jj log -r "remote_bookmarks(origin,${DEPLOY_BOOKMARK})" --no-graph -T 'commit_id.short(12)' 2>/dev/null || echo "")
+if [[ -n "${CURRENT_REMOTE_COMMIT}" ]]; then
+  CURRENT_DEPLOYED_VERSION=$(jj log -r "remote_bookmarks(origin,${DEPLOY_BOOKMARK})" --no-graph -T 'description' 2>/dev/null | grep -oP "${ENVIRONMENT}: \K[^ ]+" || echo "")
+  if [[ "${CURRENT_DEPLOYED_VERSION}" == "${VERSION_TAG}" ]]; then
+    echo "ERROR: Version ${VERSION_TAG} is already deployed to ${ENVIRONMENT}" >&2
+    echo "  Current deployment: ${CURRENT_DEPLOYED_VERSION}" >&2
+    echo "  To deploy a new version, use: ./prepare_release.sh" >&2
+    exit 1
+  fi
+  echo "Currently deployed: ${CURRENT_DEPLOYED_VERSION}"
+fi
+
 # Step 2: Check for existing deploy workspace (prevents concurrent deploys)
 if [[ -d "${DEPLOY_WORKSPACE_DIR}" ]]; then
   echo "ERROR: Deploy workspace already exists at ${DEPLOY_WORKSPACE_DIR}" >&2
