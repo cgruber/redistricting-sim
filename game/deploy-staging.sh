@@ -31,20 +31,16 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="${SCRIPT_DIR}"
 DEPLOY_STAGING_DIR="${SCRIPT_DIR}/.deploy_staging"
 
-# Step 1: Verify version tag exists locally and push it to remote
+# Step 1: Verify version tag exists (locally and on remote)
 echo "Verifying version tag: ${VERSION_TAG}"
 if ! jj log -r "tags(${VERSION_TAG})" &>/dev/null; then
   echo "ERROR: Tag '${VERSION_TAG}' does not exist locally" >&2
+  echo "  Create it first with: ./prepare_release.sh ${VERSION_TAG}" >&2
   exit 1
 fi
 
 TAG_COMMIT="$(jj log --no-graph -r "tags(${VERSION_TAG})" -T 'commit_id.short(12)')"
 echo "  ✓ Tag ${VERSION_TAG} points to commit: ${TAG_COMMIT}"
-
-# Push the tag to remote (narrow git push for tags only)
-echo "Pushing tag to remote..."
-cd "${REPO_ROOT}"
-git push origin "${VERSION_TAG}" 2>&1 | grep -v "^To " || true
 
 # Fetch to ensure we have latest remote state
 jj git fetch &>/dev/null || true
