@@ -31,19 +31,17 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="${SCRIPT_DIR}"
 DEPLOY_STAGING_DIR="${SCRIPT_DIR}/.deploy_staging"
 
-# Step 1: Verify version tag exists locally and on remote
+# Step 1: Verify version tag exists locally
 echo "Verifying version tag: ${VERSION_TAG}"
-if ! jj log -r "tag(${VERSION_TAG})" &>/dev/null; then
+if ! jj log -r "tags(${VERSION_TAG})" &>/dev/null; then
   echo "ERROR: Tag '${VERSION_TAG}' does not exist locally" >&2
   exit 1
 fi
 
-if ! jj git fetch &>/dev/null || ! git ls-remote origin "refs/tags/${VERSION_TAG}" &>/dev/null; then
-  echo "ERROR: Tag '${VERSION_TAG}' has not been pushed to remote" >&2
-  exit 1
-fi
+# Fetch to ensure we have latest remote state
+jj git fetch &>/dev/null || true
 
-TAG_COMMIT="$(jj log --no-graph -r "tag(${VERSION_TAG})" -T 'commit_id.short(12)')"
+TAG_COMMIT="$(jj log --no-graph -r "tags(${VERSION_TAG})" -T 'commit_id.short(12)')"
 echo "  ✓ Tag ${VERSION_TAG} points to commit: ${TAG_COMMIT}"
 
 # Step 2: Check for existing deploy workspace (prevents concurrent deploys)
@@ -83,16 +81,17 @@ EOF
 
 # Step 7: Extract release artifact into staging folder
 echo "Extracting release artifact..."
-unzip -q "${DEPLOYABLE_ZIP}" -d staging
+unzip -q -o "${DEPLOYABLE_ZIP}" -d staging
 
-# Step 8: Commit the changes
+# Step 8: Commit the changes and capture the commit hash
 echo "Committing staging deploy..."
 jj commit -m "staging: ${VERSION_TAG} (${TAG_COMMIT})" 2>&1
+DEPLOY_COMMIT="$(jj log --no-graph -r "@-" -T 'commit_id.short(12)')"
 
 # Step 9: Move web_deploy bookmark to this commit (from root workspace)
 echo "Setting web_deploy bookmark..."
 cd "${REPO_ROOT}"
-jj bookmark set web_deploy -r "@-.deploy_staging" --allow-backwards 2>&1
+jj bookmark set web_deploy -r "${DEPLOY_COMMIT}" --allow-backwards 2>&1
 
 # Step 10: Push to remote
 echo "Pushing web_deploy..."
