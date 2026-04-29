@@ -1,35 +1,48 @@
 #!/usr/bin/env bash
-# deploy-staging.sh — Build and deploy to staging (web_deploy branch).
+# deploy.sh — Deploy a release to staging or production.
 #
 # Usage:
-#   ./deploy-staging.sh <version-tag>
+#   ./deploy.sh <environment> <version-tag>
 #
-# Workflow:
-#   1. Verify version tag exists locally and on remote
-#   2. Check if .deploy_staging exists (error if it does — deploy in progress)
-#   3. Build release artifact via Bazel
-#   4. Create .deploy_staging workspace
-#   5. Create new commit on top of web_deploy
-#   6. Write deployment-metadata.json with version tag, commit ID, and timestamp
-#   7. Extract release artifact into staging/ folder
-#   8. Commit the changes
-#   9. Move web_deploy bookmark to the new commit
-#   10. Push to remote
-#   11. Verify the push by checking staging website
-#   12. Clean up the workspace
+# Environment: staging | prod
+# Version tag: must exist locally and on remote (created by prepare_release.sh)
+#
+# Examples:
+#   ./deploy.sh staging v0.0.5
+#   ./deploy.sh prod v0.0.5
 
 set -euo pipefail
 
-if [[ $# -lt 1 ]]; then
-  echo "Usage: $0 <version-tag>" >&2
-  echo "Example: $0 v1.2.3" >&2
+if [[ $# -lt 2 ]]; then
+  echo "Usage: $0 <environment> <version-tag>" >&2
+  echo "Environment: staging | prod" >&2
+  echo "Example: $0 staging v0.0.5" >&2
   exit 1
 fi
 
-VERSION_TAG="$1"
+ENVIRONMENT="$1"
+VERSION_TAG="$2"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="${SCRIPT_DIR}"
-DEPLOY_STAGING_DIR="${SCRIPT_DIR}/.deploy_staging"
+
+# Configure environment-specific variables
+case "${ENVIRONMENT}" in
+  staging)
+    DEPLOY_WORKSPACE_DIR="${SCRIPT_DIR}/.deploy_staging"
+    DEPLOY_BOOKMARK="web_deploy"
+    DEPLOY_URL="https://staging.pastthepost.gg"
+    ;;
+  prod)
+    DEPLOY_WORKSPACE_DIR="${SCRIPT_DIR}/.deploy_prod"
+    DEPLOY_BOOKMARK="web_deploy_prod"
+    DEPLOY_URL="https://pastthepost.gg"
+    ;;
+  *)
+    echo "ERROR: Unknown environment '${ENVIRONMENT}'" >&2
+    echo "Must be 'staging' or 'prod'" >&2
+    exit 1
+    ;;
+esac
 
 # Step 1: Verify version tag exists (locally and on remote)
 echo "Verifying version tag: ${VERSION_TAG}"
@@ -46,10 +59,10 @@ echo "  ✓ Tag ${VERSION_TAG} points to commit: ${TAG_COMMIT}"
 jj git fetch &>/dev/null || true
 
 # Step 2: Check for existing deploy workspace (prevents concurrent deploys)
-if [[ -d "${DEPLOY_STAGING_DIR}" ]]; then
-  echo "ERROR: Deploy workspace already exists at ${DEPLOY_STAGING_DIR}" >&2
+if [[ -d "${DEPLOY_WORKSPACE_DIR}" ]]; then
+  echo "ERROR: Deploy workspace already exists at ${DEPLOY_WORKSPACE_DIR}" >&2
   echo "  This indicates a deploy may be in progress or needs cleanup." >&2
-  echo "  If safe to clean up, use: jj workspace forget .deploy_staging" >&2
+  echo "  If safe to clean up, use: jj workspace forget .deploy_${ENVIRONMENT}" >&2
   exit 1
 fi
 
@@ -60,13 +73,13 @@ bazel build //web:deployable 2>&1 | tail -3
 DEPLOYABLE_ZIP="${REPO_ROOT}/bazel-bin/web/deployable.zip"
 
 # Step 4: Create deploy workspace
-echo "Creating deploy workspace at ${DEPLOY_STAGING_DIR}..."
-jj workspace add "${DEPLOY_STAGING_DIR}"
+echo "Creating deploy workspace at ${DEPLOY_WORKSPACE_DIR}..."
+jj workspace add "${DEPLOY_WORKSPACE_DIR}"
 
-# Step 5: Enter workspace and create new commit on top of web_deploy
-cd "${DEPLOY_STAGING_DIR}"
-echo "Creating new commit on top of web_deploy..."
-jj new web_deploy
+# Step 5: Enter workspace and create new commit on top of bookmark
+cd "${DEPLOY_WORKSPACE_DIR}"
+echo "Creating new commit on top of ${DEPLOY_BOOKMARK}..."
+jj new "${DEPLOY_BOOKMARK}"
 
 # Step 6: Write deployment metadata (version tag, commit ID, and timestamp)
 echo "Writing deployment metadata..."
@@ -85,28 +98,26 @@ echo "Extracting release artifact..."
 unzip -q -o "${DEPLOYABLE_ZIP}" -d staging
 
 # Step 8: Commit the deployment (with built artifacts and metadata)
-echo "Committing staging deploy..."
-jj commit -m "staging: ${VERSION_TAG} (${TAG_COMMIT})" 2>&1
+echo "Committing ${ENVIRONMENT} deploy..."
+jj commit -m "${ENVIRONMENT}: ${VERSION_TAG} (${TAG_COMMIT})" 2>&1
 DEPLOY_COMMIT="$(jj log --no-graph -r "@-" -T 'commit_id.short(12)')"
 
-# Step 9: Move web_deploy bookmark to the deployment commit (from root workspace)
-echo "Setting web_deploy bookmark..."
+# Step 9: Move bookmark to the deployment commit (from root workspace)
+echo "Setting ${DEPLOY_BOOKMARK} bookmark..."
 cd "${REPO_ROOT}"
-jj bookmark set web_deploy -r "${DEPLOY_COMMIT}" --allow-backwards 2>&1
+jj bookmark set "${DEPLOY_BOOKMARK}" -r "${DEPLOY_COMMIT}" --allow-backwards 2>&1
+echo "Pushing ${DEPLOY_BOOKMARK}..."
+jj git push -b "${DEPLOY_BOOKMARK}" 2>&1
 
-# Step 10: Push to remote
-echo "Pushing web_deploy..."
-jj git push -b web_deploy 2>&1
-
-# Step 11: Verify the deployment (with polling for hosting sync delay)
+# Step 10: Verify the deployment (with polling for hosting sync delay)
 echo "Verifying deployment (polling for up to 60 seconds)..."
 VERIFICATION_TIMEOUT=60
 VERIFICATION_START=$(date +%s)
 VERIFIED=false
 
 while [[ $(($(date +%s) - VERIFICATION_START)) -lt $VERIFICATION_TIMEOUT ]]; do
-  DEPLOYED_VERSION=$(curl -s https://staging.pastthepost.gg/deployment-metadata.json | jq -r '.version' 2>/dev/null || echo "")
-  DEPLOYED_COMMIT=$(curl -s https://staging.pastthepost.gg/deployment-metadata.json | jq -r '.commit_id' 2>/dev/null || echo "")
+  DEPLOYED_VERSION=$(curl -s "${DEPLOY_URL}/deployment-metadata.json" | jq -r '.version' 2>/dev/null || echo "")
+  DEPLOYED_COMMIT=$(curl -s "${DEPLOY_URL}/deployment-metadata.json" | jq -r '.commit_id' 2>/dev/null || echo "")
 
   if [[ "${DEPLOYED_VERSION}" == "${VERSION_TAG}" ]] && [[ "${DEPLOYED_COMMIT}" == "${TAG_COMMIT}" ]]; then
     VERIFIED=true
@@ -126,15 +137,15 @@ if [[ "${VERIFIED}" != "true" ]]; then
   exit 1
 fi
 
-# Step 12: Clean up workspace
+# Step 11: Clean up workspace
 echo "Cleaning up workspace..."
 cd "${REPO_ROOT}"
-jj workspace forget .deploy_staging
-rm -rf "${DEPLOY_STAGING_DIR}"
+jj workspace forget ".deploy_${ENVIRONMENT}"
+rm -rf "${DEPLOY_WORKSPACE_DIR}"
 
 echo ""
-echo "✓ Deployed to staging"
+echo "✓ Deployed to ${ENVIRONMENT}"
 echo "  Version: ${VERSION_TAG}"
 echo "  Commit: ${TAG_COMMIT}"
 echo "  Deployed at: ${TIMESTAMP}"
-echo "  URL: https://staging.pastthepost.gg"
+echo "  URL: ${DEPLOY_URL}"
