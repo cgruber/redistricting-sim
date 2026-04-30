@@ -89,6 +89,38 @@ js_test(
     visibility = ["//visibility:public"],
 )
 
+# ── election_test_lib: compile the test ──────────────────────────────────────
+
+ts_project(
+    name = "election_test_lib",
+    srcs = ["election_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":election_lib",
+        "//web/src/model:types_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+# ── election_test: run tests with Node ───────────────────────────────────────
+
+js_test(
+    name = "election_test",
+    entry_point = "election_test.js",
+    data = [
+        ":election_test_lib",
+        ":election_lib",
+        "//web/src/model:types_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 # ── evaluate_lib: evaluateCriteria + isMapSubmittable ─────────────────────────
 
 ts_project(

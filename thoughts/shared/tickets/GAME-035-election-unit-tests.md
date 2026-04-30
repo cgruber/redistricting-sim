@@ -2,7 +2,7 @@
 id: GAME-035
 title: Unit tests for election.ts
 area: game, testing
-status: open
+status: resolved
 created: 2026-04-29
 ---
 
