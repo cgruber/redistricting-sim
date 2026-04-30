@@ -1,0 +1,24 @@
+"""
+Bazel targets for shared test infrastructure.
+
+  test_runner_lib — shared TAP-style runner imported by all *_test.ts files (BUILD-007)
+"""
+
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
+
+ts_config(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    visibility = ["//web/src/testing:__pkg__"],
+)
+
+# ── test_runner_lib: shared TAP runner (BUILD-007) ────────────────────────────
+
+ts_project(
+    name = "test_runner_lib",
+    srcs = ["test_runner.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    testonly = True,
+    visibility = ["//web:__subpackages__"],
+)

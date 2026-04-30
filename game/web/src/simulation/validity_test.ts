@@ -25,50 +25,7 @@ import { computeValidityStats } from "./validity.js";
 import type { Precinct } from "../model/types.js";
 import type { ScenarioRules } from "../model/scenario.js";
 
-// ─── Minimal test runner ──────────────────────────────────────────────────────
-
-let testCount = 0;
-let failCount = 0;
-
-function test(name: string, fn: () => void): void {
-  testCount++;
-  try {
-    fn();
-    console.log(`ok ${testCount} - ${name}`);
-  } catch (e) {
-    failCount++;
-    console.log(`not ok ${testCount} - ${name}`);
-    console.log(`  # ${e instanceof Error ? e.message : String(e)}`);
-  }
-}
-
-function assertEqual<T>(actual: T, expected: T, msg?: string): void {
-  if (actual !== expected) {
-    throw new Error(
-      `${msg ?? "assertEqual"}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`,
-    );
-  }
-}
-
-function assertNull(actual: unknown, msg?: string): void {
-  if (actual !== null) {
-    throw new Error(`${msg ?? "assertNull"}: expected null, got ${JSON.stringify(actual)}`);
-  }
-}
-
-function assertNotNull(actual: unknown, msg?: string): void {
-  if (actual === null || actual === undefined) {
-    throw new Error(`${msg ?? "assertNotNull"}: expected non-null, got ${String(actual)}`);
-  }
-}
-
-function assertClose(actual: number, expected: number, tolerance: number, msg?: string): void {
-  if (Math.abs(actual - expected) > tolerance) {
-    throw new Error(
-      `${msg ?? "assertClose"}: expected ${expected} ±${tolerance}, got ${actual}`,
-    );
-  }
-}
+import { test, assertEqual, assertNull, assertNotNull, assertClose, summarize } from "../testing/test_runner.js";
 
 // ─── Test fixtures ────────────────────────────────────────────────────────────
 
@@ -244,8 +201,4 @@ test("contiguity: two non-adjacent precincts in same district — not contiguous
   assertEqual(stats.contiguity!.get(2), true, "single-precinct district 2 is contiguous");
 });
 
-// ─── Report ───────────────────────────────────────────────────────────────────
-
-console.log(`\n1..${testCount}`);
-console.log(`# ${testCount - failCount} passed, ${failCount} failed`);
-if (failCount > 0) throw new Error(`${failCount} test(s) failed`);
+summarize();

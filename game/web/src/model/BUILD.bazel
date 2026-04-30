@@ -104,7 +104,10 @@ ts_project(
     srcs = ["progress_test.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    deps = [":progress_lib"],
+    deps = [
+        ":progress_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
     testonly = True,
 )
 
@@ -116,6 +119,7 @@ js_test(
     data = [
         ":progress_test_lib",
         ":progress_lib",
+        "//web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",
@@ -138,19 +142,15 @@ ts_project(
     srcs = ["loader_test.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    deps = [":loader_lib", ":model_lib"],
+    deps = [
+        ":loader_lib",
+        ":model_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
     testonly = True,
 )
 
 # ── loader_test: run tests with Node built-in test runner ─────────────────────
-#
-# aspect_rules_js js_test runs the entry JS file with Node.js.
-# The compiled output of loader_test_lib is loader_test.js (ES2022 modules).
-# Node 18+ supports ESM natively via --input-type or .mjs; however the compiled
-# output from ts_project is .js with ES module syntax.
-#
-# We pass --experimental-vm-modules (Node ≥ 18) and use the js_test entry_point
-# to point at the compiled .js file.
 
 js_test(
     name = "loader_test",
@@ -159,6 +159,7 @@ js_test(
         ":loader_test_lib",
         ":loader_lib",
         ":model_lib",
+        "//web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",

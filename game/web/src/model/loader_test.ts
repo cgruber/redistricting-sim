@@ -1,12 +1,7 @@
 /**
  * Unit tests for loadScenario.
  *
- * Uses a minimal hand-rolled test runner (no external test framework dependencies)
- * so the test file type-checks under the existing tsconfig without @types/node.
- *
- * The runner prints TAP-like output: "ok N - description" / "not ok N - description".
- * Exit code 1 if any test fails.
- *
+ * Uses the shared TAP runner from //web/src/testing:test_runner_lib.
  * Run via Bazel: bazel test //web/src/model:loader_test
  *
  * Coverage:
@@ -20,55 +15,7 @@
  */
 
 import { loadScenario } from "./loader.js";
-
-// ─── Minimal test runner ──────────────────────────────────────────────────────
-
-let testCount = 0;
-let failCount = 0;
-
-function test(name: string, fn: () => void): void {
-  testCount++;
-  try {
-    fn();
-    console.log(`ok ${testCount} - ${name}`);
-  } catch (e) {
-    failCount++;
-    console.log(`not ok ${testCount} - ${name}`);
-    console.error(`  # ${e instanceof Error ? e.message : String(e)}`);
-  }
-}
-
-function assertEqual<T>(actual: T, expected: T, msg?: string): void {
-  if (actual !== expected) {
-    throw new Error(`${msg ?? "assertEqual"}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
-  }
-}
-
-function assertThrows(fn: () => unknown, pattern: RegExp, msg?: string): void {
-  let threw = false;
-  try {
-    fn();
-  } catch (e) {
-    threw = true;
-    const message = e instanceof Error ? e.message : String(e);
-    if (!pattern.test(message)) {
-      throw new Error(
-        `${msg ?? "assertThrows"}: error thrown but message "${message}" did not match ${pattern}`
-      );
-    }
-  }
-  if (!threw) {
-    throw new Error(`${msg ?? "assertThrows"}: expected function to throw but it did not`);
-  }
-}
-
-function assertDoesNotThrow(fn: () => unknown, msg?: string): void {
-  try {
-    fn();
-  } catch (e) {
-    throw new Error(`${msg ?? "assertDoesNotThrow"}: expected no throw but got: ${e instanceof Error ? e.message : String(e)}`);
-  }
-}
+import { test, assertEqual, assertThrows, assertDoesNotThrow, summarize } from "../testing/test_runner.js";
 
 // ─── Minimal valid scenario factory ──────────────────────────────────────────
 
@@ -827,13 +774,4 @@ test("events with dimension group_filter (no group_ids) pass without group exist
   assertEqual(result.events.length, 1);
 });
 
-// ─── Report results ───────────────────────────────────────────────────────────
-
-console.log(`\n1..${testCount}`);
-if (failCount > 0) {
-  console.error(`\n# ${failCount} of ${testCount} tests failed`);
-  // Throw to cause non-zero exit via unhandled exception
-  throw new Error(`Test suite failed: ${failCount} of ${testCount} tests failed`);
-} else {
-  console.log(`\n# All ${testCount} tests passed`);
-}
+summarize();
