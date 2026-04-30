@@ -2,7 +2,7 @@
 id: GAME-036
 title: Unit tests for WIP persistence functions in progress.ts
 area: game, testing
-status: open
+status: resolved
 created: 2026-04-29
 ---
 
