@@ -96,7 +96,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `BUILD-007-shared-test-runner.md` | build, testing | Extract shared TAP test runner module; eliminate boilerplate copied across 4+ test files |
 | `GAME-033-oplabel-constant-dedup.md` | game, code-quality | Deduplicate opLabel constant in evaluate.ts (4 inline copies → 1 module-level const) |
 | `GAME-034-error-panel-dedup.md` | game, code-quality | Deduplicate inline error panel HTML in main.ts (2 identical blocks → showLoadError function) |
-| `GAME-035-election-unit-tests.md` | game, testing | Unit tests for election.ts (runElection + simulateDistrict; currently no unit coverage) |
 | `GAME-036-wip-persistence-unit-tests.md` | game, testing | Unit tests for WIP persistence functions in progress.ts (saveWip/loadWip/clearWip) |
 | `GAME-037-adapter-unit-tests.md` | game, testing | Unit tests for adapter.ts scenarioToSpike (party weights, neighbor lists, district assignments) |
 | `GAME-038-extract-panel-renderers.md` | game, code-quality | Extract DOM panel renderers out of mapRenderer.ts into render/panels.ts |
@@ -114,6 +113,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 |---|---|
 | LEGAL-001: content risk assessment | Low risk for v1; all pre-authored content, fictional entities, educational framing; disclaimers added to about page + Valle Verde; authoring tool deferred to post-v1 review |
 | GAME-006: scenario compression | HTTP gzip sufficient for v1; no code changes needed; .scenarioz deferred to community scenarios |
+| GAME-035: election unit tests | 10 unit tests for runElection + simulateDistrict; exported simulateDistrict; js_test target added; all pass |
 | GAME-032: loader error handling | User-visible error screen with scenario ID, error message, and back button; replaces blank page on validation/fetch failures |
 | BUILD-006: extract inline styles | Inline `<style>` block extracted to styles.css; `'unsafe-inline'` remains in style-src for HTML element inline styles; serve + e2e updated |
 | BUILD-005: CSP meta tag | CSP added; script-src/style-src include 'unsafe-inline' temporarily (inline scripts + styles); title updated to Past the Post |

@@ -33,7 +33,7 @@ function pluralityWinner(share: PartyShare): PartyKey {
 }
 
 /** Compute DistrictResult for one district */
-function simulateDistrict(
+export function simulateDistrict(
 	districtId: DistrictId,
 	precincts: Precinct[],
 	assignments: AssignmentMap,
