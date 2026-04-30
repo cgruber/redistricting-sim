@@ -98,6 +98,22 @@ integration tests: cover use-case scenarios(happy path,edge cases,error paths); 
 research docs: $ts/research/ | YYYY-MM-DD-<description>.md + .compressed.md companion; always produce both
 frontmatter: date researcher git_commit branch repository topic tags status last_updated last_updated_by
 
+§DEPLOY
+tool: game/release.main.kts — run from game/ or repo root
+
+branch deploy (test before merge):
+  VERSION=$(./release.main.kts -- prepare)           # vTEST-<commitid>; no tag
+  ./release.main.kts -- deploy --env staging --version "$VERSION"
+  ./release.main.kts -- deploy --env production --version "$VERSION"
+
+release deploy (on main):
+  ./release.main.kts -- prepare                      # auto-bumps semver; creates+pushes tag
+  ./release.main.kts -- deploy --env staging         # auto-detects staged version
+  ./release.main.kts -- deploy --env production      # same artifact; .deploy_pkg/ kept between deploys
+
+staging:    https://staging.pastthepost.gg
+production: https://pastthepost.gg
+
 §CHAIN Bootstrap — execute exactly one branch (stop after match):
 when {
   $int/AGENTS.compressed.md exists → read+follow; exit chain
