@@ -184,6 +184,51 @@ These are **mandatory reads** — especially after context compaction, where pro
 
 ---
 
+## Deploying the Game
+
+The deploy tool is `game/release.main.kts` (a Kotlin script). It replaces the old `prepare-release.sh` and `deploy.sh` shell scripts. Run it from `game/` or the repo root.
+
+### Subcommands
+
+**`prepare [--version v0.x.y]`**
+
+Builds `//web:deployable` via Bazel and stages the artifact in `game/.deploy_pkg/<version>/`. The staged directory contains `artifact.zip` and `prepare-metadata.json`. It is gitignored and persists across deploys so the same build can go to multiple environments.
+
+- **On main** (or an empty commit directly atop main): produces a semver version. Auto-bumps the patch number from the latest tag unless `--version` is passed explicitly. Creates and pushes a jj tag.
+- **On any other branch**: produces `vTEST-<commitid>`. No tag is created. Safe for branch/PR testing.
+- Passing an explicit semver when not on main is an error.
+- Emits the version string to **stdout** so callers can capture it: `VERSION=$(./release.main.kts -- prepare)`
+
+**`deploy --env <staging|production> [--version <v>]`**
+
+Reads the staged artifact from `game/.deploy_pkg/<version>/` and deploys it. If `--version` is omitted, uses the sole prepared version (errors if zero or multiple exist). The `.deploy_pkg/<version>/` directory is **not** deleted after deploy — keep it to deploy the same build to production after validating on staging.
+
+Internally: creates a jj workspace → `jj new web_deploy` → extracts zip → writes `deployment-metadata.json` → commits → sets `web_deploy` bookmark → pushes → polls verify URL → cleans up workspace.
+
+### Typical workflows
+
+```bash
+# Branch test deploy:
+VERSION=$(./release.main.kts -- prepare)                              # vTEST-<commitid>
+./release.main.kts -- deploy --env staging --version "$VERSION"
+# test at https://staging.pastthepost.gg
+# merge PR, then do the real release from main
+
+# Release from main:
+./release.main.kts -- prepare                                         # auto-bumps semver
+./release.main.kts -- deploy --env staging                            # validates
+./release.main.kts -- deploy --env production                         # promotes same build
+```
+
+### Environments
+
+| Env | URL | Verify endpoint |
+|---|---|---|
+| staging | https://staging.pastthepost.gg | `/deployment-metadata.json` |
+| production | https://pastthepost.gg | `/deployment-metadata.json` |
+
+---
+
 ## Creating Research Documents
 
 Research documents live in `thoughts/shared/research/`. Filename convention: `YYYY-MM-DD-<description>.md` (with `.compressed.md` companion). Always produce both forms. Frontmatter fields: `date`, `researcher`, `git_commit`, `branch`, `repository`, `topic`, `tags`, `status`, `last_updated`, `last_updated_by`.

@@ -15,6 +15,7 @@ _serve_dist/
 .deploy/
 .deploy_staging/
 .deploy_prod/
+.deploy_pkg/
 _deploy_out/
 
 # Playwright test output (traces, HTML report, error contexts)
