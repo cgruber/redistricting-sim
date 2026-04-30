@@ -30,7 +30,7 @@ see game-vision.compressed.md for full scope
 | S8 | hardening | CSP; extract CSS; loader errors; scenario compression | complete — 2026-04-28 |
 | S9 | first release | deploy pastthepost.org; legal review; basic a11y | complete — 2026-04-29 |
 | S10 | code quality + tidy | test coverage gaps; dedup; extract modules; refactor for polish readiness | complete — 2026-04-29 |
-| S11 | design research+polish | achievement UX; demographic overlays; geo features; full a11y | backlog |
+| S11 | main menu, campaigns + polish | title screen→campaign select→scenario flow; Tier2: design research, a11y | backlog |
 
 §SPRINT1 [COMPLETE 2026-04-25]
 goal: app renders tutorial-001.json; player paints+undoes; no sim/game-loop yet
@@ -106,27 +106,34 @@ tier2: GAME-039(#149) GAME-038(#151)
 deferred(tier3): GAME-041 GAME-042 GAME-043 — too large for tidy sprint
 
 §SPRINT11 (backlog)
-goal: design research+polish — resolve open design questions then implement
-scope:
-  DESIGN-001 achievement/star UX; DESIGN-005/006/007 demographic overlays
-  DESIGN-008 geographic features; GAME-008 full a11y; GAME-031 gameplay critique
-  animated criteria eval (needs ticket); electoral outcome diff (needs ticket)
+goal: main menu, campaigns + polish — proper title screen, campaign navigation model
+demo target: player lands on title screen → picks campaign → plays scenario → returns to menu
+tier1 (core): GAME-047 campaign data model; GAME-048 campaign-driven scenario select;
+  GAME-049 campaign select screen; GAME-050 main menu; GAME-051 in-game nav cleanup
+tier2 (if tier1 done): DESIGN-001 achievement UX; GAME-008 full a11y; GAME-031 critique;
+  GAME-052 animated criteria eval (blocked on DESIGN-001); GAME-053 electoral outcome diff
+deferred to S12: DESIGN-005/006/007 demographic overlays; DESIGN-008 geographic features
 
 §SPRINT12+ (later)
-GAME-030 main menu+campaigns (architecture; own sprint)
+DESIGN-005 population dot-density overlay (deferred S11)
+DESIGN-006 zoom-adaptive dot density (deferred S11)
+DESIGN-007 dimensional dot map demographic overlay (deferred S11)
+DESIGN-008 geographic features — decorative tiles (deferred S11)
 GAME-041 split loader; GAME-042 break up main.ts; GAME-043 unify type systems (own sprint)
 
 §BACKLOG (not sprint-assigned)
 BUILD-003 ts-rules spawn strategy          any
 BUILD-004 playwright bzl macro             any
+BUILD-008 switch CI to pnpm               any (low priority)
 CI-001    GH Action ticket-close sync      any (low priority)
 AGENT-003 infra PR review bot              any
 DESIGN-004 legend layout                   any
-GAME-041  split loader.ts                  before S12
-GAME-042  break up main.ts                 before S12
-GAME-043  unify type systems               before S12
+GAME-041  split loader.ts                  S12
+GAME-042  break up main.ts                 S12
+GAME-043  unify type systems               S12
+GAME-046  panels unit tests                S12
 
 §BLOCKING_OPEN_QUESTIONS
-DESIGN-001 star/achievement UX → blocks S11
+DESIGN-001 star/achievement UX → blocks S11 Tier2 (GAME-052 animated criteria eval)
 RESOLVED: OQ4 narrative asset resolution — deferred indefinitely
 RESOLVED: OQ9 StateContext redesign — deferrable past $v1
