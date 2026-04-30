@@ -19,6 +19,10 @@ import type {
 import type { ValidityStats } from "./validity.js";
 import type { SimulationResult, AssignmentMap, Precinct } from "../model/types.js";
 
+// ─── Constants ───────────────────────────────────────────────────────────────
+
+const OP_LABEL: Record<CompareOp, string> = { lt: "<", lte: "≤", eq: "=", gte: "≥", gt: ">" };
+
 // ─── Public types ─────────────────────────────────────────────────────────────
 
 export interface CriterionResult {
@@ -196,8 +200,7 @@ export function evaluateCriteria(
 				const scores = getCompactness();
 				const minScore = scores.length > 0 ? Math.min(...scores) : 0;
 				passed = applyOp(minScore, c.operator, c.threshold);
-				const opLabel: Record<CompareOp, string> = { lt: "<", lte: "≤", eq: "=", gte: "≥", gt: ">" };
-				detail = `min district score: ${(minScore * 100).toFixed(1)}% (required ${opLabel[c.operator]}${(c.threshold * 100).toFixed(0)}%)`;
+				detail = `min district score: ${(minScore * 100).toFixed(1)}% (required ${OP_LABEL[c.operator]}${(c.threshold * 100).toFixed(0)}%)`;
 				break;
 			}
 
@@ -205,8 +208,7 @@ export function evaluateCriteria(
 				const key = partyIdToKey.get(c.party) ?? String(c.party);
 				const seats = (simResult.seatsByParty as Record<string, number>)[key] ?? 0;
 				passed = applyOp(seats, c.operator, c.count);
-				const opLabel: Record<CompareOp, string> = { lt: "<", lte: "≤", eq: "=", gte: "≥", gt: ">" };
-				detail = `${key}: ${seats} seat(s) (required ${opLabel[c.operator]}${c.count})`;
+				detail = `${key}: ${seats} seat(s) (required ${OP_LABEL[c.operator]}${c.count})`;
 				break;
 			}
 
@@ -256,9 +258,8 @@ export function evaluateCriteria(
 				const rawGap = allVotes > 0 ? (rWasted - dWasted) / allVotes : 0;
 				const absGap = Math.abs(rawGap);
 				passed = applyOp(absGap, c.operator, c.threshold);
-				const opLabel2: Record<CompareOp, string> = { lt: "<", lte: "≤", eq: "=", gte: "≥", gt: ">" };
 				const direction = rawGap >= 0 ? "R-disadvantaged" : "D-disadvantaged";
-				detail = `efficiency gap: ${(absGap * 100).toFixed(1)}% (${direction}; required ${opLabel2[c.operator]}${(c.threshold * 100).toFixed(0)}%)`;
+				detail = `efficiency gap: ${(absGap * 100).toFixed(1)}% (${direction}; required ${OP_LABEL[c.operator]}${(c.threshold * 100).toFixed(0)}%)`;
 				break;
 			}
 
@@ -285,9 +286,8 @@ export function evaluateCriteria(
 						: sorted[Math.floor(n / 2)]!;
 				const diff = mean - median;
 				passed = applyOp(diff, c.operator, c.threshold);
-				const opLabel3: Record<CompareOp, string> = { lt: "<", lte: "≤", eq: "=", gte: "≥", gt: ">" };
 				const sign = diff >= 0 ? "+" : "";
-				detail = `${key}: mean ${(mean * 100).toFixed(1)}% − median ${(median * 100).toFixed(1)}% = ${sign}${(diff * 100).toFixed(1)}% (required ${opLabel3[c.operator]}${(c.threshold * 100).toFixed(0)}%)`;
+				detail = `${key}: mean ${(mean * 100).toFixed(1)}% − median ${(median * 100).toFixed(1)}% = ${sign}${(diff * 100).toFixed(1)}% (required ${OP_LABEL[c.operator]}${(c.threshold * 100).toFixed(0)}%)`;
 				break;
 			}
 
