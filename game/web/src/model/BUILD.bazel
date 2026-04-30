@@ -79,6 +79,46 @@ ts_project(
     visibility = ["//web:__pkg__", "//web/src/model:__pkg__"],
 )
 
+# ── campaigns_lib: Campaign type + registry + last-played persistence ─────────
+
+ts_project(
+    name = "campaigns_lib",
+    srcs = ["campaigns.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    visibility = ["//web:__subpackages__"],
+)
+
+# ── campaigns_test_lib: compile campaign tests ────────────────────────────────
+
+ts_project(
+    name = "campaigns_test_lib",
+    srcs = ["campaigns_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":campaigns_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+# ── campaigns_test: run tests with Node ──────────────────────────────────────
+
+js_test(
+    name = "campaigns_test",
+    entry_point = "campaigns_test.js",
+    data = [
+        ":campaigns_test_lib",
+        ":campaigns_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 # ── adapter_lib: Scenario → spike internal types (GAME-005) ──────────────────
 
 ts_project(
