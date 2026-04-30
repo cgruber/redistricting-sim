@@ -2,7 +2,7 @@
 date: 2026-04-25
 status: active
 type: sprint-roadmap
-last_updated: 2026-04-28
+last_updated: 2026-04-29
 ---
 
 # Sprint Roadmap — Redistricting Simulator v1
@@ -43,8 +43,8 @@ See `thoughts/shared/vision/game-vision.compressed.md` for full scope.
 | 6 | Game infrastructure + scenarios 5–7 | In-progress save/resume; scenarios 5–7 authored; hex-of-hexes for 007–009 | complete — 2026-04-27 |
 | 7 | Shippable v1 | About page; wrap-up screen; hex backport to 002–006; all scenarios visually consistent | complete — 2026-04-28 |
 | 8 | Hardening | CSP, extract CSS, loader error handling, scenario compression | complete — 2026-04-28 |
-| 9 | First release | Deploy to pastthepost.org; legal review; basic accessibility | current |
-| 10 | Code quality + tidy | Test coverage gaps, deduplication, module extraction, pre-polish housekeeping | backlog |
+| 9 | First release | Deploy to pastthepost.org; legal review; basic accessibility | complete — 2026-04-29 |
+| 10 | Code quality + tidy | Test coverage gaps, deduplication, module extraction, pre-polish housekeeping | current |
 | 11 | Design research + polish | Achievement UX, demographic overlays, geographic features, full accessibility | backlog |
 
 ---
@@ -189,52 +189,45 @@ PRs: #119 #120 #121 #122
 
 ---
 
-## Sprint 9 — First Release [CURRENT]
+## Sprint 9 — First Release [COMPLETE 2026-04-29]
 
 **Goal**: Ship v1 to the public. Deploy, legal review, basic accessibility.
 
-**Scope**:
-- **DIST-001**: Deploy to pastthepost.org (or GH Pages as staging). Static
-  hosting; gzip served automatically. Configure DNS for pastthepost.org +
-  pastthepost.gg redirect.
-- **LEGAL-001**: Quick review of content presentation risks. The game is
-  educational, non-partisan, fictional regions — assess what disclaimers or
-  framing are needed before public release.
-- **Basic accessibility**: Keyboard navigation for district selection and
-  precinct painting. ARIA labels on interactive elements. Subset of GAME-008
-  scoped to release-blocking items only.
+**Outcome**: All tickets closed. Unified deployment scripts: Buildkite
+auto-deploy to staging on merge, production deploy via `scripts/deploy-prod.sh`
+(DIST-001; PRs #127 #131 #132). Content risk assessment: low-risk for v1 given
+educational framing, fictional regions, all pre-authored content; disclaimers
+added to about page and Valle Verde (LEGAL-001; PR #126). Basic a11y scoped to
+release-blocking items: keyboard navigation for painting and scenario select,
+ARIA labels on interactive elements (GAME-008 partial; PR #129). Plus a
+standalone startup fix: scenario-select screen always shown on initial load
+(PR #128).
 
-**Known tickets**: DIST-001, LEGAL-001, GAME-008 (partial).
+**Tickets**: DIST-001, LEGAL-001, GAME-008 (partial)
+PRs: #126 #127 #128 #129 #131 #132
 
 ---
 
-## Sprint 10 — Code Quality + Tidy [BACKLOG]
+## Sprint 10 — Code Quality + Tidy [CURRENT]
 
 **Goal**: Pre-polish housekeeping — close test coverage gaps, eliminate duplication,
 extract modules. Makes Sprint 11 design work safer and faster to implement.
 
-**Scope**:
+**Tier 1 — complete:**
+- BUILD-007: Shared TAP test runner extracted to `game/web/src/testing/test_runner.ts`;
+  boilerplate eliminated from 4 existing test files (PR #134)
+- GAME-033: `OP_LABEL` module-level const in `evaluate.ts` replaces 4 inline copies (PR #135)
+- GAME-034: `showLoadError()` helper in `main.ts` replaces 2 identical HTML blocks (PR #136)
+- GAME-035: 10 unit tests for `runElection` + `simulateDistrict`; `simulateDistrict` exported (PR #138)
+- GAME-036: 11 unit tests for `saveWip`/`loadWip`/`clearWip` with in-memory localStorage shim (PR #140)
+- GAME-037: 12 unit tests for `scenarioToSpike` in `adapter.ts` (PR #142)
+- GAME-040: 22 named `private static readonly` constants in `mapRenderer.ts` (PR #144)
 
-**Tier 1 — High value, low risk (do first):**
-- BUILD-007: Extract shared TAP test runner (eliminates boilerplate from 4+ test files)
-- GAME-033: Deduplicate `opLabel` constant in `evaluate.ts` (4 copies → 1)
-- GAME-034: Deduplicate error panel HTML in `main.ts` (2 blocks → `showLoadError()`)
-- GAME-035: Unit tests for `election.ts` (`runElection`, `simulateDistrict`)
-- GAME-036: Unit tests for WIP persistence in `progress.ts` (`saveWip`/`loadWip`/`clearWip`)
-- GAME-037: Unit tests for `adapter.ts` (`scenarioToSpike`)
-
-**Tier 2 — Moderate effort, clear structural win:**
+**Tier 2 — remaining:**
 - GAME-038: Extract DOM panel renderers from `mapRenderer.ts` → `render/panels.ts`
 - GAME-039: Extract hex geometry utils from `generator.ts` → `model/hex-geometry.ts`
-- GAME-040: Name magic numbers in `mapRenderer.ts` (opacities, zoom step, lightness)
-
-**Recommended order**: BUILD-007 first (shared runner used by all new test files); then
-Tier 1 dedup (GAME-033, GAME-034); then Tier 1 tests (GAME-035, GAME-036, GAME-037);
-then Tier 2 structural (GAME-038, GAME-039, GAME-040).
 
 **Deferred (Tier 3 — too large for this sprint)**: GAME-041, GAME-042, GAME-043.
-
-**Known tickets**: BUILD-007, GAME-033 through GAME-040.
 
 ---
 

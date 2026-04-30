@@ -2,7 +2,7 @@
 id: GAME-033
 title: Deduplicate opLabel constant in evaluate.ts
 area: game, code-quality
-status: open
+status: resolved
 created: 2026-04-29
 ---
 

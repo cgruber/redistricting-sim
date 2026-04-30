@@ -93,9 +93,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-030-main-menu-and-campaigns.md` | game, UX, architecture | Main menu, campaign model, campaign select, layered navigation; replaces scenario-select-as-home |
 | `GAME-031-gameplay-critique-followup.md` | game, content, balance | Review and act on external gameplay critique research (scenario difficulty, eval balance, design) |
 | `DESIGN-008-geographic-features.md` | design, rendering | Geographic features (lakes=aqua+wave, mountains=grey+hatch) as decorative non-precinct tiles; blocks contiguity |
-| `BUILD-007-shared-test-runner.md` | build, testing | Extract shared TAP test runner module; eliminate boilerplate copied across 4+ test files |
-| `GAME-033-oplabel-constant-dedup.md` | game, code-quality | Deduplicate opLabel constant in evaluate.ts (4 inline copies → 1 module-level const) |
-| `GAME-034-error-panel-dedup.md` | game, code-quality | Deduplicate inline error panel HTML in main.ts (2 identical blocks → showLoadError function) |
 | `GAME-038-extract-panel-renderers.md` | game, code-quality | Extract DOM panel renderers out of mapRenderer.ts into render/panels.ts |
 | `GAME-039-extract-hex-geometry.md` | game, code-quality | Extract hex geometry utilities (hexToPixel, hexCorners, mapBounds) from generator.ts into hex-geometry.ts |
 | `GAME-041-split-loader.md` | game, code-quality | Split loader.ts: extract runtime-types.ts primitives; name validateScenario() internally |
@@ -110,6 +107,9 @@ tests should be written alongside or before implementation, not as a backfill. W
 |---|---|
 | LEGAL-001: content risk assessment | Low risk for v1; all pre-authored content, fictional entities, educational framing; disclaimers added to about page + Valle Verde; authoring tool deferred to post-v1 review |
 | GAME-006: scenario compression | HTTP gzip sufficient for v1; no code changes needed; .scenarioz deferred to community scenarios |
+| BUILD-007: shared TAP test runner | test_runner.ts extracted to game/web/src/testing/; 9 exports (test, assertEqual, assertClose, assertNull, assertNotNull, assertTrue, assertFalse, assertDeepEqual, assertThrows, summarize); boilerplate eliminated from 4 existing test files |
+| GAME-033: opLabel dedup | Single OP_LABEL module-level const in evaluate.ts replaces 4 inline copies; evaluate_test passes with no behavior change |
+| GAME-034: error panel dedup | showLoadError(bodyHtml, errorMsg) helper in main.ts replaces 2 identical insertAdjacentHTML blocks; both error paths preserved |
 | GAME-040: mapRenderer magic numbers | 22 named static readonly constants extracted (opacities, zoom step, lightness coefficients, fallback dims, dash patterns); no behavior change; typecheck passes |
 | GAME-037: adapter unit tests | 12 tests for scenarioToSpike: precinct count, party weights, multi-group pop-weighting, neighbor wiring, district assignments, null assignments, districtCount |
 | GAME-036: WIP persistence unit tests | 11 tests in separate progress_wip_test.ts with in-memory localStorage shim; round-trip, null cases, clear; all pass |
