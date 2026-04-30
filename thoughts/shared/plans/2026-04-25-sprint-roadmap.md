@@ -44,7 +44,8 @@ See `thoughts/shared/vision/game-vision.compressed.md` for full scope.
 | 7 | Shippable v1 | About page; wrap-up screen; hex backport to 002–006; all scenarios visually consistent | complete — 2026-04-28 |
 | 8 | Hardening | CSP, extract CSS, loader error handling, scenario compression | complete — 2026-04-28 |
 | 9 | First release | Deploy to pastthepost.org; legal review; basic accessibility | current |
-| 10 | Design research + polish | Achievement UX, demographic overlays, geographic features, full accessibility | backlog |
+| 10 | Code quality + tidy | Test coverage gaps, deduplication, module extraction, pre-polish housekeeping | backlog |
+| 11 | Design research + polish | Achievement UX, demographic overlays, geographic features, full accessibility | backlog |
 
 ---
 
@@ -207,7 +208,37 @@ PRs: #119 #120 #121 #122
 
 ---
 
-## Sprint 10 — Design Research + Polish [BACKLOG]
+## Sprint 10 — Code Quality + Tidy [BACKLOG]
+
+**Goal**: Pre-polish housekeeping — close test coverage gaps, eliminate duplication,
+extract modules. Makes Sprint 11 design work safer and faster to implement.
+
+**Scope**:
+
+**Tier 1 — High value, low risk (do first):**
+- BUILD-007: Extract shared TAP test runner (eliminates boilerplate from 4+ test files)
+- GAME-033: Deduplicate `opLabel` constant in `evaluate.ts` (4 copies → 1)
+- GAME-034: Deduplicate error panel HTML in `main.ts` (2 blocks → `showLoadError()`)
+- GAME-035: Unit tests for `election.ts` (`runElection`, `simulateDistrict`)
+- GAME-036: Unit tests for WIP persistence in `progress.ts` (`saveWip`/`loadWip`/`clearWip`)
+- GAME-037: Unit tests for `adapter.ts` (`scenarioToSpike`)
+
+**Tier 2 — Moderate effort, clear structural win:**
+- GAME-038: Extract DOM panel renderers from `mapRenderer.ts` → `render/panels.ts`
+- GAME-039: Extract hex geometry utils from `generator.ts` → `model/hex-geometry.ts`
+- GAME-040: Name magic numbers in `mapRenderer.ts` (opacities, zoom step, lightness)
+
+**Recommended order**: BUILD-007 first (shared runner used by all new test files); then
+Tier 1 dedup (GAME-033, GAME-034); then Tier 1 tests (GAME-035, GAME-036, GAME-037);
+then Tier 2 structural (GAME-038, GAME-039, GAME-040).
+
+**Deferred (Tier 3 — too large for this sprint)**: GAME-041, GAME-042, GAME-043.
+
+**Known tickets**: BUILD-007, GAME-033 through GAME-040.
+
+---
+
+## Sprint 11 — Design Research + Polish [BACKLOG]
 
 **Goal**: Research-first sprint — resolve open design questions, then implement.
 
@@ -225,11 +256,14 @@ GAME-008, GAME-031. Two new tickets needed for animated criteria + electoral dif
 
 ---
 
-## Sprint 11+ (later)
+## Sprint 12+ (later)
 
 | Ticket | Area | Notes |
 |---|---|---|
 | GAME-030 | Main menu + campaigns | Architecture overhaul; own sprint |
+| GAME-041 | Split loader.ts | Structural; own sprint alongside GAME-042/043 |
+| GAME-042 | Break up main.ts | Structural; own sprint |
+| GAME-043 | Unify type systems | Largest refactor; own sprint; do last |
 
 ---
 
@@ -242,6 +276,9 @@ GAME-008, GAME-031. Two new tickets needed for animated criteria + electoral dif
 | CI-001 | GitHub Action ticket-close sync | Any (low priority) |
 | AGENT-003 | Infra PR review bot comment handling | Any |
 | DESIGN-004 | Legend layout (horizontal strip above map) | Any |
+| GAME-041 | Split loader.ts into focused modules | S12 |
+| GAME-042 | Break up main.ts god module | S12 |
+| GAME-043 | Unify spike + scenario type systems | S12 |
 
 ---
 
@@ -249,7 +286,7 @@ GAME-008, GAME-031. Two new tickets needed for animated criteria + electoral dif
 
 | Question | Blocks | ADR/spec reference |
 |---|---|---|
-| DESIGN-001: Star/achievement UX | Sprint 9 | DESIGN-001 ticket |
+| DESIGN-001: Star/achievement UX | Sprint 11 | DESIGN-001 ticket |
 
 **Resolved**:
 - OQ4 (narrative asset resolution) — intro slides shipped in Sprint 4 without image support; deferred indefinitely.
