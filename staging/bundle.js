@@ -14446,6 +14446,46 @@ var init_progress = __esm({
   }
 });
 
+// web/src/model/campaigns.js
+function getCampaign(id2) {
+  return CAMPAIGN_REGISTRY.find((c3) => c3.id === id2);
+}
+function saveLastPlayedScenario(scenarioId) {
+  try {
+    localStorage.setItem(LAST_PLAYED_KEY, scenarioId);
+  } catch (e) {
+  }
+}
+var LAST_PLAYED_KEY, CAMPAIGN_REGISTRY;
+var init_campaigns = __esm({
+  "web/src/model/campaigns.js"() {
+    LAST_PLAYED_KEY = "redistricting-sim-last-played-scenario";
+    CAMPAIGN_REGISTRY = [
+      {
+        id: "tutorial",
+        title: "Tutorial",
+        description: "Learn the basics of district drawing with two introductory maps.",
+        scenarioIds: ["tutorial-001", "tutorial-002"]
+      },
+      {
+        id: "educational",
+        title: "Educational Campaign",
+        description: "Explore nine scenarios that illustrate real gerrymandering techniques and their effects on elections.",
+        scenarioIds: [
+          "scenario-002",
+          "scenario-003",
+          "scenario-004",
+          "scenario-005",
+          "scenario-006",
+          "scenario-007",
+          "scenario-008",
+          "scenario-009"
+        ]
+      }
+    ];
+  }
+});
+
 // web/src/main.ts
 var require_main = __commonJS({
   "web/src/main.ts"(exports) {
@@ -14456,6 +14496,7 @@ var require_main = __commonJS({
     init_evaluate();
     init_validity();
     init_progress();
+    init_campaigns();
     var SCENARIO_MANIFEST = [
       { id: "tutorial-002", title: "Millbrook County: Three-District Challenge" },
       { id: "scenario-002", title: "Clearwater County: The Governor's Map" },
@@ -14467,6 +14508,13 @@ var require_main = __commonJS({
       { id: "scenario-008", title: "Both Sides Unhappy" },
       { id: "scenario-009", title: "Cats vs. Dogs" }
     ];
+    var CAMPAIGN_ONLY_SCENARIOS = [
+      { id: "tutorial-001", title: "Welcome to Redistricting: Millbrook County" }
+    ];
+    var MANIFEST_BY_ID = new Map([
+      ...SCENARIO_MANIFEST.map((e) => [e.id, e]),
+      ...CAMPAIGN_ONLY_SCENARIOS.map((e) => [e.id, e])
+    ]);
     var svgEl = document.getElementById("map-svg");
     var resultsEl = document.getElementById("results-container");
     var validityEl = document.getElementById("validity-container");
@@ -14521,17 +14569,21 @@ var require_main = __commonJS({
     }
     var IS_DEBUG = debugParam !== null && debugParam !== "off" || sessionStorage.getItem(DEBUG_KEY) === "1";
     (() => __async(exports, null, function* () {
-      var _a, _b, _c, _d, _e;
+      var _a, _b, _c, _d, _e, _f;
       let progress = loadProgress();
+      const urlParams = new URLSearchParams(window.location.search);
+      const campaignParam = (_a = urlParams.get("campaign")) != null ? _a : "";
+      const activeCampaign = campaignParam !== "" ? getCampaign(campaignParam) : void 0;
+      const activeList = activeCampaign ? activeCampaign.scenarioIds.map((id2) => MANIFEST_BY_ID.get(id2)).filter((e) => e !== void 0) : SCENARIO_MANIFEST;
       function renderScenarioCards() {
         if (!scenarioCardsEl)
           return;
         const wip = loadWip();
         scenarioCardsEl.innerHTML = "";
-        SCENARIO_MANIFEST.forEach((entry, i) => {
+        activeList.forEach((entry, i) => {
           var _a2, _b2;
           const completed = isCompleted(progress, entry.id);
-          const unlocked = i === 0 || isCompleted(progress, (_b2 = (_a2 = SCENARIO_MANIFEST[i - 1]) == null ? void 0 : _a2.id) != null ? _b2 : "");
+          const unlocked = i === 0 || isCompleted(progress, (_b2 = (_a2 = activeList[i - 1]) == null ? void 0 : _a2.id) != null ? _b2 : "");
           const locked = !unlocked;
           const inProgress = (wip == null ? void 0 : wip.scenarioId) === entry.id;
           const card = document.createElement("div");
@@ -14554,7 +14606,8 @@ var require_main = __commonJS({
               if (currentWip && currentWip.scenarioId !== entry.id) {
                 showWipWarning(currentWip.scenarioId, entry.id);
               } else {
-                window.location.assign(`./?s=${entry.id}`);
+                const dest = campaignParam ? `./?s=${entry.id}&campaign=${campaignParam}` : `./?s=${entry.id}`;
+                window.location.assign(dest);
               }
             });
           }
@@ -14578,7 +14631,8 @@ var require_main = __commonJS({
         const onConfirm = () => {
           cleanup();
           clearWip();
-          window.location.assign(`./?s=${targetId}`);
+          const dest = campaignParam ? `./?s=${targetId}&campaign=${campaignParam}` : `./?s=${targetId}`;
+          window.location.assign(dest);
         };
         const onCancel = () => {
           cleanup();
@@ -14595,6 +14649,15 @@ var require_main = __commonJS({
         var _a2, _b2, _c2;
         renderScenarioCards();
         scenarioSelectEl == null ? void 0 : scenarioSelectEl.classList.remove("hidden");
+        const backBtn = document.getElementById("btn-back-to-campaign");
+        if (backBtn) {
+          backBtn.hidden = !activeCampaign;
+          if (activeCampaign) {
+            backBtn.addEventListener("click", () => {
+              window.location.assign("./?view=campaigns");
+            });
+          }
+        }
         (_a2 = document.getElementById("btn-reset-campaign")) == null ? void 0 : _a2.addEventListener("click", () => {
           if (!confirm("Reset all progress? This will erase completion status and any in-progress work."))
             return;
@@ -14614,18 +14677,15 @@ var require_main = __commonJS({
           scenarioSelectEl == null ? void 0 : scenarioSelectEl.classList.remove("hidden");
         });
       }
-      const urlParams = new URLSearchParams(window.location.search);
-      const requestedId = (_a = urlParams.get("s")) != null ? _a : "";
-      const requestedEntry = SCENARIO_MANIFEST.find(
-        (e) => e.id === requestedId
-      );
+      const requestedId = (_b = urlParams.get("s")) != null ? _b : "";
+      const requestedEntry = activeList.find((e) => e.id === requestedId);
       let entryToLoad;
       if (requestedId !== "" && requestedEntry === void 0) {
         showScenarioSelect();
         return;
       } else if (requestedEntry !== void 0) {
-        const idx = SCENARIO_MANIFEST.indexOf(requestedEntry);
-        const locked = idx > 0 && !isCompleted(progress, (_c = (_b = SCENARIO_MANIFEST[idx - 1]) == null ? void 0 : _b.id) != null ? _c : "");
+        const idx = activeList.findIndex((e) => e.id === requestedId);
+        const locked = idx > 0 && !isCompleted(progress, (_d = (_c = activeList[idx - 1]) == null ? void 0 : _c.id) != null ? _d : "");
         if (locked && !IS_DEBUG) {
           showScenarioSelect();
           return;
@@ -14646,6 +14706,7 @@ var require_main = __commonJS({
 			</div>`
         );
       }
+      saveLastPlayedScenario(entryToLoad.id);
       let json;
       try {
         const resp = yield fetch(`./scenarios/${entryToLoad.id}.json`);
@@ -14937,7 +14998,7 @@ var require_main = __commonJS({
       btnKeepDrawing.addEventListener("click", () => {
         resultScreen.classList.add("hidden");
       });
-      (_d = document.getElementById("btn-back-to-scenarios")) == null ? void 0 : _d.addEventListener("click", () => {
+      (_e = document.getElementById("btn-back-to-scenarios")) == null ? void 0 : _e.addEventListener("click", () => {
         flushWipSave();
         window.location.assign("./");
       });
@@ -14951,7 +15012,7 @@ var require_main = __commonJS({
           window.location.assign("./");
         }
       });
-      (_e = document.getElementById("btn-wrap-up-replay")) == null ? void 0 : _e.addEventListener("click", () => {
+      (_f = document.getElementById("btn-wrap-up-replay")) == null ? void 0 : _f.addEventListener("click", () => {
         window.location.assign("./");
       });
       store.subscribe(() => {
