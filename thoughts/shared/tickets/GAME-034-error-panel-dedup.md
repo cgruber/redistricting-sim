@@ -2,7 +2,7 @@
 id: GAME-034
 title: Deduplicate inline error panel HTML in main.ts
 area: game, code-quality
-status: open
+status: resolved
 created: 2026-04-29
 ---
 

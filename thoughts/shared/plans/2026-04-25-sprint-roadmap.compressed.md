@@ -1,6 +1,6 @@
 <!--COMPRESSED v1; source:2026-04-25-sprint-roadmap.md-->
 §META
-date:2026-04-25 last_updated:2026-04-28 status:active type:sprint-roadmap
+date:2026-04-25 last_updated:2026-04-29 status:active type:sprint-roadmap
 LIVING DOC — update at sprint start (fill tickets) + after demo (outcomes, re-evaluate next)
 
 §ABBREV
@@ -28,8 +28,8 @@ see game-vision.compressed.md for full scope
 | S6 | game infra + scenarios 5–7 | GAME-007 save/resume; scenarios 5–9; hex-of-hexes; demo feedback fixes | complete — 2026-04-27 |
 | S7 | shippable $v1 | about page; wrap-up screen; hex backport 002–006; visual consistency | complete — 2026-04-28 |
 | S8 | hardening | CSP; extract CSS; loader errors; scenario compression | complete — 2026-04-28 |
-| S9 | first release | deploy pastthepost.org; legal review; basic a11y | current |
-| S10 | code quality + tidy | test coverage gaps; dedup; extract modules; refactor for polish readiness | backlog |
+| S9 | first release | deploy pastthepost.org; legal review; basic a11y | complete — 2026-04-29 |
+| S10 | code quality + tidy | test coverage gaps; dedup; extract modules; refactor for polish readiness | current |
 | S11 | design research+polish | achievement UX; demographic overlays; geo features; full a11y | backlog |
 
 §SPRINT1 [COMPLETE 2026-04-25]
@@ -88,21 +88,22 @@ outcome: all tickets closed; CSP meta tag w/ temp unsafe-inline (BUILD-005); inl
 tickets (all resolved): BUILD-005 BUILD-006 GAME-032 GAME-006
 PRs: #119 #120 #121 #122
 
-§SPRINT9 [CURRENT]
+§SPRINT9 [COMPLETE 2026-04-29]
 goal: first release — ship v1 to public
-scope:
-  DIST-001: deploy to pastthepost.org (static hosting; DNS config)
-  LEGAL-001: content presentation risk review (disclaimers/framing)
-  GAME-008 (partial): basic a11y — keyboard nav, ARIA labels; release-blocking subset only
-known tickets: DIST-001 LEGAL-001 GAME-008(partial)
+outcome: all tickets closed
+  DIST-001: unified deploy scripts; Buildkite auto-deploy staging; prod deploy via scripts/deploy-prod.sh; PRs #127 #131 #132
+  LEGAL-001: content risk low; disclaimers added to about page + Valle Verde; PR #126
+  GAME-008(partial): keyboard nav (painting+scenario select); ARIA labels; PR #129
+  standalone fix: scenario-select always shown on initial load; PR #128
+tickets: DIST-001 LEGAL-001 GAME-008(partial)
+PRs: #126 #127 #128 #129 #131 #132
 
-§SPRINT10 (backlog)
+§SPRINT10 [CURRENT]
 goal: code quality + tidy — close test coverage gaps, eliminate duplication, extract modules
 rationale: pre-polish housekeeping; makes S11 design work safer to implement
-tier1(high-value,low-risk): BUILD-007 GAME-033 GAME-034 GAME-035 GAME-036 GAME-037
-tier2(moderate-effort,clear-win): GAME-038 GAME-039 GAME-040
-order: BUILD-007 first (shared test runner used by GAME-035/036/037); then tier1 dedup (GAME-033 GAME-034); then tests (GAME-035 GAME-036 GAME-037); then tier2 structural
-scope note: Tier 3 deferred (GAME-041 GAME-042 GAME-043) — too large for tidy sprint
+done(tier1): BUILD-007(#134) GAME-033(#135) GAME-034(#136) GAME-035(#138) GAME-036(#140) GAME-037(#142) GAME-040(#144)
+remaining(tier2): GAME-038 GAME-039
+deferred(tier3): GAME-041 GAME-042 GAME-043 — too large for tidy sprint
 
 §SPRINT11 (backlog)
 goal: design research+polish — resolve open design questions then implement

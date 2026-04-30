@@ -2,7 +2,7 @@
 id: BUILD-007
 title: Extract shared TAP test runner module
 area: build, testing
-status: open
+status: resolved
 created: 2026-04-29
 ---
 
