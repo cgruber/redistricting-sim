@@ -30,7 +30,7 @@ ts_project(
     deps = [
         "//web/src/model:types_lib",
     ],
-    visibility = ["//web:__pkg__", "//web/src/simulation:__pkg__"],
+    visibility = ["//web:__subpackages__"],
 )
 
 # ── validity_lib: computeValidityStats ────────────────────────────────────────

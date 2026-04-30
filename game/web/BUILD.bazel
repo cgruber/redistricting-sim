@@ -31,6 +31,7 @@ ts_project(
         "//web/src/simulation:election_lib",
         "//web/src/simulation:validity_lib",
         "//web/src/simulation:evaluate_lib",
+        "//web/src/store:gameStore_lib",
     ],
 )
 
@@ -62,6 +63,7 @@ esbuild(
         "//web/src/simulation:election_lib",
         "//web/src/simulation:validity_lib",
         "//web/src/simulation:evaluate_lib",
+        "//web/src/store:gameStore_lib",
     ],
     output = "bundle.js",
     format = "esm",

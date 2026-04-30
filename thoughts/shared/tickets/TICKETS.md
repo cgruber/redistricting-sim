@@ -96,6 +96,9 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-041-split-loader.md` | game, code-quality | Split loader.ts: extract runtime-types.ts primitives; name validateScenario() internally |
 | `GAME-042-break-up-main.md` | game, code-quality | Break up main.ts god module into testable units (scenarioSelect, resultScreen, introFlow) |
 | `GAME-043-unify-type-systems.md` | game, code-quality | Unify spike and scenario type systems; retire adapter.ts and types.ts spike layer |
+| `GAME-044-hex-geometry-unit-tests.md` | game, testing | Unit tests for hex-geometry.ts: hexToPixel, hexCorners, mapBounds, HEX_DIRECTIONS |
+| `GAME-045-gamestore-unit-tests.md` | game, testing | Unit tests for gameStore.ts: paint, stroke, reset, restore, undo/redo via zundo temporal |
+| `GAME-046-panels-unit-tests.md` | game, testing | Unit tests for render/panels.ts (deferred): jsdom or extract-pure-helpers approach |
 
 ---
 
