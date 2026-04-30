@@ -10,15 +10,13 @@
 
 import { loadScenario } from "./model/loader.js";
 import type { Scenario } from "./model/scenario.js";
+import { type MapRenderer, type ViewMode, SvgMapRenderer } from "./render/mapRenderer.js";
 import {
-	type MapRenderer,
-	type ViewMode,
-	SvgMapRenderer,
 	renderDistrictButtons,
 	renderLegend,
 	renderResults,
 	renderValidityPanel,
-} from "./render/mapRenderer.js";
+} from "./render/panels.js";
 import { createGameStore } from "./store/gameStore.js";
 import { evaluateCriteria, isMapSubmittable } from "./simulation/evaluate.js";
 import { computeValidityStats } from "./simulation/validity.js";
