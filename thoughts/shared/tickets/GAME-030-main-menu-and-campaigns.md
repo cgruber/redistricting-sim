@@ -12,6 +12,9 @@ Replace the current scenario-select-as-home-screen with a proper main menu,
 campaign model, and layered navigation. The game should feel like a real game
 with a title screen, not a scenario picker that doubles as everything.
 
+This is the parent design document. Implementation is broken into five
+sub-tickets: GAME-047 through GAME-051.
+
 ## Current State
 
 The scenario select screen serves as the home screen — it's the first thing
@@ -21,55 +24,69 @@ Scenarios are hardcoded in SCENARIO_MANIFEST.
 
 ## Design
 
+### Campaign Model
+
+A campaign is a named, ordered collection of scenarios. Two campaigns ship
+with v1:
+
+- **Tutorial** — `tutorial-001` and `tutorial-002`; introduces map mechanics
+  before presenting the full scenario set
+- **Educational** — all nine main scenarios (001–009); the core game
+
+Campaign data structure:
+```typescript
+interface Campaign {
+  id: string;
+  title: string;
+  description: string;
+  scenarioIds: string[];
+}
+```
+
+Campaign completion tracked per-campaign in localStorage. Unlock logic
+(sequential progression) applies within each campaign independently.
+
 ### Main Menu Screen
 - Full-screen with game art/logo ("Past the Post")
-- Vertical menu on the left:
+- Vertical menu:
   - **Continue** (visible only when a campaign is in progress)
   - **New Campaign**
-  - **Load** (greyed out until save/load feature is ready)
-  - **Settings** (greyed out until settings feature is ready)
   - **About** (opens existing about page)
-
-### Campaign Model
-- A campaign is a named collection of scenarios with ordering
-- The v1 educational campaign is the only campaign; others are future
-- Campaign data structure: `{ id, title, description, scenarioIds: string[] }`
-- Campaign completion tracked per-campaign in localStorage
+  - **Load** (greyed out — post-v1)
+  - **Settings** (greyed out — post-v1)
 
 ### Campaign Select Screen
-- Shows available campaigns (initially just the one educational campaign)
-- Each campaign card: title, description, progress indicator
+- Shows both campaigns with progress indicator (N/M scenarios complete)
 - Back button returns to main menu
-- Clicking a campaign opens the scenario select screen
+- Clicking a campaign opens the scenario select screen for that campaign
 
 ### Scenario Select Screen
 - No longer the home screen — accessed through a campaign
-- Scenario list generated from the campaign's `scenarioIds`, not hardcoded
+- Scenario list generated from the campaign's `scenarioIds`
 - Back button returns to campaign select (not main menu)
 
 ### In-Game Navigation
-- The "← Scenarios" button becomes a menu with:
+- The "← Scenarios" button becomes a submenu:
   - "Return to Scenarios" (back to scenario select within current campaign)
-  - "Return to Main Menu" (back to main menu)
+  - "Return to Main Menu"
 
-## Goals / Acceptance Criteria
+## Sub-tickets (implementation)
 
-- [ ] Main menu screen with art/logo and vertical navigation
-- [ ] Campaign data model: id, title, description, scenarioIds
-- [ ] Campaign select screen showing available campaigns
-- [ ] Scenario select screen driven by campaign data (not hardcoded manifest)
-- [ ] In-game menu with "Return to Scenarios" and "Return to Main Menu" options
-- [ ] Continue button on main menu when a campaign is in progress
-- [ ] Load and Settings buttons present but greyed out / disabled
-- [ ] About opens existing about page
-- [ ] All existing e2e tests pass (may need updates for new navigation flow)
+Intended delivery order (each builds on the previous):
 
-## Test Coverage
+| Ticket | Scope | Depends on |
+|---|---|---|
+| GAME-047 | Campaign data model + authored campaign definitions | — |
+| GAME-048 | Campaign-driven scenario select (routing + data wiring) | GAME-047 |
+| GAME-050 | Main menu / title screen | GAME-047, GAME-048 |
+| GAME-049 | Campaign select screen | GAME-047, GAME-048, GAME-050 |
+| GAME-051 | In-game navigation cleanup | GAME-048, GAME-049, GAME-050 |
 
-- [ ] e2e: main menu visible on fresh load; About/New Campaign buttons work
-- [ ] e2e: New Campaign → campaign select → scenario select flow
-- [ ] e2e: in-game menu navigation back to scenarios and main menu
-- [ ] e2e: Continue button appears when campaign in progress
+GAME-050 ships before GAME-049 so the campaign select Back button has a real
+destination. The Continue button in GAME-050 requires per-campaign last-played
+tracking; GAME-047 must persist a `lastCampaignId` key in localStorage, or
+GAME-050 should soften Continue to navigate to campaign select rather than the
+most-recently-played campaign's scenario list.
 
 ## References
 

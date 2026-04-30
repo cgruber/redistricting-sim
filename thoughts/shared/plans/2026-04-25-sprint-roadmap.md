@@ -45,7 +45,7 @@ See `thoughts/shared/vision/game-vision.compressed.md` for full scope.
 | 8 | Hardening | CSP, extract CSS, loader error handling, scenario compression | complete — 2026-04-28 |
 | 9 | First release | Deploy to pastthepost.org; legal review; basic accessibility | complete — 2026-04-29 |
 | 10 | Code quality + tidy | Test coverage gaps, deduplication, module extraction, pre-polish housekeeping | complete — 2026-04-29 |
-| 11 | Design research + polish | Achievement UX, demographic overlays, geographic features, full accessibility | backlog |
+| 11 | Main menu, campaigns + polish | Title screen → campaign select → scenario flow; optional: design research, accessibility | backlog |
 
 ---
 
@@ -235,21 +235,35 @@ extract modules. Makes Sprint 11 design work safer and faster to implement.
 
 ---
 
-## Sprint 11 — Design Research + Polish [BACKLOG]
+## Sprint 11 — Main Menu, Campaigns + Polish [BACKLOG]
 
-**Goal**: Research-first sprint — resolve open design questions, then implement.
+**Goal**: First-impression polish sprint — proper main menu, campaign navigation
+model, and the most impactful UX improvements. Players should experience the
+game as a real game, not a scenario picker.
 
-**Scope**:
+**Demo target**: A player lands on a title screen, picks a campaign, plays a
+scenario, and returns to the menu — end-to-end navigation working.
+
+**Tier 1 (core delivery):**
+- GAME-047: Campaign data model + authored campaign definitions
+- GAME-048: Campaign-driven scenario select (routing + data wiring)
+- GAME-049: Campaign select screen
+- GAME-050: Main menu / title screen
+- GAME-051: In-game navigation cleanup
+
+**Tier 2 (if Tier 1 done early):**
 - DESIGN-001: Achievement/star UX research (blocks animated criteria eval)
-- DESIGN-005/006/007: Demographic overlay research → implementation
-- DESIGN-008: Geographic features (lakes, mountains as decorative tiles)
 - GAME-008: Full accessibility pass (remainder after S9 basics)
-- GAME-031: Gameplay critique followup (review + act on external feedback)
-- Animated criteria evaluation + party reactions (needs ticket; blocked on DESIGN-001)
-- Electoral outcome visual diff (needs ticket)
+- GAME-031: Gameplay critique followup
+- GAME-052: Animated criteria evaluation (blocked on DESIGN-001)
+- GAME-053: Electoral outcome visual diff (placeholder)
 
-**Known tickets**: DESIGN-001, DESIGN-005, DESIGN-006, DESIGN-007, DESIGN-008,
-GAME-008, GAME-031. Two new tickets needed for animated criteria + electoral diff.
+**Deferred to S12:** DESIGN-005/006/007 (demographic overlays), DESIGN-008
+(geographic features) — these require dedicated research + implementation time
+that would crowd out the navigation work.
+
+**Known tickets (Tier 1)**: GAME-047, GAME-048, GAME-049, GAME-050, GAME-051.
+**Known tickets (Tier 2)**: DESIGN-001, GAME-008, GAME-031, GAME-052, GAME-053.
 
 ---
 
@@ -257,7 +271,10 @@ GAME-008, GAME-031. Two new tickets needed for animated criteria + electoral dif
 
 | Ticket | Area | Notes |
 |---|---|---|
-| GAME-030 | Main menu + campaigns | Architecture overhaul; own sprint |
+| DESIGN-005 | Population dot-density overlay | Deferred from S11 |
+| DESIGN-006 | Zoom-adaptive dot density | Deferred from S11; refinement on DESIGN-005 |
+| DESIGN-007 | Dimensional dot map demographic overlay | Deferred from S11 |
+| DESIGN-008 | Geographic features (lakes, mountains) | Decorative tiles; blocks contiguity |
 | GAME-041 | Split loader.ts | Structural; own sprint alongside GAME-042/043 |
 | GAME-042 | Break up main.ts | Structural; own sprint |
 | GAME-043 | Unify type systems | Largest refactor; own sprint; do last |
@@ -270,12 +287,14 @@ GAME-008, GAME-031. Two new tickets needed for animated criteria + electoral dif
 |---|---|---|
 | BUILD-003 | ts-rules spawn strategy research | Any |
 | BUILD-004 | Playwright bzl macro | Any |
+| BUILD-008 | Switch CI from npm ci to pnpm | Any (low priority) |
 | CI-001 | GitHub Action ticket-close sync | Any (low priority) |
 | AGENT-003 | Infra PR review bot comment handling | Any |
 | DESIGN-004 | Legend layout (horizontal strip above map) | Any |
 | GAME-041 | Split loader.ts into focused modules | S12 |
 | GAME-042 | Break up main.ts god module | S12 |
 | GAME-043 | Unify spike + scenario type systems | S12 |
+| GAME-046 | Unit tests for render/panels.ts | S12 |
 
 ---
 
@@ -283,7 +302,7 @@ GAME-008, GAME-031. Two new tickets needed for animated criteria + electoral dif
 
 | Question | Blocks | ADR/spec reference |
 |---|---|---|
-| DESIGN-001: Star/achievement UX | Sprint 11 | DESIGN-001 ticket |
+| DESIGN-001: Star/achievement UX | Sprint 11 Tier 2 (animated criteria, GAME-052) | DESIGN-001 ticket |
 
 **Resolved**:
 - OQ4 (narrative asset resolution) — intro slides shipped in Sprint 4 without image support; deferred indefinitely.
