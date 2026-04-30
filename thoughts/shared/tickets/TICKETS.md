@@ -94,7 +94,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-031-gameplay-critique-followup.md` | game, content, balance | Review and act on external gameplay critique research (scenario difficulty, eval balance, design) |
 | `DESIGN-008-geographic-features.md` | design, rendering | Geographic features (lakes=aqua+wave, mountains=grey+hatch) as decorative non-precinct tiles; blocks contiguity |
 | `GAME-038-extract-panel-renderers.md` | game, code-quality | Extract DOM panel renderers out of mapRenderer.ts into render/panels.ts |
-| `GAME-039-extract-hex-geometry.md` | game, code-quality | Extract hex geometry utilities (hexToPixel, hexCorners, mapBounds) from generator.ts into hex-geometry.ts |
 | `GAME-041-split-loader.md` | game, code-quality | Split loader.ts: extract runtime-types.ts primitives; name validateScenario() internally |
 | `GAME-042-break-up-main.md` | game, code-quality | Break up main.ts god module into testable units (scenarioSelect, resultScreen, introFlow) |
 | `GAME-043-unify-type-systems.md` | game, code-quality | Unify spike and scenario type systems; retire adapter.ts and types.ts spike layer |
@@ -107,6 +106,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 |---|---|
 | LEGAL-001: content risk assessment | Low risk for v1; all pre-authored content, fictional entities, educational framing; disclaimers added to about page + Valle Verde; authoring tool deferred to post-v1 review |
 | GAME-006: scenario compression | HTTP gzip sufficient for v1; no code changes needed; .scenarioz deferred to community scenarios |
+| GAME-039: extract hex geometry | hex-geometry.ts created with hexToPixel, hexCorners, mapBounds, HEX_DIRECTIONS; generator.ts re-exports from it; adapter.ts + mapRenderer.ts updated; hex_geometry_lib added to model BUILD |
 | BUILD-007: shared TAP test runner | test_runner.ts extracted to game/web/src/testing/; 9 exports (test, assertEqual, assertClose, assertNull, assertNotNull, assertTrue, assertFalse, assertDeepEqual, assertThrows, summarize); boilerplate eliminated from 4 existing test files |
 | GAME-033: opLabel dedup | Single OP_LABEL module-level const in evaluate.ts replaces 4 inline copies; evaluate_test passes with no behavior change |
 | GAME-034: error panel dedup | showLoadError(bodyHtml, errorMsg) helper in main.ts replaces 2 identical insertAdjacentHTML blocks; both error paths preserved |

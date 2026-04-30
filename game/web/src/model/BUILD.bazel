@@ -36,6 +36,17 @@ ts_project(
     visibility = ["//web:__subpackages__"],
 )
 
+# ── hex_geometry_lib: pure hex math (hexToPixel, hexCorners, mapBounds, HEX_DIRECTIONS) ──
+
+ts_project(
+    name = "hex_geometry_lib",
+    srcs = ["hex-geometry.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [":types_lib"],
+    visibility = ["//web:__subpackages__"],
+)
+
 # ── generator_lib: generator.ts (spike/legacy procedural precinct generator) ──
 
 ts_project(
@@ -43,7 +54,7 @@ ts_project(
     srcs = ["generator.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    deps = [":types_lib"],
+    deps = [":types_lib", ":hex_geometry_lib"],
     visibility = ["//web:__subpackages__"],
 )
 
@@ -75,7 +86,7 @@ ts_project(
     srcs = ["adapter.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    deps = [":model_lib", ":types_lib", ":generator_lib"],
+    deps = [":model_lib", ":types_lib", ":hex_geometry_lib"],
     visibility = ["//web:__subpackages__"],
 )
 

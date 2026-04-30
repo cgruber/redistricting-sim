@@ -21,7 +21,7 @@
  */
 
 import * as d3 from "d3";
-import { hexCorners, mapBounds } from "../model/generator.js";
+import { hexCorners, mapBounds } from "../model/hex-geometry.js";
 import type { ScenarioRules } from "../model/scenario.js";
 import type { Precinct } from "../model/types.js";
 import { DISTRICT_COLORS, PARTY_COLORS, PARTY_LABELS } from "../model/types.js";

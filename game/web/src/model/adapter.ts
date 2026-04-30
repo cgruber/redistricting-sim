@@ -15,7 +15,7 @@
 
 import type { Scenario } from "./scenario.js";
 import type { AssignmentMap, DistrictId, Precinct } from "./types.js";
-import { HEX_DIRECTIONS, hexToPixel } from "./generator.js";
+import { HEX_DIRECTIONS, hexToPixel } from "./hex-geometry.js";
 
 // vote_shares is Record<PartyId, number> with branded keys; cast to plain string map at runtime
 type VoteShareRecord = Record<string, number>;
