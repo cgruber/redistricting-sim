@@ -2,7 +2,7 @@
 id: GAME-045
 title: Unit tests for gameStore.ts
 area: game, code-quality, testing
-status: open
+status: resolved
 created: 2026-04-29
 ---
 
