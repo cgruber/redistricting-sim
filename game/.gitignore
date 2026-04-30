@@ -13,6 +13,8 @@ _serve_dist/
 
 # Deploy workspace and temporary build artifacts
 .deploy/
+.deploy_staging/
+.deploy_prod/
 _deploy_out/
 
 # Playwright test output (traces, HTML report, error contexts)

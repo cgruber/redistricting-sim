@@ -64,12 +64,18 @@ echo ""
 
 # Step 2: Create and push version tag
 echo "Step 2: Creating and pushing tag ${VERSION_TAG}..."
-jj tag set "${VERSION_TAG}" -r main
+if ! jj tag set "${VERSION_TAG}" -r main; then
+  echo "ERROR: Failed to create tag ${VERSION_TAG}" >&2
+  exit 1
+fi
 echo "  ✓ Tag created: ${VERSION_TAG}"
 
 # Push tag using jj git push (not git push directly)
 cd "${SCRIPT_DIR}/.."
-jj git push -r "${VERSION_TAG}" 2>&1 | tail -3
+if ! jj git push -r "${VERSION_TAG}" 2>&1 | tail -3; then
+  echo "ERROR: Failed to push tag ${VERSION_TAG}" >&2
+  exit 1
+fi
 echo "  ✓ Tag pushed to remote"
 echo ""
 
@@ -78,5 +84,5 @@ echo "Release prepared!"
 echo "  Version: ${VERSION_TAG}"
 echo "  Artifact: ${DEPLOYABLE_ZIP}"
 echo "  Next steps:"
-echo "    - Staging: cd game && ./deploy-staging.sh"
-echo "    - Production: cd game && ./deploy-prod.sh"
+echo "    - Staging: cd game && ./deploy.sh staging"
+echo "    - Production: cd game && ./deploy.sh production"
