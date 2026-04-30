@@ -2,7 +2,7 @@
 id: GAME-039
 title: Extract hex geometry utilities from generator.ts
 area: game, code-quality
-status: open
+status: resolved
 created: 2026-04-29
 ---
 
