@@ -93,6 +93,18 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-030-main-menu-and-campaigns.md` | game, UX, architecture | Main menu, campaign model, campaign select, layered navigation; replaces scenario-select-as-home |
 | `GAME-031-gameplay-critique-followup.md` | game, content, balance | Review and act on external gameplay critique research (scenario difficulty, eval balance, design) |
 | `DESIGN-008-geographic-features.md` | design, rendering | Geographic features (lakes=aqua+wave, mountains=grey+hatch) as decorative non-precinct tiles; blocks contiguity |
+| `BUILD-007-shared-test-runner.md` | build, testing | Extract shared TAP test runner module; eliminate boilerplate copied across 4+ test files |
+| `GAME-033-oplabel-constant-dedup.md` | game, code-quality | Deduplicate opLabel constant in evaluate.ts (4 inline copies → 1 module-level const) |
+| `GAME-034-error-panel-dedup.md` | game, code-quality | Deduplicate inline error panel HTML in main.ts (2 identical blocks → showLoadError function) |
+| `GAME-035-election-unit-tests.md` | game, testing | Unit tests for election.ts (runElection + simulateDistrict; currently no unit coverage) |
+| `GAME-036-wip-persistence-unit-tests.md` | game, testing | Unit tests for WIP persistence functions in progress.ts (saveWip/loadWip/clearWip) |
+| `GAME-037-adapter-unit-tests.md` | game, testing | Unit tests for adapter.ts scenarioToSpike (party weights, neighbor lists, district assignments) |
+| `GAME-038-extract-panel-renderers.md` | game, code-quality | Extract DOM panel renderers out of mapRenderer.ts into render/panels.ts |
+| `GAME-039-extract-hex-geometry.md` | game, code-quality | Extract hex geometry utilities (hexToPixel, hexCorners, mapBounds) from generator.ts into hex-geometry.ts |
+| `GAME-040-maprenderer-magic-numbers.md` | game, code-quality | Name magic numbers in mapRenderer.ts (opacity values, zoom step, lightness coefficients, fallback dimensions) |
+| `GAME-041-split-loader.md` | game, code-quality | Split loader.ts: extract runtime-types.ts primitives; name validateScenario() internally |
+| `GAME-042-break-up-main.md` | game, code-quality | Break up main.ts god module into testable units (scenarioSelect, resultScreen, introFlow) |
+| `GAME-043-unify-type-systems.md` | game, code-quality | Unify spike and scenario type systems; retire adapter.ts and types.ts spike layer |
 
 ---
 
