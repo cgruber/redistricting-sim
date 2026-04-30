@@ -82,6 +82,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `BUILD-003-ts-rules-spawn-strategy-research.md` | build, typescript | Research optimal spawn_strategy config for aspect_rules_ts on macOS (darwin-sandbox + multi-target packages) |
 | `BUILD-004-playwright-bzl-macro.md` | build, testing | Playwright sh_test macro: proper Bazel rule for virtual store path resolution, replacing ad-hoc readlink discovery |
 | `BUILD-008-switch-ci-to-pnpm.md` | build, ci | Switch CI from npm ci to pnpm --frozen-lockfile; remove package-lock.json |
+| `BUILD-009-content-hash-bundle.md` | build, deployment | Content-hashed bundle filenames (`bundle-[hash].js`) for proper CDN cache invalidation on deploy; replaces query-string kludge in release.main.kts |
 | `CI-001-github-action-ticket-close-sync.md` | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
 | `DIST-001-steam-deployment-research.md` | distribution, platform | Research Steam free/educational program, achievements API, web-vs-Steam tradeoffs |
 | `DESIGN-001-achievement-star-system.md` | design, UX | Game ergonomics research for star/achievement ranking system (required vs. optional criteria) |
@@ -98,7 +99,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-042-break-up-main.md` | game, code-quality | Break up main.ts god module into testable units (scenarioSelect, resultScreen, introFlow) |
 | `GAME-043-unify-type-systems.md` | game, code-quality | Unify spike and scenario type systems; retire adapter.ts and types.ts spike layer |
 | `GAME-046-panels-unit-tests.md` | game, testing | Unit tests for render/panels.ts (deferred): jsdom or extract-pure-helpers approach |
-| `GAME-047-campaign-data-model.md` | game, architecture | Campaign type + CAMPAIGN_REGISTRY + getCampaign(); Tutorial (2 scenarios) and Educational (9 scenarios) campaign definitions |
 | `GAME-048-campaign-driven-scenario-select.md` | game, UX | Scenario select accepts ?campaign= param; filters list to campaign; Back button to campaign select |
 | `GAME-049-campaign-select-screen.md` | game, UX | Campaign select screen: both campaigns with progress indicators; navigates into scenario select |
 | `GAME-050-main-menu.md` | game, UX | Main menu / title screen: Continue, New Campaign, About, greyed Load/Settings; replaces scenario-select-as-home |
@@ -117,6 +117,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | GAME-038: extract panel renderers | render/panels.ts created with renderResults, renderLegend, renderDistrictButtons, renderValidityPanel; mapRenderer.ts reduced by ~115 lines; main.ts import updated |
 | GAME-039: extract hex geometry | hex-geometry.ts created with hexToPixel, hexCorners, mapBounds, HEX_DIRECTIONS; generator.ts re-exports from it; adapter.ts + mapRenderer.ts updated; hex_geometry_lib added to model BUILD |
 | GAME-044: hex-geometry unit tests | 11 unit tests for hexToPixel, hexCorners, HEX_DIRECTIONS, mapBounds; hex_geometry_test Bazel target in model/BUILD.bazel; merged PR #153 |
+| GAME-047: campaign data model | Campaign interface + CAMPAIGN_REGISTRY + getCampaign() + save/loadLastPlayedScenario(); Tutorial (2 scenarios) + Educational (8 scenarios); 13 unit tests; merged PR #159 |
 | GAME-045: gameStore unit tests | 13 unit tests for initial state, setActiveDistrict, paintPrecinct, paintStroke, resetToInitial, restoreAssignments, undo via zundo; store/BUILD.bazel package created; react added as devDep; merged PR #153 |
 | BUILD-007: shared TAP test runner | test_runner.ts extracted to game/web/src/testing/; 9 exports (test, assertEqual, assertClose, assertNull, assertNotNull, assertTrue, assertFalse, assertDeepEqual, assertThrows, summarize); boilerplate eliminated from 4 existing test files |
 | GAME-033: opLabel dedup | Single OP_LABEL module-level const in evaluate.ts replaces 4 inline copies; evaluate_test passes with no behavior change |

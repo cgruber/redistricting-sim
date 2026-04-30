@@ -881,3 +881,45 @@ test("about page: accessible from select screen and shows educational content", 
   await expect(page.locator("#scenario-select")).toBeVisible();
   await expect(page.locator("#about-screen")).not.toBeVisible();
 });
+
+// ─── GAME-048: Campaign-driven scenario select ──────────────────────────────
+
+test("campaign select: ?campaign=tutorial shows only tutorial-001 and tutorial-002", async ({ page }) => {
+  await page.goto("/?campaign=tutorial");
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  const cards = page.locator(".scenario-card");
+  await expect(cards).toHaveCount(2);
+  await expect(cards.nth(0)).toContainText("Welcome to Redistricting");
+  await expect(cards.nth(1)).toContainText("Three-District Challenge");
+});
+
+test("campaign select: ?campaign=tutorial Back button is visible", async ({ page }) => {
+  await page.goto("/?campaign=tutorial");
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator("#btn-back-to-campaign")).toBeVisible();
+});
+
+test("campaign select: Back button absent without ?campaign= param", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator("#btn-back-to-campaign")).not.toBeVisible();
+});
+
+test("campaign select: no ?campaign= shows all 9 scenarios (fallback regression guard)", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  const cards = page.locator(".scenario-card");
+  const count = await cards.count();
+  expect(count).toBe(9);
+});
+
+test("campaign select: unknown ?campaign= falls back to all scenarios with Back button hidden", async ({ page }) => {
+  await page.goto("/?campaign=bogus");
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  // Unknown campaign → full manifest fallback (9 cards)
+  const cards = page.locator(".scenario-card");
+  const count = await cards.count();
+  expect(count).toBe(9);
+  // Back button must not be visible — bogus param must not leak
+  await expect(page.locator("#btn-back-to-campaign")).not.toBeVisible();
+});
