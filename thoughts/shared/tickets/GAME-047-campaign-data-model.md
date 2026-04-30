@@ -4,6 +4,7 @@ title: Campaign data model + authored campaign definitions
 area: game, architecture
 status: open
 created: 2026-04-29
+github_issue: 158
 ---
 
 ## Summary
