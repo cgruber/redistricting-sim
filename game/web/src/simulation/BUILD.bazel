@@ -66,6 +66,7 @@ ts_project(
         ":validity_lib",
         "//web/src/model:types_lib",
         "//web/src/model:model_lib",
+        "//web/src/testing:test_runner_lib",
     ],
     testonly = True,
 )
@@ -80,6 +81,7 @@ js_test(
         ":validity_lib",
         "//web/src/model:types_lib",
         "//web/src/model:model_lib",
+        "//web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",
@@ -124,6 +126,7 @@ ts_project(
         ":election_lib",
         "//web/src/model:types_lib",
         "//web/src/model:model_lib",
+        "//web/src/testing:test_runner_lib",
     ],
     testonly = True,
 )
@@ -140,6 +143,7 @@ js_test(
         ":election_lib",
         "//web/src/model:types_lib",
         "//web/src/model:model_lib",
+        "//web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",

@@ -29,38 +29,7 @@ import { runElection } from "./election.js";
 import type { Precinct, GameState, AssignmentMap } from "../model/types.js";
 import type { ScenarioRules, SuccessCriterion, Precinct as ScenarioPrecinct } from "../model/scenario.js";
 
-// ─── Minimal test runner ──────────────────────────────────────────────────────
-
-let testCount = 0;
-let failCount = 0;
-
-function test(name: string, fn: () => void): void {
-  testCount++;
-  try {
-    fn();
-    console.log(`ok ${testCount} - ${name}`);
-  } catch (e) {
-    failCount++;
-    console.log(`not ok ${testCount} - ${name}`);
-    console.log(`  # ${e instanceof Error ? e.message : String(e)}`);
-  }
-}
-
-function assertEqual<T>(actual: T, expected: T, msg?: string): void {
-  if (actual !== expected) {
-    throw new Error(
-      `${msg ?? "assertEqual"}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`,
-    );
-  }
-}
-
-function assertTrue(actual: boolean, msg?: string): void {
-  if (!actual) throw new Error(`${msg ?? "assertTrue"}: expected true`);
-}
-
-function assertFalse(actual: boolean, msg?: string): void {
-  if (actual) throw new Error(`${msg ?? "assertFalse"}: expected false`);
-}
+import { test, assertEqual, assertTrue, assertFalse, summarize } from "../testing/test_runner.js";
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
@@ -554,7 +523,4 @@ test("majority_minority: no scenario precincts provided → fail with message", 
   assertFalse(result.criterionResults[0]!.passed, "missing scenario precincts → fail");
 });
 
-// ─── TAP summary ─────────────────────────────────────────────────────────────
-
-console.log(`\n1..${testCount}`);
-if (failCount > 0) throw new Error(`${failCount} test(s) failed`);
+summarize();

@@ -1,7 +1,5 @@
 /**
  * Unit tests for progress.ts — pure serialization and mutation functions.
- * Hand-rolled TAP runner (no external test framework); compatible with Node 18+.
- *
  * Run via: bazel test //web/src/model:progress_test
  */
 
@@ -12,140 +10,107 @@ import {
 	isCompleted,
 	type Progress,
 } from "./progress.js";
-
-let passed = 0;
-let failed = 0;
-let total = 0;
-
-function assert(description: string, condition: boolean): void {
-	total++;
-	if (condition) {
-		console.log(`ok ${total} - ${description}`);
-		passed++;
-	} else {
-		console.log(`not ok ${total} - ${description}`);
-		failed++;
-	}
-}
-
-function assertDeepEqual(description: string, actual: unknown, expected: unknown): void {
-	assert(description, JSON.stringify(actual) === JSON.stringify(expected));
-}
+import { test, assertEqual, assertDeepEqual, assertTrue, assertFalse, summarize } from "../testing/test_runner.js";
 
 // ─── serializeProgress ────────────────────────────────────────────────────────
 
-{
+test("serializeProgress: empty completed is valid JSON", () => {
 	const p: Progress = { completed: [] };
 	const json = serializeProgress(p);
-	assert("serializeProgress: empty completed is valid JSON", (() => {
-		try { JSON.parse(json); return true; } catch { return false; }
-	})());
-}
+	JSON.parse(json); // throws if invalid
+});
 
-{
+test("serializeProgress: round-trips a single id", () => {
 	const p: Progress = { completed: ["tutorial-001"] };
-	const json = serializeProgress(p);
-	const parsed = JSON.parse(json) as { completed: string[] };
-	assertDeepEqual("serializeProgress: round-trips a single id", parsed.completed, ["tutorial-001"]);
-}
+	const parsed = JSON.parse(serializeProgress(p)) as { completed: string[] };
+	assertDeepEqual(parsed.completed, ["tutorial-001"]);
+});
 
-{
+test("serializeProgress: round-trips multiple ids", () => {
 	const p: Progress = { completed: ["tutorial-001", "level-002"] };
-	const json = serializeProgress(p);
-	const parsed = JSON.parse(json) as { completed: string[] };
-	assertDeepEqual("serializeProgress: round-trips multiple ids", parsed.completed, ["tutorial-001", "level-002"]);
-}
+	const parsed = JSON.parse(serializeProgress(p)) as { completed: string[] };
+	assertDeepEqual(parsed.completed, ["tutorial-001", "level-002"]);
+});
 
 // ─── deserializeProgress ─────────────────────────────────────────────────────
 
-{
+test("deserializeProgress: parses valid JSON", () => {
 	const p = deserializeProgress('{"completed":["tutorial-001"]}');
-	assertDeepEqual("deserializeProgress: parses valid JSON", p.completed, ["tutorial-001"]);
-}
+	assertDeepEqual(p.completed, ["tutorial-001"]);
+});
 
-{
+test("deserializeProgress: parses empty completed", () => {
 	const p = deserializeProgress('{"completed":[]}');
-	assertDeepEqual("deserializeProgress: parses empty completed", p.completed, []);
-}
+	assertDeepEqual(p.completed, []);
+});
 
-{
+test("deserializeProgress: malformed JSON returns empty", () => {
 	const p = deserializeProgress("not-json");
-	assertDeepEqual("deserializeProgress: malformed JSON returns empty", p.completed, []);
-}
+	assertDeepEqual(p.completed, []);
+});
 
-{
+test("deserializeProgress: filters non-string items", () => {
 	const p = deserializeProgress('{"completed":["a",42,null,"b"]}');
-	assertDeepEqual("deserializeProgress: filters non-string items", p.completed, ["a", "b"]);
-}
+	assertDeepEqual(p.completed, ["a", "b"]);
+});
 
-{
+test("deserializeProgress: missing completed returns empty", () => {
 	const p = deserializeProgress('{"other":"field"}');
-	assertDeepEqual("deserializeProgress: missing completed returns empty", p.completed, []);
-}
+	assertDeepEqual(p.completed, []);
+});
 
-{
+test("deserializeProgress: null JSON returns empty", () => {
 	const p = deserializeProgress("null");
-	assertDeepEqual("deserializeProgress: null JSON returns empty", p.completed, []);
-}
+	assertDeepEqual(p.completed, []);
+});
 
 // ─── round-trip ───────────────────────────────────────────────────────────────
 
-{
+test("round-trip: serialize then deserialize preserves ids", () => {
 	const original: Progress = { completed: ["a", "b", "c"] };
 	const roundTripped = deserializeProgress(serializeProgress(original));
-	assertDeepEqual("round-trip: serialize then deserialize preserves ids", roundTripped.completed, original.completed);
-}
+	assertDeepEqual(roundTripped.completed, original.completed);
+});
 
 // ─── markCompleted ────────────────────────────────────────────────────────────
 
-{
+test("markCompleted: adds id to empty progress", () => {
 	const p: Progress = { completed: [] };
-	const updated = markCompleted(p, "tutorial-001");
-	assertDeepEqual("markCompleted: adds id to empty progress", updated.completed, ["tutorial-001"]);
-}
+	assertDeepEqual(markCompleted(p, "tutorial-001").completed, ["tutorial-001"]);
+});
 
-{
+test("markCompleted: does not duplicate existing id", () => {
 	const p: Progress = { completed: ["tutorial-001"] };
-	const updated = markCompleted(p, "tutorial-001");
-	assertDeepEqual("markCompleted: does not duplicate existing id", updated.completed, ["tutorial-001"]);
-}
+	assertDeepEqual(markCompleted(p, "tutorial-001").completed, ["tutorial-001"]);
+});
 
-{
+test("markCompleted: appends new id to existing", () => {
 	const p: Progress = { completed: ["tutorial-001"] };
-	const updated = markCompleted(p, "level-002");
-	assertDeepEqual("markCompleted: appends new id to existing", updated.completed, ["tutorial-001", "level-002"]);
-}
+	assertDeepEqual(markCompleted(p, "level-002").completed, ["tutorial-001", "level-002"]);
+});
 
-{
+test("markCompleted: returns new object (immutable)", () => {
 	const p: Progress = { completed: ["a"] };
 	const updated = markCompleted(p, "b");
-	assert("markCompleted: returns new object (immutable)", updated !== p);
-	assertDeepEqual("markCompleted: original unchanged", p.completed, ["a"]);
-}
+	assertTrue(updated !== p, "should return a new object");
+	assertDeepEqual(p.completed, ["a"], "original unchanged");
+});
 
 // ─── isCompleted ──────────────────────────────────────────────────────────────
 
-{
+test("isCompleted: true for present id", () => {
 	const p: Progress = { completed: ["tutorial-001"] };
-	assert("isCompleted: true for present id", isCompleted(p, "tutorial-001"));
-}
+	assertTrue(isCompleted(p, "tutorial-001"));
+});
 
-{
+test("isCompleted: false for absent id", () => {
 	const p: Progress = { completed: ["tutorial-001"] };
-	assert("isCompleted: false for absent id", !isCompleted(p, "level-002"));
-}
+	assertFalse(isCompleted(p, "level-002"));
+});
 
-{
+test("isCompleted: false for empty progress", () => {
 	const p: Progress = { completed: [] };
-	assert("isCompleted: false for empty progress", !isCompleted(p, "tutorial-001"));
-}
+	assertFalse(isCompleted(p, "tutorial-001"));
+});
 
-// ─── Summary ──────────────────────────────────────────────────────────────────
-
-console.log(`\n1..${total}`);
-if (failed > 0) {
-	console.error(`# ${failed} of ${total} tests failed`);
-	throw new Error(`Test suite failed: ${failed} of ${total} tests failed`);
-} else {
-	console.log(`# All ${total} tests passed`);
-}
+summarize();
