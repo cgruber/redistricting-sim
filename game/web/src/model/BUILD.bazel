@@ -89,6 +89,40 @@ ts_project(
     visibility = ["//web:__subpackages__"],
 )
 
+# ── adapter_test_lib: compile adapter tests ───────────────────────────────────
+
+ts_project(
+    name = "adapter_test_lib",
+    srcs = ["adapter_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":adapter_lib",
+        ":model_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+# ── adapter_test: run adapter tests with Node ─────────────────────────────────
+
+js_test(
+    name = "adapter_test",
+    entry_point = "adapter_test.js",
+    data = [
+        ":adapter_test_lib",
+        ":adapter_lib",
+        ":model_lib",
+        ":types_lib",
+        ":generator_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 # ── progress_typecheck_test: type-check passes ───────────────────────────────
 
 build_test(

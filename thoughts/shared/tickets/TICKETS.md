@@ -96,7 +96,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `BUILD-007-shared-test-runner.md` | build, testing | Extract shared TAP test runner module; eliminate boilerplate copied across 4+ test files |
 | `GAME-033-oplabel-constant-dedup.md` | game, code-quality | Deduplicate opLabel constant in evaluate.ts (4 inline copies → 1 module-level const) |
 | `GAME-034-error-panel-dedup.md` | game, code-quality | Deduplicate inline error panel HTML in main.ts (2 identical blocks → showLoadError function) |
-| `GAME-037-adapter-unit-tests.md` | game, testing | Unit tests for adapter.ts scenarioToSpike (party weights, neighbor lists, district assignments) |
 | `GAME-038-extract-panel-renderers.md` | game, code-quality | Extract DOM panel renderers out of mapRenderer.ts into render/panels.ts |
 | `GAME-039-extract-hex-geometry.md` | game, code-quality | Extract hex geometry utilities (hexToPixel, hexCorners, mapBounds) from generator.ts into hex-geometry.ts |
 | `GAME-040-maprenderer-magic-numbers.md` | game, code-quality | Name magic numbers in mapRenderer.ts (opacity values, zoom step, lightness coefficients, fallback dimensions) |
@@ -112,6 +111,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 |---|---|
 | LEGAL-001: content risk assessment | Low risk for v1; all pre-authored content, fictional entities, educational framing; disclaimers added to about page + Valle Verde; authoring tool deferred to post-v1 review |
 | GAME-006: scenario compression | HTTP gzip sufficient for v1; no code changes needed; .scenarioz deferred to community scenarios |
+| GAME-037: adapter unit tests | 12 tests for scenarioToSpike: precinct count, party weights, multi-group pop-weighting, neighbor wiring, district assignments, null assignments, districtCount |
 | GAME-036: WIP persistence unit tests | 11 tests in separate progress_wip_test.ts with in-memory localStorage shim; round-trip, null cases, clear; all pass |
 | GAME-035: election unit tests | 10 unit tests for runElection + simulateDistrict; exported simulateDistrict; js_test target added; all pass |
 | GAME-032: loader error handling | User-visible error screen with scenario ID, error message, and back button; replaces blank page on validation/fetch failures |

@@ -2,7 +2,7 @@
 id: GAME-037
 title: Unit tests for adapter.ts (scenarioToSpike)
 area: game, testing
-status: open
+status: resolved
 created: 2026-04-29
 ---
 
