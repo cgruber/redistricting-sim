@@ -127,6 +127,36 @@ js_test(
     visibility = ["//visibility:public"],
 )
 
+# ── progress_wip_test_lib: compile WIP persistence tests ─────────────────────
+
+ts_project(
+    name = "progress_wip_test_lib",
+    srcs = ["progress_wip_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":progress_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+# ── progress_wip_test: run WIP persistence tests with Node ───────────────────
+
+js_test(
+    name = "progress_wip_test",
+    entry_point = "progress_wip_test.js",
+    data = [
+        ":progress_wip_test_lib",
+        ":progress_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 # ── loader_typecheck_test: type-check passes ──────────────────────────────────
 
 build_test(
