@@ -2,7 +2,7 @@
 id: GAME-040
 title: Name magic numbers in mapRenderer.ts
 area: game, code-quality
-status: open
+status: resolved
 created: 2026-04-29
 ---
 

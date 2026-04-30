@@ -98,7 +98,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-034-error-panel-dedup.md` | game, code-quality | Deduplicate inline error panel HTML in main.ts (2 identical blocks → showLoadError function) |
 | `GAME-038-extract-panel-renderers.md` | game, code-quality | Extract DOM panel renderers out of mapRenderer.ts into render/panels.ts |
 | `GAME-039-extract-hex-geometry.md` | game, code-quality | Extract hex geometry utilities (hexToPixel, hexCorners, mapBounds) from generator.ts into hex-geometry.ts |
-| `GAME-040-maprenderer-magic-numbers.md` | game, code-quality | Name magic numbers in mapRenderer.ts (opacity values, zoom step, lightness coefficients, fallback dimensions) |
 | `GAME-041-split-loader.md` | game, code-quality | Split loader.ts: extract runtime-types.ts primitives; name validateScenario() internally |
 | `GAME-042-break-up-main.md` | game, code-quality | Break up main.ts god module into testable units (scenarioSelect, resultScreen, introFlow) |
 | `GAME-043-unify-type-systems.md` | game, code-quality | Unify spike and scenario type systems; retire adapter.ts and types.ts spike layer |
@@ -111,6 +110,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 |---|---|
 | LEGAL-001: content risk assessment | Low risk for v1; all pre-authored content, fictional entities, educational framing; disclaimers added to about page + Valle Verde; authoring tool deferred to post-v1 review |
 | GAME-006: scenario compression | HTTP gzip sufficient for v1; no code changes needed; .scenarioz deferred to community scenarios |
+| GAME-040: mapRenderer magic numbers | 22 named static readonly constants extracted (opacities, zoom step, lightness coefficients, fallback dims, dash patterns); no behavior change; typecheck passes |
 | GAME-037: adapter unit tests | 12 tests for scenarioToSpike: precinct count, party weights, multi-group pop-weighting, neighbor wiring, district assignments, null assignments, districtCount |
 | GAME-036: WIP persistence unit tests | 11 tests in separate progress_wip_test.ts with in-memory localStorage shim; round-trip, null cases, clear; all pass |
 | GAME-035: election unit tests | 10 unit tests for runElection + simulateDistrict; exported simulateDistrict; js_test target added; all pass |

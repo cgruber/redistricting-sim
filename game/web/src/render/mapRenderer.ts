@@ -164,6 +164,36 @@ export class SvgMapRenderer implements MapRenderer {
 	private static readonly PREVIEW_BASE_WIDTH = 2.5;
 	private static readonly COUNTY_BASE_WIDTH = 3;
 
+	// Zoom parameters
+	private static readonly ZOOM_STEP = 1.3;
+	private static readonly MAX_ZOOM_MULTIPLIER = 8;
+	private static readonly VIEWPORT_PADDING = 20;
+	private static readonly FALLBACK_SVG_WIDTH = 800;
+	private static readonly FALLBACK_SVG_HEIGHT = 600;
+	private static readonly ZOOM_DURATION_SHORT = 200;
+	private static readonly ZOOM_DURATION_RESET = 300;
+
+	// Opacity values
+	private static readonly BOUNDARY_OPACITY = 0.6;
+	private static readonly COUNTY_OPACITY = 0.7;
+	private static readonly PREVIEW_OPACITY = 0.85;
+	private static readonly LEAN_OPACITY = 0.9;
+	private static readonly ASSIGNED_OPACITY = 0.75;
+	private static readonly UNASSIGNED_OPACITY = 0.35;
+	private static readonly HOVER_OPACITY = 0.95;
+	private static readonly HOVER_STROKE_WIDTH = 1.5;
+
+	// Lightness coefficients for population-density district color shading
+	// District hex lightness = HEX_LIGHTNESS_BASE − normPop × HEX_LIGHTNESS_RANGE
+	private static readonly HEX_LIGHTNESS_BASE = 0.55;
+	private static readonly HEX_LIGHTNESS_RANGE = 0.30;
+
+	// Dash patterns (on,off in map units before zoom correction)
+	private static readonly COUNTY_DASH_ON = 6;
+	private static readonly COUNTY_DASH_OFF = 4;
+	private static readonly PREVIEW_DASH_ON = 5;
+	private static readonly PREVIEW_DASH_OFF = 4;
+
 	// County border overlay (GAME-012): computed once at load, toggled on/off
 	private countySegments: Segment[] = [];
 	private countyBordersVisible = false;
@@ -233,8 +263,8 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("y2", (d) => d.y2)
 			.attr("stroke", "#606060")
 			.attr("stroke-width", SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK)
-			.attr("stroke-dasharray", `${6 / this.currentK},${4 / this.currentK}`)
-			.attr("opacity", 0.7);
+			.attr("stroke-dasharray", `${SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`)
+			.attr("opacity", SvgMapRenderer.COUNTY_OPACITY);
 	}
 
 	// ─── Zoom init (GAME-009) ─────────────────────────────────────────────────
@@ -252,10 +282,10 @@ export class SvgMapRenderer implements MapRenderer {
 
 		// SVG element fills its container; getBoundingClientRect gives pixel dims.
 		const svgRect = svgNode.getBoundingClientRect();
-		const svgW = svgRect.width > 0 ? svgRect.width : 800;
-		const svgH = svgRect.height > 0 ? svgRect.height : 600;
+		const svgW = svgRect.width > 0 ? svgRect.width : SvgMapRenderer.FALLBACK_SVG_WIDTH;
+		const svgH = svgRect.height > 0 ? svgRect.height : SvgMapRenderer.FALLBACK_SVG_HEIGHT;
 
-		const padding = 20; // screen-pixel padding around the scenario at min zoom
+		const padding = SvgMapRenderer.VIEWPORT_PADDING;
 
 		// Compute the scale that fits the scenario within the SVG with padding.
 		const fitScale = Math.min(
@@ -272,8 +302,8 @@ export class SvgMapRenderer implements MapRenderer {
 
 		this.zoomBehavior = d3
 			.zoom<SVGSVGElement, unknown>()
-			// Floor = full scenario view; ceiling = 8× (3-4 precincts fill screen)
-			.scaleExtent([fitScale, fitScale * 8])
+			// Floor = full scenario view; ceiling = MAX_ZOOM_MULTIPLIER× (3-4 precincts fill screen)
+			.scaleExtent([fitScale, fitScale * SvgMapRenderer.MAX_ZOOM_MULTIPLIER])
 			// Only allow scroll-wheel zoom and right-click (button 2) drag pan.
 			// Left-click mousedown passes through to the paint brush unchanged.
 			.filter((event: Event) => {
@@ -310,15 +340,15 @@ export class SvgMapRenderer implements MapRenderer {
 			if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
 			if (e.key === "=" || e.key === "+") {
 				e.preventDefault();
-				this.svg.transition().duration(200).call(this.zoomBehavior.scaleBy, 1.3);
+				this.svg.transition().duration(SvgMapRenderer.ZOOM_DURATION_SHORT).call(this.zoomBehavior.scaleBy, SvgMapRenderer.ZOOM_STEP);
 			} else if (e.key === "-") {
 				e.preventDefault();
-				this.svg.transition().duration(200).call(this.zoomBehavior.scaleBy, 1 / 1.3);
+				this.svg.transition().duration(SvgMapRenderer.ZOOM_DURATION_SHORT).call(this.zoomBehavior.scaleBy, 1 / SvgMapRenderer.ZOOM_STEP);
 			} else if (e.key === "0") {
 				e.preventDefault();
 				this.svg
 					.transition()
-					.duration(300)
+					.duration(SvgMapRenderer.ZOOM_DURATION_RESET)
 					.call(this.zoomBehavior.transform, this.initialTransform);
 			}
 		});
@@ -368,7 +398,7 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("y2", (d) => d.y2)
 			.attr("stroke", "#ffffff")
 			.attr("stroke-width", strokeWidth)
-			.attr("opacity", 0.6)
+			.attr("opacity", SvgMapRenderer.BOUNDARY_OPACITY)
 			.attr("stroke-dasharray", null);
 	}
 
@@ -410,8 +440,8 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("y2", (d) => d.y2)
 			.attr("stroke", "#ffffff")
 			.attr("stroke-width", strokeWidth)
-			.attr("stroke-dasharray", `${5 / this.currentK},${4 / this.currentK}`)
-			.attr("opacity", 0.85);
+			.attr("stroke-dasharray", `${SvgMapRenderer.PREVIEW_DASH_ON / this.currentK},${SvgMapRenderer.PREVIEW_DASH_OFF / this.currentK}`)
+			.attr("opacity", SvgMapRenderer.PREVIEW_OPACITY);
 	}
 
 	private clearBoundaryPreview() {
@@ -443,8 +473,8 @@ export class SvgMapRenderer implements MapRenderer {
 				this.hoveredPath = path;
 				d3.select(path)
 					.attr("stroke", "#ffffff")
-					.attr("stroke-width", 1.5 / this.currentK)
-					.attr("opacity", 0.95);
+					.attr("stroke-width", SvgMapRenderer.HOVER_STROKE_WIDTH / this.currentK)
+					.attr("opacity", SvgMapRenderer.HOVER_OPACITY);
 
 				const { assignments } = this.getState();
 				const dId = assignments.get(d.id);
@@ -571,9 +601,9 @@ export class SvgMapRenderer implements MapRenderer {
 		const c = d3.hsl(base);
 		if (d !== undefined && this.popMax > this.popMin) {
 			const normPop = (d.population - this.popMin) / (this.popMax - this.popMin);
-			c.l = 0.55 - normPop * 0.30;
+			c.l = SvgMapRenderer.HEX_LIGHTNESS_BASE - normPop * SvgMapRenderer.HEX_LIGHTNESS_RANGE;
 		}
-		d3.select(path).attr("fill", c.formatHex()).attr("opacity", 0.75);
+		d3.select(path).attr("fill", c.formatHex()).attr("opacity", SvgMapRenderer.ASSIGNED_OPACITY);
 	}
 
 	// ─── Fill / opacity helpers ───────────────────────────────────────────────
@@ -592,14 +622,14 @@ export class SvgMapRenderer implements MapRenderer {
 				? (d.population - this.popMin) / (this.popMax - this.popMin)
 				: 0.5;
 		const c = d3.hsl(base);
-		c.l = 0.55 - normPop * 0.30;
+		c.l = SvgMapRenderer.HEX_LIGHTNESS_BASE - normPop * SvgMapRenderer.HEX_LIGHTNESS_RANGE;
 		return c.formatHex();
 	}
 
 	private hexOpacity(d: Precinct, assignments: GameStore["assignments"]): number {
-		if (this.viewMode === "lean") return 0.9;
+		if (this.viewMode === "lean") return SvgMapRenderer.LEAN_OPACITY;
 		const dId = assignments.get(d.id);
-		return dId != null ? 0.75 : 0.35;
+		return dId != null ? SvgMapRenderer.ASSIGNED_OPACITY : SvgMapRenderer.UNASSIGNED_OPACITY;
 	}
 }
 
