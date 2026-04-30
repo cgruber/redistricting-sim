@@ -1,0 +1,76 @@
+"""
+Bazel targets for the game store layer.
+
+  gameStore_lib — gameStore.ts (Zustand + zundo state machine; GAME-005)
+
+Creating this BUILD.bazel makes src/store/ a separate Bazel package, so
+game/web/BUILD.bazel's glob(["src/**/*.ts"]) no longer covers this directory.
+game/web/BUILD.bazel lists gameStore_lib as an explicit dep on app_typecheck_lib
+and the esbuild bundle.
+"""
+
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
+load("@aspect_rules_js//js:defs.bzl", "js_test")
+
+ts_config(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    visibility = ["//web/src/store:__pkg__"],
+)
+
+# ── gameStore_lib: Zustand + zundo state machine ──────────────────────────────
+
+ts_project(
+    name = "gameStore_lib",
+    srcs = ["gameStore.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        "//:node_modules/zustand",
+        "//:node_modules/zundo",
+        "//web/src/model:adapter_lib",
+        "//web/src/model:model_lib",
+        "//web/src/model:types_lib",
+        "//web/src/simulation:election_lib",
+    ],
+    visibility = ["//web:__subpackages__"],
+)
+
+# ── gameStore_test_lib: compile tests ─────────────────────────────────────────
+
+ts_project(
+    name = "gameStore_test_lib",
+    srcs = ["gameStore_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":gameStore_lib",
+        "//web/src/model:model_lib",
+        "//web/src/model:types_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+# ── gameStore_test: run tests with Node ──────────────────────────────────────
+
+js_test(
+    name = "gameStore_test",
+    entry_point = "gameStore_test.js",
+    data = [
+        ":gameStore_test_lib",
+        ":gameStore_lib",
+        "//:node_modules/zustand",
+        "//:node_modules/zundo",
+        "//web/src/model:adapter_lib",
+        "//web/src/model:model_lib",
+        "//web/src/model:types_lib",
+        "//web/src/model:hex_geometry_lib",
+        "//web/src/simulation:election_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)

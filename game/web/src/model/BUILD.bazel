@@ -202,6 +202,38 @@ js_test(
     visibility = ["//visibility:public"],
 )
 
+# ── hex_geometry_test_lib: compile hex-geometry tests ────────────────────────
+
+ts_project(
+    name = "hex_geometry_test_lib",
+    srcs = ["hex-geometry_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":hex_geometry_lib",
+        ":types_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+# ── hex_geometry_test: run tests with Node ────────────────────────────────────
+
+js_test(
+    name = "hex_geometry_test",
+    entry_point = "hex-geometry_test.js",
+    data = [
+        ":hex_geometry_test_lib",
+        ":hex_geometry_lib",
+        ":types_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 # ── loader_typecheck_test: type-check passes ──────────────────────────────────
 
 build_test(
