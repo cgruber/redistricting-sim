@@ -13,6 +13,19 @@
 
 set -euo pipefail
 
+# Cleanup trap to ensure workspace is forgotten on early exit
+cleanup() {
+  local exit_code=$?
+  if [[ ${exit_code} -ne 0 && -n "${DEPLOY_WORKSPACE:-}" && -d "${DEPLOY_DIR:-}" ]]; then
+    echo "Cleaning up workspace after error..." >&2
+    cd "${SCRIPT_DIR}" 2>/dev/null || true
+    jj workspace forget "${DEPLOY_WORKSPACE}" 2>&1 || true
+    rm -rf "${DEPLOY_DIR}"
+  fi
+  exit $exit_code
+}
+trap cleanup EXIT
+
 if [[ $# -lt 1 ]] || [[ $# -gt 2 ]]; then
   echo "Usage: $0 <staging|production> [<version>]" >&2
   exit 1
@@ -52,12 +65,12 @@ MAIN_HASH="$(jj log --no-graph -r main -T 'commit_id.short(12)')"
 
 # If version not provided, look up the tag for this commit
 if [[ -z "${VERSION}" ]]; then
-  VERSION=$(jj tag list | grep -E "^[^ ]+" -o | while read tag; do
+  for tag in $(jj tag list | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+$' | sort -rV); do
     if jj log -r "${tag}" --no-graph -T 'commit_id.short(12)' 2>/dev/null | grep -q "^${MAIN_HASH}$"; then
-      echo "${tag}"
-      exit 0
+      VERSION="${tag}"
+      break
     fi
-  done)
+  done
 
   if [[ -z "${VERSION}" ]]; then
     echo "ERROR: No version tag found for commit ${MAIN_HASH}" >&2
@@ -70,7 +83,7 @@ fi
 TAG_HASH="$(jj log -r "${VERSION}" --no-graph -T 'commit_id.short(12)' 2>/dev/null || echo "${MAIN_HASH}")"
 
 # Check if already deployed at this version
-DEPLOYED_VERSION=$(jj log -r web_deploy --no-graph -T 'description' 2>/dev/null | head -1 | grep -oE 'version: [^ ]+' | cut -d' ' -f2 || echo '')
+DEPLOYED_VERSION=$(jj log -r web_deploy --no-graph -T 'description' 2>/dev/null | head -1 | grep -oE "${ENVIRONMENT}: [^ ]+" | cut -d' ' -f2 || echo '')
 
 if [[ "${DEPLOYED_VERSION}" == "${VERSION}" ]]; then
   echo "⚠ Version ${VERSION} already deployed to ${ENVIRONMENT}. Skipping re-deployment." >&2
@@ -99,16 +112,14 @@ jj new web_deploy 2>&1 | tail -1
 echo "Step 3: Extracting artifact..."
 
 if [[ "${ENVIRONMENT}" == "staging" ]]; then
-  # Staging: extract to .deploy_staging/
+  # Staging: extract to .deploy_staging/staging subdirectory
   rm -rf staging
   mkdir -p staging
   unzip -q -o "${DEPLOYABLE_ZIP}" -d staging
 else
-  # Production: extract to .deploy_prod/ root
-  mkdir -p temp-extract
-  unzip -q -o "${DEPLOYABLE_ZIP}" -d temp-extract
-  cp -R temp-extract/* ./
-  rm -rf temp-extract
+  # Production: extract to .deploy_prod/ root (clean first for fresh deploy)
+  rm -rf staging *.json *.html *.css *.js 2>/dev/null || true
+  unzip -q -o "${DEPLOYABLE_ZIP}" -d .
 fi
 
 # Step 4: Create deployment metadata
@@ -149,12 +160,11 @@ INTERVAL=5
 ELAPSED=0
 
 while [[ ${ELAPSED} -lt ${TIMEOUT} ]]; do
-  RESPONSE=$(curl -s "${VERIFY_URL}" 2>/dev/null || echo "")
+  RESPONSE=$(curl -sf "${VERIFY_URL}" 2>/dev/null || echo "")
 
-  # Verify all non-ephemeral fields match
-  if echo "${RESPONSE}" | grep -q "\"version\": \"${VERSION}\"" && \
-     echo "${RESPONSE}" | grep -q "\"commit\": \"${TAG_HASH}\"" && \
-     echo "${RESPONSE}" | grep -q "\"environment\": \"${ENVIRONMENT}\""; then
+  # Verify all non-ephemeral fields match using jq
+  if [[ -n "${RESPONSE}" ]] && echo "${RESPONSE}" | jq -e \
+       ".version == \"${VERSION}\" and .commit == \"${TAG_HASH}\" and .environment == \"${ENVIRONMENT}\"" >/dev/null 2>&1; then
     echo "✓ Deployed to ${ENVIRONMENT}"
     echo "  Version: ${VERSION} (${TAG_HASH})"
     echo "  Timestamp: ${TIMESTAMP}"
@@ -168,10 +178,13 @@ while [[ ${ELAPSED} -lt ${TIMEOUT} ]]; do
     echo ""
     echo "Cleaning up workspace..."
     cd "${SCRIPT_DIR}"
-    jj workspace forget "${DEPLOY_WORKSPACE}" 2>&1 | tail -1
-    rm -rf "${DEPLOY_DIR}"
-
-    exit 0
+    if jj workspace forget "${DEPLOY_WORKSPACE}" 2>&1 | tail -1; then
+      rm -rf "${DEPLOY_DIR}"
+      exit 0
+    else
+      echo "ERROR: Failed to forget workspace ${DEPLOY_WORKSPACE}" >&2
+      exit 1
+    fi
   fi
 
   sleep ${INTERVAL}
@@ -185,7 +198,10 @@ echo "  Check ${VERIFY_URL} manually to confirm."
 echo ""
 echo "Cleaning up workspace..."
 cd "${SCRIPT_DIR}"
-jj workspace forget "${DEPLOY_WORKSPACE}" 2>&1 | tail -1
-rm -rf "${DEPLOY_DIR}"
+if jj workspace forget "${DEPLOY_WORKSPACE}" 2>&1 | tail -1; then
+  rm -rf "${DEPLOY_DIR}"
+else
+  echo "WARNING: Failed to forget workspace ${DEPLOY_WORKSPACE}, but continuing cleanup" >&2
+fi
 
 exit 1
