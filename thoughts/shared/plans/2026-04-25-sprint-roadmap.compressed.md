@@ -91,7 +91,7 @@ PRs: #119 #120 #121 #122
 §SPRINT9 [COMPLETE 2026-04-29]
 goal: first release — ship v1 to public
 outcome: all tickets closed
-  DIST-001: unified deploy scripts; Buildkite auto-deploy staging; prod deploy via scripts/deploy-prod.sh; PRs #127 #131 #132
+  DIST-001: prepare-release.sh + deploy.sh (manual staging+prod); Buildkite auto-deploy drafted in #127 but dropped in #131 rewrite; PRs #127 #131 #132
   LEGAL-001: content risk low; disclaimers added to about page + Valle Verde; PR #126
   GAME-008(partial): keyboard nav (painting+scenario select); ARIA labels; PR #129
   standalone fix: scenario-select always shown on initial load; PR #128
