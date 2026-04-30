@@ -29,7 +29,7 @@ see game-vision.compressed.md for full scope
 | S7 | shippable $v1 | about page; wrap-up screen; hex backport 002–006; visual consistency | complete — 2026-04-28 |
 | S8 | hardening | CSP; extract CSS; loader errors; scenario compression | complete — 2026-04-28 |
 | S9 | first release | deploy pastthepost.org; legal review; basic a11y | complete — 2026-04-29 |
-| S10 | code quality + tidy | test coverage gaps; dedup; extract modules; refactor for polish readiness | current |
+| S10 | code quality + tidy | test coverage gaps; dedup; extract modules; refactor for polish readiness | complete — 2026-04-29 |
 | S11 | design research+polish | achievement UX; demographic overlays; geo features; full a11y | backlog |
 
 §SPRINT1 [COMPLETE 2026-04-25]
@@ -98,11 +98,11 @@ outcome: all tickets closed
 tickets: DIST-001 LEGAL-001 GAME-008(partial)
 PRs: #126 #127 #128 #129 #131 #132
 
-§SPRINT10 [CURRENT]
+§SPRINT10 [COMPLETE 2026-04-29]
 goal: code quality + tidy — close test coverage gaps, eliminate duplication, extract modules
-rationale: pre-polish housekeeping; makes S11 design work safer to implement
-done(tier1): BUILD-007(#134) GAME-033(#135) GAME-034(#136) GAME-035(#138) GAME-036(#140) GAME-037(#142) GAME-040(#144)
-remaining(tier2): GAME-038 GAME-039
+outcome: all tier1+tier2 tickets closed
+tier1: BUILD-007(#134) GAME-033(#135) GAME-034(#136) GAME-035(#138) GAME-036(#140) GAME-037(#142) GAME-040(#144)
+tier2: GAME-039(#149) GAME-038(#151)
 deferred(tier3): GAME-041 GAME-042 GAME-043 — too large for tidy sprint
 
 §SPRINT11 (backlog)

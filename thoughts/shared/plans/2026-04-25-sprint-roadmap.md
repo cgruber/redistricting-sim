@@ -44,7 +44,7 @@ See `thoughts/shared/vision/game-vision.compressed.md` for full scope.
 | 7 | Shippable v1 | About page; wrap-up screen; hex backport to 002–006; all scenarios visually consistent | complete — 2026-04-28 |
 | 8 | Hardening | CSP, extract CSS, loader error handling, scenario compression | complete — 2026-04-28 |
 | 9 | First release | Deploy to pastthepost.org; legal review; basic accessibility | complete — 2026-04-29 |
-| 10 | Code quality + tidy | Test coverage gaps, deduplication, module extraction, pre-polish housekeeping | current |
+| 10 | Code quality + tidy | Test coverage gaps, deduplication, module extraction, pre-polish housekeeping | complete — 2026-04-29 |
 | 11 | Design research + polish | Achievement UX, demographic overlays, geographic features, full accessibility | backlog |
 
 ---
@@ -210,12 +210,14 @@ PRs: #126 #127 #128 #129 #131 #132
 
 ---
 
-## Sprint 10 — Code Quality + Tidy [CURRENT]
+## Sprint 10 — Code Quality + Tidy [COMPLETE 2026-04-29]
 
 **Goal**: Pre-polish housekeeping — close test coverage gaps, eliminate duplication,
 extract modules. Makes Sprint 11 design work safer and faster to implement.
 
-**Tier 1 — complete:**
+**Outcome**: All Tier 1 and Tier 2 tickets closed.
+
+**Tier 1:**
 - BUILD-007: Shared TAP test runner extracted to `game/web/src/testing/test_runner.ts`;
   boilerplate eliminated from 4 existing test files (PR #134)
 - GAME-033: `OP_LABEL` module-level const in `evaluate.ts` replaces 4 inline copies (PR #135)
@@ -225,9 +227,9 @@ extract modules. Makes Sprint 11 design work safer and faster to implement.
 - GAME-037: 12 unit tests for `scenarioToSpike` in `adapter.ts` (PR #142)
 - GAME-040: 22 named `private static readonly` constants in `mapRenderer.ts` (PR #144)
 
-**Tier 2 — remaining:**
-- GAME-038: Extract DOM panel renderers from `mapRenderer.ts` → `render/panels.ts`
-- GAME-039: Extract hex geometry utils from `generator.ts` → `model/hex-geometry.ts`
+**Tier 2:**
+- GAME-039: `hex-geometry.ts` created; `generator.ts` re-exports; `adapter.ts` + `mapRenderer.ts` updated (PR #149)
+- GAME-038: `render/panels.ts` created with 4 panel functions; `mapRenderer.ts` reduced ~115 lines (PR #151)
 
 **Deferred (Tier 3 — too large for this sprint)**: GAME-041, GAME-042, GAME-043.
 
