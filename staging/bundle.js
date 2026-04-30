@@ -13069,7 +13069,7 @@ var init_src32 = __esm({
   }
 });
 
-// web/src/model/generator.js
+// web/src/model/hex-geometry.js
 function hexToPixel(q, r) {
   const x3 = HEX_SIZE * (1.5 * q);
   const y3 = HEX_SIZE * (Math.sqrt(3) * r + Math.sqrt(3) / 2 * q);
@@ -13098,8 +13098,8 @@ function mapBounds(precincts) {
   return { minX, minY, width: maxX - minX, height: maxY - minY };
 }
 var HEX_SIZE, HEX_DIRECTIONS;
-var init_generator = __esm({
-  "web/src/model/generator.js"() {
+var init_hex_geometry = __esm({
+  "web/src/model/hex-geometry.js"() {
     HEX_SIZE = 36;
     HEX_DIRECTIONS = [
       [1, 0],
@@ -13143,79 +13143,6 @@ var init_types = __esm({
       G: "Green",
       I: "Independent"
     };
-  }
-});
-
-// web/src/simulation/validity.js
-function computeValidityStats(precincts, assignments, districtCount, rules) {
-  var _a, _b;
-  const totalPopulation = precincts.reduce((s2, p) => s2 + p.population, 0);
-  const idealPopulation = districtCount > 0 ? totalPopulation / districtCount : 0;
-  const tolerance = rules.population_tolerance;
-  let unassignedCount = 0;
-  for (const v2 of assignments.values()) {
-    if (v2 === null)
-      unassignedCount++;
-  }
-  const popByDistrict = /* @__PURE__ */ new Map();
-  for (let d = 1; d <= districtCount; d++)
-    popByDistrict.set(d, 0);
-  for (const [precinctId, distId] of assignments) {
-    if (distId !== null) {
-      const pc = precincts[precinctId];
-      if (pc !== void 0) {
-        popByDistrict.set(distId, ((_a = popByDistrict.get(distId)) != null ? _a : 0) + pc.population);
-      }
-    }
-  }
-  const districtPop = [];
-  for (let d = 1; d <= districtCount; d++) {
-    const pop = (_b = popByDistrict.get(d)) != null ? _b : 0;
-    const deviationPct = idealPopulation > 0 ? (pop - idealPopulation) / idealPopulation * 100 : 0;
-    let status = "ok";
-    if (deviationPct > tolerance * 100)
-      status = "over";
-    else if (deviationPct < -(tolerance * 100))
-      status = "under";
-    districtPop.push({ districtId: d, population: pop, deviationPct, status });
-  }
-  let contiguity = null;
-  if (rules.contiguity !== "allowed") {
-    contiguity = /* @__PURE__ */ new Map();
-    for (let d = 1; d <= districtCount; d++) {
-      contiguity.set(d, isContiguous(precincts, assignments, d));
-    }
-  }
-  return { idealPopulation, totalPopulation, unassignedCount, districtPop, contiguity };
-}
-function isContiguous(precincts, assignments, districtId) {
-  const inDistrict = [];
-  for (const [pid, did] of assignments) {
-    if (did === districtId)
-      inDistrict.push(pid);
-  }
-  if (inDistrict.length <= 1)
-    return true;
-  const inSet = new Set(inDistrict);
-  const visited = /* @__PURE__ */ new Set();
-  const queue = [inDistrict[0]];
-  visited.add(inDistrict[0]);
-  while (queue.length > 0) {
-    const curr = queue.shift();
-    const p = precincts[curr];
-    if (p === void 0)
-      continue;
-    for (const nbId of p.neighbors) {
-      if (nbId !== null && inSet.has(nbId) && !visited.has(nbId)) {
-        visited.add(nbId);
-        queue.push(nbId);
-      }
-    }
-  }
-  return visited.size === inSet.size;
-}
-var init_validity = __esm({
-  "web/src/simulation/validity.js"() {
   }
 });
 
@@ -13272,98 +13199,12 @@ function computeCountySegments(precincts) {
   }
   return segments;
 }
-function renderResults(container, state) {
-  if (state.simulationResult === null || state.simulationResult.districtResults.length === 0) {
-    container.innerHTML = '<div style="color:#606080;font-size:0.85rem;">Draw districts to see results</div>';
-    return;
-  }
-  const { districtResults } = state.simulationResult;
-  const html2 = districtResults.map((r) => {
-    var _a;
-    const color2 = (_a = DISTRICT_COLORS[r.districtId - 1]) != null ? _a : "#888";
-    const winnerColor = PARTY_COLORS[r.winner];
-    const winnerLabel = PARTY_LABELS[r.winner];
-    const dPct = (r.voteTotals.D * 100).toFixed(1);
-    const rPct = (r.voteTotals.R * 100).toFixed(1);
-    const marginPct = (r.margin * 100).toFixed(1);
-    return `
-      <div class="result-district" style="border-left-color:${color2}">
-        <div class="dist-name">District ${r.districtId}</div>
-        <div class="winner-badge" style="background:${winnerColor};color:#fff">${winnerLabel} +${marginPct}%</div>
-        <div class="vote-bar" style="--d-pct:${dPct}%"></div>
-        <div class="vote-details">
-          Blue ${dPct}% \xB7 Red ${rPct}% \xB7 ${r.precinctCount} precincts \xB7 pop ${r.population.toLocaleString()}
-        </div>
-      </div>`;
-  }).join("");
-  container.innerHTML = html2;
-}
-function renderLegend(container, districtCount) {
-  const items = Array.from({ length: districtCount }, (_, i) => {
-    var _a;
-    const color2 = (_a = DISTRICT_COLORS[i]) != null ? _a : "#888";
-    return `<div class="legend-item">
-      <div class="legend-swatch" style="background:${color2}"></div>
-      <span>District ${i + 1}</span>
-    </div>`;
-  });
-  container.innerHTML = items.join("");
-}
-function renderDistrictButtons(container, districtCount, activeDistrict, onSelect) {
-  var _a;
-  container.innerHTML = "";
-  for (let i = 1; i <= districtCount; i++) {
-    const color2 = (_a = DISTRICT_COLORS[i - 1]) != null ? _a : "#888";
-    const btn = document.createElement("button");
-    btn.className = `district-btn${i === activeDistrict ? " active" : ""}`;
-    btn.textContent = `District ${i}`;
-    btn.style.background = color2;
-    btn.style.color = "#fff";
-    btn.addEventListener("click", () => onSelect(i));
-    container.appendChild(btn);
-  }
-}
-function renderValidityPanel(container, state, rules) {
-  var _a, _b;
-  const { precincts, assignments, districtCount } = state;
-  const stats = computeValidityStats(precincts, assignments, districtCount, rules);
-  let html2 = "";
-  const unassignedCls = stats.unassignedCount > 0 ? "validity-warn" : "validity-ok";
-  const unassignedLabel = stats.unassignedCount === 1 ? "1 precinct" : `${stats.unassignedCount} precincts`;
-  html2 += `<div class="validity-row ${unassignedCls}">`;
-  html2 += `<span>Unassigned</span><span class="validity-badge">${unassignedLabel}</span>`;
-  html2 += `</div>`;
-  html2 += `<div class="validity-section-label">Population balance</div>`;
-  for (const d of stats.districtPop) {
-    const color2 = (_a = DISTRICT_COLORS[d.districtId - 1]) != null ? _a : "#888";
-    const sign3 = d.deviationPct >= 0 ? "+" : "";
-    const cls = d.status === "ok" ? "validity-ok" : "validity-error";
-    const statusLabel = d.status === "ok" ? "ok" : d.status;
-    html2 += `<div class="validity-row ${cls}" style="border-left-color:${color2}">`;
-    html2 += `<span>D${d.districtId}: ${d.population.toLocaleString()}</span>`;
-    html2 += `<span class="validity-badge">${sign3}${d.deviationPct.toFixed(1)}% ${statusLabel}</span>`;
-    html2 += `</div>`;
-  }
-  if (stats.contiguity !== null) {
-    html2 += `<div class="validity-section-label">Contiguity</div>`;
-    for (const [did, ok] of stats.contiguity) {
-      const color2 = (_b = DISTRICT_COLORS[did - 1]) != null ? _b : "#888";
-      const cls = ok ? "validity-ok" : rules.contiguity === "required" ? "validity-error" : "validity-warn";
-      const label = ok ? "Connected" : "Non-contiguous";
-      html2 += `<div class="validity-row ${cls}" style="border-left-color:${color2}">`;
-      html2 += `<span>D${did}</span><span class="validity-badge">${label}</span>`;
-      html2 += `</div>`;
-    }
-  }
-  container.innerHTML = html2;
-}
 var _SvgMapRenderer, SvgMapRenderer;
 var init_mapRenderer = __esm({
   "web/src/render/mapRenderer.ts"() {
     init_src32();
-    init_generator();
+    init_hex_geometry();
     init_types();
-    init_validity();
     _SvgMapRenderer = class _SvgMapRenderer {
       constructor(svgEl, getState, paintStroke, setActiveDistrict) {
         __publicField(this, "svg");
@@ -13429,7 +13270,7 @@ var init_mapRenderer = __esm({
           (enter) => enter.append("line").attr("class", "county-boundary").attr("stroke-linecap", "round"),
           (update) => update,
           (exit) => exit.remove()
-        ).attr("x1", (d) => d.x1).attr("y1", (d) => d.y1).attr("x2", (d) => d.x2).attr("y2", (d) => d.y2).attr("stroke", "#606060").attr("stroke-width", _SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK).attr("stroke-dasharray", `${6 / this.currentK},${4 / this.currentK}`).attr("opacity", 0.7);
+        ).attr("x1", (d) => d.x1).attr("y1", (d) => d.y1).attr("x2", (d) => d.x2).attr("y2", (d) => d.y2).attr("stroke", "#606060").attr("stroke-width", _SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK).attr("stroke-dasharray", `${_SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${_SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`).attr("opacity", _SvgMapRenderer.COUNTY_OPACITY);
       }
       // ─── Zoom init (GAME-009) ─────────────────────────────────────────────────
       /**
@@ -13443,9 +13284,9 @@ var init_mapRenderer = __esm({
         const { precincts } = this.getState();
         const bounds = mapBounds(precincts);
         const svgRect = svgNode2.getBoundingClientRect();
-        const svgW = svgRect.width > 0 ? svgRect.width : 800;
-        const svgH = svgRect.height > 0 ? svgRect.height : 600;
-        const padding = 20;
+        const svgW = svgRect.width > 0 ? svgRect.width : _SvgMapRenderer.FALLBACK_SVG_WIDTH;
+        const svgH = svgRect.height > 0 ? svgRect.height : _SvgMapRenderer.FALLBACK_SVG_HEIGHT;
+        const padding = _SvgMapRenderer.VIEWPORT_PADDING;
         const fitScale = Math.min(
           (svgW - padding * 2) / bounds.width,
           (svgH - padding * 2) / bounds.height
@@ -13454,7 +13295,7 @@ var init_mapRenderer = __esm({
         const ty = (svgH - bounds.height * fitScale) / 2 - bounds.minY * fitScale;
         this.initialTransform = identity5.translate(tx, ty).scale(fitScale);
         this.currentK = fitScale;
-        this.zoomBehavior = zoom_default2().scaleExtent([fitScale, fitScale * 8]).filter((event) => {
+        this.zoomBehavior = zoom_default2().scaleExtent([fitScale, fitScale * _SvgMapRenderer.MAX_ZOOM_MULTIPLIER]).filter((event) => {
           if (event.type === "wheel")
             return true;
           if (event instanceof MouseEvent && event.type === "mousedown") {
@@ -13478,13 +13319,13 @@ var init_mapRenderer = __esm({
             return;
           if (e.key === "=" || e.key === "+") {
             e.preventDefault();
-            this.svg.transition().duration(200).call(this.zoomBehavior.scaleBy, 1.3);
+            this.svg.transition().duration(_SvgMapRenderer.ZOOM_DURATION_SHORT).call(this.zoomBehavior.scaleBy, _SvgMapRenderer.ZOOM_STEP);
           } else if (e.key === "-") {
             e.preventDefault();
-            this.svg.transition().duration(200).call(this.zoomBehavior.scaleBy, 1 / 1.3);
+            this.svg.transition().duration(_SvgMapRenderer.ZOOM_DURATION_SHORT).call(this.zoomBehavior.scaleBy, 1 / _SvgMapRenderer.ZOOM_STEP);
           } else if (e.key === "0") {
             e.preventDefault();
-            this.svg.transition().duration(300).call(this.zoomBehavior.transform, this.initialTransform);
+            this.svg.transition().duration(_SvgMapRenderer.ZOOM_DURATION_RESET).call(this.zoomBehavior.transform, this.initialTransform);
           }
         });
       }
@@ -13505,7 +13346,7 @@ var init_mapRenderer = __esm({
           (enter) => enter.append("line").attr("class", "boundary").attr("stroke-linecap", "round"),
           (update) => update,
           (exit) => exit.remove()
-        ).attr("x1", (d) => d.x1).attr("y1", (d) => d.y1).attr("x2", (d) => d.x2).attr("y2", (d) => d.y2).attr("stroke", "#ffffff").attr("stroke-width", strokeWidth).attr("opacity", 0.6).attr("stroke-dasharray", null);
+        ).attr("x1", (d) => d.x1).attr("y1", (d) => d.y1).attr("x2", (d) => d.x2).attr("y2", (d) => d.y2).attr("stroke", "#ffffff").attr("stroke-width", strokeWidth).attr("opacity", _SvgMapRenderer.BOUNDARY_OPACITY).attr("stroke-dasharray", null);
       }
       // ─── Boundary preview (during drag) ───────────────────────────────────────
       /**
@@ -13527,7 +13368,7 @@ var init_mapRenderer = __esm({
           (enter) => enter.append("line").attr("class", "preview-boundary").attr("stroke-linecap", "round"),
           (update) => update,
           (exit) => exit.remove()
-        ).attr("x1", (d) => d.x1).attr("y1", (d) => d.y1).attr("x2", (d) => d.x2).attr("y2", (d) => d.y2).attr("stroke", "#ffffff").attr("stroke-width", strokeWidth).attr("stroke-dasharray", `${5 / this.currentK},${4 / this.currentK}`).attr("opacity", 0.85);
+        ).attr("x1", (d) => d.x1).attr("y1", (d) => d.y1).attr("x2", (d) => d.x2).attr("y2", (d) => d.y2).attr("stroke", "#ffffff").attr("stroke-width", strokeWidth).attr("stroke-dasharray", `${_SvgMapRenderer.PREVIEW_DASH_ON / this.currentK},${_SvgMapRenderer.PREVIEW_DASH_OFF / this.currentK}`).attr("opacity", _SvgMapRenderer.PREVIEW_OPACITY);
       }
       clearBoundaryPreview() {
         this.previewBorderGroup.selectAll("line.preview-boundary").remove();
@@ -13554,7 +13395,7 @@ var init_mapRenderer = __esm({
           if (this.hoveredPath !== path2) {
             this.clearHover();
             this.hoveredPath = path2;
-            select_default2(path2).attr("stroke", "#ffffff").attr("stroke-width", 1.5 / this.currentK).attr("opacity", 0.95);
+            select_default2(path2).attr("stroke", "#ffffff").attr("stroke-width", _SvgMapRenderer.HOVER_STROKE_WIDTH / this.currentK).attr("opacity", _SvgMapRenderer.HOVER_OPACITY);
             const { assignments } = this.getState();
             const dId = assignments.get(d.id);
             const infoPanel = document.getElementById("precinct-info");
@@ -13666,9 +13507,9 @@ var init_mapRenderer = __esm({
         const c3 = hsl(base);
         if (d !== void 0 && this.popMax > this.popMin) {
           const normPop = (d.population - this.popMin) / (this.popMax - this.popMin);
-          c3.l = 0.55 - normPop * 0.3;
+          c3.l = _SvgMapRenderer.HEX_LIGHTNESS_BASE - normPop * _SvgMapRenderer.HEX_LIGHTNESS_RANGE;
         }
-        select_default2(path2).attr("fill", c3.formatHex()).attr("opacity", 0.75);
+        select_default2(path2).attr("fill", c3.formatHex()).attr("opacity", _SvgMapRenderer.ASSIGNED_OPACITY);
       }
       // ─── Fill / opacity helpers ───────────────────────────────────────────────
       hexFill(d, assignments) {
@@ -13684,14 +13525,14 @@ var init_mapRenderer = __esm({
         const base = (_a = DISTRICT_COLORS[dId - 1]) != null ? _a : "#2a2a3e";
         const normPop = this.popMax > this.popMin ? (d.population - this.popMin) / (this.popMax - this.popMin) : 0.5;
         const c3 = hsl(base);
-        c3.l = 0.55 - normPop * 0.3;
+        c3.l = _SvgMapRenderer.HEX_LIGHTNESS_BASE - normPop * _SvgMapRenderer.HEX_LIGHTNESS_RANGE;
         return c3.formatHex();
       }
       hexOpacity(d, assignments) {
         if (this.viewMode === "lean")
-          return 0.9;
+          return _SvgMapRenderer.LEAN_OPACITY;
         const dId = assignments.get(d.id);
-        return dId != null ? 0.75 : 0.35;
+        return dId != null ? _SvgMapRenderer.ASSIGNED_OPACITY : _SvgMapRenderer.UNASSIGNED_OPACITY;
       }
     };
     // current zoom scale; stroke widths divided by this
@@ -13699,14 +13540,206 @@ var init_mapRenderer = __esm({
     __publicField(_SvgMapRenderer, "BOUNDARY_BASE_WIDTH", 2);
     __publicField(_SvgMapRenderer, "PREVIEW_BASE_WIDTH", 2.5);
     __publicField(_SvgMapRenderer, "COUNTY_BASE_WIDTH", 3);
+    // Zoom parameters
+    __publicField(_SvgMapRenderer, "ZOOM_STEP", 1.3);
+    __publicField(_SvgMapRenderer, "MAX_ZOOM_MULTIPLIER", 8);
+    __publicField(_SvgMapRenderer, "VIEWPORT_PADDING", 20);
+    __publicField(_SvgMapRenderer, "FALLBACK_SVG_WIDTH", 800);
+    __publicField(_SvgMapRenderer, "FALLBACK_SVG_HEIGHT", 600);
+    __publicField(_SvgMapRenderer, "ZOOM_DURATION_SHORT", 200);
+    __publicField(_SvgMapRenderer, "ZOOM_DURATION_RESET", 300);
+    // Opacity values
+    __publicField(_SvgMapRenderer, "BOUNDARY_OPACITY", 0.6);
+    __publicField(_SvgMapRenderer, "COUNTY_OPACITY", 0.7);
+    __publicField(_SvgMapRenderer, "PREVIEW_OPACITY", 0.85);
+    __publicField(_SvgMapRenderer, "LEAN_OPACITY", 0.9);
+    __publicField(_SvgMapRenderer, "ASSIGNED_OPACITY", 0.75);
+    __publicField(_SvgMapRenderer, "UNASSIGNED_OPACITY", 0.35);
+    __publicField(_SvgMapRenderer, "HOVER_OPACITY", 0.95);
+    __publicField(_SvgMapRenderer, "HOVER_STROKE_WIDTH", 1.5);
+    // Lightness coefficients for population-density district color shading
+    // District hex lightness = HEX_LIGHTNESS_BASE − normPop × HEX_LIGHTNESS_RANGE
+    __publicField(_SvgMapRenderer, "HEX_LIGHTNESS_BASE", 0.55);
+    __publicField(_SvgMapRenderer, "HEX_LIGHTNESS_RANGE", 0.3);
+    // Dash patterns (on,off in map units before zoom correction)
+    __publicField(_SvgMapRenderer, "COUNTY_DASH_ON", 6);
+    __publicField(_SvgMapRenderer, "COUNTY_DASH_OFF", 4);
+    __publicField(_SvgMapRenderer, "PREVIEW_DASH_ON", 5);
+    __publicField(_SvgMapRenderer, "PREVIEW_DASH_OFF", 4);
     SvgMapRenderer = _SvgMapRenderer;
   }
 });
 
-// node_modules/.aspect_rules_js/zustand@5.0.12/node_modules/zustand/esm/vanilla.mjs
+// web/src/simulation/validity.js
+function computeValidityStats(precincts, assignments, districtCount, rules) {
+  var _a, _b;
+  const totalPopulation = precincts.reduce((s2, p) => s2 + p.population, 0);
+  const idealPopulation = districtCount > 0 ? totalPopulation / districtCount : 0;
+  const tolerance = rules.population_tolerance;
+  let unassignedCount = 0;
+  for (const v2 of assignments.values()) {
+    if (v2 === null)
+      unassignedCount++;
+  }
+  const popByDistrict = /* @__PURE__ */ new Map();
+  for (let d = 1; d <= districtCount; d++)
+    popByDistrict.set(d, 0);
+  for (const [precinctId, distId] of assignments) {
+    if (distId !== null) {
+      const pc = precincts[precinctId];
+      if (pc !== void 0) {
+        popByDistrict.set(distId, ((_a = popByDistrict.get(distId)) != null ? _a : 0) + pc.population);
+      }
+    }
+  }
+  const districtPop = [];
+  for (let d = 1; d <= districtCount; d++) {
+    const pop = (_b = popByDistrict.get(d)) != null ? _b : 0;
+    const deviationPct = idealPopulation > 0 ? (pop - idealPopulation) / idealPopulation * 100 : 0;
+    let status = "ok";
+    if (deviationPct > tolerance * 100)
+      status = "over";
+    else if (deviationPct < -(tolerance * 100))
+      status = "under";
+    districtPop.push({ districtId: d, population: pop, deviationPct, status });
+  }
+  let contiguity = null;
+  if (rules.contiguity !== "allowed") {
+    contiguity = /* @__PURE__ */ new Map();
+    for (let d = 1; d <= districtCount; d++) {
+      contiguity.set(d, isContiguous(precincts, assignments, d));
+    }
+  }
+  return { idealPopulation, totalPopulation, unassignedCount, districtPop, contiguity };
+}
+function isContiguous(precincts, assignments, districtId) {
+  const inDistrict = [];
+  for (const [pid, did] of assignments) {
+    if (did === districtId)
+      inDistrict.push(pid);
+  }
+  if (inDistrict.length <= 1)
+    return true;
+  const inSet = new Set(inDistrict);
+  const visited = /* @__PURE__ */ new Set();
+  const queue = [inDistrict[0]];
+  visited.add(inDistrict[0]);
+  while (queue.length > 0) {
+    const curr = queue.shift();
+    const p = precincts[curr];
+    if (p === void 0)
+      continue;
+    for (const nbId of p.neighbors) {
+      if (nbId !== null && inSet.has(nbId) && !visited.has(nbId)) {
+        visited.add(nbId);
+        queue.push(nbId);
+      }
+    }
+  }
+  return visited.size === inSet.size;
+}
+var init_validity = __esm({
+  "web/src/simulation/validity.js"() {
+  }
+});
+
+// web/src/render/panels.ts
+function renderResults(container, state) {
+  if (state.simulationResult === null || state.simulationResult.districtResults.length === 0) {
+    container.innerHTML = '<div style="color:#606080;font-size:0.85rem;">Draw districts to see results</div>';
+    return;
+  }
+  const { districtResults } = state.simulationResult;
+  const html2 = districtResults.map((r) => {
+    var _a;
+    const color2 = (_a = DISTRICT_COLORS[r.districtId - 1]) != null ? _a : "#888";
+    const winnerColor = PARTY_COLORS[r.winner];
+    const winnerLabel = PARTY_LABELS[r.winner];
+    const dPct = (r.voteTotals.D * 100).toFixed(1);
+    const rPct = (r.voteTotals.R * 100).toFixed(1);
+    const marginPct = (r.margin * 100).toFixed(1);
+    return `
+      <div class="result-district" style="border-left-color:${color2}">
+        <div class="dist-name">District ${r.districtId}</div>
+        <div class="winner-badge" style="background:${winnerColor};color:#fff">${winnerLabel} +${marginPct}%</div>
+        <div class="vote-bar" style="--d-pct:${dPct}%"></div>
+        <div class="vote-details">
+          Blue ${dPct}% \xB7 Red ${rPct}% \xB7 ${r.precinctCount} precincts \xB7 pop ${r.population.toLocaleString()}
+        </div>
+      </div>`;
+  }).join("");
+  container.innerHTML = html2;
+}
+function renderLegend(container, districtCount) {
+  const items = Array.from({ length: districtCount }, (_, i) => {
+    var _a;
+    const color2 = (_a = DISTRICT_COLORS[i]) != null ? _a : "#888";
+    return `<div class="legend-item">
+      <div class="legend-swatch" style="background:${color2}"></div>
+      <span>District ${i + 1}</span>
+    </div>`;
+  });
+  container.innerHTML = items.join("");
+}
+function renderDistrictButtons(container, districtCount, activeDistrict, onSelect) {
+  var _a;
+  container.innerHTML = "";
+  for (let i = 1; i <= districtCount; i++) {
+    const color2 = (_a = DISTRICT_COLORS[i - 1]) != null ? _a : "#888";
+    const btn = document.createElement("button");
+    btn.className = `district-btn${i === activeDistrict ? " active" : ""}`;
+    btn.textContent = `District ${i}`;
+    btn.style.background = color2;
+    btn.style.color = "#fff";
+    btn.addEventListener("click", () => onSelect(i));
+    container.appendChild(btn);
+  }
+}
+function renderValidityPanel(container, state, rules) {
+  var _a, _b;
+  const { precincts, assignments, districtCount } = state;
+  const stats = computeValidityStats(precincts, assignments, districtCount, rules);
+  let html2 = "";
+  const unassignedCls = stats.unassignedCount > 0 ? "validity-warn" : "validity-ok";
+  const unassignedLabel = stats.unassignedCount === 1 ? "1 precinct" : `${stats.unassignedCount} precincts`;
+  html2 += `<div class="validity-row ${unassignedCls}">`;
+  html2 += `<span>Unassigned</span><span class="validity-badge">${unassignedLabel}</span>`;
+  html2 += `</div>`;
+  html2 += `<div class="validity-section-label">Population balance</div>`;
+  for (const d of stats.districtPop) {
+    const color2 = (_a = DISTRICT_COLORS[d.districtId - 1]) != null ? _a : "#888";
+    const sign3 = d.deviationPct >= 0 ? "+" : "";
+    const cls = d.status === "ok" ? "validity-ok" : "validity-error";
+    const statusLabel = d.status === "ok" ? "ok" : d.status;
+    html2 += `<div class="validity-row ${cls}" style="border-left-color:${color2}">`;
+    html2 += `<span>D${d.districtId}: ${d.population.toLocaleString()}</span>`;
+    html2 += `<span class="validity-badge">${sign3}${d.deviationPct.toFixed(1)}% ${statusLabel}</span>`;
+    html2 += `</div>`;
+  }
+  if (stats.contiguity !== null) {
+    html2 += `<div class="validity-section-label">Contiguity</div>`;
+    for (const [did, ok] of stats.contiguity) {
+      const color2 = (_b = DISTRICT_COLORS[did - 1]) != null ? _b : "#888";
+      const cls = ok ? "validity-ok" : rules.contiguity === "required" ? "validity-error" : "validity-warn";
+      const label = ok ? "Connected" : "Non-contiguous";
+      html2 += `<div class="validity-row ${cls}" style="border-left-color:${color2}">`;
+      html2 += `<span>D${did}</span><span class="validity-badge">${label}</span>`;
+      html2 += `</div>`;
+    }
+  }
+  container.innerHTML = html2;
+}
+var init_panels = __esm({
+  "web/src/render/panels.ts"() {
+    init_types();
+    init_validity();
+  }
+});
+
+// node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/vanilla.mjs
 var createStoreImpl, createStore;
 var init_vanilla = __esm({
-  "node_modules/.aspect_rules_js/zustand@5.0.12/node_modules/zustand/esm/vanilla.mjs"() {
+  "node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/vanilla.mjs"() {
     createStoreImpl = (createState) => {
       let state;
       const listeners = /* @__PURE__ */ new Set();
@@ -13732,26 +13765,26 @@ var init_vanilla = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/zustand@5.0.12/node_modules/zustand/esm/react.mjs
+// node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/react.mjs
 import React from "react";
 var init_react = __esm({
-  "node_modules/.aspect_rules_js/zustand@5.0.12/node_modules/zustand/esm/react.mjs"() {
+  "node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/react.mjs"() {
     init_vanilla();
   }
 });
 
-// node_modules/.aspect_rules_js/zustand@5.0.12/node_modules/zustand/esm/index.mjs
+// node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/index.mjs
 var init_esm = __esm({
-  "node_modules/.aspect_rules_js/zustand@5.0.12/node_modules/zustand/esm/index.mjs"() {
+  "node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/index.mjs"() {
     init_vanilla();
     init_react();
   }
 });
 
-// node_modules/.aspect_rules_js/zundo@2.3.0_zustand_5.0.12/node_modules/zundo/dist/index.js
+// node_modules/.aspect_rules_js/zundo@2.3.0_zustand_5.0.12(react_18.3.1/node_modules/zundo/dist/index.js
 var temporalStateCreator, temporal;
 var init_dist = __esm({
-  "node_modules/.aspect_rules_js/zundo@2.3.0_zustand_5.0.12/node_modules/zundo/dist/index.js"() {
+  "node_modules/.aspect_rules_js/zundo@2.3.0_zustand_5.0.12(react_18.3.1/node_modules/zundo/dist/index.js"() {
     init_esm();
     temporalStateCreator = (userSet, userGet, options) => {
       const stateCreator = (set3, get3) => {
@@ -13947,7 +13980,7 @@ function scenarioToSpike(scenario) {
 }
 var init_adapter = __esm({
   "web/src/model/adapter.js"() {
-    init_generator();
+    init_hex_geometry();
   }
 });
 
@@ -14020,7 +14053,7 @@ var init_election = __esm({
   }
 });
 
-// web/src/store/gameStore.ts
+// web/src/store/gameStore.js
 function cloneAssignments(m) {
   return new Map(m);
 }
@@ -14035,79 +14068,74 @@ function createGameStore(scenario) {
     simulationResult: null
   };
   initialState.simulationResult = runElection(initialState);
-  const store = createStore()(
-    temporal(
-      (set3, get3) => __spreadProps(__spreadValues({}, initialState), {
-        setActiveDistrict(id2) {
-          set3({ activeDistrict: id2 });
-        },
-        paintPrecinct(precinctId) {
-          const { assignments: assignments2, activeDistrict } = get3();
-          const current = assignments2.get(precinctId);
-          if (current === activeDistrict)
-            return;
-          const next = cloneAssignments(assignments2);
-          next.set(precinctId, activeDistrict);
-          set3({
-            assignments: next,
-            simulationResult: runElection(__spreadProps(__spreadValues({}, get3()), { assignments: next }))
-          });
-        },
-        paintStroke(precinctIds, district) {
-          if (precinctIds.length === 0)
-            return;
-          const { assignments: assignments2 } = get3();
-          const next = cloneAssignments(assignments2);
-          let changed = false;
-          for (const id2 of precinctIds) {
-            if (next.get(id2) !== district) {
-              next.set(id2, district);
-              changed = true;
-            }
-          }
-          if (!changed)
-            return;
-          set3({
-            assignments: next,
-            simulationResult: runElection(__spreadProps(__spreadValues({}, get3()), { assignments: next }))
-          });
-        },
-        resetToInitial() {
-          const restored = new Map(initialAssignments);
-          set3({
-            assignments: restored,
-            simulationResult: runElection(__spreadProps(__spreadValues({}, get3()), { assignments: restored }))
-          });
-        },
-        restoreAssignments(assignments2, activeDistrict) {
-          const restored = new Map(assignments2);
-          set3({
-            assignments: restored,
-            activeDistrict,
-            simulationResult: runElection(__spreadProps(__spreadValues({}, get3()), { assignments: restored }))
-          });
-        }
-      }),
-      {
-        // zundo: equality check — prevents storing a new history entry if assignments unchanged
-        equality: (a2, b) => {
-          if (a2.assignments === b.assignments)
-            return true;
-          if (a2.assignments.size !== b.assignments.size)
-            return false;
-          for (const [k2, v2] of a2.assignments) {
-            if (b.assignments.get(k2) !== v2)
-              return false;
-          }
-          return true;
+  const store = createStore()(temporal((set3, get3) => __spreadProps(__spreadValues({}, initialState), {
+    setActiveDistrict(id2) {
+      set3({ activeDistrict: id2 });
+    },
+    paintPrecinct(precinctId) {
+      const { assignments: assignments2, activeDistrict } = get3();
+      const current = assignments2.get(precinctId);
+      if (current === activeDistrict)
+        return;
+      const next = cloneAssignments(assignments2);
+      next.set(precinctId, activeDistrict);
+      set3({
+        assignments: next,
+        simulationResult: runElection(__spreadProps(__spreadValues({}, get3()), { assignments: next }))
+      });
+    },
+    paintStroke(precinctIds, district) {
+      if (precinctIds.length === 0)
+        return;
+      const { assignments: assignments2 } = get3();
+      const next = cloneAssignments(assignments2);
+      let changed = false;
+      for (const id2 of precinctIds) {
+        if (next.get(id2) !== district) {
+          next.set(id2, district);
+          changed = true;
         }
       }
-    )
-  );
+      if (!changed)
+        return;
+      set3({
+        assignments: next,
+        simulationResult: runElection(__spreadProps(__spreadValues({}, get3()), { assignments: next }))
+      });
+    },
+    resetToInitial() {
+      const restored = new Map(initialAssignments);
+      set3({
+        assignments: restored,
+        simulationResult: runElection(__spreadProps(__spreadValues({}, get3()), { assignments: restored }))
+      });
+    },
+    restoreAssignments(assignments2, activeDistrict) {
+      const restored = new Map(assignments2);
+      set3({
+        assignments: restored,
+        activeDistrict,
+        simulationResult: runElection(__spreadProps(__spreadValues({}, get3()), { assignments: restored }))
+      });
+    }
+  }), {
+    // zundo: equality check — prevents storing a new history entry if assignments unchanged
+    equality: (a2, b) => {
+      if (a2.assignments === b.assignments)
+        return true;
+      if (a2.assignments.size !== b.assignments.size)
+        return false;
+      for (const [k2, v2] of a2.assignments) {
+        if (b.assignments.get(k2) !== v2)
+          return false;
+      }
+      return true;
+    }
+  }));
   return { store };
 }
 var init_gameStore = __esm({
-  "web/src/store/gameStore.ts"() {
+  "web/src/store/gameStore.js"() {
     init_dist();
     init_vanilla();
     init_adapter();
@@ -14229,16 +14257,14 @@ function evaluateCriteria(criteria, validityStats, simResult, rules, precincts, 
         const scores = getCompactness();
         const minScore = scores.length > 0 ? Math.min(...scores) : 0;
         passed = applyOp(minScore, c3.operator, c3.threshold);
-        const opLabel = { lt: "<", lte: "\u2264", eq: "=", gte: "\u2265", gt: ">" };
-        detail = `min district score: ${(minScore * 100).toFixed(1)}% (required ${opLabel[c3.operator]}${(c3.threshold * 100).toFixed(0)}%)`;
+        detail = `min district score: ${(minScore * 100).toFixed(1)}% (required ${OP_LABEL[c3.operator]}${(c3.threshold * 100).toFixed(0)}%)`;
         break;
       }
       case "seat_count": {
         const key = (_a = partyIdToKey.get(c3.party)) != null ? _a : String(c3.party);
         const seats = (_b = simResult.seatsByParty[key]) != null ? _b : 0;
         passed = applyOp(seats, c3.operator, c3.count);
-        const opLabel = { lt: "<", lte: "\u2264", eq: "=", gte: "\u2265", gt: ">" };
-        detail = `${key}: ${seats} seat(s) (required ${opLabel[c3.operator]}${c3.count})`;
+        detail = `${key}: ${seats} seat(s) (required ${OP_LABEL[c3.operator]}${c3.count})`;
         break;
       }
       case "safe_seats": {
@@ -14276,9 +14302,8 @@ function evaluateCriteria(criteria, validityStats, simResult, rules, precincts, 
         const rawGap = allVotes > 0 ? (rWasted - dWasted) / allVotes : 0;
         const absGap = Math.abs(rawGap);
         passed = applyOp(absGap, c3.operator, c3.threshold);
-        const opLabel2 = { lt: "<", lte: "\u2264", eq: "=", gte: "\u2265", gt: ">" };
         const direction = rawGap >= 0 ? "R-disadvantaged" : "D-disadvantaged";
-        detail = `efficiency gap: ${(absGap * 100).toFixed(1)}% (${direction}; required ${opLabel2[c3.operator]}${(c3.threshold * 100).toFixed(0)}%)`;
+        detail = `efficiency gap: ${(absGap * 100).toFixed(1)}% (${direction}; required ${OP_LABEL[c3.operator]}${(c3.threshold * 100).toFixed(0)}%)`;
         break;
       }
       case "mean_median": {
@@ -14298,9 +14323,8 @@ function evaluateCriteria(criteria, validityStats, simResult, rules, precincts, 
         const median2 = n % 2 === 0 ? (sorted[n / 2 - 1] + sorted[n / 2]) / 2 : sorted[Math.floor(n / 2)];
         const diff = mean2 - median2;
         passed = applyOp(diff, c3.operator, c3.threshold);
-        const opLabel3 = { lt: "<", lte: "\u2264", eq: "=", gte: "\u2265", gt: ">" };
         const sign3 = diff >= 0 ? "+" : "";
-        detail = `${key}: mean ${(mean2 * 100).toFixed(1)}% \u2212 median ${(median2 * 100).toFixed(1)}% = ${sign3}${(diff * 100).toFixed(1)}% (required ${opLabel3[c3.operator]}${(c3.threshold * 100).toFixed(0)}%)`;
+        detail = `${key}: mean ${(mean2 * 100).toFixed(1)}% \u2212 median ${(median2 * 100).toFixed(1)}% = ${sign3}${(diff * 100).toFixed(1)}% (required ${OP_LABEL[c3.operator]}${(c3.threshold * 100).toFixed(0)}%)`;
         break;
       }
       case "majority_minority": {
@@ -14342,8 +14366,10 @@ function isMapSubmittable(validityStats, rules) {
   }
   return true;
 }
+var OP_LABEL;
 var init_evaluate = __esm({
   "web/src/simulation/evaluate.js"() {
+    OP_LABEL = { lt: "<", lte: "\u2264", eq: "=", gte: "\u2265", gt: ">" };
   }
 });
 
@@ -14425,6 +14451,7 @@ var require_main = __commonJS({
   "web/src/main.ts"(exports) {
     init_loader();
     init_mapRenderer();
+    init_panels();
     init_gameStore();
     init_evaluate();
     init_validity();
@@ -14608,6 +14635,17 @@ var require_main = __commonJS({
         showScenarioSelect();
         return;
       }
+      function showLoadError(bodyHtml, errorMsg) {
+        document.body.insertAdjacentHTML(
+          "afterbegin",
+          `<div style="position:fixed;inset:0;background:#0d1b2e;color:#c0d0e8;padding:2em;font-family:system-ui;z-index:999;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;">
+				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
+				<p style="max-width:600px;text-align:center;">${bodyHtml}</p>
+				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${errorMsg}</pre>
+				<button onclick="window.location.assign('./')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">\u2190 Back to Scenarios</button>
+			</div>`
+        );
+      }
       let json;
       try {
         const resp = yield fetch(`./scenarios/${entryToLoad.id}.json`);
@@ -14617,15 +14655,7 @@ var require_main = __commonJS({
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
         console.error(`[GAME-032] Failed to fetch scenario "${entryToLoad.id}":`, e);
-        document.body.insertAdjacentHTML(
-          "afterbegin",
-          `<div style="position:fixed;inset:0;background:#0d1b2e;color:#c0d0e8;padding:2em;font-family:system-ui;z-index:999;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;">
-				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
-				<p style="max-width:600px;text-align:center;">Could not fetch scenario <strong>${entryToLoad.id}</strong>.</p>
-				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${msg}</pre>
-				<button onclick="window.location.assign('./')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">\u2190 Back to Scenarios</button>
-			</div>`
-        );
+        showLoadError(`Could not fetch scenario <strong>${entryToLoad.id}</strong>.`, msg);
         return;
       }
       let scenario;
@@ -14634,15 +14664,7 @@ var require_main = __commonJS({
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
         console.error(`[GAME-032] Scenario "${entryToLoad.id}" validation failed:`, e);
-        document.body.insertAdjacentHTML(
-          "afterbegin",
-          `<div style="position:fixed;inset:0;background:#0d1b2e;color:#c0d0e8;padding:2em;font-family:system-ui;z-index:999;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;">
-				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
-				<p style="max-width:600px;text-align:center;">Scenario <strong>${entryToLoad.id}</strong> could not be loaded due to a validation error.</p>
-				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${msg}</pre>
-				<button onclick="window.location.assign('./')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">\u2190 Back to Scenarios</button>
-			</div>`
-        );
+        showLoadError(`Scenario <strong>${entryToLoad.id}</strong> could not be loaded due to a validation error.`, msg);
         return;
       }
       const { store } = createGameStore(scenario);
