@@ -193,8 +193,10 @@ PRs: #119 #120 #121 #122
 
 **Goal**: Ship v1 to the public. Deploy, legal review, basic accessibility.
 
-**Outcome**: All tickets closed. Unified deployment scripts: Buildkite
-auto-deploy to staging on merge, production deploy via `scripts/deploy-prod.sh`
+**Outcome**: All tickets closed. Unified manual deployment scripts:
+`prepare-release.sh` (build + tag) and `deploy.sh` (staging or production)
+replacing three earlier scripts; Buildkite auto-deploy was drafted in PR #127
+but removed in the PR #131 rewrite — deployments are manual for now
 (DIST-001; PRs #127 #131 #132). Content risk assessment: low-risk for v1 given
 educational framing, fictional regions, all pre-authored content; disclaimers
 added to about page and Valle Verde (LEGAL-001; PR #126). Basic a11y scoped to
