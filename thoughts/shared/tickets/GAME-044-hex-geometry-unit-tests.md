@@ -2,7 +2,7 @@
 id: GAME-044
 title: Unit tests for hex-geometry.ts
 area: game, code-quality, testing
-status: open
+status: resolved
 created: 2026-04-29
 ---
 
