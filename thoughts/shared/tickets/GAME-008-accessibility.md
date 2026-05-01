@@ -2,7 +2,7 @@
 id: GAME-008
 title: Accessibility pass — color blindness, keyboard navigation, screen reader support
 area: game, accessibility
-status: open
+status: resolved
 created: 2026-04-25
 ---
 
