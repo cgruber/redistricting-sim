@@ -14456,6 +14456,13 @@ function saveLastPlayedScenario(scenarioId) {
   } catch (e) {
   }
 }
+function loadLastPlayedScenario() {
+  try {
+    return localStorage.getItem(LAST_PLAYED_KEY);
+  } catch (e) {
+    return null;
+  }
+}
 var LAST_PLAYED_KEY, CAMPAIGN_REGISTRY;
 var init_campaigns = __esm({
   "web/src/model/campaigns.js"() {
@@ -14569,12 +14576,13 @@ var require_main = __commonJS({
     }
     var IS_DEBUG = debugParam !== null && debugParam !== "off" || sessionStorage.getItem(DEBUG_KEY) === "1";
     (() => __async(exports, null, function* () {
-      var _a, _b, _c, _d, _e, _f;
+      var _a, _b, _c, _d, _e, _f, _g;
       let progress = loadProgress();
       const urlParams = new URLSearchParams(window.location.search);
-      const campaignParam = (_a = urlParams.get("campaign")) != null ? _a : "";
+      const campaignParam = ((_a = urlParams.get("campaign")) != null ? _a : "").replace(/[^a-z0-9-]/g, "");
       const activeCampaign = campaignParam !== "" ? getCampaign(campaignParam) : void 0;
       const activeList = activeCampaign ? activeCampaign.scenarioIds.map((id2) => MANIFEST_BY_ID.get(id2)).filter((e) => e !== void 0) : SCENARIO_MANIFEST;
+      const backUrl = campaignParam !== "" ? `./?campaign=${campaignParam}` : "./?view=scenarios";
       function renderScenarioCards() {
         if (!scenarioCardsEl)
           return;
@@ -14606,7 +14614,7 @@ var require_main = __commonJS({
               if (currentWip && currentWip.scenarioId !== entry.id) {
                 showWipWarning(currentWip.scenarioId, entry.id);
               } else {
-                const dest = campaignParam ? `./?s=${entry.id}&campaign=${campaignParam}` : `./?s=${entry.id}`;
+                const dest = activeCampaign ? `./?s=${entry.id}&campaign=${campaignParam}` : `./?s=${entry.id}`;
                 window.location.assign(dest);
               }
             });
@@ -14631,7 +14639,7 @@ var require_main = __commonJS({
         const onConfirm = () => {
           cleanup();
           clearWip();
-          const dest = campaignParam ? `./?s=${targetId}&campaign=${campaignParam}` : `./?s=${targetId}`;
+          const dest = activeCampaign ? `./?s=${targetId}&campaign=${campaignParam}` : `./?s=${targetId}`;
           window.location.assign(dest);
         };
         const onCancel = () => {
@@ -14644,6 +14652,49 @@ var require_main = __commonJS({
         }
         confirmBtn.addEventListener("click", onConfirm);
         cancelBtn.addEventListener("click", onCancel);
+      }
+      function buildContinueUrl(scenarioId) {
+        if (SCENARIO_MANIFEST.some((e) => e.id === scenarioId)) {
+          return `./?s=${scenarioId}`;
+        }
+        for (const campaign of CAMPAIGN_REGISTRY) {
+          if (campaign.scenarioIds.includes(scenarioId)) {
+            return `./?s=${scenarioId}&campaign=${campaign.id}`;
+          }
+        }
+        return `./?s=${scenarioId}`;
+      }
+      function showMainMenu() {
+        var _a2, _b2, _c2;
+        const mainMenuEl = document.getElementById("main-menu");
+        if (!mainMenuEl)
+          return;
+        const lastPlayedId = loadLastPlayedScenario();
+        const continueBtn = document.getElementById("btn-main-continue");
+        if (continueBtn) {
+          if (lastPlayedId !== null) {
+            continueBtn.hidden = false;
+            continueBtn.addEventListener("click", () => {
+              window.location.assign(buildContinueUrl(lastPlayedId));
+            });
+          } else {
+            continueBtn.hidden = true;
+          }
+        }
+        (_a2 = document.getElementById("btn-main-new-campaign")) == null ? void 0 : _a2.addEventListener("click", () => {
+          window.location.assign("./?view=campaigns");
+        });
+        (_b2 = document.getElementById("btn-main-about")) == null ? void 0 : _b2.addEventListener("click", () => {
+          var _a3;
+          mainMenuEl.classList.add("hidden");
+          (_a3 = document.getElementById("about-screen")) == null ? void 0 : _a3.classList.remove("hidden");
+        });
+        (_c2 = document.getElementById("btn-about-close")) == null ? void 0 : _c2.addEventListener("click", () => {
+          var _a3;
+          (_a3 = document.getElementById("about-screen")) == null ? void 0 : _a3.classList.add("hidden");
+          mainMenuEl.classList.remove("hidden");
+        });
+        mainMenuEl.classList.remove("hidden");
       }
       function showScenarioSelect() {
         var _a2, _b2, _c2;
@@ -14692,7 +14743,14 @@ var require_main = __commonJS({
         }
         entryToLoad = requestedEntry;
       } else {
-        showScenarioSelect();
+        const view = (_e = urlParams.get("view")) != null ? _e : "";
+        if (campaignParam !== "" || view === "scenarios") {
+          showScenarioSelect();
+        } else if (view === "campaigns") {
+          showScenarioSelect();
+        } else {
+          showMainMenu();
+        }
         return;
       }
       function showLoadError(bodyHtml, errorMsg) {
@@ -14702,7 +14760,7 @@ var require_main = __commonJS({
 				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
 				<p style="max-width:600px;text-align:center;">${bodyHtml}</p>
 				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${errorMsg}</pre>
-				<button onclick="window.location.assign('./')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">\u2190 Back to Scenarios</button>
+				<button onclick="window.location.assign('${backUrl}')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">\u2190 Back to Scenarios</button>
 			</div>`
         );
       }
@@ -14991,16 +15049,16 @@ var require_main = __commonJS({
           if (allComplete) {
             (_a2 = document.getElementById("wrap-up-screen")) == null ? void 0 : _a2.classList.remove("hidden");
           } else {
-            window.location.assign("./");
+            window.location.assign(backUrl);
           }
         });
       }
       btnKeepDrawing.addEventListener("click", () => {
         resultScreen.classList.add("hidden");
       });
-      (_e = document.getElementById("btn-back-to-scenarios")) == null ? void 0 : _e.addEventListener("click", () => {
+      (_f = document.getElementById("btn-back-to-scenarios")) == null ? void 0 : _f.addEventListener("click", () => {
         flushWipSave();
-        window.location.assign("./");
+        window.location.assign(backUrl);
       });
       btnNextScenario.addEventListener("click", () => {
         var _a2;
@@ -15009,11 +15067,11 @@ var require_main = __commonJS({
           resultScreen.classList.add("hidden");
           (_a2 = document.getElementById("wrap-up-screen")) == null ? void 0 : _a2.classList.remove("hidden");
         } else {
-          window.location.assign("./");
+          window.location.assign(backUrl);
         }
       });
-      (_f = document.getElementById("btn-wrap-up-replay")) == null ? void 0 : _f.addEventListener("click", () => {
-        window.location.assign("./");
+      (_g = document.getElementById("btn-wrap-up-replay")) == null ? void 0 : _g.addEventListener("click", () => {
+        window.location.assign(backUrl);
       });
       store.subscribe(() => {
         updateUI();
