@@ -13,12 +13,20 @@
  *       Passing an explicit semver when not on main is an error.
  *       Emits the version string to stdout for capture by callers.
  *
- *   deploy  --env <staging|production>  [--version <v>]
+ *   deploy  --env <dev|staging|production>  [--version <v>]
  *       Read staged artifact from .deploy_pkg/<version>/ and deploy to the
  *       target environment. If --version is omitted, uses the sole prepared
  *       version or errors if zero or multiple exist.
  *       Does NOT delete .deploy_pkg/<version>/ — artifact is kept so you can
  *       deploy the same build to multiple environments.
+ *
+ *       vTEST-* builds may ONLY be deployed to dev; staging and production
+ *       require a semver release built from main.
+ *
+ *   Environments:
+ *     dev        → /dev/ folder in web_deploy branch → dev.pastthepost.gg
+ *     staging    → /staging/ folder in web_deploy branch → staging.pastthepost.gg
+ *     production → root of web_deploy branch → pastthepost.gg
  *
  * Examples:
  *   ./release.main.kts -- prepare
@@ -27,6 +35,10 @@
  *   VERSION=$(./release.main.kts -- prepare)
  *   ./release.main.kts -- deploy --env staging --version "$VERSION"
  *   ./release.main.kts -- deploy --env production --version "$VERSION"
+ *
+ *   # Branch build to dev:
+ *   VERSION=$(./release.main.kts -- prepare)
+ *   ./release.main.kts -- deploy --env dev --version "$VERSION"
  *
  *   # Explicit semver on main only:
  *   ./release.main.kts -- prepare --version v0.1.0
@@ -269,14 +281,14 @@ class Prepare : CliktCommand(
 
 class Deploy : CliktCommand(
     name = "deploy",
-    help = "Deploy a staged artifact from .deploy_pkg/<version>/ to staging or production."
+    help = "Deploy a staged artifact from .deploy_pkg/<version>/ to dev, staging, or production."
 ) {
-    val env by option("--env", help = "Target environment: staging or production").required()
+    val env by option("--env", help = "Target environment: dev, staging, or production").required()
     val versionOpt by option("--version", help = "Version to deploy (default: sole staged version)")
 
     override fun run() {
-        if (env != "staging" && env != "production")
-            err("--env must be 'staging' or 'production', got: $env")
+        if (env != "dev" && env != "staging" && env != "production")
+            err("--env must be 'dev', 'staging', or 'production', got: $env")
 
         val version = resolveVersion(versionOpt)
         val pkgDir = File(deployPkgDir, version)
@@ -290,9 +302,18 @@ class Deploy : CliktCommand(
         val meta: PrepareMetadata = mapper.readValue(metaFile)
         val isTestBuild = meta.isTestBuild
 
+        // vTEST builds may only go to dev — never to staging or production.
+        if (isTestBuild && env != "dev")
+            err(
+                "Test builds (vTEST-*) can only be deployed to 'dev', not '$env'.\n" +
+                "  To deploy to $env, build from main (a semver release).\n" +
+                "  To test this build: ./release.main.kts -- deploy --env dev --version $version"
+            )
+
         val workspaceName = ".deploy_$env"
         val workspaceDir = File(gameDir, workspaceName)
         val verifyUrl = when (env) {
+            "dev"     -> "https://dev.pastthepost.gg/deployment-metadata.json"
             "staging" -> "https://staging.pastthepost.gg/deployment-metadata.json"
             else      -> "https://pastthepost.gg/deployment-metadata.json"
         }
@@ -326,16 +347,20 @@ class Deploy : CliktCommand(
             sh("jj", "new", "web_deploy", dir = workspaceDir)
 
             System.err.println("Step 3: Extracting artifact ...")
-            val deployRoot = if (env == "staging") {
-                val sub = File(workspaceDir, "staging")
-                sub.deleteRecursively()
-                sub.mkdirs()
-                sub
-            } else {
-                workspaceDir.listFiles()
-                    ?.filter { it.name != ".jj" && it.name != "staging" }
-                    ?.forEach { it.deleteRecursively() }
-                workspaceDir
+            val deployRoot = when (env) {
+                "dev", "staging" -> {
+                    val sub = File(workspaceDir, env)
+                    sub.deleteRecursively()
+                    sub.mkdirs()
+                    sub
+                }
+                else -> {
+                    // Production: clear root but preserve the dev/ and staging/ subdirectories.
+                    workspaceDir.listFiles()
+                        ?.filter { it.name != ".jj" && it.name != "staging" && it.name != "dev" }
+                        ?.forEach { it.deleteRecursively() }
+                    workspaceDir
+                }
             }
             extractZip(stagedZip, deployRoot)
 
@@ -396,7 +421,11 @@ class Deploy : CliktCommand(
             }
 
             if (verified) {
-                val url = if (env == "staging") "https://staging.pastthepost.gg" else "https://pastthepost.gg"
+                val url = when (env) {
+                    "dev"     -> "https://dev.pastthepost.gg"
+                    "staging" -> "https://staging.pastthepost.gg"
+                    else      -> "https://pastthepost.gg"
+                }
                 System.err.println("✓ Deployed to $env")
                 System.err.println("  Version: $version (${meta.commitId})")
                 System.err.println("  URL:     $url")

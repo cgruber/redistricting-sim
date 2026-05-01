@@ -101,18 +101,19 @@ frontmatter: date researcher git_commit branch repository topic tags status last
 §DEPLOY
 tool: game/release.main.kts — run from game/ or repo root
 
-branch deploy (test before merge):
+environments: dev=dev.pastthepost.gg staging=staging.pastthepost.gg production=pastthepost.gg
+vTEST-* builds: ONLY allowed to dev; staging+production require semver (main)
+production: NEVER deploy without explicit user sign-off
+
+branch deploy (dev only — vTEST builds):
   VERSION=$(./release.main.kts -- prepare)           # vTEST-<commitid>; no tag
-  ./release.main.kts -- deploy --env staging --version "$VERSION"
-  ./release.main.kts -- deploy --env production --version "$VERSION"
+  ./release.main.kts -- deploy --env dev --version "$VERSION"
 
 release deploy (on main):
   ./release.main.kts -- prepare                      # auto-bumps semver; creates+pushes tag
   ./release.main.kts -- deploy --env staging         # auto-detects staged version
-  ./release.main.kts -- deploy --env production      # same artifact; .deploy_pkg/ kept between deploys
-
-staging:    https://staging.pastthepost.gg
-production: https://pastthepost.gg
+  # stop here; wait for explicit user approval before prod
+  ./release.main.kts -- deploy --env production      # only with user sign-off
 
 §CHAIN Bootstrap — execute exactly one branch (stop after match):
 when {
