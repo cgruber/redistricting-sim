@@ -916,3 +916,92 @@ test("routing: unknown ?campaign= redirects to main menu", async ({ page }) => {
   await expect(page.locator("#main-menu")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator("#scenario-select")).not.toBeVisible();
 });
+
+// ── GAME-051: in-game nav-back submenu ────────────────────────────────────────
+
+test("in-game nav: back trigger is shown in header when playing a scenario via campaign", async ({ page }) => {
+  await page.goto("/?campaign=tutorial&s=tutorial-001");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+  await expect(page.locator("#btn-nav-back-trigger")).toBeVisible();
+  await expect(page.locator("#nav-back-menu")).toBeHidden();
+});
+
+test("in-game nav: clicking trigger reveals both Return to Scenarios and Return to Main Menu", async ({ page }) => {
+  await page.goto("/?campaign=tutorial&s=tutorial-001");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+  await page.locator("#btn-nav-back-trigger").click();
+  await expect(page.locator("#nav-back-menu")).toBeVisible();
+  await expect(page.locator("#btn-back-to-scenarios")).toBeVisible();
+  await expect(page.locator("#btn-back-to-main-menu")).toBeVisible();
+});
+
+test("in-game nav: Return to Scenarios navigates to campaign scenario select", async ({ page }) => {
+  await page.goto("/?campaign=tutorial&s=tutorial-001");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+  await page.locator("#btn-nav-back-trigger").click();
+  await page.locator("#btn-back-to-scenarios").click();
+  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  expect(page.url()).toContain("campaign=tutorial");
+});
+
+test("in-game nav: Return to Main Menu navigates to main menu", async ({ page }) => {
+  await page.goto("/?campaign=tutorial&s=tutorial-001");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+  await page.locator("#btn-nav-back-trigger").click();
+  await page.locator("#btn-back-to-main-menu").click();
+  await expect(page.locator("#main-menu")).toBeVisible({ timeout: 10_000 });
+});
+
+test("in-game nav: Escape key closes the nav submenu", async ({ page }) => {
+  await page.goto("/?campaign=tutorial&s=tutorial-001");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+  await page.locator("#btn-nav-back-trigger").click();
+  await expect(page.locator("#nav-back-menu")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#nav-back-menu")).toBeHidden();
+});
+
+test("in-game nav: clicking outside the submenu closes it", async ({ page }) => {
+  await page.goto("/?campaign=tutorial&s=tutorial-001");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+  await page.locator("#btn-nav-back-trigger").click();
+  await expect(page.locator("#nav-back-menu")).toBeVisible();
+  // Click somewhere outside the menu (the map area)
+  await page.locator("path.hex").first().click();
+  await expect(page.locator("#nav-back-menu")).toBeHidden();
+});
+
+test("in-game nav: without campaign context, shows plain Main Menu button (no dropdown)", async ({ page }) => {
+  await page.goto("/?s=tutorial-002");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+  await expect(page.locator("#btn-nav-back-trigger")).toHaveText("← Main Menu");
+  await expect(page.locator("#btn-back-to-scenarios")).toBeHidden();
+});

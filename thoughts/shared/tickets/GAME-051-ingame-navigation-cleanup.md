@@ -2,7 +2,7 @@
 id: GAME-051
 title: In-game navigation cleanup
 area: game, UX
-status: open
+status: resolved
 created: 2026-04-29
 ---
 

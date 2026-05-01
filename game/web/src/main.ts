@@ -784,11 +784,56 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		resultScreen!.classList.add("hidden");
 	});
 
-	// "← Scenarios" button → flush WIP then return to scenario select
-	document.getElementById("btn-back-to-scenarios")?.addEventListener("click", () => {
-		flushWipSave();
-		window.location.assign(backUrl);
-	});
+	// Nav-back submenu (GAME-051)
+	const navBackTrigger = document.getElementById("btn-nav-back-trigger") as HTMLButtonElement | null;
+	const navBackMenu = document.getElementById("nav-back-menu") as HTMLElement | null;
+	const btnBackToScenarios = document.getElementById("btn-back-to-scenarios") as HTMLButtonElement | null;
+	const btnBackToMainMenu = document.getElementById("btn-back-to-main-menu") as HTMLButtonElement | null;
+
+	// Hide "Return to Scenarios" when no campaign context is active.
+	if (!activeCampaign && btnBackToScenarios) btnBackToScenarios.hidden = true;
+
+	// When only one option, drop the dropdown affordance and act as a plain button.
+	if (!activeCampaign && navBackTrigger) {
+		navBackTrigger.textContent = "← Main Menu";
+		navBackTrigger.removeAttribute("aria-haspopup");
+		navBackTrigger.removeAttribute("aria-expanded");
+		navBackTrigger.addEventListener("click", () => {
+			flushWipSave();
+			window.location.assign("./");
+		});
+	} else {
+		function closeNavMenu() {
+			navBackMenu?.setAttribute("hidden", "");
+			navBackTrigger?.setAttribute("aria-expanded", "false");
+		}
+
+		navBackTrigger?.addEventListener("click", (e) => {
+			e.stopPropagation();
+			const isOpen = !navBackMenu?.hasAttribute("hidden");
+			if (isOpen) {
+				closeNavMenu();
+			} else {
+				navBackMenu?.removeAttribute("hidden");
+				navBackTrigger.setAttribute("aria-expanded", "true");
+			}
+		});
+
+		document.addEventListener("click", closeNavMenu);
+		document.addEventListener("keydown", (e: KeyboardEvent) => {
+			if (e.key === "Escape") closeNavMenu();
+		});
+
+		btnBackToScenarios?.addEventListener("click", () => {
+			flushWipSave();
+			window.location.assign(backUrl);
+		});
+
+		btnBackToMainMenu?.addEventListener("click", () => {
+			flushWipSave();
+			window.location.assign("./");
+		});
+	}
 
 	// "Next Scenario" → if all scenarios complete, show wrap-up; else select screen.
 	btnNextScenario!.addEventListener("click", () => {
