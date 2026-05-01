@@ -2,7 +2,7 @@
 id: GAME-048
 title: Campaign-driven scenario select (routing + data wiring)
 area: game, UX
-status: open
+status: resolved
 created: 2026-04-29
 github_issue: 161
 github_pr: 162
