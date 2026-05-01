@@ -14664,6 +14664,46 @@ var require_main = __commonJS({
         }
         return `./?s=${scenarioId}`;
       }
+      function showCampaignSelect() {
+        var _a2;
+        const el = document.getElementById("campaign-select");
+        if (!el)
+          return;
+        const cardsEl = document.getElementById("campaign-cards");
+        if (cardsEl) {
+          cardsEl.innerHTML = "";
+          for (const campaign of CAMPAIGN_REGISTRY) {
+            const completed = campaign.scenarioIds.filter((id2) => isCompleted(progress, id2)).length;
+            const total = campaign.scenarioIds.length;
+            const card = document.createElement("div");
+            card.className = "campaign-card";
+            card.setAttribute("role", "button");
+            card.setAttribute("tabindex", "0");
+            card.setAttribute("aria-label", campaign.title);
+            const heading = document.createElement("h2");
+            heading.textContent = campaign.title;
+            const desc = document.createElement("p");
+            desc.textContent = campaign.description;
+            const prog = document.createElement("div");
+            prog.className = "campaign-progress";
+            prog.textContent = `${completed} / ${total} scenarios complete`;
+            card.append(heading, desc, prog);
+            const navigate = () => window.location.assign(`./?campaign=${campaign.id}`);
+            card.addEventListener("click", navigate);
+            card.addEventListener("keydown", (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                navigate();
+              }
+            });
+            cardsEl.appendChild(card);
+          }
+        }
+        (_a2 = document.getElementById("btn-campaign-back")) == null ? void 0 : _a2.addEventListener("click", () => {
+          window.location.assign("./");
+        });
+        el.classList.remove("hidden");
+      }
       function showMainMenu() {
         var _a2, _b2, _c2;
         const mainMenuEl = document.getElementById("main-menu");
@@ -14747,7 +14787,7 @@ var require_main = __commonJS({
         if (campaignParam !== "" || view === "scenarios") {
           showScenarioSelect();
         } else if (view === "campaigns") {
-          showScenarioSelect();
+          showCampaignSelect();
         } else {
           showMainMenu();
         }
