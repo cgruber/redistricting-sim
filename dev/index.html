@@ -121,7 +121,13 @@
     </div>
 
     <header id="app-header" style="display:none">
-      <button id="btn-back-to-scenarios" style="background:none;border:1px solid #2a5a8c;color:#8898b0;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.8rem;">← Scenarios</button>
+      <div id="nav-back" class="nav-back-container">
+        <button id="btn-nav-back-trigger" class="nav-back-btn" aria-haspopup="menu" aria-expanded="false">← Back ▾</button>
+        <div id="nav-back-menu" class="nav-back-menu" role="menu" hidden>
+          <button id="btn-back-to-scenarios" role="menuitem">Return to Scenarios</button>
+          <button id="btn-back-to-main-menu" role="menuitem">Return to Main Menu</button>
+        </div>
+      </div>
       <h1>Redistricting Simulator</h1>
       <div id="controls">
         <span style="font-size:0.8rem;color:#888;">Draw district:</span>
@@ -143,7 +149,7 @@
 
     <div id="main" style="display:none">
       <div id="map-container">
-        <svg id="map-svg" role="image" aria-label="District map. Use mouse to paint precincts into districts. Current assignments shown as colored hexagons."></svg>
+        <svg id="map-svg" role="application" tabindex="0" aria-label="District map. Use mouse or keyboard to paint precincts. Arrow keys navigate precincts, number keys 1–5 assign to a district."></svg>
       </div>
       <aside id="sidebar">
         <h2>Precinct Info</h2>
@@ -185,7 +191,7 @@
       wasm_bindgen("./wasm_calc_bindgen_bg.wasm").then(function () {
         var s = document.createElement("script");
         s.type = "module";
-        s.src = "bundle.js?v=v0.0.12";
+        s.src = "bundle.js?v=vTEST-d9a63fe15eef";
         document.body.appendChild(s);
       });
     </script>
