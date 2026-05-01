@@ -14673,12 +14673,12 @@ var require_main = __commonJS({
         const continueBtn = document.getElementById("btn-main-continue");
         if (continueBtn) {
           if (lastPlayedId !== null) {
-            continueBtn.hidden = false;
+            continueBtn.disabled = false;
             continueBtn.addEventListener("click", () => {
               window.location.assign(buildContinueUrl(lastPlayedId));
             });
           } else {
-            continueBtn.hidden = true;
+            continueBtn.disabled = true;
           }
         }
         (_a2 = document.getElementById("btn-main-new-campaign")) == null ? void 0 : _a2.addEventListener("click", () => {
@@ -14864,9 +14864,11 @@ var require_main = __commonJS({
       }
       let introController = null;
       function showEditor() {
+        var _a2;
         introController == null ? void 0 : introController.abort();
         introController = null;
         introScreen == null ? void 0 : introScreen.classList.add("hidden");
+        (_a2 = document.getElementById("main-menu")) == null ? void 0 : _a2.classList.add("hidden");
         appHeader.style.display = "";
         mainEl.style.display = "";
       }
