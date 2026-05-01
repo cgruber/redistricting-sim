@@ -2,7 +2,7 @@
 id: GAME-050
 title: Main menu / title screen
 area: game, UX
-status: open
+status: resolved
 created: 2026-04-29
 github_issue: 164
 github_pr: 165
