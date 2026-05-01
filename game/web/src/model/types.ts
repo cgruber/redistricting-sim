@@ -120,19 +120,26 @@ export interface StrokeDiff {
 	changes: Map<number, { from: DistrictId | null; to: DistrictId | null }>;
 }
 
-/** District color palette (index 0 = district 1, etc.) */
+/** District color palette — Okabe-Ito (2008) color-blind-safe 8-color set, 5 used here.
+ *  Source: https://jfly.uni-koeln.de/color/
+ *  Safe for deuteranopia, protanopia, and tritanopia.
+ *  Chosen to avoid collision with party colors D=#3a7bd5 and R=#e94560.
+ */
 export const DISTRICT_COLORS: readonly string[] = [
-	"#4e79a7",
-	"#f28e2b",
-	"#e15759",
-	"#76b7b2",
-	"#59a14f",
+	"#E69F00", // amber
+	"#56B4E9", // sky blue
+	"#009E73", // bluish green
+	"#CC79A7", // mauve
+	"#D55E00", // vermilion
 ] as const;
 
-/** Party display colors */
+/** Party display colors — aligned with PuOr lean-view palette so party badges
+ *  and the lean map use a consistent color language.
+ *  D → purple (D-leaning end of PuOr), R → orange (R-leaning end of PuOr).
+ */
 export const PARTY_COLORS: Record<PartyKey, string> = {
-	R: "#e94560",
-	D: "#3a7bd5",
+	R: "#c96d00",
+	D: "#7b35a8",
 	L: "#f0c040",
 	G: "#50c878",
 	I: "#a0a0a0",
