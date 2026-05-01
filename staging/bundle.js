@@ -13123,15 +13123,20 @@ var DISTRICT_COLORS, PARTY_COLORS, PARTY_LABELS;
 var init_types = __esm({
   "web/src/model/types.js"() {
     DISTRICT_COLORS = [
-      "#4e79a7",
-      "#f28e2b",
-      "#e15759",
-      "#76b7b2",
-      "#59a14f"
+      "#E69F00",
+      // amber
+      "#56B4E9",
+      // sky blue
+      "#009E73",
+      // bluish green
+      "#CC79A7",
+      // mauve
+      "#D55E00"
+      // vermilion
     ];
     PARTY_COLORS = {
-      R: "#e94560",
-      D: "#3a7bd5",
+      R: "#c96d00",
+      D: "#7b35a8",
       L: "#f0c040",
       G: "#50c878",
       I: "#a0a0a0"
@@ -13236,6 +13241,9 @@ var init_mapRenderer = __esm({
         // County border overlay (GAME-012): computed once at load, toggled on/off
         __publicField(this, "countySegments", []);
         __publicField(this, "countyBordersVisible", false);
+        // Keyboard precinct navigation state
+        __publicField(this, "focusedPrecinctId", null);
+        __publicField(this, "keyboardFocusPath", null);
         this.getState = getState;
         this.paintStroke = paintStroke;
         this.setActiveDistrict = setActiveDistrict;
@@ -13251,6 +13259,7 @@ var init_mapRenderer = __esm({
         this.countySegments = computeCountySegments(getState().precincts);
         this.initZoom();
         this.initBrushEvents();
+        this.initKeyboardNav();
         this.initHoverEvents();
       }
       setViewMode(mode2) {
@@ -13309,6 +13318,9 @@ var init_mapRenderer = __esm({
           this.borderGroup.selectAll("line.boundary").attr("stroke-width", bw);
           const pw = _SvgMapRenderer.PREVIEW_BASE_WIDTH / this.currentK;
           this.previewBorderGroup.selectAll("line.preview-boundary").attr("stroke-width", pw);
+          if (this.keyboardFocusPath !== null) {
+            select_default2(this.keyboardFocusPath).attr("stroke-width", 2 / this.currentK).attr("stroke-dasharray", `${4 / this.currentK},${2 / this.currentK}`);
+          }
         });
         svgNode2.addEventListener("contextmenu", (e) => e.preventDefault());
         this.svg.call(this.zoomBehavior);
@@ -13394,6 +13406,8 @@ var init_mapRenderer = __esm({
             return;
           if (this.hoveredPath !== path2) {
             this.clearHover();
+            if (path2 === this.keyboardFocusPath)
+              return;
             this.hoveredPath = path2;
             select_default2(path2).attr("stroke", "#ffffff").attr("stroke-width", _SvgMapRenderer.HOVER_STROKE_WIDTH / this.currentK).attr("opacity", _SvgMapRenderer.HOVER_OPACITY);
             const { assignments } = this.getState();
@@ -13435,6 +13449,10 @@ var init_mapRenderer = __esm({
       clearHover() {
         if (this.hoveredPath === null)
           return;
+        if (this.hoveredPath === this.keyboardFocusPath) {
+          this.hoveredPath = null;
+          return;
+        }
         const path2 = this.hoveredPath;
         this.hoveredPath = null;
         const { assignments } = this.getState();
@@ -13516,8 +13534,8 @@ var init_mapRenderer = __esm({
         var _a;
         if (this.viewMode === "lean") {
           const lean = d.partyShare.D - d.partyShare.R;
-          const t = (lean + 1) / 2;
-          return RdBu_default(t);
+          const t = Math.max(0.1, Math.min(0.9, (lean + 1) / 2));
+          return PuOr_default(t);
         }
         const dId = assignments.get(d.id);
         if (dId == null)
@@ -13533,6 +13551,94 @@ var init_mapRenderer = __esm({
           return _SvgMapRenderer.LEAN_OPACITY;
         const dId = assignments.get(d.id);
         return dId != null ? _SvgMapRenderer.ASSIGNED_OPACITY : _SvgMapRenderer.UNASSIGNED_OPACITY;
+      }
+      // ─── Keyboard precinct navigation (GAME-008) ──────────────────────────────
+      initKeyboardNav() {
+        const svgNode2 = this.svg.node();
+        svgNode2.addEventListener("keydown", (e) => {
+          const { precincts, activeDistrict, districtCount } = this.getState();
+          if (precincts.length === 0)
+            return;
+          if (this.focusedPrecinctId === null) {
+            this.setKeyboardFocus(precincts[0].id, precincts);
+            return;
+          }
+          const current = precincts.find((p) => p.id === this.focusedPrecinctId);
+          if (current === void 0)
+            return;
+          const dirMap = {
+            ArrowUp: [4],
+            ArrowDown: [1],
+            ArrowRight: [5, 0],
+            ArrowLeft: [3, 2]
+          };
+          const dirs = dirMap[e.key];
+          if (dirs !== void 0) {
+            e.preventDefault();
+            for (const dir of dirs) {
+              const nId = current.neighbors[dir];
+              if (nId !== null && nId !== void 0) {
+                this.setKeyboardFocus(nId, precincts);
+                break;
+              }
+            }
+            return;
+          }
+          const num = parseInt(e.key, 10);
+          if (num >= 1 && num <= districtCount) {
+            e.preventDefault();
+            this.paintStroke([this.focusedPrecinctId], num);
+            const { precincts: precincts2 } = this.getState();
+            this.setKeyboardFocus(this.focusedPrecinctId, precincts2);
+            return;
+          }
+          if (e.key === " ") {
+            e.preventDefault();
+            this.paintStroke([this.focusedPrecinctId], activeDistrict);
+            const { precincts: precincts2 } = this.getState();
+            this.setKeyboardFocus(this.focusedPrecinctId, precincts2);
+          }
+        });
+        svgNode2.addEventListener("blur", () => {
+          this.clearKeyboardFocus();
+        });
+      }
+      setKeyboardFocus(precinctId, precincts) {
+        var _a;
+        this.clearKeyboardFocus();
+        this.focusedPrecinctId = precinctId;
+        const path2 = this.hexGroup.select(`path.hex[data-precinct-id="${precinctId}"]`).node();
+        if (path2 === null)
+          return;
+        this.keyboardFocusPath = path2;
+        select_default2(path2).attr("stroke", "#F0E442").attr("stroke-width", 2 / this.currentK).attr("stroke-dasharray", `${4 / this.currentK},${2 / this.currentK}`);
+        const p = precincts.find((pr) => pr.id === precinctId);
+        if (p !== void 0) {
+          const { assignments } = this.getState();
+          const dId = assignments.get(p.id);
+          const distLabel = dId != null ? `district ${dId}` : "unassigned";
+          const label = (_a = p.name) != null ? _a : `Precinct ${p.id}`;
+          this.svg.attr(
+            "aria-label",
+            `District map \u2014 focused: ${label}, ${distLabel}. Arrow keys navigate. Number keys 1\u20135 assign district. Space assigns active district.`
+          );
+        }
+      }
+      clearKeyboardFocus() {
+        if (this.keyboardFocusPath !== null) {
+          const path2 = this.keyboardFocusPath;
+          this.keyboardFocusPath = null;
+          this.focusedPrecinctId = null;
+          const { assignments } = this.getState();
+          const d = select_default2(path2).datum();
+          if (d !== void 0) {
+            select_default2(path2).attr("stroke", "none").attr("stroke-dasharray", null).attr("stroke-width", 0.5).attr("opacity", this.hexOpacity(d, assignments));
+          }
+          this.svg.attr(
+            "aria-label",
+            "District map. Use mouse or keyboard to paint precincts. Arrow keys navigate precincts, number keys 1\u20135 assign to a district."
+          );
+        }
       }
     };
     // current zoom scale; stroke widths divided by this
@@ -14576,7 +14682,7 @@ var require_main = __commonJS({
     }
     var IS_DEBUG = debugParam !== null && debugParam !== "off" || sessionStorage.getItem(DEBUG_KEY) === "1";
     (() => __async(exports, null, function* () {
-      var _a, _b, _c, _d, _e, _f, _g;
+      var _a, _b, _c, _d, _e, _f;
       let progress = loadProgress();
       const urlParams = new URLSearchParams(window.location.search);
       const campaignParam = ((_a = urlParams.get("campaign")) != null ? _a : "").replace(/[^a-z0-9-]/g, "");
@@ -15114,10 +15220,49 @@ var require_main = __commonJS({
       btnKeepDrawing.addEventListener("click", () => {
         resultScreen.classList.add("hidden");
       });
-      (_f = document.getElementById("btn-back-to-scenarios")) == null ? void 0 : _f.addEventListener("click", () => {
-        flushWipSave();
-        window.location.assign(backUrl);
-      });
+      const navBackTrigger = document.getElementById("btn-nav-back-trigger");
+      const navBackMenu = document.getElementById("nav-back-menu");
+      const btnBackToScenarios = document.getElementById("btn-back-to-scenarios");
+      const btnBackToMainMenu = document.getElementById("btn-back-to-main-menu");
+      if (!activeCampaign && btnBackToScenarios)
+        btnBackToScenarios.hidden = true;
+      if (!activeCampaign && navBackTrigger) {
+        navBackTrigger.textContent = "\u2190 Main Menu";
+        navBackTrigger.removeAttribute("aria-haspopup");
+        navBackTrigger.removeAttribute("aria-expanded");
+        navBackTrigger.addEventListener("click", () => {
+          flushWipSave();
+          window.location.assign("./");
+        });
+      } else {
+        let closeNavMenu = function() {
+          navBackMenu == null ? void 0 : navBackMenu.setAttribute("hidden", "");
+          navBackTrigger == null ? void 0 : navBackTrigger.setAttribute("aria-expanded", "false");
+        };
+        navBackTrigger == null ? void 0 : navBackTrigger.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const isOpen = !(navBackMenu == null ? void 0 : navBackMenu.hasAttribute("hidden"));
+          if (isOpen) {
+            closeNavMenu();
+          } else {
+            navBackMenu == null ? void 0 : navBackMenu.removeAttribute("hidden");
+            navBackTrigger.setAttribute("aria-expanded", "true");
+          }
+        });
+        document.addEventListener("click", closeNavMenu);
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape")
+            closeNavMenu();
+        });
+        btnBackToScenarios == null ? void 0 : btnBackToScenarios.addEventListener("click", () => {
+          flushWipSave();
+          window.location.assign(backUrl);
+        });
+        btnBackToMainMenu == null ? void 0 : btnBackToMainMenu.addEventListener("click", () => {
+          flushWipSave();
+          window.location.assign("./");
+        });
+      }
       btnNextScenario.addEventListener("click", () => {
         var _a2;
         const allComplete = SCENARIO_MANIFEST.every((e) => isCompleted(progress, e.id));
@@ -15128,7 +15273,7 @@ var require_main = __commonJS({
           window.location.assign(backUrl);
         }
       });
-      (_g = document.getElementById("btn-wrap-up-replay")) == null ? void 0 : _g.addEventListener("click", () => {
+      (_f = document.getElementById("btn-wrap-up-replay")) == null ? void 0 : _f.addEventListener("click", () => {
         window.location.assign(backUrl);
       });
       store.subscribe(() => {
