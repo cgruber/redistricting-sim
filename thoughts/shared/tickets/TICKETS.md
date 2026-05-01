@@ -99,7 +99,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-042-break-up-main.md` | game, code-quality | Break up main.ts god module into testable units (scenarioSelect, resultScreen, introFlow) |
 | `GAME-043-unify-type-systems.md` | game, code-quality | Unify spike and scenario type systems; retire adapter.ts and types.ts spike layer |
 | `GAME-046-panels-unit-tests.md` | game, testing | Unit tests for render/panels.ts (deferred): jsdom or extract-pure-helpers approach |
-| `GAME-051-ingame-navigation-cleanup.md` | game, UX | Replace ← Scenarios with submenu: Return to Scenarios + Return to Main Menu |
 | `GAME-052-animated-criteria-eval.md` | game, UX | Animated criteria reveal on result screen; blocked on DESIGN-001 |
 | `GAME-053-electoral-outcome-visual-diff.md` | game, UX | Electoral outcome comparison (player map vs baseline) on result screen; placeholder |
 
@@ -115,6 +114,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | GAME-039: extract hex geometry | hex-geometry.ts created with hexToPixel, hexCorners, mapBounds, HEX_DIRECTIONS; generator.ts re-exports from it; adapter.ts + mapRenderer.ts updated; hex_geometry_lib added to model BUILD |
 | GAME-044: hex-geometry unit tests | 11 unit tests for hexToPixel, hexCorners, HEX_DIRECTIONS, mapBounds; hex_geometry_test Bazel target in model/BUILD.bazel; merged PR #153 |
 | GAME-054: remove legacy scenario select | ?campaign=bogus+?view=scenarios+unknown ?s=+locked (no campaign) all redirect to main menu; ?s= in campaign→show campaign select; backUrl updated; 89 e2e tests pass; merged PR #172 |
+| GAME-051: in-game navigation cleanup | ← Scenarios replaced with submenu trigger; Return to Scenarios (campaign only) + Return to Main Menu; no-campaign shows flat ← Main Menu button; Escape+outside-click close; 6 e2e tests; 102 total pass |
 | GAME-049: campaign select screen | ?view=campaigns→campaign cards with progress indicators; click→?campaign=<id>; Back→main menu; tabindex+keydown a11y; 6 e2e tests; merged PR #169 |
 | GAME-050: main menu / title screen | Continue/New Campaign/About/Load+Settings(disabled); routing /→main menu; 9 e2e tests; merged PR #165 |
 | GAME-048: campaign-driven scenario select | ?campaign= URL param filtering + Back button + input sanitization + cache-bust warn; 5 e2e tests; merged PR #162 |
