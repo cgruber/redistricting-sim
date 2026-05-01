@@ -102,7 +102,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-051-ingame-navigation-cleanup.md` | game, UX | Replace ← Scenarios with submenu: Return to Scenarios + Return to Main Menu |
 | `GAME-052-animated-criteria-eval.md` | game, UX | Animated criteria reveal on result screen; blocked on DESIGN-001 |
 | `GAME-053-electoral-outcome-visual-diff.md` | game, UX | Electoral outcome comparison (player map vs baseline) on result screen; placeholder |
-| `GAME-054-remove-legacy-scenario-select.md` | game, UX, routing | Remove standalone `?view=scenarios` route and fix `?campaign=<bogus>` to redirect to main menu |
 
 ---
 
@@ -115,8 +114,9 @@ tests should be written alongside or before implementation, not as a backfill. W
 | GAME-038: extract panel renderers | render/panels.ts created with renderResults, renderLegend, renderDistrictButtons, renderValidityPanel; mapRenderer.ts reduced by ~115 lines; main.ts import updated |
 | GAME-039: extract hex geometry | hex-geometry.ts created with hexToPixel, hexCorners, mapBounds, HEX_DIRECTIONS; generator.ts re-exports from it; adapter.ts + mapRenderer.ts updated; hex_geometry_lib added to model BUILD |
 | GAME-044: hex-geometry unit tests | 11 unit tests for hexToPixel, hexCorners, HEX_DIRECTIONS, mapBounds; hex_geometry_test Bazel target in model/BUILD.bazel; merged PR #153 |
+| GAME-054: remove legacy scenario select | ?campaign=bogus+?view=scenarios+unknown ?s=+locked (no campaign) all redirect to main menu; ?s= in campaign→show campaign select; backUrl updated; 89 e2e tests pass; merged PR #172 |
 | GAME-049: campaign select screen | ?view=campaigns→campaign cards with progress indicators; click→?campaign=<id>; Back→main menu; tabindex+keydown a11y; 6 e2e tests; merged PR #169 |
-| GAME-050: main menu / title screen | Continue/New Campaign/About/Load+Settings(disabled); routing /→main menu, /?view=scenarios→scenario select; 9 e2e tests; merged PR #165 |
+| GAME-050: main menu / title screen | Continue/New Campaign/About/Load+Settings(disabled); routing /→main menu; 9 e2e tests; merged PR #165 |
 | GAME-048: campaign-driven scenario select | ?campaign= URL param filtering + Back button + input sanitization + cache-bust warn; 5 e2e tests; merged PR #162 |
 | GAME-047: campaign data model | Campaign interface + CAMPAIGN_REGISTRY + getCampaign() + save/loadLastPlayedScenario(); Tutorial (2 scenarios) + Educational (8 scenarios); 13 unit tests; merged PR #159 |
 | GAME-045: gameStore unit tests | 13 unit tests for initial state, setActiveDistrict, paintPrecinct, paintStroke, resetToInitial, restoreAssignments, undo via zundo; store/BUILD.bazel package created; react added as devDep; merged PR #153 |
