@@ -255,6 +255,47 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		return `./?s=${scenarioId}`;
 	}
 
+	function showCampaignSelect() {
+		const el = document.getElementById("campaign-select");
+		if (!el) return;
+
+		const cardsEl = document.getElementById("campaign-cards");
+		if (cardsEl) {
+			cardsEl.innerHTML = "";
+			for (const campaign of CAMPAIGN_REGISTRY) {
+				const completed = campaign.scenarioIds.filter((id) => isCompleted(progress, id)).length;
+				const total = campaign.scenarioIds.length;
+				const card = document.createElement("div");
+				card.className = "campaign-card";
+				card.setAttribute("role", "button");
+				card.setAttribute("tabindex", "0");
+				card.setAttribute("aria-label", campaign.title);
+
+				const heading = document.createElement("h2");
+				heading.textContent = campaign.title;
+				const desc = document.createElement("p");
+				desc.textContent = campaign.description;
+				const prog = document.createElement("div");
+				prog.className = "campaign-progress";
+				prog.textContent = `${completed} / ${total} scenarios complete`;
+				card.append(heading, desc, prog);
+
+				const navigate = () => window.location.assign(`./?campaign=${campaign.id}`);
+				card.addEventListener("click", navigate);
+				card.addEventListener("keydown", (e: KeyboardEvent) => {
+					if (e.key === "Enter" || e.key === " ") { e.preventDefault(); navigate(); }
+				});
+				cardsEl.appendChild(card);
+			}
+		}
+
+		document.getElementById("btn-campaign-back")?.addEventListener("click", () => {
+			window.location.assign("./");
+		});
+
+		el.classList.remove("hidden");
+	}
+
 	function showMainMenu() {
 		const mainMenuEl = document.getElementById("main-menu");
 		if (!mainMenuEl) return;
@@ -350,7 +391,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		if (campaignParam !== "" || view === "scenarios") {
 			showScenarioSelect();
 		} else if (view === "campaigns") {
-			showScenarioSelect(); // GAME-049 stub: campaign select not yet built
+			showCampaignSelect();
 		} else {
 			showMainMenu();
 		}

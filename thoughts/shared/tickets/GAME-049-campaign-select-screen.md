@@ -4,6 +4,7 @@ title: Campaign select screen
 area: game, UX
 status: open
 created: 2026-04-29
+github_issue: 168
 ---
 
 ## Summary
