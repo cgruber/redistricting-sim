@@ -339,6 +339,24 @@ class Deploy : CliktCommand(
             }
             extractZip(stagedZip, deployRoot)
 
+            // Patch index.html: add version query string to bundle.js src so browsers
+            // treat each deploy as a unique resource and bypass stale cache entries.
+            // (BUILD-009 tracks the proper content-hash solution.)
+            val indexHtml = File(deployRoot, "index.html")
+            if (indexHtml.exists()) {
+                val original = indexHtml.readText()
+                val patched = original.replace(
+                    """s.src = "bundle.js";""",
+                    """s.src = "bundle.js?v=$version";"""
+                )
+                if (patched == original) {
+                    System.err.println("⚠ WARNING: cache-bust patch had no effect — 's.src = \"bundle.js\";' not found in index.html")
+                    System.err.println("  Browsers may serve a stale bundle. Check index.html and update release.main.kts.")
+                } else {
+                    indexHtml.writeText(patched)
+                }
+            }
+
             val deployMeta = DeployMetadata(
                 version = version,
                 commit = meta.commitId,

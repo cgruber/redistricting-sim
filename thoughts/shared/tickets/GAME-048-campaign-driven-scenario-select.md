@@ -4,6 +4,8 @@ title: Campaign-driven scenario select (routing + data wiring)
 area: game, UX
 status: open
 created: 2026-04-29
+github_issue: 161
+github_pr: 162
 ---
 
 ## Summary

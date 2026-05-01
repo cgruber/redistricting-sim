@@ -30,6 +30,7 @@ import {
 	clearWip,
 	type WipState,
 } from "./model/progress.js";
+import { getCampaign, saveLastPlayedScenario } from "./model/campaigns.js";
 
 // ─── Scenario manifest (GAME-021) ─────────────────────────────────────────────
 // Static list of all available scenarios in play order.
@@ -48,6 +49,17 @@ const SCENARIO_MANIFEST = [
 ] as const;
 
 type ManifestEntry = (typeof SCENARIO_MANIFEST)[number];
+
+// Scenarios that exist as JSON + content but are only reachable via a campaign (not shown in
+// the fallback all-scenarios list). Add an entry here when a new scenario ships campaign-only.
+const CAMPAIGN_ONLY_SCENARIOS: { id: string; title: string }[] = [
+	{ id: "tutorial-001", title: "Welcome to Redistricting: Millbrook County" },
+];
+
+const MANIFEST_BY_ID = new Map<string, { id: string; title: string }>([
+	...SCENARIO_MANIFEST.map((e) => [e.id, e] as [string, { id: string; title: string }]),
+	...CAMPAIGN_ONLY_SCENARIOS.map((e) => [e.id, e] as [string, { id: string; title: string }]),
+]);
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
 
@@ -132,6 +144,19 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 (async () => {
 	let progress = loadProgress();
 
+	// ── Campaign context (GAME-048) ───────────────────────────────────────────
+	// Parse ?campaign=<id> early so renderScenarioCards and routing can use it.
+	const urlParams = new URLSearchParams(window.location.search);
+	const campaignParam = (urlParams.get("campaign") ?? "").replace(/[^a-z0-9-]/g, "");
+	const activeCampaign = campaignParam !== "" ? getCampaign(campaignParam) : undefined;
+	// When a campaign is active, show only that campaign's scenarios in manifest order.
+	// Falls back to the full manifest when no (or unknown) ?campaign= is provided.
+	const activeList: ReadonlyArray<{ id: string; title: string }> = activeCampaign
+		? (activeCampaign.scenarioIds
+				.map((id) => MANIFEST_BY_ID.get(id))
+				.filter((e): e is { id: string; title: string } => e !== undefined))
+		: (SCENARIO_MANIFEST as ReadonlyArray<{ id: string; title: string }>);
+
 	// ── Scenario select screen (GAME-018 / GAME-021) ──────────────────────────
 	// Rendered from the static manifest + localStorage progress.
 	// Card clicks navigate to /?s=<id> so the page reloads cleanly with the
@@ -141,9 +166,9 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		if (!scenarioCardsEl) return;
 		const wip = loadWip();
 		scenarioCardsEl.innerHTML = "";
-		SCENARIO_MANIFEST.forEach((entry, i) => {
+		activeList.forEach((entry, i) => {
 			const completed = isCompleted(progress, entry.id);
-			const unlocked = i === 0 || isCompleted(progress, SCENARIO_MANIFEST[i - 1]?.id ?? "");
+			const unlocked = i === 0 || isCompleted(progress, activeList[i - 1]?.id ?? "");
 			const locked = !unlocked;
 			const inProgress = wip?.scenarioId === entry.id;
 
@@ -171,7 +196,10 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 						// Warn: switching will discard in-progress work on a different scenario
 						showWipWarning(currentWip.scenarioId, entry.id);
 					} else {
-						window.location.assign(`./?s=${entry.id}`);
+						const dest = activeCampaign
+							? `./?s=${entry.id}&campaign=${campaignParam}`
+							: `./?s=${entry.id}`;
+						window.location.assign(dest);
 					}
 				});
 			}
@@ -195,7 +223,10 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		const onConfirm = () => {
 			cleanup();
 			clearWip();
-			window.location.assign(`./?s=${targetId}`);
+			const dest = activeCampaign
+				? `./?s=${targetId}&campaign=${campaignParam}`
+				: `./?s=${targetId}`;
+			window.location.assign(dest);
 		};
 		const onCancel = () => {
 			cleanup();
@@ -212,6 +243,17 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	function showScenarioSelect() {
 		renderScenarioCards();
 		scenarioSelectEl?.classList.remove("hidden");
+
+		// Back button — visible only when a campaign is active (GAME-048)
+		const backBtn = document.getElementById("btn-back-to-campaign") as HTMLButtonElement | null;
+		if (backBtn) {
+			backBtn.hidden = !activeCampaign;
+			if (activeCampaign) {
+				backBtn.addEventListener("click", () => {
+					window.location.assign("./?view=campaigns");
+				});
+			}
+		}
 
 		// Reset campaign button — clears all progress and WIP
 		document.getElementById("btn-reset-campaign")?.addEventListener("click", () => {
@@ -233,24 +275,22 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		});
 	}
 
-	// ── Startup routing (GAME-021) ────────────────────────────────────────────
+	// ── Startup routing (GAME-021 / GAME-048) ────────────────────────────────
 	// Priority: explicit ?s= param > scenario select screen (for all other cases).
+	// When ?campaign= is set, only scenarios in activeList are accessible.
 
-	const urlParams = new URLSearchParams(window.location.search);
 	const requestedId = urlParams.get("s") ?? "";
-	const requestedEntry: ManifestEntry | undefined = SCENARIO_MANIFEST.find(
-		(e) => e.id === requestedId,
-	);
+	const requestedEntry = activeList.find((e) => e.id === requestedId);
 
-	let entryToLoad: ManifestEntry;
+	let entryToLoad: { id: string; title: string };
 	if (requestedId !== "" && requestedEntry === undefined) {
-		// Unknown scenario ID in URL — redirect to select screen
+		// Unknown scenario ID (or not in current campaign) — redirect to select screen
 		showScenarioSelect();
 		return;
 	} else if (requestedEntry !== undefined) {
-		// Check unlock: scenario must be first, or previous scenario completed (unless debug)
-		const idx = SCENARIO_MANIFEST.indexOf(requestedEntry);
-		const locked = idx > 0 && !isCompleted(progress, SCENARIO_MANIFEST[idx - 1]?.id ?? "");
+		// Check unlock: scenario must be first in activeList, or previous entry completed (unless debug)
+		const idx = activeList.findIndex((e) => e.id === requestedId);
+		const locked = idx > 0 && !isCompleted(progress, activeList[idx - 1]?.id ?? "");
 		if (locked && !IS_DEBUG) {
 			showScenarioSelect();
 			return;
@@ -276,6 +316,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			</div>`,
 		);
 	}
+
+	saveLastPlayedScenario(entryToLoad.id);
 
 	let json: unknown;
 	try {

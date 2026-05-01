@@ -2,7 +2,7 @@
 id: GAME-047
 title: Campaign data model + authored campaign definitions
 area: game, architecture
-status: open
+status: resolved
 created: 2026-04-29
 github_issue: 158
 ---
