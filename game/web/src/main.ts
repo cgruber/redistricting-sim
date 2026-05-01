@@ -30,7 +30,7 @@ import {
 	clearWip,
 	type WipState,
 } from "./model/progress.js";
-import { getCampaign, saveLastPlayedScenario } from "./model/campaigns.js";
+import { CAMPAIGN_REGISTRY, getCampaign, loadLastPlayedScenario, saveLastPlayedScenario } from "./model/campaigns.js";
 
 // ─── Scenario manifest (GAME-021) ─────────────────────────────────────────────
 // Static list of all available scenarios in play order.
@@ -157,6 +157,9 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				.filter((e): e is { id: string; title: string } => e !== undefined))
 		: (SCENARIO_MANIFEST as ReadonlyArray<{ id: string; title: string }>);
 
+	// URL to return to when leaving a scenario — preserves campaign context if present.
+	const backUrl = campaignParam !== "" ? `./?campaign=${campaignParam}` : "./?view=scenarios";
+
 	// ── Scenario select screen (GAME-018 / GAME-021) ──────────────────────────
 	// Rendered from the static manifest + localStorage progress.
 	// Card clicks navigate to /?s=<id> so the page reloads cleanly with the
@@ -240,6 +243,52 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		cancelBtn.addEventListener("click", onCancel);
 	}
 
+	function buildContinueUrl(scenarioId: string): string {
+		if (SCENARIO_MANIFEST.some((e) => e.id === scenarioId)) {
+			return `./?s=${scenarioId}`;
+		}
+		for (const campaign of CAMPAIGN_REGISTRY) {
+			if (campaign.scenarioIds.includes(scenarioId)) {
+				return `./?s=${scenarioId}&campaign=${campaign.id}`;
+			}
+		}
+		return `./?s=${scenarioId}`;
+	}
+
+	function showMainMenu() {
+		const mainMenuEl = document.getElementById("main-menu");
+		if (!mainMenuEl) return;
+
+		const lastPlayedId = loadLastPlayedScenario();
+		const continueBtn = document.getElementById("btn-main-continue") as HTMLButtonElement | null;
+		if (continueBtn) {
+			if (lastPlayedId !== null) {
+				continueBtn.hidden = false;
+				continueBtn.addEventListener("click", () => {
+					window.location.assign(buildContinueUrl(lastPlayedId));
+				});
+			} else {
+				continueBtn.hidden = true;
+			}
+		}
+
+		document.getElementById("btn-main-new-campaign")?.addEventListener("click", () => {
+			window.location.assign("./?view=campaigns");
+		});
+
+		document.getElementById("btn-main-about")?.addEventListener("click", () => {
+			mainMenuEl.classList.add("hidden");
+			document.getElementById("about-screen")?.classList.remove("hidden");
+		});
+
+		document.getElementById("btn-about-close")?.addEventListener("click", () => {
+			document.getElementById("about-screen")?.classList.add("hidden");
+			mainMenuEl.classList.remove("hidden");
+		});
+
+		mainMenuEl.classList.remove("hidden");
+	}
+
 	function showScenarioSelect() {
 		renderScenarioCards();
 		scenarioSelectEl?.classList.remove("hidden");
@@ -297,9 +346,14 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		}
 		entryToLoad = requestedEntry;
 	} else {
-		// No explicit ?s= param — show scenario select screen
-		// (new players, returning players, everyone)
-		showScenarioSelect();
+		const view = urlParams.get("view") ?? "";
+		if (campaignParam !== "" || view === "scenarios") {
+			showScenarioSelect();
+		} else if (view === "campaigns") {
+			showScenarioSelect(); // GAME-049 stub: campaign select not yet built
+		} else {
+			showMainMenu();
+		}
 		return;
 	}
 
@@ -312,7 +366,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
 				<p style="max-width:600px;text-align:center;">${bodyHtml}</p>
 				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${errorMsg}</pre>
-				<button onclick="window.location.assign('./')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">← Back to Scenarios</button>
+				<button onclick="window.location.assign('${backUrl}')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">← Back to Scenarios</button>
 			</div>`,
 		);
 	}
@@ -660,7 +714,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			if (allComplete) {
 				document.getElementById("wrap-up-screen")?.classList.remove("hidden");
 			} else {
-				window.location.assign("./");
+				window.location.assign(backUrl);
 			}
 		});
 	}
@@ -672,7 +726,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	// "← Scenarios" button → flush WIP then return to scenario select
 	document.getElementById("btn-back-to-scenarios")?.addEventListener("click", () => {
 		flushWipSave();
-		window.location.assign("./");
+		window.location.assign(backUrl);
 	});
 
 	// "Next Scenario" → if all scenarios complete, show wrap-up; else select screen.
@@ -682,13 +736,13 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			resultScreen!.classList.add("hidden");
 			document.getElementById("wrap-up-screen")?.classList.remove("hidden");
 		} else {
-			window.location.assign("./");
+			window.location.assign(backUrl);
 		}
 	});
 
 	// Wrap-up "Play Again" → back to select screen
 	document.getElementById("btn-wrap-up-replay")?.addEventListener("click", () => {
-		window.location.assign("./");
+		window.location.assign(backUrl);
 	});
 
 	// ── Subscribe to state changes ────────────────────────────────────────────

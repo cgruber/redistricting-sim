@@ -302,6 +302,39 @@ body {
 
 /* ── Scenario select screen (GAME-018) ───────────────────────────────── */
 
+/* ── Main menu / title screen (GAME-050) ──────────────────────────── */
+#main-menu {
+  position: fixed; inset: 0;
+  background: #0d1b2e;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 48px; z-index: 90;
+}
+#main-menu.hidden { display: none; }
+#main-menu-title {
+  font-size: 2.4rem; font-weight: 700;
+  color: #e94560; letter-spacing: 0.04em;
+  text-align: center;
+}
+#main-menu-nav {
+  display: flex; flex-direction: column;
+  align-items: stretch; gap: 12px;
+  width: 260px;
+}
+#main-menu-nav button {
+  background: #16213e; color: #c0d0e8;
+  border: 1px solid #2a5a8c;
+  padding: 14px 24px; border-radius: 6px;
+  font-size: 1rem; cursor: pointer;
+  text-align: center;
+}
+#main-menu-nav button:hover:not(:disabled) { background: #1a3a5c; }
+#main-menu-nav button:disabled {
+  color: #555e6e; border-color: #222e40; cursor: default;
+}
+.coming-soon { font-size: 0.78rem; color: #555e6e; margin-left: 6px; }
+
+/* ── Scenario select screen (GAME-018) ────────────────────────────── */
 #scenario-select {
   position: fixed;
   inset: 0;

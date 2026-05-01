@@ -10,6 +10,18 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
+    <!-- ── Main menu / title screen (GAME-050) ─────────────────────────── -->
+    <div id="main-menu" class="hidden" role="main" aria-label="Main Menu">
+      <h1 id="main-menu-title">Past the Post</h1>
+      <nav id="main-menu-nav" aria-label="Main navigation">
+        <button id="btn-main-continue" hidden>Continue</button>
+        <button id="btn-main-new-campaign">New Campaign</button>
+        <button id="btn-main-about">About</button>
+        <button id="btn-main-load" disabled>Load <span class="coming-soon">(coming soon)</span></button>
+        <button id="btn-main-settings" disabled>Settings <span class="coming-soon">(coming soon)</span></button>
+      </nav>
+    </div>
+
     <!-- ── Scenario select screen (GAME-018) ────────────────────────────── -->
     <div id="scenario-select" class="hidden" role="region" aria-label="Scenario Selection">
       <button id="btn-back-to-campaign" hidden aria-label="Back to campaign select" style="background:none;border:1px solid #2a5a8c;color:#8898b0;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.8rem;margin-bottom:8px;">← Back</button>
