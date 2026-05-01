@@ -14581,8 +14581,13 @@ var require_main = __commonJS({
       const urlParams = new URLSearchParams(window.location.search);
       const campaignParam = ((_a = urlParams.get("campaign")) != null ? _a : "").replace(/[^a-z0-9-]/g, "");
       const activeCampaign = campaignParam !== "" ? getCampaign(campaignParam) : void 0;
+      if (campaignParam !== "" && activeCampaign === void 0) {
+        window.location.replace("./");
+        return;
+      }
       const activeList = activeCampaign ? activeCampaign.scenarioIds.map((id2) => MANIFEST_BY_ID.get(id2)).filter((e) => e !== void 0) : SCENARIO_MANIFEST;
-      const backUrl = campaignParam !== "" ? `./?campaign=${campaignParam}` : "./?view=scenarios";
+      const backUrl = campaignParam !== "" ? `./?campaign=${campaignParam}` : "./";
+      const backLabel = campaignParam !== "" ? "\u2190 Back to Scenarios" : "\u2190 Main Menu";
       function renderScenarioCards() {
         if (!scenarioCardsEl)
           return;
@@ -14772,22 +14777,33 @@ var require_main = __commonJS({
       const requestedEntry = activeList.find((e) => e.id === requestedId);
       let entryToLoad;
       if (requestedId !== "" && requestedEntry === void 0) {
-        showScenarioSelect();
+        if (activeCampaign) {
+          showScenarioSelect();
+        } else {
+          window.location.replace("./");
+        }
         return;
       } else if (requestedEntry !== void 0) {
         const idx = activeList.findIndex((e) => e.id === requestedId);
         const locked = idx > 0 && !isCompleted(progress, (_d = (_c = activeList[idx - 1]) == null ? void 0 : _c.id) != null ? _d : "");
         if (locked && !IS_DEBUG) {
-          showScenarioSelect();
+          if (activeCampaign) {
+            showScenarioSelect();
+          } else {
+            window.location.replace("./");
+          }
           return;
         }
         entryToLoad = requestedEntry;
       } else {
         const view = (_e = urlParams.get("view")) != null ? _e : "";
-        if (campaignParam !== "" || view === "scenarios") {
+        if (campaignParam !== "") {
           showScenarioSelect();
         } else if (view === "campaigns") {
           showCampaignSelect();
+        } else if (view === "scenarios") {
+          window.location.replace("./");
+          return;
         } else {
           showMainMenu();
         }
@@ -14800,7 +14816,7 @@ var require_main = __commonJS({
 				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
 				<p style="max-width:600px;text-align:center;">${bodyHtml}</p>
 				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${errorMsg}</pre>
-				<button onclick="window.location.assign('${backUrl}')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">\u2190 Back to Scenarios</button>
+				<button onclick="window.location.assign('${backUrl}')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">${backLabel}</button>
 			</div>`
         );
       }
