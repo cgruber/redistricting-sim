@@ -100,7 +100,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-043-unify-type-systems.md` | game, code-quality | Unify spike and scenario type systems; retire adapter.ts and types.ts spike layer |
 | `GAME-046-panels-unit-tests.md` | game, testing | Unit tests for render/panels.ts (deferred): jsdom or extract-pure-helpers approach |
 | `GAME-049-campaign-select-screen.md` | game, UX | Campaign select screen: both campaigns with progress indicators; navigates into scenario select |
-| `GAME-050-main-menu.md` | game, UX | Main menu / title screen: Continue, New Campaign, About, greyed Load/Settings; replaces scenario-select-as-home |
 | `GAME-051-ingame-navigation-cleanup.md` | game, UX | Replace ← Scenarios with submenu: Return to Scenarios + Return to Main Menu |
 | `GAME-052-animated-criteria-eval.md` | game, UX | Animated criteria reveal on result screen; blocked on DESIGN-001 |
 | `GAME-053-electoral-outcome-visual-diff.md` | game, UX | Electoral outcome comparison (player map vs baseline) on result screen; placeholder |
@@ -116,6 +115,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | GAME-038: extract panel renderers | render/panels.ts created with renderResults, renderLegend, renderDistrictButtons, renderValidityPanel; mapRenderer.ts reduced by ~115 lines; main.ts import updated |
 | GAME-039: extract hex geometry | hex-geometry.ts created with hexToPixel, hexCorners, mapBounds, HEX_DIRECTIONS; generator.ts re-exports from it; adapter.ts + mapRenderer.ts updated; hex_geometry_lib added to model BUILD |
 | GAME-044: hex-geometry unit tests | 11 unit tests for hexToPixel, hexCorners, HEX_DIRECTIONS, mapBounds; hex_geometry_test Bazel target in model/BUILD.bazel; merged PR #153 |
+| GAME-050: main menu / title screen | Continue/New Campaign/About/Load+Settings(disabled); routing /→main menu, /?view=scenarios→scenario select; 9 e2e tests; merged PR #165 |
 | GAME-048: campaign-driven scenario select | ?campaign= URL param filtering + Back button + input sanitization + cache-bust warn; 5 e2e tests; merged PR #162 |
 | GAME-047: campaign data model | Campaign interface + CAMPAIGN_REGISTRY + getCampaign() + save/loadLastPlayedScenario(); Tutorial (2 scenarios) + Educational (8 scenarios); 13 unit tests; merged PR #159 |
 | GAME-045: gameStore unit tests | 13 unit tests for initial state, setActiveDistrict, paintPrecinct, paintStroke, resetToInitial, restoreAssignments, undo via zundo; store/BUILD.bazel package created; react added as devDep; merged PR #153 |
