@@ -22,11 +22,7 @@ test("app loads and renders hex map", async ({ page }) => {
     consoleErrors.push(`[pageerror] ${err.message}`);
   });
 
-  await page.goto("/?view=scenarios");
-
-  // New player sees scenario select first; click first scenario
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
+  await page.goto("/?s=tutorial-002");
 
   // Dismiss intro screen (GAME-016): skip button appears after scenario loads.
   const skipBtn = page.locator("#btn-intro-skip");

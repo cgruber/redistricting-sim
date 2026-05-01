@@ -26,12 +26,13 @@ reach the main menu from in-game without manually editing the URL.
 - [ ] "← Scenarios" button replaced with a submenu trigger (e.g. "← Back ▾" or
   a named button that reveals two options on click/tap)
 - [ ] Submenu contains:
-  - **Return to Scenarios** — navigates to `?campaign=<currentCampaignId>` (or
-    `?view=scenarios` if no campaign context); same behavior as old button
+  - **Return to Scenarios** — navigates to `?campaign=<currentCampaignId>`; only
+    shown when a campaign is active (no fallback to standalone scenario select,
+    which was removed in GAME-054)
   - **Return to Main Menu** — navigates to `/` (app root, main menu)
 - [ ] Submenu closes when clicking outside it (or pressing Escape)
 - [ ] If no campaign context is available (direct URL access to a scenario),
-  "Return to Scenarios" navigates to scenario select without campaign filter
+  only "Return to Main Menu" is shown (standalone scenario select was removed in GAME-054)
 - [ ] Campaign context propagated via URL parameter or in-page state so the
   in-game view knows which campaign to return to
 

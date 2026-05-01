@@ -741,8 +741,8 @@ test("scenario-009 winnability: ring-based split gives 3 Cat-safe districts", as
 // ─── Cross-cutting: demo feedback fixes ─────────────────────────────────────
 
 test("scenario select: all cards visible and scrollable", async ({ page }) => {
-  // Navigate first so localStorage is accessible, then seed progress and reload
-  await page.goto("/?view=scenarios");
+  // Navigate via educational campaign (8 scenarios) — enough to verify scroll
+  await page.goto("/?campaign=educational");
   await page.evaluate(() => {
     localStorage.setItem("redistricting-sim-progress", JSON.stringify({ completed: ["tutorial-002"] }));
   });
@@ -750,7 +750,7 @@ test("scenario select: all cards visible and scrollable", async ({ page }) => {
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
   const cards = page.locator(".scenario-card");
   const count = await cards.count();
-  expect(count).toBeGreaterThanOrEqual(9);
+  expect(count).toBeGreaterThanOrEqual(8);
   // The last card should be scrollable into view, not clipped
   const lastCard = cards.last();
   await lastCard.scrollIntoViewIfNeeded();
@@ -778,8 +778,8 @@ test("debug force-win button: visible with ?debug param, marks scenario complete
   const debugBtn = page.locator("#btn-debug-win");
   await expect(debugBtn).toBeVisible();
   await debugBtn.click();
-  // Should navigate to select screen after force-win
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  // No campaign context — force-win navigates to main menu via backUrl
+  await expect(page.locator("#main-menu")).toBeVisible({ timeout: 10_000 });
   const completed = await page.evaluate(() => {
     const raw = localStorage.getItem("redistricting-sim-progress");
     return raw ? JSON.parse(raw) : null;
@@ -798,7 +798,7 @@ test("debug force-win button: hidden without ?debug param", async ({ page }) => 
   await expect(debugBtn).not.toBeVisible();
 });
 
-test("lock gate: direct URL to locked scenario redirects to select screen", async ({ page }) => {
+test("lock gate: direct URL to locked scenario redirects to main menu", async ({ page }) => {
   // Ensure no progress — scenario-002 requires tutorial-002 completed
   await page.goto("/");
   await page.evaluate(() => {
@@ -806,8 +806,8 @@ test("lock gate: direct URL to locked scenario redirects to select screen", asyn
     localStorage.removeItem("redistricting-sim-wip");
   });
   await page.goto("/?s=scenario-002");
-  // Should NOT show the intro or hex grid — should show the select screen
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
+  // Should NOT show the intro or hex grid — should redirect to main menu
+  await expect(page.locator("#main-menu")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator("path.hex")).toHaveCount(0);
 });
 
@@ -820,6 +820,12 @@ test("lock gate: debug param bypasses lock on locked scenario", async ({ page })
   await page.goto("/?s=scenario-002&debug");
   // Should load the scenario, not redirect
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
+});
+
+test("routing: unknown ?s= without campaign redirects to main menu", async ({ page }) => {
+  await page.goto("/?s=this-scenario-does-not-exist");
+  await expect(page.locator("#main-menu")).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator("path.hex")).toHaveCount(0);
 });
 
 // ─── GAME-020: Wrap-up screen after final scenario ──────────────────────────
@@ -866,7 +872,7 @@ test("wrap-up screen: completing last scenario shows wrap-up on Next Scenario", 
 // ─── GAME-029: About page ───────────────────────────────────────────────────
 
 test("about page: accessible from select screen and shows educational content", async ({ page }) => {
-  await page.goto("/?view=scenarios");
+  await page.goto("/?campaign=educational");
   await page.evaluate(() => {
     localStorage.setItem("redistricting-sim-progress", JSON.stringify({ completed: ["tutorial-002"] }));
   });
@@ -899,27 +905,14 @@ test("campaign select: ?campaign=tutorial Back button is visible", async ({ page
   await expect(page.locator("#btn-back-to-campaign")).toBeVisible();
 });
 
-test("campaign select: Back button absent without ?campaign= param", async ({ page }) => {
+test("routing: ?view=scenarios redirects to main menu (legacy URL)", async ({ page }) => {
   await page.goto("/?view=scenarios");
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator("#btn-back-to-campaign")).not.toBeVisible();
+  await expect(page.locator("#main-menu")).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator("#scenario-select")).not.toBeVisible();
 });
 
-test("campaign select: no ?campaign= shows all 9 scenarios (fallback regression guard)", async ({ page }) => {
-  await page.goto("/?view=scenarios");
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  const cards = page.locator(".scenario-card");
-  const count = await cards.count();
-  expect(count).toBe(9);
-});
-
-test("campaign select: unknown ?campaign= falls back to all scenarios with Back button hidden", async ({ page }) => {
+test("routing: unknown ?campaign= redirects to main menu", async ({ page }) => {
   await page.goto("/?campaign=bogus");
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  // Unknown campaign → full manifest fallback (9 cards)
-  const cards = page.locator(".scenario-card");
-  const count = await cards.count();
-  expect(count).toBe(9);
-  // Back button must not be visible — bogus param must not leak
-  await expect(page.locator("#btn-back-to-campaign")).not.toBeVisible();
+  await expect(page.locator("#main-menu")).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator("#scenario-select")).not.toBeVisible();
 });
