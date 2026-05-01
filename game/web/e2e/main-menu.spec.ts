@@ -35,16 +35,17 @@ test("main menu: About button opens about page", async ({ page }) => {
   await expect(page.locator("#main-menu")).not.toBeVisible();
 });
 
-test("main menu: Continue absent when no campaign progress exists", async ({ page }) => {
+test("main menu: Continue visible but disabled when no campaign progress exists", async ({ page }) => {
   await page.goto("/");
   // Ensure no last-played key
   await page.evaluate((key) => localStorage.removeItem(key), LAST_PLAYED_KEY);
   await page.reload();
   await expect(page.locator("#main-menu")).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator("#btn-main-continue")).not.toBeVisible();
+  await expect(page.locator("#btn-main-continue")).toBeVisible();
+  await expect(page.locator("#btn-main-continue")).toBeDisabled();
 });
 
-test("main menu: Continue present when lastPlayedScenarioId set in localStorage", async ({ page }) => {
+test("main menu: Continue enabled when lastPlayedScenarioId set in localStorage", async ({ page }) => {
   await page.goto("/");
   await page.evaluate(
     ([key, val]) => localStorage.setItem(key, val),
@@ -53,6 +54,7 @@ test("main menu: Continue present when lastPlayedScenarioId set in localStorage"
   await page.reload();
   await expect(page.locator("#main-menu")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator("#btn-main-continue")).toBeVisible();
+  await expect(page.locator("#btn-main-continue")).toBeEnabled();
 });
 
 test("main menu: Continue navigates directly to last played scenario", async ({ page }) => {

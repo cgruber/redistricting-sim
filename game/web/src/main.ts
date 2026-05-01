@@ -263,12 +263,12 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		const continueBtn = document.getElementById("btn-main-continue") as HTMLButtonElement | null;
 		if (continueBtn) {
 			if (lastPlayedId !== null) {
-				continueBtn.hidden = false;
+				continueBtn.disabled = false;
 				continueBtn.addEventListener("click", () => {
 					window.location.assign(buildContinueUrl(lastPlayedId));
 				});
 			} else {
-				continueBtn.hidden = true;
+				continueBtn.disabled = true;
 			}
 		}
 
@@ -502,6 +502,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		introController?.abort();
 		introController = null;
 		introScreen?.classList.add("hidden");
+		document.getElementById("main-menu")?.classList.add("hidden");
 		appHeader!.style.display = "";
 		mainEl!.style.display = "";
 	}
