@@ -149,16 +149,21 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	const urlParams = new URLSearchParams(window.location.search);
 	const campaignParam = (urlParams.get("campaign") ?? "").replace(/[^a-z0-9-]/g, "");
 	const activeCampaign = campaignParam !== "" ? getCampaign(campaignParam) : undefined;
+	// Unknown campaign ID → redirect to main menu rather than falling back to all scenarios.
+	if (campaignParam !== "" && activeCampaign === undefined) {
+		window.location.replace("./");
+		return;
+	}
 	// When a campaign is active, show only that campaign's scenarios in manifest order.
-	// Falls back to the full manifest when no (or unknown) ?campaign= is provided.
 	const activeList: ReadonlyArray<{ id: string; title: string }> = activeCampaign
 		? (activeCampaign.scenarioIds
 				.map((id) => MANIFEST_BY_ID.get(id))
 				.filter((e): e is { id: string; title: string } => e !== undefined))
 		: (SCENARIO_MANIFEST as ReadonlyArray<{ id: string; title: string }>);
 
-	// URL to return to when leaving a scenario — preserves campaign context if present.
-	const backUrl = campaignParam !== "" ? `./?campaign=${campaignParam}` : "./?view=scenarios";
+	// URL and label for returning from a scenario — preserves campaign context if present.
+	const backUrl = campaignParam !== "" ? `./?campaign=${campaignParam}` : "./";
+	const backLabel = campaignParam !== "" ? "← Back to Scenarios" : "← Main Menu";
 
 	// ── Scenario select screen (GAME-018 / GAME-021) ──────────────────────────
 	// Rendered from the static manifest + localStorage progress.
@@ -374,24 +379,38 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 	let entryToLoad: { id: string; title: string };
 	if (requestedId !== "" && requestedEntry === undefined) {
-		// Unknown scenario ID (or not in current campaign) — redirect to select screen
-		showScenarioSelect();
+		// Unknown scenario ID (or outside active campaign's list).
+		// Stay in campaign context if one is active; otherwise fall back to main menu.
+		if (activeCampaign) {
+			showScenarioSelect();
+		} else {
+			window.location.replace("./");
+		}
 		return;
 	} else if (requestedEntry !== undefined) {
 		// Check unlock: scenario must be first in activeList, or previous entry completed (unless debug)
 		const idx = activeList.findIndex((e) => e.id === requestedId);
 		const locked = idx > 0 && !isCompleted(progress, activeList[idx - 1]?.id ?? "");
 		if (locked && !IS_DEBUG) {
-			showScenarioSelect();
+			// In campaign context → show campaign's scenario select; otherwise → main menu
+			if (activeCampaign) {
+				showScenarioSelect();
+			} else {
+				window.location.replace("./");
+			}
 			return;
 		}
 		entryToLoad = requestedEntry;
 	} else {
 		const view = urlParams.get("view") ?? "";
-		if (campaignParam !== "" || view === "scenarios") {
+		if (campaignParam !== "") {
 			showScenarioSelect();
 		} else if (view === "campaigns") {
 			showCampaignSelect();
+		} else if (view === "scenarios") {
+			// Legacy URL — redirect to main menu
+			window.location.replace("./");
+			return;
 		} else {
 			showMainMenu();
 		}
@@ -407,7 +426,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
 				<p style="max-width:600px;text-align:center;">${bodyHtml}</p>
 				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${errorMsg}</pre>
-				<button onclick="window.location.assign('${backUrl}')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">← Back to Scenarios</button>
+				<button onclick="window.location.assign('${backUrl}')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">${backLabel}</button>
 			</div>`,
 		);
 	}

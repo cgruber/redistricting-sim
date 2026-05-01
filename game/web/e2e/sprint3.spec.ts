@@ -34,10 +34,7 @@ import { test, expect } from "@playwright/test";
 
 /** Navigate, dismiss intro, wait for hex grid. */
 async function loadEditor(page: import("@playwright/test").Page): Promise<void> {
-  await page.goto("/?view=scenarios");
-  // New player sees scenario select first; click first scenario
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
+  await page.goto("/?s=tutorial-002");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 10_000 });
   await skip.click();
@@ -56,10 +53,7 @@ async function paintHex(
 // ─── GAME-016: Scenario intro screen ─────────────────────────────────────────
 
 test("intro: screen is visible on initial load before editor", async ({ page }) => {
-  await page.goto("/?view=scenarios");
-  // Scenario select must be visible first; click to proceed to intro
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
+  await page.goto("/?s=tutorial-002");
   // Intro screen must be visible; editor elements must be hidden
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator("#app-header")).not.toBeVisible();
@@ -67,9 +61,7 @@ test("intro: screen is visible on initial load before editor", async ({ page }) 
 });
 
 test("intro: character name and role are shown from scenario narrative", async ({ page }) => {
-  await page.goto("/?view=scenarios");
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
+  await page.goto("/?s=tutorial-002");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
   // tutorial-002.json character: name="You", role="Redistricting Commissioner, Millbrook County"
   await expect(page.locator("#char-name")).toHaveText("You");
@@ -77,18 +69,14 @@ test("intro: character name and role are shown from scenario narrative", async (
 });
 
 test("intro: first slide heading is shown and Previous is disabled", async ({ page }) => {
-  await page.goto("/?view=scenarios");
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
+  await page.goto("/?s=tutorial-002");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator("#intro-slide-heading")).toHaveText("Welcome to Millbrook County");
   await expect(page.locator("#btn-intro-prev")).toBeDisabled();
 });
 
 test("intro: Next advances to second slide; Previous returns to first", async ({ page }) => {
-  await page.goto("/?view=scenarios");
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
+  await page.goto("/?s=tutorial-002");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
 
   // Advance to slide 2
@@ -102,9 +90,7 @@ test("intro: Next advances to second slide; Previous returns to first", async ({
 });
 
 test("intro: Start Drawing button appears on last slide and reveals editor", async ({ page }) => {
-  await page.goto("/?view=scenarios");
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
+  await page.goto("/?s=tutorial-002");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
 
   // Start Drawing should not be visible on first slide
@@ -123,9 +109,7 @@ test("intro: Start Drawing button appears on last slide and reveals editor", asy
 });
 
 test("intro: Skip intro immediately reveals editor without navigating slides", async ({ page }) => {
-  await page.goto("/?view=scenarios");
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
+  await page.goto("/?s=tutorial-002");
   await expect(page.locator("#btn-intro-skip")).toBeVisible({ timeout: 10_000 });
 
   await page.locator("#btn-intro-skip").click();
@@ -135,9 +119,7 @@ test("intro: Skip intro immediately reveals editor without navigating slides", a
 });
 
 test("intro: objective text is shown from scenario narrative", async ({ page }) => {
-  await page.goto("/?view=scenarios");
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
+  await page.goto("/?s=tutorial-002");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator("#objective-text")).toContainText("Balance the three districts");
 });
@@ -218,7 +200,7 @@ async function seedProgress(
 
 test("progression: scenario select screen is shown for returning players", async ({ page }) => {
   await seedProgress(page, ["tutorial-002"]);
-  await page.goto("/?view=scenarios");
+  await page.goto("/?campaign=tutorial");
 
   // Scenario select must be visible; intro screen and editor must not be
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
@@ -228,7 +210,7 @@ test("progression: scenario select screen is shown for returning players", async
 
 test("progression: scenario card shows Completed status for completed scenario", async ({ page }) => {
   await seedProgress(page, ["tutorial-002"]);
-  await page.goto("/?view=scenarios");
+  await page.goto("/?campaign=tutorial");
 
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator(".sc-status.completed")).toBeVisible();
@@ -237,11 +219,12 @@ test("progression: scenario card shows Completed status for completed scenario",
 });
 
 test("progression: Play Again from select screen shows intro then editor", async ({ page }) => {
-  await seedProgress(page, ["tutorial-002"]);
-  await page.goto("/?view=scenarios");
+  // Seed both tutorial scenarios so tutorial-002 is accessible (not locked) and replayable
+  await seedProgress(page, ["tutorial-001", "tutorial-002"]);
+  await page.goto("/?campaign=tutorial");
 
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  await page.locator(".sc-play-btn.replay").click();
+  await page.locator(".sc-play-btn.replay").first().click();
 
   // Intro screen appears after clicking Play Again
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 5_000 });
@@ -253,7 +236,7 @@ test("progression: Play Again from select screen shows intro then editor", async
 
 test("progression: page reload restores completion state from localStorage", async ({ page }) => {
   await seedProgress(page, ["tutorial-002"]);
-  await page.goto("/?view=scenarios");
+  await page.goto("/?campaign=tutorial");
 
   // First load: scenario select visible with completed status
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
@@ -267,7 +250,7 @@ test("progression: page reload restores completion state from localStorage", asy
 
 test("progression: new player (no localStorage) sees scenario select", async ({ page }) => {
   // No seedProgress call — fresh localStorage
-  await page.goto("/?view=scenarios");
+  await page.goto("/?campaign=tutorial");
 
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator("#intro-screen")).not.toBeVisible();
@@ -294,12 +277,12 @@ test("wip: scenario select shows 'In Progress' for scenario with saved WIP", asy
   // Seed completion for tutorial-002 so select screen appears, plus WIP for scenario-002
   await seedProgress(page, ["tutorial-002"]);
   await seedWip(page, "scenario-002", { "0": 1, "1": 2 }, 2);
-  await page.goto("/?view=scenarios");
+  await page.goto("/?campaign=educational");
 
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
   // scenario-002 card must show "In Progress" status and "Continue" button
   const cards = page.locator(".scenario-card");
-  const scenario002Card = cards.nth(1); // second card in manifest
+  const scenario002Card = cards.nth(0); // first card in educational campaign
   await expect(scenario002Card.locator(".sc-status.in-progress")).toBeVisible();
   await expect(scenario002Card.locator(".sc-status.in-progress")).toContainText("In Progress");
   await expect(scenario002Card.locator(".sc-play-btn.continue")).toBeVisible();
@@ -309,7 +292,7 @@ test("wip: scenario select shows 'In Progress' for scenario with saved WIP", asy
 test("wip: select screen shown when WIP exists even for new player", async ({ page }) => {
   // No completed scenarios, but a WIP exists — should show select screen
   await seedWip(page, "tutorial-002", { "0": 1 }, 1);
-  await page.goto("/?view=scenarios");
+  await page.goto("/?campaign=tutorial");
 
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator("#intro-screen")).not.toBeVisible();
@@ -478,12 +461,8 @@ test("winnability: painting boundary precincts enables submit and produces a pas
 // ─── GAME-014: Scenario scale ─────────────────────────────────────────────────
 
 test("scale: tutorial-002 loads and renders 196 precincts (path.hex count)", async ({ page }) => {
-  // tutorial-002 is the default scenario (196-precinct three-county map)
-  await page.goto("/?view=scenarios");
-
-  // New player sees scenario select first; click first scenario
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
+  // tutorial-002 is the 196-precinct three-county map
+  await page.goto("/?s=tutorial-002");
 
   // Skip intro to reveal editor
   const skip = page.locator("#btn-intro-skip");

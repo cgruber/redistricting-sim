@@ -102,6 +102,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-051-ingame-navigation-cleanup.md` | game, UX | Replace ← Scenarios with submenu: Return to Scenarios + Return to Main Menu |
 | `GAME-052-animated-criteria-eval.md` | game, UX | Animated criteria reveal on result screen; blocked on DESIGN-001 |
 | `GAME-053-electoral-outcome-visual-diff.md` | game, UX | Electoral outcome comparison (player map vs baseline) on result screen; placeholder |
+| `GAME-054-remove-legacy-scenario-select.md` | game, UX, routing | Remove standalone `?view=scenarios` route and fix `?campaign=<bogus>` to redirect to main menu |
 
 ---
 
