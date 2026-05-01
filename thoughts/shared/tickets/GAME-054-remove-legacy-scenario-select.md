@@ -2,7 +2,7 @@
 id: GAME-054
 title: Remove legacy scenario select and fix invalid campaign redirect
 area: game, UX, routing
-status: open
+status: resolved
 created: 2026-04-30
 ---
 
