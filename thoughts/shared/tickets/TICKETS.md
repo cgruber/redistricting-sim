@@ -92,6 +92,8 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-006-zoom-adaptive-dot-density.md` | design, rendering | Zoom-adaptive dot density scaling + person glyph threshold (refinement on DESIGN-005, possibly post-v1) |
 | `DESIGN-007-dimensional-dot-map-demographic-overlay.md` | design, rendering | Dimensional dot map: demographic dimension switching (Option B adaptive encoding) + sorted placement toggle |
 | `GAME-008-accessibility.md` | game, accessibility | Full a11y pass: color-blind-safe palettes, ARIA labels, keyboard nav, screen reader support |
+| `GAME-055-party-names-scenario-driven.md` | game, content | Party names should come from scenario data (Ken/Ryu, Cat/Dog), not hardcoded "Red Party"/"Blue Party" |
+| `GAME-056-playtest-feedback.md` | game, content, UX | Capture and act on playtest feedback — scenario balance and UX |
 | `GAME-030-main-menu-and-campaigns.md` | game, UX, architecture | Main menu, campaign model, campaign select, layered navigation; replaces scenario-select-as-home |
 | `GAME-031-gameplay-critique-followup.md` | game, content, balance | Review and act on external gameplay critique research (scenario difficulty, eval balance, design) |
 | `DESIGN-008-geographic-features.md` | design, rendering | Geographic features (lakes=aqua+wave, mountains=grey+hatch) as decorative non-precinct tiles; blocks contiguity |

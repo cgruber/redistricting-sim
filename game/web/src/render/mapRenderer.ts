@@ -196,6 +196,10 @@ export class SvgMapRenderer implements MapRenderer {
 	private countySegments: Segment[] = [];
 	private countyBordersVisible = false;
 
+	// Keyboard precinct navigation state
+	private focusedPrecinctId: number | null = null;
+	private keyboardFocusPath: SVGPathElement | null = null;
+
 	constructor(
 		svgEl: SVGSVGElement,
 		getState: () => GameStore,
@@ -225,6 +229,7 @@ export class SvgMapRenderer implements MapRenderer {
 
 		this.initZoom();
 		this.initBrushEvents();
+		this.initKeyboardNav();
 		this.initHoverEvents();
 	}
 
@@ -323,6 +328,11 @@ export class SvgMapRenderer implements MapRenderer {
 				this.previewBorderGroup
 					.selectAll<SVGLineElement, Segment>("line.preview-boundary")
 					.attr("stroke-width", pw);
+				if (this.keyboardFocusPath !== null) {
+					d3.select(this.keyboardFocusPath)
+						.attr("stroke-width", 2 / this.currentK)
+						.attr("stroke-dasharray", `${4 / this.currentK},${2 / this.currentK}`);
+				}
 			});
 
 		// Prevent context menu on right-click so drag-pan isn't interrupted.
@@ -468,6 +478,7 @@ export class SvgMapRenderer implements MapRenderer {
 
 			if (this.hoveredPath !== path) {
 				this.clearHover();
+				if (path === this.keyboardFocusPath) return;
 				this.hoveredPath = path;
 				d3.select(path)
 					.attr("stroke", "#ffffff")
@@ -523,6 +534,10 @@ export class SvgMapRenderer implements MapRenderer {
 	/** Restores stroke/opacity only — never fill (hover never changes fill). */
 	private clearHover() {
 		if (this.hoveredPath === null) return;
+		if (this.hoveredPath === this.keyboardFocusPath) {
+			this.hoveredPath = null;
+			return;
+		}
 		const path = this.hoveredPath;
 		this.hoveredPath = null;
 		const { assignments } = this.getState();
@@ -609,8 +624,11 @@ export class SvgMapRenderer implements MapRenderer {
 	private hexFill(d: Precinct, assignments: GameStore["assignments"]): string {
 		if (this.viewMode === "lean") {
 			const lean = d.partyShare.D - d.partyShare.R;
-			const t = (lean + 1) / 2; // 0 = full R (red), 1 = full D (blue)
-			return d3.interpolateRdBu(t);
+			// PuOr (purple-orange): CVD-safe diverging palette; avoids party color collision.
+			// t=0 → orange (R-leaning), t=1 → purple (D-leaning). Clamped to [0.1,0.9] for dark-bg contrast.
+			// Source: ColorBrewer (Brewer 2003) https://colorbrewer2.org/
+			const t = Math.max(0.1, Math.min(0.9, (lean + 1) / 2));
+			return d3.interpolatePuOr(t);
 		}
 		const dId = assignments.get(d.id);
 		if (dId == null) return "#2a2a3e";
@@ -628,6 +646,124 @@ export class SvgMapRenderer implements MapRenderer {
 		if (this.viewMode === "lean") return SvgMapRenderer.LEAN_OPACITY;
 		const dId = assignments.get(d.id);
 		return dId != null ? SvgMapRenderer.ASSIGNED_OPACITY : SvgMapRenderer.UNASSIGNED_OPACITY;
+	}
+
+	// ─── Keyboard precinct navigation (GAME-008) ──────────────────────────────
+
+	private initKeyboardNav() {
+		const svgNode = this.svg.node()!;
+
+		svgNode.addEventListener("keydown", (e: KeyboardEvent) => {
+			const { precincts, activeDistrict, districtCount } = this.getState();
+			if (precincts.length === 0) return;
+
+			// Initialize focus to first precinct if none selected
+			if (this.focusedPrecinctId === null) {
+				this.setKeyboardFocus(precincts[0]!.id, precincts);
+				return;
+			}
+
+			const current = precincts.find(p => p.id === this.focusedPrecinctId);
+			if (current === undefined) return;
+
+			// Arrow key → neighbor direction mapping for flat-top hex grid
+			// Try primary then secondary direction to handle diagonal movement
+			const dirMap: Record<string, number[]> = {
+				ArrowUp:    [4],
+				ArrowDown:  [1],
+				ArrowRight: [5, 0],
+				ArrowLeft:  [3, 2],
+			};
+
+			const dirs = dirMap[e.key];
+			if (dirs !== undefined) {
+				e.preventDefault();
+				for (const dir of dirs) {
+					const nId = current.neighbors[dir];
+					if (nId !== null && nId !== undefined) {
+						this.setKeyboardFocus(nId, precincts);
+						break;
+					}
+				}
+				return;
+			}
+
+			// Number keys 1–5: assign focused precinct to that district
+			const num = parseInt(e.key, 10);
+			if (num >= 1 && num <= districtCount) {
+				e.preventDefault();
+				this.paintStroke([this.focusedPrecinctId], num);
+				const { precincts } = this.getState();
+				this.setKeyboardFocus(this.focusedPrecinctId, precincts);
+				return;
+			}
+
+			// Space: assign to active district
+			if (e.key === " ") {
+				e.preventDefault();
+				this.paintStroke([this.focusedPrecinctId], activeDistrict);
+				const { precincts } = this.getState();
+				this.setKeyboardFocus(this.focusedPrecinctId, precincts);
+			}
+		});
+
+		// Clear keyboard focus when SVG loses focus
+		svgNode.addEventListener("blur", () => {
+			this.clearKeyboardFocus();
+		});
+	}
+
+	private setKeyboardFocus(precinctId: number, precincts: Precinct[]) {
+		this.clearKeyboardFocus();
+		this.focusedPrecinctId = precinctId;
+
+		// Find the SVG path element for this precinct
+		const path = this.hexGroup
+			.select<SVGPathElement>(`path.hex[data-precinct-id="${precinctId}"]`)
+			.node();
+		if (path === null) return;
+		this.keyboardFocusPath = path;
+
+		// Yellow dashed focus ring — distinct from hover (white) and district fills
+		d3.select(path)
+			.attr("stroke", "#F0E442")
+			.attr("stroke-width", 2 / this.currentK)
+			.attr("stroke-dasharray", `${4 / this.currentK},${2 / this.currentK}`);
+
+		// Update SVG aria-label with current precinct context
+		const p = precincts.find(pr => pr.id === precinctId);
+		if (p !== undefined) {
+			const { assignments } = this.getState();
+			const dId = assignments.get(p.id);
+			const distLabel = dId != null ? `district ${dId}` : "unassigned";
+			const label = p.name ?? `Precinct ${p.id}`;
+			this.svg.attr("aria-label",
+				`District map — focused: ${label}, ${distLabel}. ` +
+				`Arrow keys navigate. Number keys 1–5 assign district. Space assigns active district.`
+			);
+		}
+	}
+
+	private clearKeyboardFocus() {
+		if (this.keyboardFocusPath !== null) {
+			const path = this.keyboardFocusPath;
+			this.keyboardFocusPath = null;
+			this.focusedPrecinctId = null;
+			const { assignments } = this.getState();
+			const d = d3.select<SVGPathElement, Precinct>(path).datum();
+			if (d !== undefined) {
+				d3.select(path)
+					.attr("stroke", "none")
+					.attr("stroke-dasharray", null)
+					.attr("stroke-width", 0.5)
+					.attr("opacity", this.hexOpacity(d, assignments));
+			}
+			// Restore default aria-label
+			this.svg.attr("aria-label",
+				"District map. Use mouse or keyboard to paint precincts. " +
+				"Arrow keys navigate precincts, number keys 1–5 assign to a district."
+			);
+		}
 	}
 }
 

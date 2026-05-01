@@ -210,7 +210,7 @@ body {
 .result-district .vote-bar {
   height: 8px;
   border-radius: 4px;
-  background: linear-gradient(to right, #3a7bd5 var(--d-pct), #e94560 var(--d-pct));
+  background: linear-gradient(to right, #7b35a8 var(--d-pct), #c96d00 var(--d-pct));
   margin-bottom: 4px;
 }
 
@@ -861,4 +861,33 @@ body {
 
 .nav-back-menu button:hover {
   background: #1e3a6e;
+}
+
+/* ── Accessibility: focus rings (WCAG 2.1 AA) ─────────────────────────── */
+
+/* Global visible focus ring for keyboard navigation */
+:focus-visible {
+  outline: 2px solid #56B4E9;
+  outline-offset: 2px;
+}
+
+/* District buttons: white outline matches active border convention */
+.district-btn:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* SVG map gets a container-level focus ring (role=application, tabindex=0) */
+#map-svg:focus-visible {
+  outline: 2px solid #56B4E9;
+  outline-offset: 4px;
+}
+
+/* ── Accessibility: reduced motion ─────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }
