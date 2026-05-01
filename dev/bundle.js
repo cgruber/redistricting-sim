@@ -13135,8 +13135,8 @@ var init_types = __esm({
       // vermilion
     ];
     PARTY_COLORS = {
-      R: "#e94560",
-      D: "#3a7bd5",
+      R: "#c96d00",
+      D: "#7b35a8",
       L: "#f0c040",
       G: "#50c878",
       I: "#a0a0a0"
