@@ -742,7 +742,7 @@ test("scenario-009 winnability: ring-based split gives 3 Cat-safe districts", as
 
 test("scenario select: all cards visible and scrollable", async ({ page }) => {
   // Navigate first so localStorage is accessible, then seed progress and reload
-  await page.goto("/");
+  await page.goto("/?view=scenarios");
   await page.evaluate(() => {
     localStorage.setItem("redistricting-sim-progress", JSON.stringify({ completed: ["tutorial-002"] }));
   });
@@ -866,7 +866,7 @@ test("wrap-up screen: completing last scenario shows wrap-up on Next Scenario", 
 // ─── GAME-029: About page ───────────────────────────────────────────────────
 
 test("about page: accessible from select screen and shows educational content", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/?view=scenarios");
   await page.evaluate(() => {
     localStorage.setItem("redistricting-sim-progress", JSON.stringify({ completed: ["tutorial-002"] }));
   });
@@ -900,13 +900,13 @@ test("campaign select: ?campaign=tutorial Back button is visible", async ({ page
 });
 
 test("campaign select: Back button absent without ?campaign= param", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/?view=scenarios");
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator("#btn-back-to-campaign")).not.toBeVisible();
 });
 
 test("campaign select: no ?campaign= shows all 9 scenarios (fallback regression guard)", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/?view=scenarios");
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
   const cards = page.locator(".scenario-card");
   const count = await cards.count();

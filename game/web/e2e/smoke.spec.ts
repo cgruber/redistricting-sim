@@ -22,7 +22,7 @@ test("app loads and renders hex map", async ({ page }) => {
     consoleErrors.push(`[pageerror] ${err.message}`);
   });
 
-  await page.goto("/");
+  await page.goto("/?view=scenarios");
 
   // New player sees scenario select first; click first scenario
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });

@@ -15,7 +15,7 @@ import { test, expect } from "@playwright/test";
 
 /** Navigate, dismiss the intro screen, and wait for the hex grid to be ready. */
 async function loadApp(page: import("@playwright/test").Page): Promise<void> {
-  await page.goto("/");
+  await page.goto("/?view=scenarios");
   // New player sees scenario select first; click first scenario
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
   await page.locator(".scenario-card").first().locator(".sc-play-btn").click();
