@@ -2,9 +2,10 @@
 id: GAME-049
 title: Campaign select screen
 area: game, UX
-status: open
+status: resolved
 created: 2026-04-29
 github_issue: 168
+github_pr: 169
 ---
 
 ## Summary
