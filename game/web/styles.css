@@ -334,6 +334,40 @@ body {
 }
 .coming-soon { font-size: 0.78rem; color: #555e6e; margin-left: 6px; }
 
+/* ── Campaign select screen (GAME-049) ────────────────────────────── */
+#campaign-select {
+  position: fixed; inset: 0;
+  background: #0d1b2e;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 32px; z-index: 88;
+}
+#campaign-select.hidden { display: none; }
+#campaign-select-title {
+  font-size: 1.8rem; font-weight: 700;
+  color: #c0d0e8; text-align: center;
+}
+#btn-campaign-back {
+  position: absolute; top: 16px; left: 16px;
+  background: none; border: 1px solid #2a5a8c;
+  color: #8898b0; padding: 4px 12px;
+  border-radius: 4px; cursor: pointer; font-size: 0.8rem;
+}
+#btn-campaign-back:hover { background: #16213e; }
+#campaign-cards {
+  display: flex; flex-direction: column;
+  gap: 16px; width: 380px;
+}
+.campaign-card {
+  background: #16213e; border: 1px solid #2a5a8c;
+  border-radius: 8px; padding: 20px 24px;
+  cursor: pointer; text-align: left;
+}
+.campaign-card:hover { background: #1a3a5c; border-color: #4a8abf; }
+.campaign-card h2 { color: #c0d0e8; font-size: 1.1rem; margin: 0 0 6px; }
+.campaign-card p { color: #8898b0; font-size: 0.85rem; margin: 0 0 10px; }
+.campaign-progress { color: #5a8abf; font-size: 0.8rem; }
+
 /* ── Scenario select screen (GAME-018) ────────────────────────────── */
 #scenario-select {
   position: fixed;
