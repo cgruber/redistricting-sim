@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Past the Post</title>
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' data:; style-src 'self' 'unsafe-inline'; img-src data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self';">
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <!-- ── Main menu / title screen (GAME-050) ─────────────────────────── -->
+    <div id="main-menu" class="hidden" role="main" aria-label="Main Menu">
+      <h1 id="main-menu-title">Past the Post</h1>
+      <nav id="main-menu-nav" aria-label="Main navigation">
+        <button id="btn-main-continue" disabled>Continue</button>
+        <button id="btn-main-new-campaign">New Campaign</button>
+        <button id="btn-main-about">About</button>
+        <button id="btn-main-load" disabled>Load <span class="coming-soon">(coming soon)</span></button>
+        <button id="btn-main-settings" disabled>Settings <span class="coming-soon">(coming soon)</span></button>
+      </nav>
+    </div>
+
+    <!-- ── Campaign select screen (GAME-049) ───────────────────────────── -->
+    <div id="campaign-select" class="hidden" role="main" aria-label="Campaign Selection">
+      <button id="btn-campaign-back">← Main Menu</button>
+      <h1 id="campaign-select-title">Choose a Campaign</h1>
+      <div id="campaign-cards"></div>
+    </div>
+
+    <!-- ── Scenario select screen (GAME-018) ────────────────────────────── -->
+    <div id="scenario-select" class="hidden" role="region" aria-label="Scenario Selection">
+      <button id="btn-back-to-campaign" hidden aria-label="Back to campaign select" style="background:none;border:1px solid #2a5a8c;color:#8898b0;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.8rem;margin-bottom:8px;">← Back</button>
+      <h1>Past the Post</h1>
+      <div id="scenario-cards" role="list"></div>
+      <div style="display:flex;gap:16px;margin-top:16px;align-items:center;">
+        <button id="btn-about" style="background:none;border:1px solid #2a5a8c;color:#8898b0;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:0.75rem;">About</button>
+        <button id="btn-reset-campaign" style="background:none;border:1px solid #555;color:#888;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:0.75rem;">Reset Campaign</button>
+      </div>
+    </div>
+
+    <!-- ── About page (GAME-029) ──────────────────────────────────────────── -->
+    <div id="about-screen" class="hidden">
+      <div id="about-card">
+        <h1>Past the Post</h1>
+        <p>An educational redistricting simulator. Draw district boundaries, simulate elections, and discover how the same voters can produce wildly different outcomes depending on where the lines are drawn.</p>
+        <p>This game is not advocacy for or against any political party, position, or reform proposal. It presents multiple perspectives — partisan operatives, reform commissioners, bipartisan dealmakers — so that players leave with better questions, not predetermined answers.</p>
+        <p style="color:#8898b0;font-size:0.82rem;font-style:italic;">The scenarios in this campaign use fictional data. They do not model real elections, real voters, or real communities. Redistricting in practice is governed by federal and state law.</p>
+        <h2>Learn More</h2>
+        <ul id="about-links">
+          <li><a href="https://www.brennancenter.org/issues/gerrymandering-fair-representation" target="_blank" rel="noopener">Brennan Center — Gerrymandering &amp; Fair Representation</a></li>
+          <li><a href="https://redistricting.lls.edu/" target="_blank" rel="noopener">Loyola Law School — All About Redistricting</a></li>
+          <li><a href="https://www.fairvote.org/redistricting" target="_blank" rel="noopener">FairVote — Redistricting</a></li>
+        </ul>
+        <p style="color:#606878;font-size:0.8rem;margin-top:16px;">Designed, architected, and co-developed by Christian Edward Jackson-Gruber and Claude.</p>
+        <button id="btn-about-close" style="margin-top:16px;">← Back</button>
+      </div>
+    </div>
+
+    <!-- ── WIP discard warning modal ──────────────────────────────────── -->
+    <div id="wip-warning-modal" class="hidden">
+      <div id="wip-warning-card">
+        <p id="wip-warning-text"></p>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:16px;">
+          <button id="wip-warning-confirm">Switch Scenario</button>
+          <button id="wip-warning-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Result screen (GAME-017) ─────────────────────────────────────── -->
+    <div id="result-screen" class="hidden">
+      <div id="result-card">
+        <div id="result-verdict"></div>
+        <div id="result-subtitle"></div>
+        <div id="result-criteria-list"></div>
+        <div id="result-actions">
+          <button id="btn-keep-drawing">← Keep Drawing</button>
+          <button id="btn-next-scenario" style="display:none">Next Scenario →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Wrap-up screen (GAME-020) ─────────────────────────────────────── -->
+    <div id="wrap-up-screen" class="hidden">
+      <div id="wrap-up-card">
+        <h1>Congratulations</h1>
+        <p id="wrap-up-text">You've completed every scenario. You've drawn maps that packed voters, cracked communities, protected incumbents, satisfied reformers, and proven that no set of rules can make redistricting apolitical.</p>
+        <p style="color:#8898b0;margin-top:12px;">The lines always matter. Now you know why.</p>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+          <button id="btn-wrap-up-replay">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Intro screen (GAME-016) ──────────────────────────────────────── -->
+    <div id="intro-screen" class="hidden">
+      <button id="btn-intro-skip">Skip intro</button>
+      <div id="intro-card">
+        <div id="intro-character">
+          <div class="char-name" id="char-name"></div>
+          <div class="char-role" id="char-role"></div>
+          <div class="char-motivation" id="char-motivation"></div>
+        </div>
+        <div id="intro-slide-heading"></div>
+        <div id="intro-slide-body"></div>
+        <div id="intro-objective">
+          <div class="obj-label">Your objective</div>
+          <div id="objective-text"></div>
+        </div>
+        <div id="intro-nav">
+          <span id="intro-progress"></span>
+          <div class="nav-btns">
+            <button id="btn-intro-prev" disabled>← Previous</button>
+            <button id="btn-intro-next">Next →</button>
+            <button id="btn-intro-start">Start Drawing</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <header id="app-header" style="display:none">
+      <button id="btn-back-to-scenarios" style="background:none;border:1px solid #2a5a8c;color:#8898b0;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.8rem;">← Scenarios</button>
+      <h1>Redistricting Simulator</h1>
+      <div id="controls">
+        <span style="font-size:0.8rem;color:#888;">Draw district:</span>
+        <div id="district-buttons" role="group" aria-label="District Selection"></div>
+        <button id="btn-undo" disabled aria-label="Undo last action">↩ Undo</button>
+        <button id="btn-redo" disabled aria-label="Redo last action">↪ Redo</button>
+        <button id="btn-view-toggle" aria-label="Toggle between districts and partisan lean view">Switch to Partisan Lean</button>
+        <button id="btn-county-toggle" aria-label="Toggle county borders display">Show County Borders</button>
+        <button id="btn-submit" disabled aria-label="Submit map for evaluation">Submit Map</button>
+        <button id="btn-debug-win" style="display:none;background:#8b4513;color:#ffa;">⚡ Force Win (debug)</button>
+        <button id="btn-reset" aria-label="Reset map to initial state">Reset</button>
+        <span id="reset-confirm">
+          Reset to start?
+          <button id="btn-reset-confirm">Yes</button>
+          <button id="btn-reset-cancel">No</button>
+        </span>
+      </div>
+    </header>
+
+    <div id="main" style="display:none">
+      <div id="map-container">
+        <svg id="map-svg" role="image" aria-label="District map. Use mouse to paint precincts into districts. Current assignments shown as colored hexagons."></svg>
+      </div>
+      <aside id="sidebar">
+        <h2>Precinct Info</h2>
+        <div id="precinct-info">
+          <div class="precinct-placeholder">Hover over a precinct to see details.<br>Click and drag to paint districts.</div>
+        </div>
+        <h2>Election Results</h2>
+        <div id="results-container" aria-live="polite" aria-label="Election results">
+          <div style="color:#606080;font-size:0.85rem;">Draw districts to see results</div>
+        </div>
+        <h2>Map Validity</h2>
+        <div id="validity-container"></div>
+        <h2>Legend</h2>
+        <div id="legend-container" class="legend"></div>
+      </aside>
+    </div>
+
+    <!--
+      WASM loading sequence (no-modules target):
+      1. Load the wasm-bindgen glue — registers global wasm_bindgen.
+      2. Init the WASM binary asynchronously.
+      3. After WASM is ready, load the bundled game (ES module).
+    -->
+    <!--
+      Import map: zundo pulls in zustand/esm/react.mjs which has a bare `import "react"`.
+      Nothing in this app calls React APIs — shim it to an empty module so the browser
+      doesn't fail resolving the bare specifier.
+    -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "data:text/javascript,export default {};",
+        "react-dom": "data:text/javascript,export default {};"
+      }
+    }
+    </script>
+    <script src="wasm_calc_bindgen.js"></script>
+    <script>
+      wasm_bindgen("./wasm_calc_bindgen_bg.wasm").then(function () {
+        var s = document.createElement("script");
+        s.type = "module";
+        s.src = "bundle.js?v=v0.0.12";
+        document.body.appendChild(s);
+      });
+    </script>
+  </body>
+</html>
