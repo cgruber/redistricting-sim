@@ -8,30 +8,34 @@ created: 2026-05-02
 
 ## Summary
 
-Wire `scenario.narrative.character` to the result screen: display the scenario
-character's animated sprite, trigger the appropriate pass/fail animation state, and
-play the matching audio clip. Replaces the 🎉/💔 emoji placeholder added in GAME-052.
-Depends on DESIGN-009 (style), GAME-060 (art assets), GAME-061 (audio clips),
-GAME-063 (asset pipeline), and GAME-064 (audio playback infrastructure).
+Wire the instigator reaction system to the result screen: resolve the instigator type
+from the scenario, load the correct star-count state SVG, inject it into
+`#result-reaction`, and play the matching audio clip. Replaces the 🎉/💔 emoji
+placeholder (GAME-052). The player is a neutral consultant; the instigator (party
+boss, judge, commissioner, etc.) reacts based on star count (3/2/1/0), not binary
+pass/fail. Animation plays last, after all per-criterion reveal animations finish.
+Depends on DESIGN-009 (style), GAME-060 (art), GAME-061 (audio), GAME-063
+(asset pipeline), and GAME-064 (audio playback infrastructure).
 
 ## Current State
 
-The result screen shows a `#result-reaction` element populated with a single emoji
-(🎉 or 💔) based on overall pass/fail. Character identity from `scenario.narrative`
-is not used on the result screen at all.
+The result screen shows a `#result-reaction` element with a single emoji (🎉/💔)
+based on overall pass/fail. Scenario instigator identity is not used on the result
+screen. No star-count grading exists on the result screen.
 
 ## Goals / Acceptance Criteria
 
-- [ ] Result screen displays the scenario character's sprite in `#result-reaction`,
-      sized and positioned per DESIGN-009 spec
-- [ ] Pass state animation plays on overall pass; fail state on overall fail
+- [ ] Instigator type resolved from scenario's `narrative.character` role
+- [ ] Star count computed from criterion results (required criteria only)
+- [ ] Correct SVG loaded from `assets/characters/{type}/{state}.svg` and injected
+      into `#result-reaction`; sized and positioned per DESIGN-009 spec
+- [ ] Star-count state maps correctly: 3 required criteria met → three-star; etc.
 - [ ] Audio clip plays on result screen open via GAME-064 AudioPlayer
 - [ ] Mute toggle visible on result screen; uses GAME-064 persistence
-- [ ] `prefers-reduced-motion`: animation suppressed; audio unaffected
-- [ ] Character type resolved from scenario's character role
-- [ ] Scenario-006 two-character case handled per DESIGN-009 decision
-      (simultaneous split-screen or sequential)
-- [ ] Fallback: if character type has no asset, emoji placeholder remains
+- [ ] `prefers-reduced-motion`: SVG idle animation suppressed (CSS); audio unaffected
+- [ ] Scenario-006 Bipartisan Broker: both bosses shown side-by-side (split-screen)
+- [ ] Fallback: if instigator type has no asset, emoji placeholder remains
+- [ ] Instigator reaction plays AFTER per-criterion animations complete (timing)
 
 ## Test Coverage
 
