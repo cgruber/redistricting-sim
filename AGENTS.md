@@ -157,6 +157,20 @@ Reference issues from PRs with `see #N` — never `fixes #N` or `closes #N`.
 
 ---
 
+## Pull Request Conventions
+
+### task-list-completed check
+
+This repo runs a `task-list-completed` GitHub Actions check that scans **every** checkbox in the PR — the description body **and** all comments (inline review comments included). Any unchecked `- [ ]` box anywhere blocks the check and prevents merge.
+
+Rules:
+- Never write `- [ ]` in a PR comment unless you intend to come back and check it off.
+- After a critique agent posts inline comments with `- [ ]` items (issues to fix), once each fix is applied, edit that comment to check the boxes (`- [x]`) via the GitHub API: `gh api repos/<org>/<repo>/pulls/comments/<id> -X PATCH -F body=@/tmp/...`
+- The check does **not** time out or resolve on its own — it stays permanently blocking until all boxes are checked.
+- To exclude an item from blocking merge, use the keywords `N/A`, `POST-MERGE`, or `OPTIONAL` in the checkbox line instead of leaving it bare and unchecked.
+
+---
+
 ## Development Process
 
 This project follows a **sprint-based development process** and **TDD-informed workflow**. Two documents govern how work is planned and executed — read both on every context load:
