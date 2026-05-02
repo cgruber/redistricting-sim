@@ -30,7 +30,9 @@ see game-vision.compressed.md for full scope
 | S8 | hardening | CSP; extract CSS; loader errors; scenario compression | complete — 2026-04-28 |
 | S9 | first release | deploy pastthepost.org; legal review; basic a11y | complete — 2026-04-29 |
 | S10 | code quality + tidy | test coverage gaps; dedup; extract modules; refactor for polish readiness | complete — 2026-04-29 |
-| S11 | main menu, campaigns + polish | title screen→campaign select→scenario flow; Tier2: design research, a11y | backlog |
+| S11 | main menu, campaigns + polish | title screen→campaign select→scenario flow; Tier2: design research, a11y | complete — 2026-05-02 |
+| S12 | character reactions + submit-on-invalid | result screen characters animate+react; audio; allow invalid map submission | planned |
+| S13 | code quality | split loader; break up main.ts; unify type systems | sketched |
 
 §SPRINT1 [COMPLETE 2026-04-25]
 goal: app renders tutorial-001.json; player paints+undoes; no sim/game-loop yet
@@ -105,21 +107,34 @@ tier1: BUILD-007(#134) GAME-033(#135) GAME-034(#136) GAME-035(#138) GAME-036(#14
 tier2: GAME-039(#149) GAME-038(#151)
 deferred(tier3): GAME-041 GAME-042 GAME-043 — too large for tidy sprint
 
-§SPRINT11 (backlog)
+§SPRINT11 [COMPLETE 2026-05-02]
 goal: main menu, campaigns + polish — proper title screen, campaign navigation model
-demo target: player lands on title screen → picks campaign → plays scenario → returns to menu
-tier1 (core): GAME-047 campaign data model; GAME-048 campaign-driven scenario select;
-  GAME-049 campaign select screen; GAME-050 main menu; GAME-051 in-game nav cleanup
-tier2 (if tier1 done): DESIGN-001 achievement UX; GAME-008 full a11y; GAME-031 critique;
-  GAME-052 animated criteria eval (blocked on DESIGN-001); GAME-053 electoral outcome diff
-deferred to S12: DESIGN-005/006/007 demographic overlays; DESIGN-008 geographic features
+outcome: all tier1+tier2 tickets closed
+  tier1: GAME-047(#159) GAME-048(#162) GAME-049(#169) GAME-050(#165) GAME-051(#175)
+  tier2: DESIGN-001 achievement UX research; GAME-008 full a11y pass; GAME-031 critique;
+    GAME-052 animated criteria reveal (CSS @keyframes, click-to-skip, 🎉/💔 placeholder, 4 e2e tests; #189)
+  deferred: GAME-053 electoral outcome diff → discuss S12 planning; DESIGN-009 open questions resolved in ticket
+  new tickets filed for S12: DESIGN-009 GAME-059 GAME-060 GAME-061 GAME-062 GAME-063 GAME-064
 
-§SPRINT12+ (later)
-DESIGN-005 population dot-density overlay (deferred S11)
-DESIGN-006 zoom-adaptive dot density (deferred S11)
-DESIGN-007 dimensional dot map demographic overlay (deferred S11)
-DESIGN-008 geographic features — decorative tiles (deferred S11)
-GAME-041 split loader; GAME-042 break up main.ts; GAME-043 unify type systems (own sprint)
+§SPRINT12 (planned)
+goal: character reactions + submit-on-invalid
+demo target: player submits map (valid or invalid) → result screen shows animated character + audio reaction;
+  invalid map shows Fix-It path; valid pass/fail shows correct character animation
+dependency chain:
+  DESIGN-009 (resolve open questions: SVG vs pixel art; 006 layout; tutorial animation)
+  → parallel: GAME-060 (character sprites) + GAME-061 (audio clips)
+  → GAME-064 (audio playback infrastructure)
+  → GAME-062 (character reaction system — wires everything to result screen)
+  GAME-059 (submit-on-invalid) — independent; can start anytime
+  GAME-063 (asset pipeline) — independent; format-agnostic; can start anytime
+tier1 (core): DESIGN-009 GAME-059 GAME-063 GAME-064
+tier2 (if tier1 done): GAME-060 GAME-061 GAME-062
+deferred to S13+: DESIGN-005/006/007 demographic overlays; DESIGN-008 geographic features; GAME-053
+
+§SPRINT13 (sketched)
+goal: code quality — split modules, unify type systems
+tickets: GAME-041 split loader; GAME-042 break up main.ts; GAME-043 unify type systems
+rationale: isolated sprint; no feature work mixed in; large refactors need focused review
 
 §BACKLOG (not sprint-assigned)
 BUILD-003 ts-rules spawn strategy          any
@@ -128,12 +143,22 @@ BUILD-008 switch CI to pnpm               any (low priority)
 CI-001    GH Action ticket-close sync      any (low priority)
 AGENT-003 infra PR review bot              any
 DESIGN-004 legend layout                   any
-GAME-041  split loader.ts                  S12
-GAME-042  break up main.ts                 S12
-GAME-043  unify type systems               S12
-GAME-046  panels unit tests                S12
+DESIGN-005 population dot-density overlay  S14+
+DESIGN-006 zoom-adaptive dot density       S14+
+DESIGN-007 dimensional dot map overlay     S14+
+DESIGN-008 geographic features             S14+
+GAME-041  split loader.ts                  S13
+GAME-042  break up main.ts                 S13
+GAME-043  unify type systems               S13
+GAME-046  panels unit tests                S13
+GAME-053  electoral outcome visual diff    S13+
+GAME-056  playtest feedback                any
+GAME-057  scenario randomization           any
+GAME-058  manual playability test          any
+GAME-030  main menu+campaigns (remaining)  S14+
 
 §BLOCKING_OPEN_QUESTIONS
-DESIGN-001 star/achievement UX → blocks S11 Tier2 (GAME-052 animated criteria eval)
+DESIGN-009 open questions (SVG vs pixel art; 006 layout; tutorial animation) → resolve during DESIGN-009 work; gates GAME-060+GAME-061 (not GAME-063 — pipeline is format-agnostic)
+RESOLVED: DESIGN-001 star/achievement UX → resolved; GAME-052 shipped with emoji placeholder
 RESOLVED: OQ4 narrative asset resolution — deferred indefinitely
 RESOLVED: OQ9 StateContext redesign — deferrable past $v1
