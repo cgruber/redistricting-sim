@@ -8,25 +8,34 @@ created: 2026-05-02
 
 ## Summary
 
-Create the character art and animation assets for result screen reactions — one set
-per character type (partisan boss, legal authority, bipartisan broker, reform arbiter,
-neutral admin) with pass and fail animation states. Format and style defined by
-DESIGN-009. Art will be AI-generated (Claude SVG generation as primary approach;
-Grok/other multimodal models as fallback if quality is insufficient).
+Create the instigator character art for result screen reactions — one SVG file per
+instigator type × star-count state (5 types × 4 states = 20 files). The instigator
+is the person who hired the player (party boss, judge, reform commissioner, etc.)
+and reacts based on how well the player delivered, graded by star count (3/2/1/0).
+Format and consistency spec defined by DESIGN-009. Art will be AI-generated (Claude
+SVG as primary; Grok/other multimodal models as fallback).
 
 ## Current State
 
 No character art exists. The result screen shows a 🎉/💔 emoji placeholder (GAME-052).
+DESIGN-009 defines the full consistency spec — it MUST be read before generating any
+art (embed the §CONSISTENCY section in every generation prompt).
 
 ## Goals / Acceptance Criteria
 
-- [ ] One asset per character type × 2 states (pass / fail) — 10 assets total
-- [ ] Assets match the format decided in DESIGN-009 (SVG preferred)
-- [ ] Pass state: character expresses approval (thumbs up, cheering, etc.)
-- [ ] Fail state: character expresses disapproval (thumbs down, booing, etc.)
-- [ ] File sizes appropriate for browser delivery (target: < 20 KB per SVG)
-- [ ] Assets placed in `game/web/assets/characters/` (see GAME-063)
-- [ ] Accessible alt-text description for each character/state
+- [ ] 20 SVG files: 5 instigator types × 4 states (three-star/two-star/one-star/zero-star)
+- [ ] File naming: `assets/characters/{type}/{state}.svg`
+      types: partisan-boss, legal-authority, bipartisan-broker, reform-arbiter, neutral-admin
+- [ ] All files use `viewBox="0 0 200 200"`, transparent background
+- [ ] Character occupies center ~140×160 px; head ~y=30, feet ~y=190, centered horiz
+- [ ] Flat fills, 2–3 colors per type, 2–3 px stroke, no gradients
+- [ ] Each type has a visually distinct silhouette readable at 160 px
+- [ ] Same type across 4 states: same character, only pose+expression changes
+- [ ] State poses match DESIGN-009 spec (three-star=expansive celebratory; two-star=composed positive; one-star=reserved; zero-star=closed/disapproving)
+- [ ] Subtle idle animation (bob/blink/breathing, 0.6–1.0 s loopable) in each SVG
+- [ ] File sizes < 15 KB per SVG
+- [ ] Assets placed in `game/web/assets/characters/{type}/` (GAME-063 pipeline must be merged first)
+- [ ] Accessible alt-text description documented for each type/state combination
 
 ## References
 
