@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <style>
+    @keyframes idle-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .character { animation: idle-bob 0.9s ease-in-out infinite; }
+  </style>
+  <g class="character">
+    <!-- Head -->
+    <ellipse cx="100" cy="52" rx="22" ry="24" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Hair / hat brim -->
+    <rect x="76" y="34" width="48" height="8" rx="3" fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1"/>
+    <!-- Eyes -->
+    <circle cx="91" cy="50" r="3" fill="#1a1a2e"/>
+    <circle cx="109" cy="50" r="3" fill="#1a1a2e"/>
+    <!-- Approving smile -->
+    <path d="M90 62 Q100 69 110 62" stroke="#1a1a2e" stroke-width="2" fill="none"/>
+    <!-- Neck -->
+    <rect x="94" y="74" width="12" height="10" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Body / suit jacket — wide shouldered -->
+    <path d="M65 145 L65 90 Q68 84 100 84 Q132 84 135 90 L135 145 Z"
+          fill="#c0392b" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Wide lapels -->
+    <path d="M100 84 L88 110 L80 84" fill="#d4a017" stroke="#1a1a2e" stroke-width="2"/>
+    <path d="M100 84 L112 110 L120 84" fill="#d4a017" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Shirt front / tie -->
+    <rect x="96" y="84" width="8" height="26" rx="2" fill="#d4a017" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Trousers -->
+    <path d="M65 145 L72 185 L97 185 L100 162 L103 185 L128 185 L135 145 Z"
+          fill="#1a1a2e" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Shoes -->
+    <ellipse cx="80" cy="185" rx="10" ry="5" fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1.5"/>
+    <ellipse cx="120" cy="185" rx="10" ry="5" fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Left arm — thumbs up -->
+    <path d="M65 100 L42 105" stroke="#c0392b" stroke-width="14" stroke-linecap="round"/>
+    <path d="M65 100 L42 105" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- Left thumb up fist -->
+    <rect x="34" y="98" width="10" height="14" rx="3" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <rect x="36" y="90" width="6" height="11" rx="3" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Right arm — thumbs up -->
+    <path d="M135 100 L158 105" stroke="#c0392b" stroke-width="14" stroke-linecap="round"/>
+    <path d="M135 100 L158 105" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- Right thumb up fist -->
+    <rect x="156" y="98" width="10" height="14" rx="3" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <rect x="158" y="90" width="6" height="11" rx="3" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+  </g>
+</svg>
