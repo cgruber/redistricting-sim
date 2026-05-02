@@ -2,8 +2,9 @@
 id: GAME-052
 title: Animated criteria evaluation on result screen
 area: game, UX
-status: open
+status: resolved
 created: 2026-04-29
+github_issue: 188
 ---
 
 ## Summary
@@ -22,18 +23,22 @@ animation. There are no party reactions.
 
 *Placeholder — to be fully specced after DESIGN-001 resolves the visual language.*
 
-- [ ] Criteria rows animate in sequentially on result screen load
-- [ ] Pass/fail state revealed per-row after brief delay (timing TBD per DESIGN-001)
-- [ ] Party reaction (emoji or character art) displayed for overall pass/fail outcome
-- [ ] Animation skippable (click/tap to fast-forward)
+- [x] Criteria rows animate in sequentially on result screen load
+- [x] Pass/fail state revealed per-row after brief delay (120ms stagger, 0.3s reveal)
+- [x] Party reaction (emoji or character art) displayed for overall pass/fail outcome
+- [x] Animation skippable (click/tap to fast-forward)
 
 ## Test Coverage
 
 *Specify after DESIGN-001.*
 
-- [ ] e2e test: result screen does not show all criteria simultaneously before animation
-- [ ] e2e test: clicking during animation completes it immediately
-- [ ] e2e test: final state matches non-animated result (regression)
+- [x] e2e test: result screen does not show all criteria simultaneously before animation
+- [x] e2e test: clicking during animation completes it immediately
+- [x] e2e test: final state matches non-animated result (regression)
+
+## Resolution
+
+CSS `@keyframes criterionReveal` (opacity 0→1 + translateY 8px→0, 0.3s ease). Each `.result-criterion` starts with `opacity:0` and animates in; `animationDelay = index * 120ms` staggers the reveal. A one-time click handler on `#result-screen` fast-forwards all rows by setting `animation:none; opacity:1`. `#result-reaction` shows 🎉 on pass, 💔 on fail. 4 e2e tests in `sprint4.spec.ts`. Merged PR #189.
 
 ## References
 
