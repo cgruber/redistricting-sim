@@ -2,7 +2,7 @@
 id: GAME-055
 title: Party names should come from scenario data, not hardcoded labels
 area: game, content
-status: open
+status: resolved
 created: 2026-05-01
 ---
 
