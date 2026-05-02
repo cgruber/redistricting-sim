@@ -82,6 +82,21 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+# Static asset files (character SVGs, audio clips) served under /assets/.
+# Populated incrementally by GAME-060 (sprites) and GAME-061 (audio).
+#
+# NOTE: asset_files globs assets/**/* and the deployable genrule uses
+# cp -r to copy the whole assets tree, so new subdirectories are picked up
+# automatically — no changes to BUILD.bazel required when adding new subdirs.
+filegroup(
+    name = "asset_files",
+    srcs = glob(
+        ["assets/**/*"],
+        allow_empty = True,
+    ),
+    visibility = ["//visibility:public"],
+)
+
 # Playwright behavioral (e2e) smoke test — CI-002 Phase 1.
 #
 # Assembles Bazel-built artifacts into a temp dir, starts python3 http.server
@@ -99,6 +114,7 @@ sh_test(
     data = [
         ":app",
         ":html",
+        ":asset_files",
         "//rust:wasm_calc_bindgen",
         "//scenarios:scenario_files",
         "playwright.config.ts",
@@ -135,6 +151,7 @@ genrule(
     srcs = [
         ":app",
         ":html",
+        ":asset_files",
         "//rust:wasm_calc_bindgen",
         "//scenarios:scenario_files",
     ],
@@ -146,7 +163,9 @@ genrule(
         STAGING="$$(mktemp -d)"
         trap "rm -rf $$STAGING" EXIT
 
-        # Iterate over all source files and copy to appropriate location
+        # Iterate over all source files and copy to appropriate location.
+        # Assets are handled separately below via cp -r to preserve tree structure.
+        ASSETS_SRC=""
         for f in $(SRCS); do
             fname="$$(basename "$$f")"
             case "$$fname" in
@@ -157,7 +176,17 @@ genrule(
                 wasm_calc_bindgen.js) cp "$$f" "$$STAGING/" ;;
                 *.json) mkdir -p "$$STAGING/scenarios" && cp "$$f" "$$STAGING/scenarios/" ;;
             esac
+            case "$$f" in
+                */assets/*) ASSETS_SRC="$${f%/assets/*}/assets" ;;
+            esac
         done
+
+        # Copy entire assets tree in one shot to preserve subdirectory structure,
+        # matching the behaviour of serve.sh and e2e_test.sh.
+        if [[ -n "$$ASSETS_SRC" ]]; then
+            mkdir -p "$$STAGING/assets"
+            cp -r "$$ASSETS_SRC/." "$$STAGING/assets/"
+        fi
 
         # Create zip file
         cd "$$STAGING"
