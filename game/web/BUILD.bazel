@@ -106,6 +106,7 @@ sh_test(
         "e2e/sprint1.spec.ts",
         "e2e/sprint2.spec.ts",
         "e2e/sprint3.spec.ts",
+        "e2e/sprint4.spec.ts",
         "e2e/scenarios.spec.ts",
         "e2e/main-menu.spec.ts",
         "e2e/campaign-select.spec.ts",

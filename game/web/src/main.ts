@@ -86,8 +86,10 @@ const scenarioCardsEl = document.getElementById("scenario-cards") as HTMLElement
 // Submit + result screen refs (GAME-017)
 const btnSubmit = document.getElementById("btn-submit") as HTMLButtonElement | null;
 const resultScreen = document.getElementById("result-screen") as HTMLElement | null;
+let skipClickHandler: (() => void) | null = null;
 const resultVerdict = document.getElementById("result-verdict") as HTMLElement | null;
 const resultSubtitle = document.getElementById("result-subtitle") as HTMLElement | null;
+const resultReaction = document.getElementById("result-reaction") as HTMLElement | null;
 const resultCriteriaList = document.getElementById("result-criteria-list") as HTMLElement | null;
 const btnKeepDrawing = document.getElementById("btn-keep-drawing") as HTMLButtonElement | null;
 const btnNextScenario = document.getElementById("btn-next-scenario") as HTMLButtonElement | null;
@@ -684,7 +686,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 	// ── Submit / Evaluation (GAME-017) ────────────────────────────────────────
 	function showResultScreen() {
-		if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList) return;
+		if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList || !resultReaction) return;
+		if (skipClickHandler) { resultScreen.removeEventListener("click", skipClickHandler); skipClickHandler = null; }
 
 		const state = store.getState();
 		if (state.simulationResult === null) return;
@@ -712,8 +715,10 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		resultSubtitle.textContent = evalResult.overallPass
 			? "All required criteria met."
 			: "One or more required criteria were not met.";
+		resultReaction.textContent = evalResult.overallPass ? "🎉" : "💔";
 
 		resultCriteriaList.innerHTML = "";
+		let rowIndex = 0;
 		for (const cr of evalResult.criterionResults) {
 			const cls = cr.passed
 				? "passed"
@@ -723,6 +728,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 			const row = document.createElement("div");
 			row.className = `result-criterion ${cls}`;
+			row.style.animationDelay = `${rowIndex * 120}ms`;
+			rowIndex++;
 
 			const iconEl = document.createElement("span");
 			iconEl.className = "rc-icon";
@@ -752,6 +759,18 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			row.appendChild(badge);
 			resultCriteriaList.appendChild(row);
 		}
+
+		// Skip animation: click anywhere on result screen to reveal all rows instantly.
+		const skipHandler = () => {
+			const rows = Array.from(resultCriteriaList.querySelectorAll<HTMLElement>(".result-criterion"));
+			for (const el of rows) {
+				el.style.animation = "none";
+				el.style.opacity = "1";
+			}
+			skipClickHandler = null;
+		};
+		skipClickHandler = skipHandler;
+		resultScreen.addEventListener("click", skipHandler, { once: true });
 
 		btnKeepDrawing!.style.display = "";
 		btnNextScenario!.style.display = evalResult.overallPass ? "" : "none";

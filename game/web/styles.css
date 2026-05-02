@@ -587,6 +587,8 @@ body {
   border-radius: 6px;
   background: #0a1f3a;
   font-size: 0.84rem;
+  opacity: 0;
+  animation: criterionReveal 0.3s ease forwards;
 }
 
 .result-criterion .rc-icon {
@@ -622,6 +624,18 @@ body {
 .result-criterion.passed .rc-badge { background: #1a4a30; color: #4caf80; }
 .result-criterion.failed-required .rc-badge { background: #3a1020; color: #e94560; }
 .result-criterion.failed-optional .rc-badge { background: #2a2a3a; color: #7070a0; }
+
+@keyframes criterionReveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#result-reaction {
+  text-align: center;
+  font-size: 1.5rem;
+  line-height: 1.3;
+  margin-top: -4px;
+}
 
 #result-actions {
   display: flex;
@@ -889,5 +903,9 @@ body {
   *, *::before, *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+  }
+  .result-criterion {
+    opacity: 1;
+    animation: none;
   }
 }
