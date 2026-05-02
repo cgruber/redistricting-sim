@@ -91,8 +91,8 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-006-zoom-adaptive-dot-density.md` | design, rendering | Zoom-adaptive dot density scaling + person glyph threshold (refinement on DESIGN-005, possibly post-v1) |
 | `DESIGN-007-dimensional-dot-map-demographic-overlay.md` | design, rendering | Dimensional dot map: demographic dimension switching (Option B adaptive encoding) + sorted placement toggle |
 | `GAME-056-playtest-feedback.md` | game, content, UX | Capture and act on playtest feedback — scenario balance and UX |
+| `GAME-057-scenario-randomization.md` | game, content, replayability | Per-session ±5% population/lean offsets seeded per session; e2e tests remain deterministic |
 | `GAME-030-main-menu-and-campaigns.md` | game, UX, architecture | Main menu, campaign model, campaign select, layered navigation; replaces scenario-select-as-home |
-| `GAME-031-gameplay-critique-followup.md` | game, content, balance | Review and act on external gameplay critique research (scenario difficulty, eval balance, design) |
 | `DESIGN-008-geographic-features.md` | design, rendering | Geographic features (lakes=aqua+wave, mountains=grey+hatch) as decorative non-precinct tiles; blocks contiguity |
 | `GAME-041-split-loader.md` | game, code-quality | Split loader.ts: extract runtime-types.ts primitives; name validateScenario() internally |
 | `GAME-042-break-up-main.md` | game, code-quality | Break up main.ts god module into testable units (scenarioSelect, resultScreen, introFlow) |
@@ -107,6 +107,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-031: gameplay critique followup | Tightened pop tolerance (007/008: 10%→5%); compactness 007: 0.40→0.50; randomization→GAME-057; others deferred or rejected |
 | DESIGN-001: achievement/star system research | Variable per-criterion stars: 1 base + 1 per optional criterion; no format change needed; fixed-3 rejected; research doc written 2026-05-02 |
 | GAME-055: scenario-driven party names | `renderResults()` accepts partyLabels param; scenario party names (Ken/Ryu, Cat/Dog) shown in results panel; fallback to "Party 1"/"Party 2"; 2 e2e tests; merged PR #180 |
 | GAME-008: full accessibility pass | Okabe-Ito CVD-safe district palette, PuOr lean view, aligned party colors, keyboard precinct nav (arrow+number keys), focus rings, prefers-reduced-motion, 6 e2e a11y tests; merged PR #177, deployed v0.0.13 |
