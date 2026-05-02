@@ -100,6 +100,13 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-043-unify-type-systems.md` | game, code-quality | Unify spike and scenario type systems; retire adapter.ts and types.ts spike layer |
 | `GAME-046-panels-unit-tests.md` | game, testing | Unit tests for render/panels.ts (deferred): jsdom or extract-pure-helpers approach |
 | `GAME-053-electoral-outcome-visual-diff.md` | game, UX | Electoral outcome comparison (player map vs baseline) on result screen; placeholder |
+| `DESIGN-009-character-reaction-visual-style.md` | design, UX, art | Art style, character roster, animation approach, and audio tone for result screen reactions |
+| `GAME-059-submit-on-invalid.md` | game, UX | Allow submission of invalid maps; failure animations play; Fix-It path replaces Next Scenario |
+| `GAME-060-character-sprite-assets.md` | game, art, content | Character sprite + animation assets (5 types × pass/fail); AI-generated SVG; depends on DESIGN-009 |
+| `GAME-061-audio-clips.md` | game, audio, content | 10 audio clips (5 types × pass/fail); CC0 preferred; AI-generated fallback; depends on DESIGN-009 |
+| `GAME-062-character-reaction-system.md` | game, UX | Wire character sprites + audio to result screen; replaces emoji placeholder; depends on GAME-060/061/063/064 |
+| `GAME-063-asset-pipeline.md` | game, build, infrastructure | Asset directory structure + Bazel integration for SVG + audio delivery |
+| `GAME-064-audio-playback-infrastructure.md` | game, UX, infrastructure | AudioPlayer module: preload, play, mute toggle, autoplay policy, localStorage persistence |
 
 ---
 
