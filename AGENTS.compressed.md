@@ -51,6 +51,13 @@ SPIKE CHECKPOINTING: maintain PROGRESS.md in spike dir; update+commit with each 
   resuming agent: read ticket → PROGRESS.md → jj log; continue from Next up
   keep under 30 lines; skip anything evident from ticket or code
 
+§PR
+task-list-completed CI check scans ALL checkboxes — PR description AND every comment (inline included).
+ANY unchecked `- [ ]` blocks merge permanently; check does NOT time out.
+critique agents often post `- [ ]` items; once fixed, edit comment via gh api PATCH to `- [x]`.
+  gh api repos/<org>/<repo>/pulls/comments/<id> -X PATCH -F body=@/tmp/...
+exclude from blocking: add N/A|POST-MERGE|OPTIONAL keyword to the checkbox line.
+
 §TICKETS
 TICKETS.md=canonical index; do NOT maintain ticket inventories elsewhere
 any ticket file create|modify|resolve|delete → update TICKETS.md in same op
