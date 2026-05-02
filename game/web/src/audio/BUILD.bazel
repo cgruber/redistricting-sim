@@ -1,0 +1,68 @@
+"""
+Bazel targets for audio playback infrastructure (GAME-064):
+
+  audioplayer_lib — audioPlayer.ts (preload, play, setMuted, isMuted)
+
+This BUILD.bazel makes src/audio/ a separate Bazel package, so the parent's
+glob(["src/**/*.ts"]) no longer covers this directory. game/web/BUILD.bazel
+lists audioplayer_lib as an explicit dep on app_typecheck_lib and the
+esbuild app bundle.
+"""
+
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
+load("@aspect_rules_js//js:defs.bzl", "js_test")
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
+
+ts_config(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    visibility = ["//web/src/audio:__pkg__"],
+)
+
+# ── audioplayer_lib: preload, play, setMuted, isMuted ─────────────────────────
+
+ts_project(
+    name = "audioplayer_lib",
+    srcs = ["audioPlayer.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    visibility = ["//web:__subpackages__"],
+)
+
+# ── audioplayer_typecheck_test: type-check passes ────────────────────────────
+
+build_test(
+    name = "audioplayer_typecheck_test",
+    targets = [":audioplayer_lib"],
+    visibility = ["//visibility:public"],
+)
+
+# ── audioplayer_test_lib: compile the test ───────────────────────────────────
+
+ts_project(
+    name = "audioplayer_test_lib",
+    srcs = ["audioPlayer_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":audioplayer_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+# ── audioplayer_test: run tests with Node ────────────────────────────────────
+
+js_test(
+    name = "audioplayer_test",
+    entry_point = "audioPlayer_test.js",
+    data = [
+        ":audioplayer_test_lib",
+        ":audioplayer_lib",
+        "//web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
