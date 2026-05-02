@@ -85,7 +85,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `BUILD-009-content-hash-bundle.md` | build, deployment | Content-hashed bundle filenames (`bundle-[hash].js`) for proper CDN cache invalidation on deploy; replaces query-string kludge in release.main.kts |
 | `CI-001-github-action-ticket-close-sync.md` | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
 | `DIST-001-steam-deployment-research.md` | distribution, platform | Research Steam free/educational program, achievements API, web-vs-Steam tradeoffs |
-| `DESIGN-001-achievement-star-system.md` | design, UX | Game ergonomics research for star/achievement ranking system (required vs. optional criteria) |
 | `AGENT-003-infra-pr-review-bot-comment-handling.md` | agentic workflow, infra | Propose bot comment handling (Copilot, CodeQL) to infra pr-review-cycle workflow |
 | `DESIGN-004-legend-layout.md` | design, UX | Move legend to horizontal strip above map; free sidebar space for data panels |
 | `DESIGN-005-population-dot-density-overlay.md` | design, rendering | Population dot density overlay: dot count per precinct proportional to population; hue-aware dot color; colorblind-safe palette |
@@ -108,6 +107,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| DESIGN-001: achievement/star system research | Variable per-criterion stars: 1 base + 1 per optional criterion; no format change needed; fixed-3 rejected; research doc written 2026-05-02 |
 | GAME-055: scenario-driven party names | `renderResults()` accepts partyLabels param; scenario party names (Ken/Ryu, Cat/Dog) shown in results panel; fallback to "Party 1"/"Party 2"; 2 e2e tests; merged PR #180 |
 | GAME-008: full accessibility pass | Okabe-Ito CVD-safe district palette, PuOr lean view, aligned party colors, keyboard precinct nav (arrow+number keys), focus rings, prefers-reduced-motion, 6 e2e a11y tests; merged PR #177, deployed v0.0.13 |
 | LEGAL-001: content risk assessment | Low risk for v1; all pre-authored content, fictional entities, educational framing; disclaimers added to about page + Valle Verde; authoring tool deferred to post-v1 review |
