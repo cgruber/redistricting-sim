@@ -527,6 +527,14 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		partyIdToKey.set(p.id, SPIKE_PARTY_KEYS[i] ?? "I");
 	});
 
+	// ── Party labels derived from scenario data (GAME-055) ───────────────────
+	// Override the hardcoded PARTY_LABELS fallbacks with scenario party names.
+	const partyLabels: Partial<Record<"R" | "D" | "L" | "G" | "I", string>> = {};
+	scenario.parties.forEach((p) => {
+		const key = partyIdToKey.get(p.id);
+		if (key !== undefined) partyLabels[key as "R" | "D" | "L" | "G" | "I"] = p.name;
+	});
+
 	// ── Update cycle ──────────────────────────────────────────────────────────
 	function updateUI() {
 		const state = store.getState();
@@ -534,7 +542,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 		renderer.render();
 
-		renderResults(resultsEl!, state);
+		renderResults(resultsEl!, state, partyLabels);
 		renderValidityPanel(validityEl!, state, scenario.rules);
 		renderLegend(legendEl!, state.districtCount);
 		renderDistrictButtons(districtBtnsEl!, state.districtCount, state.activeDistrict, (id) => {

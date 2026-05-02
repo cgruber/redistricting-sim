@@ -1,21 +1,26 @@
 import type { ScenarioRules } from "../model/scenario.js";
-import { DISTRICT_COLORS, PARTY_COLORS, PARTY_LABELS } from "../model/types.js";
+import { DISTRICT_COLORS, PARTY_COLORS, PARTY_LABELS, type PartyKey } from "../model/types.js";
 import { computeValidityStats } from "../simulation/validity.js";
 import type { GameStore } from "../store/gameStore.js";
 
-export function renderResults(container: HTMLElement, state: GameStore): void {
+export function renderResults(
+	container: HTMLElement,
+	state: GameStore,
+	partyLabels?: Partial<Record<PartyKey, string>>,
+): void {
 	if (state.simulationResult === null || state.simulationResult.districtResults.length === 0) {
 		container.innerHTML =
 			'<div style="color:#606080;font-size:0.85rem;">Draw districts to see results</div>';
 		return;
 	}
 
+	const labels: Record<PartyKey, string> = { ...PARTY_LABELS, ...partyLabels };
 	const { districtResults } = state.simulationResult;
 	const html = districtResults
 		.map((r) => {
 			const color = DISTRICT_COLORS[r.districtId - 1] ?? "#888";
 			const winnerColor = PARTY_COLORS[r.winner];
-			const winnerLabel = PARTY_LABELS[r.winner];
+			const winnerLabel = labels[r.winner];
 			const dPct = (r.voteTotals.D * 100).toFixed(1);
 			const rPct = (r.voteTotals.R * 100).toFixed(1);
 			const marginPct = (r.margin * 100).toFixed(1);
@@ -25,7 +30,7 @@ export function renderResults(container: HTMLElement, state: GameStore): void {
         <div class="winner-badge" style="background:${winnerColor};color:#fff">${winnerLabel} +${marginPct}%</div>
         <div class="vote-bar" style="--d-pct:${dPct}%"></div>
         <div class="vote-details">
-          Blue ${dPct}% · Red ${rPct}% · ${r.precinctCount} precincts · pop ${r.population.toLocaleString()}
+          ${labels.D} ${dPct}% · ${labels.R} ${rPct}% · ${r.precinctCount} precincts · pop ${r.population.toLocaleString()}
         </div>
       </div>`;
 		})
