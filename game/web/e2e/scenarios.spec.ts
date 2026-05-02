@@ -119,8 +119,8 @@ test("scenario-002 winnability: packing east Ryu bloc into one district passes",
    */
   await loadScenario(page, "scenario-002");
 
-  // Initial diagonal-strip assignment should fail (≤2 Ken seats)
-  await expect(page.locator("#btn-submit")).toBeDisabled();
+  // GAME-059: Submit always enabled; initial diagonal-strip assignment fails criteria but can be submitted
+  await expect(page.locator("#btn-submit")).toBeEnabled(); // GAME-059: validity gate removed
 
   // D1: west-center Ken blob (23 hexes)
   await paintHexes(page, [
@@ -200,8 +200,8 @@ test("scenario-003 winnability: packing urban core into one district passes", as
    */
   await loadScenario(page, "scenario-003");
 
-  // Initial angular-wedge assignment should fail (sectors mix urban+rural → ≤2 Ken seats)
-  await expect(page.locator("#btn-submit")).toBeDisabled();
+  // GAME-059: Submit always enabled; initial angular-wedge assignment fails criteria but can be submitted
+  await expect(page.locator("#btn-submit")).toBeEnabled(); // GAME-059: validity gate removed
 
   // D1: northeast arc — rural + suburban Ken territory (26 hexes)
   await paintHexes(page, [
@@ -295,8 +295,8 @@ test("scenario-004 winnability: cracking the corridor across all 5 districts pas
    */
   await loadScenario(page, "scenario-004");
 
-  // Initial horizontal-slab assignment consolidates corridor → fails all-5 criterion
-  await expect(page.locator("#btn-submit")).toBeDisabled();
+  // GAME-059: Submit always enabled; initial horizontal-slab assignment fails criteria but can be submitted
+  await expect(page.locator("#btn-submit")).toBeEnabled(); // GAME-059: validity gate removed
 
   // D1: far west strip q≤-4 (24 hexes, crosses corridor at q=-6..-4 r=0)
   await paintHexes(page, [
@@ -408,8 +408,8 @@ test("scenario-005 winnability: consolidating the valley into one district passe
    */
   await loadScenario(page, "scenario-005");
 
-  // Initial diagonal-strip assignment cracks the valley → fails VRA criterion
-  await expect(page.locator("#btn-submit")).toBeDisabled();
+  // GAME-059: Submit always enabled; initial diagonal-strip assignment fails VRA criterion but can be submitted
+  await expect(page.locator("#btn-submit")).toBeEnabled(); // GAME-059: validity gate removed
 
   // D1: valley consolidated — all valley hexes (q=1..5, r=-2..1) + nearby (25 hexes, ~60% Latino)
   await paintHexes(page, [
@@ -499,8 +499,8 @@ test("scenario-006 winnability: column strips separate partisan flanks into safe
    */
   await loadScenario(page, "scenario-006");
 
-  // Initial angular-wedge assignment mixes left+right → all competitive → fails safe_seats
-  await expect(page.locator("#btn-submit")).toBeDisabled();
+  // GAME-059: Submit always enabled; initial angular-wedge assignment fails safe_seats but can be submitted
+  await expect(page.locator("#btn-submit")).toBeEnabled(); // GAME-059: validity gate removed
 
   // D1: far-left Ken strip q=-6,-5,-4 (24 hexes)
   await paintHexes(page, [
@@ -615,7 +615,7 @@ test("scenario-007 winnability: five compact blobs pass reform criteria", async 
    */
   await loadScenario(page, "scenario-007");
 
-  await expect(page.locator("#btn-submit")).toBeDisabled();
+  await expect(page.locator("#btn-submit")).toBeEnabled(); // GAME-059: validity gate removed
 
   await page.evaluate(() => {
     const store = (window as unknown as Record<string, { getState: () => {
@@ -663,7 +663,7 @@ test("scenario-008 winnability: compact Voronoi blobs pass neutral criteria", as
    */
   await loadScenario(page, "scenario-008");
 
-  await expect(page.locator("#btn-submit")).toBeDisabled();
+  await expect(page.locator("#btn-submit")).toBeEnabled(); // GAME-059: validity gate removed
 
   await page.evaluate(() => {
     const store = (window as unknown as Record<string, { getState: () => {
@@ -712,7 +712,7 @@ test("scenario-009 winnability: ring-based split gives 3 Cat-safe districts", as
    */
   await loadScenario(page, "scenario-009");
 
-  await expect(page.locator("#btn-submit")).toBeDisabled();
+  await expect(page.locator("#btn-submit")).toBeEnabled(); // GAME-059: validity gate removed
 
   await page.evaluate(() => {
     const store = (window as unknown as Record<string, { getState: () => {
