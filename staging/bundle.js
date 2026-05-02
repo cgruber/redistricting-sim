@@ -13142,8 +13142,8 @@ var init_types = __esm({
       I: "#a0a0a0"
     };
     PARTY_LABELS = {
-      R: "Red Party",
-      D: "Blue Party",
+      R: "Party 1",
+      D: "Party 2",
       L: "Libertarian",
       G: "Green",
       I: "Independent"
@@ -13750,17 +13750,18 @@ var init_validity = __esm({
 });
 
 // web/src/render/panels.ts
-function renderResults(container, state) {
+function renderResults(container, state, partyLabels) {
   if (state.simulationResult === null || state.simulationResult.districtResults.length === 0) {
     container.innerHTML = '<div style="color:#606080;font-size:0.85rem;">Draw districts to see results</div>';
     return;
   }
+  const labels = __spreadValues(__spreadValues({}, PARTY_LABELS), partyLabels);
   const { districtResults } = state.simulationResult;
   const html2 = districtResults.map((r) => {
     var _a;
     const color2 = (_a = DISTRICT_COLORS[r.districtId - 1]) != null ? _a : "#888";
     const winnerColor = PARTY_COLORS[r.winner];
-    const winnerLabel = PARTY_LABELS[r.winner];
+    const winnerLabel = labels[r.winner];
     const dPct = (r.voteTotals.D * 100).toFixed(1);
     const rPct = (r.voteTotals.R * 100).toFixed(1);
     const marginPct = (r.margin * 100).toFixed(1);
@@ -13770,7 +13771,7 @@ function renderResults(container, state) {
         <div class="winner-badge" style="background:${winnerColor};color:#fff">${winnerLabel} +${marginPct}%</div>
         <div class="vote-bar" style="--d-pct:${dPct}%"></div>
         <div class="vote-details">
-          Blue ${dPct}% \xB7 Red ${rPct}% \xB7 ${r.precinctCount} precincts \xB7 pop ${r.population.toLocaleString()}
+          ${labels.D} ${dPct}% \xB7 ${labels.R} ${rPct}% \xB7 ${r.precinctCount} precincts \xB7 pop ${r.population.toLocaleString()}
         </div>
       </div>`;
   }).join("");
@@ -15004,11 +15005,17 @@ var require_main = __commonJS({
         var _a2;
         partyIdToKey.set(p.id, (_a2 = SPIKE_PARTY_KEYS[i]) != null ? _a2 : "I");
       });
+      const partyLabels = {};
+      scenario.parties.forEach((p) => {
+        const key = partyIdToKey.get(p.id);
+        if (key !== void 0)
+          partyLabels[key] = p.name;
+      });
       function updateUI() {
         const state = store.getState();
         const { pastStates, futureStates } = temporalStore.getState();
         renderer.render();
-        renderResults(resultsEl, state);
+        renderResults(resultsEl, state, partyLabels);
         renderValidityPanel(validityEl, state, scenario.rules);
         renderLegend(legendEl, state.districtCount);
         renderDistrictButtons(districtBtnsEl, state.districtCount, state.activeDistrict, (id2) => {
