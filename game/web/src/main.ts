@@ -9,7 +9,7 @@
  */
 
 import { loadScenario } from "./model/loader.js";
-import type { Scenario } from "./model/scenario.js";
+import type { Scenario, CriterionId } from "./model/scenario.js";
 import { type MapRenderer, type ViewMode, SvgMapRenderer } from "./render/mapRenderer.js";
 import {
 	renderDistrictButtons,
@@ -18,7 +18,7 @@ import {
 	renderValidityPanel,
 } from "./render/panels.js";
 import { createGameStore } from "./store/gameStore.js";
-import { evaluateCriteria, isMapSubmittable } from "./simulation/evaluate.js";
+import { evaluateCriteria, isMapSubmittable, type CriterionResult } from "./simulation/evaluate.js";
 import { computeValidityStats } from "./simulation/validity.js";
 import {
 	loadProgress,
@@ -554,13 +554,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		btnUndo!.disabled = pastStates.length === 0;
 		btnRedo!.disabled = futureStates.length === 0;
 
-		const validity = computeValidityStats(
-			state.precincts,
-			state.assignments,
-			state.districtCount,
-			scenario.rules,
-		);
-		btnSubmit!.disabled = !isMapSubmittable(validity, scenario.rules);
+		// GAME-059: Submit button is always enabled — validity gate removed.
+		btnSubmit!.disabled = false;
 	}
 
 	// ── Intro screen (GAME-016) ───────────────────────────────────────────────
@@ -685,6 +680,55 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	});
 
 	// ── Submit / Evaluation (GAME-017) ────────────────────────────────────────
+
+	/**
+	 * Build synthetic CriterionResult rows for hard validity constraints that the
+	 * map violates (GAME-059).  These are prepended to the result criteria list so
+	 * players can see exactly which structural issues need fixing.
+	 */
+	function buildValidityRows(validity: ReturnType<typeof computeValidityStats>): CriterionResult[] {
+		const rows: CriterionResult[] = [];
+
+		if (validity.unassignedCount > 0) {
+			rows.push({
+				criterionId: "validity:all-assigned" as CriterionId,
+				required: true,
+				description: "All precincts must be assigned to a district",
+				passed: false,
+				detail: `${validity.unassignedCount} precinct(s) unassigned`,
+			});
+		}
+
+		const badPop = validity.districtPop.filter(d => d.status !== "ok");
+		if (badPop.length > 0) {
+			const worst = badPop[0]!;
+			const sign = worst.deviationPct >= 0 ? "+" : "";
+			rows.push({
+				criterionId: "validity:population-balance" as CriterionId,
+				required: true,
+				description: "District populations must be within tolerance",
+				passed: false,
+				detail: `District ${worst.districtId}: ${sign}${worst.deviationPct.toFixed(1)}% deviation`,
+			});
+		}
+
+		if (validity.contiguity !== null) {
+			for (const [distId, ok] of validity.contiguity) {
+				if (!ok) {
+					rows.push({
+						criterionId: `validity:contiguity-${distId}` as CriterionId,
+						required: true,
+						description: `District ${distId} must be contiguous`,
+						passed: false,
+						detail: `District ${distId} is split into disconnected pieces`,
+					});
+				}
+			}
+		}
+
+		return rows;
+	}
+
 	function showResultScreen() {
 		if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList || !resultReaction) return;
 		if (skipClickHandler) { resultScreen.removeEventListener("click", skipClickHandler); skipClickHandler = null; }
@@ -698,6 +742,10 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			state.districtCount,
 			scenario.rules,
 		);
+
+		// GAME-059: detect invalid map before running criterion evaluation.
+		const mapIsValid = isMapSubmittable(validity, scenario.rules);
+
 		const evalResult = evaluateCriteria(
 			scenario.success_criteria,
 			validity,
@@ -710,16 +758,25 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			scenario.precincts,
 		);
 
-		resultVerdict.textContent = evalResult.overallPass ? "Map Passed!" : "Map Failed";
-		resultVerdict.className = evalResult.overallPass ? "pass" : "fail";
-		resultSubtitle.textContent = evalResult.overallPass
+		// GAME-059: overall pass requires a valid map AND all required criteria passing.
+		const overallPass = mapIsValid && evalResult.overallPass;
+
+		resultVerdict.textContent = overallPass ? "Map Passed!" : "Map Failed";
+		resultVerdict.className = overallPass ? "pass" : "fail";
+		resultSubtitle.textContent = overallPass
 			? "All required criteria met."
-			: "One or more required criteria were not met.";
-		resultReaction.textContent = evalResult.overallPass ? "🎉" : "💔";
+			: mapIsValid
+				? "One or more required criteria were not met."
+				: "The map has structural issues that must be fixed.";
+		resultReaction.textContent = overallPass ? "🎉" : "💔";
+
+		// GAME-059: for invalid maps, prepend validity failure rows before scenario criteria.
+		const validityRows = mapIsValid ? [] : buildValidityRows(validity);
+		const allRows: CriterionResult[] = [...validityRows, ...evalResult.criterionResults];
 
 		resultCriteriaList.innerHTML = "";
 		let rowIndex = 0;
-		for (const cr of evalResult.criterionResults) {
+		for (const cr of allRows) {
 			const cls = cr.passed
 				? "passed"
 				: cr.required
@@ -772,11 +829,14 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		skipClickHandler = skipHandler;
 		resultScreen.addEventListener("click", skipHandler, { once: true });
 
+		// GAME-059: "Fix It" label for invalid maps, "Keep Drawing" otherwise.
+		// "Next Scenario" only shown on a full pass.
+		btnKeepDrawing!.textContent = mapIsValid ? "← Keep Drawing" : "← Fix It";
 		btnKeepDrawing!.style.display = "";
-		btnNextScenario!.style.display = evalResult.overallPass ? "" : "none";
+		btnNextScenario!.style.display = overallPass ? "" : "none";
 
 		// ── GAME-018: persist completion on pass ──────────────────────────────────
-		if (evalResult.overallPass) {
+		if (overallPass) {
 			progress = markCompleted(progress, scenario.id);
 			saveProgress(progress);
 			// GAME-007: clear the WIP for this scenario — it's done.

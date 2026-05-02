@@ -16,7 +16,7 @@ import { test, expect } from "@playwright/test";
  *   6. Objective text is shown from scenario narrative
  *
  * GAME-017: Evaluation phase:
- *   7. Submit button is disabled on initial state (one district empty)
+ *   7. Submit button is enabled on initial load (GAME-059: validity gate removed)
  *   8. Submit button remains in DOM after painting precincts
  *   9. Clicking submit shows result screen with criteria
  *   10. "Keep Drawing" button hides the result screen
@@ -126,10 +126,10 @@ test("intro: objective text is shown from scenario narrative", async ({ page }) 
 
 // ─── GAME-017: Evaluation phase ───────────────────────────────────────────────
 
-test("submit: button is disabled on initial load (population imbalance)", async ({ page }) => {
+test("submit: button is enabled on initial load (GAME-059: validity gate removed)", async ({ page }) => {
   await loadEditor(page);
-  // Initial state: precincts distributed unevenly across 3 districts → fails population balance
-  await expect(page.locator("#btn-submit")).toBeDisabled();
+  // GAME-059: Submit is always enabled regardless of validity
+  await expect(page.locator("#btn-submit")).toBeEnabled();
 });
 
 test("submit: result screen is hidden on initial load", async ({ page }) => {
@@ -156,25 +156,17 @@ test("submit: button remains in DOM and is interactive after painting precincts 
 test("submit: clicking submit shows result screen with criteria", async ({ page }) => {
   await loadEditor(page);
 
-  // Force-enable and click submit via JS (bypasses the validity gate for this structural test)
-  await page.evaluate(() => {
-    const btn = document.getElementById("btn-submit") as HTMLButtonElement | null;
-    if (btn) btn.disabled = false;
-  });
+  // GAME-059: Submit is always enabled; no need to force-enable via JS.
   await page.locator("#btn-submit").click();
 
   await expect(page.locator("#result-screen")).toBeVisible();
   await expect(page.locator(".result-criterion").first()).toBeVisible();
 });
 
-test("submit: Keep Drawing button hides result screen", async ({ page }) => {
+test("submit: Keep Drawing / Fix It button hides result screen", async ({ page }) => {
   await loadEditor(page);
 
-  // Show result screen by force
-  await page.evaluate(() => {
-    const btn = document.getElementById("btn-submit") as HTMLButtonElement | null;
-    if (btn) btn.disabled = false;
-  });
+  // GAME-059: Submit is always enabled.
   await page.locator("#btn-submit").click();
   await expect(page.locator("#result-screen")).toBeVisible();
 
@@ -406,15 +398,15 @@ test("winnability: painting boundary precincts enables submit and produces a pas
    *   d1 (north, r<-2): ~57 hexes, underpopulated (~-14%)
    *   d2 (central, |r|≤2): ~74 hexes, overpopulated (~+13%)
    *   d3 (south, r>2): ~65 hexes, about right (~+0.4%)
-   * Submit is disabled; population imbalance prevents submission.
+   * GAME-059: Submit is always enabled; initial state fails population balance but can be submitted.
    *
    * Winning move: paint 7 hexes at r=-2, q=-6..0 from d2 → d1.
    * This transfers ~21k population, bringing all three districts within ±3%.
    */
   await loadEditor(page);
 
-  // Initial state: submit must be disabled (d1 under-populated, d2 over-populated)
-  await expect(page.locator("#btn-submit")).toBeDisabled();
+  // GAME-059: Submit is always enabled; initial state is unbalanced but submittable.
+  await expect(page.locator("#btn-submit")).toBeEnabled();
 
   // Activate district 1 (the default, but be explicit)
   await page.locator("button.district-btn").first().click();

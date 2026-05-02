@@ -111,6 +111,7 @@ sh_test(
         "e2e/main-menu.spec.ts",
         "e2e/campaign-select.spec.ts",
         "e2e/a11y.spec.ts",
+        "e2e/submit-on-invalid.spec.ts",
         # Playwright packages as declared Bazel deps — ensures the cache key includes
         # the playwright version and the files are available in runfiles.
         "//:node_modules/@playwright/test",
