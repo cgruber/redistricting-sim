@@ -4,6 +4,7 @@ title: Audio playback infrastructure — preload, mute toggle, autoplay handling
 area: game, UX, infrastructure
 status: open
 created: 2026-05-02
+github_issue: 193
 ---
 
 ## Summary
