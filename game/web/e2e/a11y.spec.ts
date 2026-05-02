@@ -140,3 +140,81 @@ test.describe("GAME-008 Accessibility", () => {
     expect(jsErrors).toHaveLength(0);
   });
 });
+
+// ─── GAME-055: Party names ────────────────────────────────────────────────────
+
+test.describe("GAME-055 Party names", () => {
+  /**
+   * Test 1: tutorial-001 results panel shows scenario party names (Ken Party / Ryu Party)
+   * not the generic PARTY_LABELS fallbacks ("Party 1" / "Party 2").
+   *
+   * tutorial-001 starts with all precincts unassigned, so we must paint them first
+   * via window.__gameStore to trigger a non-empty simulationResult.
+   */
+  test("tutorial-001 results panel shows scenario party names not hardcoded labels", async ({ page }) => {
+    await page.goto("/?campaign=tutorial&s=tutorial-001&debug=true");
+    const skip = page.locator("#btn-intro-skip");
+    await expect(skip).toBeVisible({ timeout: 10_000 });
+    await skip.click();
+    await expect(page.locator("#map-svg path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+    // Assign all precincts to districts 1 and 2 (split roughly in half) via the
+    // exposed game store so renderResults() runs with non-empty districtResults.
+    await page.evaluate(() => {
+      const store = (window as unknown as Record<string, {
+        getState: () => {
+          paintStroke: (ids: number[], district: number) => void;
+          precincts: unknown[];
+        };
+      }>)["__gameStore"];
+      if (!store) throw new Error("__gameStore not exposed");
+      const { precincts, paintStroke } = store.getState();
+      const total = precincts.length;
+      const half = Math.floor(total / 2);
+      // District 1 gets first half, district 2 gets second half
+      paintStroke(Array.from({ length: half }, (_, i) => i), 1);
+      paintStroke(Array.from({ length: total - half }, (_, i) => i + half), 2);
+    });
+
+    // Wait for at least one result-district row to appear
+    await expect(page.locator("#results-container .result-district").first()).toBeVisible({ timeout: 5_000 });
+
+    const resultsText = await page.locator("#results-container").innerText();
+
+    // Must NOT contain the generic PARTY_LABELS fallbacks
+    expect(resultsText).not.toContain("Party 1");
+    expect(resultsText).not.toContain("Party 2");
+
+    // Must contain both scenario-specific party names
+    expect(resultsText).toContain("Ken Party");
+    expect(resultsText).toContain("Ryu Party");
+  });
+
+  /**
+   * Test 2: scenario-009 results panel shows Cat Party / Dog Party names.
+   *
+   * scenario-009 ships with all precincts pre-assigned, so results are already
+   * populated on initial load — no painting required.
+   */
+  test("scenario-009 results panel shows scenario party names not hardcoded labels", async ({ page }) => {
+    // scenario-009 is in the educational campaign, accessible via ?s= + ?debug
+    await page.goto("/?campaign=educational&s=scenario-009&debug=true");
+    const skip = page.locator("#btn-intro-skip");
+    await expect(skip).toBeVisible({ timeout: 10_000 });
+    await skip.click();
+    await expect(page.locator("#map-svg path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+    // All precincts are pre-assigned in scenario-009 — results render on page load
+    await expect(page.locator("#results-container .result-district").first()).toBeVisible({ timeout: 5_000 });
+
+    const resultsText = await page.locator("#results-container").innerText();
+
+    // Must NOT contain the generic PARTY_LABELS fallbacks
+    expect(resultsText).not.toContain("Party 1");
+    expect(resultsText).not.toContain("Party 2");
+
+    // Must contain both scenario-specific party names
+    expect(resultsText).toContain("Cat Party");
+    expect(resultsText).toContain("Dog Party");
+  });
+});

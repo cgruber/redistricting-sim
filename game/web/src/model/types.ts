@@ -145,10 +145,12 @@ export const PARTY_COLORS: Record<PartyKey, string> = {
 	I: "#a0a0a0",
 };
 
-/** Party display labels */
+/** Party display labels — fallbacks used when a scenario does not supply party names.
+ *  Generic "Party 1/2" avoids color-name confusion since party colors vary by scenario.
+ */
 export const PARTY_LABELS: Record<PartyKey, string> = {
-	R: "Red Party",
-	D: "Blue Party",
+	R: "Party 1",
+	D: "Party 2",
 	L: "Libertarian",
 	G: "Green",
 	I: "Independent",
