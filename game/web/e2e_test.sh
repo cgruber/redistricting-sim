@@ -46,6 +46,7 @@ WEB_CSS="${RUNFILES_MOD}/web/styles.css"
 WASM_JS="${RUNFILES_MOD}/rust/wasm_calc_bindgen/wasm_calc_bindgen.js"
 WASM_BG="${RUNFILES_MOD}/rust/wasm_calc_bindgen/wasm_calc_bindgen_bg.wasm"
 SCENARIOS_DIR="${RUNFILES_MOD}/scenarios"
+ASSETS_DIR="${RUNFILES_MOD}/web/assets"
 
 # ── Verify all required artifacts exist ──────────────────────────────────────
 for f in "${WEB_BUNDLE}" "${WEB_HTML}" "${WASM_JS}" "${WASM_BG}"; do
@@ -78,6 +79,11 @@ cp "${WASM_BG}"    "${SERVE_DIR}/wasm_calc_bindgen_bg.wasm"
 if [[ -d "${SCENARIOS_DIR}" ]]; then
   mkdir -p "${SERVE_DIR}/scenarios"
   cp "${SCENARIOS_DIR}/"*.json "${SERVE_DIR}/scenarios/"
+fi
+
+# Static assets (character SVGs, audio clips) served under /assets/
+if [[ -d "${ASSETS_DIR}" ]]; then
+  cp -r "${ASSETS_DIR}" "${SERVE_DIR}/assets"
 fi
 
 # ── Start HTTP server ─────────────────────────────────────────────────────────

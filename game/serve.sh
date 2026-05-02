@@ -31,5 +31,10 @@ cp "${BUILD_WORKSPACE_DIRECTORY}/web/styles.css" "${DIST}/"
 mkdir -p "${DIST}/scenarios"
 cp "${BUILD_WORKSPACE_DIRECTORY}/scenarios/"*.json "${DIST}/scenarios/"
 
+# Static assets (character SVGs, audio clips) served under /assets/
+if [[ -d "${BUILD_WORKSPACE_DIRECTORY}/web/assets" ]]; then
+  cp -r "${BUILD_WORKSPACE_DIRECTORY}/web/assets" "${DIST}/assets"
+fi
+
 echo "Serving on http://localhost:${PORT} (Ctrl-C to stop)"
 cd "${DIST}" && python3 -m http.server "${PORT}"
