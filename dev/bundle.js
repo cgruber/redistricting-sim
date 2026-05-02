@@ -13142,8 +13142,8 @@ var init_types = __esm({
       I: "#a0a0a0"
     };
     PARTY_LABELS = {
-      R: "Red Party",
-      D: "Blue Party",
+      R: "Party 1",
+      D: "Party 2",
       L: "Libertarian",
       G: "Green",
       I: "Independent"
@@ -13318,6 +13318,9 @@ var init_mapRenderer = __esm({
           this.borderGroup.selectAll("line.boundary").attr("stroke-width", bw);
           const pw = _SvgMapRenderer.PREVIEW_BASE_WIDTH / this.currentK;
           this.previewBorderGroup.selectAll("line.preview-boundary").attr("stroke-width", pw);
+          if (this.keyboardFocusPath !== null) {
+            select_default2(this.keyboardFocusPath).attr("stroke-width", 2 / this.currentK).attr("stroke-dasharray", `${4 / this.currentK},${2 / this.currentK}`);
+          }
         });
         svgNode2.addEventListener("contextmenu", (e) => e.preventDefault());
         this.svg.call(this.zoomBehavior);
@@ -13403,6 +13406,8 @@ var init_mapRenderer = __esm({
             return;
           if (this.hoveredPath !== path2) {
             this.clearHover();
+            if (path2 === this.keyboardFocusPath)
+              return;
             this.hoveredPath = path2;
             select_default2(path2).attr("stroke", "#ffffff").attr("stroke-width", _SvgMapRenderer.HOVER_STROKE_WIDTH / this.currentK).attr("opacity", _SvgMapRenderer.HOVER_OPACITY);
             const { assignments } = this.getState();
@@ -13444,6 +13449,10 @@ var init_mapRenderer = __esm({
       clearHover() {
         if (this.hoveredPath === null)
           return;
+        if (this.hoveredPath === this.keyboardFocusPath) {
+          this.hoveredPath = null;
+          return;
+        }
         const path2 = this.hoveredPath;
         this.hoveredPath = null;
         const { assignments } = this.getState();
@@ -13579,11 +13588,15 @@ var init_mapRenderer = __esm({
           if (num >= 1 && num <= districtCount) {
             e.preventDefault();
             this.paintStroke([this.focusedPrecinctId], num);
+            const { precincts: precincts2 } = this.getState();
+            this.setKeyboardFocus(this.focusedPrecinctId, precincts2);
             return;
           }
           if (e.key === " ") {
             e.preventDefault();
             this.paintStroke([this.focusedPrecinctId], activeDistrict);
+            const { precincts: precincts2 } = this.getState();
+            this.setKeyboardFocus(this.focusedPrecinctId, precincts2);
           }
         });
         svgNode2.addEventListener("blur", () => {
@@ -13737,17 +13750,18 @@ var init_validity = __esm({
 });
 
 // web/src/render/panels.ts
-function renderResults(container, state) {
+function renderResults(container, state, partyLabels) {
   if (state.simulationResult === null || state.simulationResult.districtResults.length === 0) {
     container.innerHTML = '<div style="color:#606080;font-size:0.85rem;">Draw districts to see results</div>';
     return;
   }
+  const labels = __spreadValues(__spreadValues({}, PARTY_LABELS), partyLabels);
   const { districtResults } = state.simulationResult;
   const html2 = districtResults.map((r) => {
     var _a;
     const color2 = (_a = DISTRICT_COLORS[r.districtId - 1]) != null ? _a : "#888";
     const winnerColor = PARTY_COLORS[r.winner];
-    const winnerLabel = PARTY_LABELS[r.winner];
+    const winnerLabel = labels[r.winner];
     const dPct = (r.voteTotals.D * 100).toFixed(1);
     const rPct = (r.voteTotals.R * 100).toFixed(1);
     const marginPct = (r.margin * 100).toFixed(1);
@@ -13757,7 +13771,7 @@ function renderResults(container, state) {
         <div class="winner-badge" style="background:${winnerColor};color:#fff">${winnerLabel} +${marginPct}%</div>
         <div class="vote-bar" style="--d-pct:${dPct}%"></div>
         <div class="vote-details">
-          Blue ${dPct}% \xB7 Red ${rPct}% \xB7 ${r.precinctCount} precincts \xB7 pop ${r.population.toLocaleString()}
+          ${labels.D} ${dPct}% \xB7 ${labels.R} ${rPct}% \xB7 ${r.precinctCount} precincts \xB7 pop ${r.population.toLocaleString()}
         </div>
       </div>`;
   }).join("");
@@ -14634,8 +14648,10 @@ var require_main = __commonJS({
     var scenarioCardsEl = document.getElementById("scenario-cards");
     var btnSubmit = document.getElementById("btn-submit");
     var resultScreen = document.getElementById("result-screen");
+    var skipClickHandler = null;
     var resultVerdict = document.getElementById("result-verdict");
     var resultSubtitle = document.getElementById("result-subtitle");
+    var resultReaction = document.getElementById("result-reaction");
     var resultCriteriaList = document.getElementById("result-criteria-list");
     var btnKeepDrawing = document.getElementById("btn-keep-drawing");
     var btnNextScenario = document.getElementById("btn-next-scenario");
@@ -14991,11 +15007,17 @@ var require_main = __commonJS({
         var _a2;
         partyIdToKey.set(p.id, (_a2 = SPIKE_PARTY_KEYS[i]) != null ? _a2 : "I");
       });
+      const partyLabels = {};
+      scenario.parties.forEach((p) => {
+        const key = partyIdToKey.get(p.id);
+        if (key !== void 0)
+          partyLabels[key] = p.name;
+      });
       function updateUI() {
         const state = store.getState();
         const { pastStates, futureStates } = temporalStore.getState();
         renderer.render();
-        renderResults(resultsEl, state);
+        renderResults(resultsEl, state, partyLabels);
         renderValidityPanel(validityEl, state, scenario.rules);
         renderLegend(legendEl, state.districtCount);
         renderDistrictButtons(districtBtnsEl, state.districtCount, state.activeDistrict, (id2) => {
@@ -15123,8 +15145,12 @@ var require_main = __commonJS({
         btnReset.disabled = false;
       });
       function showResultScreen() {
-        if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList)
+        if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList || !resultReaction)
           return;
+        if (skipClickHandler) {
+          resultScreen.removeEventListener("click", skipClickHandler);
+          skipClickHandler = null;
+        }
         const state = store.getState();
         if (state.simulationResult === null)
           return;
@@ -15148,11 +15174,15 @@ var require_main = __commonJS({
         resultVerdict.textContent = evalResult.overallPass ? "Map Passed!" : "Map Failed";
         resultVerdict.className = evalResult.overallPass ? "pass" : "fail";
         resultSubtitle.textContent = evalResult.overallPass ? "All required criteria met." : "One or more required criteria were not met.";
+        resultReaction.textContent = evalResult.overallPass ? "\u{1F389}" : "\u{1F494}";
         resultCriteriaList.innerHTML = "";
+        let rowIndex = 0;
         for (const cr of evalResult.criterionResults) {
           const cls = cr.passed ? "passed" : cr.required ? "failed-required" : "failed-optional";
           const row = document.createElement("div");
           row.className = `result-criterion ${cls}`;
+          row.style.animationDelay = `${rowIndex * 120}ms`;
+          rowIndex++;
           const iconEl = document.createElement("span");
           iconEl.className = "rc-icon";
           iconEl.textContent = cr.passed ? "\u2713" : "\u2717";
@@ -15176,6 +15206,16 @@ var require_main = __commonJS({
           row.appendChild(badge);
           resultCriteriaList.appendChild(row);
         }
+        const skipHandler = () => {
+          const rows = Array.from(resultCriteriaList.querySelectorAll(".result-criterion"));
+          for (const el of rows) {
+            el.style.animation = "none";
+            el.style.opacity = "1";
+          }
+          skipClickHandler = null;
+        };
+        skipClickHandler = skipHandler;
+        resultScreen.addEventListener("click", skipHandler, { once: true });
         btnKeepDrawing.style.display = "";
         btnNextScenario.style.display = evalResult.overallPass ? "" : "none";
         if (evalResult.overallPass) {
