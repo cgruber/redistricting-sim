@@ -62,4 +62,6 @@ Option 2 is a format switch — decide before starting and update DESIGN-009 if 
 - `game/web/assets/characters/` — current placeholder SVGs
 - `game/web/assets/characters/ALT-TEXT.md` — accessibility descriptions
 - `thoughts/shared/tickets/GAME-062-character-reaction-system.md` — downstream consumer
-- `/tmp/sprite-review.html` — local review page (regenerate if needed)
+- Sprite review page: regenerate on demand from the grid template in the Visual
+  review AC above (dark background, 5×4 grid, idle-bob animation, file:/// paths
+  to `game/web/assets/characters/{type}/{state}.svg`)
