@@ -100,7 +100,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-043-unify-type-systems.md` | game, code-quality | Unify spike and scenario type systems; retire adapter.ts and types.ts spike layer |
 | `GAME-046-panels-unit-tests.md` | game, testing | Unit tests for render/panels.ts (deferred): jsdom or extract-pure-helpers approach |
 | `GAME-053-electoral-outcome-visual-diff.md` | game, UX | Electoral outcome comparison (player map vs baseline) on result screen; placeholder |
-| `DESIGN-009-character-reaction-visual-style.md` | design, UX, art | Art style, character roster, animation approach, and audio tone for result screen reactions |
 | `GAME-059-submit-on-invalid.md` | game, UX | Allow submission of invalid maps; failure animations play; Fix-It path replaces Next Scenario |
 | `GAME-060-character-sprite-assets.md` | game, art, content | Character sprite + animation assets (5 types × pass/fail); AI-generated SVG; depends on DESIGN-009 |
 | `GAME-061-audio-clips.md` | game, audio, content | 10 audio clips (5 types × pass/fail); CC0 preferred; AI-generated fallback; depends on DESIGN-009 |
@@ -114,6 +113,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| DESIGN-009: character reaction visual style | Inline SVG + CSS animation decided; 5 instigator types × 4 star states; consistency spec for AI generation; audio tone per type; research doc finalized |
 | GAME-052: animated criteria reveal | CSS criterionReveal keyframe (opacity+translateY), 120ms stagger, click-to-skip, 🎉/💔 reaction; 4 e2e tests; merged PR #189 |
 | GAME-031: gameplay critique followup | Tightened pop tolerance (007/008: 10%→5%); compactness 007: 0.40→0.50; randomization→GAME-057; others deferred or rejected |
 | DESIGN-001: achievement/star system research | Variable per-criterion stars: 1 base + 1 per optional criterion; no format change needed; fixed-3 rejected; research doc written 2026-05-02 |

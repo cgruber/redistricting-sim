@@ -4,6 +4,7 @@ title: Character sprite and animation assets for result screen reactions
 area: game, art, content
 status: open
 created: 2026-05-02
+github_issue: 201
 ---
 
 ## Summary

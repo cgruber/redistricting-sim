@@ -2,7 +2,7 @@
 id: DESIGN-009
 title: Character reaction visual style — result screen art direction
 area: design, UX, art
-status: open
+status: resolved
 created: 2026-05-02
 github_issue: 197
 ---
