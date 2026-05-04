@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <style>
+    @keyframes idle-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .character { animation: idle-bob 0.9s ease-in-out infinite; }
+  </style>
+  <g class="character">
+    <!-- LEFT FIGURE (red) centered at x=50 -->
+    <!-- Head -->
+    <ellipse cx="50" cy="52" rx="16" ry="18" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5"/>
+    <circle cx="43" cy="50" r="2.5" fill="#1a1a2e"/>
+    <circle cx="57" cy="50" r="2.5" fill="#1a1a2e"/>
+    <path d="M42 59 Q50 65 58 59" stroke="#1a1a2e" stroke-width="2" fill="none"/>
+    <rect x="45" y="68" width="10" height="8" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M28 148 L30 86 Q32 76 50 76 Q68 76 70 86 L72 148 Z"
+          fill="#c0392b" stroke="#1a1a2e" stroke-width="2.5"/>
+    <rect x="46" y="76" width="8" height="20" rx="1" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M28 148 L32 185 L48 185 L50 165 L52 185 L68 185 L72 148 Z"
+          fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1.5"/>
+    <ellipse cx="38" cy="185" rx="7" ry="4" fill="#1a1a2e"/>
+    <ellipse cx="62" cy="185" rx="7" ry="4" fill="#1a1a2e"/>
+    <!-- Left arm thumbs up -->
+    <path d="M30 97 L16 100" stroke="#c0392b" stroke-width="10" stroke-linecap="round"/>
+    <path d="M30 97 L16 100" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <rect x="9" y="95" width="8" height="10" rx="2" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <rect x="11" y="88" width="5" height="9" rx="2" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Right arm out toward center -->
+    <path d="M70 97 L84 90" stroke="#c0392b" stroke-width="10" stroke-linecap="round"/>
+    <path d="M70 97 L84 90" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="87" cy="88" r="6" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+
+    <!-- RIGHT FIGURE (blue) centered at x=150 -->
+    <ellipse cx="150" cy="52" rx="16" ry="18" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5"/>
+    <circle cx="143" cy="50" r="2.5" fill="#1a1a2e"/>
+    <circle cx="157" cy="50" r="2.5" fill="#1a1a2e"/>
+    <path d="M142 59 Q150 65 158 59" stroke="#1a1a2e" stroke-width="2" fill="none"/>
+    <rect x="145" y="68" width="10" height="8" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M128 148 L130 86 Q132 76 150 76 Q168 76 170 86 L172 148 Z"
+          fill="#4a6fa5" stroke="#1a1a2e" stroke-width="2.5"/>
+    <rect x="146" y="76" width="8" height="20" rx="1" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M128 148 L132 185 L148 185 L150 165 L152 185 L168 185 L172 148 Z"
+          fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1.5"/>
+    <ellipse cx="138" cy="185" rx="7" ry="4" fill="#1a1a2e"/>
+    <ellipse cx="162" cy="185" rx="7" ry="4" fill="#1a1a2e"/>
+    <!-- Left arm out toward center -->
+    <path d="M130 97 L116 90" stroke="#4a6fa5" stroke-width="10" stroke-linecap="round"/>
+    <path d="M130 97 L116 90" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="113" cy="88" r="6" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Right arm thumbs up -->
+    <path d="M170 97 L184 100" stroke="#4a6fa5" stroke-width="10" stroke-linecap="round"/>
+    <path d="M170 97 L184 100" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <rect x="183" y="95" width="8" height="10" rx="2" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <rect x="184" y="88" width="5" height="9" rx="2" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+
+    <!-- Handshake in center -->
+    <ellipse cx="100" cy="89" rx="10" ry="6" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+  </g>
+</svg>

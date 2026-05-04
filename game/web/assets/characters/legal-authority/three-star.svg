@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <style>
+    @keyframes idle-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .character { animation: idle-bob 0.9s ease-in-out infinite; }
+  </style>
+  <g class="character">
+    <!-- Head -->
+    <ellipse cx="100" cy="50" rx="20" ry="22" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Judge's collar / wig suggestion -->
+    <path d="M78 64 Q100 72 122 64 L122 58 Q100 66 78 58 Z" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Eyes -->
+    <circle cx="92" cy="48" r="3" fill="#1a1a2e"/>
+    <circle cx="108" cy="48" r="3" fill="#1a1a2e"/>
+    <!-- Big open celebratory smile -->
+    <path d="M87 60 Q100 72 113 60" stroke="#1a1a2e" stroke-width="2" fill="none"/>
+    <!-- Neck -->
+    <rect x="94" y="70" width="12" height="8" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Robe — tall and narrow, flared at base -->
+    <path d="M70 190 L72 88 Q74 78 100 78 Q126 78 128 88 L130 190 Z"
+          fill="#4a6fa5" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Robe trim / front panel -->
+    <rect x="93" y="78" width="14" height="80" rx="2" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Robe shoulder flare -->
+    <path d="M72 90 L55 100 L60 88 Z" fill="#4a6fa5" stroke="#1a1a2e" stroke-width="2"/>
+    <path d="M128 90 L145 100 L140 88 Z" fill="#4a6fa5" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Left arm raised high (celebratory) -->
+    <path d="M72 90 L44 58" stroke="#4a6fa5" stroke-width="14" stroke-linecap="round"/>
+    <path d="M72 90 L44 58" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="41" cy="55" r="8" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Right arm raised with gavel held high -->
+    <path d="M128 90 L156 58" stroke="#4a6fa5" stroke-width="14" stroke-linecap="round"/>
+    <path d="M128 90 L156 58" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="159" cy="55" r="8" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Gavel (T-shape) in right hand -->
+    <line x1="159" y1="55" x2="165" y2="36" stroke="#8B6914" stroke-width="4"/>
+    <rect x="158" y="30" width="14" height="8" rx="2" fill="#8B6914" stroke="#1a1a2e" stroke-width="1.5"/>
+  </g>
+</svg>

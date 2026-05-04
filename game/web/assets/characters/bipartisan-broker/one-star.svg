@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <style>
+    @keyframes idle-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .character { animation: idle-bob 0.9s ease-in-out infinite; }
+  </style>
+  <g class="character">
+    <!-- LEFT FIGURE (red) centered at x=50 -->
+    <ellipse cx="50" cy="52" rx="16" ry="18" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5"/>
+    <ellipse cx="43" cy="50" rx="2.5" ry="2" fill="#1a1a2e"/>
+    <ellipse cx="57" cy="50" rx="2.5" ry="2" fill="#1a1a2e"/>
+    <!-- Neutral expression -->
+    <line x1="43" y1="62" x2="57" y2="62" stroke="#1a1a2e" stroke-width="2"/>
+    <rect x="45" y="68" width="10" height="8" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M28 148 L30 86 Q32 76 50 76 Q68 76 70 86 L72 148 Z"
+          fill="#c0392b" stroke="#1a1a2e" stroke-width="2.5"/>
+    <rect x="46" y="76" width="8" height="20" rx="1" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M28 148 L32 185 L48 185 L50 165 L52 185 L68 185 L72 148 Z"
+          fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1.5"/>
+    <ellipse cx="38" cy="185" rx="7" ry="4" fill="#1a1a2e"/>
+    <ellipse cx="62" cy="185" rx="7" ry="4" fill="#1a1a2e"/>
+    <!-- Arms at sides, slightly inward -->
+    <path d="M30 100 L18 125" stroke="#c0392b" stroke-width="10" stroke-linecap="round"/>
+    <path d="M30 100 L18 125" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="16" cy="128" r="5" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M70 100 L76 122" stroke="#c0392b" stroke-width="10" stroke-linecap="round"/>
+    <path d="M70 100 L76 122" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="77" cy="125" r="5" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+
+    <!-- RIGHT FIGURE (blue) centered at x=150 -->
+    <ellipse cx="150" cy="52" rx="16" ry="18" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5"/>
+    <ellipse cx="143" cy="50" rx="2.5" ry="2" fill="#1a1a2e"/>
+    <ellipse cx="157" cy="50" rx="2.5" ry="2" fill="#1a1a2e"/>
+    <!-- Neutral expression -->
+    <line x1="143" y1="62" x2="157" y2="62" stroke="#1a1a2e" stroke-width="2"/>
+    <rect x="145" y="68" width="10" height="8" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M128 148 L130 86 Q132 76 150 76 Q168 76 170 86 L172 148 Z"
+          fill="#4a6fa5" stroke="#1a1a2e" stroke-width="2.5"/>
+    <rect x="146" y="76" width="8" height="20" rx="1" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M128 148 L132 185 L148 185 L150 165 L152 185 L168 185 L172 148 Z"
+          fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1.5"/>
+    <ellipse cx="138" cy="185" rx="7" ry="4" fill="#1a1a2e"/>
+    <ellipse cx="162" cy="185" rx="7" ry="4" fill="#1a1a2e"/>
+    <!-- Arms at sides, slightly inward -->
+    <path d="M130 100 L124 122" stroke="#4a6fa5" stroke-width="10" stroke-linecap="round"/>
+    <path d="M130 100 L124 122" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="123" cy="125" r="5" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M170 100 L182 125" stroke="#4a6fa5" stroke-width="10" stroke-linecap="round"/>
+    <path d="M170 100 L182 125" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="184" cy="128" r="5" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+  </g>
+</svg>
