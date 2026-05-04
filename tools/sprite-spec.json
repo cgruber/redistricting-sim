@@ -1,0 +1,65 @@
+{
+  "characterTypes": [
+    {
+      "id": "partisan-boss",
+      "displayName": "Partisan Boss",
+      "role": "Party boss who hired the player to draw the map in their party's favour",
+      "palette": "party gold (#d4a017) and red (#c0392b) accents; shared dark outline (#1a1a2e)",
+      "silhouetteNotes": "Wide-shouldered power-broker suit jacket with visible lapels; strong hat brim or distinctive hair; props: flag or clenched fist; political-cartoon bravado"
+    },
+    {
+      "id": "legal-authority",
+      "displayName": "Legal Authority",
+      "role": "Federal judge evaluating whether the map meets constitutional requirements",
+      "palette": "slate blue (#4a6fa5) accent; formal dark robe; shared dark outline (#1a1a2e)",
+      "silhouetteNotes": "Judicial robe with wide collar; gavel as recurring prop; formal upright bearing; authority conveyed through posture not bulk"
+    },
+    {
+      "id": "bipartisan-broker",
+      "displayName": "Bipartisan Broker",
+      "role": "Both party bosses side by side, evaluating whether the map is fair to both sides",
+      "palette": "left boss warm-red (#c0392b); right boss cool-blue (#2980b9); shared dark outline (#1a1a2e)",
+      "silhouetteNotes": "Two smaller figures at half-width each within the 200x200 viewBox; mirror-image postures; opposing accent colours make them visually symmetric"
+    },
+    {
+      "id": "reform-arbiter",
+      "displayName": "Reform Arbiter",
+      "role": "Reform commission evaluating whether the map meets neutral fairness criteria",
+      "palette": "teal (#16a085) and muted green (#27ae60) accents; shared dark outline (#1a1a2e)",
+      "silhouetteNotes": "Business-casual attire; clipboard or balance-scale as prop; earnest civic-minded bearing; less imposing than Partisan Boss"
+    },
+    {
+      "id": "neutral-admin",
+      "displayName": "Neutral Admin",
+      "role": "Supervisor / tutorial guide assessing the player's work on training exercises",
+      "palette": "muted grey-blue (#7f8c8d / #a0b4c8) accents; shared dark outline (#1a1a2e)",
+      "silhouetteNotes": "Plain office attire; clipboard or checklist as prop; no political symbols; approachable and professional, not intimidating"
+    }
+  ],
+  "starStates": [
+    {
+      "id": "three-star",
+      "stars": 3,
+      "label": "Three-star (ecstatic)",
+      "poseGuide": "Open, expansive, celebratory — arms raised high or spread wide, leaning forward into the viewer, big visible gesture, wide grin or triumphant expression"
+    },
+    {
+      "id": "two-star",
+      "stars": 2,
+      "label": "Two-star (satisfied)",
+      "poseGuide": "Positive, composed — thumbs up or approving nod, upright confident posture, relaxed slight smile"
+    },
+    {
+      "id": "one-star",
+      "stars": 1,
+      "label": "One-star (disappointed)",
+      "poseGuide": "Reserved, ambivalent — slight lean, crossed arms or a restrained shrug, neutral or slightly downturned expression, subdued or absent gesture"
+    },
+    {
+      "id": "zero-star",
+      "stars": 0,
+      "label": "Zero-star (furious / despairing)",
+      "poseGuide": "Closed, negative — hunched or turned slightly away, disapproving gesture (fist, head in hands, or dismissive wave), clear frown or scowl"
+    }
+  ]
+}
