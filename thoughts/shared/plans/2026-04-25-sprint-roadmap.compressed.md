@@ -1,6 +1,6 @@
 <!--COMPRESSED v1; source:2026-04-25-sprint-roadmap.md-->
 §META
-date:2026-04-25 last_updated:2026-04-29 status:active type:sprint-roadmap
+date:2026-04-25 last_updated:2026-05-04 status:active type:sprint-roadmap
 LIVING DOC — update at sprint start (fill tickets) + after demo (outcomes, re-evaluate next)
 
 §ABBREV
@@ -116,19 +116,21 @@ outcome: all tier1+tier2 tickets closed
   deferred: GAME-053 electoral outcome diff → discuss S12 planning; DESIGN-009 open questions resolved in ticket
   new tickets filed for S12: DESIGN-009 GAME-059 GAME-060 GAME-061 GAME-062 GAME-063 GAME-064
 
-§SPRINT12 (planned)
+§SPRINT12 (in progress)
 goal: character reactions + submit-on-invalid
 demo target: player submits map (valid or invalid) → result screen shows animated character + audio reaction;
   invalid map shows Fix-It path; valid pass/fail shows correct character animation
 dependency chain:
-  DESIGN-009 (resolve open questions: SVG vs pixel art; 006 layout; tutorial animation)
-  → parallel: GAME-060 (character sprites) + GAME-061 (audio clips)
-  → GAME-064 (audio playback infrastructure)
+  DESIGN-009 [resolved] (SVG inline + CSS animation; 5 instigator types × 4 star states)
+  → parallel: GAME-060 [placeholder SVGs merged] + GAME-061 [audio stubs merged]
+  → GAME-065 (sprite art refinement — replace placeholder SVGs with quality art)
+  → GAME-064 [resolved] (audio playback infrastructure)
   → GAME-062 (character reaction system — wires everything to result screen)
-  GAME-059 (submit-on-invalid) — independent; can start anytime
-  GAME-063 (asset pipeline) — independent; format-agnostic; can start anytime
-tier1 (core): DESIGN-009 GAME-059 GAME-063 GAME-064
-tier2 (if tier1 done): GAME-060 GAME-061 GAME-062
+  GAME-059 [resolved] (submit-on-invalid) — done
+  GAME-063 [resolved] (asset pipeline) — done
+tier1 (core — all resolved): DESIGN-009 GAME-059 GAME-063 GAME-064
+tier2 (remaining): GAME-060 GAME-061 GAME-065 GAME-062
+  note: GAME-065 front-loaded before GAME-062; art pass before wiring
 deferred to S13+: DESIGN-005/006/007 demographic overlays; DESIGN-008 geographic features; GAME-053
 
 §SPRINT13 (sketched)

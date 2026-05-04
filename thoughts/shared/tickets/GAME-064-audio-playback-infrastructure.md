@@ -2,7 +2,7 @@
 id: GAME-064
 title: Audio playback infrastructure — preload, mute toggle, autoplay handling
 area: game, UX, infrastructure
-status: open
+status: resolved
 created: 2026-05-02
 github_issue: 193
 ---

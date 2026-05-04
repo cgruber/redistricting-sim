@@ -2,7 +2,7 @@
 id: GAME-063
 title: Asset pipeline — directory structure, Bazel integration, deployable inclusion
 area: game, build, infrastructure
-status: open
+status: resolved
 created: 2026-05-02
 ---
 
