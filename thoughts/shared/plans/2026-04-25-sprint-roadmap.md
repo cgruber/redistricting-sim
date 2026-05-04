@@ -267,6 +267,39 @@ that would crowd out the navigation work.
 
 ---
 
+## Sprint 12 — Character Reactions + Submit-on-Invalid [IN PROGRESS]
+
+**Goal**: Result screen shows animated character sprites with audio; invalid maps
+can be submitted and trigger a Fix-It path.
+
+**Demo target**: Player submits map (valid or invalid) → result screen shows
+animated character + audio reaction; invalid map shows Fix-It path; valid
+pass/fail shows correct character animation.
+
+**Dependency chain**:
+- DESIGN-009 [resolved] — SVG inline + CSS animation decided; 5 instigator
+  types × 4 star states; consistency spec + audio tones per type
+- GAME-059 [resolved] — submit-on-invalid: removed validity gate from Submit button
+- GAME-063 [resolved] — asset pipeline: directory structure + Bazel integration
+- GAME-064 [resolved] — audio playback infrastructure: AudioPlayer module
+- GAME-060 / GAME-061 — placeholder SVG sprites + audio stubs merged
+- **GAME-065** — sprite art refinement: replace placeholder SVGs with quality art
+  (front-loaded before GAME-062 so wiring ships with final art)
+- GAME-062 — character reaction system: wires sprites + audio to result screen
+
+**Tier 1 (core — all resolved)**: DESIGN-009, GAME-059, GAME-063, GAME-064
+
+**Tier 2 (remaining)**:
+- GAME-060: placeholder sprites merged; GAME-065 covers art refinement
+- GAME-061: audio stubs merged; final clips pending
+- GAME-065: sprite art refinement (must land before GAME-062)
+- GAME-062: character reaction system (last; wires everything)
+
+**Deferred to S13+**: DESIGN-005/006/007 demographic overlays; DESIGN-008
+geographic features; GAME-053 electoral outcome diff.
+
+---
+
 ## Sprint 12+ (later)
 
 | Ticket | Area | Notes |

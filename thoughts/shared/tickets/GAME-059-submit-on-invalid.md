@@ -2,7 +2,7 @@
 id: GAME-059
 title: Submit-on-invalid maps — allow submission of invalid maps
 area: game, UX
-status: open
+status: resolved
 created: 2026-05-02
 ---
 

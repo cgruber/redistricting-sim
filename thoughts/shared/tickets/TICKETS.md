@@ -100,12 +100,10 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-043-unify-type-systems.md` | game, code-quality | Unify spike and scenario type systems; retire adapter.ts and types.ts spike layer |
 | `GAME-046-panels-unit-tests.md` | game, testing | Unit tests for render/panels.ts (deferred): jsdom or extract-pure-helpers approach |
 | `GAME-053-electoral-outcome-visual-diff.md` | game, UX | Electoral outcome comparison (player map vs baseline) on result screen; placeholder |
-| `GAME-059-submit-on-invalid.md` | game, UX | Allow submission of invalid maps; failure animations play; Fix-It path replaces Next Scenario |
-| `GAME-060-character-sprite-assets.md` | game, art, content | Character sprite + animation assets (5 types × pass/fail); AI-generated SVG; depends on DESIGN-009 |
+| `GAME-060-character-sprite-assets.md` | game, art, content | Character sprite + animation assets (5 types × 4 star states); placeholder SVGs merged; art refinement in GAME-065 |
 | `GAME-061-audio-clips.md` | game, audio, content | 10 audio clips (5 types × pass/fail); CC0 preferred; AI-generated fallback; depends on DESIGN-009 |
-| `GAME-062-character-reaction-system.md` | game, UX | Wire character sprites + audio to result screen; replaces emoji placeholder; depends on GAME-060/061/063/064 |
-| `GAME-063-asset-pipeline.md` | game, build, infrastructure | Asset directory structure + Bazel integration for SVG + audio delivery |
-| `GAME-064-audio-playback-infrastructure.md` | game, UX, infrastructure | AudioPlayer module: preload, play, mute toggle, autoplay policy, localStorage persistence |
+| `GAME-062-character-reaction-system.md` | game, UX | Wire character sprites + audio to result screen; replaces emoji placeholder; depends on GAME-060/061/063/064/065 |
+| `GAME-065-character-sprite-art-refinement.md` | game, art, content | Replace placeholder SVGs with quality character art; pose/file structure unchanged; visual review required before merge |
 
 ---
 
@@ -113,6 +111,9 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-064: audio playback infrastructure | AudioPlayer module: preload, play, mute toggle, autoplay policy, localStorage persistence; merged PR #194 |
+| GAME-063: asset pipeline | Directory structure + Bazel integration for SVG + audio delivery; deployable inclusion; merged PR #192 |
+| GAME-059: submit-on-invalid maps | Removed validity gate from Submit button; invalid maps now reach result screen; Fix-It path replaces Next Scenario; merged PR #196 |
 | DESIGN-009: character reaction visual style | Inline SVG + CSS animation decided; 5 instigator types × 4 star states; consistency spec for AI generation; audio tone per type; research doc finalized |
 | GAME-052: animated criteria reveal | CSS criterionReveal keyframe (opacity+translateY), 120ms stagger, click-to-skip, 🎉/💔 reaction; 4 e2e tests; merged PR #189 |
 | GAME-031: gameplay critique followup | Tightened pop tolerance (007/008: 10%→5%); compactness 007: 0.40→0.50; randomization→GAME-057; others deferred or rejected |
