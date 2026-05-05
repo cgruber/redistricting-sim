@@ -255,6 +255,35 @@ The 2–3 features most essential for recognizing this subject. An artist must g
         val filename = if (count == 1) "$stateId.$ext" else "$stateId-$n.$ext"
         return Paths.get(outputDir, typeId, filename)
     }
+
+    fun expandHome(path: String): Path =
+        Paths.get(path.replaceFirst("~", System.getProperty("user.home")))
+
+    fun buildTestSpriteSpec(
+        typeId: String = "test-character",
+        displayName: String = "Test Character",
+        role: String = "test role",
+        palette: String = "#FF0000 - red",
+        silhouetteNotes: String = "A test character",
+        provider: String? = "grok",
+        model: String? = null,
+    ): SpriteSpec = SpriteSpec(
+        characterTypes = listOf(CharacterType(
+            id = typeId,
+            displayName = displayName,
+            role = role,
+            palette = palette,
+            silhouetteNotes = silhouetteNotes,
+        )),
+        starStates = listOf(StarState(
+            id = "default",
+            stars = 1,
+            label = "Default",
+            poseGuide = "neutral pose",
+        )),
+        provider = provider,
+        model = model,
+    )
 }
 
 // ---------------------------------------------------------------------------
@@ -433,12 +462,12 @@ class OutputPathTest {
         assertEquals("idle-2.png", Logic.outputPath("/tmp/out", "t", "idle", "png", 2, 3).fileName.toString())
     }
     @Test fun `svg extension works`() {
-        val p = Logic.outputPath("/tmp/out", "governor", "three-star", "svg", 1, 1)
+        val p = Logic.outputPath("/tmp/out", "governor-wm", "three-star", "svg", 1, 1)
         assertEquals("three-star.svg", p.fileName.toString())
     }
     @Test fun `path includes type directory`() {
-        val p = Logic.outputPath("/tmp/out", "governor", "three-star", "svg", 1, 1)
-        assertTrue(p.toString().contains("governor"))
+        val p = Logic.outputPath("/tmp/out", "governor-wm", "three-star", "svg", 1, 1)
+        assertTrue(p.toString().contains("governor-wm"))
     }
 }
 
@@ -583,6 +612,122 @@ class SpriteSpecParsingTest {
 }
 
 // ---------------------------------------------------------------------------
+// Tests — describe integration
+// ---------------------------------------------------------------------------
+
+class DescribePaletteExtractionTest {
+    @Test fun `extracts palette from structured description`() {
+        val description = """
+## PALETTE
+#FF0000 - red fill
+#00FF00 - green outline
+## OVERALL SHAPE
+Symmetric figure
+""".trimIndent()
+        val palette = Logic.extractPalette(description)
+        assertTrue(palette.contains("#FF0000"), "Palette must contain red")
+        assertTrue(palette.contains("#00FF00"), "Palette must contain green")
+        assertTrue(palette.contains(";"), "Multiple colors must be joined by semicolon")
+    }
+
+    @Test fun `extractPalette handles description with no PALETTE section`() {
+        val description = "No palette here, just a description"
+        val palette = Logic.extractPalette(description)
+        assertEquals("See silhouetteNotes for color palette", palette)
+    }
+}
+
+class SpriteSpecRoundTripTest {
+    @TempDir lateinit var tmp: Path
+
+    @Test fun `spec serializes and deserializes correctly`() {
+        val original = Logic.buildTestSpriteSpec(
+            typeId = "partisan-boss",
+            displayName = "Partisan Boss",
+            role = "hires player",
+            palette = "#FFD700 - gold; #FF0000 - red",
+            silhouetteNotes = "Wide shoulders, authoritative stance",
+            provider = "grok",
+            model = "grok-3",
+        )
+        val json = Logic.specAdapter.toJson(original)
+        val deserialized = Logic.loadSpriteSpec(json)
+        assertEquals(original.characterTypes.size, deserialized.characterTypes.size)
+        assertEquals(original.starStates.size, deserialized.starStates.size)
+        assertEquals(original.provider, deserialized.provider)
+        assertEquals(original.model, deserialized.model)
+    }
+
+    @Test fun `spec preserves all character type fields after round-trip`() {
+        val spec = Logic.buildTestSpriteSpec()
+        val json = Logic.specAdapter.toJson(spec)
+        val restored = Logic.loadSpriteSpec(json)
+        val type = restored.characterTypes[0]
+        assertEquals("test-character", type.id)
+        assertEquals("Test Character", type.displayName)
+        assertEquals("test role", type.role)
+        assertEquals("#FF0000 - red", type.palette)
+        assertEquals("A test character", type.silhouetteNotes)
+    }
+
+    @Test fun `spec preserves all star state fields after round-trip`() {
+        val spec = Logic.buildTestSpriteSpec()
+        val json = Logic.specAdapter.toJson(spec)
+        val restored = Logic.loadSpriteSpec(json)
+        val state = restored.starStates[0]
+        assertEquals("default", state.id)
+        assertEquals(1, state.stars)
+        assertEquals("Default", state.label)
+        assertEquals("neutral pose", state.poseGuide)
+    }
+
+    @Test fun `spec with null provider and model round-trips correctly`() {
+        val original = Logic.buildTestSpriteSpec(provider = null, model = null)
+        val json = Logic.specAdapter.toJson(original)
+        val restored = Logic.loadSpriteSpec(json)
+        assertNull(restored.provider)
+        assertNull(restored.model)
+    }
+
+    @Test fun `serialized spec can be written and read from disk`() {
+        val spec = Logic.buildTestSpriteSpec(
+            typeId = "governor-wm",
+            displayName = "Governor",
+            provider = "gemini",
+        )
+        val specFile = tmp.resolve("test-spec.json")
+        val json = Logic.specAdapter.toJson(spec)
+        Files.writeString(specFile, json)
+        val readJson = Files.readString(specFile)
+        val restored = Logic.loadSpriteSpec(readJson)
+        assertEquals("governor-wm", restored.characterTypes[0].id)
+        assertEquals("Governor", restored.characterTypes[0].displayName)
+        assertEquals("gemini", restored.provider)
+    }
+}
+
+class ExpandHomeTest {
+    @Test fun `expands tilde to home directory`() {
+        val home = System.getProperty("user.home")
+        val expanded = Logic.expandHome("~/.config/test")
+        assertTrue(expanded.toString().startsWith(home), "Expanded path must start with home directory")
+        assertFalse(expanded.toString().contains("~"), "Expanded path must not contain tilde")
+    }
+
+    @Test fun `handles paths without tilde`() {
+        val path = "/tmp/absolute/path"
+        val expanded = Logic.expandHome(path)
+        assertEquals(path, expanded.toString())
+    }
+
+    @Test fun `handles relative paths without tilde`() {
+        val path = "relative/path"
+        val expanded = Logic.expandHome(path)
+        assertEquals(path, expanded.toString())
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Runner
 // ---------------------------------------------------------------------------
 
@@ -601,6 +746,9 @@ val request = LauncherDiscoveryRequestBuilder.request()
         selectClass(CredentialFileParsingTest::class.java),
         selectClass(CredentialResolutionTest::class.java),
         selectClass(SpriteSpecParsingTest::class.java),
+        selectClass(DescribePaletteExtractionTest::class.java),
+        selectClass(SpriteSpecRoundTripTest::class.java),
+        selectClass(ExpandHomeTest::class.java),
     )
     .build()
 
