@@ -6,16 +6,24 @@
 /**
  * gen-assets
  *
- * Generates game character assets via AI APIs. Two subcommands:
+ * Generates game character assets via AI APIs. Three subcommands:
  *
- *   gen-assets sprites   — SVG sprites via chat API (Gemini or Grok)
- *   gen-assets images    — PNG reference images via image API (Gemini Imagen or Grok)
+ *   gen-assets describe   — analyze a reference image → write a character spec JSON
+ *   gen-assets sprites    — SVG sprites via chat API (Gemini or Grok)
+ *   gen-assets images     — PNG reference images via image API (Gemini Imagen or Grok)
  *
  * Verified working models (as of 2026-05-04):
+ *   describe/gemini: gemini-2.5-pro  (Grok has no vision model on this account)
  *   sprites/gemini:  gemini-2.5-pro
  *   sprites/grok:    grok-3
  *   images/gemini:   imagen-4.0-generate-001
  *   images/grok:     grok-imagine-image, grok-imagine-image-pro
+ *
+ * Pipeline example (image → spec → SVG via different providers):
+ *   gen-assets describe --image /tmp/butterfly.png --generate-provider grok \
+ *                       --output-spec /tmp/butterfly-spec.json
+ *   gen-assets sprites  --characters-file /tmp/butterfly-spec.json
+ *   # sprites reads provider/model from the spec; --provider flag overrides
  *
  * Character types and animation states are loaded from sprite-spec.json.
  * Outputs one file per (type × state). Run with --list-types / --list-states
@@ -29,21 +37,37 @@
  *   5. Auto: ~/.gemini/oauth_creds.json  (Gemini only)
  *
  * Usage:
+ *   gen-assets.main.kts describe --image /tmp/ref.png --output-spec /tmp/spec.json
+ *   gen-assets.main.kts describe --image /tmp/ref.png --generate-provider grok \
+ *                                --output-spec /tmp/spec.json
  *   gen-assets.main.kts sprites
  *   gen-assets.main.kts sprites --provider grok
+ *   gen-assets.main.kts sprites --characters-file /tmp/spec.json   # provider from spec
  *   gen-assets.main.kts sprites --type partisan-boss --state three-star --dry-run
  *   gen-assets.main.kts images
  *   gen-assets.main.kts images --provider grok --model grok-imagine-image-pro
  *   gen-assets.main.kts images --type partisan-boss --count 3
  *   gen-assets.main.kts sprites --list-types
  *
- * Shared flags (both subcommands):
- *   --provider          gemini | grok (default: gemini)
+ * describe flags:
+ *   --image             Path to reference image (PNG, JPG, WEBP)
+ *   --output-spec       Write spec JSON to this path
+ *   --generate-provider Provider to embed in the spec for the generation step (default: grok)
+ *   --generate-model    Model to embed in the spec for the generation step
+ *   --type-id           Character type ID in the output spec (default: character)
+ *   --type-name         Character display name (default: Character)
+ *   --type-role         Role description (default: reference character)
+ *   --state-id          State ID (default: default)
+ *   --state-label       State label (default: Default)
+ *   --state-guide       Pose guide (default: As shown in reference image)
+ *
+ * Shared flags (sprites + images):
+ *   --provider          gemini | grok (default: gemini, or from spec if loaded via --characters-file)
  *   --api-key           Raw API key (any provider)
  *   --gemini-api-key    Gemini key (or GEMINI_API_KEY env)
  *   --grok-api-key      Grok key (or GROK_API_KEY env)
  *   --credentials-file  Credentials file (JSON oauth or plain text)
- *   --model             Model override (default: command + provider specific)
+ *   --model             Model override (default: command + provider specific, or from spec)
  *   --characters-file   sprite-spec.json path (default: tools/sprite-spec.json)
  *   --type              Limit to type ID (repeatable)
  *   --state             Limit to state ID (repeatable)
@@ -69,6 +93,7 @@ import com.github.ajalt.clikt.parameters.options.defaultLazy
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.int
 import com.squareup.moshi.JsonClass
@@ -109,6 +134,8 @@ data class StarState(
 data class SpriteSpec(
     val characterTypes: List<CharacterType>,
     val starStates: List<StarState>,
+    val provider: String? = null,
+    val model: String? = null,
 )
 
 // ---------------------------------------------------------------------------
@@ -237,38 +264,44 @@ interface ImageProvider {
     fun generate(prompt: String): ByteArray
 }
 
+fun geminiAuthHeaders(credential: Credential): Map<String, String> = when (credential) {
+    is Credential.ApiKey      -> mapOf("x-goog-api-key" to credential.key)
+    is Credential.BearerToken -> mapOf("Authorization"  to "Bearer ${credential.token}")
+}
+
+fun grokBearerToken(credential: Credential): String = when (credential) {
+    is Credential.ApiKey      -> credential.key
+    is Credential.BearerToken -> credential.token
+}
+
+fun extractGeminiText(raw: String): String {
+    val parsed = jsonAny.fromJson(raw)
+    val candidate = parsed.nav("candidates").nav(0)
+        ?: error("Gemini returned no candidates. Raw: ${raw.take(500)}")
+    val content = candidate.nav("content")
+        ?: error("Gemini candidate has no content (finishReason: ${candidate.nav("finishReason")}). Raw: ${raw.take(500)}")
+    return content.nav("parts").nav(0).nav("text") as? String
+        ?: error("Gemini text missing. Raw: ${raw.take(500)}")
+}
+
 class GeminiSpriteProvider(private val credential: Credential, private val model: String) : SpriteProvider {
     override val name = "gemini/$model"
     override fun generate(systemPrompt: String, userPrompt: String): String {
         val url = "https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent"
-        val auth: Map<String, String> = when (credential) {
-            is Credential.ApiKey      -> mapOf("x-goog-api-key" to credential.key)
-            is Credential.BearerToken -> mapOf("Authorization"  to "Bearer ${credential.token}")
-        }
-        val raw = httpPost(url, auth, toJson(mapOf(
+        val raw = httpPost(url, geminiAuthHeaders(credential), toJson(mapOf(
             "system_instruction" to mapOf("parts" to listOf(mapOf("text" to systemPrompt))),
             "contents"           to listOf(mapOf("role" to "user", "parts" to listOf(mapOf("text" to userPrompt)))),
             "generationConfig"   to mapOf("temperature" to 1.0, "maxOutputTokens" to 8192),
         )))
-        val parsed = jsonAny.fromJson(raw)
-        val candidate = parsed.nav("candidates").nav(0)
-            ?: error("Gemini returned no candidates. Raw: ${raw.take(500)}")
-        val content = candidate.nav("content")
-            ?: error("Gemini candidate has no content (finishReason: ${candidate.nav("finishReason")}). Raw: ${raw.take(500)}")
-        return content.nav("parts").nav(0).nav("text") as? String
-            ?: error("Gemini text missing. Raw: ${raw.take(500)}")
+        return extractGeminiText(raw)
     }
 }
 
 class GrokSpriteProvider(private val credential: Credential, private val model: String) : SpriteProvider {
     override val name = "grok/$model"
     override fun generate(systemPrompt: String, userPrompt: String): String {
-        val bearer = when (credential) {
-            is Credential.ApiKey      -> credential.key
-            is Credential.BearerToken -> credential.token
-        }
         val raw = httpPost("https://api.x.ai/v1/chat/completions",
-            mapOf("Authorization" to "Bearer $bearer"),
+            mapOf("Authorization" to "Bearer ${grokBearerToken(credential)}"),
             toJson(mapOf(
                 "model"       to model,
                 "messages"    to listOf(
@@ -295,11 +328,7 @@ class GeminiImagenProvider(
     override val name = "gemini/$model"
     override fun generate(prompt: String): ByteArray {
         val url = "https://generativelanguage.googleapis.com/v1beta/models/$model:predict"
-        val auth: Map<String, String> = when (credential) {
-            is Credential.ApiKey      -> mapOf("x-goog-api-key" to credential.key)
-            is Credential.BearerToken -> mapOf("Authorization"  to "Bearer ${credential.token}")
-        }
-        val raw = httpPost(url, auth, toJson(mapOf(
+        val raw = httpPost(url, geminiAuthHeaders(credential), toJson(mapOf(
             "instances"  to listOf(mapOf("prompt" to prompt)),
             "parameters" to mapOf("sampleCount" to 1, "aspectRatio" to aspectRatio),
         )))
@@ -310,18 +339,40 @@ class GeminiImagenProvider(
 class GrokImageProvider(private val credential: Credential, private val model: String) : ImageProvider {
     override val name = "grok/$model"
     override fun generate(prompt: String): ByteArray {
-        val bearer = when (credential) {
-            is Credential.ApiKey      -> credential.key
-            is Credential.BearerToken -> credential.token
-        }
         val raw = httpPost(
             "https://api.x.ai/v1/images/generations",
-            mapOf("Authorization" to "Bearer $bearer"),
+            mapOf("Authorization" to "Bearer ${grokBearerToken(credential)}"),
             toJson(mapOf(
                 "model" to model, "prompt" to prompt, "n" to 1, "response_format" to "b64_json",
             ))
         )
         return decodeGrokImageResponse(jsonAny.fromJson(raw))
+    }
+}
+
+class GeminiDescribeProvider(private val credential: Credential, private val model: String) {
+    val name = "gemini/$model"
+
+    fun describe(imagePath: Path, prompt: String): String {
+        val url = "https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent"
+        val mimeType = when (imagePath.fileName.toString().substringAfterLast('.').lowercase()) {
+            "jpg", "jpeg" -> "image/jpeg"
+            "gif"         -> "image/gif"
+            "webp"        -> "image/webp"
+            else          -> "image/png"
+        }
+        val b64 = Base64.getEncoder().encodeToString(Files.readAllBytes(imagePath))
+        val raw = httpPost(url, geminiAuthHeaders(credential), toJson(mapOf(
+            "contents" to listOf(mapOf(
+                "role" to "user",
+                "parts" to listOf(
+                    mapOf("inline_data" to mapOf("mime_type" to mimeType, "data" to b64)),
+                    mapOf("text" to prompt),
+                ),
+            )),
+            "generationConfig" to mapOf("temperature" to 0.2, "maxOutputTokens" to 8192),
+        )))
+        return extractGeminiText(raw)
     }
 }
 
@@ -413,6 +464,52 @@ POSE / STATE: ${state.label}
 Render the full body. White background. Character centred, standing upright.
 """.trimIndent()
 
+fun buildDescribePrompt(): String = """
+You are analyzing a reference image to produce a precise SVG illustration spec.
+
+Study the image carefully and describe the subject for an SVG artist who will recreate it as a
+vector illustration in a 200×200 pixel viewBox. Be specific enough that the artist can work
+from your description alone, without seeing the original image.
+
+Structure your response with EXACTLY these sections in this order:
+
+## PALETTE
+List every distinct color as a hex code (#RRGGBB) with the part name. One line per color.
+Example: #E8841A — orange wing fill
+
+## OVERALL SHAPE
+Describe the subject's overall silhouette, total proportions, and orientation (dorsal, lateral, etc).
+
+## BODY PARTS
+List each distinct part with approximate pixel position (x, y) in a 200×200 canvas, shape type
+(circle, ellipse, bezier path), and size. Work from the center outward.
+Example: Head — circle centered at (100, 58), radius ≈ 5px
+
+## LAYER ORDER
+From back to front, list parts in the drawing order they must be rendered. What overlaps what.
+
+## MARKINGS AND PATTERNS
+Describe any patterns, stripes, spots, borders, veins, or decorative elements. For each:
+shape, position as (x, y) coordinates, color (#hex), and approximate size.
+
+## SYMMETRY
+Which parts are bilaterally symmetric about x=100? For symmetric parts, describe only the right
+side and note "mirrored to left."
+
+## DISTINCTIVE FEATURES
+The 2–3 features most essential for recognizing this subject. An artist must get these right.
+""".trimIndent()
+
+fun extractPalette(description: String): String {
+    val lines = description.lines()
+    val headerIdx = lines.indexOfFirst { it.trim().matches(Regex("#+\\s*PALETTE.*", RegexOption.IGNORE_CASE)) }
+    if (headerIdx < 0) return "See silhouetteNotes for color palette"
+    val paletteLines = lines.drop(headerIdx + 1)
+        .takeWhile { !it.trim().startsWith("##") }
+        .filter { it.isNotBlank() }
+    return if (paletteLines.isNotEmpty()) paletteLines.joinToString("; ") else "See silhouetteNotes for color palette"
+}
+
 // ---------------------------------------------------------------------------
 // Loaders
 // ---------------------------------------------------------------------------
@@ -462,7 +559,7 @@ fun outputPath(outputDir: String, typeId: String, stateId: String, ext: String, 
 }
 
 // ---------------------------------------------------------------------------
-// Base command (shared flags + helpers)
+// Base command (shared flags + helpers for sprites + images)
 // ---------------------------------------------------------------------------
 
 abstract class BaseGenCommand(
@@ -473,15 +570,16 @@ abstract class BaseGenCommand(
     private val defaultGrokModel: String,
 ) : CliktCommand(name = name, help = help) {
 
-    val providerName by option("--provider", help = "AI provider: gemini or grok")
-        .choice("gemini", "grok").default("gemini")
+    // Nullable: spec.provider wins over hardcoded "gemini" when flag is absent
+    val providerOpt by option("--provider", help = "AI provider: gemini or grok")
+        .choice("gemini", "grok")
 
     val apiKeyOpt    by option("--api-key",         help = "Raw API key (any provider)")
     val geminiApiKey by option("--gemini-api-key",   help = "Gemini API key", envvar = "GEMINI_API_KEY")
     val grokApiKey   by option("--grok-api-key",     help = "Grok API key",   envvar = "GROK_API_KEY")
     val credFile     by option("--credentials-file", help = "Credentials file (JSON oauth or plain text)")
 
-    val model          by option("--model",           help = "Model override (default: provider-specific)")
+    val model          by option("--model",           help = "Model override (default: provider-specific, or from spec)")
     val charactersFile by option("--characters-file", help = "sprite-spec.json path (default: tools/sprite-spec.json)")
 
     val typeFilter  by option("--type",  help = "Generate only this type ID (repeatable)").multiple()
@@ -494,18 +592,28 @@ abstract class BaseGenCommand(
     val listTypes  by option("--list-types",  help = "Print available character types and exit").flag()
     val listStates by option("--list-states", help = "Print available star states and exit").flag()
 
-    protected fun credential(): Credential = resolveCredential(
-        provider        = providerName,
+    protected fun effectiveProvider(spec: SpriteSpec): String =
+        providerOpt ?: spec.provider ?: "gemini"
+
+    protected fun effectiveModel(provider: String, spec: SpriteSpec): String {
+        // If user explicitly passed --model, use it. Else if user didn't pass --provider and
+        // spec has a model, use spec's model. Else use the default for this provider.
+        val m = model
+        if (m != null) return m
+        if (providerOpt == null && spec.model != null) return spec.model
+        return if (provider == "gemini") defaultGeminiModel else defaultGrokModel
+    }
+
+    protected fun credential(provider: String): Credential = resolveCredential(
+        provider        = provider,
         apiKeyFlag      = apiKeyOpt,
-        providerKeyFlag = if (providerName == "gemini") geminiApiKey else grokApiKey,
+        providerKeyFlag = if (provider == "gemini") geminiApiKey else grokApiKey,
         credFileFlag    = credFile,
         autoSearchPaths = buildList {
-            add("~/.config/gen-sprites/keys/$providerName")
-            if (providerName == "gemini") add("~/.gemini/oauth_creds.json")
+            add("~/.config/gen-sprites/keys/$provider")
+            if (provider == "gemini") add("~/.gemini/oauth_creds.json")
         },
     )
-
-    protected fun effectiveModel(): String = model ?: if (providerName == "gemini") defaultGeminiModel else defaultGrokModel
 
     protected fun filteredSpec(spec: SpriteSpec): Pair<List<CharacterType>, List<StarState>> {
         val types  = if (typeFilter.isEmpty())  spec.characterTypes else spec.characterTypes.filter { it.id in typeFilter }
@@ -546,13 +654,15 @@ class SpritesCommand : BaseGenCommand(
         if (types.isEmpty())  { echo("No matching types — run --list-types.",   err = true); return }
         if (states.isEmpty()) { echo("No matching states — run --list-states.", err = true); return }
 
+        val providerName = effectiveProvider(spec)
+        val modelName    = effectiveModel(providerName, spec)
         val specSection  = loadSpecSection(specFile)
         val systemPrompt = buildSystemPrompt(specSection)
         val provider     = if (dryRun) null else run {
-            val cred = credential()
+            val cred = credential(providerName)
             when (providerName) {
-                "gemini" -> GeminiSpriteProvider(cred, effectiveModel())
-                "grok"   -> GrokSpriteProvider(cred,   effectiveModel())
+                "gemini" -> GeminiSpriteProvider(cred, modelName)
+                "grok"   -> GrokSpriteProvider(cred,   modelName)
                 else     -> error("Unknown provider: $providerName")
             }
         }
@@ -615,12 +725,14 @@ class ImagesCommand : BaseGenCommand(
         if (types.isEmpty())  { echo("No matching types — run --list-types.",   err = true); return }
         if (states.isEmpty()) { echo("No matching states — run --list-states.", err = true); return }
 
-        val styleSpec = loadStyleSpec(styleFile)
-        val provider  = if (dryRun) null else run {
-            val cred = credential()
+        val providerName = effectiveProvider(spec)
+        val modelName    = effectiveModel(providerName, spec)
+        val styleSpec    = loadStyleSpec(styleFile)
+        val provider     = if (dryRun) null else run {
+            val cred = credential(providerName)
             when (providerName) {
-                "gemini" -> GeminiImagenProvider(cred, effectiveModel())
-                "grok"   -> GrokImageProvider(cred,   effectiveModel())
+                "gemini" -> GeminiImagenProvider(cred, modelName)
+                "grok"   -> GrokImageProvider(cred,   modelName)
                 else     -> error("Unknown provider: $providerName")
             }
         }
@@ -663,6 +775,93 @@ class ImagesCommand : BaseGenCommand(
 }
 
 // ---------------------------------------------------------------------------
+// describe subcommand
+// ---------------------------------------------------------------------------
+
+class DescribeCommand : CliktCommand(
+    name = "describe",
+    help = "Analyze a reference image with Gemini vision and write a character spec JSON for 'sprites'",
+) {
+    val imagePath      by option("--image",             help = "Path to reference image (PNG, JPG, WEBP)").required()
+    val outputSpecPath by option("--output-spec",       help = "Write spec JSON to this path").required()
+
+    // Describe step
+    val apiKeyOpt    by option("--api-key",         help = "Raw API key")
+    val geminiApiKey by option("--gemini-api-key",   help = "Gemini API key", envvar = "GEMINI_API_KEY")
+    val credFile     by option("--credentials-file", help = "Credentials file")
+    val model        by option("--model",            help = "Describe model (default: gemini-2.5-pro)")
+    val dryRun       by option("--dry-run",          help = "Print describe prompt without calling API").flag()
+
+    // Generation step (written into output spec)
+    val generateProvider by option("--generate-provider",
+        help = "Provider to embed in spec for the generation step (default: grok)")
+        .choice("gemini", "grok").default("grok")
+    val generateModel    by option("--generate-model",
+        help = "Model to embed in spec for the generation step (null = use provider default)")
+
+    // Character metadata for the output spec
+    val typeId     by option("--type-id",     help = "Character type ID").default("character")
+    val typeName   by option("--type-name",   help = "Character display name").default("Character")
+    val typeRole   by option("--type-role",   help = "Character role description").default("reference character")
+    val stateId    by option("--state-id",    help = "State ID").default("default")
+    val stateLabel by option("--state-label", help = "State label").default("Default")
+    val stateGuide by option("--state-guide", help = "Pose guide").default("As shown in reference image")
+
+    override fun run() {
+        val imgPath = Paths.get(imagePath)
+        if (!Files.exists(imgPath)) error("Image not found: $imgPath")
+
+        val prompt = buildDescribePrompt()
+
+        if (dryRun) {
+            echo("=== DESCRIBE PROMPT (${prompt.length} chars) ===")
+            echo(prompt)
+            return
+        }
+
+        val cred = resolveCredential(
+            provider        = "gemini",
+            apiKeyFlag      = apiKeyOpt,
+            providerKeyFlag = geminiApiKey,
+            credFileFlag    = credFile,
+            autoSearchPaths = listOf("~/.config/gen-sprites/keys/gemini", "~/.gemini/oauth_creds.json"),
+        )
+        val effectiveModel = model ?: "gemini-2.5-pro"
+        val provider = GeminiDescribeProvider(cred, effectiveModel)
+
+        echo("Describing: $imgPath  [${provider.name}]")
+        val description = provider.describe(imgPath, prompt)
+
+        val palette = extractPalette(description)
+
+        val spec = SpriteSpec(
+            provider = generateProvider,
+            model    = generateModel,
+            characterTypes = listOf(CharacterType(
+                id             = typeId,
+                displayName    = typeName,
+                role           = typeRole,
+                palette        = palette,
+                silhouetteNotes = description,
+            )),
+            starStates = listOf(StarState(
+                id        = stateId,
+                stars     = 1,
+                label     = stateLabel,
+                poseGuide = stateGuide,
+            )),
+        )
+
+        val outPath = Paths.get(outputSpecPath)
+        outPath.parent?.let { Files.createDirectories(it) }
+        Files.writeString(outPath, specAdapter.toJson(spec))
+        echo("Spec written: $outPath")
+        echo("Generation provider: $generateProvider${if (generateModel != null) "/$generateModel" else " (default model)"}")
+        echo("Next: gen-assets sprites --characters-file $outPath")
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Root command + entry point
 // ---------------------------------------------------------------------------
 
@@ -670,7 +869,7 @@ class SystemExit(val code: Int) : Exception()
 
 try {
     NoOpCliktCommand(name = "gen-assets")
-        .subcommands(SpritesCommand(), ImagesCommand())
+        .subcommands(DescribeCommand(), SpritesCommand(), ImagesCommand())
         .main(args)
 } catch (e: SystemExit) {
     System.exit(e.code)

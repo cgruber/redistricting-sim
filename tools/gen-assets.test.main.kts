@@ -41,7 +41,12 @@ data class CharacterType(val id: String, val displayName: String, val role: Stri
 data class StarState(val id: String, val stars: Int, val label: String, val poseGuide: String)
 
 @JsonClass(generateAdapter = false)
-data class SpriteSpec(val characterTypes: List<CharacterType>, val starStates: List<StarState>)
+data class SpriteSpec(
+    val characterTypes: List<CharacterType>,
+    val starStates: List<StarState>,
+    val provider: String? = null,
+    val model: String? = null,
+)
 
 sealed class Credential {
     data class ApiKey(val key: String) : Credential()
@@ -187,6 +192,52 @@ POSE / STATE: ${state.label}
 Render the full body. White background. Character centred, standing upright.
 """.trimIndent()
 
+    fun buildDescribePrompt(): String = """
+You are analyzing a reference image to produce a precise SVG illustration spec.
+
+Study the image carefully and describe the subject for an SVG artist who will recreate it as a
+vector illustration in a 200×200 pixel viewBox. Be specific enough that the artist can work
+from your description alone, without seeing the original image.
+
+Structure your response with EXACTLY these sections in this order:
+
+## PALETTE
+List every distinct color as a hex code (#RRGGBB) with the part name. One line per color.
+Example: #E8841A — orange wing fill
+
+## OVERALL SHAPE
+Describe the subject's overall silhouette, total proportions, and orientation (dorsal, lateral, etc).
+
+## BODY PARTS
+List each distinct part with approximate pixel position (x, y) in a 200×200 canvas, shape type
+(circle, ellipse, bezier path), and size. Work from the center outward.
+Example: Head — circle centered at (100, 58), radius ≈ 5px
+
+## LAYER ORDER
+From back to front, list parts in the drawing order they must be rendered. What overlaps what.
+
+## MARKINGS AND PATTERNS
+Describe any patterns, stripes, spots, borders, veins, or decorative elements. For each:
+shape, position as (x, y) coordinates, color (#hex), and approximate size.
+
+## SYMMETRY
+Which parts are bilaterally symmetric about x=100? For symmetric parts, describe only the right
+side and note "mirrored to left."
+
+## DISTINCTIVE FEATURES
+The 2–3 features most essential for recognizing this subject. An artist must get these right.
+""".trimIndent()
+
+    fun extractPalette(description: String): String {
+        val lines = description.lines()
+        val headerIdx = lines.indexOfFirst { it.trim().matches(Regex("#+\\s*PALETTE.*", RegexOption.IGNORE_CASE)) }
+        if (headerIdx < 0) return "See silhouetteNotes for color palette"
+        val paletteLines = lines.drop(headerIdx + 1)
+            .takeWhile { !it.trim().startsWith("##") }
+            .filter { it.isNotBlank() }
+        return if (paletteLines.isNotEmpty()) paletteLines.joinToString("; ") else "See silhouetteNotes for color palette"
+    }
+
     fun decodeGeminiImageResponse(parsed: Any?): ByteArray {
         val b64 = parsed.nav("predictions").nav(0).nav("bytesBase64Encoded") as? String
             ?: error("No bytesBase64Encoded in Gemini Imagen response. " +
@@ -301,6 +352,70 @@ class DefaultImageStyleTest {
     @Test fun `mentions flat fills`()      { assertTrue(DEFAULT_IMAGE_STYLE.contains("Flat fills")) }
     @Test fun `mentions oversized head`()  { assertTrue(DEFAULT_IMAGE_STYLE.contains("Oversized round head")) }
     @Test fun `is not blank`()             { assertTrue(DEFAULT_IMAGE_STYLE.isNotBlank()) }
+}
+
+// ---------------------------------------------------------------------------
+// Tests — describe
+// ---------------------------------------------------------------------------
+
+class DescribePromptContentTest {
+    private val prompt by lazy { Logic.buildDescribePrompt() }
+
+    @Test fun `has PALETTE section`()          { assertTrue(prompt.contains("## PALETTE")) }
+    @Test fun `has OVERALL SHAPE section`()    { assertTrue(prompt.contains("## OVERALL SHAPE")) }
+    @Test fun `has BODY PARTS section`()       { assertTrue(prompt.contains("## BODY PARTS")) }
+    @Test fun `has LAYER ORDER section`()      { assertTrue(prompt.contains("## LAYER ORDER")) }
+    @Test fun `has MARKINGS AND PATTERNS section`() { assertTrue(prompt.contains("## MARKINGS AND PATTERNS")) }
+    @Test fun `has SYMMETRY section`()         { assertTrue(prompt.contains("## SYMMETRY")) }
+    @Test fun `has DISTINCTIVE FEATURES section`() { assertTrue(prompt.contains("## DISTINCTIVE FEATURES")) }
+    @Test fun `mentions 200x200 viewBox`()     { assertTrue(prompt.contains("200×200")) }
+}
+
+class PaletteExtractionTest {
+    @Test fun `extracts single color line after PALETTE header`() {
+        val desc = """
+## PALETTE
+#E8841A — orange wing fill
+## OVERALL SHAPE
+The butterfly has wings
+""".trimIndent()
+        assertEquals("#E8841A — orange wing fill", Logic.extractPalette(desc))
+    }
+
+    @Test fun `extracts multiple colors joined with semicolon`() {
+        val desc = """
+## PALETTE
+#E8841A — orange wing fill
+#1A1A1A — black border
+## OVERALL SHAPE
+Butterfly
+""".trimIndent()
+        val result = Logic.extractPalette(desc)
+        assertTrue(result.contains("#E8841A"))
+        assertTrue(result.contains("#1A1A1A"))
+        assertTrue(result.contains(";"))
+    }
+
+    @Test fun `returns default message when PALETTE section missing`() {
+        val result = Logic.extractPalette("No palette here\nJust a description")
+        assertEquals("See silhouetteNotes for color palette", result)
+    }
+
+    @Test fun `handles PALETTE header case-insensitive`() {
+        val desc = "## palette\n#ABCDEF — some color\n## OTHER"
+        assertTrue(Logic.extractPalette(desc).contains("#ABCDEF"))
+    }
+
+    @Test fun `skips blank lines after header`() {
+        val desc = """
+## PALETTE
+
+#123456 — color
+
+## BODY PARTS
+""".trimIndent()
+        assertTrue(Logic.extractPalette(desc).contains("#123456"))
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -431,6 +546,24 @@ class SpriteSpecParsingTest {
         assertEquals("three-star", spec.starStates[0].id)
         assertEquals(3, spec.starStates[0].stars)
     }
+    @Test fun `parses spec with provider field`() {
+        val json = """
+            {
+              "characterTypes": [{"id":"t1","displayName":"T1","role":"r","palette":"p","silhouetteNotes":"n"}],
+              "starStates": [{"id":"s1","stars":1,"label":"S1","poseGuide":"g"}],
+              "provider": "grok",
+              "model": "grok-3"
+            }
+        """.trimIndent()
+        val spec = Logic.loadSpriteSpec(json)
+        assertEquals("grok", spec.provider)
+        assertEquals("grok-3", spec.model)
+    }
+    @Test fun `parses spec with missing provider and model as null`() {
+        val spec = Logic.loadSpriteSpec(minimalSpec)
+        assertNull(spec.provider)
+        assertNull(spec.model)
+    }
     @Test fun `actual sprite-spec json is valid and complete`() {
         val path = Paths.get("tools/sprite-spec.json")
         assertTrue(Files.exists(path), "tools/sprite-spec.json must exist")
@@ -462,6 +595,8 @@ val request = LauncherDiscoveryRequestBuilder.request()
         selectClass(GrokImageDecodingTest::class.java),
         selectClass(ImagePromptContentTest::class.java),
         selectClass(DefaultImageStyleTest::class.java),
+        selectClass(DescribePromptContentTest::class.java),
+        selectClass(PaletteExtractionTest::class.java),
         selectClass(OutputPathTest::class.java),
         selectClass(CredentialFileParsingTest::class.java),
         selectClass(CredentialResolutionTest::class.java),
