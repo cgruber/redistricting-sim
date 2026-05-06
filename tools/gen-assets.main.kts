@@ -1096,7 +1096,10 @@ class EditCommand : CliktCommand(
         echo("Instruction: $effectiveInstruction")
 
         val refPaths = referenceImages.map { expandHome(it) }
-        if (refPaths.isNotEmpty()) echo("Reference images: ${refPaths.joinToString(", ") { it.fileName.toString() }}")
+        if (refPaths.isNotEmpty()) {
+            if (provider == "gemini") error("--reference-image is only supported with --provider grok; Gemini edit does not accept multiple images")
+            echo("Reference images: ${refPaths.joinToString(", ") { it.fileName.toString() }}")
+        }
 
         val bytes = when (provider) {
             "gemini" -> GeminiImageEditProvider(credential("gemini"), effectiveModel).edit(imgPath, effectiveInstruction)
