@@ -6,11 +6,12 @@
 /**
  * gen-assets
  *
- * Generates game character assets via AI APIs. Three subcommands:
+ * Generates game character assets via AI APIs. Four subcommands:
  *
  *   gen-assets describe   — analyze a reference image → write a character spec JSON
  *   gen-assets sprites    — SVG sprites via chat API (Gemini or Grok)
  *   gen-assets images     — PNG reference images via image API (Gemini Imagen or Grok)
+ *   gen-assets edit       — edit an existing image: fix a specific element, preserve the rest
  *
  * Verified working models (as of 2026-05-04):
  *   describe/gemini: gemini-2.5-pro  (Grok has no vision model on this account)
@@ -18,12 +19,22 @@
  *   sprites/grok:    grok-3
  *   images/gemini:   imagen-4.0-generate-001
  *   images/grok:     grok-imagine-image, grok-imagine-image-pro
+ *   edit/gemini:     gemini-2.5-flash-image
+ *   edit/grok:       grok-imagine-image
  *
  * Pipeline example (image → spec → SVG via different providers):
  *   gen-assets describe --image /tmp/butterfly.png --generate-provider grok \
  *                       --output-spec /tmp/butterfly-spec.json
  *   gen-assets sprites  --characters-file /tmp/butterfly-spec.json
  *   # sprites reads provider/model from the spec; --provider flag overrides
+ *
+ * Style-guided image generation (reference images extracted via Gemini vision):
+ *   gen-assets images --characters-file spec.json \
+ *                     --reference-image ~/Downloads/fallout/FalloutBoy.png \
+ *                     --reference-image ~/Downloads/fallout/vaultboyartstyle.png
+ *   # --reference-image is repeatable; each is analyzed for visual style,
+ *   # results merged and prepended to the generation prompt.
+ *   # Style extraction always uses gemini-2.5-pro; generation uses --provider.
  *
  * Character types and animation states are loaded from sprite-spec.json.
  * Outputs one file per (type × state). Run with --list-types / --list-states
@@ -48,6 +59,18 @@
  *   gen-assets.main.kts images --provider grok --model grok-imagine-image-pro
  *   gen-assets.main.kts images --type partisan-boss --count 3
  *   gen-assets.main.kts sprites --list-types
+ *   gen-assets.main.kts edit --input-image /tmp/sheet.png \
+ *                            --instruction-file /tmp/fix-thumbs.md \
+ *                            --output /tmp/sheet-fixed.png
+ *
+ * edit flags (all required except --provider/--model/--dry-run):
+ *   --input-image       Source image to edit (PNG, JPG, WEBP)
+ *   --instruction       Inline edit instruction (use --instruction-file to avoid shell quoting)
+ *   --instruction-file  Path to a file containing the edit instruction (preferred over --instruction)
+ *   --output            Output path for the edited image
+ *   --provider          gemini | grok (default: gemini)
+ *   --model             Model override (gemini: gemini-2.5-flash-image; grok: grok-imagine-image)
+ *   --dry-run           Print instruction without calling API
  *
  * describe flags:
  *   --image             Path to reference image (PNG, JPG, WEBP)
@@ -376,6 +399,84 @@ class GeminiDescribeProvider(private val credential: Credential, private val mod
     }
 }
 
+class GeminiImageEditProvider(private val credential: Credential, private val model: String) {
+    val name = "gemini/$model"
+
+    fun edit(imagePath: Path, instruction: String): ByteArray {
+        val url = "https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent"
+        val mimeType = when (imagePath.fileName.toString().substringAfterLast('.').lowercase()) {
+            "jpg", "jpeg" -> "image/jpeg"
+            "gif"         -> "image/gif"
+            "webp"        -> "image/webp"
+            else          -> "image/png"
+        }
+        val b64 = Base64.getEncoder().encodeToString(Files.readAllBytes(imagePath))
+        val raw = httpPost(url, geminiAuthHeaders(credential), toJson(mapOf(
+            "contents" to listOf(mapOf(
+                "parts" to listOf(
+                    mapOf("text" to instruction),
+                    mapOf("inline_data" to mapOf("mime_type" to mimeType, "data" to b64)),
+                ),
+            )),
+            "generationConfig" to mapOf("responseModalities" to listOf("TEXT", "IMAGE")),
+        )))
+        val parsed = jsonAny.fromJson(raw)
+        val parts = parsed.nav("candidates").nav(0).nav("content").nav("parts")
+        @Suppress("UNCHECKED_CAST")
+        val partsList = parts as? List<*>
+            ?: error("No parts in Gemini edit response. Raw: ${raw.take(500)}")
+        for (part in partsList) {
+            val inlineData = (part as? Map<*, *>)?.get("inlineData") as? Map<*, *>
+            val data = inlineData?.get("data") as? String
+            if (data != null) return Base64.getDecoder().decode(data)
+        }
+        val texts = partsList.mapNotNull { (it as? Map<*, *>)?.get("text") as? String }
+        error("No image in Gemini edit response. Text: ${texts.joinToString(" | ")}\nRaw: ${raw.take(800)}")
+    }
+}
+
+class GrokImageEditProvider(private val credential: Credential, private val model: String) {
+    val name = "grok/$model"
+
+    fun mimeType(path: Path) = when (path.fileName.toString().substringAfterLast('.').lowercase()) {
+        "jpg", "jpeg" -> "image/jpeg"
+        "gif"         -> "image/gif"
+        "webp"        -> "image/webp"
+        else          -> "image/png"
+    }
+
+    fun imageEntry(path: Path): Map<String, Any> {
+        val mime = mimeType(path)
+        val b64  = Base64.getEncoder().encodeToString(Files.readAllBytes(path))
+        return mapOf("type" to "image_url", "url" to "data:$mime;base64,$b64")
+    }
+
+    fun edit(imagePath: Path, instruction: String, referenceImages: List<Path> = emptyList()): ByteArray {
+        val allImages = listOf(imagePath) + referenceImages
+        val body = if (allImages.size == 1) {
+            mapOf(
+                "model"           to model,
+                "prompt"          to instruction,
+                "image"           to imageEntry(imagePath),
+                "response_format" to "b64_json",
+            )
+        } else {
+            mapOf(
+                "model"           to model,
+                "prompt"          to instruction,
+                "images"          to allImages.map { imageEntry(it) },
+                "response_format" to "b64_json",
+            )
+        }
+        val raw = httpPost(
+            "https://api.x.ai/v1/images/edits",
+            mapOf("Authorization" to "Bearer ${grokBearerToken(credential)}"),
+            toJson(body)
+        )
+        return decodeGrokImageResponse(jsonAny.fromJson(raw))
+    }
+}
+
 // ---------------------------------------------------------------------------
 // Prompt builders
 // ---------------------------------------------------------------------------
@@ -499,6 +600,62 @@ side and note "mirrored to left."
 ## DISTINCTIVE FEATURES
 The 2–3 features most essential for recognizing this subject. An artist must get these right.
 """.trimIndent()
+
+fun buildStyleGuidePrompt(): String = """
+You are analyzing reference images to extract a visual style guide for an AI image generator.
+
+Study the image carefully. Your goal is NOT to describe the specific subject — it's to capture
+the ILLUSTRATION STYLE so a generator can produce NEW characters that look like they belong
+in the same visual universe.
+
+Describe:
+
+## LINE WORK
+Outline weight and consistency. How are edges defined? Any tapering or variation?
+
+## SHADING APPROACH
+Flat fill only? Cel-shading with a second tone? How many tones per color region?
+Where do highlights and shadows fall?
+
+## COLOR GRAMMAR
+Saturation level (vivid, muted, pastel?). Color temperature. Maximum colors per character.
+Any shared palette across different characters in the set?
+
+## PROPORTIONS
+Head-to-body ratio. How exaggerated are limbs? Face placement within head.
+Eye size relative to face. Overall "chibi" vs realistic balance.
+
+## FACE STYLE
+Eye shape (round, oval, dot, stylized). Eyebrow presence. Mouth expression vocabulary.
+Nose treatment (dot, triangle, omitted?). Cheek style.
+
+## TEXTURE AND DETAIL LEVEL
+How much interior line detail exists? Are clothes/props simplified or detailed?
+Skin texture: smooth, crosshatched, none?
+
+## OVERALL AESTHETIC
+Name the style (e.g. "American cartoon", "Vault Boy / Fallout", "chibi manga", "pixel art").
+What era or medium does it evoke? What would be OUT OF PLACE in this style?
+""".trimIndent()
+
+fun extractStyleFromImages(imagePaths: List<Path>, geminiCred: Credential, geminiModel: String): String {
+    val provider = GeminiDescribeProvider(geminiCred, geminiModel)
+    val prompt = buildStyleGuidePrompt()
+    val guides = imagePaths.mapIndexed { i, path ->
+        val label = path.fileName.toString()
+        System.err.println("  STYLE   $label [${i + 1}/${imagePaths.size}]")
+        try {
+            provider.describe(path, prompt)
+        } catch (e: Exception) {
+            System.err.println("  WARN    Could not analyze $label: ${e.message}")
+            null
+        }
+    }.filterNotNull()
+    if (guides.isEmpty()) return ""
+    if (guides.size == 1) return "\n## REFERENCE STYLE GUIDE\n${guides[0]}\n"
+    val merged = guides.mapIndexed { i, g -> "### Reference image ${i + 1}\n$g" }.joinToString("\n\n")
+    return "\n## REFERENCE STYLE GUIDES\n$merged\n"
+}
 
 fun extractPalette(description: String): String {
     val lines = description.lines()
@@ -714,8 +871,9 @@ class ImagesCommand : BaseGenCommand(
     defaultGeminiModel = "imagen-4.0-generate-001",
     defaultGrokModel   = "grok-imagine-image",
 ) {
-    val styleFile by option("--style-file", help = "Art style spec file (auto-detect or built-in Vault Boy spec)")
-    val count     by option("--count", help = "Images per (type × state) combination (default: 1)").int().default(1)
+    val styleFile      by option("--style-file",      help = "Art style spec file (auto-detect or built-in Vault Boy spec)")
+    val referenceImages by option("--reference-image", help = "Reference image for style extraction (repeatable; analyzed with Gemini vision)").multiple()
+    val count          by option("--count",           help = "Images per (type × state) combination (default: 1)").int().default(1)
 
     override fun run() {
         val spec = loadSpriteSpec(charactersFile)
@@ -728,6 +886,14 @@ class ImagesCommand : BaseGenCommand(
         val providerName = effectiveProvider(spec)
         val modelName    = effectiveModel(providerName, spec)
         val styleSpec    = loadStyleSpec(styleFile)
+
+        val refImagePaths = referenceImages.map { expandHome(it) }
+        val styleGuide = if (refImagePaths.isEmpty() || dryRun) "" else run {
+            echo("Extracting style from ${refImagePaths.size} reference image(s) via Gemini vision...")
+            val geminiCred = credential("gemini")
+            extractStyleFromImages(refImagePaths, geminiCred, "gemini-2.5-pro")
+        }
+
         val provider     = if (dryRun) null else run {
             val cred = credential(providerName)
             when (providerName) {
@@ -740,13 +906,14 @@ class ImagesCommand : BaseGenCommand(
         val total = types.size * states.size * count
         echo("${if (dryRun) "DRY RUN" else "Generating"}: ${types.size} type(s) × ${states.size} state(s) × $count = $total image(s)")
         if (!dryRun) echo("  provider: ${provider!!.name}  output: $outputDir")
+        if (refImagePaths.isNotEmpty()) echo("  style refs: ${refImagePaths.joinToString(", ") { it.fileName.toString() }}")
         echo()
 
         var generated = 0; var skipped = 0; var errors = 0
 
         for (type in types) {
             for (state in states) {
-                val prompt = buildImagePrompt(type, state, styleSpec)
+                val prompt = buildImagePrompt(type, state, styleSpec + styleGuide)
                 if (dryRun) {
                     echo("=== ${type.id} / ${state.id} ===\n--- PROMPT (${prompt.length} chars) ---")
                     echo(prompt); echo(); generated += count; continue
@@ -824,7 +991,10 @@ class DescribeCommand : CliktCommand(
             apiKeyFlag      = apiKeyOpt,
             providerKeyFlag = geminiApiKey,
             credFileFlag    = credFile,
-            autoSearchPaths = listOf("~/.config/gen-sprites/keys/gemini", "~/.gemini/oauth_creds.json"),
+            autoSearchPaths = listOf(
+                expandHome("~/.config/gen-sprites/keys/gemini").toString(),
+                expandHome("~/.gemini/oauth_creds.json").toString(),
+            ),
         )
         val effectiveModel = model ?: "gemini-2.5-pro"
         val provider = GeminiDescribeProvider(cred, effectiveModel)
@@ -853,11 +1023,93 @@ class DescribeCommand : CliktCommand(
         )
 
         val outPath = Paths.get(outputSpecPath)
-        outPath.parent?.let { Files.createDirectories(it) }
+        outPath.parent?.also { Files.createDirectories(it) }
+            ?: error("Output spec path must include a directory component: $outputSpecPath")
         Files.writeString(outPath, specAdapter.toJson(spec))
         echo("Spec written: $outPath")
         echo("Generation provider: $generateProvider${if (generateModel != null) "/$generateModel" else " (default model)"}")
         echo("Next: gen-assets sprites --characters-file $outPath")
+    }
+}
+
+// ---------------------------------------------------------------------------
+// edit subcommand
+// ---------------------------------------------------------------------------
+
+class EditCommand : CliktCommand(
+    name = "edit",
+    help = "Edit an existing image using AI — fix a specific element while preserving the rest",
+) {
+    val inputImage       by option("--input-image",      help = "Source image to edit (PNG, JPG, WEBP)").required()
+    val instruction      by option("--instruction",      help = "Inline edit instruction")
+    val instructionFile  by option("--instruction-file", help = "Path to file containing the edit instruction")
+    val referenceImages  by option("--reference-image",  help = "Additional reference image (repeatable; Grok only)").multiple()
+    val output           by option("--output",           help = "Output path for the edited image").required()
+
+    val apiKeyOpt    by option("--api-key",          help = "Raw API key (any provider)")
+    val geminiApiKey by option("--gemini-api-key",   help = "Gemini API key", envvar = "GEMINI_API_KEY")
+    val grokApiKey   by option("--grok-api-key",     help = "Grok API key",   envvar = "GROK_API_KEY")
+    val credFile     by option("--credentials-file", help = "Credentials file (JSON oauth or plain text)")
+    val provider     by option("--provider",         help = "AI provider: gemini or grok (default: gemini)")
+                        .choice("gemini", "grok").default("gemini")
+    val model        by option("--model",            help = "Model override")
+    val dryRun       by option("--dry-run",          help = "Print instruction without calling API").flag()
+
+    private fun credential(prov: String): Credential = resolveCredential(
+        provider        = prov,
+        apiKeyFlag      = apiKeyOpt,
+        providerKeyFlag = if (prov == "gemini") geminiApiKey else grokApiKey,
+        credFileFlag    = credFile,
+        autoSearchPaths = buildList {
+            add("~/.config/gen-sprites/keys/$prov")
+            if (prov == "gemini") add("~/.gemini/oauth_creds.json")
+        },
+    )
+
+    override fun run() {
+        val imgPath = expandHome(inputImage)
+        if (!Files.exists(imgPath)) error("Input image not found: $imgPath")
+        val outPath = Paths.get(output)
+
+        val effectiveInstruction = when {
+            instructionFile != null -> {
+                val p = expandHome(instructionFile!!)
+                if (!Files.exists(p)) error("Instruction file not found: $p")
+                Files.readString(p).trim()
+            }
+            instruction != null -> instruction!!
+            else -> error("Provide --instruction or --instruction-file")
+        }
+
+        val effectiveModel = model ?: if (provider == "gemini") "gemini-2.5-flash-image" else "grok-imagine-image"
+
+        if (dryRun) {
+            echo("=== EDIT INSTRUCTION ===")
+            echo(effectiveInstruction)
+            echo("\nProvider: $provider/$effectiveModel")
+            echo("Input:  $imgPath")
+            echo("Output: $outPath")
+            return
+        }
+
+        echo("Editing: ${imgPath.fileName}  [$provider/$effectiveModel]")
+        echo("Instruction: $effectiveInstruction")
+
+        val refPaths = referenceImages.map { expandHome(it) }
+        if (refPaths.isNotEmpty()) {
+            if (provider == "gemini") error("--reference-image is only supported with --provider grok; Gemini edit does not accept multiple images")
+            echo("Reference images: ${refPaths.joinToString(", ") { it.fileName.toString() }}")
+        }
+
+        val bytes = when (provider) {
+            "gemini" -> GeminiImageEditProvider(credential("gemini"), effectiveModel).edit(imgPath, effectiveInstruction)
+            "grok"   -> GrokImageEditProvider(credential("grok"), effectiveModel).edit(imgPath, effectiveInstruction, refPaths)
+            else     -> error("Unknown provider: $provider")
+        }
+
+        outPath.parent?.also { Files.createDirectories(it) }
+        Files.write(outPath, bytes)
+        echo("Saved: $outPath  (${"%.1f".format(bytes.size / 1024.0)} KB)")
     }
 }
 
@@ -869,7 +1121,7 @@ class SystemExit(val code: Int) : Exception()
 
 try {
     NoOpCliktCommand(name = "gen-assets")
-        .subcommands(DescribeCommand(), SpritesCommand(), ImagesCommand())
+        .subcommands(DescribeCommand(), SpritesCommand(), ImagesCommand(), EditCommand())
         .main(args)
 } catch (e: SystemExit) {
     System.exit(e.code)
