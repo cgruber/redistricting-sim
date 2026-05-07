@@ -14802,6 +14802,8 @@ var require_main = __commonJS({
     var resultCriteriaList = document.getElementById("result-criteria-list");
     var btnKeepDrawing = document.getElementById("btn-keep-drawing");
     var btnNextScenario = document.getElementById("btn-next-scenario");
+    var resultRevealControls = document.getElementById("result-reveal-controls");
+    var btnRevealSkip = document.getElementById("btn-reveal-skip");
     var introScreen = document.getElementById("intro-screen");
     var charNameEl = document.getElementById("char-name");
     var charRoleEl = document.getElementById("char-role");
@@ -15378,7 +15380,7 @@ var require_main = __commonJS({
         if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList || !resultReaction)
           return;
         if (skipClickHandler) {
-          resultScreen.removeEventListener("click", skipClickHandler);
+          btnRevealSkip == null ? void 0 : btnRevealSkip.removeEventListener("click", skipClickHandler);
           skipClickHandler = null;
         }
         const state = store.getState();
@@ -15478,6 +15480,10 @@ var require_main = __commonJS({
             resultReaction.textContent = overallPass ? "\u{1F389}" : "\u{1F494}";
           }
         } else {
+          const ROW_FADE_MS = 300;
+          const ROW_HOLD_MS = 1200;
+          const ROW_FLIP_MS = 150;
+          const ROW_CHAIN_MS = ROW_FADE_MS + ROW_HOLD_MS + ROW_FLIP_MS;
           let waitingSprite = null;
           if (instigator) {
             waitingSprite = renderInstigatorWaiting(resultReaction, instigator.type, demo);
@@ -15494,13 +15500,16 @@ var require_main = __commonJS({
             resultCriteriaList.appendChild(row);
             rowElements.push(row);
           }
+          if (resultRevealControls)
+            resultRevealControls.style.display = "";
           const pendingTimeouts = [];
-          let delay = 0;
+          let chainDelay = 0;
           for (let i = 0; i < rowElements.length; i++) {
             const row = rowElements[i];
+            const rowStart = chainDelay;
             const t13 = setTimeout(() => {
               row.classList.remove("rc-pending");
-              row.style.animation = "criterionReveal 0.3s ease forwards";
+              row.style.animation = `criterionReveal ${ROW_FADE_MS}ms ease forwards`;
               const t22 = setTimeout(() => {
                 finalizeRow(row);
                 const badge = row.querySelector(".rc-badge");
@@ -15508,7 +15517,9 @@ var require_main = __commonJS({
                 badge.addEventListener("animationend", () => badge.classList.remove("rc-pop"), { once: true });
                 if (i === rowElements.length - 1) {
                   const tVerdict = setTimeout(() => {
-                    resultScreen.removeEventListener("click", skipHandler);
+                    btnRevealSkip == null ? void 0 : btnRevealSkip.removeEventListener("click", skipHandler);
+                    if (resultRevealControls)
+                      resultRevealControls.style.display = "none";
                     skipClickHandler = null;
                     if (instigator) {
                       transitionInstigatorToVerdict(waitingSprite, resultReaction, instigator.type, stars, demo);
@@ -15518,26 +15529,28 @@ var require_main = __commonJS({
                   }, 800);
                   pendingTimeouts.push(tVerdict);
                 }
-              }, 1200);
+              }, ROW_HOLD_MS);
               pendingTimeouts.push(t22);
-            }, delay);
+            }, rowStart);
             pendingTimeouts.push(t13);
-            delay += 400;
+            chainDelay += ROW_CHAIN_MS;
           }
           const skipHandler = () => {
             for (const t of pendingTimeouts)
               clearTimeout(t);
             for (const row of rowElements)
               finalizeRow(row);
+            if (resultRevealControls)
+              resultRevealControls.style.display = "none";
+            skipClickHandler = null;
             if (instigator) {
               transitionInstigatorToVerdict(waitingSprite, resultReaction, instigator.type, stars, demo);
             } else {
               resultReaction.textContent = overallPass ? "\u{1F389}" : "\u{1F494}";
             }
-            skipClickHandler = null;
           };
           skipClickHandler = skipHandler;
-          resultScreen.addEventListener("click", skipHandler, { once: true });
+          btnRevealSkip == null ? void 0 : btnRevealSkip.addEventListener("click", skipHandler, { once: true });
         }
         btnKeepDrawing.textContent = mapIsValid ? "\u2190 Keep Drawing" : "\u2190 Fix It";
         btnKeepDrawing.style.display = "";

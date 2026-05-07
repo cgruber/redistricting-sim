@@ -712,6 +712,28 @@ body {
   }
 }
 
+#result-reveal-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+#btn-reveal-skip {
+  padding: 4px 12px;
+  background: transparent;
+  color: #5070a0;
+  border: 1px solid #2a4060;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+}
+
+#btn-reveal-skip:hover {
+  color: #8090c0;
+  border-color: #4a6080;
+}
+
 #result-actions {
   display: flex;
   justify-content: center;
