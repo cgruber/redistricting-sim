@@ -21,6 +21,10 @@ export default defineConfig({
     baseURL: "http://localhost:58173",
     // Collect trace on any test failure (on-first-retry is dead config with retries:0)
     trace: "retain-on-failure",
+    // Skip sequential-reveal animations globally so existing tests don't time out
+    // waiting for 400ms×N stagger + 1200ms CHECKING hold per row. Tests that want
+    // to exercise the animated path override this with test.use({ reducedMotion: 'no-preference' }).
+    reducedMotion: "reduce",
   },
 
   projects: [

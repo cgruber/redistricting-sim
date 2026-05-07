@@ -591,11 +591,29 @@ body {
   animation: criterionReveal 0.3s ease forwards;
 }
 
+/* GAME-066: row starts hidden; JS reveals sequentially */
+.result-criterion.rc-pending {
+  opacity: 0;
+  animation: none;
+}
+
 .result-criterion .rc-icon {
   font-size: 1rem;
   flex-shrink: 0;
   margin-top: 1px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4a6080;
+  transition: color 0.15s ease;
 }
+
+/* GAME-066: icon tints on verdict */
+.result-criterion.passed .rc-icon { color: #4caf80; }
+.result-criterion.failed-required .rc-icon { color: #e94560; }
+.result-criterion.failed-optional .rc-icon { color: #606080; }
 
 .result-criterion .rc-body {
   flex: 1;
@@ -625,6 +643,29 @@ body {
 .result-criterion.failed-required .rc-badge { background: #3a1020; color: #e94560; }
 .result-criterion.failed-optional .rc-badge { background: #2a2a3a; color: #7070a0; }
 
+/* GAME-066: CHECKING badge — muted pulse during hold phase */
+.rc-badge.rc-checking {
+  background: #1a2a3a;
+  color: #5070a0;
+  animation: rcCheckingPulse 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes rcCheckingPulse {
+  from { opacity: 0.5; }
+  to   { opacity: 1; }
+}
+
+/* GAME-066: pop scale on verdict flip */
+@keyframes rcBadgePop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+.rc-badge.rc-pop {
+  animation: rcBadgePop 0.15s ease-out forwards;
+}
+
 @keyframes criterionReveal {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -645,6 +686,8 @@ body {
   background-size: auto 100%;
   background-repeat: no-repeat;
   animation: characterBob 0.9s ease-in-out infinite alternate;
+  /* GAME-066: cross-fade on pose transition */
+  transition: opacity 0.2s ease;
 }
 
 @keyframes characterBob {
@@ -655,6 +698,17 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .character-sprite {
     animation: none;
+    transition: none;
+  }
+  .rc-badge.rc-checking {
+    animation: none;
+    opacity: 1;
+  }
+  .rc-badge.rc-pop {
+    animation: none;
+  }
+  .result-criterion .rc-icon {
+    transition: none;
   }
 }
 

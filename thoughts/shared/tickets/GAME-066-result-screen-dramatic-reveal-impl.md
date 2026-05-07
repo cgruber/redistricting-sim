@@ -23,29 +23,27 @@ for icon spec and timing decisions.
 
 ## Goals / Acceptance Criteria
 
-- [ ] Sequential reveal: criteria revealed one at a time, not stagger-simultaneously
-- [ ] Each criterion holds in "pending" state (~3s, or skip-able) before showing
-      pass/fail verdict
-- [ ] Per-criterion icon replaces the bare ✓/✗ text, per DESIGN-010 spec:
-      - district_count: checkmark icon
-      - population_balance: scales icon
-      - seat_count: instigator-specific (governor flashes neutral→approve/disapprove)
-      - compactness: achievement badge
-      - validity rows: warning icon
-- [ ] Instigator character flashes from neutral pose to reaction pose when its
-      associated criterion reveals; stays in final-verdict pose after all done
-- [ ] Click-to-skip still works: skips pending state, reveals all remaining
-      criteria instantly (no animation)
-- [ ] `prefers-reduced-motion`: all pending + flash animations suppressed; criteria
-      reveal instantly; character shown in final pose without transition
-- [ ] Audio: drum-roll or suspense sound during pending state, if GAME-061 audio
-      clips are available; graceful no-op if absent
+- [ ] Sequential reveal: criteria revealed one at a time (400ms stagger), not simultaneously
+- [ ] Each criterion holds in "CHECKING…" badge state (1 200ms) with opacity-pulse before
+      flipping to PASS/FAIL (150ms pop); per DESIGN-010 §D2_TIMING
+- [ ] Per-criterion icon (`criterion-icons.ts`) replaces ✓/✗ text; one SVG per criterion
+      type; grey during CHECKING, color-tinted (green/red) on result; per DESIGN-010 §D1_ICONS
+- [ ] Instigator renders in neutral/waiting pose before criteria begin; transitions to
+      binary approve (stars ≥ 1) or disapprove (stars === 0) 0.8s after last row resolves;
+      0.4s cross-fade; foot-baseline pinned via CSS so it reads as posture change not jump;
+      per DESIGN-010 §D3_CHARACTER_FLASH
+- [ ] Click-to-skip still works: clears all pending timeouts, instantly resolves all rows
+      to final state, shows instigator in final pose
+- [ ] `prefers-reduced-motion`: JS branch skips sequential reveal entirely; all rows
+      rendered in final state immediately; instigator shown in final pose at open
+- [ ] Audio: `audioPlayer.play("instigator-approve-{type}")` / `"instigator-disapprove-{type}"`
+      on instigator flip; graceful no-op until GAME-061 clips registered
 
 ## Test Coverage
 
-- [ ] e2e: after submit, criteria rows appear sequentially (first visible, others hidden)
-- [ ] e2e: clicking result screen during pending state reveals remaining rows instantly
-- [ ] e2e: `prefers-reduced-motion` — all rows visible immediately after submit
+- [ ] e2e: in reduced-motion mode, all rows visible immediately after submit
+- [ ] e2e: clicking result screen during CHECKING hold reveals remaining rows instantly
+- [ ] e2e: result screen shows criterion icons (SVG elements in `.rc-icon`)
 
 ## References
 
