@@ -104,6 +104,15 @@ test("scenario-002 smoke: intro shows correct character and objective", async ({
   await expect(page.locator("#objective-text")).toContainText("Ken Party wins at least 3");
 });
 
+test("scenario-002: governor sprite appears on result screen", async ({ page }) => {
+  await loadScenario(page, "scenario-002");
+  // Submit the default map immediately (will fail criteria but should still show governor sprite)
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#result-screen")).toBeVisible();
+  await expect(page.locator("#result-reaction .character-sprite")).toBeVisible();
+  await expect(page.locator("#result-reaction .character-sprite")).toHaveClass(/character-governor/);
+});
+
 test("scenario-002 winnability: packing east Ryu bloc into one district passes", async ({ page }) => {
   /**
    * Hex-of-hexes R=5: 91 precincts, 4 districts of ~23.

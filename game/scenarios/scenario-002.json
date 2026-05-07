@@ -2272,6 +2272,9 @@
     }
   ],
   "narrative": {
+    "instigator": {
+      "type": "governor"
+    },
     "character": {
       "name": "You",
       "role": "Ken Party Campaign Strategist, Clearwater County",

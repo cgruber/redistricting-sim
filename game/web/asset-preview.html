@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Character Asset Preview</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0a101e;
+      color: #c8d8f0;
+      font-family: monospace;
+      font-size: 13px;
+      padding: 24px;
+    }
+    h1  { color: #7ba8e0; font-size: 1.4rem; margin-bottom: 24px; }
+    h2  { color: #5090c0; font-size: 1.1rem; margin: 32px 0 10px;
+          border-bottom: 1px solid #1a3060; padding-bottom: 6px; }
+    .section-label { color: #405080; font-size: 0.75rem; margin: 18px 0 6px;
+                     text-transform: uppercase; letter-spacing: 0.05em; }
+    p   { color: #506080; font-size: 0.8rem; margin-top: 5px; text-align: center; }
+
+    .sheet-wrap { display: inline-block; border: 1px solid #1a3060; position: relative; }
+    .sheet-wrap img { display: block; max-width: 100%; }
+
+    /* vertical boundary guides on the full sheet */
+    .guide {
+      position: absolute; top: 0; bottom: 0; width: 2px;
+      background: rgba(255, 80, 80, 0.7);
+      pointer-events: none;
+    }
+
+    .crops-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+    .crop-cell { text-align: center; }
+
+    canvas {
+      display: block;
+      border: 1px solid #2a4060;
+      /* checkerboard to show transparency */
+      background-image:
+        linear-gradient(45deg, #1a2030 25%, transparent 25%),
+        linear-gradient(-45deg, #1a2030 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1a2030 75%),
+        linear-gradient(-45deg, transparent 75%, #1a2030 75%);
+      background-size: 12px 12px;
+      background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+      background-color: #0e1828;
+    }
+  </style>
+</head>
+<body>
+  <h1>Character Asset Preview</h1>
+
+  <div id="content"></div>
+
+  <script>
+    const demos    = ["wm", "bm", "af"];
+    // Display height is fixed; width is computed per-crop to preserve aspect ratio
+    const DISP_H   = 245;
+    // Pose columns in the sprite sheet (left→right)
+    const POSES = [
+      { name: "neutral",     col: 0, stars: "2 stars"  },
+      { name: "approve",     col: 1, stars: "3 stars"  },
+      { name: "disapprove",  col: 2, stars: "0–1 stars" },
+    ];
+
+    const content = document.getElementById("content");
+
+    for (const demo of demos) {
+      const base  = `assets/characters/governor-${demo}`;
+      const block = document.createElement("div");
+      block.style.marginBottom = "48px";
+      content.appendChild(block);
+
+      block.innerHTML = `<h2>governor-${demo}</h2>`;
+
+      // ── Full sheet ──────────────────────────────────────────────────────────
+      const sheetLabel = document.createElement("div");
+      sheetLabel.className = "section-label";
+      sheetLabel.textContent = `Full sprite sheet  (${base}/sheet.png)`;
+      block.appendChild(sheetLabel);
+
+      const sheetWrap = document.createElement("div");
+      sheetWrap.className = "sheet-wrap";
+      block.appendChild(sheetWrap);
+
+      const sheetImg = new Image();
+      sheetImg.style.maxWidth = "100%";
+      sheetWrap.appendChild(sheetImg);
+
+      // When the image loads, draw crop boundaries on the full-sheet view
+      // and render each pose crop canvas.
+      sheetImg.onload = (function(img, wrap, bl, bs) {
+        return function() {
+          const W  = img.naturalWidth;
+          const H  = img.naturalHeight;
+          // Split points (x pixels in source image): [start, split1, split2, end]
+          const SPLITS = [0, 400, 880, W];
+
+          // Red guide lines at split points
+          for (const frac of [SPLITS[1] / W, SPLITS[2] / W]) {
+            const guide = document.createElement("div");
+            guide.className = "guide";
+            guide.style.left = (frac * 100) + "%";
+            wrap.appendChild(guide);
+          }
+
+          // ── CSS-crop canvases ──────────────────────────────────────────────
+          const cropLabel = document.createElement("div");
+          cropLabel.className = "section-label";
+          cropLabel.textContent = `Pose crops  (splits at x=${SPLITS[1]}, x=${SPLITS[2]} → height ${bs.DISP_H}px, width per pose)`;
+          bl.appendChild(cropLabel);
+
+          const row = document.createElement("div");
+          row.className = "crops-row";
+          bl.appendChild(row);
+
+          for (const pose of bs.POSES) {
+            const sx   = SPLITS[pose.col];
+            const sw   = SPLITS[pose.col + 1] - sx;
+            const dispW = Math.round(sw / H * bs.DISP_H);
+
+            const cell = document.createElement("div");
+            cell.className = "crop-cell";
+            row.appendChild(cell);
+
+            const canvas = document.createElement("canvas");
+            canvas.width  = dispW;
+            canvas.height = bs.DISP_H;
+            cell.appendChild(canvas);
+
+            const ctx = canvas.getContext("2d");
+            // drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh)
+            ctx.drawImage(img,
+              sx, 0, sw, H,               // source rect
+              0, 0, dispW, bs.DISP_H      // dest rect
+            );
+
+            const lbl = document.createElement("p");
+            lbl.textContent = `${pose.name}  (x=${sx}–${sx + sw})`;
+            cell.appendChild(lbl);
+            const lbl2 = document.createElement("p");
+            lbl2.style.color = "#405070";
+            lbl2.textContent = pose.stars;
+            cell.appendChild(lbl2);
+          }
+
+          // ── Individual .png file crops (if already generated) ────────────
+          const fileLabel = document.createElement("div");
+          fileLabel.className = "section-label";
+          fileLabel.textContent = "Individual pose files (neutral / approve / disapprove .png)";
+          bl.appendChild(fileLabel);
+
+          const fileRow = document.createElement("div");
+          fileRow.className = "crops-row";
+          bl.appendChild(fileRow);
+
+          for (const pose of bs.POSES) {
+            const cell = document.createElement("div");
+            cell.className = "crop-cell";
+            fileRow.appendChild(cell);
+
+            const sw2    = SPLITS[pose.col + 1] - SPLITS[pose.col];
+            const dispW2 = Math.round(sw2 / H * bs.DISP_H);
+
+            const canvas2 = document.createElement("canvas");
+            canvas2.width  = dispW2;
+            canvas2.height = bs.DISP_H;
+            cell.appendChild(canvas2);
+
+            const ctx2 = canvas2.getContext("2d");
+            const poseImg = new Image();
+            poseImg.onload = (function(c, ci, sw, h, dw, dh) {
+              return function() {
+                ci.drawImage(poseImg, 0, 0, sw, h, 0, 0, dw, dh);
+              };
+            })(canvas2, ctx2, sw2, H, dispW2, bs.DISP_H);
+            poseImg.onerror = (function(c2, pname) {
+              return function() {
+                const c = c2.getContext("2d");
+                c.fillStyle = "#1a2030";
+                c.fillRect(0, 0, c2.width, c2.height);
+                c.fillStyle = "#3a5070";
+                c.font = "11px monospace";
+                c.textAlign = "center";
+                c.fillText(pname + ".png", c2.width / 2, c2.height / 2 - 8);
+                c.fillText("not generated", c2.width / 2, c2.height / 2 + 8);
+              };
+            })(canvas2, pose.name);
+            poseImg.src = `${bs.base}/${pose.name}.png`;
+
+            const lbl = document.createElement("p");
+            lbl.textContent = pose.name + ".png";
+            cell.appendChild(lbl);
+          }
+        };
+      })(sheetImg, sheetWrap, block, { DISP_H, POSES, base });
+
+      sheetImg.src = `${base}/sheet.png`;
+    }
+  </script>
+</body>
+</html>

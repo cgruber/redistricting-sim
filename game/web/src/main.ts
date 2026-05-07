@@ -9,7 +9,7 @@
  */
 
 import { loadScenario } from "./model/loader.js";
-import type { Scenario, CriterionId } from "./model/scenario.js";
+import type { Scenario, CriterionId, InstigatorType } from "./model/scenario.js";
 import { type MapRenderer, type ViewMode, SvgMapRenderer } from "./render/mapRenderer.js";
 import {
 	renderDistrictButtons,
@@ -31,6 +31,7 @@ import {
 	type WipState,
 } from "./model/progress.js";
 import { CAMPAIGN_REGISTRY, getCampaign, loadLastPlayedScenario, saveLastPlayedScenario } from "./model/campaigns.js";
+import { initAssets, assetUrl } from "./assets.js";
 
 // ─── Scenario manifest (GAME-021) ─────────────────────────────────────────────
 // Static list of all available scenarios in play order.
@@ -144,6 +145,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 // ─── Async init ───────────────────────────────────────────────────────────────
 
 (async () => {
+	initAssets();
+
 	let progress = loadProgress();
 
 	// ── Campaign context (GAME-048) ───────────────────────────────────────────
@@ -729,6 +732,39 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		return rows;
 	}
 
+	function computeStarCount(criterionResults: CriterionResult[], mapIsValid: boolean): number {
+		if (!mapIsValid) return 0;
+		return criterionResults.filter(cr => cr.required && cr.passed).length;
+	}
+
+	const GOVERNOR_DEMOGRAPHICS = ["wm", "bm", "af"] as const;
+
+	function renderInstigatorReaction(container: HTMLElement, type: InstigatorType, stars: number): void {
+		if (type === "governor") {
+			const demo = GOVERNOR_DEMOGRAPHICS[Math.floor(Math.random() * GOVERNOR_DEMOGRAPHICS.length)];
+			// Sheet is 1376×752; sprite height is fixed at 200px → scale = 200/752.
+			// Column splits (source px): neutral 0–400, approve 400–880, disapprove 880–1376.
+			// Display widths = round(col_width × 200/752): neutral=106, approve=128, disapprove=132.
+			// Element width is set per-pose so each crop window matches the column exactly — no bleed.
+			const pose = stars >= 3
+				? { offsetX: 106, width: 128, label: "The governor reacts with enthusiasm — thumbs up" }
+				: stars >= 2
+					? { offsetX: 0,   width: 106, label: "The governor looks on, arms at sides" }
+					: { offsetX: 234, width: 132, label: "The governor reacts with displeasure — thumbs down" };
+			const sprite = document.createElement("div");
+			sprite.className = "character-sprite character-governor";
+			sprite.setAttribute("role", "img");
+			sprite.setAttribute("aria-label", pose.label);
+			sprite.style.width = `${pose.width}px`;
+			sprite.style.backgroundImage = `url('${assetUrl(`assets/characters/governor-${demo}/sheet.png`)}')`;
+			sprite.style.backgroundPosition = `-${pose.offsetX}px 0%`;
+			container.appendChild(sprite);
+		} else {
+			// SVG-based types: emoji fallback until GAME-060 art is complete
+			container.textContent = stars >= 2 ? "🎉" : "💔";
+		}
+	}
+
 	function showResultScreen() {
 		if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList || !resultReaction) return;
 		if (skipClickHandler) { resultScreen.removeEventListener("click", skipClickHandler); skipClickHandler = null; }
@@ -768,7 +804,14 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			: mapIsValid
 				? "One or more required criteria were not met."
 				: "The map has structural issues that must be fixed.";
-		resultReaction.textContent = overallPass ? "🎉" : "💔";
+		resultReaction.innerHTML = "";
+		const instigator = scenario.narrative.instigator;
+		if (instigator) {
+			const stars = computeStarCount(evalResult.criterionResults, mapIsValid);
+			renderInstigatorReaction(resultReaction, instigator.type, stars);
+		} else {
+			resultReaction.textContent = overallPass ? "🎉" : "💔";
+		}
 
 		// GAME-059: for invalid maps, prepend validity failure rows before scenario criteria.
 		const validityRows = mapIsValid ? [] : buildValidityRows(validity);

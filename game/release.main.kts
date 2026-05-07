@@ -364,22 +364,47 @@ class Deploy : CliktCommand(
             }
             extractZip(stagedZip, deployRoot)
 
-            // Patch index.html: add version query string to bundle.js src so browsers
-            // treat each deploy as a unique resource and bypass stale cache entries.
+            // Patch index.html:
+            //  1. Version query string on bundle.js so browsers bypass stale cache.
+            //  2. Fill app-version / app-environment meta tags so JS can read them
+            //     synchronously without an extra network fetch (avoids 404 console errors
+            //     in environments that don't have deployment-metadata.json).
             // (BUILD-009 tracks the proper content-hash solution.)
             val indexHtml = File(deployRoot, "index.html")
             if (indexHtml.exists()) {
-                val original = indexHtml.readText()
-                val patched = original.replace(
+                var html = indexHtml.readText()
+
+                val bundlePatched = html.replace(
                     """s.src = "bundle.js";""",
                     """s.src = "bundle.js?v=$version";"""
                 )
-                if (patched == original) {
-                    System.err.println("⚠ WARNING: cache-bust patch had no effect — 's.src = \"bundle.js\";' not found in index.html")
+                if (bundlePatched == html) {
+                    System.err.println("⚠ WARNING: bundle cache-bust patch had no effect — 's.src = \"bundle.js\";' not found in index.html")
                     System.err.println("  Browsers may serve a stale bundle. Check index.html and update release.main.kts.")
-                } else {
-                    indexHtml.writeText(patched)
                 }
+                html = bundlePatched
+
+                val versionMetaOriginal = html
+                html = html.replace(
+                    """<meta name="app-version" content="">""",
+                    """<meta name="app-version" content="$version">"""
+                )
+                if (html == versionMetaOriginal) {
+                    System.err.println("⚠ WARNING: app-version meta patch had no effect — '<meta name=\"app-version\" content=\"\">' not found in index.html")
+                    System.err.println("  The JS version badge and asset URLs may show stale or missing data. Check index.html and update release.main.kts.")
+                }
+
+                val envMetaOriginal = html
+                html = html.replace(
+                    """<meta name="app-environment" content="">""",
+                    """<meta name="app-environment" content="$env">"""
+                )
+                if (html == envMetaOriginal) {
+                    System.err.println("⚠ WARNING: app-environment meta patch had no effect — '<meta name=\"app-environment\" content=\"\">' not found in index.html")
+                    System.err.println("  The JS version badge may show the wrong environment. Check index.html and update release.main.kts.")
+                }
+
+                indexHtml.writeText(html)
             }
 
             val deployMeta = DeployMetadata(
