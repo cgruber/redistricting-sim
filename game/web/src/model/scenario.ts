@@ -198,12 +198,26 @@ export interface Slide {
 	image?: string;
 }
 
+export type InstigatorType =
+	| "partisan-boss"
+	| "legal-authority"
+	| "bipartisan-broker"
+	| "reform-arbiter"
+	| "neutral-admin"
+	| "governor";
+
+export interface ScenarioInstigator {
+	type: InstigatorType;
+}
+
 export interface Narrative {
 	character: {
 		name: string;
 		role: string;
 		motivation: string;
 	};
+	/** The character who reacts on the result screen. Absent = emoji fallback. */
+	instigator?: ScenarioInstigator;
 	intro_slides: Slide[];
 	/** Shown on the map screen */
 	objective: string;

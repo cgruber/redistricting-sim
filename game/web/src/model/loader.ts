@@ -20,6 +20,7 @@ import type {
   GroupFilter,
   GroupId,
   GroupSchema,
+  InstigatorType,
   Narrative,
   Party,
   PartyId,
@@ -408,6 +409,18 @@ function parseNarrative(raw: unknown): Narrative {
   };
   if (r["flavor_text"] !== undefined) {
     narrative.flavor_text = requireString(r["flavor_text"], "narrative.flavor_text");
+  }
+  if (r["instigator"] !== undefined) {
+    const insRaw = requireObject(r["instigator"], "narrative.instigator");
+    const instigatorTypes: InstigatorType[] = [
+      "partisan-boss", "legal-authority", "bipartisan-broker",
+      "reform-arbiter", "neutral-admin", "governor",
+    ];
+    const type = requireString(insRaw["type"], "narrative.instigator.type");
+    if (!(instigatorTypes as string[]).includes(type)) {
+      throw new Error(`narrative.instigator.type: unknown type "${type}"; expected one of: ${instigatorTypes.join(", ")}`);
+    }
+    narrative.instigator = { type: type as InstigatorType };
   }
   return narrative;
 }

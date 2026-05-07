@@ -90,6 +90,8 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-005-population-dot-density-overlay.md` | design, rendering | Population dot density overlay: dot count per precinct proportional to population; hue-aware dot color; colorblind-safe palette |
 | `DESIGN-006-zoom-adaptive-dot-density.md` | design, rendering | Zoom-adaptive dot density scaling + person glyph threshold (refinement on DESIGN-005, possibly post-v1) |
 | `DESIGN-007-dimensional-dot-map-demographic-overlay.md` | design, rendering | Dimensional dot map: demographic dimension switching (Option B adaptive encoding) + sorted placement toggle |
+| `DESIGN-010-result-screen-dramatic-reveal.md` | design, UX, art | Per-criterion icons, suspense timing, instigator character flash — design spec gates GAME-066 |
+| `GAME-066-result-screen-dramatic-reveal-impl.md` | game, UX | Sequential criterion reveal with ~3s suspense pause, per-criterion icons, instigator flash; depends on DESIGN-010 |
 | `GAME-056-playtest-feedback.md` | game, content, UX | Capture and act on playtest feedback — scenario balance and UX |
 | `GAME-057-scenario-randomization.md` | game, content, replayability | Per-session ±5% population/lean offsets seeded per session; e2e tests remain deterministic |
 | `GAME-058-manual-playability-test-thresholds.md` | game, content, QA | Manual playthrough of scenarios 007 and 008 to verify tightened thresholds (GAME-031) feel right |
@@ -104,6 +106,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-061-audio-clips.md` | game, audio, content | 10 audio clips (5 types × pass/fail); CC0 preferred; AI-generated fallback; depends on DESIGN-009 |
 | `GAME-062-character-reaction-system.md` | game, UX | Wire character sprites + audio to result screen; replaces emoji placeholder; depends on GAME-060/061/063/064/065 |
 | `GAME-065-character-sprite-art-refinement.md` | game, art, content | Replace placeholder SVGs with quality character art; pose/file structure unchanged; visual review required before merge |
+| `GAME-067-asset-versioning-and-env-badge.md` | game, build, deployment | Asset URL versioning (`?v=<version>`) via deployment-metadata.json + dev/staging version badge |
 
 ---
 
