@@ -14616,6 +14616,44 @@ var init_campaigns = __esm({
   }
 });
 
+// web/src/assets.ts
+function initAssets() {
+  var _a, _b;
+  const versionMeta = document.querySelector('meta[name="app-version"]');
+  const envMeta = document.querySelector('meta[name="app-environment"]');
+  const version = (_a = versionMeta == null ? void 0 : versionMeta.content) != null ? _a : "";
+  const env = (_b = envMeta == null ? void 0 : envMeta.content) != null ? _b : "";
+  _version = version !== "" ? version : null;
+  _environment = env !== "" ? env : null;
+  if (!isProduction()) {
+    showVersionBadge();
+  }
+}
+function assetUrl(path2) {
+  return _version !== null ? `${path2}?v=${_version}` : path2;
+}
+function isProduction() {
+  return window.location.hostname === "pastthepost.gg";
+}
+function showVersionBadge() {
+  const existing = document.getElementById("version-badge");
+  if (existing)
+    return;
+  const badge = document.createElement("div");
+  badge.id = "version-badge";
+  const env = _environment != null ? _environment : window.location.hostname === "localhost" ? "local" : "?";
+  const ver = _version != null ? _version : "no metadata";
+  badge.textContent = `${env}  ${ver}`;
+  document.body.appendChild(badge);
+}
+var _version, _environment;
+var init_assets = __esm({
+  "web/src/assets.ts"() {
+    _version = null;
+    _environment = null;
+  }
+});
+
 // web/src/main.ts
 var require_main = __commonJS({
   "web/src/main.ts"(exports) {
@@ -14627,6 +14665,7 @@ var require_main = __commonJS({
     init_validity();
     init_progress();
     init_campaigns();
+    init_assets();
     var SCENARIO_MANIFEST = [
       { id: "tutorial-002", title: "Millbrook County: Three-District Challenge" },
       { id: "scenario-002", title: "Clearwater County: The Governor's Map" },
@@ -14702,6 +14741,7 @@ var require_main = __commonJS({
     var IS_DEBUG = debugParam !== null && debugParam !== "off" || sessionStorage.getItem(DEBUG_KEY) === "1";
     (() => __async(exports, null, function* () {
       var _a, _b, _c, _d, _e, _f;
+      initAssets();
       let progress = loadProgress();
       const urlParams = new URLSearchParams(window.location.search);
       const campaignParam = ((_a = urlParams.get("campaign")) != null ? _a : "").replace(/[^a-z0-9-]/g, "");
@@ -15207,7 +15247,7 @@ var require_main = __commonJS({
           sprite.setAttribute("role", "img");
           sprite.setAttribute("aria-label", pose.label);
           sprite.style.width = `${pose.width}px`;
-          sprite.style.backgroundImage = `url('assets/characters/governor-${demo}/sheet.png')`;
+          sprite.style.backgroundImage = `url('${assetUrl(`assets/characters/governor-${demo}/sheet.png`)}')`;
           sprite.style.backgroundPosition = `-${pose.offsetX}px 0%`;
           container.appendChild(sprite);
         } else {

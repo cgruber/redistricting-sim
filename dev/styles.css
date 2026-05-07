@@ -930,3 +930,19 @@ body {
     animation: none;
   }
 }
+
+/* ── Version badge (dev / staging only — injected by assets.ts) ───────────── */
+#version-badge {
+  position: fixed;
+  bottom: 8px;
+  left: 8px;
+  padding: 3px 8px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #7ba8e0;
+  font-family: monospace;
+  font-size: 0.7rem;
+  border-radius: 3px;
+  pointer-events: none;
+  z-index: 9999;
+  user-select: none;
+}
