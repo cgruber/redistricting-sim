@@ -643,7 +643,7 @@ body {
   display: block;
   width: 122px;
   height: 200px;
-  background-size: 300% auto;
+  background-size: auto 100%;
   background-repeat: no-repeat;
   animation: characterBob 0.9s ease-in-out infinite alternate;
 }

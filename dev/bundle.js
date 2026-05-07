@@ -15201,7 +15201,7 @@ var require_main = __commonJS({
       function renderInstigatorReaction(container, type2, stars) {
         if (type2 === "governor") {
           const demo = GOVERNOR_DEMOGRAPHICS[Math.floor(Math.random() * GOVERNOR_DEMOGRAPHICS.length)];
-          const posePos = stars >= 3 ? "50%" : stars >= 2 ? "0%" : "100%";
+          const posePos = stars >= 3 ? "-106px 0%" : stars >= 2 ? "0px 0%" : "-234px 0%";
           const ariaLabel = stars >= 3 ? "The governor reacts with enthusiasm \u2014 thumbs up" : stars >= 2 ? "The governor looks on, arms at sides" : "The governor reacts with displeasure \u2014 thumbs down";
           const sprite = document.createElement("div");
           sprite.className = "character-sprite character-governor";
