@@ -14633,7 +14633,8 @@ function assetUrl(path2) {
   return _version !== null ? `${path2}?v=${_version}` : path2;
 }
 function isProduction() {
-  return window.location.hostname === "pastthepost.gg";
+  const h = window.location.hostname;
+  return h === "pastthepost.gg" || h === "www.pastthepost.gg";
 }
 function showVersionBadge() {
   const existing = document.getElementById("version-badge");
@@ -14654,6 +14655,96 @@ var init_assets = __esm({
   }
 });
 
+// web/src/criterion-icons.ts
+function getCriterionIcon(criterionId, criterionType) {
+  if (criterionType in ICONS)
+    return ICONS[criterionType];
+  if (criterionId.startsWith("validity:contiguity"))
+    return ICONS["validity:contiguity"];
+  if (criterionId.startsWith("validity:all-assigned"))
+    return ICONS["validity:all-assigned"];
+  if (criterionId.startsWith("validity:population-balance"))
+    return ICONS["validity:population-balance"];
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="12" x2="18" y2="12"/></svg>`;
+}
+var ICONS;
+var init_criterion_icons = __esm({
+  "web/src/criterion-icons.ts"() {
+    ICONS = {
+      district_count: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <rect x="3" y="3" width="7" height="7" rx="1"/>
+    <rect x="14" y="3" width="7" height="7" rx="1"/>
+    <rect x="3" y="14" width="7" height="7" rx="1"/>
+    <rect x="14" y="14" width="7" height="7" rx="1"/>
+  </svg>`,
+      population_balance: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <line x1="12" y1="3" x2="12" y2="21"/>
+    <line x1="4" y1="8" x2="20" y2="8"/>
+    <path d="M4 8 Q5 12 8 14 Q11 12 12 8"/>
+    <path d="M12 8 Q13 12 16 14 Q19 12 20 8"/>
+    <line x1="9" y1="21" x2="15" y2="21"/>
+  </svg>`,
+      seat_count: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <rect x="6" y="10" width="12" height="7" rx="1"/>
+    <line x1="6" y1="10" x2="6" y2="7"/>
+    <line x1="18" y1="10" x2="18" y2="7"/>
+    <line x1="4" y1="17" x2="4" y2="21"/>
+    <line x1="20" y1="17" x2="20" y2="21"/>
+    <line x1="8" y1="7" x2="16" y2="7"/>
+  </svg>`,
+      majority_minority: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="9" cy="7" r="3"/>
+    <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+    <circle cx="16" cy="7" r="3" stroke-dasharray="2 1"/>
+  </svg>`,
+      efficiency_gap: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <line x1="3" y1="21" x2="21" y2="21"/>
+    <rect x="5" y="9" width="5" height="12"/>
+    <rect x="14" y="4" width="5" height="17"/>
+  </svg>`,
+      mean_median: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 18 Q8 4 12 4 Q16 4 21 18"/>
+    <line x1="10" y1="8" x2="10" y2="20" stroke-dasharray="2 1"/>
+    <line x1="13" y1="7" x2="13" y2="20"/>
+  </svg>`,
+      compactness: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="7" cy="12" r="4"/>
+    <path d="M14 8 Q17 6 19 9 Q22 11 20 14 Q19 17 16 16 Q13 18 13 15 Q11 12 14 8Z"/>
+  </svg>`,
+      safe_seats: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 3 L20 7 L20 13 Q20 18 12 21 Q4 18 4 13 L4 7 Z"/>
+  </svg>`,
+      competitive_seats: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <line x1="3" y1="18" x2="21" y2="18"/>
+    <line x1="9" y1="18" x2="9" y2="10"/>
+    <polygon points="7,10 9,6 11,10"/>
+    <line x1="15" y1="18" x2="15" y2="10"/>
+    <polygon points="13,10 15,6 17,10"/>
+  </svg>`,
+      "validity:all-assigned": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <rect x="3" y="3" width="7" height="7" rx="1"/>
+    <rect x="14" y="3" width="7" height="7" rx="1"/>
+    <rect x="3" y="14" width="7" height="7" rx="1"/>
+    <rect x="14" y="14" width="7" height="7" rx="1"/>
+    <line x1="5" y1="17" x2="7" y2="19"/>
+    <line x1="7" y1="19" x2="9" y2="15"/>
+  </svg>`,
+      "validity:population-balance": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <line x1="12" y1="3" x2="12" y2="21"/>
+    <line x1="4" y1="10" x2="20" y2="10"/>
+    <path d="M4 10 Q5 15 8 17 Q11 15 12 10"/>
+    <path d="M12 10 Q13 13 16 12 Q19 11 20 10"/>
+    <line x1="9" y1="21" x2="15" y2="21"/>
+  </svg>`,
+      "validity:contiguity": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12 Q5 10 7 12 Q9 14 11 12"/>
+    <path d="M13 12 Q15 10 17 12 Q19 14 21 12"/>
+    <line x1="11" y1="12" x2="13" y2="12" stroke-dasharray="1 2"/>
+  </svg>`
+    };
+  }
+});
+
 // web/src/main.ts
 var require_main = __commonJS({
   "web/src/main.ts"(exports) {
@@ -14666,6 +14757,7 @@ var require_main = __commonJS({
     init_progress();
     init_campaigns();
     init_assets();
+    init_criterion_icons();
     var SCENARIO_MANIFEST = [
       { id: "tutorial-002", title: "Millbrook County: Three-District Challenge" },
       { id: "scenario-002", title: "Clearwater County: The Governor's Map" },
@@ -15238,10 +15330,24 @@ var require_main = __commonJS({
         return criterionResults.filter((cr) => cr.required && cr.passed).length;
       }
       const GOVERNOR_DEMOGRAPHICS = ["wm", "bm", "af"];
-      function renderInstigatorReaction(container, type2, stars) {
+      function renderInstigatorWaiting(container, type2, demo) {
         if (type2 === "governor") {
-          const demo = GOVERNOR_DEMOGRAPHICS[Math.floor(Math.random() * GOVERNOR_DEMOGRAPHICS.length)];
-          const pose = stars >= 3 ? { offsetX: 106, width: 128, label: "The governor reacts with enthusiasm \u2014 thumbs up" } : stars >= 2 ? { offsetX: 0, width: 106, label: "The governor looks on, arms at sides" } : { offsetX: 234, width: 132, label: "The governor reacts with displeasure \u2014 thumbs down" };
+          const sprite = document.createElement("div");
+          sprite.className = "character-sprite character-governor";
+          sprite.setAttribute("role", "img");
+          sprite.setAttribute("aria-label", "The governor watches, awaiting the verdict");
+          sprite.style.width = "106px";
+          sprite.style.backgroundImage = `url('${assetUrl(`assets/characters/governor-${demo}/sheet.png`)}')`;
+          sprite.style.backgroundPosition = "0px 0%";
+          container.appendChild(sprite);
+          return sprite;
+        }
+        container.textContent = "\u23F3";
+        return null;
+      }
+      function renderInstigatorFinal(container, type2, stars, demo) {
+        if (type2 === "governor") {
+          const pose = stars >= 1 ? { offsetX: 106, width: 128, label: "The governor approves \u2014 thumbs up" } : { offsetX: 234, width: 132, label: "The governor disapproves \u2014 thumbs down" };
           const sprite = document.createElement("div");
           sprite.className = "character-sprite character-governor";
           sprite.setAttribute("role", "img");
@@ -15251,7 +15357,21 @@ var require_main = __commonJS({
           sprite.style.backgroundPosition = `-${pose.offsetX}px 0%`;
           container.appendChild(sprite);
         } else {
-          container.textContent = stars >= 2 ? "\u{1F389}" : "\u{1F494}";
+          container.textContent = stars >= 1 ? "\u{1F389}" : "\u{1F494}";
+        }
+      }
+      function transitionInstigatorToVerdict(sprite, container, type2, stars, demo) {
+        if (type2 === "governor" && sprite) {
+          const pose = stars >= 1 ? { offsetX: 106, width: 128, label: "The governor approves \u2014 thumbs up" } : { offsetX: 234, width: 132, label: "The governor disapproves \u2014 thumbs down" };
+          sprite.style.opacity = "0";
+          setTimeout(() => {
+            sprite.setAttribute("aria-label", pose.label);
+            sprite.style.width = `${pose.width}px`;
+            sprite.style.backgroundPosition = `-${pose.offsetX}px 0%`;
+            sprite.style.opacity = "1";
+          }, 200);
+        } else if (type2 !== "governor") {
+          container.textContent = stars >= 1 ? "\u{1F389}" : "\u{1F494}";
         }
       }
       function showResultScreen() {
@@ -15286,27 +15406,29 @@ var require_main = __commonJS({
         resultVerdict.textContent = overallPass ? "Map Passed!" : "Map Failed";
         resultVerdict.className = overallPass ? "pass" : "fail";
         resultSubtitle.textContent = overallPass ? "All required criteria met." : mapIsValid ? "One or more required criteria were not met." : "The map has structural issues that must be fixed.";
-        resultReaction.innerHTML = "";
+        const stars = computeStarCount(evalResult.criterionResults, mapIsValid);
         const instigator = scenario.narrative.instigator;
-        if (instigator) {
-          const stars = computeStarCount(evalResult.criterionResults, mapIsValid);
-          renderInstigatorReaction(resultReaction, instigator.type, stars);
-        } else {
-          resultReaction.textContent = overallPass ? "\u{1F389}" : "\u{1F494}";
+        const criterionTypeMap = /* @__PURE__ */ new Map();
+        for (const sc of scenario.success_criteria) {
+          criterionTypeMap.set(sc.id, sc.criterion.type);
         }
         const validityRows = mapIsValid ? [] : buildValidityRows(validity);
         const allRows = [...validityRows, ...evalResult.criterionResults];
         resultCriteriaList.innerHTML = "";
-        let rowIndex = 0;
-        for (const cr of allRows) {
-          const cls = cr.passed ? "passed" : cr.required ? "failed-required" : "failed-optional";
+        resultReaction.innerHTML = "";
+        const demo = (instigator == null ? void 0 : instigator.type) === "governor" ? GOVERNOR_DEMOGRAPHICS[Math.floor(Math.random() * GOVERNOR_DEMOGRAPHICS.length)] : "";
+        function buildRowElement(cr, final) {
+          var _a2;
+          const verdictCls = cr.passed ? "passed" : cr.required ? "failed-required" : "failed-optional";
           const row = document.createElement("div");
-          row.className = `result-criterion ${cls}`;
-          row.style.animationDelay = `${rowIndex * 120}ms`;
-          rowIndex++;
+          row.className = final ? `result-criterion ${verdictCls}` : "result-criterion rc-pending";
+          row.dataset["passed"] = String(cr.passed);
+          row.dataset["required"] = String(cr.required);
+          row.dataset["finalized"] = String(final);
           const iconEl = document.createElement("span");
           iconEl.className = "rc-icon";
-          iconEl.textContent = cr.passed ? "\u2713" : "\u2717";
+          const criterionType = (_a2 = criterionTypeMap.get(cr.criterionId)) != null ? _a2 : cr.criterionId;
+          iconEl.innerHTML = getCriterionIcon(cr.criterionId, criterionType);
           const body = document.createElement("div");
           body.className = "rc-body";
           const desc = document.createElement("div");
@@ -15320,23 +15442,103 @@ var require_main = __commonJS({
             body.appendChild(detail);
           }
           const badge = document.createElement("span");
-          badge.className = "rc-badge";
-          badge.textContent = cr.passed ? "PASS" : cr.required ? "FAIL" : "OPTIONAL";
+          badge.className = final ? "rc-badge" : "rc-badge rc-checking";
+          badge.textContent = final ? cr.passed ? "PASS" : cr.required ? "FAIL" : "OPTIONAL" : "CHECKING\u2026";
           row.appendChild(iconEl);
           row.appendChild(body);
           row.appendChild(badge);
-          resultCriteriaList.appendChild(row);
+          return row;
         }
-        const skipHandler = () => {
-          const rows = Array.from(resultCriteriaList.querySelectorAll(".result-criterion"));
-          for (const el of rows) {
-            el.style.animation = "none";
-            el.style.opacity = "1";
+        function finalizeRow(row) {
+          if (row.dataset["finalized"] === "true")
+            return;
+          row.dataset["finalized"] = "true";
+          const passed = row.dataset["passed"] === "true";
+          const required2 = row.dataset["required"] === "true";
+          const verdictCls = passed ? "passed" : required2 ? "failed-required" : "failed-optional";
+          row.className = `result-criterion ${verdictCls}`;
+          row.style.opacity = "1";
+          row.style.animation = "none";
+          const badge = row.querySelector(".rc-badge");
+          badge.classList.remove("rc-checking");
+          badge.textContent = passed ? "PASS" : required2 ? "FAIL" : "OPTIONAL";
+        }
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reducedMotion) {
+          for (const cr of allRows) {
+            resultCriteriaList.appendChild(buildRowElement(
+              cr,
+              /*final=*/
+              true
+            ));
           }
-          skipClickHandler = null;
-        };
-        skipClickHandler = skipHandler;
-        resultScreen.addEventListener("click", skipHandler, { once: true });
+          if (instigator) {
+            renderInstigatorFinal(resultReaction, instigator.type, stars, demo);
+          } else {
+            resultReaction.textContent = overallPass ? "\u{1F389}" : "\u{1F494}";
+          }
+        } else {
+          let waitingSprite = null;
+          if (instigator) {
+            waitingSprite = renderInstigatorWaiting(resultReaction, instigator.type, demo);
+          } else {
+            resultReaction.textContent = "\u23F3";
+          }
+          const rowElements = [];
+          for (const cr of allRows) {
+            const row = buildRowElement(
+              cr,
+              /*final=*/
+              false
+            );
+            resultCriteriaList.appendChild(row);
+            rowElements.push(row);
+          }
+          const pendingTimeouts = [];
+          let delay = 0;
+          for (let i = 0; i < rowElements.length; i++) {
+            const row = rowElements[i];
+            const t13 = setTimeout(() => {
+              row.classList.remove("rc-pending");
+              row.style.animation = "criterionReveal 0.3s ease forwards";
+              const t22 = setTimeout(() => {
+                finalizeRow(row);
+                const badge = row.querySelector(".rc-badge");
+                badge.classList.add("rc-pop");
+                badge.addEventListener("animationend", () => badge.classList.remove("rc-pop"), { once: true });
+                if (i === rowElements.length - 1) {
+                  const tVerdict = setTimeout(() => {
+                    resultScreen.removeEventListener("click", skipHandler);
+                    skipClickHandler = null;
+                    if (instigator) {
+                      transitionInstigatorToVerdict(waitingSprite, resultReaction, instigator.type, stars, demo);
+                    } else {
+                      resultReaction.textContent = overallPass ? "\u{1F389}" : "\u{1F494}";
+                    }
+                  }, 800);
+                  pendingTimeouts.push(tVerdict);
+                }
+              }, 1200);
+              pendingTimeouts.push(t22);
+            }, delay);
+            pendingTimeouts.push(t13);
+            delay += 400;
+          }
+          const skipHandler = () => {
+            for (const t of pendingTimeouts)
+              clearTimeout(t);
+            for (const row of rowElements)
+              finalizeRow(row);
+            if (instigator) {
+              transitionInstigatorToVerdict(waitingSprite, resultReaction, instigator.type, stars, demo);
+            } else {
+              resultReaction.textContent = overallPass ? "\u{1F389}" : "\u{1F494}";
+            }
+            skipClickHandler = null;
+          };
+          skipClickHandler = skipHandler;
+          resultScreen.addEventListener("click", skipHandler, { once: true });
+        }
         btnKeepDrawing.textContent = mapIsValid ? "\u2190 Keep Drawing" : "\u2190 Fix It";
         btnKeepDrawing.style.display = "";
         btnNextScenario.style.display = overallPass ? "" : "none";
