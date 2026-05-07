@@ -1049,16 +1049,19 @@ test("GAME-066: result screen shows SVG criterion icons (not bare ✓/✗ text)"
 });
 
 // test.use() must be at describe scope, not inside a test() body.
-test.describe("GAME-066: animated reveal path (no reduced-motion)", () => {
+test.describe("GAME-068: animated reveal path (no reduced-motion)", () => {
   test.use({ reducedMotion: "no-preference" });
 
-  test("clicking result screen skips sequential reveal and shows all rows", async ({ page }) => {
+  test("Skip button finalises all rows instantly in animated reveal", async ({ page }) => {
     await loadScenario(page, "scenario-002");
     await page.locator("#btn-submit").click();
     await expect(page.locator("#result-screen")).toBeVisible();
 
-    // Immediately click to skip — all rows should be in final state.
-    await page.locator("#result-screen").click();
+    // Skip button visible during animated reveal.
+    await expect(page.locator("#btn-reveal-skip")).toBeVisible();
+
+    // Click Skip → all rows in final state immediately.
+    await page.locator("#btn-reveal-skip").click();
 
     const rows = page.locator(".result-criterion");
     const count = await rows.count();
@@ -1067,5 +1070,8 @@ test.describe("GAME-066: animated reveal path (no reduced-motion)", () => {
       await expect(rows.nth(i)).toBeVisible();
       await expect(rows.nth(i)).not.toHaveClass(/rc-pending/);
     }
+
+    // Skip button gone after skipping.
+    await expect(page.locator("#result-reveal-controls")).toBeHidden();
   });
 });

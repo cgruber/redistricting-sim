@@ -50,25 +50,23 @@ test("GAME-052: criterion rows all visible immediately in reduced-motion mode", 
   }
 });
 
-test("GAME-052: clicking result screen reveals all rows instantly", async ({ page }) => {
+// GAME-068: skip is now a dedicated button, not click-anywhere.
+// In reduced-motion mode (global default) all rows are already final at open — no skip needed.
+test("GAME-052: all rows in final state immediately in reduced-motion mode", async ({ page }) => {
   await loadEditor(page);
   await openResultScreen(page);
-
-  await page.locator("#result-screen").click();
 
   const rows = page.locator(".result-criterion");
   const count = await rows.count();
   expect(count).toBeGreaterThan(0);
 
   for (let i = 0; i < count; i++) {
-    const opacity = await rows.nth(i).evaluate((el) => (el as HTMLElement).style.opacity);
-    // animation shorthand is cleared; computed animationName resolves to "none"
-    const animationName = await rows.nth(i).evaluate(
-      (el) => getComputedStyle(el).animationName,
-    );
-    expect(opacity).toBe("1");
-    expect(animationName).toBe("none");
+    await expect(rows.nth(i)).toBeVisible();
+    await expect(rows.nth(i)).not.toHaveClass(/rc-pending/);
   }
+
+  // Skip button not shown in reduced-motion path.
+  await expect(page.locator("#result-reveal-controls")).toBeHidden();
 });
 
 test("GAME-052: party reaction element is populated after submit", async ({ page }) => {

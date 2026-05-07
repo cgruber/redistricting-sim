@@ -90,7 +90,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-005-population-dot-density-overlay.md` | design, rendering | Population dot density overlay: dot count per precinct proportional to population; hue-aware dot color; colorblind-safe palette |
 | `DESIGN-006-zoom-adaptive-dot-density.md` | design, rendering | Zoom-adaptive dot density scaling + person glyph threshold (refinement on DESIGN-005, possibly post-v1) |
 | `DESIGN-007-dimensional-dot-map-demographic-overlay.md` | design, rendering | Dimensional dot map: demographic dimension switching (Option B adaptive encoding) + sorted placement toggle |
-| `GAME-066-result-screen-dramatic-reveal-impl.md` | game, UX | Sequential criterion reveal with ~3s suspense pause, per-criterion icons, instigator flash; depends on DESIGN-010 |
+| `GAME-068-result-reveal-pacing.md` | game, UX | True sequential reveal (1 row at a time, no overlap) + dedicated Skip button; pacing followup to GAME-066 |
 | `GAME-056-playtest-feedback.md` | game, content, UX | Capture and act on playtest feedback — scenario balance and UX |
 | `GAME-057-scenario-randomization.md` | game, content, replayability | Per-session ±5% population/lean offsets seeded per session; e2e tests remain deterministic |
 | `GAME-058-manual-playability-test-thresholds.md` | game, content, QA | Manual playthrough of scenarios 007 and 008 to verify tightened thresholds (GAME-031) feel right |
@@ -116,6 +116,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | GAME-064: audio playback infrastructure | AudioPlayer module: preload, play, mute toggle, autoplay policy, localStorage persistence; merged PR #194 |
 | GAME-063: asset pipeline | Directory structure + Bazel integration for SVG + audio delivery; deployable inclusion; merged PR #192 |
 | GAME-059: submit-on-invalid maps | Removed validity gate from Submit button; invalid maps now reach result screen; Fix-It path replaces Next Scenario; merged PR #196 |
+| GAME-066: result screen dramatic reveal | Per-criterion SVG icons, sequential reveal, binary instigator cross-fade, prefers-reduced-motion fast path; merged PR #213 |
 | DESIGN-010: result screen dramatic reveal | Per-criterion icons (flat SVG set, 24/36px, criterion-icons.ts), suspense timing (400ms stagger, 1.2s CHECKING hold, click-to-skip), binary instigator pose (approve=1-3★/disapprove=0★, waiting.svg neutral pre-reveal, foot-anchored CSS); research doc finalized 2026-05-07 |
 | DESIGN-009: character reaction visual style | Inline SVG + CSS animation decided; 5 instigator types × 4 star states; consistency spec for AI generation; audio tone per type; research doc finalized |
 | GAME-052: animated criteria reveal | CSS criterionReveal keyframe (opacity+translateY), 120ms stagger, click-to-skip, 🎉/💔 reaction; 4 e2e tests; merged PR #189 |

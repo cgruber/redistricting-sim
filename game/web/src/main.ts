@@ -95,6 +95,8 @@ const resultReaction = document.getElementById("result-reaction") as HTMLElement
 const resultCriteriaList = document.getElementById("result-criteria-list") as HTMLElement | null;
 const btnKeepDrawing = document.getElementById("btn-keep-drawing") as HTMLButtonElement | null;
 const btnNextScenario = document.getElementById("btn-next-scenario") as HTMLButtonElement | null;
+const resultRevealControls = document.getElementById("result-reveal-controls") as HTMLElement | null;
+const btnRevealSkip = document.getElementById("btn-reveal-skip") as HTMLButtonElement | null;
 
 // Intro screen refs (GAME-016)
 const introScreen = document.getElementById("intro-screen") as HTMLElement | null;
@@ -806,7 +808,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 	function showResultScreen() {
 		if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList || !resultReaction) return;
-		if (skipClickHandler) { resultScreen.removeEventListener("click", skipClickHandler); skipClickHandler = null; }
+		if (skipClickHandler) { btnRevealSkip?.removeEventListener("click", skipClickHandler); skipClickHandler = null; }
 
 		const state = store.getState();
 		if (state.simulationResult === null) return;
@@ -941,7 +943,14 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				resultReaction.textContent = overallPass ? "🎉" : "💔";
 			}
 		} else {
-			// Animated path: waiting instigator → sequential reveal → verdict cross-fade.
+			// Animated path: waiting instigator → true sequential reveal → verdict cross-fade.
+			// GAME-068: each row fully resolves before the next starts (no simultaneous CHECKING).
+			// Chain delay = 300ms fade + 1200ms hold + 150ms flip = 1650ms per row.
+			const ROW_FADE_MS = 300;
+			const ROW_HOLD_MS = 1200;
+			const ROW_FLIP_MS = 150;
+			const ROW_CHAIN_MS = ROW_FADE_MS + ROW_HOLD_MS + ROW_FLIP_MS; // 1650ms
+
 			let waitingSprite: HTMLElement | null = null;
 			if (instigator) {
 				waitingSprite = renderInstigatorWaiting(resultReaction, instigator.type, demo);
@@ -956,15 +965,20 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				rowElements.push(row);
 			}
 
+			// Show Skip button; hide it when reveal completes naturally.
+			if (resultRevealControls) resultRevealControls.style.display = "";
+
 			const pendingTimeouts: ReturnType<typeof setTimeout>[] = [];
-			let delay = 0;
+			let chainDelay = 0;
 
 			for (let i = 0; i < rowElements.length; i++) {
 				const row = rowElements[i]!;
+				const rowStart = chainDelay;
+
 				const t1 = setTimeout(() => {
 					// Phase 1: animate row in with CHECKING badge.
 					row.classList.remove("rc-pending");
-					row.style.animation = "criterionReveal 0.3s ease forwards";
+					row.style.animation = `criterionReveal ${ROW_FADE_MS}ms ease forwards`;
 
 					const t2 = setTimeout(() => {
 						// Phase 2: flip to final verdict with pop.
@@ -976,8 +990,9 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 						// After last row resolves, pause then show instigator verdict.
 						if (i === rowElements.length - 1) {
 							const tVerdict = setTimeout(() => {
-								// Natural reveal complete — deactivate skip handler.
-								resultScreen.removeEventListener("click", skipHandler);
+								// Natural reveal complete — deactivate skip.
+								btnRevealSkip?.removeEventListener("click", skipHandler);
+								if (resultRevealControls) resultRevealControls.style.display = "none";
 								skipClickHandler = null;
 								if (instigator) {
 									transitionInstigatorToVerdict(waitingSprite, resultReaction, instigator.type, stars, demo);
@@ -987,26 +1002,29 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 							}, 800);
 							pendingTimeouts.push(tVerdict);
 						}
-					}, 1200);
+					}, ROW_HOLD_MS);
 					pendingTimeouts.push(t2);
-				}, delay);
+				}, rowStart);
 				pendingTimeouts.push(t1);
-				delay += 400;
+
+				// Next row starts only after this row has fully resolved.
+				chainDelay += ROW_CHAIN_MS;
 			}
 
-			// Skip: clear all pending timeouts, finalize all rows, show verdict instigator.
+			// Skip button: clear all pending timeouts, finalize rows, show verdict.
 			const skipHandler = () => {
 				for (const t of pendingTimeouts) clearTimeout(t);
 				for (const row of rowElements) finalizeRow(row);
+				if (resultRevealControls) resultRevealControls.style.display = "none";
+				skipClickHandler = null;
 				if (instigator) {
 					transitionInstigatorToVerdict(waitingSprite, resultReaction, instigator.type, stars, demo);
 				} else {
 					resultReaction.textContent = overallPass ? "🎉" : "💔";
 				}
-				skipClickHandler = null;
 			};
 			skipClickHandler = skipHandler;
-			resultScreen.addEventListener("click", skipHandler, { once: true });
+			btnRevealSkip?.addEventListener("click", skipHandler, { once: true });
 		}
 
 		// GAME-059: "Fix It" label for invalid maps, "Keep Drawing" otherwise.
