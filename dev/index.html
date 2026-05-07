@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Past the Post</title>
     <meta http-equiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' data:; style-src 'self' 'unsafe-inline'; img-src data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self';">
+          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' data:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self';">
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="styles.css">
   </head>
@@ -192,7 +192,7 @@
       wasm_bindgen("./wasm_calc_bindgen_bg.wasm").then(function () {
         var s = document.createElement("script");
         s.type = "module";
-        s.src = "bundle.js?v=vTEST-dc05117d66d4";
+        s.src = "bundle.js?v=vTEST-5b9c4a01389f";
         document.body.appendChild(s);
       });
     </script>
