@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <style>
+    @keyframes idle-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .character { animation: idle-bob 0.9s ease-in-out infinite; }
+  </style>
+  <g class="character">
+    <!-- Head — slightly slumped -->
+    <ellipse cx="98" cy="55" rx="20" ry="22" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5" transform="rotate(-7 98 55)"/>
+    <!-- Hair -->
+    <path d="M78 48 Q98 38 118 48 L116 52 Q98 42 80 52 Z" fill="#4a3520" stroke="#1a1a2e" stroke-width="1.5" transform="rotate(-7 98 48)"/>
+    <!-- Eyes — disapproving furrowed brows -->
+    <ellipse cx="90" cy="53" rx="3" ry="2" fill="#1a1a2e"/>
+    <ellipse cx="106" cy="51" rx="3" ry="2" fill="#1a1a2e"/>
+    <line x1="86" y1="47" x2="94" y2="50" stroke="#1a1a2e" stroke-width="2.5"/>
+    <line x1="110" y1="46" x2="102" y2="49" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Frown -->
+    <path d="M87 65 Q97 58 108 63" stroke="#1a1a2e" stroke-width="2" fill="none"/>
+    <!-- Neck -->
+    <rect x="92" y="75" width="12" height="8" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Trim body / blazer — hunched -->
+    <path d="M74 152 L75 93 Q77 83 100 83 Q123 83 125 93 L126 152 Z"
+          fill="#1abc9c" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Collar / lapels -->
+    <path d="M100 83 L92 104 L85 83" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M100 83 L108 104 L115 83" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Trousers -->
+    <path d="M74 152 L77 185 L98 185 L100 168 L102 185 L123 185 L126 152 Z"
+          fill="#1a2e2a" stroke="#1a1a2e" stroke-width="2"/>
+    <ellipse cx="84" cy="185" rx="8" ry="4" fill="#1a1a2e"/>
+    <ellipse cx="116" cy="185" rx="8" ry="4" fill="#1a1a2e"/>
+    <!-- Arms crossed tightly -->
+    <path d="M75 108 L61 120" stroke="#1abc9c" stroke-width="12" stroke-linecap="round"/>
+    <path d="M75 108 L61 120" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M125 108 L139 120" stroke="#1abc9c" stroke-width="12" stroke-linecap="round"/>
+    <path d="M125 108 L139 120" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M61 120 Q100 114 139 120" stroke="#f5d5a0" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <path d="M63 124 Q100 118 137 124" stroke="#f5d5a0" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <path d="M61 120 Q100 114 139 120" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <path d="M63 124 Q100 118 137 124" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <!-- Clipboard dropped/dangling from one hand (disapproving) -->
+    <rect x="130" y="128" width="14" height="18" rx="2" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="2" transform="rotate(30 137 137)"/>
+    <circle cx="137" cy="126" r="3" fill="#7f8c9a" stroke="#1a1a2e" stroke-width="1.5" transform="rotate(30 137 126)"/>
+  </g>
+</svg>

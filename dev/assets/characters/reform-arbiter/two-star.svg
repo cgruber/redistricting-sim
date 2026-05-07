@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <style>
+    @keyframes idle-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .character { animation: idle-bob 0.9s ease-in-out infinite; }
+  </style>
+  <g class="character">
+    <!-- Head -->
+    <ellipse cx="100" cy="50" rx="20" ry="22" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Hair -->
+    <path d="M80 44 Q100 34 120 44 L118 48 Q100 38 82 48 Z" fill="#4a3520" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Eyes -->
+    <circle cx="92" cy="50" r="3" fill="#1a1a2e"/>
+    <circle cx="108" cy="50" r="3" fill="#1a1a2e"/>
+    <!-- Composed approving smile -->
+    <path d="M89 60 Q100 68 111 60" stroke="#1a1a2e" stroke-width="2" fill="none"/>
+    <!-- Neck -->
+    <rect x="94" y="70" width="12" height="9" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Trim body / blazer -->
+    <path d="M72 150 L73 88 Q75 79 100 79 Q125 79 127 88 L128 150 Z"
+          fill="#1abc9c" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Collar / lapels -->
+    <path d="M100 79 L91 102 L84 79" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M100 79 L109 102 L116 79" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Trousers -->
+    <path d="M72 150 L76 185 L97 185 L100 165 L103 185 L124 185 L128 150 Z"
+          fill="#1a2e2a" stroke="#1a1a2e" stroke-width="2"/>
+    <ellipse cx="82" cy="185" rx="8" ry="4" fill="#1a1a2e"/>
+    <ellipse cx="118" cy="185" rx="8" ry="4" fill="#1a1a2e"/>
+    <!-- Left arm — neutral at side, slightly out -->
+    <path d="M73 95 L52 112" stroke="#1abc9c" stroke-width="12" stroke-linecap="round"/>
+    <path d="M73 95 L52 112" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="49" cy="115" r="7" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Right arm holding clipboard/scales upright -->
+    <path d="M127 95 L148 85" stroke="#1abc9c" stroke-width="12" stroke-linecap="round"/>
+    <path d="M127 95 L148 85" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="151" cy="82" r="7" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Scales held at chest height -->
+    <line x1="151" y1="75" x2="151" y2="60" stroke="#8B6914" stroke-width="3"/>
+    <line x1="143" y1="60" x2="159" y2="60" stroke="#1a1a2e" stroke-width="2.5"/>
+    <circle cx="143" cy="65" r="5" fill="none" stroke="#1a1a2e" stroke-width="2"/>
+    <circle cx="159" cy="65" r="5" fill="none" stroke="#1a1a2e" stroke-width="2"/>
+    <line x1="143" y1="60" x2="143" y2="65" stroke="#1a1a2e" stroke-width="1.5"/>
+    <line x1="159" y1="60" x2="159" y2="65" stroke="#1a1a2e" stroke-width="1.5"/>
+  </g>
+</svg>

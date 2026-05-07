@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <style>
+    @keyframes idle-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .character { animation: idle-bob 0.9s ease-in-out infinite; }
+  </style>
+  <g class="character">
+    <!-- Head — slightly slumped/tilted -->
+    <ellipse cx="98" cy="55" rx="20" ry="22" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5" transform="rotate(-6 98 55)"/>
+    <!-- Judge's collar / wig suggestion -->
+    <path d="M76 69 Q98 77 120 69 L120 63 Q98 71 76 63 Z" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Eyes — stern, disapproving furrowed brows -->
+    <ellipse cx="90" cy="53" rx="3" ry="2" fill="#1a1a2e"/>
+    <ellipse cx="106" cy="51" rx="3" ry="2" fill="#1a1a2e"/>
+    <line x1="86" y1="47" x2="95" y2="50" stroke="#1a1a2e" stroke-width="2.5"/>
+    <line x1="110" y1="46" x2="102" y2="49" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Frown / stern expression -->
+    <path d="M87 65 Q97 59 108 63" stroke="#1a1a2e" stroke-width="2" fill="none"/>
+    <!-- Neck -->
+    <rect x="92" y="75" width="12" height="8" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Robe — slumped slightly narrower -->
+    <path d="M72 190 L74 93 Q76 83 100 83 Q124 83 126 93 L128 190 Z"
+          fill="#4a6fa5" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Robe trim / front panel -->
+    <rect x="93" y="83" width="14" height="75" rx="2" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Robe shoulder flare -->
+    <path d="M74 95 L57 105 L62 93 Z" fill="#4a6fa5" stroke="#1a1a2e" stroke-width="2"/>
+    <path d="M126 95 L143 105 L138 93 Z" fill="#4a6fa5" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Arms crossed tightly under robe -->
+    <path d="M74 108 L60 120" stroke="#4a6fa5" stroke-width="14" stroke-linecap="round"/>
+    <path d="M74 108 L60 120" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M126 108 L140 120" stroke="#4a6fa5" stroke-width="14" stroke-linecap="round"/>
+    <path d="M126 108 L140 120" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- Forearm cross -->
+    <path d="M60 120 Q100 114 140 120" stroke="#f0f0f0" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <path d="M63 124 Q100 118 137 124" stroke="#f0f0f0" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <path d="M60 120 Q100 114 140 120" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <path d="M63 124 Q100 118 137 124" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <!-- Gavel at side, pointing down (slumped) -->
+    <circle cx="140" cy="135" r="5" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <line x1="140" y1="140" x2="140" y2="155" stroke="#8B6914" stroke-width="4"/>
+    <rect x="133" y="153" width="14" height="8" rx="2" fill="#8B6914" stroke="#1a1a2e" stroke-width="1.5"/>
+  </g>
+</svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <style>
+    @keyframes idle-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .character { animation: idle-bob 0.9s ease-in-out infinite; }
+  </style>
+  <g class="character">
+    <!-- Head — slumped, turned slightly away -->
+    <ellipse cx="97" cy="57" rx="19" ry="21" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5" transform="rotate(-9 97 57)"/>
+    <!-- Hair -->
+    <path d="M78 50 Q97 40 116 50 L114 54 Q97 44 80 54 Z" fill="#5a4a3a" stroke="#1a1a2e" stroke-width="1.5" transform="rotate(-9 97 50)"/>
+    <!-- Eyes — tired/unimpressed -->
+    <ellipse cx="89" cy="55" rx="2.5" ry="1.8" fill="#1a1a2e"/>
+    <ellipse cx="105" cy="53" rx="2.5" ry="1.8" fill="#1a1a2e"/>
+    <!-- Heavy eyebrows down -->
+    <line x1="86" y1="49" x2="93" y2="52" stroke="#1a1a2e" stroke-width="2.5"/>
+    <line x1="108" y1="48" x2="101" y2="51" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Slight frown -->
+    <path d="M87 66 Q97 60 107 64" stroke="#1a1a2e" stroke-width="2" fill="none"/>
+    <!-- Neck -->
+    <rect x="91" y="76" width="12" height="8" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Body — hunched with slight forward lean -->
+    <path d="M70 152 L71 95 Q73 84 100 84 Q127 84 129 95 L130 152 Z"
+          fill="#7f8c9a" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Collar and tie (slightly askew) -->
+    <path d="M100 84 L92 102 L87 84" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M100 84 L108 102 L113 84" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M98 84 L100 108 L102 84" fill="#b0c4d0" stroke="#1a1a2e" stroke-width="1.5" transform="rotate(-5 100 95)"/>
+    <!-- Trousers -->
+    <path d="M70 152 L74 185 L97 185 L100 168 L103 185 L126 185 L130 152 Z"
+          fill="#4a5560" stroke="#1a1a2e" stroke-width="2"/>
+    <ellipse cx="80" cy="185" rx="9" ry="4" fill="#1a1a2e"/>
+    <ellipse cx="120" cy="185" rx="9" ry="4" fill="#1a1a2e"/>
+    <!-- Arms crossed tightly, clipboard pinned under arm -->
+    <path d="M71 108 L57 120" stroke="#7f8c9a" stroke-width="12" stroke-linecap="round"/>
+    <path d="M71 108 L57 120" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M129 108 L143 120" stroke="#7f8c9a" stroke-width="12" stroke-linecap="round"/>
+    <path d="M129 108 L143 120" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- Crossed forearms -->
+    <path d="M57 120 Q100 114 143 120" stroke="#f5d5a0" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <path d="M59 124 Q100 118 141 124" stroke="#f5d5a0" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <path d="M57 120 Q100 114 143 120" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <path d="M59 124 Q100 118 141 124" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <!-- Clipboard pinned under left arm, hanging loose -->
+    <rect x="40" y="120" width="16" height="22" rx="2" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="2" transform="rotate(-20 48 131)"/>
+    <circle cx="48" cy="118" r="3.5" fill="#7f8c9a" stroke="#1a1a2e" stroke-width="1.5" transform="rotate(-20 48 118)"/>
+  </g>
+</svg>

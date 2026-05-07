@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <style>
+    @keyframes idle-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .character { animation: idle-bob 0.9s ease-in-out infinite; }
+  </style>
+  <g class="character">
+    <!-- Head -->
+    <ellipse cx="100" cy="50" rx="20" ry="22" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Judge's collar / wig suggestion -->
+    <path d="M78 64 Q100 72 122 64 L122 58 Q100 66 78 58 Z" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Eyes — straight, neutral -->
+    <ellipse cx="92" cy="48" rx="3" ry="2.5" fill="#1a1a2e"/>
+    <ellipse cx="108" cy="48" rx="3" ry="2.5" fill="#1a1a2e"/>
+    <!-- Neutral/reserved expression -->
+    <line x1="90" y1="62" x2="110" y2="62" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Neck -->
+    <rect x="94" y="70" width="12" height="8" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Robe — tall and narrow, flared at base -->
+    <path d="M70 190 L72 88 Q74 78 100 78 Q126 78 128 88 L130 190 Z"
+          fill="#4a6fa5" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Robe trim / front panel -->
+    <rect x="93" y="78" width="14" height="80" rx="2" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Robe shoulder flare -->
+    <path d="M72 90 L55 100 L60 88 Z" fill="#4a6fa5" stroke="#1a1a2e" stroke-width="2"/>
+    <path d="M128 90 L145 100 L140 88 Z" fill="#4a6fa5" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Arms at sides within robe, slightly inward -->
+    <path d="M72 100 L55 130" stroke="#4a6fa5" stroke-width="14" stroke-linecap="round"/>
+    <path d="M72 100 L55 130" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="53" cy="133" r="7" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Right arm holds gavel low at side -->
+    <path d="M128 100 L145 130" stroke="#4a6fa5" stroke-width="14" stroke-linecap="round"/>
+    <path d="M128 100 L145 130" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="147" cy="133" r="7" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Gavel held low -->
+    <line x1="147" y1="133" x2="147" y2="150" stroke="#8B6914" stroke-width="4"/>
+    <rect x="140" y="148" width="14" height="8" rx="2" fill="#8B6914" stroke="#1a1a2e" stroke-width="1.5"/>
+  </g>
+</svg>

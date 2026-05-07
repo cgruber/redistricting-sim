@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <style>
+    @keyframes idle-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .character { animation: idle-bob 0.9s ease-in-out infinite; }
+  </style>
+  <g class="character">
+    <!-- Head -->
+    <ellipse cx="100" cy="52" rx="22" ry="24" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Hair / hat brim -->
+    <rect x="76" y="34" width="48" height="8" rx="3" fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1"/>
+    <!-- Eyes — slightly narrowed -->
+    <ellipse cx="91" cy="50" rx="3" ry="2.5" fill="#1a1a2e"/>
+    <ellipse cx="109" cy="50" rx="3" ry="2.5" fill="#1a1a2e"/>
+    <!-- Neutral expression -->
+    <line x1="90" y1="64" x2="110" y2="64" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Neck -->
+    <rect x="94" y="74" width="12" height="10" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Body / suit jacket — wide shouldered -->
+    <path d="M65 145 L65 90 Q68 84 100 84 Q132 84 135 90 L135 145 Z"
+          fill="#c0392b" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Wide lapels -->
+    <path d="M100 84 L88 110 L80 84" fill="#d4a017" stroke="#1a1a2e" stroke-width="2"/>
+    <path d="M100 84 L112 110 L120 84" fill="#d4a017" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Shirt front / tie -->
+    <rect x="96" y="84" width="8" height="26" rx="2" fill="#d4a017" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Trousers -->
+    <path d="M65 145 L72 185 L97 185 L100 162 L103 185 L128 185 L135 145 Z"
+          fill="#1a1a2e" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Shoes -->
+    <ellipse cx="80" cy="185" rx="10" ry="5" fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1.5"/>
+    <ellipse cx="120" cy="185" rx="10" ry="5" fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Arms at sides / slightly crossed -->
+    <path d="M65 100 L48 125" stroke="#c0392b" stroke-width="14" stroke-linecap="round"/>
+    <path d="M65 100 L48 125" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="47" cy="128" r="7" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <path d="M135 100 L152 125" stroke="#c0392b" stroke-width="14" stroke-linecap="round"/>
+    <path d="M135 100 L152 125" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="153" cy="128" r="7" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Arms crossing at mid-body -->
+    <path d="M48 128 Q75 132 100 128 Q125 132 153 128" stroke="#f5d5a0" stroke-width="8" stroke-linecap="round" fill="none"/>
+    <path d="M48 128 Q75 132 100 128 Q125 132 153 128" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>

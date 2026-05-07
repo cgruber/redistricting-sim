@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <style>
+    @keyframes idle-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .character { animation: idle-bob 0.9s ease-in-out infinite; }
+  </style>
+  <g class="character">
+    <!-- Head — slightly tilted/slumped -->
+    <ellipse cx="97" cy="58" rx="22" ry="23" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5" transform="rotate(-8 97 58)"/>
+    <!-- Hair / hat brim -->
+    <rect x="73" y="40" width="48" height="8" rx="3" fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1" transform="rotate(-8 97 40)"/>
+    <!-- Eyes — furrowed/displeased -->
+    <ellipse cx="89" cy="56" rx="3" ry="2" fill="#1a1a2e"/>
+    <ellipse cx="106" cy="54" rx="3" ry="2" fill="#1a1a2e"/>
+    <!-- Brow lines conveying displeasure -->
+    <line x1="85" y1="49" x2="95" y2="52" stroke="#1a1a2e" stroke-width="2.5"/>
+    <line x1="110" y1="49" x2="102" y2="52" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Frown -->
+    <path d="M87 67 Q97 60 108 65" stroke="#1a1a2e" stroke-width="2" fill="none"/>
+    <!-- Neck -->
+    <rect x="91" y="78" width="12" height="10" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Body slumped — narrower, hunched forward -->
+    <path d="M68 148 L70 95 Q72 88 100 88 Q128 88 130 95 L132 148 Z"
+          fill="#c0392b" stroke="#1a1a2e" stroke-width="2.5"/>
+    <!-- Wide lapels -->
+    <path d="M100 88 L89 112 L82 88" fill="#d4a017" stroke="#1a1a2e" stroke-width="2"/>
+    <path d="M100 88 L111 112 L118 88" fill="#d4a017" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Shirt front / tie -->
+    <rect x="96" y="88" width="8" height="24" rx="2" fill="#d4a017" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Trousers -->
+    <path d="M68 148 L74 185 L98 185 L100 165 L102 185 L126 185 L132 148 Z"
+          fill="#1a1a2e" stroke="#1a1a2e" stroke-width="2"/>
+    <!-- Shoes -->
+    <ellipse cx="81" cy="185" rx="10" ry="5" fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1.5"/>
+    <ellipse cx="119" cy="185" rx="10" ry="5" fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Arms crossed tightly -->
+    <path d="M70 105 L55 118" stroke="#c0392b" stroke-width="14" stroke-linecap="round"/>
+    <path d="M70 105 L55 118" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M130 105 L145 118" stroke="#c0392b" stroke-width="14" stroke-linecap="round"/>
+    <path d="M130 105 L145 118" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- Forearm cross over chest -->
+    <path d="M55 118 Q100 112 145 118" stroke="#f5d5a0" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <path d="M60 122 Q100 116 140 122" stroke="#f5d5a0" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <path d="M55 118 Q100 112 145 118" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <path d="M60 122 Q100 116 140 122" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>

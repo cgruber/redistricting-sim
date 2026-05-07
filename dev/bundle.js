@@ -431,6 +431,22 @@ function parseNarrative(raw) {
   if (r["flavor_text"] !== void 0) {
     narrative.flavor_text = requireString(r["flavor_text"], "narrative.flavor_text");
   }
+  if (r["instigator"] !== void 0) {
+    const insRaw = requireObject(r["instigator"], "narrative.instigator");
+    const instigatorTypes = [
+      "partisan-boss",
+      "legal-authority",
+      "bipartisan-broker",
+      "reform-arbiter",
+      "neutral-admin",
+      "governor"
+    ];
+    const type2 = requireString(insRaw["type"], "narrative.instigator.type");
+    if (!instigatorTypes.includes(type2)) {
+      throw new Error(`narrative.instigator.type: unknown type "${type2}"; expected one of: ${instigatorTypes.join(", ")}`);
+    }
+    narrative.instigator = { type: type2 };
+  }
   return narrative;
 }
 function parseRules(raw) {
@@ -15025,13 +15041,7 @@ var require_main = __commonJS({
         });
         btnUndo.disabled = pastStates.length === 0;
         btnRedo.disabled = futureStates.length === 0;
-        const validity = computeValidityStats(
-          state.precincts,
-          state.assignments,
-          state.districtCount,
-          scenario.rules
-        );
-        btnSubmit.disabled = !isMapSubmittable(validity, scenario.rules);
+        btnSubmit.disabled = false;
       }
       let introController = null;
       function showEditor() {
@@ -15144,6 +15154,66 @@ var require_main = __commonJS({
         resetConfirm.classList.remove("visible");
         btnReset.disabled = false;
       });
+      function buildValidityRows(validity) {
+        const rows = [];
+        if (validity.unassignedCount > 0) {
+          rows.push({
+            criterionId: "validity:all-assigned",
+            required: true,
+            description: "All precincts must be assigned to a district",
+            passed: false,
+            detail: `${validity.unassignedCount} precinct(s) unassigned`
+          });
+        }
+        const badPop = validity.districtPop.filter((d) => d.status !== "ok");
+        if (badPop.length > 0) {
+          const worst = badPop[0];
+          const sign3 = worst.deviationPct >= 0 ? "+" : "";
+          rows.push({
+            criterionId: "validity:population-balance",
+            required: true,
+            description: "District populations must be within tolerance",
+            passed: false,
+            detail: `District ${worst.districtId}: ${sign3}${worst.deviationPct.toFixed(1)}% deviation`
+          });
+        }
+        if (validity.contiguity !== null) {
+          for (const [distId, ok] of validity.contiguity) {
+            if (!ok) {
+              rows.push({
+                criterionId: `validity:contiguity-${distId}`,
+                required: true,
+                description: `District ${distId} must be contiguous`,
+                passed: false,
+                detail: `District ${distId} is split into disconnected pieces`
+              });
+            }
+          }
+        }
+        return rows;
+      }
+      function computeStarCount(criterionResults, mapIsValid) {
+        if (!mapIsValid)
+          return 0;
+        return criterionResults.filter((cr) => cr.required && cr.passed).length;
+      }
+      const GOVERNOR_DEMOGRAPHICS = ["wm", "bm", "af"];
+      function renderInstigatorReaction(container, type2, stars) {
+        if (type2 === "governor") {
+          const demo = GOVERNOR_DEMOGRAPHICS[Math.floor(Math.random() * GOVERNOR_DEMOGRAPHICS.length)];
+          const posePos = stars >= 3 ? "50%" : stars >= 2 ? "0%" : "100%";
+          const ariaLabel = stars >= 3 ? "The governor reacts with enthusiasm \u2014 thumbs up" : stars >= 2 ? "The governor looks on, arms at sides" : "The governor reacts with displeasure \u2014 thumbs down";
+          const sprite = document.createElement("div");
+          sprite.className = "character-sprite character-governor";
+          sprite.setAttribute("role", "img");
+          sprite.setAttribute("aria-label", ariaLabel);
+          sprite.style.backgroundImage = `url('assets/characters/governor-${demo}/sheet.png')`;
+          sprite.style.backgroundPosition = `${posePos} 0%`;
+          container.appendChild(sprite);
+        } else {
+          container.textContent = stars >= 2 ? "\u{1F389}" : "\u{1F494}";
+        }
+      }
       function showResultScreen() {
         if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList || !resultReaction)
           return;
@@ -15160,6 +15230,7 @@ var require_main = __commonJS({
           state.districtCount,
           scenario.rules
         );
+        const mapIsValid = isMapSubmittable(validity, scenario.rules);
         const evalResult = evaluateCriteria(
           scenario.success_criteria,
           validity,
@@ -15171,13 +15242,23 @@ var require_main = __commonJS({
           partyIdToKey,
           scenario.precincts
         );
-        resultVerdict.textContent = evalResult.overallPass ? "Map Passed!" : "Map Failed";
-        resultVerdict.className = evalResult.overallPass ? "pass" : "fail";
-        resultSubtitle.textContent = evalResult.overallPass ? "All required criteria met." : "One or more required criteria were not met.";
-        resultReaction.textContent = evalResult.overallPass ? "\u{1F389}" : "\u{1F494}";
+        const overallPass = mapIsValid && evalResult.overallPass;
+        resultVerdict.textContent = overallPass ? "Map Passed!" : "Map Failed";
+        resultVerdict.className = overallPass ? "pass" : "fail";
+        resultSubtitle.textContent = overallPass ? "All required criteria met." : mapIsValid ? "One or more required criteria were not met." : "The map has structural issues that must be fixed.";
+        resultReaction.innerHTML = "";
+        const instigator = scenario.narrative.instigator;
+        if (instigator) {
+          const stars = computeStarCount(evalResult.criterionResults, mapIsValid);
+          renderInstigatorReaction(resultReaction, instigator.type, stars);
+        } else {
+          resultReaction.textContent = overallPass ? "\u{1F389}" : "\u{1F494}";
+        }
+        const validityRows = mapIsValid ? [] : buildValidityRows(validity);
+        const allRows = [...validityRows, ...evalResult.criterionResults];
         resultCriteriaList.innerHTML = "";
         let rowIndex = 0;
-        for (const cr of evalResult.criterionResults) {
+        for (const cr of allRows) {
           const cls = cr.passed ? "passed" : cr.required ? "failed-required" : "failed-optional";
           const row = document.createElement("div");
           row.className = `result-criterion ${cls}`;
@@ -15216,9 +15297,10 @@ var require_main = __commonJS({
         };
         skipClickHandler = skipHandler;
         resultScreen.addEventListener("click", skipHandler, { once: true });
+        btnKeepDrawing.textContent = mapIsValid ? "\u2190 Keep Drawing" : "\u2190 Fix It";
         btnKeepDrawing.style.display = "";
-        btnNextScenario.style.display = evalResult.overallPass ? "" : "none";
-        if (evalResult.overallPass) {
+        btnNextScenario.style.display = overallPass ? "" : "none";
+        if (overallPass) {
           progress = markCompleted(progress, scenario.id);
           saveProgress(progress);
           clearWip();

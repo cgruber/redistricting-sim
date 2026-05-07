@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <style>
+    @keyframes idle-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .character { animation: idle-bob 0.9s ease-in-out infinite; }
+  </style>
+  <g class="character">
+    <!-- LEFT FIGURE (red) — slumped, turned slightly left (away from center) -->
+    <ellipse cx="47" cy="56" rx="15" ry="17" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5" transform="rotate(-8 47 56)"/>
+    <ellipse cx="41" cy="54" rx="2.5" ry="2" fill="#1a1a2e"/>
+    <ellipse cx="54" cy="52" rx="2.5" ry="2" fill="#1a1a2e"/>
+    <line x1="39" y1="64" x2="52" y2="61" stroke="#1a1a2e" stroke-width="2.5"/>
+    <line x1="39" y1="68" x2="52" y2="66" stroke="#1a1a2e" stroke-width="2"/>
+    <path d="M37 72 Q47 66 57 70" stroke="#1a1a2e" stroke-width="2" fill="none"/>
+    <rect x="42" y="72" width="10" height="8" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <!-- Body slumped -->
+    <path d="M27 150 L29 90 Q31 80 47 80 Q63 80 65 90 L67 150 Z"
+          fill="#c0392b" stroke="#1a1a2e" stroke-width="2.5"/>
+    <rect x="43" y="80" width="8" height="20" rx="1" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M27 150 L30 185 L45 185 L47 165 L49 185 L64 185 L67 150 Z"
+          fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1.5"/>
+    <ellipse cx="36" cy="185" rx="7" ry="4" fill="#1a1a2e"/>
+    <ellipse cx="58" cy="185" rx="7" ry="4" fill="#1a1a2e"/>
+    <!-- Arms crossed tight -->
+    <path d="M29 105 L16 118" stroke="#c0392b" stroke-width="10" stroke-linecap="round"/>
+    <path d="M29 105 L16 118" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M65 105 L72 118" stroke="#c0392b" stroke-width="10" stroke-linecap="round"/>
+    <path d="M65 105 L72 118" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M16 118 Q47 112 72 118" stroke="#f5d5a0" stroke-width="9" stroke-linecap="round" fill="none"/>
+    <path d="M18 122 Q47 116 70 122" stroke="#f5d5a0" stroke-width="9" stroke-linecap="round" fill="none"/>
+    <path d="M16 118 Q47 112 72 118" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <path d="M18 122 Q47 116 70 122" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+    <!-- RIGHT FIGURE (blue) — slumped, turned slightly right (away from center) -->
+    <ellipse cx="153" cy="56" rx="15" ry="17" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="2.5" transform="rotate(8 153 56)"/>
+    <ellipse cx="146" cy="52" rx="2.5" ry="2" fill="#1a1a2e"/>
+    <ellipse cx="159" cy="54" rx="2.5" ry="2" fill="#1a1a2e"/>
+    <line x1="148" y1="61" x2="161" y2="64" stroke="#1a1a2e" stroke-width="2.5"/>
+    <line x1="148" y1="65" x2="161" y2="68" stroke="#1a1a2e" stroke-width="2"/>
+    <path d="M143 70 Q153 66 163 72" stroke="#1a1a2e" stroke-width="2" fill="none"/>
+    <rect x="148" y="72" width="10" height="8" fill="#f5d5a0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M133 150 L135 90 Q137 80 153 80 Q169 80 171 90 L173 150 Z"
+          fill="#4a6fa5" stroke="#1a1a2e" stroke-width="2.5"/>
+    <rect x="149" y="80" width="8" height="20" rx="1" fill="#f0f0f0" stroke="#1a1a2e" stroke-width="1.5"/>
+    <path d="M133 150 L136 185 L151 185 L153 165 L155 185 L170 185 L173 150 Z"
+          fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1.5"/>
+    <ellipse cx="142" cy="185" rx="7" ry="4" fill="#1a1a2e"/>
+    <ellipse cx="164" cy="185" rx="7" ry="4" fill="#1a1a2e"/>
+    <!-- Arms crossed tight -->
+    <path d="M135 105 L128 118" stroke="#4a6fa5" stroke-width="10" stroke-linecap="round"/>
+    <path d="M135 105 L128 118" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M171 105 L184 118" stroke="#4a6fa5" stroke-width="10" stroke-linecap="round"/>
+    <path d="M171 105 L184 118" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M128 118 Q153 112 184 118" stroke="#f5d5a0" stroke-width="9" stroke-linecap="round" fill="none"/>
+    <path d="M130 122 Q153 116 182 122" stroke="#f5d5a0" stroke-width="9" stroke-linecap="round" fill="none"/>
+    <path d="M128 118 Q153 112 184 118" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <path d="M130 122 Q153 116 182 122" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>
