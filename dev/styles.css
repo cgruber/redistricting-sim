@@ -641,7 +641,6 @@ body {
 
 .character-sprite {
   display: block;
-  width: 122px;
   height: 200px;
   background-size: auto 100%;
   background-repeat: no-repeat;

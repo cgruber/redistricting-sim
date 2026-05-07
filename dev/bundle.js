@@ -15201,14 +15201,14 @@ var require_main = __commonJS({
       function renderInstigatorReaction(container, type2, stars) {
         if (type2 === "governor") {
           const demo = GOVERNOR_DEMOGRAPHICS[Math.floor(Math.random() * GOVERNOR_DEMOGRAPHICS.length)];
-          const posePos = stars >= 3 ? "-106px 0%" : stars >= 2 ? "0px 0%" : "-234px 0%";
-          const ariaLabel = stars >= 3 ? "The governor reacts with enthusiasm \u2014 thumbs up" : stars >= 2 ? "The governor looks on, arms at sides" : "The governor reacts with displeasure \u2014 thumbs down";
+          const pose = stars >= 3 ? { offsetX: 106, width: 128, label: "The governor reacts with enthusiasm \u2014 thumbs up" } : stars >= 2 ? { offsetX: 0, width: 106, label: "The governor looks on, arms at sides" } : { offsetX: 234, width: 132, label: "The governor reacts with displeasure \u2014 thumbs down" };
           const sprite = document.createElement("div");
           sprite.className = "character-sprite character-governor";
           sprite.setAttribute("role", "img");
-          sprite.setAttribute("aria-label", ariaLabel);
+          sprite.setAttribute("aria-label", pose.label);
+          sprite.style.width = `${pose.width}px`;
           sprite.style.backgroundImage = `url('assets/characters/governor-${demo}/sheet.png')`;
-          sprite.style.backgroundPosition = `${posePos} 0%`;
+          sprite.style.backgroundPosition = `-${pose.offsetX}px 0%`;
           container.appendChild(sprite);
         } else {
           container.textContent = stars >= 2 ? "\u{1F389}" : "\u{1F494}";
