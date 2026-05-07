@@ -1014,3 +1014,58 @@ test("in-game nav: without campaign context, shows plain Main Menu button (no dr
   await expect(page.locator("#btn-nav-back-trigger")).toHaveText("← Main Menu");
   await expect(page.locator("#btn-back-to-scenarios")).toBeHidden();
 });
+
+// ─── GAME-066: result screen dramatic reveal ──────────────────────────────────
+
+test("GAME-066: reduced-motion — all criterion rows visible immediately after submit", async ({ page }) => {
+  // Global playwright config sets reducedMotion:'reduce', so sequential reveal
+  // is bypassed and all rows are rendered in final state synchronously.
+  await loadScenario(page, "scenario-002");
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#result-screen")).toBeVisible();
+
+  // All criterion rows must be visible immediately (no sequential reveal delay).
+  const rows = page.locator(".result-criterion");
+  const count = await rows.count();
+  expect(count).toBeGreaterThan(0);
+  for (let i = 0; i < count; i++) {
+    await expect(rows.nth(i)).toBeVisible();
+    // Each row should be in a final state (passed, failed-required, or failed-optional)
+    // not still in the pending checking state.
+    await expect(rows.nth(i)).not.toHaveClass(/rc-pending/);
+  }
+});
+
+test("GAME-066: result screen shows SVG criterion icons (not bare ✓/✗ text)", async ({ page }) => {
+  // reducedMotion:'reduce' from global config — instant reveal, so we can check icons.
+  await loadScenario(page, "scenario-002");
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#result-screen")).toBeVisible();
+
+  // Each rc-icon slot should contain an SVG element, not bare text.
+  const icons = page.locator(".result-criterion .rc-icon svg");
+  const count = await icons.count();
+  expect(count).toBeGreaterThan(0);
+});
+
+// test.use() must be at describe scope, not inside a test() body.
+test.describe("GAME-066: animated reveal path (no reduced-motion)", () => {
+  test.use({ reducedMotion: "no-preference" });
+
+  test("clicking result screen skips sequential reveal and shows all rows", async ({ page }) => {
+    await loadScenario(page, "scenario-002");
+    await page.locator("#btn-submit").click();
+    await expect(page.locator("#result-screen")).toBeVisible();
+
+    // Immediately click to skip — all rows should be in final state.
+    await page.locator("#result-screen").click();
+
+    const rows = page.locator(".result-criterion");
+    const count = await rows.count();
+    expect(count).toBeGreaterThan(0);
+    for (let i = 0; i < count; i++) {
+      await expect(rows.nth(i)).toBeVisible();
+      await expect(rows.nth(i)).not.toHaveClass(/rc-pending/);
+    }
+  });
+});

@@ -32,6 +32,7 @@ import {
 } from "./model/progress.js";
 import { CAMPAIGN_REGISTRY, getCampaign, loadLastPlayedScenario, saveLastPlayedScenario } from "./model/campaigns.js";
 import { initAssets, assetUrl } from "./assets.js";
+import { getCriterionIcon } from "./criterion-icons.js";
 
 // ─── Scenario manifest (GAME-021) ─────────────────────────────────────────────
 // Static list of all available scenarios in play order.
@@ -739,18 +740,32 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 	const GOVERNOR_DEMOGRAPHICS = ["wm", "bm", "af"] as const;
 
-	function renderInstigatorReaction(container: HTMLElement, type: InstigatorType, stars: number): void {
+	// GAME-066: Three-phase instigator helpers.
+	// Sheet column layout (governor): neutral 0–106px, approve 106–234px, disapprove 234–366px.
+	// Pose binary per DESIGN-010: approve=stars≥1, disapprove=stars===0.
+	// "waiting" reuses neutral column as proxy until GAME-060 waiting.svg is commissioned.
+
+	function renderInstigatorWaiting(container: HTMLElement, type: InstigatorType, demo: string): HTMLElement | null {
 		if (type === "governor") {
-			const demo = GOVERNOR_DEMOGRAPHICS[Math.floor(Math.random() * GOVERNOR_DEMOGRAPHICS.length)];
-			// Sheet is 1376×752; sprite height is fixed at 200px → scale = 200/752.
-			// Column splits (source px): neutral 0–400, approve 400–880, disapprove 880–1376.
-			// Display widths = round(col_width × 200/752): neutral=106, approve=128, disapprove=132.
-			// Element width is set per-pose so each crop window matches the column exactly — no bleed.
-			const pose = stars >= 3
-				? { offsetX: 106, width: 128, label: "The governor reacts with enthusiasm — thumbs up" }
-				: stars >= 2
-					? { offsetX: 0,   width: 106, label: "The governor looks on, arms at sides" }
-					: { offsetX: 234, width: 132, label: "The governor reacts with displeasure — thumbs down" };
+			const sprite = document.createElement("div");
+			sprite.className = "character-sprite character-governor";
+			sprite.setAttribute("role", "img");
+			sprite.setAttribute("aria-label", "The governor watches, awaiting the verdict");
+			sprite.style.width = "106px";
+			sprite.style.backgroundImage = `url('${assetUrl(`assets/characters/governor-${demo}/sheet.png`)}')`;
+			sprite.style.backgroundPosition = "0px 0%";
+			container.appendChild(sprite);
+			return sprite;
+		}
+		container.textContent = "⏳";
+		return null;
+	}
+
+	function renderInstigatorFinal(container: HTMLElement, type: InstigatorType, stars: number, demo: string): void {
+		if (type === "governor") {
+			const pose = stars >= 1
+				? { offsetX: 106, width: 128, label: "The governor approves — thumbs up" }
+				: { offsetX: 234, width: 132, label: "The governor disapproves — thumbs down" };
 			const sprite = document.createElement("div");
 			sprite.className = "character-sprite character-governor";
 			sprite.setAttribute("role", "img");
@@ -760,9 +775,33 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			sprite.style.backgroundPosition = `-${pose.offsetX}px 0%`;
 			container.appendChild(sprite);
 		} else {
-			// SVG-based types: emoji fallback until GAME-060 art is complete
-			container.textContent = stars >= 2 ? "🎉" : "💔";
+			container.textContent = stars >= 1 ? "🎉" : "💔";
 		}
+	}
+
+	function transitionInstigatorToVerdict(
+		sprite: HTMLElement | null,
+		container: HTMLElement,
+		type: InstigatorType,
+		stars: number,
+		demo: string,
+	): void {
+		if (type === "governor" && sprite) {
+			const pose = stars >= 1
+				? { offsetX: 106, width: 128, label: "The governor approves — thumbs up" }
+				: { offsetX: 234, width: 132, label: "The governor disapproves — thumbs down" };
+			sprite.style.opacity = "0";
+			setTimeout(() => {
+				sprite.setAttribute("aria-label", pose.label);
+				sprite.style.width = `${pose.width}px`;
+				sprite.style.backgroundPosition = `-${pose.offsetX}px 0%`;
+				sprite.style.opacity = "1";
+			}, 200);
+		} else if (type !== "governor") {
+			container.textContent = stars >= 1 ? "🎉" : "💔";
+		}
+		// GAME-061: audio clips registered when that ticket lands; no-ops until then
+		// audioPlayer.play(`instigator-${stars >= 1 ? "approve" : "disapprove"}-${type}`);
 	}
 
 	function showResultScreen() {
@@ -804,13 +843,14 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			: mapIsValid
 				? "One or more required criteria were not met."
 				: "The map has structural issues that must be fixed.";
-		resultReaction.innerHTML = "";
+		// GAME-066: sequential reveal — criteria appear one at a time with CHECKING hold.
+		const stars = computeStarCount(evalResult.criterionResults, mapIsValid);
 		const instigator = scenario.narrative.instigator;
-		if (instigator) {
-			const stars = computeStarCount(evalResult.criterionResults, mapIsValid);
-			renderInstigatorReaction(resultReaction, instigator.type, stars);
-		} else {
-			resultReaction.textContent = overallPass ? "🎉" : "💔";
+
+		// Build criterion-type lookup (criterionId → Criterion["type"]) for icon dispatch.
+		const criterionTypeMap = new Map<string, string>();
+		for (const sc of scenario.success_criteria) {
+			criterionTypeMap.set(sc.id as string, sc.criterion.type);
 		}
 
 		// GAME-059: for invalid maps, prepend validity failure rows before scenario criteria.
@@ -818,22 +858,33 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		const allRows: CriterionResult[] = [...validityRows, ...evalResult.criterionResults];
 
 		resultCriteriaList.innerHTML = "";
-		let rowIndex = 0;
-		for (const cr of allRows) {
-			const cls = cr.passed
+		resultReaction.innerHTML = "";
+
+		// Pick demo variant once so waiting and verdict poses use the same sprite sheet.
+		const demo = instigator?.type === "governor"
+			? GOVERNOR_DEMOGRAPHICS[Math.floor(Math.random() * GOVERNOR_DEMOGRAPHICS.length)]!
+			: "";
+
+		// Build a criterion row element.
+		// final=true → already in pass/fail state (reduced-motion or skip path).
+		// final=false → starts in rc-pending/CHECKING state; JS reveals it later.
+		function buildRowElement(cr: CriterionResult, final: boolean): HTMLElement {
+			const verdictCls = cr.passed
 				? "passed"
 				: cr.required
 					? "failed-required"
 					: "failed-optional";
 
 			const row = document.createElement("div");
-			row.className = `result-criterion ${cls}`;
-			row.style.animationDelay = `${rowIndex * 120}ms`;
-			rowIndex++;
+			row.className = final ? `result-criterion ${verdictCls}` : "result-criterion rc-pending";
+			row.dataset["passed"] = String(cr.passed);
+			row.dataset["required"] = String(cr.required);
+			row.dataset["finalized"] = String(final);
 
 			const iconEl = document.createElement("span");
 			iconEl.className = "rc-icon";
-			iconEl.textContent = cr.passed ? "✓" : "✗";
+			const criterionType = criterionTypeMap.get(cr.criterionId as string) ?? (cr.criterionId as string);
+			iconEl.innerHTML = getCriterionIcon(cr.criterionId as string, criterionType);
 
 			const body = document.createElement("div");
 			body.className = "rc-body";
@@ -851,26 +902,112 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			}
 
 			const badge = document.createElement("span");
-			badge.className = "rc-badge";
-			badge.textContent = cr.passed ? "PASS" : cr.required ? "FAIL" : "OPTIONAL";
+			badge.className = final ? "rc-badge" : "rc-badge rc-checking";
+			badge.textContent = final
+				? (cr.passed ? "PASS" : cr.required ? "FAIL" : "OPTIONAL")
+				: "CHECKING…";
 
 			row.appendChild(iconEl);
 			row.appendChild(body);
 			row.appendChild(badge);
-			resultCriteriaList.appendChild(row);
+			return row;
 		}
 
-		// Skip animation: click anywhere on result screen to reveal all rows instantly.
-		const skipHandler = () => {
-			const rows = Array.from(resultCriteriaList.querySelectorAll<HTMLElement>(".result-criterion"));
-			for (const el of rows) {
-				el.style.animation = "none";
-				el.style.opacity = "1";
+		// Snap a row to its final verdict state.
+		function finalizeRow(row: HTMLElement): void {
+			if (row.dataset["finalized"] === "true") return;
+			row.dataset["finalized"] = "true";
+			const passed = row.dataset["passed"] === "true";
+			const required = row.dataset["required"] === "true";
+			const verdictCls = passed ? "passed" : required ? "failed-required" : "failed-optional";
+			row.className = `result-criterion ${verdictCls}`;
+			row.style.opacity = "1";
+			row.style.animation = "none";
+			const badge = row.querySelector<HTMLSpanElement>(".rc-badge")!;
+			badge.classList.remove("rc-checking");
+			badge.textContent = passed ? "PASS" : required ? "FAIL" : "OPTIONAL";
+		}
+
+		const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+		if (reducedMotion) {
+			// Instant path: all rows final, instigator in verdict pose immediately.
+			for (const cr of allRows) {
+				resultCriteriaList.appendChild(buildRowElement(cr, /*final=*/ true));
 			}
-			skipClickHandler = null;
-		};
-		skipClickHandler = skipHandler;
-		resultScreen.addEventListener("click", skipHandler, { once: true });
+			if (instigator) {
+				renderInstigatorFinal(resultReaction, instigator.type, stars, demo);
+			} else {
+				resultReaction.textContent = overallPass ? "🎉" : "💔";
+			}
+		} else {
+			// Animated path: waiting instigator → sequential reveal → verdict cross-fade.
+			let waitingSprite: HTMLElement | null = null;
+			if (instigator) {
+				waitingSprite = renderInstigatorWaiting(resultReaction, instigator.type, demo);
+			} else {
+				resultReaction.textContent = "⏳";
+			}
+
+			const rowElements: HTMLElement[] = [];
+			for (const cr of allRows) {
+				const row = buildRowElement(cr, /*final=*/ false);
+				resultCriteriaList.appendChild(row);
+				rowElements.push(row);
+			}
+
+			const pendingTimeouts: ReturnType<typeof setTimeout>[] = [];
+			let delay = 0;
+
+			for (let i = 0; i < rowElements.length; i++) {
+				const row = rowElements[i]!;
+				const t1 = setTimeout(() => {
+					// Phase 1: animate row in with CHECKING badge.
+					row.classList.remove("rc-pending");
+					row.style.animation = "criterionReveal 0.3s ease forwards";
+
+					const t2 = setTimeout(() => {
+						// Phase 2: flip to final verdict with pop.
+						finalizeRow(row);
+						const badge = row.querySelector<HTMLSpanElement>(".rc-badge")!;
+						badge.classList.add("rc-pop");
+						badge.addEventListener("animationend", () => badge.classList.remove("rc-pop"), { once: true });
+
+						// After last row resolves, pause then show instigator verdict.
+						if (i === rowElements.length - 1) {
+							const tVerdict = setTimeout(() => {
+								// Natural reveal complete — deactivate skip handler.
+								resultScreen.removeEventListener("click", skipHandler);
+								skipClickHandler = null;
+								if (instigator) {
+									transitionInstigatorToVerdict(waitingSprite, resultReaction, instigator.type, stars, demo);
+								} else {
+									resultReaction.textContent = overallPass ? "🎉" : "💔";
+								}
+							}, 800);
+							pendingTimeouts.push(tVerdict);
+						}
+					}, 1200);
+					pendingTimeouts.push(t2);
+				}, delay);
+				pendingTimeouts.push(t1);
+				delay += 400;
+			}
+
+			// Skip: clear all pending timeouts, finalize all rows, show verdict instigator.
+			const skipHandler = () => {
+				for (const t of pendingTimeouts) clearTimeout(t);
+				for (const row of rowElements) finalizeRow(row);
+				if (instigator) {
+					transitionInstigatorToVerdict(waitingSprite, resultReaction, instigator.type, stars, demo);
+				} else {
+					resultReaction.textContent = overallPass ? "🎉" : "💔";
+				}
+				skipClickHandler = null;
+			};
+			skipClickHandler = skipHandler;
+			resultScreen.addEventListener("click", skipHandler, { once: true });
+		}
 
 		// GAME-059: "Fix It" label for invalid maps, "Keep Drawing" otherwise.
 		// "Next Scenario" only shown on a full pass.

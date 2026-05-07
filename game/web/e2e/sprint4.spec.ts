@@ -31,8 +31,11 @@ async function openResultScreen(page: import("@playwright/test").Page): Promise<
 }
 
 // ─── GAME-052: Animated criteria reveal ──────────────────────────────────────
+// GAME-066 supersedes the 120ms stagger: reduced-motion mode (global default) renders
+// all rows in final state immediately; animated mode uses sequential JS reveal instead.
 
-test("GAME-052: criterion rows have staggered animation-delay styles", async ({ page }) => {
+test("GAME-052: criterion rows all visible immediately in reduced-motion mode", async ({ page }) => {
+  // Global playwright config sets reducedMotion:'reduce' — sequential reveal is bypassed.
   await loadEditor(page);
   await openResultScreen(page);
 
@@ -40,10 +43,10 @@ test("GAME-052: criterion rows have staggered animation-delay styles", async ({ 
   const count = await rows.count();
   expect(count).toBeGreaterThan(0);
 
-  // Row 0 → 0ms delay; row 1 → 120ms; row N → N*120ms
+  // All rows finalized immediately — no rc-pending class.
   for (let i = 0; i < count; i++) {
-    const delay = await rows.nth(i).evaluate((el) => (el as HTMLElement).style.animationDelay);
-    expect(delay).toBe(`${i * 120}ms`);
+    await expect(rows.nth(i)).toBeVisible();
+    await expect(rows.nth(i)).not.toHaveClass(/rc-pending/);
   }
 });
 
