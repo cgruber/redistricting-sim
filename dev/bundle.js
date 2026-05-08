@@ -404,7 +404,19 @@ function parseCriterion(raw, idx) {
     default:
       throw new Error(`${label}.criterion.type: unknown type "${cType}"`);
   }
-  return { id: id2, required: required2, description, criterion };
+  const sc = { id: id2, required: required2, description, criterion };
+  if (r["character"] !== void 0) {
+    const charVal = requireString(r["character"], `${label}.character`);
+    const validChars = ["governor", "commissioner", "party", "judge", "legislator", "instigator"];
+    if (!validChars.includes(charVal)) {
+      throw new Error(`${label}.character: unknown value "${charVal}"; expected one of: ${validChars.join(", ")}`);
+    }
+    sc.character = charVal;
+  }
+  if (r["party_id"] !== void 0) {
+    sc.party_id = requireString(r["party_id"], `${label}.party_id`);
+  }
+  return sc;
 }
 function parseNarrative(raw) {
   const r = requireObject(raw, "narrative");
@@ -432,20 +444,7 @@ function parseNarrative(raw) {
     narrative.flavor_text = requireString(r["flavor_text"], "narrative.flavor_text");
   }
   if (r["instigator"] !== void 0) {
-    const insRaw = requireObject(r["instigator"], "narrative.instigator");
-    const instigatorTypes = [
-      "partisan-boss",
-      "legal-authority",
-      "bipartisan-broker",
-      "reform-arbiter",
-      "neutral-admin",
-      "governor"
-    ];
-    const type2 = requireString(insRaw["type"], "narrative.instigator.type");
-    if (!instigatorTypes.includes(type2)) {
-      throw new Error(`narrative.instigator.type: unknown type "${type2}"; expected one of: ${instigatorTypes.join(", ")}`);
-    }
-    narrative.instigator = { type: type2 };
+    throw new Error("narrative.instigator removed; use instigator_character at the scenario root level instead");
   }
   return narrative;
 }
@@ -540,6 +539,15 @@ function loadScenario(json) {
   const criteriaRaw = requireArray(raw["success_criteria"], "success_criteria");
   const success_criteria = criteriaRaw.map((c3, i) => parseCriterion(c3, i));
   const narrative = parseNarrative(raw["narrative"]);
+  let instigator_character;
+  if (raw["instigator_character"] !== void 0) {
+    const icVal = requireString(raw["instigator_character"], "instigator_character");
+    const validChars = ["governor", "commissioner", "party", "judge", "legislator"];
+    if (!validChars.includes(icVal)) {
+      throw new Error(`instigator_character: unknown value "${icVal}"; expected one of: ${validChars.join(", ")}`);
+    }
+    instigator_character = icVal;
+  }
   let state_context;
   if (raw["state_context"] !== void 0) {
     state_context = parseStateContext(raw["state_context"]);
@@ -782,6 +790,8 @@ function loadScenario(json) {
     scenario.group_schema = group_schema;
   if (default_district_id !== void 0)
     scenario.default_district_id = default_district_id;
+  if (instigator_character !== void 0)
+    scenario.instigator_character = instigator_character;
   if (state_context !== void 0)
     scenario.state_context = state_context;
   return scenario;
@@ -14798,7 +14808,6 @@ var require_main = __commonJS({
     var skipClickHandler = null;
     var resultVerdict = document.getElementById("result-verdict");
     var resultSubtitle = document.getElementById("result-subtitle");
-    var resultReaction = document.getElementById("result-reaction");
     var resultCriteriaList = document.getElementById("result-criteria-list");
     var btnKeepDrawing = document.getElementById("btn-keep-drawing");
     var btnNextScenario = document.getElementById("btn-next-scenario");
@@ -15332,52 +15341,64 @@ var require_main = __commonJS({
         return criterionResults.filter((cr) => cr.required && cr.passed).length;
       }
       const GOVERNOR_DEMOGRAPHICS = ["wm", "bm", "af"];
-      function renderInstigatorWaiting(container, type2, demo) {
-        if (type2 === "governor") {
-          const sprite = document.createElement("div");
-          sprite.className = "character-sprite character-governor";
-          sprite.setAttribute("role", "img");
-          sprite.setAttribute("aria-label", "The governor watches, awaiting the verdict");
-          sprite.style.width = "106px";
-          sprite.style.backgroundImage = `url('${assetUrl(`assets/characters/governor-${demo}/sheet.png`)}')`;
-          sprite.style.backgroundPosition = "0px 0%";
-          container.appendChild(sprite);
-          return sprite;
+      const GOV_ROW_SCALE = 0.32;
+      const GOV_SHEET = { neutral: { x: 0, w: 106 }, approve: { x: 106, w: 128 }, disapprove: { x: 234, w: 132 } };
+      function charPlaceholderSvg(state) {
+        if (state === "neutral") {
+          return `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+				<rect x="4" y="4" width="24" height="24" rx="3" fill="none" stroke="#5060a0" stroke-width="2"/>
+			</svg>`;
         }
-        container.textContent = "\u23F3";
-        return null;
+        if (state === "approve") {
+          return `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+				<rect x="4" y="4" width="24" height="24" rx="3" fill="none" stroke="#4caf80" stroke-width="2"/>
+				<polyline points="8,17 13,22 24,10" fill="none" stroke="#4caf80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>`;
+        }
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+			<rect x="4" y="4" width="24" height="24" rx="3" fill="none" stroke="#e94560" stroke-width="2"/>
+			<line x1="10" y1="10" x2="22" y2="22" stroke="#e94560" stroke-width="2.5" stroke-linecap="round"/>
+			<line x1="22" y1="10" x2="10" y2="22" stroke="#e94560" stroke-width="2.5" stroke-linecap="round"/>
+		</svg>`;
       }
-      function renderInstigatorFinal(container, type2, stars, demo) {
-        if (type2 === "governor") {
-          const pose = stars >= 1 ? { offsetX: 106, width: 128, label: "The governor approves \u2014 thumbs up" } : { offsetX: 234, width: 132, label: "The governor disapproves \u2014 thumbs down" };
-          const sprite = document.createElement("div");
-          sprite.className = "character-sprite character-governor";
-          sprite.setAttribute("role", "img");
-          sprite.setAttribute("aria-label", pose.label);
-          sprite.style.width = `${pose.width}px`;
-          sprite.style.backgroundImage = `url('${assetUrl(`assets/characters/governor-${demo}/sheet.png`)}')`;
-          sprite.style.backgroundPosition = `-${pose.offsetX}px 0%`;
-          container.appendChild(sprite);
+      function buildCharSlotChildren(slot, charType, passed, demo) {
+        const neutralEl = document.createElement("div");
+        neutralEl.className = "rc-char-neutral";
+        const verdictEl = document.createElement("div");
+        verdictEl.className = "rc-char-verdict";
+        verdictEl.style.opacity = "0";
+        if (charType === "governor") {
+          const n = GOV_SHEET.neutral;
+          const v2 = passed ? GOV_SHEET.approve : GOV_SHEET.disapprove;
+          const img = assetUrl(`assets/characters/governor-${demo}/sheet.png`);
+          const makeSprite = (col, label) => {
+            const s2 = document.createElement("div");
+            s2.className = "character-sprite character-governor character-sprite--row";
+            s2.setAttribute("role", "img");
+            s2.setAttribute("aria-label", label);
+            s2.style.width = `${Math.round(col.w * GOV_ROW_SCALE)}px`;
+            s2.style.backgroundImage = `url('${img}')`;
+            s2.style.backgroundPosition = `-${Math.round(col.x * GOV_ROW_SCALE)}px 0%`;
+            s2.style.backgroundSize = `${Math.round(366 * GOV_ROW_SCALE)}px 64px`;
+            return s2;
+          };
+          neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
+          verdictEl.appendChild(makeSprite(v2, passed ? "Approves" : "Disapproves"));
         } else {
-          container.textContent = stars >= 1 ? "\u{1F389}" : "\u{1F494}";
+          neutralEl.innerHTML = charPlaceholderSvg("neutral");
+          verdictEl.innerHTML = charPlaceholderSvg(passed ? "approve" : "disapprove");
         }
+        slot.appendChild(neutralEl);
+        slot.appendChild(verdictEl);
+        return { neutral: neutralEl, verdict: verdictEl };
       }
-      function transitionInstigatorToVerdict(sprite, container, type2, stars, demo) {
-        if (type2 === "governor" && sprite) {
-          const pose = stars >= 1 ? { offsetX: 106, width: 128, label: "The governor approves \u2014 thumbs up" } : { offsetX: 234, width: 132, label: "The governor disapproves \u2014 thumbs down" };
-          sprite.style.opacity = "0";
-          setTimeout(() => {
-            sprite.setAttribute("aria-label", pose.label);
-            sprite.style.width = `${pose.width}px`;
-            sprite.style.backgroundPosition = `-${pose.offsetX}px 0%`;
-            sprite.style.opacity = "1";
-          }, 200);
-        } else if (type2 !== "governor") {
-          container.textContent = stars >= 1 ? "\u{1F389}" : "\u{1F494}";
-        }
+      function transitionCharSlot(neutral, verdict) {
+        neutral.style.opacity = "0";
+        verdict.style.opacity = "1";
       }
       function showResultScreen() {
-        if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList || !resultReaction)
+        var _a2;
+        if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList)
           return;
         if (skipClickHandler) {
           btnRevealSkip == null ? void 0 : btnRevealSkip.removeEventListener("click", skipClickHandler);
@@ -15409,27 +15430,53 @@ var require_main = __commonJS({
         resultVerdict.className = overallPass ? "pass" : "fail";
         resultSubtitle.textContent = overallPass ? "All required criteria met." : mapIsValid ? "One or more required criteria were not met." : "The map has structural issues that must be fixed.";
         const stars = computeStarCount(evalResult.criterionResults, mapIsValid);
-        const instigator = scenario.narrative.instigator;
         const criterionTypeMap = /* @__PURE__ */ new Map();
         for (const sc of scenario.success_criteria) {
           criterionTypeMap.set(sc.id, sc.criterion.type);
         }
+        const charInfoMap = /* @__PURE__ */ new Map();
+        for (const sc of scenario.success_criteria) {
+          const raw = sc.character;
+          let charType;
+          if (!raw) {
+            charType = "commissioner";
+          } else if (raw === "instigator") {
+            charType = (_a2 = scenario.instigator_character) != null ? _a2 : "commissioner";
+          } else {
+            charType = raw;
+          }
+          const entry = { type: charType };
+          if (sc.party_id !== void 0)
+            entry.party_id = sc.party_id;
+          charInfoMap.set(sc.id, entry);
+        }
         const validityRows = mapIsValid ? [] : buildValidityRows(validity);
         const allRows = [...validityRows, ...evalResult.criterionResults];
         resultCriteriaList.innerHTML = "";
-        resultReaction.innerHTML = "";
-        const demo = (instigator == null ? void 0 : instigator.type) === "governor" ? GOVERNOR_DEMOGRAPHICS[Math.floor(Math.random() * GOVERNOR_DEMOGRAPHICS.length)] : "";
+        const demo = GOVERNOR_DEMOGRAPHICS[Math.floor(Math.random() * GOVERNOR_DEMOGRAPHICS.length)];
+        function resolveCharInfo(cr) {
+          var _a3;
+          return (_a3 = charInfoMap.get(cr.criterionId)) != null ? _a3 : { type: "commissioner" };
+        }
         function buildRowElement(cr, final) {
-          var _a2;
+          var _a3;
           const verdictCls = cr.passed ? "passed" : cr.required ? "failed-required" : "failed-optional";
           const row = document.createElement("div");
           row.className = final ? `result-criterion ${verdictCls}` : "result-criterion rc-pending";
           row.dataset["passed"] = String(cr.passed);
           row.dataset["required"] = String(cr.required);
           row.dataset["finalized"] = String(final);
+          const charInfo = resolveCharInfo(cr);
+          const charSlot = document.createElement("div");
+          charSlot.className = "rc-char";
+          buildCharSlotChildren(charSlot, charInfo.type, cr.passed, demo);
+          if (final) {
+            charSlot.querySelector(".rc-char-neutral").style.opacity = "0";
+            charSlot.querySelector(".rc-char-verdict").style.opacity = "1";
+          }
           const iconEl = document.createElement("span");
           iconEl.className = "rc-icon";
-          const criterionType = (_a2 = criterionTypeMap.get(cr.criterionId)) != null ? _a2 : cr.criterionId;
+          const criterionType = (_a3 = criterionTypeMap.get(cr.criterionId)) != null ? _a3 : cr.criterionId;
           iconEl.innerHTML = getCriterionIcon(cr.criterionId, criterionType);
           const body = document.createElement("div");
           body.className = "rc-body";
@@ -15446,6 +15493,7 @@ var require_main = __commonJS({
           const badge = document.createElement("span");
           badge.className = final ? "rc-badge" : "rc-badge rc-checking";
           badge.textContent = final ? cr.passed ? "PASS" : cr.required ? "FAIL" : "OPTIONAL" : "CHECKING\u2026";
+          row.appendChild(charSlot);
           row.appendChild(iconEl);
           row.appendChild(body);
           row.appendChild(badge);
@@ -15464,6 +15512,10 @@ var require_main = __commonJS({
           const badge = row.querySelector(".rc-badge");
           badge.classList.remove("rc-checking");
           badge.textContent = passed ? "PASS" : required2 ? "FAIL" : "OPTIONAL";
+          const neutral = row.querySelector(".rc-char-neutral");
+          const verdict = row.querySelector(".rc-char-verdict");
+          if (neutral && verdict)
+            transitionCharSlot(neutral, verdict);
         }
         const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         if (reducedMotion) {
@@ -15474,22 +15526,11 @@ var require_main = __commonJS({
               true
             ));
           }
-          if (instigator) {
-            renderInstigatorFinal(resultReaction, instigator.type, stars, demo);
-          } else {
-            resultReaction.textContent = overallPass ? "\u{1F389}" : "\u{1F494}";
-          }
         } else {
           const ROW_FADE_MS = 300;
           const ROW_HOLD_MS = 1200;
           const ROW_FLIP_MS = 150;
           const ROW_CHAIN_MS = ROW_FADE_MS + ROW_HOLD_MS + ROW_FLIP_MS;
-          let waitingSprite = null;
-          if (instigator) {
-            waitingSprite = renderInstigatorWaiting(resultReaction, instigator.type, demo);
-          } else {
-            resultReaction.textContent = "\u23F3";
-          }
           const rowElements = [];
           for (const cr of allRows) {
             const row = buildRowElement(
@@ -15516,18 +15557,13 @@ var require_main = __commonJS({
                 badge.classList.add("rc-pop");
                 badge.addEventListener("animationend", () => badge.classList.remove("rc-pop"), { once: true });
                 if (i === rowElements.length - 1) {
-                  const tVerdict = setTimeout(() => {
+                  const tDone = setTimeout(() => {
                     btnRevealSkip == null ? void 0 : btnRevealSkip.removeEventListener("click", skipHandler);
                     if (resultRevealControls)
                       resultRevealControls.style.display = "none";
                     skipClickHandler = null;
-                    if (instigator) {
-                      transitionInstigatorToVerdict(waitingSprite, resultReaction, instigator.type, stars, demo);
-                    } else {
-                      resultReaction.textContent = overallPass ? "\u{1F389}" : "\u{1F494}";
-                    }
                   }, 800);
-                  pendingTimeouts.push(tVerdict);
+                  pendingTimeouts.push(tDone);
                 }
               }, ROW_HOLD_MS);
               pendingTimeouts.push(t22);
@@ -15543,11 +15579,6 @@ var require_main = __commonJS({
             if (resultRevealControls)
               resultRevealControls.style.display = "none";
             skipClickHandler = null;
-            if (instigator) {
-              transitionInstigatorToVerdict(waitingSprite, resultReaction, instigator.type, stars, demo);
-            } else {
-              resultReaction.textContent = overallPass ? "\u{1F389}" : "\u{1F494}";
-            }
           };
           skipClickHandler = skipHandler;
           btnRevealSkip == null ? void 0 : btnRevealSkip.addEventListener("click", skipHandler, { once: true });

@@ -3107,7 +3107,8 @@
       "description": "All five districts are in use and every precinct is assigned.",
       "criterion": {
         "type": "district_count"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-population-balance",
@@ -3115,49 +3116,53 @@
       "description": "All five districts have roughly equal population (within 5%).",
       "criterion": {
         "type": "population_balance"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-compactness",
       "required": true,
-      "description": "All districts must be reasonably compact \u2014 no long tentacles or thin strips (compactness \u2265 50%).",
+      "description": "All districts must be reasonably compact — no long tentacles or thin strips (compactness ≥ 50%).",
       "criterion": {
         "type": "compactness",
         "operator": "gte",
         "threshold": 0.5
-      }
+      },
+      "character": "judge"
     },
     {
       "id": "sc-efficiency-gap",
       "required": false,
-      "description": "Even a geometrically neutral map has an efficiency gap \u2014 see how close to zero you can get (\u2264 15%).",
+      "description": "Even a geometrically neutral map has an efficiency gap — see how close to zero you can get (≤ 15%).",
       "criterion": {
         "type": "efficiency_gap",
         "operator": "lte",
         "threshold": 0.15
-      }
+      },
+      "character": "judge"
     }
   ],
   "narrative": {
     "character": {
       "name": "You",
       "role": "Independent Reform Commissioner, Meridian County",
-      "motivation": "The legislature has deadlocked. A court has ordered an independent commission to draw a new map using only neutral criteria \u2014 equal population, geographic compactness, and contiguity. No partisan data allowed. Draw the fairest map you can."
+      "motivation": "The legislature has deadlocked. A court has ordered an independent commission to draw a new map using only neutral criteria — equal population, geographic compactness, and contiguity. No partisan data allowed. Draw the fairest map you can."
     },
     "intro_slides": [
       {
         "heading": "The Promise of Neutral Rules",
-        "body": "Reformers have long argued that if we just take politics out of redistricting \u2014 use an independent commission, apply mechanical criteria, ignore partisan data \u2014 the maps will be fair.\n\nMeridian County is your test case. Draw a map using only geometric rules: compact districts, equal population, no disconnected pieces. No partisan data. Just shapes."
+        "body": "Reformers have long argued that if we just take politics out of redistricting — use an independent commission, apply mechanical criteria, ignore partisan data — the maps will be fair.\n\nMeridian County is your test case. Draw a map using only geometric rules: compact districts, equal population, no disconnected pieces. No partisan data. Just shapes."
       },
       {
         "heading": "The Geography Problem",
-        "body": "Here's what nobody tells you: voters aren't distributed randomly. In Meridian County \u2014 as in most American counties \u2014 different communities cluster together. Urban neighborhoods vote differently from suburbs, which vote differently from exurbs.\n\nA perfectly geometric map doesn't erase that. It just captures it differently."
+        "body": "Here's what nobody tells you: voters aren't distributed randomly. In Meridian County — as in most American counties — different communities cluster together. Urban neighborhoods vote differently from suburbs, which vote differently from exurbs.\n\nA perfectly geometric map doesn't erase that. It just captures it differently."
       },
       {
         "heading": "What the Map Will Show You",
-        "body": "When you're done, submit your map and look at the results. You drew it without looking at party data. But the outcome won't be perfectly proportional.\n\nThis is called the geography problem. It's not a bug in your map \u2014 it's a feature of where people live. Neutral rules don't produce neutral outcomes. They produce different outcomes."
+        "body": "When you're done, submit your map and look at the results. You drew it without looking at party data. But the outcome won't be perfectly proportional.\n\nThis is called the geography problem. It's not a bug in your map — it's a feature of where people live. Neutral rules don't produce neutral outcomes. They produce different outcomes."
       }
     ],
-    "objective": "Draw a compact, population-balanced map using only geometric criteria. No partisan data required \u2014 or allowed."
-  }
+    "objective": "Draw a compact, population-balanced map using only geometric criteria. No partisan data required — or allowed."
+  },
+  "instigator_character": "commissioner"
 }

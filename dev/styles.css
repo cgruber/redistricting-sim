@@ -671,13 +671,30 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-#result-reaction {
-  text-align: center;
-  font-size: 1.5rem;
-  line-height: 1.3;
-  margin-top: -4px;
+/* GAME-069: per-row character slot */
+.rc-char {
+  flex-shrink: 0;
+  width: 40px;
+  height: 64px;
   display: flex;
+  align-items: center;
   justify-content: center;
+  position: relative;
+  margin-right: 4px;
+}
+
+.rc-char-neutral,
+.rc-char-verdict {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.rc-char-verdict {
+  opacity: 0;
 }
 
 .character-sprite {
@@ -685,19 +702,21 @@ body {
   height: 200px;
   background-size: auto 100%;
   background-repeat: no-repeat;
-  animation: characterBob 0.9s ease-in-out infinite alternate;
   /* GAME-066: cross-fade on pose transition */
   transition: opacity 0.2s ease;
 }
 
-@keyframes characterBob {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-6px); }
+.character-sprite--row {
+  height: 64px;
+  background-size: auto 64px;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .character-sprite {
-    animation: none;
+    transition: none;
+  }
+  .rc-char-neutral,
+  .rc-char-verdict {
     transition: none;
   }
   .rc-badge.rc-checking {
