@@ -15341,7 +15341,7 @@ var require_main = __commonJS({
         return criterionResults.filter((cr) => cr.required && cr.passed).length;
       }
       const GOVERNOR_DEMOGRAPHICS = ["wm", "bm", "af"];
-      const GOV_ROW_SCALE = 0.32;
+      const GOV_ROW_SCALE = 0.42;
       const GOV_SHEET = { neutral: { x: 0, w: 106 }, approve: { x: 106, w: 128 }, disapprove: { x: 234, w: 132 } };
       function charPlaceholderSvg(state) {
         if (state === "neutral") {
@@ -15379,7 +15379,7 @@ var require_main = __commonJS({
             s2.style.width = `${Math.round(col.w * GOV_ROW_SCALE)}px`;
             s2.style.backgroundImage = `url('${img}')`;
             s2.style.backgroundPosition = `-${Math.round(col.x * GOV_ROW_SCALE)}px 0%`;
-            s2.style.backgroundSize = `${Math.round(366 * GOV_ROW_SCALE)}px 64px`;
+            s2.style.backgroundSize = `${Math.round(366 * GOV_ROW_SCALE)}px 84px`;
             return s2;
           };
           neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
@@ -15493,10 +15493,10 @@ var require_main = __commonJS({
           const badge = document.createElement("span");
           badge.className = final ? "rc-badge" : "rc-badge rc-checking";
           badge.textContent = final ? cr.passed ? "PASS" : cr.required ? "FAIL" : "OPTIONAL" : "CHECKING\u2026";
-          row.appendChild(charSlot);
           row.appendChild(iconEl);
           row.appendChild(body);
           row.appendChild(badge);
+          row.appendChild(charSlot);
           return row;
         }
         function finalizeRow(row) {

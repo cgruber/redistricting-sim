@@ -639,7 +639,7 @@ body {
   margin-top: 2px;
 }
 
-.result-criterion.passed .rc-badge { background: #1a4a30; color: #4caf80; }
+.result-criterion.passed .rc-badge { display: none; }
 .result-criterion.failed-required .rc-badge { background: #3a1020; color: #e94560; }
 .result-criterion.failed-optional .rc-badge { background: #2a2a3a; color: #7070a0; }
 
@@ -674,13 +674,13 @@ body {
 /* GAME-069: per-row character slot */
 .rc-char {
   flex-shrink: 0;
-  width: 40px;
-  height: 64px;
+  width: 56px;
+  height: 84px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  margin-right: 4px;
+  margin-left: 8px;
 }
 
 .rc-char-neutral,
@@ -707,8 +707,8 @@ body {
 }
 
 .character-sprite--row {
-  height: 64px;
-  background-size: auto 64px;
+  height: 84px;
+  background-size: auto 84px;
 }
 
 @media (prefers-reduced-motion: reduce) {
