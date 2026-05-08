@@ -15341,8 +15341,8 @@ var require_main = __commonJS({
         return criterionResults.filter((cr) => cr.required && cr.passed).length;
       }
       const GOVERNOR_DEMOGRAPHICS = ["wm", "bm", "af"];
-      const GOV_ROW_SCALE = 0.42;
-      const GOV_SHEET = { neutral: { x: 0, w: 106 }, approve: { x: 106, w: 128 }, disapprove: { x: 234, w: 132 } };
+      const GOV_ROW_SCALE = 84 / 752;
+      const GOV_SHEET = { neutral: { x: 0, w: 400 }, approve: { x: 400, w: 480 }, disapprove: { x: 880, w: 496 } };
       function charPlaceholderSvg(state) {
         if (state === "neutral") {
           return `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
@@ -15379,7 +15379,7 @@ var require_main = __commonJS({
             s2.style.width = `${Math.round(col.w * GOV_ROW_SCALE)}px`;
             s2.style.backgroundImage = `url('${img}')`;
             s2.style.backgroundPosition = `-${Math.round(col.x * GOV_ROW_SCALE)}px 0%`;
-            s2.style.backgroundSize = `${Math.round(366 * GOV_ROW_SCALE)}px 84px`;
+            s2.style.backgroundSize = `${Math.round(1376 * GOV_ROW_SCALE)}px 84px`;
             return s2;
           };
           neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
@@ -15453,7 +15453,8 @@ var require_main = __commonJS({
         const validityRows = mapIsValid ? [] : buildValidityRows(validity);
         const allRows = [...validityRows, ...evalResult.criterionResults];
         resultCriteriaList.innerHTML = "";
-        const demo = GOVERNOR_DEMOGRAPHICS[Math.floor(Math.random() * GOVERNOR_DEMOGRAPHICS.length)];
+        const demoIdx = scenario.id.split("").reduce((acc, c3) => acc + c3.charCodeAt(0), 0) % GOVERNOR_DEMOGRAPHICS.length;
+        const demo = GOVERNOR_DEMOGRAPHICS[demoIdx];
         function resolveCharInfo(cr) {
           var _a3;
           return (_a3 = charInfoMap.get(cr.criterionId)) != null ? _a3 : { type: "commissioner" };
