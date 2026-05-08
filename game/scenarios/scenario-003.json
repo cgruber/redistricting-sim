@@ -3107,7 +3107,8 @@
       "description": "All five districts are in use and every precinct is assigned.",
       "criterion": {
         "type": "district_count"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-population-balance",
@@ -3115,7 +3116,8 @@
       "description": "All five districts have roughly equal population (within 10%).",
       "criterion": {
         "type": "population_balance"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-ken-seats",
@@ -3126,39 +3128,43 @@
         "party": "ken",
         "operator": "gte",
         "count": 4
-      }
+      },
+      "character": "party",
+      "party_id": "ken"
     },
     {
       "id": "sc-efficiency-gap",
       "required": false,
-      "description": "Packing creates a large efficiency gap \u2014 can you keep it under 15%?",
+      "description": "Packing creates a large efficiency gap — can you keep it under 15%?",
       "criterion": {
         "type": "efficiency_gap",
         "operator": "lte",
         "threshold": 0.15
-      }
+      },
+      "character": "judge"
     }
   ],
   "narrative": {
     "character": {
       "name": "You",
       "role": "Ken Party Campaign Strategist, Riverport Metro",
-      "motivation": "The Ken Party controls the state legislature but is losing ground in Riverport's urban core. The Ryu Party's voters are concentrated downtown \u2014 a liability if you know how to exploit it. Your job: draw a map that locks in 4 of 5 seats by packing their voters into one unwinnable district."
+      "motivation": "The Ken Party controls the state legislature but is losing ground in Riverport's urban core. The Ryu Party's voters are concentrated downtown — a liability if you know how to exploit it. Your job: draw a map that locks in 4 of 5 seats by packing their voters into one unwinnable district."
     },
     "intro_slides": [
       {
         "heading": "The Urban Problem",
-        "body": "Riverport's downtown is a Ryu stronghold \u2014 dense, politically active, and growing. If you let those voters spread across multiple districts, they could flip seats.\n\nBut concentration is a weakness. If all those Ryu voters end up in the same district, they win it by a landslide \u2014 and waste thousands of votes that could have helped them elsewhere."
+        "body": "Riverport's downtown is a Ryu stronghold — dense, politically active, and growing. If you let those voters spread across multiple districts, they could flip seats.\n\nBut concentration is a weakness. If all those Ryu voters end up in the same district, they win it by a landslide — and waste thousands of votes that could have helped them elsewhere."
       },
       {
         "heading": "The Packing Play",
-        "body": "Packing means drawing one district that your opponents win overwhelmingly \u2014 80%, 85%, even 90%. Every vote above 50%+1 is wasted. Meanwhile, you spread your own voters efficiently across the remaining districts, winning each by a comfortable but not wasteful margin.\n\nThe result: they win one seat by a landslide. You win four seats by steady margins."
+        "body": "Packing means drawing one district that your opponents win overwhelmingly — 80%, 85%, even 90%. Every vote above 50%+1 is wasted. Meanwhile, you spread your own voters efficiently across the remaining districts, winning each by a comfortable but not wasteful margin.\n\nThe result: they win one seat by a landslide. You win four seats by steady margins."
       },
       {
         "heading": "The Efficiency Gap",
-        "body": "Political scientists measure this with the efficiency gap \u2014 the difference in wasted votes between the two parties. A packed map has a huge efficiency gap: the opposition wastes votes in their landslide district, while the mapmaker wastes very few.\n\nDraw your map. Then look at the efficiency gap and see what packing costs."
+        "body": "Political scientists measure this with the efficiency gap — the difference in wasted votes between the two parties. A packed map has a huge efficiency gap: the opposition wastes votes in their landslide district, while the mapmaker wastes very few.\n\nDraw your map. Then look at the efficiency gap and see what packing costs."
       }
     ],
     "objective": "Pack Ryu voters into as few districts as possible. Ken Party must win at least 4 of 5 seats."
-  }
+  },
+  "instigator_character": "party"
 }

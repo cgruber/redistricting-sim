@@ -3107,7 +3107,8 @@
       "description": "All five districts are in use and every precinct is assigned.",
       "criterion": {
         "type": "district_count"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-population-balance",
@@ -3115,34 +3116,37 @@
       "description": "All five districts have roughly equal population (within 5%).",
       "criterion": {
         "type": "population_balance"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-compactness",
       "required": true,
-      "description": "All districts must be reasonably compact \u2014 no long tentacles or thin strips (compactness \u2265 40%).",
+      "description": "All districts must be reasonably compact — no long tentacles or thin strips (compactness ≥ 40%).",
       "criterion": {
         "type": "compactness",
         "operator": "gte",
         "threshold": 0.4
-      }
+      },
+      "character": "judge"
     },
     {
       "id": "sc-efficiency-gap",
       "required": false,
-      "description": "How close to zero can you get the efficiency gap on a purely neutral map? (\u2264 10%).",
+      "description": "How close to zero can you get the efficiency gap on a purely neutral map? (≤ 10%).",
       "criterion": {
         "type": "efficiency_gap",
         "operator": "lte",
         "threshold": 0.1
-      }
+      },
+      "character": "judge"
     }
   ],
   "narrative": {
     "character": {
       "name": "You",
       "role": "Independent Commissioner, Accord County Redistricting Commission",
-      "motivation": "After years of partisan warfare over district lines, both parties agreed to something remarkable: an independent commission with binding authority. The rules are strict \u2014 equal population, geographic compactness, contiguous districts. No partisan data allowed. Both sides signed off on the criteria. Now you draw the map."
+      "motivation": "After years of partisan warfare over district lines, both parties agreed to something remarkable: an independent commission with binding authority. The rules are strict — equal population, geographic compactness, contiguous districts. No partisan data allowed. Both sides signed off on the criteria. Now you draw the map."
     },
     "intro_slides": [
       {
@@ -3151,7 +3155,7 @@
       },
       {
         "heading": "The Problem with Perfect Neutrality",
-        "body": "Here's what both parties understood privately, even as they signed: neutral rules don't produce neutral outcomes. They produce outcomes driven by geography.\n\nIn Accord County, geography has a lean. Ryu voters cluster tightly in the urban core. Ken voters spread across the suburbs and exurbs. Any compact map will reflect that geography \u2014 not because anyone drew it that way, but because that's where people live."
+        "body": "Here's what both parties understood privately, even as they signed: neutral rules don't produce neutral outcomes. They produce outcomes driven by geography.\n\nIn Accord County, geography has a lean. Ryu voters cluster tightly in the urban core. Ken voters spread across the suburbs and exurbs. Any compact map will reflect that geography — not because anyone drew it that way, but because that's where people live."
       },
       {
         "heading": "A Fair Process, An Unfair Outcome?",
@@ -3159,5 +3163,6 @@
       }
     ],
     "objective": "Apply the agreed neutral criteria. Draw a compact, population-balanced map. Watch both sides declare the process rigged."
-  }
+  },
+  "instigator_character": "commissioner"
 }

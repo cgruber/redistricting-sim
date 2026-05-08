@@ -2239,7 +2239,8 @@
       "description": "All four districts are in use and every precinct is assigned.",
       "criterion": {
         "type": "district_count"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-population-balance",
@@ -2247,7 +2248,8 @@
       "description": "All four districts have roughly equal population (within 10%).",
       "criterion": {
         "type": "population_balance"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-ken-seats",
@@ -2258,42 +2260,42 @@
         "party": "ken",
         "operator": "gte",
         "count": 3
-      }
+      },
+      "character": "instigator"
     },
     {
       "id": "sc-compactness",
       "required": false,
-      "description": "All districts are reasonably compact (\u2265 40%).",
+      "description": "All districts are reasonably compact (≥ 40%).",
       "criterion": {
         "type": "compactness",
         "operator": "gte",
         "threshold": 0.4
-      }
+      },
+      "character": "judge"
     }
   ],
   "narrative": {
-    "instigator": {
-      "type": "governor"
-    },
     "character": {
       "name": "You",
       "role": "Ken Party Campaign Strategist, Clearwater County",
-      "motivation": "The governor wants a reliable majority in Clearwater County. The current map splits the vote evenly \u2014 two Ken, two Ryu. That's not good enough. You've been brought in to redraw the lines so Ken wins three of four seats."
+      "motivation": "The governor wants a reliable majority in Clearwater County. The current map splits the vote evenly — two Ken, two Ryu. That's not good enough. You've been brought in to redraw the lines so Ken wins three of four seats."
     },
     "intro_slides": [
       {
         "heading": "The Governor's Problem",
-        "body": "Clearwater County elects four representatives. Right now, the map gives each party two seats. The governor \u2014 a Ken partisan \u2014 wants three.\n\nThe population hasn't changed. The voters haven't changed. But the lines can change."
+        "body": "Clearwater County elects four representatives. Right now, the map gives each party two seats. The governor — a Ken partisan — wants three.\n\nThe population hasn't changed. The voters haven't changed. But the lines can change."
       },
       {
         "heading": "How Redistricting Works",
-        "body": "Every ten years, district boundaries are redrawn. The official reason is to reflect population changes. The real reason, often, is to change who wins.\n\nYou're looking at a map of precincts \u2014 small geographic units with known voting patterns. Your job is to group them into districts that favor the Ken Party."
+        "body": "Every ten years, district boundaries are redrawn. The official reason is to reflect population changes. The real reason, often, is to change who wins.\n\nYou're looking at a map of precincts — small geographic units with known voting patterns. Your job is to group them into districts that favor the Ken Party."
       },
       {
         "heading": "Your First Gerrymander",
-        "body": "Look at the map. The southeast corner votes heavily Ryu. The north and southwest lean Ken.\n\nIf you can contain the Ryu stronghold in one district and spread Ken voters across the other three, the governor gets the majority. The tools are simple \u2014 the consequences are not."
+        "body": "Look at the map. The southeast corner votes heavily Ryu. The north and southwest lean Ken.\n\nIf you can contain the Ryu stronghold in one district and spread Ken voters across the other three, the governor gets the majority. The tools are simple — the consequences are not."
       }
     ],
     "objective": "Redraw the map so the Ken Party wins at least 3 of 4 districts."
-  }
+  },
+  "instigator_character": "governor"
 }

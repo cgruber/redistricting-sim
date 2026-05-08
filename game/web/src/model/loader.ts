@@ -11,6 +11,7 @@
  */
 
 import type {
+  CharacterType,
   CriterionId,
   DemographicEvent,
   DemographicGroup,
@@ -20,7 +21,6 @@ import type {
   GroupFilter,
   GroupId,
   GroupSchema,
-  InstigatorType,
   Narrative,
   Party,
   PartyId,
@@ -383,7 +383,27 @@ function parseCriterion(raw: unknown, idx: number): SuccessCriterion {
       throw new Error(`${label}.criterion.type: unknown type "${cType}"`);
   }
 
-  return { id, required, description, criterion };
+  const sc: SuccessCriterion = { id, required, description, criterion };
+
+  if (r["character"] !== undefined) {
+    const charVal = requireString(r["character"], `${label}.character`);
+    const validChars = ["governor", "commissioner", "party", "judge", "legislator", "instigator"];
+    if (!validChars.includes(charVal)) {
+      throw new Error(`${label}.character: unknown value "${charVal}"; expected one of: ${validChars.join(", ")}`);
+    }
+    // When character is statically "party" (not via instigator indirection), party_id is required
+    // at load time. The instigator→party chain resolves at render time and cannot be checked here.
+    if (charVal === "party" && r["party_id"] === undefined) {
+      throw new Error(`${label}.character is "party" but party_id is missing`);
+    }
+    sc.character = charVal as CharacterType | "instigator";
+  }
+
+  if (r["party_id"] !== undefined) {
+    sc.party_id = requireString(r["party_id"], `${label}.party_id`) as PartyId;
+  }
+
+  return sc;
 }
 
 function parseNarrative(raw: unknown): Narrative {
@@ -411,16 +431,7 @@ function parseNarrative(raw: unknown): Narrative {
     narrative.flavor_text = requireString(r["flavor_text"], "narrative.flavor_text");
   }
   if (r["instigator"] !== undefined) {
-    const insRaw = requireObject(r["instigator"], "narrative.instigator");
-    const instigatorTypes: InstigatorType[] = [
-      "partisan-boss", "legal-authority", "bipartisan-broker",
-      "reform-arbiter", "neutral-admin", "governor",
-    ];
-    const type = requireString(insRaw["type"], "narrative.instigator.type");
-    if (!(instigatorTypes as string[]).includes(type)) {
-      throw new Error(`narrative.instigator.type: unknown type "${type}"; expected one of: ${instigatorTypes.join(", ")}`);
-    }
-    narrative.instigator = { type: type as InstigatorType };
+    throw new Error("narrative.instigator removed; use instigator_character at the scenario root level instead");
   }
   return narrative;
 }
@@ -565,6 +576,16 @@ export function loadScenario(json: unknown): Scenario {
   const success_criteria = criteriaRaw.map((c, i) => parseCriterion(c, i));
 
   const narrative = parseNarrative(raw["narrative"]);
+
+  let instigator_character: CharacterType | undefined;
+  if (raw["instigator_character"] !== undefined) {
+    const icVal = requireString(raw["instigator_character"], "instigator_character");
+    const validChars: string[] = ["governor", "commissioner", "party", "judge", "legislator"];
+    if (!validChars.includes(icVal)) {
+      throw new Error(`instigator_character: unknown value "${icVal}"; expected one of: ${validChars.join(", ")}`);
+    }
+    instigator_character = icVal as CharacterType;
+  }
 
   let state_context: StateContext | undefined;
   if (raw["state_context"] !== undefined) {
@@ -901,6 +922,7 @@ export function loadScenario(json: unknown): Scenario {
 
   if (group_schema !== undefined) scenario.group_schema = group_schema;
   if (default_district_id !== undefined) scenario.default_district_id = default_district_id;
+  if (instigator_character !== undefined) scenario.instigator_character = instigator_character;
   if (state_context !== undefined) scenario.state_context = state_context;
 
   return scenario;

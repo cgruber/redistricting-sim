@@ -104,13 +104,14 @@ test("scenario-002 smoke: intro shows correct character and objective", async ({
   await expect(page.locator("#objective-text")).toContainText("Ken Party wins at least 3");
 });
 
-test("scenario-002: governor sprite appears on result screen", async ({ page }) => {
+// GAME-069: governor sprite now appears in the sc-ken-seats criterion row, not #result-reaction.
+test("scenario-002: governor sprite appears in the sc-ken-seats criterion row", async ({ page }) => {
   await loadScenario(page, "scenario-002");
-  // Submit the default map immediately (will fail criteria but should still show governor sprite)
+  // Submit the default map (fails criteria but still shows per-row character sprites).
   await page.locator("#btn-submit").click();
   await expect(page.locator("#result-screen")).toBeVisible();
-  await expect(page.locator("#result-reaction .character-sprite")).toBeVisible();
-  await expect(page.locator("#result-reaction .character-sprite")).toHaveClass(/character-governor/);
+  // Governor sprite should be in the rc-char slot of the row containing sc-ken-seats.
+  await expect(page.locator(".result-criterion .rc-char .character-sprite.character-governor").first()).toBeVisible();
 });
 
 test("scenario-002 winnability: packing east Ryu bloc into one district passes", async ({ page }) => {

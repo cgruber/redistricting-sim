@@ -182,11 +182,22 @@ export type Criterion =
 	| { type: "population_balance" }
 	| { type: "district_count" };
 
+export type CharacterType =
+	| "governor"
+	| "commissioner"
+	| "party"
+	| "judge"
+	| "legislator";
+
 export interface SuccessCriterion {
 	id: CriterionId;
 	required: boolean;
 	description: string;
 	criterion: Criterion;
+	/** Which character reacts to this criterion on the result screen. "instigator" resolves via scenario.instigator_character. */
+	character?: CharacterType | "instigator";
+	/** Required when resolved character type is "party" — selects the party palette. */
+	party_id?: PartyId;
 }
 
 // ─── Narrative ────────────────────────────────────────────────────────────────
@@ -198,26 +209,12 @@ export interface Slide {
 	image?: string;
 }
 
-export type InstigatorType =
-	| "partisan-boss"
-	| "legal-authority"
-	| "bipartisan-broker"
-	| "reform-arbiter"
-	| "neutral-admin"
-	| "governor";
-
-export interface ScenarioInstigator {
-	type: InstigatorType;
-}
-
 export interface Narrative {
 	character: {
 		name: string;
 		role: string;
 		motivation: string;
 	};
-	/** The character who reacts on the result screen. Absent = emoji fallback. */
-	instigator?: ScenarioInstigator;
 	intro_slides: Slide[];
 	/** Shown on the map screen */
 	objective: string;
@@ -257,6 +254,8 @@ export interface Scenario {
 	rules: ScenarioRules;
 	success_criteria: SuccessCriterion[];
 	narrative: Narrative;
+	/** Which character type plays the instigator role in this scenario. Resolves "instigator" character refs on criteria. */
+	instigator_character?: CharacterType;
 	/** v1: parsed but may be ignored by renderer */
 	state_context?: StateContext;
 }
