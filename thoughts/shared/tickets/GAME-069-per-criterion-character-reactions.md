@@ -2,7 +2,7 @@
 id: GAME-069
 title: Per-criterion character reactions on result screen
 area: game
-status: open
+status: resolved
 created: 2026-05-07
 ---
 
