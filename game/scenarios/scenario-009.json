@@ -3107,7 +3107,8 @@
       "description": "All five districts are in use and every precinct is assigned.",
       "criterion": {
         "type": "district_count"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-population-balance",
@@ -3115,39 +3116,45 @@
       "description": "All five districts have roughly equal population (within 10%).",
       "criterion": {
         "type": "population_balance"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-compactness",
       "required": true,
-      "description": "Districts must be geographically compact \u2014 no sprawling fur-balls (compactness \u2265 40%).",
+      "description": "Districts must be geographically compact — no sprawling fur-balls (compactness ≥ 40%).",
       "criterion": {
         "type": "compactness",
         "operator": "gte",
         "threshold": 0.4
-      }
+      },
+      "character": "judge"
     },
     {
       "id": "sc-safe-seats-cat",
       "required": true,
-      "description": "The Cat Party must lock in at least 3 safe districts (winning margin \u2265 15 points).",
+      "description": "The Cat Party must lock in at least 3 safe districts (winning margin ≥ 15 points).",
       "criterion": {
         "type": "safe_seats",
         "party": "cat",
         "margin": 0.15,
         "min_count": 3
-      }
+      },
+      "character": "party",
+      "party_id": "cat"
     },
     {
       "id": "sc-safe-seats-dog",
       "required": false,
-      "description": "Even dogs deserve one safe seat \u2014 can you give the Dog Party at least 1 district won by 15+ points?",
+      "description": "Even dogs deserve one safe seat — can you give the Dog Party at least 1 district won by 15+ points?",
       "criterion": {
         "type": "safe_seats",
         "party": "dog",
         "margin": 0.15,
         "min_count": 1
-      }
+      },
+      "character": "party",
+      "party_id": "dog"
     }
   ],
   "narrative": {
@@ -3163,13 +3170,14 @@
       },
       {
         "heading": "The Math",
-        "body": "Cats make up about 60% of Pawprint County's voters \u2014 a comfortable majority in the urban core, but the outer precincts are more competitive.\n\nLeft to chance, those outer districts could swing either way. Your job is to take chance out of the equation. Draw lines that turn a majority into a durable map."
+        "body": "Cats make up about 60% of Pawprint County's voters — a comfortable majority in the urban core, but the outer precincts are more competitive.\n\nLeft to chance, those outer districts could swing either way. Your job is to take chance out of the equation. Draw lines that turn a majority into a durable map."
       },
       {
         "heading": "Same Game, Different Fur",
-        "body": "You've seen this before \u2014 packing, cracking, population balance, compactness. The tools are the same whether you're drawing for Cats, Dogs, Ken, Ryu, or anyone else.\n\nThe rules of redistricting don't care about the players. Only the lines matter."
+        "body": "You've seen this before — packing, cracking, population balance, compactness. The tools are the same whether you're drawing for Cats, Dogs, Ken, Ryu, or anyone else.\n\nThe rules of redistricting don't care about the players. Only the lines matter."
       }
     ],
-    "objective": "Draw a compact, population-balanced map that locks in at least 3 safe Cat Party districts (winning margin \u2265 15 points). Bonus: leave the dogs one safe seat to chew on."
-  }
+    "objective": "Draw a compact, population-balanced map that locks in at least 3 safe Cat Party districts (winning margin ≥ 15 points). Bonus: leave the dogs one safe seat to chew on."
+  },
+  "instigator_character": "party"
 }

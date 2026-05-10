@@ -9,7 +9,7 @@
  */
 
 import { loadScenario } from "./model/loader.js";
-import type { Scenario, CriterionId, InstigatorType } from "./model/scenario.js";
+import type { Scenario, CriterionId, CharacterType } from "./model/scenario.js";
 import { type MapRenderer, type ViewMode, SvgMapRenderer } from "./render/mapRenderer.js";
 import {
 	renderDistrictButtons,
@@ -91,7 +91,6 @@ const resultScreen = document.getElementById("result-screen") as HTMLElement | n
 let skipClickHandler: (() => void) | null = null;
 const resultVerdict = document.getElementById("result-verdict") as HTMLElement | null;
 const resultSubtitle = document.getElementById("result-subtitle") as HTMLElement | null;
-const resultReaction = document.getElementById("result-reaction") as HTMLElement | null;
 const resultCriteriaList = document.getElementById("result-criteria-list") as HTMLElement | null;
 const btnKeepDrawing = document.getElementById("btn-keep-drawing") as HTMLButtonElement | null;
 const btnNextScenario = document.getElementById("btn-next-scenario") as HTMLButtonElement | null;
@@ -742,72 +741,81 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 	const GOVERNOR_DEMOGRAPHICS = ["wm", "bm", "af"] as const;
 
-	// GAME-066: Three-phase instigator helpers.
-	// Sheet column layout (governor): neutral 0–106px, approve 106–234px, disapprove 234–366px.
-	// Pose binary per DESIGN-010: approve=stars≥1, disapprove=stars===0.
-	// "waiting" reuses neutral column as proxy until GAME-060 waiting.svg is commissioned.
+	// GAME-069: Governor sprite sheet layout (200px tall canonical):
+	// Sheet: 1376×752px. Pose columns: neutral 0–400, approve 400–880, disapprove 880–1376.
+	// Row-scale (84px target height): 84/752 ≈ 0.1117.
+	const GOV_ROW_SCALE = 84 / 752;
+	const GOV_SHEET = { neutral: { x: 0, w: 400 }, approve: { x: 400, w: 480 }, disapprove: { x: 880, w: 496 } };
 
-	function renderInstigatorWaiting(container: HTMLElement, type: InstigatorType, demo: string): HTMLElement | null {
-		if (type === "governor") {
-			const sprite = document.createElement("div");
-			sprite.className = "character-sprite character-governor";
-			sprite.setAttribute("role", "img");
-			sprite.setAttribute("aria-label", "The governor watches, awaiting the verdict");
-			sprite.style.width = "106px";
-			sprite.style.backgroundImage = `url('${assetUrl(`assets/characters/governor-${demo}/sheet.png`)}')`;
-			sprite.style.backgroundPosition = "0px 0%";
-			container.appendChild(sprite);
-			return sprite;
+	// Placeholder SVG for non-governor character types.
+	function charPlaceholderSvg(state: "neutral" | "approve" | "disapprove"): string {
+		if (state === "neutral") {
+			return `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+				<rect x="4" y="4" width="24" height="24" rx="3" fill="none" stroke="#5060a0" stroke-width="2"/>
+			</svg>`;
 		}
-		container.textContent = "⏳";
-		return null;
+		if (state === "approve") {
+			return `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+				<rect x="4" y="4" width="24" height="24" rx="3" fill="none" stroke="#4caf80" stroke-width="2"/>
+				<polyline points="8,17 13,22 24,10" fill="none" stroke="#4caf80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>`;
+		}
+		return `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+			<rect x="4" y="4" width="24" height="24" rx="3" fill="none" stroke="#e94560" stroke-width="2"/>
+			<line x1="10" y1="10" x2="22" y2="22" stroke="#e94560" stroke-width="2.5" stroke-linecap="round"/>
+			<line x1="22" y1="10" x2="10" y2="22" stroke="#e94560" stroke-width="2.5" stroke-linecap="round"/>
+		</svg>`;
 	}
 
-	function renderInstigatorFinal(container: HTMLElement, type: InstigatorType, stars: number, demo: string): void {
-		if (type === "governor") {
-			const pose = stars >= 1
-				? { offsetX: 106, width: 128, label: "The governor approves — thumbs up" }
-				: { offsetX: 234, width: 132, label: "The governor disapproves — thumbs down" };
-			const sprite = document.createElement("div");
-			sprite.className = "character-sprite character-governor";
-			sprite.setAttribute("role", "img");
-			sprite.setAttribute("aria-label", pose.label);
-			sprite.style.width = `${pose.width}px`;
-			sprite.style.backgroundImage = `url('${assetUrl(`assets/characters/governor-${demo}/sheet.png`)}')`;
-			sprite.style.backgroundPosition = `-${pose.offsetX}px 0%`;
-			container.appendChild(sprite);
-		} else {
-			container.textContent = stars >= 1 ? "🎉" : "💔";
-		}
-	}
-
-	function transitionInstigatorToVerdict(
-		sprite: HTMLElement | null,
-		container: HTMLElement,
-		type: InstigatorType,
-		stars: number,
+	// Build the neutral and verdict child elements for a per-row character slot.
+	// Returns {neutral, verdict} — both appended to the slot container.
+	function buildCharSlotChildren(
+		slot: HTMLElement,
+		charType: CharacterType,
+		passed: boolean,
 		demo: string,
-	): void {
-		if (type === "governor" && sprite) {
-			const pose = stars >= 1
-				? { offsetX: 106, width: 128, label: "The governor approves — thumbs up" }
-				: { offsetX: 234, width: 132, label: "The governor disapproves — thumbs down" };
-			sprite.style.opacity = "0";
-			setTimeout(() => {
-				sprite.setAttribute("aria-label", pose.label);
-				sprite.style.width = `${pose.width}px`;
-				sprite.style.backgroundPosition = `-${pose.offsetX}px 0%`;
-				sprite.style.opacity = "1";
-			}, 200);
-		} else if (type !== "governor") {
-			container.textContent = stars >= 1 ? "🎉" : "💔";
+	): { neutral: HTMLElement; verdict: HTMLElement } {
+		const neutralEl = document.createElement("div");
+		neutralEl.className = "rc-char-neutral";
+		const verdictEl = document.createElement("div");
+		verdictEl.className = "rc-char-verdict";
+		verdictEl.style.opacity = "0";
+
+		if (charType === "governor") {
+			const n = GOV_SHEET.neutral;
+			const v = passed ? GOV_SHEET.approve : GOV_SHEET.disapprove;
+			const img = assetUrl(`assets/characters/governor-${demo}/sheet.png`);
+			const makeSprite = (col: { x: number; w: number }, label: string): HTMLElement => {
+				const s = document.createElement("div");
+				s.className = "character-sprite character-governor character-sprite--row";
+				s.setAttribute("role", "img");
+				s.setAttribute("aria-label", label);
+				s.style.width = `${Math.round(col.w * GOV_ROW_SCALE)}px`;
+				s.style.backgroundImage = `url('${img}')`;
+				s.style.backgroundPosition = `-${Math.round(col.x * GOV_ROW_SCALE)}px 0%`;
+				s.style.backgroundSize = `${Math.round(1376 * GOV_ROW_SCALE)}px 84px`;
+				return s;
+			};
+			neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
+			verdictEl.appendChild(makeSprite(v, passed ? "Approves" : "Disapproves"));
+		} else {
+			neutralEl.innerHTML = charPlaceholderSvg("neutral");
+			verdictEl.innerHTML = charPlaceholderSvg(passed ? "approve" : "disapprove");
 		}
-		// GAME-061: audio clips registered when that ticket lands; no-ops until then
-		// audioPlayer.play(`instigator-${stars >= 1 ? "approve" : "disapprove"}-${type}`);
+
+		slot.appendChild(neutralEl);
+		slot.appendChild(verdictEl);
+		return { neutral: neutralEl, verdict: verdictEl };
+	}
+
+	// Cross-fade a character slot from neutral to verdict.
+	function transitionCharSlot(neutral: HTMLElement, verdict: HTMLElement): void {
+		neutral.style.opacity = "0";
+		verdict.style.opacity = "1";
 	}
 
 	function showResultScreen() {
-		if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList || !resultReaction) return;
+		if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList) return;
 		if (skipClickHandler) { btnRevealSkip?.removeEventListener("click", skipClickHandler); skipClickHandler = null; }
 
 		const state = store.getState();
@@ -847,7 +855,6 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				: "The map has structural issues that must be fixed.";
 		// GAME-066: sequential reveal — criteria appear one at a time with CHECKING hold.
 		const stars = computeStarCount(evalResult.criterionResults, mapIsValid);
-		const instigator = scenario.narrative.instigator;
 
 		// Build criterion-type lookup (criterionId → Criterion["type"]) for icon dispatch.
 		const criterionTypeMap = new Map<string, string>();
@@ -855,17 +862,43 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			criterionTypeMap.set(sc.id as string, sc.criterion.type);
 		}
 
+		// GAME-069: build character info map (criterionId → resolved CharacterType + party_id).
+		// "instigator" refs resolve through scenario.instigator_character.
+		const charInfoMap = new Map<string, { type: CharacterType; party_id?: string }>();
+		for (const sc of scenario.success_criteria) {
+			const raw = sc.character;
+			let charType: CharacterType;
+			if (!raw) {
+				charType = "commissioner";
+			} else if (raw === "instigator") {
+				charType = scenario.instigator_character ?? "commissioner";
+			} else {
+				charType = raw;
+			}
+			const entry: { type: CharacterType; party_id?: string } = { type: charType };
+			if (sc.party_id !== undefined) entry.party_id = sc.party_id as string;
+			charInfoMap.set(sc.id as string, entry);
+		}
+
 		// GAME-059: for invalid maps, prepend validity failure rows before scenario criteria.
 		const validityRows = mapIsValid ? [] : buildValidityRows(validity);
 		const allRows: CriterionResult[] = [...validityRows, ...evalResult.criterionResults];
 
 		resultCriteriaList.innerHTML = "";
-		resultReaction.innerHTML = "";
 
-		// Pick demo variant once so waiting and verdict poses use the same sprite sheet.
-		const demo = instigator?.type === "governor"
-			? GOVERNOR_DEMOGRAPHICS[Math.floor(Math.random() * GOVERNOR_DEMOGRAPHICS.length)]!
-			: "";
+		// Pick demo variant deterministically from scenario ID so the same character
+		// appears every time this scenario is played (and can match the intro screen later).
+		const demoIdx =
+			(scenario.id as string)
+				.split("")
+				.reduce((acc, c) => acc + c.charCodeAt(0), 0) %
+			GOVERNOR_DEMOGRAPHICS.length;
+		const demo = GOVERNOR_DEMOGRAPHICS[demoIdx]!;
+
+		// Resolve character info for a row (validity rows default to commissioner).
+		function resolveCharInfo(cr: CriterionResult): { type: CharacterType; party_id?: string } {
+			return charInfoMap.get(cr.criterionId as string) ?? { type: "commissioner" };
+		}
 
 		// Build a criterion row element.
 		// final=true → already in pass/fail state (reduced-motion or skip path).
@@ -882,6 +915,16 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			row.dataset["passed"] = String(cr.passed);
 			row.dataset["required"] = String(cr.required);
 			row.dataset["finalized"] = String(final);
+
+			// GAME-069: per-row character slot.
+			const charInfo = resolveCharInfo(cr);
+			const charSlot = document.createElement("div");
+			charSlot.className = "rc-char";
+			buildCharSlotChildren(charSlot, charInfo.type, cr.passed, demo);
+			if (final) {
+				charSlot.querySelector<HTMLElement>(".rc-char-neutral")!.style.opacity = "0";
+				charSlot.querySelector<HTMLElement>(".rc-char-verdict")!.style.opacity = "1";
+			}
 
 			const iconEl = document.createElement("span");
 			iconEl.className = "rc-icon";
@@ -912,6 +955,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			row.appendChild(iconEl);
 			row.appendChild(body);
 			row.appendChild(badge);
+			row.appendChild(charSlot);
 			return row;
 		}
 
@@ -928,35 +972,27 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			const badge = row.querySelector<HTMLSpanElement>(".rc-badge")!;
 			badge.classList.remove("rc-checking");
 			badge.textContent = passed ? "PASS" : required ? "FAIL" : "OPTIONAL";
+			// Transition character slot neutral → verdict.
+			const neutral = row.querySelector<HTMLElement>(".rc-char-neutral");
+			const verdict = row.querySelector<HTMLElement>(".rc-char-verdict");
+			if (neutral && verdict) transitionCharSlot(neutral, verdict);
 		}
 
 		const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 		if (reducedMotion) {
-			// Instant path: all rows final, instigator in verdict pose immediately.
+			// Instant path: all rows in final state with verdict character poses immediately.
 			for (const cr of allRows) {
 				resultCriteriaList.appendChild(buildRowElement(cr, /*final=*/ true));
 			}
-			if (instigator) {
-				renderInstigatorFinal(resultReaction, instigator.type, stars, demo);
-			} else {
-				resultReaction.textContent = overallPass ? "🎉" : "💔";
-			}
 		} else {
-			// Animated path: waiting instigator → true sequential reveal → verdict cross-fade.
+			// Animated path: sequential reveal — each row fades in CHECKING, then flips to verdict.
 			// GAME-068: each row fully resolves before the next starts (no simultaneous CHECKING).
 			// Chain delay = 300ms fade + 1200ms hold + 150ms flip = 1650ms per row.
 			const ROW_FADE_MS = 300;
 			const ROW_HOLD_MS = 1200;
 			const ROW_FLIP_MS = 150;
 			const ROW_CHAIN_MS = ROW_FADE_MS + ROW_HOLD_MS + ROW_FLIP_MS; // 1650ms
-
-			let waitingSprite: HTMLElement | null = null;
-			if (instigator) {
-				waitingSprite = renderInstigatorWaiting(resultReaction, instigator.type, demo);
-			} else {
-				resultReaction.textContent = "⏳";
-			}
 
 			const rowElements: HTMLElement[] = [];
 			for (const cr of allRows) {
@@ -983,24 +1019,21 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 					const t2 = setTimeout(() => {
 						// Phase 2: flip to final verdict with pop.
 						finalizeRow(row);
-						const badge = row.querySelector<HTMLSpanElement>(".rc-badge")!;
-						badge.classList.add("rc-pop");
-						badge.addEventListener("animationend", () => badge.classList.remove("rc-pop"), { once: true });
+						// Only pop the badge when it is visible; passed rows hide the badge via display:none.
+						const passed = row.dataset["passed"] === "true";
+						if (!passed) {
+							const badge = row.querySelector<HTMLSpanElement>(".rc-badge")!;
+							badge.classList.add("rc-pop");
+							badge.addEventListener("animationend", () => badge.classList.remove("rc-pop"), { once: true });
+						}
 
-						// After last row resolves, pause then show instigator verdict.
 						if (i === rowElements.length - 1) {
-							const tVerdict = setTimeout(() => {
-								// Natural reveal complete — deactivate skip.
+							const tDone = setTimeout(() => {
 								btnRevealSkip?.removeEventListener("click", skipHandler);
 								if (resultRevealControls) resultRevealControls.style.display = "none";
 								skipClickHandler = null;
-								if (instigator) {
-									transitionInstigatorToVerdict(waitingSprite, resultReaction, instigator.type, stars, demo);
-								} else {
-									resultReaction.textContent = overallPass ? "🎉" : "💔";
-								}
 							}, 800);
-							pendingTimeouts.push(tVerdict);
+							pendingTimeouts.push(tDone);
 						}
 					}, ROW_HOLD_MS);
 					pendingTimeouts.push(t2);
@@ -1011,17 +1044,12 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				chainDelay += ROW_CHAIN_MS;
 			}
 
-			// Skip button: clear all pending timeouts, finalize rows, show verdict.
+			// Skip button: clear all pending timeouts, finalize all rows immediately.
 			const skipHandler = () => {
 				for (const t of pendingTimeouts) clearTimeout(t);
 				for (const row of rowElements) finalizeRow(row);
 				if (resultRevealControls) resultRevealControls.style.display = "none";
 				skipClickHandler = null;
-				if (instigator) {
-					transitionInstigatorToVerdict(waitingSprite, resultReaction, instigator.type, stars, demo);
-				} else {
-					resultReaction.textContent = overallPass ? "🎉" : "💔";
-				}
 			};
 			skipClickHandler = skipHandler;
 			btnRevealSkip?.addEventListener("click", skipHandler, { once: true });

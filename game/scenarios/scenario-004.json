@@ -3107,7 +3107,8 @@
       "description": "All five districts are in use and every precinct is assigned.",
       "criterion": {
         "type": "district_count"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-population-balance",
@@ -3115,51 +3116,56 @@
       "description": "All five districts have roughly equal population (within 10%).",
       "criterion": {
         "type": "population_balance"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-ken-all-seats",
       "required": true,
-      "description": "Ken Party wins every seat \u2014 all 5 districts.",
+      "description": "Ken Party wins every seat — all 5 districts.",
       "criterion": {
         "type": "seat_count",
         "party": "ken",
         "operator": "gte",
         "count": 5
-      }
+      },
+      "character": "party",
+      "party_id": "ken"
     },
     {
       "id": "sc-mean-median",
       "required": false,
-      "description": "How skewed is your map? Mean-median gap \u2264 10%.",
+      "description": "How skewed is your map? Mean-median gap ≤ 10%.",
       "criterion": {
         "type": "mean_median",
         "party": "ken",
         "operator": "lte",
         "threshold": 0.1
-      }
+      },
+      "character": "judge"
     }
   ],
   "narrative": {
     "character": {
       "name": "You",
       "role": "Ken Party Redistricting Director, Lakeview County",
-      "motivation": "Last cycle, the Ryu Party won a seat in Lakeview by concentrating their voters along the lakeshore corridor. The Ken Party wants that seat back \u2014 and every other seat too. Your job: split the corridor so Ryu voters can't form a majority anywhere."
+      "motivation": "Last cycle, the Ryu Party won a seat in Lakeview by concentrating their voters along the lakeshore corridor. The Ken Party wants that seat back — and every other seat too. Your job: split the corridor so Ryu voters can't form a majority anywhere."
     },
     "intro_slides": [
       {
         "heading": "The Corridor",
-        "body": "A narrow band of Ryu voters runs through the center of Lakeview County \u2014 along the lakeshore, where the apartments are dense and the politics lean hard Ryu.\n\nRight now, if those voters are in one district, they win it. Your predecessor let that happen. You won't."
+        "body": "A narrow band of Ryu voters runs through the center of Lakeview County — along the lakeshore, where the apartments are dense and the politics lean hard Ryu.\n\nRight now, if those voters are in one district, they win it. Your predecessor let that happen. You won't."
       },
       {
         "heading": "The Cracking Play",
-        "body": "Cracking is the opposite of packing. Instead of concentrating the opposition, you split them. Draw district lines that cut through the corridor, dividing Ryu voters across multiple districts.\n\nIn each district, the corridor's Ryu precincts are outnumbered by the surrounding Ken territory. Ryu voters still vote \u2014 but they lose everywhere."
+        "body": "Cracking is the opposite of packing. Instead of concentrating the opposition, you split them. Draw district lines that cut through the corridor, dividing Ryu voters across multiple districts.\n\nIn each district, the corridor's Ryu precincts are outnumbered by the surrounding Ken territory. Ryu voters still vote — but they lose everywhere."
       },
       {
         "heading": "The Disappearing Voice",
-        "body": "Notice what happens: a community that could win one seat now wins zero. Their total vote count hasn't changed. Their turnout hasn't dropped. But the lines moved, and their voice vanished.\n\nThis is what cracking does. It doesn't silence voters \u2014 it dilutes them until they don't matter."
+        "body": "Notice what happens: a community that could win one seat now wins zero. Their total vote count hasn't changed. Their turnout hasn't dropped. But the lines moved, and their voice vanished.\n\nThis is what cracking does. It doesn't silence voters — it dilutes them until they don't matter."
       }
     ],
     "objective": "Crack the Ryu corridor across all 5 districts. Ken Party must win every seat."
-  }
+  },
+  "instigator_character": "party"
 }

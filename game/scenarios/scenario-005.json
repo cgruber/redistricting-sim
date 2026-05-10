@@ -5148,7 +5148,8 @@
       "description": "All five districts are in use and every precinct is assigned.",
       "criterion": {
         "type": "district_count"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-population-balance",
@@ -5156,12 +5157,13 @@
       "description": "All five districts have roughly equal population (within 10%).",
       "criterion": {
         "type": "population_balance"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-majority-minority",
       "required": true,
-      "description": "At least one district must have a Latino population of 50% or more \u2014 giving the Valley community a fair opportunity to elect their preferred representative.",
+      "description": "At least one district must have a Latino population of 50% or more — giving the Valley community a fair opportunity to elect their preferred representative.",
       "criterion": {
         "type": "majority_minority",
         "group_filter": {
@@ -5170,29 +5172,31 @@
         },
         "min_eligible_share": 0.5,
         "min_districts": 1
-      }
+      },
+      "character": "instigator"
     },
     {
       "id": "sc-compactness",
       "required": false,
-      "description": "All districts are reasonably compact \u2014 the Valley district hugs the Valley, not a long tendril reaching for favorable precincts (compactness \u2265 35%).",
+      "description": "All districts are reasonably compact — the Valley district hugs the Valley, not a long tendril reaching for favorable precincts (compactness ≥ 35%).",
       "criterion": {
         "type": "compactness",
         "operator": "gte",
         "threshold": 0.35
-      }
+      },
+      "character": "judge"
     }
   ],
   "narrative": {
     "character": {
       "name": "You",
       "role": "Court-Appointed Redistricting Coordinator, Valle Verde County",
-      "motivation": "A federal court found that the current district map violates the Voting Rights Act. The Valley's Latino community has been cracked across multiple districts \u2014 diluted so thoroughly that they cannot elect their preferred candidate anywhere. You must draw a new map that complies with the law."
+      "motivation": "A federal court found that the current district map violates the Voting Rights Act. The Valley's Latino community has been cracked across multiple districts — diluted so thoroughly that they cannot elect their preferred candidate anywhere. You must draw a new map that complies with the law."
     },
     "intro_slides": [
       {
         "heading": "The Valley Grows",
-        "body": "Over the past decade, Valle Verde County's Valley has seen significant population growth. The Latino community, concentrated in this area, now makes up a meaningful share of the county's total population.\n\nBut on the current map, drawn ten years ago, the Valley is sliced across multiple districts \u2014 each one a piece of a different district, none large enough to matter."
+        "body": "Over the past decade, Valle Verde County's Valley has seen significant population growth. The Latino community, concentrated in this area, now makes up a meaningful share of the county's total population.\n\nBut on the current map, drawn ten years ago, the Valley is sliced across multiple districts — each one a piece of a different district, none large enough to matter."
       },
       {
         "heading": "The Voting Rights Act",
@@ -5200,9 +5204,10 @@
       },
       {
         "heading": "A Tradeoff You'll See",
-        "body": "Creating a majority-Latino district solves the legal problem \u2014 but notice what happens to the surrounding districts. Concentrating a cohesive voting bloc into one place can shift the balance everywhere else.\n\nThis is one of the real tensions in redistricting. Even compliance with a fairness law reshapes who wins and loses. There is no map without consequences.\n\nNote: This scenario uses simplified demographic data to illustrate VRA concepts. Real-world redistricting involves far more complex demographic analysis and legal requirements."
+        "body": "Creating a majority-Latino district solves the legal problem — but notice what happens to the surrounding districts. Concentrating a cohesive voting bloc into one place can shift the balance everywhere else.\n\nThis is one of the real tensions in redistricting. Even compliance with a fairness law reshapes who wins and loses. There is no map without consequences.\n\nNote: This scenario uses simplified demographic data to illustrate VRA concepts. Real-world redistricting involves far more complex demographic analysis and legal requirements."
       }
     ],
-    "objective": "Draw at least one majority-Latino district (\u2265 50% Latino population) to give the Valley community a fair chance to elect their preferred representative."
-  }
+    "objective": "Draw at least one majority-Latino district (≥ 50% Latino population) to give the Valley community a fair chance to elect their preferred representative."
+  },
+  "instigator_character": "judge"
 }

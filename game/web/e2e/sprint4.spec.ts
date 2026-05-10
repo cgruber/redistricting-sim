@@ -69,15 +69,46 @@ test("GAME-052: all rows in final state immediately in reduced-motion mode", asy
   await expect(page.locator("#result-reveal-controls")).toBeHidden();
 });
 
-test("GAME-052: party reaction element is populated after submit", async ({ page }) => {
+// GAME-069: per-row character slots replace the top-level #result-reaction block.
+test("GAME-069: every criterion row has a character slot (.rc-char)", async ({ page }) => {
   await loadEditor(page);
   await openResultScreen(page);
 
-  const reaction = page.locator("#result-reaction");
-  await expect(reaction).toBeVisible();
-  const text = await reaction.textContent();
-  expect(text).toBeTruthy();
-  expect(text!.trim().length).toBeGreaterThan(0);
+  const rows = page.locator(".result-criterion");
+  const count = await rows.count();
+  expect(count).toBeGreaterThan(0);
+
+  for (let i = 0; i < count; i++) {
+    await expect(rows.nth(i).locator(".rc-char")).toBeVisible();
+  }
+});
+
+// GAME-069: tutorial-002 has no character fields on criteria → all default to commissioner → placeholder SVG.
+test("GAME-069: non-governor criterion rows contain a placeholder SVG", async ({ page }) => {
+  await loadEditor(page);
+  await openResultScreen(page);
+
+  // All slots in tutorial-002 use the commissioner placeholder (no governor sprite).
+  // At least one .rc-char slot must contain an SVG element.
+  const svgSlots = page.locator(".rc-char svg");
+  const count = await svgSlots.count();
+  expect(count).toBeGreaterThan(0);
+});
+
+// GAME-069: in reduced-motion mode (global Playwright default), rows are built with final=true
+// so .rc-char-verdict elements are immediately set to opacity "1".
+test("GAME-069: reduced-motion path sets all rc-char-verdict elements to opacity 1", async ({ page }) => {
+  await loadEditor(page);
+  await openResultScreen(page);
+
+  // Reduced-motion is the global default; all verdict slots must be fully visible immediately.
+  const verdicts = page.locator(".rc-char-verdict");
+  const count = await verdicts.count();
+  expect(count).toBeGreaterThan(0);
+
+  for (let i = 0; i < count; i++) {
+    await expect(verdicts.nth(i)).toHaveCSS("opacity", "1");
+  }
 });
 
 test("GAME-052: final state has correct criteria count after skip (regression)", async ({ page }) => {

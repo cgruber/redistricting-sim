@@ -3107,7 +3107,8 @@
       "description": "All five districts are in use and every precinct is assigned.",
       "criterion": {
         "type": "district_count"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-population-balance",
@@ -3115,46 +3116,52 @@
       "description": "All five districts have roughly equal population (within 10%).",
       "criterion": {
         "type": "population_balance"
-      }
+      },
+      "character": "commissioner"
     },
     {
       "id": "sc-safe-seats-ken",
       "required": true,
-      "description": "Ken Party incumbents are protected \u2014 at least 3 districts won by a margin of 15 points or more.",
+      "description": "Ken Party incumbents are protected — at least 3 districts won by a margin of 15 points or more.",
       "criterion": {
         "type": "safe_seats",
         "party": "ken",
         "margin": 0.15,
         "min_count": 3
-      }
+      },
+      "character": "party",
+      "party_id": "ken"
     },
     {
       "id": "sc-safe-seats-ryu",
       "required": true,
-      "description": "Ryu Party incumbents are protected \u2014 at least 2 districts won by a margin of 15 points or more.",
+      "description": "Ryu Party incumbents are protected — at least 2 districts won by a margin of 15 points or more.",
       "criterion": {
         "type": "safe_seats",
         "party": "ryu",
         "margin": 0.15,
         "min_count": 2
-      }
+      },
+      "character": "party",
+      "party_id": "ryu"
     },
     {
       "id": "sc-compactness",
       "required": false,
-      "description": "The map follows natural geographic lines \u2014 all districts are reasonably compact (\u2265 35%).",
+      "description": "The map follows natural geographic lines — all districts are reasonably compact (≥ 35%).",
       "criterion": {
         "type": "compactness",
         "operator": "gte",
         "threshold": 0.35
-      }
+      },
+      "character": "judge"
     }
   ],
   "narrative": {
     "character": {
       "name": "You",
       "role": "Bipartisan Redistricting Consultant, Brookfield County",
-      "motivation": "Both parties have agreed \u2014 privately \u2014 that the current map is too competitive. Too many incumbents lost their seats last cycle. You've been hired by both sides to draw a new map where each party keeps what it has. The voters don't need to know the details."
+      "motivation": "Both parties have agreed — privately — that the current map is too competitive. Too many incumbents lost their seats last cycle. You've been hired by both sides to draw a new map where each party keeps what it has. The voters don't need to know the details."
     },
     "intro_slides": [
       {
@@ -3167,9 +3174,10 @@
       },
       {
         "heading": "What the Voters Lose",
-        "body": "A safe seat means your representative doesn't need to worry about losing. They only need to survive their own primary \u2014 which means appealing to their party's base, not to the median voter.\n\nCompetitive elections create accountability. This map is designed to eliminate them. Notice how many races are decided before anyone votes."
+        "body": "A safe seat means your representative doesn't need to worry about losing. They only need to survive their own primary — which means appealing to their party's base, not to the median voter.\n\nCompetitive elections create accountability. This map is designed to eliminate them. Notice how many races are decided before anyone votes."
       }
     ],
-    "objective": "Draw a map that protects incumbents of both parties \u2014 Ken Party wins at least 3 safe seats (margin \u2265 15 points), Ryu Party wins at least 2 safe seats (margin \u2265 15 points)."
-  }
+    "objective": "Draw a map that protects incumbents of both parties — Ken Party wins at least 3 safe seats (margin ≥ 15 points), Ryu Party wins at least 2 safe seats (margin ≥ 15 points)."
+  },
+  "instigator_character": "party"
 }
