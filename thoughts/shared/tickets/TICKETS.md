@@ -92,7 +92,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-007-dimensional-dot-map-demographic-overlay.md` | design, rendering | Dimensional dot map: demographic dimension switching (Option B adaptive encoding) + sorted placement toggle |
 | `GAME-068-result-reveal-pacing.md` | game, UX | True sequential reveal (1 row at a time, no overlap) + dedicated Skip button; pacing followup to GAME-066 |
 | `DESIGN-011-per-criterion-character-roster.md` | design, art | Define 5-type character roster (governor/commissioner/party/judge/legislator) + sprite design notes for 4 new types |
-| `GAME-069-per-criterion-character-reactions.md` | game, UX, art | Per-criterion character reactions on result screen; governor at row scale; checkbox placeholder for unbuilt types; schema + scenario data changes |
 | `GAME-056-playtest-feedback.md` | game, content, UX | Capture and act on playtest feedback — scenario balance and UX |
 | `GAME-057-scenario-randomization.md` | game, content, replayability | Per-session ±5% population/lean offsets seeded per session; e2e tests remain deterministic |
 | `GAME-058-manual-playability-test-thresholds.md` | game, content, QA | Manual playthrough of scenarios 007 and 008 to verify tightened thresholds (GAME-031) feel right |
@@ -115,6 +114,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-069: per-criterion character reactions | Per-row .rc-char slots with governor sprite + SVG placeholders; schema + scenario data; GOV_SHEET fix; merged PR #215 |
 | GAME-064: audio playback infrastructure | AudioPlayer module: preload, play, mute toggle, autoplay policy, localStorage persistence; merged PR #194 |
 | GAME-063: asset pipeline | Directory structure + Bazel integration for SVG + audio delivery; deployable inclusion; merged PR #192 |
 | GAME-059: submit-on-invalid maps | Removed validity gate from Submit button; invalid maps now reach result screen; Fix-It path replaces Next Scenario; merged PR #196 |
