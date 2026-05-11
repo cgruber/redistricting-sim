@@ -2,7 +2,7 @@
 id: GAME-068
 title: Result screen reveal pacing — true sequential reveal + dedicated Skip button
 area: game, UX
-status: open
+status: resolved
 created: 2026-05-07
 ---
 

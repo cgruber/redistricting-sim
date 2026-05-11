@@ -2,7 +2,7 @@
 id: GAME-067
 title: Asset URL versioning + environment version badge
 area: game, build, deployment
-status: open
+status: resolved
 created: 2026-05-06
 ---
 
