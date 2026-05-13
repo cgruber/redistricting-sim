@@ -276,24 +276,41 @@ can be submitted and trigger a Fix-It path.
 animated character + audio reaction; invalid map shows Fix-It path; valid
 pass/fail shows correct character animation.
 
-**Dependency chain**:
-- DESIGN-009 [resolved] — SVG inline + CSS animation decided; 5 instigator
-  types × 3 evaluation states (approve/neutral/disapprove); consistency spec + audio tones per type
-- GAME-059 [resolved] — submit-on-invalid: removed validity gate from Submit button
-- GAME-063 [resolved] — asset pipeline: directory structure + Bazel integration
-- GAME-064 [resolved] — audio playback infrastructure: AudioPlayer module
-- GAME-060 / GAME-061 — placeholder SVG sprites + audio stubs merged
-- **GAME-065** — sprite art refinement: replace placeholder SVGs with quality art
-  (front-loaded before GAME-062 so wiring ships with final art)
-- GAME-062 — character reaction system: wires sprites + audio to result screen
+**Art model (updated 2026-05-13)**: PNG sprite sheets (horizontal strip:
+neutral | approve | disapprove), 200 px row height. Governor sheet is complete
+and live. Remaining types: commissioner, party, judge, legislator (DESIGN-011).
+Evaluation states are **approve / neutral / disapprove**, not 1:1 star-count poses.
+Bipartisan-broker variants (3 demographic pairs × 3 states, for scenario-006
+instigator) are defined in `tools/sprite-spec.json` and are separate from the
+per-criterion roster.
 
-**Tier 1 (core — all resolved)**: DESIGN-009, GAME-059, GAME-063, GAME-064
+**Dependency chain**:
+- DESIGN-009 [resolved] — character reaction visual style; 3 evaluation states
+  (approve/neutral/disapprove)
+- DESIGN-011 [open] — per-criterion character roster (governor done; 4 types to build)
+- GAME-059 [resolved] — submit-on-invalid
+- GAME-063 [resolved] — asset pipeline
+- GAME-064 [resolved] — audio playback infrastructure
+- GAME-066 [resolved] — result screen dramatic reveal (sequential criteria reveal)
+- GAME-068 [resolved] — result reveal pacing
+- GAME-069 [resolved] — per-criterion `.rc-char` slots + governor PNG wired
+- GAME-060 — produce commissioner/party/judge/legislator PNG sprite sheets (DESIGN-011)
+- GAME-061 — audio clips
+- GAME-065 — art quality iteration (trails GAME-060; not a blocker for GAME-062)
+- GAME-062 — wire remaining character types + audio to result screen
+
+**Tier 1 (core — all resolved)**: DESIGN-009, GAME-059, GAME-063, GAME-064,
+GAME-066, GAME-068, GAME-069
 
 **Tier 2 (remaining)**:
-- GAME-060: placeholder sprites merged; GAME-065 covers art refinement
-- GAME-061: audio stubs merged; final clips pending
-- GAME-065: sprite art refinement (must land before GAME-062)
-- GAME-062: character reaction system (last; wires everything)
+- DESIGN-011: finalize criterion → character mapping; drives GAME-060
+- GAME-060: produce 4 remaining PNG sprite sheets (commissioner/party/judge/legislator)
+- GAME-061: audio clips (10 clips: 5 types × pass/fail or approve/disapprove)
+- GAME-062: wire remaining types + audio (governor already wired; 4 types pending)
+- GAME-065: art refinement (polish pass after GAME-060; not a blocker)
+
+**Stretch / S12+ if time allows**:
+- Bipartisan-broker PNG variants for scenario-006 (spec in sprite-spec.json; 9 images)
 
 **Deferred to S13+**: DESIGN-005/006/007 demographic overlays; DESIGN-008
 geographic features; GAME-053 electoral outcome diff.

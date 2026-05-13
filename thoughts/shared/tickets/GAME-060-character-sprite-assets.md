@@ -5,41 +5,55 @@ area: game, art, content
 status: open
 created: 2026-05-02
 github_issue: 201
+last_updated: 2026-05-13
 ---
 
 ## Summary
 
-Create the instigator character art for result screen reactions — one SVG file per
-instigator type × star-count state (5 types × 4 states = 20 files). The instigator
-is the person who hired the player (party boss, judge, reform commissioner, etc.)
-and reacts based on how well the player delivered, graded by star count (3/2/1/0).
-Format and consistency spec defined by DESIGN-009. Art will be AI-generated (Claude
-SVG as primary; Grok/other multimodal models as fallback).
+Produce the PNG sprite sheets for the four character types not yet built:
+`commissioner`, `party`, `judge`, `legislator`. The `governor` sheet is already
+complete and in use (GAME-069). All four sheets follow the same horizontal-strip
+format: [neutral | approve | disapprove], 200 px row height, fixed-width poses.
+Character types and visual design are defined in DESIGN-011.
+
+The bipartisan-broker variants (3 demographic pairs × 3 evaluation states = 9 images)
+are defined in `tools/sprite-spec.json` and are generated separately via
+`gen-assets.main.kts`. They are consumed by scenario-006 as an instigator,
+not as per-criterion reaction characters.
 
 ## Current State
 
-No character art exists. The result screen shows a 🎉/💔 emoji placeholder (GAME-052).
-DESIGN-009 defines the full consistency spec — it MUST be read before generating any
-art (embed the §CONSISTENCY section in every generation prompt).
+- `governor` sprite sheet: complete — `game/assets/characters/character-governor.png`
+- `commissioner`, `party`, `judge`, `legislator`: not yet produced
+- Old SVG placeholder files exist at `game/web/assets/characters/{type}/{state}.svg`
+  from prior work; these are superseded by the PNG sprite sheet approach and can
+  be cleaned up in this ticket or GAME-065
 
 ## Goals / Acceptance Criteria
 
-- [ ] 20 SVG files: 5 instigator types × 4 states (three-star/two-star/one-star/zero-star)
-- [ ] File naming: `assets/characters/{type}/{state}.svg`
-      types: partisan-boss, legal-authority, bipartisan-broker, reform-arbiter, neutral-admin
-- [ ] All files use `viewBox="0 0 200 200"`, transparent background
-- [ ] Character occupies center ~140×160 px; head ~y=30, feet ~y=190, centered horiz
-- [ ] Flat fills, 2–3 colors per type, 2–3 px stroke, no gradients
-- [ ] Each type has a visually distinct silhouette readable at 160 px
-- [ ] Same type across 4 states: same character, only pose+expression changes
-- [ ] State poses match DESIGN-009 spec (three-star=expansive celebratory; two-star=composed positive; one-star=reserved; zero-star=closed/disapproving)
-- [ ] Subtle idle animation (bob/blink/breathing, 0.6–1.0 s loopable) in each SVG
-- [ ] File sizes < 15 KB per SVG
-- [ ] Assets placed in `game/web/assets/characters/{type}/` (GAME-063 pipeline must be merged first)
-- [ ] Accessible alt-text description documented for each type/state combination
+- [ ] `commissioner` PNG sprite sheet produced per DESIGN-011 spec
+      (neutral / approve / disapprove poses; clipboard/folder prop)
+- [ ] `party` PNG sprite sheet produced per DESIGN-011 spec
+      (small cluster of figures with flags; neutral color body, party-tintable flags)
+- [ ] `judge` PNG sprite sheet produced per DESIGN-011 spec
+      (black-robed single figure; gavel prop; neutral / nod approve / dismissive disapprove)
+- [ ] `legislator` PNG sprite sheet produced per DESIGN-011 spec
+      (treatment decided: building/gavel/assembly; neutral / approve / disapprove)
+- [ ] All sheets follow governor format: single horizontal strip, 200 px row height,
+      equal-width poses, documented pixel offsets
+- [ ] All sheets committed to `game/assets/characters/character-<key>.png`
+- [ ] DESIGN-011 roster table updated with any design-phase changes
+- [ ] Old SVG placeholder files removed or noted as superseded
+
+## Test Coverage
+
+- [ ] Visual review: each sheet opened on dark background at display size (≈100–120 px height)
+      and all three poses read clearly as the same character in different states
 
 ## References
 
-- `thoughts/shared/tickets/DESIGN-009-character-reaction-visual-style.md` — **blocks this**
-- `thoughts/shared/tickets/GAME-063-asset-pipeline.md` — asset directory must exist first
-- `thoughts/shared/tickets/GAME-062-character-reaction-system.md` — consumes these assets
+- `thoughts/shared/tickets/DESIGN-011-per-criterion-character-roster.md` — **blocks this** (art spec)
+- `game/assets/characters/character-governor.png` — format reference
+- `tools/sprite-spec.json` — broker variants (separate art, scenario-006 instigator)
+- `tools/gen-assets.main.kts` — image generation pipeline
+- `thoughts/shared/tickets/GAME-062-character-reaction-system.md` — downstream consumer
