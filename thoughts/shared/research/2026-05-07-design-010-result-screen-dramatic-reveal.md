@@ -134,12 +134,12 @@ generalize (a federal judge cares about all criteria differently than a partisan
 
 **Revised sequence:**
 
-1. Instigator renders in **neutral/waiting pose** at the top of the result card before
-   criteria begin.
+1. Instigator renders in **waiting pose** (`waiting.svg`) at the top of the result card before
+   criteria begin. This is a pre-reveal pose, semantically distinct from the `neutral` evaluation state.
 2. Criteria reveal one by one (Phase 1 + Phase 2 per Decision 2).
 3. After the last criterion resolves: **0.8s dramatic pause** (all rows visible, no
    new motion).
-4. Instigator **transitions to approve or disapprove pose** with a CSS cross-fade (0.4s).
+4. Instigator **transitions to approve, neutral, or disapprove pose** with a CSS cross-fade (0.4s).
    Audio clip plays (GAME-061).
 5. Overall verdict text ("Map Passed!" / "Map Failed") pulses once.
 
@@ -149,26 +149,27 @@ generalize (a federal judge cares about all criteria differently than a partisan
 - Flash on every criterion cheapens the moment — the instigator's reaction is the
   narrative payoff, not a running commentary
 
-### Pose logic: binary, not graduated by star count
+### Pose logic: three evaluation states
 
-The instigator's final pose is **binary**:
+The instigator's final pose uses three states (see DESIGN-009):
 
-- **Approve** — any stars (1, 2, or 3): the player's map is accepted; they can proceed.
-  Maps to a positive pose (e.g., thumbs-up / satisfied / celebratory depending on type).
-- **Disapprove** — zero stars: the map requires rework.
-  Maps to a negative pose (e.g., head-in-hands / rejection depending on type).
+- **Approve** — strong result: the player's map is accepted with enthusiasm.
+  Maps to the `approve` SVG (celebratory, arms up).
+- **Neutral** — acceptable result: the map passes minimum requirements but is unremarkable.
+  Maps to the `neutral` SVG (reserved, composed).
+- **Disapprove** — failure: the map requires rework.
+  Maps to the `disapprove` SVG (negative, closed gesture).
 
-The star count (0/1/2/3) is still computed and displayed as the score, but the
-instigator's visual only needs two states for this sequence. The graduated DESIGN-009
-four-pose schema (three/two/one/zero-star) still applies to the sprite assets — the
-approve pose maps to `three-star` or `two-star` (whichever best fits the art),
-disapprove maps to `zero-star`. The `one-star` pose is not used in this flow.
+The star count is still computed and displayed as the score. The evaluation state
+(approve / neutral / disapprove) is derived from the star score; the exact thresholds
+are an implementation decision (e.g., disapprove = 0 stars, neutral = required-only,
+approve = bonus criteria met). This supersedes the earlier binary approve/disapprove model.
 
 ### Neutral waiting pose
 
 The instigator needs a distinct pre-reveal visual state. Options:
 
-**Option A** — Reuse an existing pose (e.g., `two-star`) as neutral waiting.
+**Option A** — Reuse an existing evaluation pose (e.g., `neutral`) as the waiting pose.
 Inexpensive; slightly misleading (implies outcome before reveal).
 
 **Option B** — Add a 5th SVG file per instigator type: `waiting.svg` (arms folded,
@@ -177,7 +178,7 @@ watching). 5 new files. Clean semantic separation.
 **Recommendation: Option B** — the neutral-waiting pose is the *first* thing the
 player sees when the result screen opens. Reusing an "approve" pose before the verdict
 is known undercuts the reveal. This is the right long-term answer. GAME-066 to
-commission or generate `waiting.svg` per type alongside the four star-state files.
+commission or generate `waiting.svg` per type alongside the three evaluation-state files.
 
 ### Foot alignment
 
@@ -213,7 +214,7 @@ requests).
 | 1 | Icons: separate flat SVG symbol set; 24×24 or 36×36 (try both); inline in TS; one per criterion type |
 | 2 | Placement: inside `.rc-icon` slot, replacing ✓/✗; color-tinted on result |
 | 3 | Timing: 400ms stagger (tentative, iterate); 1 200ms CHECKING hold; 150ms flip; click-to-skip |
-| 4 | Instigator: binary approve (any stars) / disapprove (0 stars); starts in new `waiting.svg` neutral pose; transitions after 0.8s pause; foot-anchored so transition reads as posture not position |
+| 4 | Instigator: three-state approve / neutral / disapprove (derived from star score); starts in new `waiting.svg` pre-reveal pose; transitions after 0.8s pause; foot-anchored so transition reads as posture not position |
 | 5 | Icons separate from DESIGN-009; criterion icons in `criterion-icons.ts` as SVG strings |
 
 ---

@@ -121,7 +121,7 @@ goal: character reactions + submit-on-invalid
 demo target: player submits map (valid or invalid) → result screen shows animated character + audio reaction;
   invalid map shows Fix-It path; valid pass/fail shows correct character animation
 dependency chain:
-  DESIGN-009 [resolved] (SVG inline + CSS animation; 5 instigator types × 4 star states)
+  DESIGN-009 [resolved] (SVG inline + CSS animation; 5 instigator types × 3 evaluation states: approve/neutral/disapprove)
   → parallel: GAME-060 [placeholder SVGs merged] + GAME-061 [audio stubs merged]
   → GAME-065 (sprite art refinement — replace placeholder SVGs with quality art)
   → GAME-064 [resolved] (audio playback infrastructure)
