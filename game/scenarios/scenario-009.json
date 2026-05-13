@@ -3179,5 +3179,9 @@
     ],
     "objective": "Draw a compact, population-balanced map that locks in at least 3 safe Cat Party districts (winning margin ≥ 15 points). Bonus: leave the dogs one safe seat to chew on."
   },
-  "instigator_character": "party"
+  "instigator_character": "party",
+  "character_demographics": {
+    "commissioner": "wm",
+    "judge": "naf"
+  }
 }

@@ -587,6 +587,31 @@ export function loadScenario(json: unknown): Scenario {
     instigator_character = icVal as CharacterType;
   }
 
+  let character_demographics: Partial<Record<CharacterType, string>> | undefined;
+  if (raw["character_demographics"] !== undefined) {
+    const cd = raw["character_demographics"];
+    if (typeof cd !== "object" || cd === null || Array.isArray(cd)) {
+      throw new Error("character_demographics: must be an object");
+    }
+    const validChars: string[] = ["governor", "commissioner", "judge", "legislator"];
+    // Types that have no bare directory — a demographic suffix is required.
+    const requiresSuffix = new Set(["governor", "commissioner", "legislator"]);
+    character_demographics = {};
+    for (const key of Object.keys(cd)) {
+      if (key === "party") {
+        throw new Error(`character_demographics: "party" has no demographic variants and must be omitted`);
+      }
+      if (!validChars.includes(key)) {
+        throw new Error(`character_demographics: unknown key "${key}"; expected one of: ${validChars.join(", ")}`);
+      }
+      const val = requireString((cd as Record<string, unknown>)[key], `character_demographics.${key}`);
+      if (requiresSuffix.has(key) && val === "") {
+        throw new Error(`character_demographics.${key}: demographic suffix must be non-empty (no bare "${key}/" directory exists)`);
+      }
+      character_demographics[key as CharacterType] = val;
+    }
+  }
+
   let state_context: StateContext | undefined;
   if (raw["state_context"] !== undefined) {
     state_context = parseStateContext(raw["state_context"]);
@@ -923,6 +948,7 @@ export function loadScenario(json: unknown): Scenario {
   if (group_schema !== undefined) scenario.group_schema = group_schema;
   if (default_district_id !== undefined) scenario.default_district_id = default_district_id;
   if (instigator_character !== undefined) scenario.instigator_character = instigator_character;
+  if (character_demographics !== undefined) scenario.character_demographics = character_demographics;
   if (state_context !== undefined) scenario.state_context = state_context;
 
   return scenario;

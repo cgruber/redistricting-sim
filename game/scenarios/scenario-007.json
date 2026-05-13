@@ -3164,5 +3164,9 @@
     ],
     "objective": "Draw a compact, population-balanced map using only geometric criteria. No partisan data required — or allowed."
   },
-  "instigator_character": "commissioner"
+  "instigator_character": "commissioner",
+  "character_demographics": {
+    "commissioner": "wf",
+    "judge": ""
+  }
 }

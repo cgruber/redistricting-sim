@@ -256,6 +256,11 @@ export interface Scenario {
 	narrative: Narrative;
 	/** Which character type plays the instigator role in this scenario. Resolves "instigator" character refs on criteria. */
 	instigator_character?: CharacterType;
+	/** Demographic variant per character type for result-screen sprites.
+	 *  Key = CharacterType (excluding "party", which has no variants); value = demographic suffix
+	 *  (e.g. "wm", "bm", "af", "lm", "naf", "wf", "bf"). Empty string is valid only for "judge"
+	 *  (resolves to the bare judge/ directory); governor/commissioner/legislator require a non-empty suffix. */
+	character_demographics?: Partial<Record<CharacterType, string>>;
 	/** v1: parsed but may be ignored by renderer */
 	state_context?: StateContext;
 }

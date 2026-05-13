@@ -3166,5 +3166,9 @@
     ],
     "objective": "Pack Ryu voters into as few districts as possible. Ken Party must win at least 4 of 5 seats."
   },
-  "instigator_character": "party"
+  "instigator_character": "party",
+  "character_demographics": {
+    "commissioner": "wf",
+    "judge": "naf"
+  }
 }

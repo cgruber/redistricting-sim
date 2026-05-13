@@ -3179,5 +3179,9 @@
     ],
     "objective": "Draw a map that protects incumbents of both parties — Ken Party wins at least 3 safe seats (margin ≥ 15 points), Ryu Party wins at least 2 safe seats (margin ≥ 15 points)."
   },
-  "instigator_character": "party"
+  "instigator_character": "party",
+  "character_demographics": {
+    "commissioner": "wf",
+    "judge": "naf"
+  }
 }

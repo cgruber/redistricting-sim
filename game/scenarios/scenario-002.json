@@ -2297,5 +2297,10 @@
     ],
     "objective": "Redraw the map so the Ken Party wins at least 3 of 4 districts."
   },
-  "instigator_character": "governor"
+  "instigator_character": "governor",
+  "character_demographics": {
+    "governor": "bm",
+    "commissioner": "bf",
+    "judge": "lm"
+  }
 }

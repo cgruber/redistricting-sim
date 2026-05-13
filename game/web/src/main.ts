@@ -739,13 +739,16 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		return criterionResults.filter(cr => cr.required && cr.passed).length;
 	}
 
-	const GOVERNOR_DEMOGRAPHICS = ["wm", "bm", "af"] as const;
-
-	// GAME-069: Governor sprite sheet layout (200px tall canonical):
-	// Sheet: 1376×752px. Pose columns: neutral 0–400, approve 400–880, disapprove 880–1376.
-	// Row-scale (84px target height): 84/752 ≈ 0.1117.
+	// GAME-069/GAME-062: Sprite sheet layout constants.
+	// Governor sheet: 1376×752px (unique dimensions).
+	// Pose columns: neutral 0–400, approve 400–880, disapprove 880–1376.
 	const GOV_ROW_SCALE = 84 / 752;
 	const GOV_SHEET = { neutral: { x: 0, w: 400 }, approve: { x: 400, w: 480 }, disapprove: { x: 880, w: 496 } };
+
+	// All other character sheets: 1408×768px, equal-thirds columns (469/469/470).
+	const CHAR_ROW_SCALE = 84 / 768;
+	const CHAR_SHEET_WIDTH = 1408;
+	const CHAR_SHEET = { neutral: { x: 0, w: 469 }, approve: { x: 469, w: 469 }, disapprove: { x: 938, w: 470 } };
 
 	// Placeholder SVG for non-governor character types.
 	function charPlaceholderSvg(state: "neutral" | "approve" | "disapprove"): string {
@@ -773,7 +776,6 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		slot: HTMLElement,
 		charType: CharacterType,
 		passed: boolean,
-		demo: string,
 	): { neutral: HTMLElement; verdict: HTMLElement } {
 		const neutralEl = document.createElement("div");
 		neutralEl.className = "rc-char-neutral";
@@ -781,10 +783,14 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		verdictEl.className = "rc-char-verdict";
 		verdictEl.style.opacity = "0";
 
+		// Demographic variant: read from scenario, fall back to "" (generic/no-suffix).
+		const demo = scenario.character_demographics?.[charType] ?? "";
+
 		if (charType === "governor") {
 			const n = GOV_SHEET.neutral;
 			const v = passed ? GOV_SHEET.approve : GOV_SHEET.disapprove;
-			const img = assetUrl(`assets/characters/governor-${demo}/sheet.png`);
+			const govDemo = demo || "wm"; // loader enforces non-empty; fallback guards stale/direct scenarios
+			const img = assetUrl(`assets/characters/governor-${govDemo}/sheet.png`);
 			const makeSprite = (col: { x: number; w: number }, label: string): HTMLElement => {
 				const s = document.createElement("div");
 				s.className = "character-sprite character-governor character-sprite--row";
@@ -799,8 +805,26 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
 			verdictEl.appendChild(makeSprite(v, passed ? "Approves" : "Disapproves"));
 		} else {
-			neutralEl.innerHTML = charPlaceholderSvg("neutral");
-			verdictEl.innerHTML = charPlaceholderSvg(passed ? "approve" : "disapprove");
+			// charType is commissioner | judge | legislator | party — all use 1408×768 sheets.
+			// party has no demographic variants (path: party/sheet.png).
+			// judge allows empty demo → bare judge/ directory; all others require non-empty (enforced by loader).
+			const dir = (charType !== "party" && demo) ? `${charType}-${demo}` : charType;
+			const img = assetUrl(`assets/characters/${dir}/sheet.png`);
+			const n = CHAR_SHEET.neutral;
+			const v = passed ? CHAR_SHEET.approve : CHAR_SHEET.disapprove;
+			const makeSprite = (col: { x: number; w: number }, label: string): HTMLElement => {
+				const s = document.createElement("div");
+				s.className = `character-sprite character-${charType} character-sprite--row`;
+				s.setAttribute("role", "img");
+				s.setAttribute("aria-label", label);
+				s.style.width = `${Math.round(col.w * CHAR_ROW_SCALE)}px`;
+				s.style.backgroundImage = `url('${img}')`;
+				s.style.backgroundPosition = `-${Math.round(col.x * CHAR_ROW_SCALE)}px 0%`;
+				s.style.backgroundSize = `${Math.round(CHAR_SHEET_WIDTH * CHAR_ROW_SCALE)}px 84px`;
+				return s;
+			};
+			neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
+			verdictEl.appendChild(makeSprite(v, passed ? "Approves" : "Disapproves"));
 		}
 
 		slot.appendChild(neutralEl);
@@ -886,15 +910,6 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 		resultCriteriaList.innerHTML = "";
 
-		// Pick demo variant deterministically from scenario ID so the same character
-		// appears every time this scenario is played (and can match the intro screen later).
-		const demoIdx =
-			(scenario.id as string)
-				.split("")
-				.reduce((acc, c) => acc + c.charCodeAt(0), 0) %
-			GOVERNOR_DEMOGRAPHICS.length;
-		const demo = GOVERNOR_DEMOGRAPHICS[demoIdx]!;
-
 		// Resolve character info for a row (validity rows default to commissioner).
 		function resolveCharInfo(cr: CriterionResult): { type: CharacterType; party_id?: string } {
 			return charInfoMap.get(cr.criterionId as string) ?? { type: "commissioner" };
@@ -920,7 +935,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			const charInfo = resolveCharInfo(cr);
 			const charSlot = document.createElement("div");
 			charSlot.className = "rc-char";
-			buildCharSlotChildren(charSlot, charInfo.type, cr.passed, demo);
+			buildCharSlotChildren(charSlot, charInfo.type, cr.passed);
 			if (final) {
 				charSlot.querySelector<HTMLElement>(".rc-char-neutral")!.style.opacity = "0";
 				charSlot.querySelector<HTMLElement>(".rc-char-verdict")!.style.opacity = "1";

@@ -3164,5 +3164,9 @@
     ],
     "objective": "Apply the agreed neutral criteria. Draw a compact, population-balanced map. Watch both sides declare the process rigged."
   },
-  "instigator_character": "commissioner"
+  "instigator_character": "commissioner",
+  "character_demographics": {
+    "commissioner": "bf",
+    "judge": "lm"
+  }
 }

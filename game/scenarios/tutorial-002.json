@@ -4793,5 +4793,8 @@
       }
     ],
     "objective": "Balance the three districts so each has roughly equal population (within 10%). Move boundary precincts between districts to fix the imbalance."
+  },
+  "character_demographics": {
+    "commissioner": "wf"
   }
 }

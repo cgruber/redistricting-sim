@@ -5209,5 +5209,9 @@
     ],
     "objective": "Draw at least one majority-Latino district (≥ 50% Latino population) to give the Valley community a fair chance to elect their preferred representative."
   },
-  "instigator_character": "judge"
+  "instigator_character": "judge",
+  "character_demographics": {
+    "commissioner": "bf",
+    "judge": "lm"
+  }
 }
