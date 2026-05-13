@@ -48,14 +48,18 @@ why 1.2s not 3s: 3s×5cr=15s wall-clock before $ins appears; 1.2s keeps moment; 
 §D3_CHARACTER_FLASH
 no per-cr flash — no generalizable mapping from cr type → $ins concern (9×5=45 cases)
 sequence:
-  1 $ins renders in neutral/waiting pose at top of card (before criteria begin)
+  1 $ins renders in waiting/pre-reveal pose at top of card (before criteria begin)
   2 criteria reveal one-by-one (§D2_TIMING)
   3 after last cr resolves: 0.8s dramatic pause
-  4 $ins cross-fades to approve or disapprove pose (0.4s); audio plays (GAME-061)
+  4 $ins cross-fades to approve/neutral/disapprove pose (0.4s); audio plays (GAME-061)
   5 verdict text pulses once
-pose logic: BINARY — approve=any stars(1/2/3); disapprove=0 stars; not graduated
-  approve maps to three-star or two-star SVG; disapprove maps to zero-star SVG; one-star unused here
-neutral/waiting pose: new waiting.svg per $ins type (Option B — reusing approve pose misleads before reveal)
+pose logic: THREE STATES — approve/neutral/disapprove derived from star score (not 1:1 star-to-pose)
+  approve=strong result; neutral=acceptable/minimum; disapprove=0 stars/rework needed
+  thresholds = implementation decision (e.g. disapprove=0 stars; neutral=required-only; approve=bonus met)
+  maps directly to approve.svg / neutral.svg / disapprove.svg from DESIGN-009
+  supersedes prior binary (approve=1-3 stars / disapprove=0 stars) model
+waiting/pre-reveal pose: new waiting.svg per $ins type — semantically distinct from neutral evaluation state
+  (Option B — reusing approve/neutral pose misleads before reveal)
   DESIGN-009 foot spec (feet near y=190, 200×200 viewBox) already supports foot-anchoring
   GAME-066 constraint: CSS must pin foot-baseline so transition reads as posture change, not positional jump
 
@@ -69,7 +73,7 @@ no shared schema; cr icons in criterion-icons.ts
 1 cr icons: separate flat SVG; 24 or 36px (try both); criterion-icons.ts; one per type
 2 placement: .rc-icon slot; replaces ✓/✗; color-tint on result
 3 timing: 400ms stagger (tentative/iterate); 1 200ms CHECKING hold; 150ms flip; click-to-skip
-4 $ins: binary approve(1-3 stars)/disapprove(0 stars); new waiting.svg neutral pre-reveal; 0.8s pause→pose cross-fade; foot-anchored CSS
+4 $ins: three-state approve/neutral/disapprove (derived from star score); new waiting.svg pre-reveal pose (distinct from neutral evaluation state); 0.8s pause→pose cross-fade; foot-anchored CSS
 5 icon set separate from DESIGN-009; criterion-icons.ts as SVG strings
 
 §REFS

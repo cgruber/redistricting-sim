@@ -278,7 +278,7 @@ pass/fail shows correct character animation.
 
 **Dependency chain**:
 - DESIGN-009 [resolved] — SVG inline + CSS animation decided; 5 instigator
-  types × 4 star states; consistency spec + audio tones per type
+  types × 3 evaluation states (approve/neutral/disapprove); consistency spec + audio tones per type
 - GAME-059 [resolved] — submit-on-invalid: removed validity gate from Submit button
 - GAME-063 [resolved] — asset pipeline: directory structure + Bazel integration
 - GAME-064 [resolved] — audio playback infrastructure: AudioPlayer module

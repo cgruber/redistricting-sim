@@ -1,7 +1,7 @@
 # DESIGN-009: Character Reaction Visual Style Research
 
 **Date:** 2026-05-02  
-**Last updated:** 2026-05-02  
+**Last updated:** 2026-05-13  
 **Researcher:** Claude (Sonnet 4.6)  
 **Topic:** Art style, character roster, and animation approach for result screen reactions  
 **Status:** decisions complete — approved
@@ -13,8 +13,11 @@
 The player is a neutral consultant hired to draw a map. They have no stake in the
 political outcome — it's "just a job." The person who *does* have a stake is the
 instigator: the party boss, judge, reform commissioner, or supervisor who hired or
-empowered the player. On the result screen, the instigator reacts to how well the
-player delivered — graded by star count, not binary pass/fail.
+empowered the player. On the result screen, the instigator reacts to the overall
+outcome — expressed as one of three evaluation states: **approve**, **neutral**, or
+**disapprove**. The star score is still computed from criteria (required + optional),
+but the instigator's pose is determined by the evaluation state, not mapped 1:1 to a
+star count.
 
 The instigator's animation plays last, after all per-criterion reveal animations
 finish, as the final emotional beat. Different scenarios pick from a curated roster
@@ -28,15 +31,15 @@ custom-scenario tooling, but that functionality is not implemented now.
 Five instigator types cover all current scenarios. Future scenarios pick from this
 roster (or, in future custom-scenario tooling, supply their own art).
 
-| Type | Scenarios | Instigator | 3-star | 2-star | 1-star | 0-star |
-|---|---|---|---|---|---|---|
-| Partisan Boss | 002, 003, 004 (Ken); 009 (Cat) | Party boss who hired you | Fist pump, ecstatic | Satisfied nod, thumbs up | Grudging shrug, "close enough" | Head in hands, furious |
-| Legal Authority | 005 | Federal judge | Gavel bang + scales balanced, beaming | Measured nod, gavel tap | Furrowed brow, reluctant approval | Gavel bang, scales tipped, rejection |
-| Bipartisan Broker | 006 | Both party bosses (side-by-side) | Both bosses handshake, celebratory | Cautious handshake | One boss nods, other uncertain | Both bosses crossed arms, displeased |
-| Reform Arbiter | 007, 008 | Reform commission | Bright thumbs up, balanced scales | Steady approval, nod | Reserved acknowledgment | Thumbs down, head shake |
-| Neutral Admin | tutorial-001, tutorial-002 | Supervisor | Checkmark, warm smile | Approving nod | Mild nod, "acceptable" | Shrug, disappointed |
+| Type | Scenarios | Instigator | approve | neutral | disapprove |
+|---|---|---|---|---|---|
+| Partisan Boss | 002, 003, 004 (Ken); 009 (Cat) | Party boss who hired you | Fist pump, ecstatic | Satisfied shrug, "good enough" | Head in hands, furious |
+| Legal Authority | 005 | Federal judge | Gavel bang + scales balanced, beaming | Measured nod, furrowed but accepting | Gavel bang, scales tipped, rejection |
+| Bipartisan Broker | 006 | Both party bosses (side-by-side) | Both bosses handshake, celebratory | Cautious handshake, reserved | Both bosses crossed arms, united frustration |
+| Reform Arbiter | 007, 008 | Reform commission | Bright thumbs up, balanced scales | Reserved acknowledgment, neutral | Thumbs down, head shake |
+| Neutral Admin | tutorial-001, tutorial-002 | Supervisor | Checkmark, warm smile | Mild nod, "acceptable" | Shrug, disappointed |
 
-**State names** (CSS classes applied to the SVG): `three-star`, `two-star`, `one-star`, `zero-star`.
+**State names** (file names and CSS classes): `approve`, `neutral`, `disapprove`.
 
 **Scenario-006 note:** The Bipartisan Broker type shows both party bosses simultaneously.
 Both share the same outcome state (the criteria require safe seats for BOTH parties,
@@ -56,8 +59,8 @@ implementation required now; just avoid hard-coding the roster as a closed enum.
 Ruled out. Cannot convey distinct character types or personality.
 
 ### Option B — Inline SVG + CSS animation (chosen)
-Each state is a separate SVG file. Pass/fail toggling replaced by 4-state class
-system. Animated with `@keyframes`. Resolution-independent, AI-generable,
+Each state is a separate SVG file. Three-state evaluation system (approve/neutral/disapprove).
+Animated with `@keyframes`. Resolution-independent, AI-generable,
 < 10 KB per file. No library needed.
 
 ### Option C — Pixel art sprite sheets
@@ -74,10 +77,10 @@ Ruled out. Existing GAME-052 placeholder; not the goal.
 
 ## Recommendation
 
-**Format:** 20 SVG files — 5 instigator types × 4 star-count states.  
+**Format:** 15 SVG files — 5 instigator types × 3 evaluation states.  
 **File path schema:** `assets/characters/{type}/{state}.svg`  
   - type: `partisan-boss`, `legal-authority`, `bipartisan-broker`, `reform-arbiter`, `neutral-admin`  
-  - state: `three-star`, `two-star`, `one-star`, `zero-star`  
+  - state: `approve`, `neutral`, `disapprove`  
   - Extension is `.svg` now; path schema is otherwise format-agnostic for future re-skin.
 
 **Style:** Flat, minimal, 2–3 colors per character. Silhouette-readable at 160–200 px.
@@ -95,8 +98,8 @@ Political-cartoon / board-game-token aesthetic.
 loading the appropriate file (no CSS class switching needed — each file is one state).
 `prefers-reduced-motion` handled by the reaction system wrapper, not per-file.
 
-**Audio:** 20 clips — 5 types × 4 states (or collapsed to fewer grades if authoring
-20 distinct clips proves impractical; minimum 2 per type: celebratory / disappointed).
+**Audio:** 15 clips — 5 types × 3 states (or collapsed to 2 per type if authoring
+15 distinct clips proves impractical; minimum 2 per type: celebratory / disappointed).
 See GAME-061 for clip strategy. All clips: 0.5–1.5 s, loop-free, board-game/casual
 register.
 
@@ -123,17 +126,16 @@ Consistency across the set is more important than perfection of individual files
   accessory, or body outline (the player needs to recognize them at a glance)
 
 ### Cross-type consistency
-- Same viewBox, same body scale, same foot/head placement across all 20 files
+- Same viewBox, same body scale, same foot/head placement across all 15 files
 - Characters should feel like they come from the same illustration set — consistent
   line weight, same visual grammar, same level of detail
 - Different types differ in: accent color, silhouette shape, costume/prop
-- Same type across 4 states: same character, only pose and expression change
+- Same type across 3 states: same character, only pose and expression change
 
-### State poses (same type, 4 poses)
-- `three-star`: open, expansive, celebratory — arms up, leaning forward, big gesture
-- `two-star`: positive, composed — thumbs up or approving nod, upright
-- `one-star`: reserved, ambivalent — slight lean or crossed arms, neutral expression
-- `zero-star`: closed, negative — hunched or turned away, disapproving gesture
+### State poses (same type, 3 poses)
+- `approve`: open, expansive, celebratory — arms up, leaning forward, big gesture
+- `neutral`: reserved, composed — slight lean or upright, neutral to mildly positive expression; hands at sides or crossed; no strong gesture
+- `disapprove`: closed, negative — hunched or turned away, disapproving gesture
 
 ### Animation
 - Each SVG file represents one static pose with a short looping idle animation
@@ -145,13 +147,13 @@ Consistency across the set is more important than perfection of individual files
 
 ## Audio Tone Per Instigator Type
 
-| Type | 3-star | 2-star | 1-star | 0-star |
-|---|---|---|---|---|
-| Partisan Boss | Short triumphant brass sting; punchy | Upbeat resolution chord | Flat "close enough" sting | Trombone wah-wah deflation |
-| Legal Authority | Formal gavel + ascending chime | Measured chime | Single neutral gavel tap | Gavel + descending tone; austere |
-| Bipartisan Broker | Warm celebratory chord; handshake-feel | Mild positive chord | Subdued chord; uncertain | Dull thud; resigned |
-| Reform Arbiter | Bright civic fanfare; optimistic | Soft chime; steady | Quiet acknowledgment tone | Soft negative buzz or descending chime |
-| Neutral Admin | Affirming ding; warm | Soft click; approving | Flat neutral click | Brief flat shrug sound |
+| Type | approve | neutral | disapprove |
+|---|---|---|---|
+| Partisan Boss | Short triumphant brass sting; punchy | Flat "good enough" sting | Trombone wah-wah deflation |
+| Legal Authority | Formal gavel + ascending chime | Single measured gavel tap | Gavel + descending tone; austere |
+| Bipartisan Broker | Warm celebratory chord; handshake-feel | Subdued chord; reserved | Dull thud; resigned |
+| Reform Arbiter | Bright civic fanfare; optimistic | Quiet acknowledgment tone | Soft negative buzz or descending chime |
+| Neutral Admin | Affirming ding; warm | Flat neutral click | Brief flat shrug sound |
 
 All clips: 0.5–1.5 s, loop-free, no dramatic buildup. Board-game / casual-strategy
 tonal register.
@@ -177,16 +179,18 @@ as a general capability: future scenarios may have asymmetric outcomes per panel
 Tutorials are level 1 of the core game loop. Skipping animation there creates an
 inconsistent first impression and signals reactions are optional rather than core UI.
 
-**4. Instigator model — no player avatar; instigator reacts on star count.**
+**4. Instigator model — no player avatar; instigator shows evaluation state.**
 
 The player is a neutral consultant ("just a job"). The instigator (the person who hired
-the player) reacts based on how well the player delivered, graded by star count
-(3/2/1/0). This replaces the earlier "player avatar" concept. The instigator's
-animation plays last, after all per-criterion animations finish.
+the player) reacts based on the evaluation state (approve / neutral / disapprove) derived
+from the overall score. Stars are still computed and displayed; the evaluation state is
+determined from the star score but is not a 1:1 star-to-pose mapping. This replaces
+the earlier "player avatar" concept and supersedes the prior 4-state (3/2/1/0 star) model.
+The instigator's animation plays last, after all per-criterion animations finish.
 
-**5. 20 files (one per state) vs 6 files (multi-state SVG).**
+**5. 15 files (one per state) vs 6 files (multi-state SVG).**
 
-20 files (5 types × 4 states), one SVG file per state. Simpler to AI-generate
+15 files (5 types × 3 states), one SVG file per state. Simpler to AI-generate
 (describe one pose at a time), easier to iterate individual states independently.
 Can revisit merging into multi-state files if it later becomes worthwhile.
 

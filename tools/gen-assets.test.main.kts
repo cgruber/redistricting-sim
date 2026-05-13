@@ -38,12 +38,12 @@ import java.util.Base64
 data class CharacterType(val id: String, val displayName: String, val role: String, val palette: String, val silhouetteNotes: String)
 
 @JsonClass(generateAdapter = false)
-data class StarState(val id: String, val stars: Int, val label: String, val poseGuide: String)
+data class EvaluationState(val id: String, val label: String, val poseGuide: String)
 
 @JsonClass(generateAdapter = false)
 data class SpriteSpec(
     val characterTypes: List<CharacterType>,
-    val starStates: List<StarState>,
+    val evaluationStates: List<EvaluationState>,
     val provider: String? = null,
     val model: String? = null,
 )
@@ -123,7 +123,7 @@ object Logic {
         error("No SVG found in model output. First 500 chars:\n${raw.take(500)}")
     }
 
-    fun buildSpritePrompt(type: CharacterType, state: StarState): String = """
+    fun buildSpritePrompt(type: CharacterType, state: EvaluationState): String = """
 Generate one SVG sprite for the following character + state combination.
 
 CHARACTER TYPE: ${type.displayName}
@@ -178,7 +178,7 @@ Output the SVG inside a markdown fenced code block:
 Respond with ONLY the code block — no prose, no explanation.
 """.trimIndent()
 
-    fun buildImagePrompt(type: CharacterType, state: StarState, styleSpec: String): String = """
+    fun buildImagePrompt(type: CharacterType, state: EvaluationState, styleSpec: String): String = """
 $styleSpec
 
 CHARACTER: ${type.displayName}
@@ -275,9 +275,8 @@ The 2–3 features most essential for recognizing this subject. An artist must g
             palette = palette,
             silhouetteNotes = silhouetteNotes,
         )),
-        starStates = listOf(StarState(
+        evaluationStates = listOf(EvaluationState(
             id = "default",
-            stars = 1,
             label = "Default",
             poseGuide = "neutral pose",
         )),
@@ -307,11 +306,11 @@ class SvgExtractionTest {
 
 class SpritePromptContentTest {
     private val type  = CharacterType("partisan-boss", "Partisan Boss", "hires player", "gold/red", "wide shoulders")
-    private val state = StarState("three-star", 3, "Three-star (ecstatic)", "arms raised high")
+    private val state = EvaluationState("approve", "Approve (ecstatic)", "arms raised high")
     private val prompt by lazy { Logic.buildSpritePrompt(type, state) }
 
     @Test fun `contains character display name`()  { assertTrue(prompt.contains("Partisan Boss")) }
-    @Test fun `contains state label`()             { assertTrue(prompt.contains("Three-star")) }
+    @Test fun `contains state label`()             { assertTrue(prompt.contains("Approve")) }
     @Test fun `contains viewBox requirement`()     { assertTrue(prompt.contains("viewBox=\"0 0 200 200\"")) }
     @Test fun `contains idle-bob requirement`()    { assertTrue(prompt.contains("idle-bob")) }
     @Test fun `contains file size limit`()         { assertTrue(prompt.contains("15 KB")) }
@@ -362,12 +361,12 @@ class GrokImageDecodingTest {
 
 class ImagePromptContentTest {
     private val type  = CharacterType("partisan-boss", "Partisan Boss", "hires player", "gold suit; red tie", "oversized round head")
-    private val state = StarState("thumbs-up", 3, "Thumbs up (ecstatic)", "arm raised, big grin")
+    private val state = EvaluationState("approve", "Approve (ecstatic)", "arm raised, big grin")
     private val style = "Bold outlines, flat fills, Vault Boy style"
     private val prompt by lazy { Logic.buildImagePrompt(type, state, style) }
 
     @Test fun `contains character display name`()  { assertTrue(prompt.contains("Partisan Boss")) }
-    @Test fun `contains state label`()             { assertTrue(prompt.contains("Thumbs up")) }
+    @Test fun `contains state label`()             { assertTrue(prompt.contains("Approve")) }
     @Test fun `contains palette`()                 { assertTrue(prompt.contains("gold suit")) }
     @Test fun `contains silhouette notes`()        { assertTrue(prompt.contains("oversized round head")) }
     @Test fun `contains pose guide`()              { assertTrue(prompt.contains("arm raised")) }
@@ -555,10 +554,10 @@ class SpriteSpecParsingTest {
     private val minimalSpec = """
         {
           "characterTypes": [
-            {"id":"partisan-boss","displayName":"Partisan Boss","role":"role","palette":"palette","silhouetteNotes":"notes"}
+            {"id":"broker-wm-bm","displayName":"Bipartisan Broker","role":"role","palette":"palette","silhouetteNotes":"notes"}
           ],
-          "starStates": [
-            {"id":"three-star","stars":3,"label":"Three-star (ecstatic)","poseGuide":"arms up"}
+          "evaluationStates": [
+            {"id":"approve","label":"Approve","poseGuide":"arms up"}
           ]
         }
     """.trimIndent()
@@ -566,20 +565,20 @@ class SpriteSpecParsingTest {
     @Test fun `parses character type fields`() {
         val spec = Logic.loadSpriteSpec(minimalSpec)
         assertEquals(1, spec.characterTypes.size)
-        assertEquals("partisan-boss", spec.characterTypes[0].id)
-        assertEquals("Partisan Boss", spec.characterTypes[0].displayName)
+        assertEquals("broker-wm-bm", spec.characterTypes[0].id)
+        assertEquals("Bipartisan Broker", spec.characterTypes[0].displayName)
     }
-    @Test fun `parses star state fields`() {
+    @Test fun `parses evaluation state fields`() {
         val spec = Logic.loadSpriteSpec(minimalSpec)
-        assertEquals(1, spec.starStates.size)
-        assertEquals("three-star", spec.starStates[0].id)
-        assertEquals(3, spec.starStates[0].stars)
+        assertEquals(1, spec.evaluationStates.size)
+        assertEquals("approve", spec.evaluationStates[0].id)
+        assertEquals("Approve", spec.evaluationStates[0].label)
     }
     @Test fun `parses spec with provider field`() {
         val json = """
             {
               "characterTypes": [{"id":"t1","displayName":"T1","role":"r","palette":"p","silhouetteNotes":"n"}],
-              "starStates": [{"id":"s1","stars":1,"label":"S1","poseGuide":"g"}],
+              "evaluationStates": [{"id":"approve","label":"Approve","poseGuide":"g"}],
               "provider": "grok",
               "model": "grok-3"
             }
@@ -597,17 +596,21 @@ class SpriteSpecParsingTest {
         val path = Paths.get("tools/sprite-spec.json")
         assertTrue(Files.exists(path), "tools/sprite-spec.json must exist")
         val spec = Logic.loadSpriteSpec(Files.readString(path))
-        assertEquals(5, spec.characterTypes.size, "Expected 5 character types")
-        assertEquals(4, spec.starStates.size,     "Expected 4 star states")
+        assertEquals(3, spec.characterTypes.size,    "Expected 3 character types")
+        assertEquals(3, spec.evaluationStates.size,  "Expected 3 evaluation states")
         val typeIds  = spec.characterTypes.map { it.id }.toSet()
-        val stateIds = spec.starStates.map { it.id }.toSet()
-        assertTrue("partisan-boss" in typeIds)
-        assertTrue("three-star"   in stateIds)
+        val stateIds = spec.evaluationStates.map { it.id }.toSet()
+        assertTrue("broker-wm-bm" in typeIds)
+        assertTrue("approve"      in stateIds)
+        assertTrue("neutral"      in stateIds)
+        assertTrue("disapprove"   in stateIds)
         spec.characterTypes.forEach { t ->
             assertTrue(t.palette.isNotBlank(),         "${t.id}: blank palette")
             assertTrue(t.silhouetteNotes.isNotBlank(), "${t.id}: blank silhouetteNotes")
         }
-        assertEquals(setOf(0, 1, 2, 3), spec.starStates.map { it.stars }.toSet())
+        spec.evaluationStates.forEach { s ->
+            assertTrue(s.poseGuide.isNotBlank(), "${s.id}: blank poseGuide")
+        }
     }
 }
 
@@ -653,7 +656,7 @@ class SpriteSpecRoundTripTest {
         val json = Logic.specAdapter.toJson(original)
         val deserialized = Logic.loadSpriteSpec(json)
         assertEquals(original.characterTypes.size, deserialized.characterTypes.size)
-        assertEquals(original.starStates.size, deserialized.starStates.size)
+        assertEquals(original.evaluationStates.size, deserialized.evaluationStates.size)
         assertEquals(original.provider, deserialized.provider)
         assertEquals(original.model, deserialized.model)
     }
@@ -670,13 +673,12 @@ class SpriteSpecRoundTripTest {
         assertEquals("A test character", type.silhouetteNotes)
     }
 
-    @Test fun `spec preserves all star state fields after round-trip`() {
+    @Test fun `spec preserves all evaluation state fields after round-trip`() {
         val spec = Logic.buildTestSpriteSpec()
         val json = Logic.specAdapter.toJson(spec)
         val restored = Logic.loadSpriteSpec(json)
-        val state = restored.starStates[0]
+        val state = restored.evaluationStates[0]
         assertEquals("default", state.id)
-        assertEquals(1, state.stars)
         assertEquals("Default", state.label)
         assertEquals("neutral pose", state.poseGuide)
     }

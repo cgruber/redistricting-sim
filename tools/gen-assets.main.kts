@@ -146,9 +146,8 @@ data class CharacterType(
 )
 
 @JsonClass(generateAdapter = false)
-data class StarState(
+data class EvaluationState(
     val id: String,
-    val stars: Int,
     val label: String,
     val poseGuide: String,
 )
@@ -156,7 +155,7 @@ data class StarState(
 @JsonClass(generateAdapter = false)
 data class SpriteSpec(
     val characterTypes: List<CharacterType>,
-    val starStates: List<StarState>,
+    val evaluationStates: List<EvaluationState>,
     val provider: String? = null,
     val model: String? = null,
 )
@@ -509,7 +508,7 @@ Output the SVG inside a markdown fenced code block:
 Respond with ONLY the code block — no prose, no explanation.
 """.trimIndent()
 
-fun buildSpritePrompt(type: CharacterType, state: StarState): String = """
+fun buildSpritePrompt(type: CharacterType, state: EvaluationState): String = """
 Generate one SVG sprite for the following character + state combination.
 
 CHARACTER TYPE: ${type.displayName}
@@ -551,7 +550,7 @@ Style rules:
 - White background
 """.trimIndent()
 
-fun buildImagePrompt(type: CharacterType, state: StarState, styleSpec: String): String = """
+fun buildImagePrompt(type: CharacterType, state: EvaluationState, styleSpec: String): String = """
 $styleSpec
 
 CHARACTER: ${type.displayName}
@@ -772,9 +771,9 @@ abstract class BaseGenCommand(
         },
     )
 
-    protected fun filteredSpec(spec: SpriteSpec): Pair<List<CharacterType>, List<StarState>> {
-        val types  = if (typeFilter.isEmpty())  spec.characterTypes else spec.characterTypes.filter { it.id in typeFilter }
-        val states = if (stateFilter.isEmpty()) spec.starStates     else spec.starStates.filter     { it.id in stateFilter }
+    protected fun filteredSpec(spec: SpriteSpec): Pair<List<CharacterType>, List<EvaluationState>> {
+        val types  = if (typeFilter.isEmpty())  spec.characterTypes   else spec.characterTypes.filter   { it.id in typeFilter }
+        val states = if (stateFilter.isEmpty()) spec.evaluationStates else spec.evaluationStates.filter { it.id in stateFilter }
         return types to states
     }
 
@@ -784,8 +783,8 @@ abstract class BaseGenCommand(
             spec.characterTypes.forEach { echo("  ${it.id.padEnd(22)} ${it.displayName} — ${it.role}") }
         }
         if (listStates) {
-            echo("Available star states (from ${charactersFile ?: "tools/sprite-spec.json"}):")
-            spec.starStates.forEach { echo("  ${it.id.padEnd(12)} ${it.label}") }
+            echo("Available evaluation states (from ${charactersFile ?: "tools/sprite-spec.json"}):")
+            spec.evaluationStates.forEach { echo("  ${it.id.padEnd(12)} ${it.label}") }
         }
     }
 }
@@ -1014,9 +1013,8 @@ class DescribeCommand : CliktCommand(
                 palette        = palette,
                 silhouetteNotes = description,
             )),
-            starStates = listOf(StarState(
+            evaluationStates = listOf(EvaluationState(
                 id        = stateId,
-                stars     = 1,
                 label     = stateLabel,
                 poseGuide = stateGuide,
             )),
