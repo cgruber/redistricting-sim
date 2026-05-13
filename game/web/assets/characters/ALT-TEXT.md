@@ -1,84 +1,87 @@
 # Character Sprite Alt-Text Inventory
 
-Generated for GAME-060. One description per type × state combination (20 total).
-Each character is a flat-fill SVG political-cartoon figure with a gentle idle bob animation.
+PNG sprite sheets for all 5 character types. Each sheet is a horizontal strip:
+[neutral | approve | disapprove]. Demographic variants share the same poses;
+only appearance (skin tone, hair, etc.) differs within a type.
 
 ---
 
-## partisan-boss
+## governor
 
-**three-star.svg**
-A stocky, wide-shouldered figure in a red wide-lapel suit with gold tie and lapels, both fists raised triumphantly overhead. Right hand holds a small gold flag. Broad grin, dark flat-brimmed hat.
+Demographic variants: `governor-wm` (white male), `governor-bm` (Black male), `governor-af` (Asian female).
+Sheet: 1376×752. Poses: neutral 0–400px, approve 400–880px, disapprove 880–1376px.
 
-**two-star.svg**
-The same red-suited partisan boss standing upright, both arms extended forward at mid-height with thumbs raised in approval. Composed, satisfied smile.
+**neutral**
+The governor standing composed, facing right. Official posture, relaxed expression — awaiting the verdict.
 
-**one-star.svg**
-The red-suited partisan boss with both arms crossed at chest height, extending out to the sides in a reserved, guarded posture. Flat neutral expression with narrowed eyes.
+**approve**
+The governor with a broad celebratory expression, arms raised or gesturing approval. Clear positive body language.
 
-**zero-star.svg**
-The red-suited partisan boss hunched slightly, head tilted with a scowl and heavy brows, both arms crossed tightly over the chest in a disapproving, closed-off posture.
-
----
-
-## legal-authority
-
-**three-star.svg**
-A tall, narrow-robed figure in slate blue with white judicial collar, both arms raised high in celebration. Right hand holds a gavel raised overhead. Wide celebratory smile.
-
-**two-star.svg**
-The same robed judge standing upright, left arm slightly extended at side, right arm raised holding a gavel vertically at shoulder height — composed, approving expression.
-
-**one-star.svg**
-The robed judge with both arms dropped to the sides within the robe, right hand holding the gavel low. Flat neutral expression, reserved posture.
-
-**zero-star.svg**
-The robed judge slumped slightly with head tilted and a stern frown, arms crossed tightly under the robe, heavy disapproving brows. Gavel lying at the side.
+**disapprove**
+The governor with a visible frown or scowl, arms crossed or turned away. Clear negative body language.
 
 ---
 
-## bipartisan-broker
+## commissioner
 
-**three-star.svg**
-Two smaller figures side by side — the left in red, the right in slate blue — both with arms raised overhead in celebration. Inner hands meet in a handshake at center. Both show wide smiles.
+Demographic variants: `commissioner-wm` (white male, navy suit, greying temples), `commissioner-wf` (white female), `commissioner-bf` (Black female).
+Sheet: 1408×768. All three facing right, clipboard prop throughout.
 
-**two-star.svg**
-Two figures (red left, blue right) standing upright. Inner arms extended toward each other in a handshake at center. Outer arms give thumbs-up gestures. Both show approving smiles.
+**neutral**
+The commissioner standing upright, clipboard held at side. Neutral professional expression.
 
-**one-star.svg**
-The red and blue figures side by side with arms at their sides, slightly angled inward. Both show flat neutral expressions, no contact between them.
+**approve**
+The commissioner with a thumbs-up gesture, clipboard in other hand. Satisfied, approving expression.
 
-**zero-star.svg**
-The red figure turned slightly left, the blue figure turned slightly right — each facing away from center. Both have arms tightly crossed and downturned scowls. The gap between them is visible.
-
----
-
-## reform-arbiter
-
-**three-star.svg**
-A trim teal-blazered figure with neat dark hair, both arms raised overhead in celebration. Right hand holds a set of balance scales aloft. Large open smile.
-
-**two-star.svg**
-The same teal figure standing upright, left arm slightly extended. Right arm raised at shoulder height holding balance scales — composed and approving expression.
-
-**one-star.svg**
-The teal-blazered figure with left arm at side and right arm at chest level, holding a clipboard. Neutral flat expression; clipboard shows notes lines.
-
-**zero-star.svg**
-The teal figure slumped slightly with a furrowed brow and frown, arms crossed tightly. Clipboard dangles at an angle from the right hand, suggesting frustration.
+**disapprove**
+The commissioner with arms crossed, clipboard pressed to chest. Reserved, disapproving expression.
 
 ---
 
-## neutral-admin
+## judge
 
-**three-star.svg**
-A plain grey-blue office-worker figure in a muted suit and blue tie, both arms raised in surprised celebration. Right hand holds a clipboard raised high showing a checkmark. Wide open smile.
+Demographic variants: `judge` (white male, receding grey hair), `judge-lm` (Latino male), `judge-naf` (Native American female).
+Sheet: 1408×768. All seated behind a raised dark wooden bench, black judicial robes, white collar band.
 
-**two-star.svg**
-The same grey-blue admin standing composed, left arm in a slight outward gesture, right arm holding a clipboard upright at chest height. Small pleasant smile.
+**neutral**
+The judge seated at the bench, gavel resting on the surface. Composed, impartial expression.
 
-**one-star.svg**
-The grey-blue admin with both arms at sides. Right arm holds clipboard loosely at hip level. Flat unenthusiastic expression — doing the job, nothing more.
+**approve**
+The judge with gavel struck down firmly. A green "APPROVED!" stamp overlay appears. Decisive, satisfied expression.
 
-**zero-star.svg**
-The grey-blue admin hunched, head tilted with a tired scowl and heavy brows, arms crossed tightly. Clipboard pinned under the left arm at an awkward angle, slightly drooping.
+**disapprove**
+The judge with gavel struck down firmly. A red "DENIED!" stamp overlay appears. Stern, dismissive expression.
+
+---
+
+## legislator
+
+Demographic variants: `legislator-wm` (white male, late 60s, grey receding hair), `legislator-wf` (white female), `legislator-bm` (Black male).
+Sheet: 1408×768. All facing right, rolled parchment scroll with red ribbon as prop.
+
+**neutral**
+The legislator standing upright, scroll held at side. Neutral, formal expression.
+
+**approve**
+The legislator with a clear thumbs-up gesture, scroll at side. Positive, affirming expression.
+
+**disapprove**
+The legislator with a clear thumbs-down gesture, scroll at side. Negative, rejecting expression.
+
+---
+
+## party
+
+Single multi-demographic group sheet: `party/sheet.png`. No demographic variants.
+Sheet: 1408×768. Three party operatives as a waist-up group cluster:
+left = white male (navy suit, magenta tie), center = dark-brown-skinned male (charcoal blazer, campaign sign),
+right = white female (burgundy blazer, red hair). All behind a magenta "#FF00FF" PARTY banner.
+
+**neutral**
+The three operatives standing together, rally sign upright, expressions composed. Ready to react.
+
+**approve**
+The three operatives with sign raised high and fist-pump gestures. Celebratory, energized expressions.
+
+**disapprove**
+The three operatives slumped, sign drooping. Dejected, disappointed expressions.
