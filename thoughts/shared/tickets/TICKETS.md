@@ -90,7 +90,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-005-population-dot-density-overlay.md` | design, rendering | Population dot density overlay: dot count per precinct proportional to population; hue-aware dot color; colorblind-safe palette |
 | `DESIGN-006-zoom-adaptive-dot-density.md` | design, rendering | Zoom-adaptive dot density scaling + person glyph threshold (refinement on DESIGN-005, possibly post-v1) |
 | `DESIGN-007-dimensional-dot-map-demographic-overlay.md` | design, rendering | Dimensional dot map: demographic dimension switching (Option B adaptive encoding) + sorted placement toggle |
-| `DESIGN-011-per-criterion-character-roster.md` | design, art | Define 5-type character roster (governor/commissioner/party/judge/legislator) + sprite design notes for 4 new types |
 | `GAME-056-playtest-feedback.md` | game, content, UX | Capture and act on playtest feedback — scenario balance and UX |
 | `GAME-057-scenario-randomization.md` | game, content, replayability | Per-session ±5% population/lean offsets seeded per session; e2e tests remain deterministic |
 | `GAME-058-manual-playability-test-thresholds.md` | game, content, QA | Manual playthrough of scenarios 007 and 008 to verify tightened thresholds (GAME-031) feel right |
@@ -112,6 +111,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| DESIGN-011: per-criterion character roster | commissioner/judge/legislator/party PNG sheets produced with demographic variants; criterion→character mapping in scenario format; old SVG placeholders deleted |
 | GAME-069: per-criterion character reactions | Per-row .rc-char slots with governor sprite + SVG placeholders; schema + scenario data; GOV_SHEET fix; merged PR #215 |
 | GAME-068: result reveal pacing | True sequential reveal (1 row at a time), dedicated Skip button; merged PR #214 |
 | GAME-067: asset URL versioning + env badge | Asset ?v= versioning via deployment-metadata.json + dev/staging badge; merged PR #212 |

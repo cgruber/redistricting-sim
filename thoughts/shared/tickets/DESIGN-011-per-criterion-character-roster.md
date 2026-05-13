@@ -2,9 +2,19 @@
 id: DESIGN-011
 title: Per-criterion character roster and sprite design
 area: design
-status: open
+status: resolved
 created: 2026-05-07
 ---
+
+## Resolution
+
+All 4 non-governor character types designed and produced as PNG sprite sheets with demographic variants:
+- `commissioner`: wm / wf / bf (1408×768, clipboard prop, 3 evaluation poses)
+- `judge`: generic / lm / naf (1408×768, black robes + bench, gavel + APPROVED!/DENIED! stamps)
+- `legislator`: wm / wf / bm (1408×768, scroll prop, thumbs-up/down poses)
+- `party`: single multi-demographic group (1408×768, magenta PARTY banner, crowd poses)
+
+Criterion→character mapping defined in each scenario's `character` field per success criterion. Demographic variant selection per scenario via `narrative.character_demographics` map (introduced in GAME-062). Old SVG placeholders deleted. All ACs met.
 
 ## Summary
 
