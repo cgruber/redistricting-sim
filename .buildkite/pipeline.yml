@@ -51,3 +51,21 @@ steps:
       ./setup.sh
       bazel test --config=ci //...
 
+  ##############################################################################
+  # TOOLS TEST — standalone Kotlin script unit tests (no Bazel, no build dep)
+  ##############################################################################
+
+  - label: ":kotlin: Tools Tests"
+    key: tools-test
+    agents:
+      os: macos
+    command: |
+      set -euo pipefail
+      # Precondition: kotlin (Kotlin script runner) must be installed on the agent.
+      # Confirmed present at /opt/homebrew/bin/kotlin on the macOS dev-machine agent.
+      # This is a persistent agent, not ephemeral CI — no install step is needed.
+      for f in tools/*.test.main.kts; do
+        echo "--- $$f"
+        kotlin "$$f"
+      done
+
