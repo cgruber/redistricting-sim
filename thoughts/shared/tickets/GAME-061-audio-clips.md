@@ -9,12 +9,13 @@ github_issue: 199
 
 ## Summary
 
-Source or create short audio clips for each instigator type × star-count state
-to accompany the animated reactions on the result screen. Target: 20 clips
-(5 types × 4 states). Acceptable minimum: 10 clips (2 per type: celebratory /
-disappointed) if sourcing 20 distinct clips proves impractical. Prefer CC0 sources.
-If CC0 unavailable, use AI-generated audio (ElevenLabs Sound Effects, Grok, or
-similar). Tone per type defined by DESIGN-009.
+Source or create short audio clips for each instigator type × evaluation state
+to accompany the animated reactions on the result screen. Target: 15 clips
+(5 types × 3 states: approve/neutral/disapprove). Acceptable minimum: 10 clips
+(2 per type: celebratory / disappointed) if sourcing 15 distinct clips proves
+impractical. Prefer CC0 sources. If CC0 unavailable, use AI-generated audio
+(ElevenLabs Sound Effects, Grok, or similar). Tone per type defined by DESIGN-009
+(resolved — see that ticket for guidance).
 
 ## Current State
 
@@ -23,10 +24,10 @@ No audio exists anywhere in the game. This is the first audio feature.
 
 ## Goals / Acceptance Criteria
 
-- [ ] Audio clips for 5 instigator types × 4 states — target 20, minimum 10 (2/type)
+- [ ] Audio clips for 5 instigator types × 3 evaluation states — target 15, minimum 10 (2/type)
 - [ ] File naming: `assets/audio/{type}-{state}.mp3` and `.ogg` (dual encoding)
-      types: partisan-boss, legal-authority, bipartisan-broker, reform-arbiter, neutral-admin
-      states: three-star, two-star, one-star, zero-star (or: win, lose if collapsed to 2/type)
+      types: governor, commissioner, party, judge, legislator
+      states: approve, neutral, disapprove (or: approve, disapprove if collapsed to 2/type)
 - [ ] Clips are short: target 0.5–1.5 s each
 - [ ] File sizes < 100 KB per clip
 - [ ] Source priority: (1) CC0 from freesound.org/pixabay, (2) AI-generated,
@@ -39,8 +40,7 @@ No audio exists anywhere in the game. This is the first audio feature.
 
 ## References
 
-- `thoughts/shared/tickets/DESIGN-009-character-reaction-visual-style.md` — **blocks this**
-  (defines instigator roster and audio tone guidance per type)
+- `thoughts/shared/tickets/DESIGN-009-character-reaction-visual-style.md` — resolved; defines instigator roster and audio tone guidance per type
 - `thoughts/shared/tickets/GAME-063-asset-pipeline.md` — asset directory must exist first
 - `thoughts/shared/tickets/GAME-064-audio-playback-infrastructure.md` — playback layer
 - `thoughts/shared/tickets/GAME-062-character-reaction-system.md` — wires audio playback

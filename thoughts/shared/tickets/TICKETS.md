@@ -101,10 +101,10 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-043-unify-type-systems.md` | game, code-quality | Unify spike and scenario type systems; retire adapter.ts and types.ts spike layer |
 | `GAME-046-panels-unit-tests.md` | game, testing | Unit tests for render/panels.ts (deferred): jsdom or extract-pure-helpers approach |
 | `GAME-053-electoral-outcome-visual-diff.md` | game, UX | Electoral outcome comparison (player map vs baseline) on result screen; placeholder |
-| `GAME-060-character-sprite-assets.md` | game, art, content | Character sprite + animation assets (5 types × 4 star states); placeholder SVGs merged; art refinement in GAME-065 |
-| `GAME-061-audio-clips.md` | game, audio, content | 10 audio clips (5 types × pass/fail); CC0 preferred; AI-generated fallback; depends on DESIGN-009 |
-| `GAME-062-character-reaction-system.md` | game, UX | Wire character sprites + audio to result screen; replaces emoji placeholder; depends on GAME-060/061/063/064/065 |
-| `GAME-065-character-sprite-art-refinement.md` | game, art, content | Replace placeholder SVGs with quality character art; pose/file structure unchanged; visual review required before merge |
+| `GAME-060-character-sprite-assets.md` | game, art, content | Produce PNG sprite sheets for commissioner/party/judge/legislator (governor done); 3 evaluation states each; per DESIGN-011 |
+| `GAME-061-audio-clips.md` | game, audio, content | 15 audio clips (5 types × 3 eval states: approve/neutral/disapprove); min 10 (2/type); CC0 preferred; AI-generated fallback |
+| `GAME-062-character-reaction-system.md` | game, UX | Wire remaining character types + audio to result screen; governor already wired; approve/neutral/disapprove model; depends on GAME-060/061 |
+| `GAME-065-character-sprite-art-refinement.md` | game, art, content | Broker PNG initial production (stretch; 9 images via gen-assets.main.kts) + quality iteration pass after GAME-060; not a blocker for GAME-062 core |
 
 ---
 

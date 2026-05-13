@@ -118,19 +118,18 @@ outcome: all tier1+tier2 tickets closed
 
 §SPRINT12 (in progress)
 goal: character reactions + submit-on-invalid
-demo target: player submits map (valid or invalid) → result screen shows animated character + audio reaction;
-  invalid map shows Fix-It path; valid pass/fail shows correct character animation
-dependency chain:
-  DESIGN-009 [resolved] (SVG inline + CSS animation; 5 instigator types × 3 evaluation states: approve/neutral/disapprove)
-  → parallel: GAME-060 [placeholder SVGs merged] + GAME-061 [audio stubs merged]
-  → GAME-065 (sprite art refinement — replace placeholder SVGs with quality art)
-  → GAME-064 [resolved] (audio playback infrastructure)
-  → GAME-062 (character reaction system — wires everything to result screen)
-  GAME-059 [resolved] (submit-on-invalid) — done
-  GAME-063 [resolved] (asset pipeline) — done
-tier1 (core — all resolved): DESIGN-009 GAME-059 GAME-063 GAME-064
-tier2 (remaining): GAME-060 GAME-061 GAME-065 GAME-062
-  note: GAME-065 front-loaded before GAME-062; art pass before wiring
+demo target: player submits map → result screen shows animated character + audio; invalid map shows Fix-It path
+art model (updated 2026-05-13): PNG sprite sheets (neutral|approve|disapprove horizontal strip, 200px row)
+  governor done+live; 4 remaining types: commissioner party judge legislator (DESIGN-011)
+  eval states: approve/neutral/disapprove (not 1:1 star-count); broker variants (sprite-spec.json) = stretch
+resolved: DESIGN-009 GAME-059 GAME-063 GAME-064 GAME-066 GAME-068 GAME-069
+tier2 (remaining):
+  DESIGN-011 [open] (criterion→character mapping; governor done; 4 types to design)
+  GAME-060 [open] (produce commissioner/party/judge/legislator PNG sheets per DESIGN-011)
+  GAME-061 [open] (audio clips; unblocked)
+  GAME-062 [open] (wire remaining types + audio; governor already wired)
+  GAME-065 [open] (art refinement; trails GAME-060; not blocker for GAME-062)
+stretch: broker PNG variants × 3 states for scenario-006 (spec in sprite-spec.json)
 deferred to S13+: DESIGN-005/006/007 demographic overlays; DESIGN-008 geographic features; GAME-053
 
 §SPRINT13 (sketched)
@@ -160,7 +159,7 @@ GAME-058  manual playability test          any
 GAME-030  main menu+campaigns (remaining)  S14+
 
 §BLOCKING_OPEN_QUESTIONS
-DESIGN-009 open questions (SVG vs pixel art; 006 layout; tutorial animation) → resolve during DESIGN-009 work; gates GAME-060+GAME-061 (not GAME-063 — pipeline is format-agnostic)
+RESOLVED: DESIGN-009 art model → PNG sprite sheets; 3 eval states (approve/neutral/disapprove); governor done
 RESOLVED: DESIGN-001 star/achievement UX → resolved; GAME-052 shipped with emoji placeholder
 RESOLVED: OQ4 narrative asset resolution — deferred indefinitely
 RESOLVED: OQ9 StateContext redesign — deferrable past $v1
