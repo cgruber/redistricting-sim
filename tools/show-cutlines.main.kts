@@ -9,7 +9,7 @@ val assetsDir = File(args.getOrElse(0) { "game/web/assets/characters" })
 val outDir = File(args.getOrElse(1) { "/tmp/cutline-guides" })
 outDir.mkdirs()
 
-val sheets = assetsDir.listFiles()!!
+val sheets = (assetsDir.listFiles() ?: error("assets directory not found or not a directory: ${assetsDir.absolutePath}"))
     .filter { it.isDirectory }
     .mapNotNull { dir -> File(dir, "sheet.png").takeIf { it.exists() }?.let { dir.name to it } }
     .sortedBy { it.first }
