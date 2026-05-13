@@ -2,11 +2,21 @@
 id: GAME-060
 title: Character sprite and animation assets for result screen reactions
 area: game, art, content
-status: open
+status: resolved
 created: 2026-05-02
 github_issue: 201
 last_updated: 2026-05-13
 ---
+
+## Resolution
+
+All 4 PNG sprite sheets produced and committed to `game/web/assets/characters/`:
+- `commissioner-wm/`, `commissioner-wf/`, `commissioner-bf/` — navy-suit commissioner, clipboard prop; stamped wm-v10
+- `judge/`, `judge-lm/`, `judge-naf/` — black-robed judge at bench, gavel + APPROVED!/DENIED! stamp overlays; j-v4/naf-v1
+- `legislator-wm/`, `legislator-wf/`, `legislator-bm/` — legislator with scroll prop, thumbs-up/down poses; wm-v7
+- `party/` — multi-demographic group cluster (wm+bm+wf) with magenta PARTY banner; group-v6
+
+All 1408×768, 3-state horizontal strip (neutral|approve|disapprove). Known minor art quality issues documented in each `GENERATION.md`; quality pass in GAME-065. Old SVG placeholders deleted in same PR.
 
 ## Summary
 
