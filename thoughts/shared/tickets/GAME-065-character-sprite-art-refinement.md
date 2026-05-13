@@ -1,6 +1,6 @@
 ---
 id: GAME-065
-title: Character sprite art refinement — quality iteration after initial generation
+title: Character sprite art refinement — quality iteration on produced sheets
 area: game, art, content
 status: open
 created: 2026-05-04
@@ -9,40 +9,49 @@ last_updated: 2026-05-13
 
 ## Summary
 
-Two-part scope:
+Quality iteration pass on the character sprite sheets produced in GAME-060. Known
+minor issues are documented in each character's `GENERATION.md`. This ticket covers
+targeted fixes (manual post-edit or regeneration) and optional broker PNG initial
+production (stretch, scenario-006 instigator).
 
-1. **Broker initial production** (stretch): generate the 9 bipartisan-broker PNG images
-   (3 demographic variants × 3 evaluation states) using `gen-assets.main.kts` and the
-   spec in `tools/sprite-spec.json`. This is the initial production run for the broker;
-   it is not covered by GAME-060 (which covers the per-criterion roster only).
-
-2. **Quality iteration pass**: review and improve any sprite sheets that need it after
-   initial generation — the four new types from GAME-060, the broker images from part 1,
-   and optionally the governor sheet.
-
-This ticket has no fixed scope for part 2 — it is the designated place to capture and
-act on post-generation visual feedback. It is not a blocker for GAME-062 (broker wiring
-is stretch); the core GAME-062 work (governor + 4 types) can proceed without it.
+This ticket is not a blocker for GAME-062. The known issues are all minor and
+acceptable at game display scale (~84–100px height). GAME-062 wiring can proceed
+in parallel; art fixes can ship after.
 
 ## Current State
 
-GAME-060 art is not yet produced. This ticket opens once GAME-060 is complete.
+All 5 character types have stamped PNG sheets. Known issues:
+
+| Type | Variant | Issue | Severity |
+|---|---|---|---|
+| Governor | all | None | — |
+| Commissioner | all | None | — |
+| Judge | generic | Neutral pose: slight eye shine asymmetry (right eye slightly darker) | Minor |
+| Judge | lm, naf | None noted | — |
+| Legislator | wm | Thumbs-down thumb geometry slightly imperfect | Minor |
+| Legislator | wf | Pants rendering slightly odd; thumbs-down thumb imperfect (same as wm) | Minor |
+| Legislator | bm | None | — |
+| Party | group | Some mouth expressions inconsistent between panels; manual post-edit needed | Minor |
 
 ## Goals / Acceptance Criteria
 
-### Broker initial production (stretch)
-- [ ] 9 broker PNG images generated via `gen-assets.main.kts` (3 variants × 3 eval states)
-- [ ] Images committed to `game/assets/characters/` per naming in `sprite-spec.json`
+### Quality fixes
+- [ ] Judge (generic) neutral pose: eye shine asymmetry fixed (Photopea or regenerate)
+- [ ] Legislator (wm + wf) thumbs-down pose: thumb geometry improved if feasible
+- [ ] Legislator (wf) pants: post-edit if visible at display size
+- [ ] Party: mouth expression inconsistency addressed (manual post-edit)
+- [ ] All fixed sheets reviewed at display size (≈84–100px) on dark background
+- [ ] `ALT-TEXT.md` updated if any visual descriptions change
 
-### Quality iteration
-- [ ] Each produced sprite sheet reviewed at display size (≈100–120 px height) on dark bg
-- [ ] Any sheets identified as needing improvement: regenerated or hand-edited
-- [ ] All reviewed sheets signed off before this ticket closes
-- [ ] `ALT-TEXT.md` (if it exists) updated if descriptions change
+### Broker initial production (stretch — scenario-006 instigator)
+- [ ] 9 broker PNG images generated via `gen-assets.main.kts`
+      (3 demographic variants × 3 evaluation states per `tools/sprite-spec.json`)
+- [ ] Images committed to `game/web/assets/characters/broker-*/sheet.png`
 
 ## References
 
-- `thoughts/shared/tickets/GAME-060-character-sprite-assets.md` — primary art production
-- `thoughts/shared/tickets/DESIGN-011-per-criterion-character-roster.md` — art spec
+- `game/web/assets/characters/*/GENERATION.md` — generation logs with known issues per variant
+- `game/web/assets/characters/ALT-TEXT.md` — accessibility descriptions
 - `tools/sprite-spec.json` — broker variants spec
-- `game/assets/characters/` — sprite sheet files
+- `tools/gen-assets.main.kts` — image generation pipeline
+- `thoughts/shared/tickets/GAME-062-character-reaction-system.md` — downstream consumer
