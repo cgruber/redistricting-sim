@@ -103,6 +103,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-061-audio-clips.md` | game, audio, content | 15 audio clips (5 types × 3 eval states: approve/neutral/disapprove); min 10 (2/type); CC0 preferred; AI-generated fallback |
 | `GAME-062-character-reaction-system.md` | game, UX | Wire commissioner/judge/legislator/party sprites + audio; scenario demographic assignment; pose offsets for 1408×768 sheets; governor done |
 | `GAME-065-character-sprite-art-refinement.md` | game, art, content | Quality fixes for known issues (judge eye, party mouth, legislator thumb); broker PNG production (stretch); not a blocker for GAME-062 |
+| `GAME-070-audio-settings.md` | game, UX, audio | Audio settings panel (main menu Settings item): master volume slider, mute toggle, localStorage persistence; coordinates with GAME-062 result-screen toggle |
 
 ---
 

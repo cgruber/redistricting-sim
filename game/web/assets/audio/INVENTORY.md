@@ -1,79 +1,82 @@
-# Audio Clip Inventory — Instigator Reaction Sounds
+# Audio Clip Inventory
 
-All clips: target 0.5–1.5 s, loop-free, board-game / casual-strategy register.
-File size target: < 100 KB per clip.
+Naming scheme: `{type}-{state}.mp3` + `{type}-{state}.ogg` for gender-neutral sounds (judge, party).  
+Human characters (governor, commissioner, legislator): `{type}-{state}-m.mp3` / `{type}-{state}-f.mp3`.  
+Gender is derived at runtime from the demographic code's last character (`wm`→m, `bf`→f, `naf`→f).
 
-Dual encoding required: each slot needs both `.mp3` and `.ogg`.
-
-## License Key
-
-- **CC0** — Creative Commons Zero / Public Domain; no attribution required
-- **CC-BY 3.0** — Creative Commons Attribution 3.0; attribution required in credits
-- **AI-GENERATE** — No suitable CC0 source found; generate with ElevenLabs Sound Effects, Grok Audio, or similar AI tool using the spec description
-- **VERIFY** — Source found but license could not be confirmed via search alone; visit URL before downloading
+All clips normalized to −16 LUFS (EBU R128) via `ffmpeg -af loudnorm=I=-16:TP=-1.5:LRA=11`.  
+OGG files use Opus encoding (libopus via ffmpeg). All clips CC0.
 
 ---
 
-## Inventory Table
+## Active game clips
 
-| Type | State | Filename (base) | Source URL | License | Notes |
-|---|---|---|---|---|---|
-| partisan-boss | three-star | `partisan-boss-three-star` | https://freesound.org/people/el_boss/sounds/677858/ | VERIFY (likely CC0) | "Game Success Fanfare Short" by el_boss — short triumphant game victory sting; verify CC0 on page |
-| partisan-boss | two-star | `partisan-boss-two-star` | https://freesound.org/people/FunWithSound/sounds/456966/ | VERIFY (likely CC-BY 3.0) | "Success Fanfare Trumpets" by FunWithSound — upbeat brass resolution; verify license; if CC-BY add to CREDITS |
-| partisan-boss | one-star | `partisan-boss-one-star` | — | AI-GENERATE | Flat "close enough" brass sting: short 2-note brass phrase, unresolved, neutral register, ~0.7 s |
-| partisan-boss | zero-star | `partisan-boss-zero-star` | — | AI-GENERATE | Trombone wah-wah deflation: classic descending 4-note trombone "womp womp", ~1.2 s. NOTE: freesound.org/people/kirbydx/sounds/175409/ and freesound.org/people/Benboncan/sounds/73581/ both have trombone fails but are CC-BY 3.0, not CC0; use AI generation for clean CC0 |
-| legal-authority | three-star | `legal-authority-three-star` | — | AI-GENERATE | Formal gavel strike + ascending chime: single hard gavel hit immediately followed by a 2-note ascending bell chime, ~1.0 s |
-| legal-authority | two-star | `legal-authority-two-star` | — | AI-GENERATE | Measured chime: single clear bell or xylophone note, warm sustain, ~0.6 s |
-| legal-authority | one-star | `legal-authority-one-star` | https://bigsoundbank.com/gavel-1-blow-s1588.html | CC0 (public domain) | "Gavel, 1 blow" by BigSoundBank — neutral gavel tap; BigSoundBank releases under public-domain equivalent license |
-| legal-authority | zero-star | `legal-authority-zero-star` | — | AI-GENERATE | Gavel hit + descending tone: single gavel strike immediately followed by a descending 2-note minor tone, austere feel, ~1.0 s |
-| bipartisan-broker | three-star | `bipartisan-broker-three-star` | — | AI-GENERATE | Warm celebratory major chord: full piano or acoustic guitar strum, major triad, warm reverb, ~1.0 s |
-| bipartisan-broker | two-star | `bipartisan-broker-two-star` | — | AI-GENERATE | Mild positive chord: single piano major chord, lighter velocity than three-star, ~0.7 s |
-| bipartisan-broker | one-star | `bipartisan-broker-one-star` | — | AI-GENERATE | Subdued uncertain chord: piano minor or sus2 chord, low velocity, slightly muted, ~0.7 s |
-| bipartisan-broker | zero-star | `bipartisan-broker-zero-star` | https://freesound.org/people/Breviceps/sounds/448086/ | CC0 | "Normal click / dull thud" by Breviceps — repurpose as resigned dull thud; part of CC0 pack 25371 |
-| reform-arbiter | three-star | `reform-arbiter-three-star` | https://freesound.org/people/FunWithSound/sounds/456969/ | VERIFY (likely CC-BY 3.0) | "Success Resolution Video Game Fanfare with Drum Roll" by FunWithSound — bright civic fanfare; verify license; if CC-BY add to CREDITS |
-| reform-arbiter | two-star | `reform-arbiter-two-star` | https://freesound.org/people/hypocore/sounds/164088/ | VERIFY (likely CC-BY 3.0) | "chime.wav" by hypocore — soft steady chime, single note; verify license on page |
-| reform-arbiter | one-star | `reform-arbiter-one-star` | — | AI-GENERATE | Quiet acknowledgment tone: single soft marimba or vibraphone note, brief sustain, ~0.5 s |
-| reform-arbiter | zero-star | `reform-arbiter-zero-star` | https://freesound.org/people/Breviceps/sounds/493163/ | CC0 | "Buzzer sounds (Wrong answer / Error)" by Breviceps — short negative buzz; CC0 confirmed; trim to ~0.8 s |
-| neutral-admin | three-star | `neutral-admin-three-star` | — | AI-GENERATE | Affirming ding: single warm bell ding, bright fundamental, short decay, ~0.5 s |
-| neutral-admin | two-star | `neutral-admin-two-star` | — | AI-GENERATE | Soft approving click: light wood-block or soft button click, ~0.3 s |
-| neutral-admin | one-star | `neutral-admin-one-star` | https://freesound.org/people/Breviceps/sounds/448086/ | CC0 | "Normal click" by Breviceps — flat neutral click; CC0 confirmed; same source as bipartisan-broker zero-star (different context) |
-| neutral-admin | zero-star | `neutral-admin-zero-star` | — | AI-GENERATE | Brief flat shrug sound: flat/dull click or very short negative buzz with no musical character, ~0.3 s |
+### Human character voices (gendered — governor / commissioner / legislator)
 
----
+Same source sounds used for all three human character types.
 
-## CC0 Confirmed (no attribution required)
+| Files | Source | Duration | Notes |
+|---|---|---|---|
+| `{type}-approve-m` | Freesound CC0 (anonymous male mumble) | ~0.9s | Male approve murmur |
+| `{type}-approve-f` | andrutzab murmur pack (Freesound CC0), segment #21 | 1.8s | Female definite-yes murmur |
+| `{type}-disapprove-m` | Freesound CC0 (anonymous male murmur) | ~0.6s | Male dissatisfied murmur |
+| `{type}-disapprove-f` | andrutzab murmur pack (Freesound CC0), segment #03 | 1.3s | Female dissatisfied murmur |
 
-- `reform-arbiter-zero-star`: freesound.org/people/Breviceps/sounds/493163/ — "Buzzer sounds (Wrong answer / Error)" by Breviceps
-- `neutral-admin-one-star` + `bipartisan-broker-zero-star`: freesound.org/people/Breviceps/sounds/448086/ — "Normal click" by Breviceps (CC0 pack 25371)
-- `legal-authority-one-star`: bigsoundbank.com/gavel-1-blow-s1588.html — "Gavel, 1 blow" (public domain / CC0 equivalent)
+Neutral voice variants (`{type}-neutral-m/f`) are stubs pending sourcing (see below).
 
-## VERIFY Before Downloading (may be CC-BY 3.0, not CC0)
+### Judge (gender-neutral — gavel sounds)
 
-Visit each URL and check the license badge before downloading. If CC-BY, add to CREDITS.md:
+| File | Source | Duration | Notes |
+|---|---|---|---|
+| `judge-approve` | BigSoundBank #1590 | 1.2s | Gavel 3 strikes |
+| `judge-neutral` | BigSoundBank #1588 | 0.36s | Single gavel strike |
+| `judge-disapprove` | BigSoundBank #1589 | 0.74s | Gavel 2 strikes |
 
-- `partisan-boss-three-star`: freesound.org/people/el_boss/sounds/677858/
-- `partisan-boss-two-star`: freesound.org/people/FunWithSound/sounds/456966/
-- `reform-arbiter-three-star`: freesound.org/people/FunWithSound/sounds/456969/
-- `reform-arbiter-two-star`: freesound.org/people/hypocore/sounds/164088/
+### Party (gender-neutral — crowd sounds)
 
-## AI-GENERATE Required (12 slots)
+| File | Source | Duration | Notes |
+|---|---|---|---|
+| `party-approve` | BigSoundBank #2482 | 2.35s | Applause burst |
+| `party-neutral` | BigSoundBank #3515 | 1.5s | Crowd ambient, trimmed from 108s |
+| `party-disapprove` | — | — | Stub — see below |
 
-Use ElevenLabs Sound Effects (https://elevenlabs.io/sound-effects), Grok audio generation,
-or equivalent AI tool. Text prompts for each are in the Notes column above.
+### Commissioner (gender-neutral instrument sound — questionable; revisit)
 
-Suggested generation approach:
-1. Generate at 44.1 kHz stereo WAV
-2. Trim to target duration in Audacity or ffmpeg
-3. Export to both MP3 (128 kbps) and OGG (quality 4) for < 100 KB per file
-4. Place in this directory with the filename pattern `{type}-{state}.{ext}`
+| File | Source | Duration | Notes |
+|---|---|---|---|
+| `commissioner-neutral` | BigSoundBank #1588 | 0.36s | Single gavel strike (may not fit commissioner personality) |
+
+BigSoundBank direct URL: `https://bigsoundbank.com/UPLOAD/mp3/NNNN.mp3` — CC0 entire catalog.
 
 ---
 
-## Placeholder Status
+## Future sound candidates (candidates/ subdirectory)
 
-All `.mp3` and `.ogg` files currently in this directory are **zero-byte stub placeholders**.
-They are zero-byte files created to allow GAME-062 audio wiring to be developed and tested
-without real audio. Replace each pair by running `download-clips.sh` for sourced clips,
-or by placing AI-generated files here for the AI-GENERATE slots.
+| File | Source | Duration | Role | Notes |
+|---|---|---|---|---|
+| `candidates/f-interrogative-murmur18.mp3` | andrutzab murmur pack (Freesound CC0), segment #18 | 1.1s | Future: interrogative reaction | "Huh?" questioning sound |
+| `candidates/f-approve-mhm-assent.mp3` | Reitanna Seishin "Hmm" (Freesound CC0) | ~1.0s | Future: assent/listening | "I'm listening" or agreement tone; not celebratory enough for approve |
 
-See `download-clips.sh` for curl commands to fetch sourced clips.
+---
+
+## Stubs requiring manual download
+
+These files are zero-byte placeholders. Download from Pixabay Sound Effects
+(pixabay.com/sound-effects/) — search terms below. All Pixabay audio is CC0.
+
+| File pair | Search term | Suggested feel |
+|---|---|---|
+| governor-neutral-m/f, legislator-neutral-m/f | "hmm thinking" or "pondering" | Short neutral "hmm" vocalization, 0.5–1.5s |
+| commissioner-approve-m/f | "tada fanfare" or "short trumpet fanfare" | Celebratory sting, 1–2s |
+| commissioner-disapprove-m/f | "sad trombone" or "wah wah fail" | Classic failure horn, 1–2s |
+| party-disapprove | "crowd boo" or "audience disappointment" | Crowd negative reaction, 1–2s |
+
+After downloading: convert OGG with `ffmpeg -i <input>.mp3 -c:a libopus -b:a 96k <output>.ogg`
+
+---
+
+## Processing notes
+
+Trimming done with `tools/trim-audio.main.kts` (AIFF intermediate) or `ffmpeg -t <seconds>`.  
+MP3 encoding: `ffmpeg -q:a 4` (VBR ~128kbps).  
+OGG encoding: `ffmpeg -c:a libopus -b:a 96k`.
