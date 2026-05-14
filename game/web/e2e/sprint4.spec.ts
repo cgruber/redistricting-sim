@@ -83,15 +83,15 @@ test("GAME-069: every criterion row has a character slot (.rc-char)", async ({ p
   }
 });
 
-// GAME-069: tutorial-002 has no character fields on criteria → all default to commissioner → placeholder SVG.
+// GAME-069: non-governor criterion rows render character sprites (not placeholder SVGs since GAME-062).
 test("GAME-069: non-governor criterion rows contain a placeholder SVG", async ({ page }) => {
   await loadEditor(page);
   await openResultScreen(page);
 
-  // All slots in tutorial-002 use the commissioner placeholder (no governor sprite).
-  // At least one .rc-char slot must contain an SVG element.
-  const svgSlots = page.locator(".rc-char svg");
-  const count = await svgSlots.count();
+  // GAME-062 replaced placeholder SVGs with real sprite divs for all character types.
+  // Check that at least one .rc-char slot contains a character-sprite div.
+  const spriteSlots = page.locator(".rc-char .character-sprite");
+  const count = await spriteSlots.count();
   expect(count).toBeGreaterThan(0);
 });
 
