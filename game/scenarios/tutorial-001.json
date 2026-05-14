@@ -341,5 +341,8 @@
       }
     ],
     "objective": "Divide Millbrook County into 2 districts with equal population. Every precinct must be assigned. Both districts must be contiguous."
+  },
+  "character_demographics": {
+    "commissioner": "wm"
   }
 }
