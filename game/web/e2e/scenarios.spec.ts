@@ -1019,8 +1019,11 @@ test("in-game nav: without campaign context, shows plain Main Menu button (no dr
 // ─── GAME-066: result screen dramatic reveal ──────────────────────────────────
 
 test("GAME-066: reduced-motion — all criterion rows visible immediately after submit", async ({ page }) => {
-  // Global playwright config sets reducedMotion:'reduce', so sequential reveal
-  // is bypassed and all rows are rendered in final state synchronously.
+  // playwright.config reducedMotion:'reduce' is ignored in Bazel-sandboxed Chromium —
+  // window.matchMedia() returns false there and the animated path runs. With ROW_CHAIN_MS=2550ms
+  // and 5 rows in scenario-002, animated path takes 4×2550=10200ms > 10s test timeout.
+  // Explicit emulateMedia call here ensures the instant path runs reliably.
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await loadScenario(page, "scenario-002");
   await page.locator("#btn-submit").click();
   await expect(page.locator("#result-screen")).toBeVisible();

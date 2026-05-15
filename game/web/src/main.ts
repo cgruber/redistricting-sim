@@ -827,26 +827,10 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
 			verdictEl.appendChild(makeSprite(v, passed ? "Approves" : "Disapproves"));
 		} else {
-			// charType is commissioner | judge | legislator | party — all use 1408×768 sheets.
-			// party has no demographic variants (path: party/sheet.png).
-			// judge allows empty demo → bare judge/ directory; all others require non-empty (enforced by loader).
-			const dir = (charType !== "party" && demo) ? `${charType}-${demo}` : charType;
-			const img = assetUrl(`assets/characters/${dir}/sheet.png`);
-			const n = CHAR_SHEET.neutral;
-			const v = passed ? CHAR_SHEET.approve : CHAR_SHEET.disapprove;
-			const makeSprite = (col: { x: number; w: number }, label: string): HTMLElement => {
-				const s = document.createElement("div");
-				s.className = `character-sprite character-${charType} character-sprite--row`;
-				s.setAttribute("role", "img");
-				s.setAttribute("aria-label", label);
-				s.style.width = `${Math.round(col.w * CHAR_ROW_SCALE)}px`;
-				s.style.backgroundImage = `url('${img}')`;
-				s.style.backgroundPosition = `-${Math.round(col.x * CHAR_ROW_SCALE)}px 0%`;
-				s.style.backgroundSize = `${Math.round(CHAR_SHEET_WIDTH * CHAR_ROW_SCALE)}px 84px`;
-				return s;
-			};
-			neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
-			verdictEl.appendChild(makeSprite(v, passed ? "Approves" : "Disapproves"));
+			// GAME-062: sprite offsets for commissioner/judge/legislator/party not yet measured.
+			// Use placeholder SVG until GAME-062 sprite wiring is complete.
+			neutralEl.innerHTML = charPlaceholderSvg("neutral");
+			verdictEl.innerHTML = charPlaceholderSvg(passed ? "approve" : "disapprove");
 		}
 
 		slot.appendChild(neutralEl);
@@ -1019,10 +1003,21 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				const type = row.dataset["charType"] ?? "";
 				const democode = row.dataset["charDemo"] ?? "";
 				const state = passed ? "approve" : "disapprove";
-				const gender = democode.length >= 2 ? democode.slice(-1) : "";
-				const clipName = (gender === "m" || gender === "f")
-					? `${type}-${state}-${gender}`
-					: `${type}-${state}`;
+				// Governor: gender-keyed murmur clips.
+				// Judge: dedicated gavel clips (judge-approve / judge-disapprove).
+				// All others (SVG placeholder rows): party-approve; disapprove falls back to
+				// judge-disapprove until a real crowd-boo clip exists (party-disapprove is a stub).
+				let clipName: string;
+				if (type === "governor") {
+					const gender = democode.length >= 2 ? democode.slice(-1) : "";
+					clipName = (gender === "m" || gender === "f")
+						? `${type}-${state}-${gender}`
+						: `${type}-${state}`;
+				} else if (type === "judge") {
+					clipName = `judge-${state}`;
+				} else {
+					clipName = passed ? "party-approve" : "judge-disapprove";
+				}
 				play(clipName);
 			}
 		}
@@ -1037,11 +1032,13 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		} else {
 			// Animated path: sequential reveal — each row fades in CHECKING, then flips to verdict.
 			// GAME-068: each row fully resolves before the next starts (no simultaneous CHECKING).
-			// Chain delay = 300ms fade + 1200ms hold + 150ms flip = 1650ms per row.
+			// Chain delay = 300ms fade + 1200ms hold + 150ms flip + 900ms settle = 2550ms per row.
+			// ROW_SETTLE_MS gives audio clips space to finish before the next row starts.
 			const ROW_FADE_MS = 300;
 			const ROW_HOLD_MS = 1200;
 			const ROW_FLIP_MS = 150;
-			const ROW_CHAIN_MS = ROW_FADE_MS + ROW_HOLD_MS + ROW_FLIP_MS; // 1650ms
+			const ROW_SETTLE_MS = 900;
+			const ROW_CHAIN_MS = ROW_FADE_MS + ROW_HOLD_MS + ROW_FLIP_MS + ROW_SETTLE_MS; // 2550ms
 
 			const rowElements: HTMLElement[] = [];
 			for (const cr of allRows) {

@@ -22,6 +22,11 @@ async function loadEditor(page: import("@playwright/test").Page): Promise<void> 
 
 /** Force-open the result screen by bypassing submit gate. */
 async function openResultScreen(page: import("@playwright/test").Page): Promise<void> {
+  // Explicit emulation needed: playwright.config reducedMotion:'reduce' is ignored in the
+  // Bazel-sandboxed Chromium, so window.matchMedia() returns false and the animated path
+  // runs. With ROW_CHAIN_MS=2550ms and multiple rows, animated path exceeds the 10s test
+  // timeout. Calling emulateMedia here ensures the instant (non-animated) path runs.
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.evaluate(() => {
     const btn = document.getElementById("btn-submit") as HTMLButtonElement | null;
     if (btn) btn.disabled = false;
@@ -83,15 +88,16 @@ test("GAME-069: every criterion row has a character slot (.rc-char)", async ({ p
   }
 });
 
-// GAME-069: non-governor criterion rows render character sprites (not placeholder SVGs since GAME-062).
+// GAME-069 / GAME-062: non-governor criterion rows show SVG placeholder checkmarks/X marks
+// until sprite offsets for each type are measured and wired (GAME-062 sprite wiring pending).
 test("GAME-069: non-governor criterion rows contain a placeholder SVG", async ({ page }) => {
   await loadEditor(page);
   await openResultScreen(page);
 
-  // GAME-062 replaced placeholder SVGs with real sprite divs for all character types.
-  // Check that at least one .rc-char slot contains a character-sprite div.
-  const spriteSlots = page.locator(".rc-char .character-sprite");
-  const count = await spriteSlots.count();
+  // Governor row has a sprite; all other rows render charPlaceholderSvg() via innerHTML.
+  // Check that at least one .rc-char slot contains an svg element.
+  const svgSlots = page.locator(".rc-char svg");
+  const count = await svgSlots.count();
   expect(count).toBeGreaterThan(0);
 });
 
