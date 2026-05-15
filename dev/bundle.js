@@ -411,6 +411,9 @@ function parseCriterion(raw, idx) {
     if (!validChars.includes(charVal)) {
       throw new Error(`${label}.character: unknown value "${charVal}"; expected one of: ${validChars.join(", ")}`);
     }
+    if (charVal === "party" && r["party_id"] === void 0) {
+      throw new Error(`${label}.character is "party" but party_id is missing`);
+    }
     sc.character = charVal;
   }
   if (r["party_id"] !== void 0) {
@@ -547,6 +550,29 @@ function loadScenario(json) {
       throw new Error(`instigator_character: unknown value "${icVal}"; expected one of: ${validChars.join(", ")}`);
     }
     instigator_character = icVal;
+  }
+  let character_demographics;
+  if (raw["character_demographics"] !== void 0) {
+    const cd2 = raw["character_demographics"];
+    if (typeof cd2 !== "object" || cd2 === null || Array.isArray(cd2)) {
+      throw new Error("character_demographics: must be an object");
+    }
+    const validChars = ["governor", "commissioner", "judge", "legislator"];
+    const requiresSuffix = /* @__PURE__ */ new Set(["governor", "commissioner", "legislator"]);
+    character_demographics = {};
+    for (const key of Object.keys(cd2)) {
+      if (key === "party") {
+        throw new Error(`character_demographics: "party" has no demographic variants and must be omitted`);
+      }
+      if (!validChars.includes(key)) {
+        throw new Error(`character_demographics: unknown key "${key}"; expected one of: ${validChars.join(", ")}`);
+      }
+      const val = requireString(cd2[key], `character_demographics.${key}`);
+      if (requiresSuffix.has(key) && val === "") {
+        throw new Error(`character_demographics.${key}: demographic suffix must be non-empty (no bare "${key}/" directory exists)`);
+      }
+      character_demographics[key] = val;
+    }
   }
   let state_context;
   if (raw["state_context"] !== void 0) {
@@ -792,6 +818,8 @@ function loadScenario(json) {
     scenario.default_district_id = default_district_id;
   if (instigator_character !== void 0)
     scenario.instigator_character = instigator_character;
+  if (character_demographics !== void 0)
+    scenario.character_demographics = character_demographics;
   if (state_context !== void 0)
     scenario.state_context = state_context;
   return scenario;
@@ -14755,6 +14783,56 @@ var init_criterion_icons = __esm({
   }
 });
 
+// web/src/audio/audioPlayer.js
+function preload(clips) {
+  for (const [name, url] of Object.entries(clips)) {
+    const el = new Audio(url);
+    el.preload = "auto";
+    _clips.set(name, el);
+  }
+}
+function play(name) {
+  if (isMuted())
+    return;
+  const el = _clips.get(name);
+  if (el === void 0)
+    return;
+  try {
+    const result = el.play();
+    if (result !== void 0) {
+      result.catch(() => {
+      });
+    }
+  } catch (e) {
+  }
+}
+function setMuted(muted) {
+  _mutedCache = muted;
+  try {
+    localStorage.setItem(MUTE_KEY, muted ? "true" : "false");
+  } catch (e) {
+  }
+}
+function isMuted() {
+  if (_mutedCache !== void 0)
+    return _mutedCache;
+  try {
+    const raw = localStorage.getItem(MUTE_KEY);
+    _mutedCache = raw === "true";
+  } catch (e) {
+    _mutedCache = false;
+  }
+  return _mutedCache;
+}
+var MUTE_KEY, _clips, _mutedCache;
+var init_audioPlayer = __esm({
+  "web/src/audio/audioPlayer.js"() {
+    MUTE_KEY = "redistricting-sim-audio-muted";
+    _clips = /* @__PURE__ */ new Map();
+    _mutedCache = void 0;
+  }
+});
+
 // web/src/main.ts
 var require_main = __commonJS({
   "web/src/main.ts"(exports) {
@@ -14768,6 +14846,7 @@ var require_main = __commonJS({
     init_campaigns();
     init_assets();
     init_criterion_icons();
+    init_audioPlayer();
     var SCENARIO_MANIFEST = [
       { id: "tutorial-002", title: "Millbrook County: Three-District Challenge" },
       { id: "scenario-002", title: "Clearwater County: The Governor's Map" },
@@ -14813,6 +14892,7 @@ var require_main = __commonJS({
     var btnNextScenario = document.getElementById("btn-next-scenario");
     var resultRevealControls = document.getElementById("result-reveal-controls");
     var btnRevealSkip = document.getElementById("btn-reveal-skip");
+    var btnMuteAudio = document.getElementById("btn-mute-audio");
     var introScreen = document.getElementById("intro-screen");
     var charNameEl = document.getElementById("char-name");
     var charRoleEl = document.getElementById("char-role");
@@ -15110,6 +15190,24 @@ var require_main = __commonJS({
         showLoadError(`Scenario <strong>${entryToLoad.id}</strong> could not be loaded due to a validation error.`, msg);
         return;
       }
+      {
+        const clips = {};
+        for (const type2 of ["governor", "commissioner", "legislator"]) {
+          for (const gender of ["m", "f"]) {
+            for (const state of ["approve", "disapprove"]) {
+              const name = `${type2}-${state}-${gender}`;
+              clips[name] = assetUrl(`assets/audio/${name}.mp3`);
+            }
+          }
+        }
+        for (const type2 of ["judge", "party"]) {
+          for (const state of ["approve", "neutral", "disapprove"]) {
+            const name = `${type2}-${state}`;
+            clips[name] = assetUrl(`assets/audio/${name}.mp3`);
+          }
+        }
+        preload(clips);
+      }
       const { store } = createGameStore(scenario);
       const temporalStore = store.temporal;
       if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
@@ -15340,9 +15438,11 @@ var require_main = __commonJS({
           return 0;
         return criterionResults.filter((cr) => cr.required && cr.passed).length;
       }
-      const GOVERNOR_DEMOGRAPHICS = ["wm", "bm", "af"];
       const GOV_ROW_SCALE = 84 / 752;
       const GOV_SHEET = { neutral: { x: 0, w: 400 }, approve: { x: 400, w: 480 }, disapprove: { x: 880, w: 496 } };
+      const CHAR_ROW_SCALE = 84 / 768;
+      const CHAR_SHEET_WIDTH = 1408;
+      const CHAR_SHEET = { neutral: { x: 0, w: 469 }, approve: { x: 469, w: 469 }, disapprove: { x: 938, w: 470 } };
       function charPlaceholderSvg(state) {
         if (state === "neutral") {
           return `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
@@ -15361,16 +15461,19 @@ var require_main = __commonJS({
 			<line x1="22" y1="10" x2="10" y2="22" stroke="#e94560" stroke-width="2.5" stroke-linecap="round"/>
 		</svg>`;
       }
-      function buildCharSlotChildren(slot, charType, passed, demo) {
+      function buildCharSlotChildren(slot, charType, passed) {
+        var _a2, _b2;
         const neutralEl = document.createElement("div");
         neutralEl.className = "rc-char-neutral";
         const verdictEl = document.createElement("div");
         verdictEl.className = "rc-char-verdict";
         verdictEl.style.opacity = "0";
+        const demo = (_b2 = (_a2 = scenario.character_demographics) == null ? void 0 : _a2[charType]) != null ? _b2 : "";
         if (charType === "governor") {
           const n = GOV_SHEET.neutral;
           const v2 = passed ? GOV_SHEET.approve : GOV_SHEET.disapprove;
-          const img = assetUrl(`assets/characters/governor-${demo}/sheet.png`);
+          const govDemo = demo || "wm";
+          const img = assetUrl(`assets/characters/governor-${govDemo}/sheet.png`);
           const makeSprite = (col, label) => {
             const s2 = document.createElement("div");
             s2.className = "character-sprite character-governor character-sprite--row";
@@ -15385,8 +15488,23 @@ var require_main = __commonJS({
           neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
           verdictEl.appendChild(makeSprite(v2, passed ? "Approves" : "Disapproves"));
         } else {
-          neutralEl.innerHTML = charPlaceholderSvg("neutral");
-          verdictEl.innerHTML = charPlaceholderSvg(passed ? "approve" : "disapprove");
+          const dir = charType !== "party" && demo ? `${charType}-${demo}` : charType;
+          const img = assetUrl(`assets/characters/${dir}/sheet.png`);
+          const n = CHAR_SHEET.neutral;
+          const v2 = passed ? CHAR_SHEET.approve : CHAR_SHEET.disapprove;
+          const makeSprite = (col, label) => {
+            const s2 = document.createElement("div");
+            s2.className = `character-sprite character-${charType} character-sprite--row`;
+            s2.setAttribute("role", "img");
+            s2.setAttribute("aria-label", label);
+            s2.style.width = `${Math.round(col.w * CHAR_ROW_SCALE)}px`;
+            s2.style.backgroundImage = `url('${img}')`;
+            s2.style.backgroundPosition = `-${Math.round(col.x * CHAR_ROW_SCALE)}px 0%`;
+            s2.style.backgroundSize = `${Math.round(CHAR_SHEET_WIDTH * CHAR_ROW_SCALE)}px 84px`;
+            return s2;
+          };
+          neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
+          verdictEl.appendChild(makeSprite(v2, passed ? "Approves" : "Disapproves"));
         }
         slot.appendChild(neutralEl);
         slot.appendChild(verdictEl);
@@ -15453,14 +15571,12 @@ var require_main = __commonJS({
         const validityRows = mapIsValid ? [] : buildValidityRows(validity);
         const allRows = [...validityRows, ...evalResult.criterionResults];
         resultCriteriaList.innerHTML = "";
-        const demoIdx = scenario.id.split("").reduce((acc, c3) => acc + c3.charCodeAt(0), 0) % GOVERNOR_DEMOGRAPHICS.length;
-        const demo = GOVERNOR_DEMOGRAPHICS[demoIdx];
         function resolveCharInfo(cr) {
           var _a3;
           return (_a3 = charInfoMap.get(cr.criterionId)) != null ? _a3 : { type: "commissioner" };
         }
         function buildRowElement(cr, final) {
-          var _a3;
+          var _a3, _b2, _c2;
           const verdictCls = cr.passed ? "passed" : cr.required ? "failed-required" : "failed-optional";
           const row = document.createElement("div");
           row.className = final ? `result-criterion ${verdictCls}` : "result-criterion rc-pending";
@@ -15470,14 +15586,16 @@ var require_main = __commonJS({
           const charInfo = resolveCharInfo(cr);
           const charSlot = document.createElement("div");
           charSlot.className = "rc-char";
-          buildCharSlotChildren(charSlot, charInfo.type, cr.passed, demo);
+          buildCharSlotChildren(charSlot, charInfo.type, cr.passed);
+          row.dataset["charType"] = charInfo.type;
+          row.dataset["charDemo"] = (_b2 = (_a3 = scenario.character_demographics) == null ? void 0 : _a3[charInfo.type]) != null ? _b2 : "";
           if (final) {
             charSlot.querySelector(".rc-char-neutral").style.opacity = "0";
             charSlot.querySelector(".rc-char-verdict").style.opacity = "1";
           }
           const iconEl = document.createElement("span");
           iconEl.className = "rc-icon";
-          const criterionType = (_a3 = criterionTypeMap.get(cr.criterionId)) != null ? _a3 : cr.criterionId;
+          const criterionType = (_c2 = criterionTypeMap.get(cr.criterionId)) != null ? _c2 : cr.criterionId;
           iconEl.innerHTML = getCriterionIcon(cr.criterionId, criterionType);
           const body = document.createElement("div");
           body.className = "rc-body";
@@ -15500,7 +15618,8 @@ var require_main = __commonJS({
           row.appendChild(charSlot);
           return row;
         }
-        function finalizeRow(row) {
+        function finalizeRow(row, withAudio = false) {
+          var _a3, _b2;
           if (row.dataset["finalized"] === "true")
             return;
           row.dataset["finalized"] = "true";
@@ -15517,6 +15636,14 @@ var require_main = __commonJS({
           const verdict = row.querySelector(".rc-char-verdict");
           if (neutral && verdict)
             transitionCharSlot(neutral, verdict);
+          if (withAudio) {
+            const type2 = (_a3 = row.dataset["charType"]) != null ? _a3 : "";
+            const democode = (_b2 = row.dataset["charDemo"]) != null ? _b2 : "";
+            const state2 = passed ? "approve" : "disapprove";
+            const gender = democode.length >= 2 ? democode.slice(-1) : "";
+            const clipName = gender === "m" || gender === "f" ? `${type2}-${state2}-${gender}` : `${type2}-${state2}`;
+            play(clipName);
+          }
         }
         const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         if (reducedMotion) {
@@ -15553,10 +15680,17 @@ var require_main = __commonJS({
               row.classList.remove("rc-pending");
               row.style.animation = `criterionReveal ${ROW_FADE_MS}ms ease forwards`;
               const t22 = setTimeout(() => {
-                finalizeRow(row);
-                const badge = row.querySelector(".rc-badge");
-                badge.classList.add("rc-pop");
-                badge.addEventListener("animationend", () => badge.classList.remove("rc-pop"), { once: true });
+                finalizeRow(
+                  row,
+                  /*withAudio=*/
+                  true
+                );
+                const passed = row.dataset["passed"] === "true";
+                if (!passed) {
+                  const badge = row.querySelector(".rc-badge");
+                  badge.classList.add("rc-pop");
+                  badge.addEventListener("animationend", () => badge.classList.remove("rc-pop"), { once: true });
+                }
                 if (i === rowElements.length - 1) {
                   const tDone = setTimeout(() => {
                     btnRevealSkip == null ? void 0 : btnRevealSkip.removeEventListener("click", skipHandler);
@@ -15592,8 +15726,20 @@ var require_main = __commonJS({
           saveProgress(progress);
           clearWip();
         }
+        syncMuteButton();
         resultScreen.classList.remove("hidden");
       }
+      function syncMuteButton() {
+        if (!btnMuteAudio)
+          return;
+        const muted = isMuted();
+        btnMuteAudio.textContent = muted ? "Unmute" : "Mute";
+        btnMuteAudio.setAttribute("aria-pressed", String(muted));
+      }
+      btnMuteAudio == null ? void 0 : btnMuteAudio.addEventListener("click", () => {
+        setMuted(!isMuted());
+        syncMuteButton();
+      });
       btnSubmit.addEventListener("click", () => {
         showResultScreen();
       });

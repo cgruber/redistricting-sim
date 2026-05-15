@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="app-version" content="vTEST-db3d6c033bfa">
+    <meta name="app-version" content="v0.0.11">
     <meta name="app-environment" content="dev">
     <title>Past the Post</title>
     <meta http-equiv="Content-Security-Policy"
@@ -83,6 +83,7 @@
         <div id="result-actions">
           <button id="btn-keep-drawing">← Keep Drawing</button>
           <button id="btn-next-scenario" style="display:none">Next Scenario →</button>
+          <button id="btn-mute-audio" aria-pressed="false">Mute</button>
         </div>
       </div>
     </div>
@@ -196,7 +197,7 @@
       wasm_bindgen("./wasm_calc_bindgen_bg.wasm").then(function () {
         var s = document.createElement("script");
         s.type = "module";
-        s.src = "bundle.js?v=vTEST-db3d6c033bfa";
+        s.src = "bundle.js?v=v0.0.11";
         document.body.appendChild(s);
       });
     </script>

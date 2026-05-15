@@ -3167,5 +3167,9 @@
     ],
     "objective": "Crack the Ryu corridor across all 5 districts. Ken Party must win every seat."
   },
-  "instigator_character": "party"
+  "instigator_character": "party",
+  "character_demographics": {
+    "commissioner": "wm",
+    "judge": ""
+  }
 }

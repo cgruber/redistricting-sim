@@ -785,6 +785,20 @@ body {
 
 #btn-next-scenario:hover { background: #2a8050; }
 
+#btn-mute-audio {
+  padding: 6px 12px;
+  background: transparent;
+  color: #607090;
+  border: 1px solid #2a3a5a;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  align-self: center;
+}
+
+#btn-mute-audio:hover { border-color: #4060a0; color: #90a8d0; }
+#btn-mute-audio[aria-pressed="true"] { color: #e94560; border-color: #6a2040; }
+
 /* ── Intro screen ──────────────────────────────────────────────────────── */
 
 #intro-screen {
