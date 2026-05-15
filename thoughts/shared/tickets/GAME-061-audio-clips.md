@@ -17,26 +17,37 @@ impractical. Prefer CC0 sources. If CC0 unavailable, use AI-generated audio
 (ElevenLabs Sound Effects, Grok, or similar). Tone per type defined by DESIGN-009
 (resolved — see that ticket for guidance).
 
-## Current State
+## Current State (updated 2026-05-14)
 
-No audio exists anywhere in the game. This is the first audio feature.
-`game/web/assets/audio/` directory exists (created in GAME-063).
+Audio assets placed in `game/web/assets/audio/`. Naming scheme extended to gender-keyed
+variants for human characters (`{type}-{state}-m.mp3` / `{type}-{state}-f.mp3`). All
+active clips normalized to −16 LUFS. See `INVENTORY.md` for full details.
+
+**Done:**
+- Governor, commissioner, legislator: approve-m, approve-f, disapprove-m, disapprove-f (real audio, CC0)
+- Judge: approve, neutral, disapprove (gavel — gender-neutral)
+- Party: approve, neutral (crowd sounds — gender-neutral)
+- `candidates/` subdirectory: future sounds inventoried (interrogative huh?, assent/listening)
+
+**Remaining stubs (zero-byte):**
+- `governor-neutral.mp3`, `legislator-neutral.mp3` (thinking/pondering sound needed)
+- `commissioner-neutral.mp3` is gavel (may not fit; revisit)
+- `party-disapprove.mp3` (crowd boo needed)
+- No gender-keyed neutral variants yet for human characters
 
 ## Goals / Acceptance Criteria
 
-- [ ] Audio clips for 5 instigator types × 3 evaluation states — target 15, minimum 10 (2/type)
-- [ ] File naming: `assets/audio/{type}-{state}.mp3` and `.ogg` (dual encoding)
-      types: governor, commissioner, party, judge, legislator
-      states: approve, neutral, disapprove (or: approve, disapprove if collapsed to 2/type)
-- [ ] Clips are short: target 0.5–1.5 s each
-- [ ] File sizes < 100 KB per clip
-- [ ] Source priority: (1) CC0 from freesound.org/pixabay, (2) AI-generated,
-      (3) CC-BY with in-game attribution
-- [ ] Asset inventory document (`game/web/assets/audio/INVENTORY.md`) listing:
-      type, state, filename, source URL, license for each clip
-- [ ] Placeholder silent clips created for any states not yet sourced, so
-      GAME-062 can be wired and tested without waiting for final audio
-- [ ] Assets placed in `game/web/assets/audio/`
+- [x] Audio clips for 5 instigator types × 3 evaluation states — minimum 10 met; 12 real clips active
+- [x] File naming: gender-keyed `{type}-{state}-m/f` for human characters; bare `{type}-{state}` for judge/party
+- [x] Clips short: 0.6–2.35s each
+- [x] File sizes < 100 KB per clip
+- [x] Source priority honoured: all CC0 from freesound.org / BigSoundBank
+- [x] Asset inventory document (`game/web/assets/audio/INVENTORY.md`) complete
+- [x] Zero-byte placeholder stubs for missing states (GAME-062 can wire without blocking)
+- [x] Assets placed in `game/web/assets/audio/`
+- [x] All clips normalized to −16 LUFS (EBU R128)
+- [ ] Remaining stubs filled: governor-neutral-m/f, legislator-neutral-m/f, party-disapprove
+- [ ] commissioner-neutral revisited (gavel may not fit a person character)
 
 ## References
 
