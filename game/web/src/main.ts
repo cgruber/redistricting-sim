@@ -33,6 +33,7 @@ import {
 import { CAMPAIGN_REGISTRY, getCampaign, loadLastPlayedScenario, saveLastPlayedScenario } from "./model/campaigns.js";
 import { initAssets, assetUrl } from "./assets.js";
 import { getCriterionIcon } from "./criterion-icons.js";
+import { preload, play, setMuted, isMuted } from "./audio/audioPlayer.js";
 
 // ─── Scenario manifest (GAME-021) ─────────────────────────────────────────────
 // Static list of all available scenarios in play order.
@@ -96,6 +97,7 @@ const btnKeepDrawing = document.getElementById("btn-keep-drawing") as HTMLButton
 const btnNextScenario = document.getElementById("btn-next-scenario") as HTMLButtonElement | null;
 const resultRevealControls = document.getElementById("result-reveal-controls") as HTMLElement | null;
 const btnRevealSkip = document.getElementById("btn-reveal-skip") as HTMLButtonElement | null;
+const btnMuteAudio = document.getElementById("btn-mute-audio") as HTMLButtonElement | null;
 
 // Intro screen refs (GAME-016)
 const introScreen = document.getElementById("intro-screen") as HTMLElement | null;
@@ -460,6 +462,26 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		console.error(`[GAME-032] Scenario "${entryToLoad.id}" validation failed:`, e);
 		showLoadError(`Scenario <strong>${entryToLoad.id}</strong> could not be loaded due to a validation error.`, msg);
 		return;
+	}
+
+	// ── Preload audio clips (GAME-062) ───────────────────────────────────────
+	{
+		const clips: Record<string, string> = {};
+		for (const type of ["governor", "commissioner", "legislator"] as const) {
+			for (const gender of ["m", "f"] as const) {
+				for (const state of ["approve", "disapprove"] as const) {
+					const name = `${type}-${state}-${gender}`;
+					clips[name] = assetUrl(`assets/audio/${name}.mp3`);
+				}
+			}
+		}
+		for (const type of ["judge", "party"] as const) {
+			for (const state of ["approve", "neutral", "disapprove"] as const) {
+				const name = `${type}-${state}`;
+				clips[name] = assetUrl(`assets/audio/${name}.mp3`);
+			}
+		}
+		preload(clips);
 	}
 
 	// ── Build store from scenario ─────────────────────────────────────────────
@@ -936,6 +958,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			const charSlot = document.createElement("div");
 			charSlot.className = "rc-char";
 			buildCharSlotChildren(charSlot, charInfo.type, cr.passed);
+			row.dataset["charType"] = charInfo.type;
+			row.dataset["charDemo"] = scenario.character_demographics?.[charInfo.type] ?? "";
 			if (final) {
 				charSlot.querySelector<HTMLElement>(".rc-char-neutral")!.style.opacity = "0";
 				charSlot.querySelector<HTMLElement>(".rc-char-verdict")!.style.opacity = "1";
@@ -975,7 +999,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		}
 
 		// Snap a row to its final verdict state.
-		function finalizeRow(row: HTMLElement): void {
+		function finalizeRow(row: HTMLElement, withAudio = false): void {
 			if (row.dataset["finalized"] === "true") return;
 			row.dataset["finalized"] = "true";
 			const passed = row.dataset["passed"] === "true";
@@ -991,6 +1015,16 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			const neutral = row.querySelector<HTMLElement>(".rc-char-neutral");
 			const verdict = row.querySelector<HTMLElement>(".rc-char-verdict");
 			if (neutral && verdict) transitionCharSlot(neutral, verdict);
+			if (withAudio) {
+				const type = row.dataset["charType"] ?? "";
+				const democode = row.dataset["charDemo"] ?? "";
+				const state = passed ? "approve" : "disapprove";
+				const gender = democode.length >= 2 ? democode.slice(-1) : "";
+				const clipName = (gender === "m" || gender === "f")
+					? `${type}-${state}-${gender}`
+					: `${type}-${state}`;
+				play(clipName);
+			}
 		}
 
 		const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1033,7 +1067,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 					const t2 = setTimeout(() => {
 						// Phase 2: flip to final verdict with pop.
-						finalizeRow(row);
+						finalizeRow(row, /*withAudio=*/ true);
 						// Only pop the badge when it is visible; passed rows hide the badge via display:none.
 						const passed = row.dataset["passed"] === "true";
 						if (!passed) {
@@ -1084,8 +1118,21 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			clearWip();
 		}
 
+		syncMuteButton();
 		resultScreen.classList.remove("hidden");
 	}
+
+	function syncMuteButton(): void {
+		if (!btnMuteAudio) return;
+		const muted = isMuted();
+		btnMuteAudio.textContent = muted ? "Unmute" : "Mute";
+		btnMuteAudio.setAttribute("aria-pressed", String(muted));
+	}
+
+	btnMuteAudio?.addEventListener("click", () => {
+		setMuted(!isMuted());
+		syncMuteButton();
+	});
 
 	btnSubmit!.addEventListener("click", () => {
 		showResultScreen();

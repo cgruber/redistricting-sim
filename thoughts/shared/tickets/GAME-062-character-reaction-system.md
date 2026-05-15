@@ -55,8 +55,8 @@ layer (GAME-061). Replaces the placeholder SVG fallback for all known types.
 - [ ] Party type: no demographic — single `party/sheet.png` used
 
 ### Audio (depends on GAME-061)
-- [ ] Audio clip plays on result screen open via GAME-064 AudioPlayer
-- [ ] Mute toggle visible on result screen; uses GAME-064 persistence
+- [x] Audio clip plays on result screen open via GAME-064 AudioPlayer
+- [x] Mute toggle visible on result screen; uses GAME-064 persistence
 
 ### Remaining edge cases
 - [ ] Fallback: unknown character type → placeholder SVG (not a crash)
