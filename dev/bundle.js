@@ -15488,23 +15488,29 @@ var require_main = __commonJS({
           neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
           verdictEl.appendChild(makeSprite(v2, passed ? "Approves" : "Disapproves"));
         } else {
-          const dir = charType !== "party" && demo ? `${charType}-${demo}` : charType;
-          const img = assetUrl(`assets/characters/${dir}/sheet.png`);
-          const n = CHAR_SHEET.neutral;
-          const v2 = passed ? CHAR_SHEET.approve : CHAR_SHEET.disapprove;
-          const makeSprite = (col, label) => {
-            const s2 = document.createElement("div");
-            s2.className = `character-sprite character-${charType} character-sprite--row`;
-            s2.setAttribute("role", "img");
-            s2.setAttribute("aria-label", label);
-            s2.style.width = `${Math.round(col.w * CHAR_ROW_SCALE)}px`;
-            s2.style.backgroundImage = `url('${img}')`;
-            s2.style.backgroundPosition = `-${Math.round(col.x * CHAR_ROW_SCALE)}px 0%`;
-            s2.style.backgroundSize = `${Math.round(CHAR_SHEET_WIDTH * CHAR_ROW_SCALE)}px 84px`;
-            return s2;
-          };
-          neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
-          verdictEl.appendChild(makeSprite(v2, passed ? "Approves" : "Disapproves"));
+          const needsDemo = charType !== "party" && charType !== "judge";
+          if (needsDemo && !demo) {
+            neutralEl.innerHTML = charPlaceholderSvg("neutral");
+            verdictEl.innerHTML = charPlaceholderSvg(passed ? "approve" : "disapprove");
+          } else {
+            const dir = charType !== "party" && demo ? `${charType}-${demo}` : charType;
+            const img = assetUrl(`assets/characters/${dir}/sheet.png`);
+            const n = CHAR_SHEET.neutral;
+            const v2 = passed ? CHAR_SHEET.approve : CHAR_SHEET.disapprove;
+            const makeSprite = (col, label) => {
+              const s2 = document.createElement("div");
+              s2.className = `character-sprite character-${charType} character-sprite--row`;
+              s2.setAttribute("role", "img");
+              s2.setAttribute("aria-label", label);
+              s2.style.width = `${Math.round(col.w * CHAR_ROW_SCALE)}px`;
+              s2.style.backgroundImage = `url('${img}')`;
+              s2.style.backgroundPosition = `-${Math.round(col.x * CHAR_ROW_SCALE)}px 0%`;
+              s2.style.backgroundSize = `${Math.round(CHAR_SHEET_WIDTH * CHAR_ROW_SCALE)}px 84px`;
+              return s2;
+            };
+            neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
+            verdictEl.appendChild(makeSprite(v2, passed ? "Approves" : "Disapproves"));
+          }
         }
         slot.appendChild(neutralEl);
         slot.appendChild(verdictEl);
