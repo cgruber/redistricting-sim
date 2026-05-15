@@ -15488,29 +15488,8 @@ var require_main = __commonJS({
           neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
           verdictEl.appendChild(makeSprite(v2, passed ? "Approves" : "Disapproves"));
         } else {
-          const needsDemo = charType !== "party" && charType !== "judge";
-          if (needsDemo && !demo) {
-            neutralEl.innerHTML = charPlaceholderSvg("neutral");
-            verdictEl.innerHTML = charPlaceholderSvg(passed ? "approve" : "disapprove");
-          } else {
-            const dir = charType !== "party" && demo ? `${charType}-${demo}` : charType;
-            const img = assetUrl(`assets/characters/${dir}/sheet.png`);
-            const n = CHAR_SHEET.neutral;
-            const v2 = passed ? CHAR_SHEET.approve : CHAR_SHEET.disapprove;
-            const makeSprite = (col, label) => {
-              const s2 = document.createElement("div");
-              s2.className = `character-sprite character-${charType} character-sprite--row`;
-              s2.setAttribute("role", "img");
-              s2.setAttribute("aria-label", label);
-              s2.style.width = `${Math.round(col.w * CHAR_ROW_SCALE)}px`;
-              s2.style.backgroundImage = `url('${img}')`;
-              s2.style.backgroundPosition = `-${Math.round(col.x * CHAR_ROW_SCALE)}px 0%`;
-              s2.style.backgroundSize = `${Math.round(CHAR_SHEET_WIDTH * CHAR_ROW_SCALE)}px 84px`;
-              return s2;
-            };
-            neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
-            verdictEl.appendChild(makeSprite(v2, passed ? "Approves" : "Disapproves"));
-          }
+          neutralEl.innerHTML = charPlaceholderSvg("neutral");
+          verdictEl.innerHTML = charPlaceholderSvg(passed ? "approve" : "disapprove");
         }
         slot.appendChild(neutralEl);
         slot.appendChild(verdictEl);
@@ -15646,8 +15625,13 @@ var require_main = __commonJS({
             const type2 = (_a3 = row.dataset["charType"]) != null ? _a3 : "";
             const democode = (_b2 = row.dataset["charDemo"]) != null ? _b2 : "";
             const state2 = passed ? "approve" : "disapprove";
-            const gender = democode.length >= 2 ? democode.slice(-1) : "";
-            const clipName = gender === "m" || gender === "f" ? `${type2}-${state2}-${gender}` : `${type2}-${state2}`;
+            let clipName;
+            if (type2 === "governor") {
+              const gender = democode.length >= 2 ? democode.slice(-1) : "";
+              clipName = gender === "m" || gender === "f" ? `${type2}-${state2}-${gender}` : `${type2}-${state2}`;
+            } else {
+              clipName = `party-${state2}`;
+            }
             play(clipName);
           }
         }
