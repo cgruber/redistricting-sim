@@ -15648,7 +15648,8 @@ var require_main = __commonJS({
           const ROW_FADE_MS = 300;
           const ROW_HOLD_MS = 1200;
           const ROW_FLIP_MS = 150;
-          const ROW_CHAIN_MS = ROW_FADE_MS + ROW_HOLD_MS + ROW_FLIP_MS;
+          const ROW_SETTLE_MS = 900;
+          const ROW_CHAIN_MS = ROW_FADE_MS + ROW_HOLD_MS + ROW_FLIP_MS + ROW_SETTLE_MS;
           const rowElements = [];
           for (const cr of allRows) {
             const row = buildRowElement(
