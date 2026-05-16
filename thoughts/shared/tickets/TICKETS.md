@@ -100,7 +100,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-043-unify-type-systems.md` | game, code-quality | Unify spike and scenario type systems; retire adapter.ts and types.ts spike layer |
 | `GAME-046-panels-unit-tests.md` | game, testing | Unit tests for render/panels.ts (deferred): jsdom or extract-pure-helpers approach |
 | `GAME-053-electoral-outcome-visual-diff.md` | game, UX | Electoral outcome comparison (player map vs baseline) on result screen; placeholder |
-| `GAME-062-character-reaction-system.md` | game, UX | Wire commissioner/judge/legislator/party sprites + audio; scenario demographic assignment; pose offsets for 1408×768 sheets; governor done |
 | `GAME-065-character-sprite-art-refinement.md` | game, art, content | Quality fixes for known issues (judge eye, party mouth, legislator thumb); broker PNG production (stretch); not a blocker for GAME-062 |
 | `GAME-070-audio-settings.md` | game, UX, audio | Audio settings panel (main menu Settings item): master volume slider, mute toggle, localStorage persistence; coordinates with GAME-062 result-screen toggle |
 | `GAME-071-audio-character-assignment.md` | game, audio, content | Per-scenario character/audio inventory; audio clip selection per type; timing calibration; stub resolution |
@@ -111,6 +110,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-062: character reaction system | CHAR_POSES measured for all 1408×768 sheets; commissioner/judge/legislator/party wired in buildCharSlotChildren(); demographic selection reads scenario.character_demographics; placeholder SVG retained as unknown-type fallback; e2e tests for commissioner sprite + aria-labels; broker/scenario-006 deferred to GAME-065 |
 | GAME-061: audio clips | 12 real clips active (governor/commissioner/legislator gender-keyed, judge/party gender-neutral), all −16 LUFS; stubs for neutral variants + party-disapprove deferred to GAME-071 fine-tuning |
 | GAME-060: character sprite assets | commissioner/judge/legislator/party PNG sheets produced with demographic variants (1408×768, 3-state); old SVG placeholders deleted |
 | DESIGN-011: per-criterion character roster | commissioner/judge/legislator/party PNG sheets produced with demographic variants; criterion→character mapping in scenario format; old SVG placeholders deleted |

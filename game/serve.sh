@@ -9,7 +9,7 @@ if [[ -n "${OLD_PID}" ]]; then
   while lsof -i :"${PORT}" -sTCP:LISTEN >/dev/null 2>&1; do sleep 0.2; done
 fi
 
-# bazel run sets BUILD_WORKSPACE_DIRECTORY to the workspace root (game/).
+# bazel run sets BUILD_WORKSPACE_DIRECTORY to the workspace root (repo root).
 DIST="${BUILD_WORKSPACE_DIRECTORY}/_serve_dist"
 BAZEL_BIN="${BUILD_WORKSPACE_DIRECTORY}/bazel-bin"
 
@@ -17,23 +17,23 @@ rm -rf "${DIST}"
 mkdir -p "${DIST}"
 
 # WASM binding outputs: {name}.js, {name}_bg.wasm (no-modules target)
-cp "${BAZEL_BIN}/rust/wasm_calc_bindgen/wasm_calc_bindgen.js" "${DIST}/"
-cp "${BAZEL_BIN}/rust/wasm_calc_bindgen/wasm_calc_bindgen_bg.wasm" "${DIST}/"
+cp "${BAZEL_BIN}/game/rust/wasm_calc_bindgen/wasm_calc_bindgen.js" "${DIST}/"
+cp "${BAZEL_BIN}/game/rust/wasm_calc_bindgen/wasm_calc_bindgen_bg.wasm" "${DIST}/"
 
 # esbuild bundle (TypeScript + npm deps bundled into a single file)
-cp "${BAZEL_BIN}/web/bundle.js" "${DIST}/"
+cp "${BAZEL_BIN}/game/web/bundle.js" "${DIST}/"
 
 # HTML entry point + CSS (served from source)
-cp "${BUILD_WORKSPACE_DIRECTORY}/web/index.html" "${DIST}/"
-cp "${BUILD_WORKSPACE_DIRECTORY}/web/styles.css" "${DIST}/"
+cp "${BUILD_WORKSPACE_DIRECTORY}/game/web/index.html" "${DIST}/"
+cp "${BUILD_WORKSPACE_DIRECTORY}/game/web/styles.css" "${DIST}/"
 
 # Scenario JSON files (fetched at runtime; not bundled by esbuild)
 mkdir -p "${DIST}/scenarios"
-cp "${BUILD_WORKSPACE_DIRECTORY}/scenarios/"*.json "${DIST}/scenarios/"
+cp "${BUILD_WORKSPACE_DIRECTORY}/game/scenarios/"*.json "${DIST}/scenarios/"
 
 # Static assets (character SVGs, audio clips) served under /assets/
-if [[ -d "${BUILD_WORKSPACE_DIRECTORY}/web/assets" ]]; then
-  cp -r "${BUILD_WORKSPACE_DIRECTORY}/web/assets" "${DIST}/assets"
+if [[ -d "${BUILD_WORKSPACE_DIRECTORY}/game/web/assets" ]]; then
+  cp -r "${BUILD_WORKSPACE_DIRECTORY}/game/web/assets" "${DIST}/assets"
 fi
 
 echo "Serving on http://localhost:${PORT} (Ctrl-C to stop)"

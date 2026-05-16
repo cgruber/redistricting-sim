@@ -2,9 +2,9 @@
 id: GAME-062
 title: Character reaction system — wire remaining types + audio to result screen
 area: game, UX
-status: open
+status: resolved
 created: 2026-05-02
-last_updated: 2026-05-13
+last_updated: 2026-05-18
 ---
 
 ## Summary

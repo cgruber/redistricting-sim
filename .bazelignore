@@ -1,0 +1,6 @@
+game/node_modules
+game/bazel-bin
+game/bazel-game
+game/bazel-out
+game/bazel-testlogs
+spike

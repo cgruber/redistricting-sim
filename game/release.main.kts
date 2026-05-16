@@ -59,17 +59,20 @@ import java.util.zip.ZipInputStream
 // ─── Locate game/ directory ───────────────────────────────────────────────────
 
 val cwd = File(System.getProperty("user.dir"))
+// Locate game/ (npm, playwright, .deploy_pkg live there) and the repo root
+// (MODULE.bazel lives there; bazel-bin is created there).
 val gameDir: File = when {
     File(cwd, "web/BUILD.bazel").exists() -> cwd
     File(cwd, "game/web/BUILD.bazel").exists() -> File(cwd, "game")
     else -> {
-        System.err.println("ERROR: Run from game/ or repo root (could not find web/BUILD.bazel).")
+        System.err.println("ERROR: Run from game/ or repo root (could not find game/web/BUILD.bazel).")
         kotlin.system.exitProcess(1)
     }
 }
+val repoRoot: File = if (File(gameDir, "MODULE.bazel").exists()) gameDir else gameDir.parentFile
 
 val deployPkgDir = File(gameDir, ".deploy_pkg")
-val bazelBinZip = File(gameDir, "bazel-bin/web/deployable.zip")
+val bazelBinZip = File(repoRoot, "bazel-bin/game/web/deployable.zip")
 val mapper = jacksonObjectMapper()
 
 // ─── Shell helpers ────────────────────────────────────────────────────────────
@@ -233,7 +236,7 @@ class Prepare : CliktCommand(
 
         // Build
         System.err.println("Step 1: Building deployable artifact...")
-        shLive("bazel", "build", "//web:deployable")
+        shLive("bazel", "build", "//game/web:deployable", dir = repoRoot)
         if (!bazelBinZip.exists()) err("Artifact not found at $bazelBinZip after build.")
         System.err.println()
 
@@ -469,6 +472,59 @@ class Deploy : CliktCommand(
     }
 }
 
+// ─── serve ────────────────────────────────────────────────────────────────────
+
+class Serve : CliktCommand(
+    name = "serve",
+    help = "Build artifact, extract it locally, and serve it on localhost."
+) {
+    val port by option("--port", help = "HTTP port (default: 58080)").default("58080")
+
+    override fun run() {
+        val wc = detectWorkingCopy()
+        val version = if (wc.onMain) {
+            trysh("jj", "tag", "list").first
+                .lines().lastOrNull { it.trim().startsWith("v") }?.trim()
+                ?: "vTEST-${wc.commitId}"
+        } else {
+            "vTEST-${wc.commitId}"
+        }
+
+        System.err.println("Building $version for local serve ...")
+        shLive("bazel", "build", "//game/web:deployable", dir = repoRoot)
+        if (!bazelBinZip.exists()) err("Artifact not found at $bazelBinZip after build.")
+
+        val serveDir = File(gameDir, ".local_serve/$version")
+        if (serveDir.exists()) serveDir.deleteRecursively()
+        serveDir.mkdirs()
+
+        System.err.println("Extracting to ${serveDir.absolutePath} ...")
+        extractZip(bazelBinZip, serveDir)
+
+        // Patch index.html: inject version + environment so the in-game badge works.
+        val indexHtml = File(serveDir, "index.html")
+        if (indexHtml.exists()) {
+            var html = indexHtml.readText()
+            html = html.replace(
+                """s.src = "bundle.js";""",
+                """s.src = "bundle.js?v=$version";"""
+            )
+            html = html.replace(
+                """<meta name="app-version" content="">""",
+                """<meta name="app-version" content="$version">"""
+            )
+            html = html.replace(
+                """<meta name="app-environment" content="">""",
+                """<meta name="app-environment" content="local">"""
+            )
+            indexHtml.writeText(html)
+        }
+
+        System.err.println("Serving $version at http://localhost:$port  (Ctrl-C to stop)")
+        shLive("python3", "-m", "http.server", port, "--directory", serveDir.absolutePath)
+    }
+}
+
 // ─── Root command ─────────────────────────────────────────────────────────────
 
 class Release : CliktCommand(
@@ -476,7 +532,7 @@ class Release : CliktCommand(
     help = "Build and deploy the game.",
     invokeWithoutSubcommand = false,
 ) {
-    init { subcommands(Prepare(), Deploy()) }
+    init { subcommands(Prepare(), Deploy(), Serve()) }
     override fun run() = Unit
 }
 

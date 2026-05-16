@@ -23,7 +23,7 @@ load("@bazel_skylib//rules:build_test.bzl", "build_test")
 ts_config(
     name = "tsconfig",
     src = "tsconfig.json",
-    visibility = ["//web/src/model:__pkg__"],
+    visibility = ["//game/web/src/model:__pkg__"],
 )
 
 # ── types_lib: types.ts (spike/legacy types for the hex-grid renderer) ────────
@@ -33,7 +33,7 @@ ts_project(
     srcs = ["types.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    visibility = ["//web:__subpackages__"],
+    visibility = ["//game/web:__subpackages__"],
 )
 
 # ── hex_geometry_lib: pure hex math (hexToPixel, hexCorners, mapBounds, HEX_DIRECTIONS) ──
@@ -44,7 +44,7 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [":types_lib"],
-    visibility = ["//web:__subpackages__"],
+    visibility = ["//game/web:__subpackages__"],
 )
 
 # ── generator_lib: generator.ts (spike/legacy procedural precinct generator) ──
@@ -55,7 +55,7 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [":types_lib", ":hex_geometry_lib"],
-    visibility = ["//web:__subpackages__"],
+    visibility = ["//game/web:__subpackages__"],
 )
 
 # ── model_lib: scenario.ts types (GAME-001) ───────────────────────────────────
@@ -65,7 +65,7 @@ ts_project(
     srcs = ["scenario.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    visibility = ["//web:__subpackages__"],
+    visibility = ["//game/web:__subpackages__"],
 )
 
 # ── loader_lib: loadScenario function ────────────────────────────────────────
@@ -76,7 +76,7 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [":model_lib"],
-    visibility = ["//web:__pkg__", "//web/src/model:__pkg__"],
+    visibility = ["//game/web:__pkg__", "//game/web/src/model:__pkg__"],
 )
 
 # ── campaigns_lib: Campaign type + registry + last-played persistence ─────────
@@ -86,7 +86,7 @@ ts_project(
     srcs = ["campaigns.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    visibility = ["//web:__subpackages__"],
+    visibility = ["//game/web:__subpackages__"],
 )
 
 # ── campaigns_test_lib: compile campaign tests ────────────────────────────────
@@ -98,7 +98,7 @@ ts_project(
     declaration = True,
     deps = [
         ":campaigns_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     testonly = True,
 )
@@ -111,7 +111,7 @@ js_test(
     data = [
         ":campaigns_test_lib",
         ":campaigns_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",
@@ -127,7 +127,7 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [":model_lib", ":types_lib", ":hex_geometry_lib"],
-    visibility = ["//web:__subpackages__"],
+    visibility = ["//game/web:__subpackages__"],
 )
 
 # ── progress_lib: player progress persistence (GAME-018) ─────────────────────
@@ -137,7 +137,7 @@ ts_project(
     srcs = ["progress.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    visibility = ["//web:__subpackages__"],
+    visibility = ["//game/web:__subpackages__"],
 )
 
 # ── adapter_test_lib: compile adapter tests ───────────────────────────────────
@@ -150,7 +150,7 @@ ts_project(
     deps = [
         ":adapter_lib",
         ":model_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     testonly = True,
 )
@@ -166,7 +166,7 @@ js_test(
         ":model_lib",
         ":types_lib",
         ":generator_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",
@@ -191,7 +191,7 @@ ts_project(
     declaration = True,
     deps = [
         ":progress_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     testonly = True,
 )
@@ -204,7 +204,7 @@ js_test(
     data = [
         ":progress_test_lib",
         ":progress_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",
@@ -221,7 +221,7 @@ ts_project(
     declaration = True,
     deps = [
         ":progress_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     testonly = True,
 )
@@ -234,7 +234,7 @@ js_test(
     data = [
         ":progress_wip_test_lib",
         ":progress_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",
@@ -252,7 +252,7 @@ ts_project(
     deps = [
         ":hex_geometry_lib",
         ":types_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     testonly = True,
 )
@@ -266,7 +266,7 @@ js_test(
         ":hex_geometry_test_lib",
         ":hex_geometry_lib",
         ":types_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",
@@ -292,7 +292,7 @@ ts_project(
     deps = [
         ":loader_lib",
         ":model_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     testonly = True,
 )
@@ -306,7 +306,7 @@ js_test(
         ":loader_test_lib",
         ":loader_lib",
         ":model_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",

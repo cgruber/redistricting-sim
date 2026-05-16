@@ -11,7 +11,7 @@ bazel_dep(name = "aspect_rules_esbuild", version = "0.21.0")
 single_version_override(
     module_name = "aspect_rules_esbuild",
     version = "0.21.0",
-    patches = ["//patches:aspect_rules_esbuild_bazel9.patch"],
+    patches = ["//game/patches:aspect_rules_esbuild_bazel9.patch"],
     patch_strip = 1,
 )
 bazel_dep(name = "aspect_rules_js", version = "2.9.2")
@@ -31,7 +31,7 @@ use_repo(rules_ts_ext, "npm_typescript")
 npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
 npm.npm_translate_lock(
     name = "npm",
-    pnpm_lock = "//:pnpm-lock.yaml",
+    pnpm_lock = "//game:pnpm-lock.yaml",
     verify_node_modules_ignored = "//:.bazelignore",
 )
 use_repo(npm, "npm")
