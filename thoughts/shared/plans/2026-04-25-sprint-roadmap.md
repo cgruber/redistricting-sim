@@ -287,27 +287,26 @@ per-criterion roster.
 **Dependency chain**:
 - DESIGN-009 [resolved] — character reaction visual style; 3 evaluation states
   (approve/neutral/disapprove)
-- DESIGN-011 [open] — per-criterion character roster (governor done; 4 types to build)
+- DESIGN-011 [resolved] — per-criterion character roster; all 4 types done
 - GAME-059 [resolved] — submit-on-invalid
+- GAME-060 [resolved] — commissioner/party/judge/legislator PNG sheets produced
+- GAME-061 [resolved] — 12 real audio clips active; stubs + tuning deferred to GAME-071
 - GAME-063 [resolved] — asset pipeline
 - GAME-064 [resolved] — audio playback infrastructure
 - GAME-066 [resolved] — result screen dramatic reveal (sequential criteria reveal)
 - GAME-068 [resolved] — result reveal pacing
 - GAME-069 [resolved] — per-criterion `.rc-char` slots + governor PNG wired
-- GAME-060 — produce commissioner/party/judge/legislator PNG sprite sheets (DESIGN-011)
-- GAME-061 — audio clips
+- GAME-062 — wire remaining character types + audio to result screen (SVG placeholders standing in)
 - GAME-065 — art quality iteration (trails GAME-060; not a blocker for GAME-062)
-- GAME-062 — wire remaining character types + audio to result screen
+- GAME-071 — audio fine-tuning; stub resolution; per-scenario character/audio inventory
 
 **Tier 1 (core — all resolved)**: DESIGN-009, GAME-059, GAME-063, GAME-064,
 GAME-066, GAME-068, GAME-069
 
 **Tier 2 (remaining)**:
-- DESIGN-011: finalize criterion → character mapping; drives GAME-060
-- GAME-060: produce 4 remaining PNG sprite sheets (commissioner/party/judge/legislator)
-- GAME-061: audio clips (10 clips: 5 types × pass/fail or approve/disapprove)
 - GAME-062: wire remaining types + audio (governor already wired; 4 types pending)
 - GAME-065: art refinement (polish pass after GAME-060; not a blocker)
+- GAME-071: audio fine-tuning; stub resolution; per-scenario character/audio inventory
 
 **Stretch / S12+ if time allows**:
 - Bipartisan-broker PNG variants for scenario-006 (spec in sprite-spec.json; 9 images)
