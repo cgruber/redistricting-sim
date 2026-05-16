@@ -122,13 +122,11 @@ demo target: player submits map → result screen shows animated character + aud
 art model (updated 2026-05-13): PNG sprite sheets (neutral|approve|disapprove horizontal strip, 200px row)
   governor done+live; 4 remaining types: commissioner party judge legislator (DESIGN-011)
   eval states: approve/neutral/disapprove (not 1:1 star-count); broker variants (sprite-spec.json) = stretch
-resolved: DESIGN-009 GAME-059 GAME-063 GAME-064 GAME-066 GAME-068 GAME-069
+resolved: DESIGN-009 DESIGN-011 GAME-059 GAME-060 GAME-061 GAME-063 GAME-064 GAME-066 GAME-068 GAME-069
 tier2 (remaining):
-  DESIGN-011 [open] (criterion→character mapping; governor done; 4 types to design)
-  GAME-060 [open] (produce commissioner/party/judge/legislator PNG sheets per DESIGN-011)
-  GAME-061 [open] (audio clips; unblocked)
-  GAME-062 [open] (wire remaining types + audio; governor already wired)
+  GAME-062 [open] (wire commissioner/judge/legislator/party sprites + audio; governor done; SVG placeholders standing in)
   GAME-065 [open] (art refinement; trails GAME-060; not blocker for GAME-062)
+  GAME-071 [open] (audio fine-tuning; stub resolution; per-scenario character/audio inventory)
 stretch: broker PNG variants × 3 states for scenario-006 (spec in sprite-spec.json)
 deferred to S13+: DESIGN-005/006/007 demographic overlays; DESIGN-008 geographic features; GAME-053
 
