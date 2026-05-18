@@ -572,6 +572,7 @@ body {
   font-size: 0.84rem;
   color: #808098;
   margin-top: -10px;
+  min-height: 1.2rem; /* reserve space while hidden — prevents layout shift */
   transition: opacity 0.3s ease;
 }
 
@@ -580,9 +581,10 @@ body {
   justify-content: center;
   gap: 6px;
   margin-top: -4px;
+  min-height: 2rem; /* reserve space even when empty/hidden — prevents layout shift on reveal */
 }
 
-#result-stars.hidden { display: none; }
+#result-stars.hidden { visibility: hidden; }
 
 .result-star {
   font-size: 1.6rem;
