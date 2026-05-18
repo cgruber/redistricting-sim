@@ -881,20 +881,16 @@ test("wrap-up screen: completing last scenario shows wrap-up on Next Scenario", 
 
 // ─── GAME-029: About page ───────────────────────────────────────────────────
 
-test("about page: accessible from select screen and shows educational content", async ({ page }) => {
-  await page.goto("/?campaign=educational");
-  await page.evaluate(() => {
-    localStorage.setItem("redistricting-sim-progress", JSON.stringify({ completed: ["tutorial-002"] }));
-  });
-  await page.reload();
-  await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
-  await page.locator("#btn-about").click();
+test("about page: accessible from main menu and shows educational content", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#main-menu")).toBeVisible({ timeout: 10_000 });
+  await page.locator("#btn-main-about").click();
   await expect(page.locator("#about-screen")).toBeVisible();
   await expect(page.locator("#about-screen")).toContainText("Past the Post");
   await expect(page.locator("#about-screen")).toContainText("not advocacy");
-  // Back button returns to select screen
+  // Back button returns to main menu
   await page.locator("#btn-about-close").click();
-  await expect(page.locator("#scenario-select")).toBeVisible();
+  await expect(page.locator("#main-menu")).toBeVisible();
   await expect(page.locator("#about-screen")).not.toBeVisible();
 });
 

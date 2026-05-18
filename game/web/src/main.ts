@@ -368,15 +368,6 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			renderScenarioCards();
 		});
 
-		// About button
-		document.getElementById("btn-about")?.addEventListener("click", () => {
-			scenarioSelectEl?.classList.add("hidden");
-			document.getElementById("about-screen")?.classList.remove("hidden");
-		});
-		document.getElementById("btn-about-close")?.addEventListener("click", () => {
-			document.getElementById("about-screen")?.classList.add("hidden");
-			scenarioSelectEl?.classList.remove("hidden");
-		});
 	}
 
 	// ── Startup routing (GAME-021 / GAME-048) ────────────────────────────────
