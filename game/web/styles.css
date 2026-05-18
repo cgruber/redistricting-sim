@@ -561,6 +561,7 @@ body {
   font-weight: 700;
   text-align: center;
   padding: 10px 0 6px;
+  transition: opacity 0.3s ease;
 }
 
 #result-verdict.pass { color: #4caf80; }
@@ -571,6 +572,34 @@ body {
   font-size: 0.84rem;
   color: #808098;
   margin-top: -10px;
+  transition: opacity 0.3s ease;
+}
+
+#result-stars {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: -4px;
+}
+
+#result-stars.hidden { display: none; }
+
+.result-star {
+  font-size: 1.6rem;
+  animation: starReveal 0.3s ease forwards;
+}
+
+.result-star.filled { color: #f4c430; }
+.result-star.empty  { color: #404060; }
+
+@keyframes starReveal {
+  from { opacity: 0; transform: scale(0.5); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-star { animation: none; }
+  #result-verdict, #result-subtitle { transition: none; }
 }
 
 #result-criteria-list {

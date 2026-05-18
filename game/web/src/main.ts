@@ -95,6 +95,7 @@ const resultSubtitle = document.getElementById("result-subtitle") as HTMLElement
 const resultCriteriaList = document.getElementById("result-criteria-list") as HTMLElement | null;
 const btnKeepDrawing = document.getElementById("btn-keep-drawing") as HTMLButtonElement | null;
 const btnNextScenario = document.getElementById("btn-next-scenario") as HTMLButtonElement | null;
+const resultStars = document.getElementById("result-stars") as HTMLElement | null;
 const resultRevealControls = document.getElementById("result-reveal-controls") as HTMLElement | null;
 const btnRevealSkip = document.getElementById("btn-reveal-skip") as HTMLButtonElement | null;
 const btnMuteAudio = document.getElementById("btn-mute-audio") as HTMLButtonElement | null;
@@ -752,8 +753,9 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	}
 
 	function computeStarCount(criterionResults: CriterionResult[], mapIsValid: boolean): number {
-		if (!mapIsValid) return 0;
-		return criterionResults.filter(cr => cr.required && cr.passed).length;
+		const allRequiredPass = criterionResults.every(cr => !cr.required || cr.passed);
+		if (!mapIsValid || !allRequiredPass) return 0;
+		return 1 + criterionResults.filter(cr => !cr.required && cr.passed).length;
 	}
 
 	// GAME-069/GAME-062: Sprite sheet layout constants.
@@ -917,15 +919,16 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			overallPass = true;
 		}
 
-		resultVerdict.textContent = overallPass ? "Map Passed!" : "Map Failed";
-		resultVerdict.className = overallPass ? "pass" : "fail";
-		resultSubtitle.textContent = overallPass
-			? "All required criteria met."
-			: mapIsValid
-				? "One or more required criteria were not met."
-				: "The map has structural issues that must be fixed.";
-		// GAME-066: sequential reveal — criteria appear one at a time with CHECKING hold.
-		const stars = computeStarCount(evalResult.criterionResults, mapIsValid);
+		// GAME-073: verdict starts hidden; revealed progressively during criteria reveal.
+		resultVerdict.textContent = "";
+		resultVerdict.className = "";
+		resultVerdict.style.opacity = "0";
+		resultSubtitle.textContent = "";
+		resultSubtitle.style.opacity = "0";
+		if (resultStars) { resultStars.innerHTML = ""; resultStars.classList.add("hidden"); }
+		// maxStars based on scenario structure (not forced-pass); stars computed from actual results.
+		const maxStars = 1 + evalResult.criterionResults.filter(cr => !cr.required).length;
+		const stars = debugForcePass ? maxStars : computeStarCount(evalResult.criterionResults, mapIsValid);
 
 		// Build criterion-type lookup (criterionId → Criterion["type"]) for icon dispatch.
 		const criterionTypeMap = new Map<string, string>();
@@ -973,6 +976,50 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		// All active setTimeout handles — cleared by skip, Keep Drawing, and debug replay.
 		let activeTimeouts: ReturnType<typeof setTimeout>[] = [];
 
+		// GAME-073: deferred verdict — shown only after first required-fail or all rows complete.
+		let verdictShown = false;
+
+		function renderStars(el: HTMLElement, earned: number, max: number): void {
+			el.innerHTML = "";
+			el.setAttribute("aria-label", `${earned} of ${max} star${max !== 1 ? "s" : ""}`);
+			for (let i = 1; i <= max; i++) {
+				const s = document.createElement("span");
+				s.className = `result-star ${i <= earned ? "filled" : "empty"}`;
+				s.setAttribute("aria-hidden", "true");
+				s.textContent = i <= earned ? "★" : "☆";
+				el.appendChild(s);
+			}
+		}
+
+		function revealVerdict(pass: boolean, starCount: number): void {
+			if (verdictShown) return;
+			verdictShown = true;
+			resultVerdict!.textContent = pass ? "Map Passed!" : "Map Failed";
+			resultVerdict!.className = pass ? "pass" : "fail";
+			resultVerdict!.style.opacity = "1";
+			resultSubtitle!.textContent = pass
+				? "All required criteria met."
+				: mapIsValid
+					? "One or more required criteria were not met."
+					: "The map has structural issues that must be fixed.";
+			resultSubtitle!.style.opacity = "1";
+			btnNextScenario!.style.display = pass ? "" : "none";
+			if (pass && resultStars) {
+				renderStars(resultStars, starCount, maxStars);
+				resultStars.classList.remove("hidden");
+			}
+			if (pass) {
+				play("tada");
+			} else {
+				// Delay so the criterion's disapprove audio (playing in finalizeRow) finishes first.
+				setTimeout(() => play("womp-womp"), 400);
+			}
+		}
+
+		function finalizeVerdict(): void {
+			if (!verdictShown) revealVerdict(overallPass, stars);
+		}
+
 		// Snap a row to its final verdict state.
 		function finalizeRow(row: HTMLElement, withAudio = false): void {
 			if (row.dataset["finalized"] === "true") return;
@@ -990,6 +1037,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			const neutral = row.querySelector<HTMLElement>(".rc-char-neutral");
 			const verdict = row.querySelector<HTMLElement>(".rc-char-verdict");
 			if (neutral && verdict) transitionCharSlot(neutral, verdict);
+			// GAME-073: reveal failure banner on first required-criterion fail.
+			if (!passed && required) revealVerdict(false, 0);
 			if (withAudio) {
 				const type = row.dataset["charType"] ?? "";
 				const democode = row.dataset["charDemo"] ?? "";
@@ -1013,19 +1062,33 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			}
 		}
 
-		// Recompute the top-level verdict/subtitle/Next Scenario button from current row states.
+		// Recompute the top-level verdict/subtitle/Next Scenario button/stars from current row states.
 		// Called after a debug replay changes a single criterion's result.
 		function syncOverallVerdict(): void {
 			if (!resultVerdict || !resultSubtitle || !resultCriteriaList) return;
 			const rows = Array.from(resultCriteriaList.querySelectorAll<HTMLElement>(".result-criterion"));
 			const anyRequiredFailed = rows.some(r => r.classList.contains("failed-required"));
 			const nowPass = !anyRequiredFailed;
+			verdictShown = true;
 			resultVerdict.textContent = nowPass ? "Map Passed!" : "Map Failed";
 			resultVerdict.className = nowPass ? "pass" : "fail";
+			resultVerdict.style.opacity = "1";
 			resultSubtitle.textContent = nowPass
 				? "All required criteria met."
 				: "One or more required criteria were not met.";
+			resultSubtitle.style.opacity = "1";
 			btnNextScenario!.style.display = nowPass ? "" : "none";
+			if (resultStars) {
+				if (nowPass) {
+					const optionalPassed = rows.filter(r =>
+						r.dataset["required"] === "false" && r.dataset["passed"] === "true"
+					).length;
+					renderStars(resultStars, 1 + optionalPassed, maxStars);
+					resultStars.classList.remove("hidden");
+				} else {
+					resultStars.classList.add("hidden");
+				}
+			}
 		}
 
 		// Debug: reset a single row to pending and re-run its reveal with a forced result.
@@ -1165,11 +1228,19 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			return row;
 		}
 
+		// GAME-059: "Fix It" label for invalid maps, "Keep Drawing" otherwise.
+		// "Next Scenario" visibility is deferred to revealVerdict (GAME-073).
+		btnKeepDrawing!.textContent = mapIsValid ? "← Keep Drawing" : "← Fix It";
+		btnKeepDrawing!.style.display = "";
+		btnNextScenario!.style.display = "none";
+
 		if (reducedMotion) {
 			// Instant path: all rows in final state with verdict character poses immediately.
 			for (const cr of allRows) {
 				resultCriteriaList.appendChild(buildRowElement(cr, /*final=*/ true));
 			}
+			// GAME-073: reveal verdict immediately in reduced-motion mode.
+			revealVerdict(overallPass, stars);
 		} else {
 			// Animated path: sequential reveal — each row fades in CHECKING, then flips to verdict.
 			// GAME-068: each row fully resolves before the next starts (no simultaneous CHECKING).
@@ -1214,6 +1285,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 						if (i === rowElements.length - 1) {
 							const tDone = setTimeout(() => {
 								btnRevealSkip?.removeEventListener("click", skipHandler);
+								finalizeVerdict(); // GAME-073: reveal success banner after all rows done
 								if (resultRevealControls) resultRevealControls.style.display = "none";
 								skipClickHandler = null;
 							}, 800);
@@ -1233,18 +1305,13 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				for (const t of activeTimeouts) clearTimeout(t);
 				activeTimeouts = [];
 				for (const row of rowElements) finalizeRow(row);
+				finalizeVerdict(); // GAME-073: reveal banner after skip
 				if (resultRevealControls) resultRevealControls.style.display = "none";
 				skipClickHandler = null;
 			};
 			skipClickHandler = skipHandler;
 			btnRevealSkip?.addEventListener("click", skipHandler, { once: true });
 		}
-
-		// GAME-059: "Fix It" label for invalid maps, "Keep Drawing" otherwise.
-		// "Next Scenario" only shown on a full pass.
-		btnKeepDrawing!.textContent = mapIsValid ? "← Keep Drawing" : "← Fix It";
-		btnKeepDrawing!.style.display = "";
-		btnNextScenario!.style.display = overallPass ? "" : "none";
 
 		// ── GAME-018: persist completion on pass ──────────────────────────────────
 		if (overallPass) {
