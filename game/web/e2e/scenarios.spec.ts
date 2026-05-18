@@ -788,8 +788,10 @@ test("debug force-win button: visible with ?debug param, marks scenario complete
   const debugBtn = page.locator("#btn-debug-win");
   await expect(debugBtn).toBeVisible();
   await debugBtn.click();
-  // No campaign context — force-win navigates to main menu via backUrl
-  await expect(page.locator("#main-menu")).toBeVisible({ timeout: 10_000 });
+  // Force-win now opens the result screen with all criteria forced to pass.
+  await expect(page.locator("#result-screen")).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator("#btn-next-scenario")).toBeVisible();
+  // Scenario should be marked complete synchronously when result screen opens.
   const completed = await page.evaluate(() => {
     const raw = localStorage.getItem("redistricting-sim-progress");
     return raw ? JSON.parse(raw) : null;

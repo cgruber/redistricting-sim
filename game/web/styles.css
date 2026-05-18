@@ -717,6 +717,26 @@ body {
   background-size: auto 84px;
 }
 
+/* Debug per-criterion pass/fail controls — only rendered in ?debug mode */
+.rc-debug-ctrl {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-left: 6px;
+  flex-shrink: 0;
+}
+.rc-debug-ctrl button {
+  font-size: 0.6rem;
+  padding: 2px 5px;
+  border-radius: 3px;
+  border: 1px solid;
+  cursor: pointer;
+  background: transparent;
+  line-height: 1;
+}
+.rc-debug-pass { color: #4caf80; border-color: #4caf80; }
+.rc-debug-fail { color: #e94560; border-color: #e94560; }
+
 @media (prefers-reduced-motion: reduce) {
   .character-sprite {
     transition: none;

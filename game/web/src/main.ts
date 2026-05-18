@@ -880,7 +880,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		verdict.style.opacity = "1";
 	}
 
-	function showResultScreen() {
+	function showResultScreen(debugForcePass = false) {
 		if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList) return;
 		if (skipClickHandler) { btnRevealSkip?.removeEventListener("click", skipClickHandler); skipClickHandler = null; }
 
@@ -895,7 +895,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		);
 
 		// GAME-059: detect invalid map before running criterion evaluation.
-		const mapIsValid = isMapSubmittable(validity, scenario.rules);
+		let mapIsValid = isMapSubmittable(validity, scenario.rules);
 
 		const evalResult = evaluateCriteria(
 			scenario.success_criteria,
@@ -910,7 +910,12 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		);
 
 		// GAME-059: overall pass requires a valid map AND all required criteria passing.
-		const overallPass = mapIsValid && evalResult.overallPass;
+		let overallPass = mapIsValid && evalResult.overallPass;
+
+		if (debugForcePass) {
+			mapIsValid = true;
+			overallPass = true;
+		}
 
 		resultVerdict.textContent = overallPass ? "Map Passed!" : "Map Failed";
 		resultVerdict.className = overallPass ? "pass" : "fail";
@@ -948,13 +953,113 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 		// GAME-059: for invalid maps, prepend validity failure rows before scenario criteria.
 		const validityRows = mapIsValid ? [] : buildValidityRows(validity);
-		const allRows: CriterionResult[] = [...validityRows, ...evalResult.criterionResults];
+		const criterionRows = debugForcePass
+			? evalResult.criterionResults.map(cr => ({ ...cr, passed: true }))
+			: evalResult.criterionResults;
+		const allRows: CriterionResult[] = [...validityRows, ...criterionRows];
 
 		resultCriteriaList.innerHTML = "";
 
 		// Resolve character info for a row (validity rows default to commissioner).
 		function resolveCharInfo(cr: CriterionResult): { type: CharacterType; party_id?: string } {
 			return charInfoMap.get(cr.criterionId as string) ?? { type: "commissioner" };
+		}
+
+		// Row timing constants — shared by main reveal and per-row debug replay.
+		const ROW_FADE_MS = 300;
+		const ROW_HOLD_MS = 1200;
+		const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+		// All active setTimeout handles — cleared by skip, Keep Drawing, and debug replay.
+		let activeTimeouts: ReturnType<typeof setTimeout>[] = [];
+
+		// Snap a row to its final verdict state.
+		function finalizeRow(row: HTMLElement, withAudio = false): void {
+			if (row.dataset["finalized"] === "true") return;
+			row.dataset["finalized"] = "true";
+			const passed = row.dataset["passed"] === "true";
+			const required = row.dataset["required"] === "true";
+			const verdictCls = passed ? "passed" : required ? "failed-required" : "failed-optional";
+			row.className = `result-criterion ${verdictCls}`;
+			row.style.opacity = "1";
+			row.style.animation = "none";
+			const badge = row.querySelector<HTMLSpanElement>(".rc-badge")!;
+			badge.classList.remove("rc-checking");
+			badge.textContent = passed ? "PASS" : required ? "FAIL" : "OPTIONAL";
+			// Transition character slot neutral → verdict.
+			const neutral = row.querySelector<HTMLElement>(".rc-char-neutral");
+			const verdict = row.querySelector<HTMLElement>(".rc-char-verdict");
+			if (neutral && verdict) transitionCharSlot(neutral, verdict);
+			if (withAudio) {
+				const type = row.dataset["charType"] ?? "";
+				const democode = row.dataset["charDemo"] ?? "";
+				const audioState = passed ? "approve" : "disapprove";
+				// Governor/commissioner/legislator: gender-keyed clips.
+				// Judge: dedicated gavel clips.
+				// Party: party-approve / party-disapprove (disapprove is a stub — GAME-071).
+				let clipName: string;
+				if (type === "governor" || type === "commissioner" || type === "legislator") {
+					const gender = democode.length >= 2 ? democode.slice(-1) : "";
+					clipName = (gender === "m" || gender === "f")
+						? `${type}-${audioState}-${gender}`
+						: `${type}-${audioState}`;
+				} else if (type === "judge") {
+					clipName = `judge-${audioState}`;
+				} else {
+					// party
+					clipName = passed ? "party-approve" : "party-disapprove";
+				}
+				play(clipName);
+			}
+		}
+
+		// Debug: reset a single row to pending and re-run its reveal with a forced result.
+		// Cancels any in-flight animations (main reveal or a prior replay) before starting.
+		function debugReplayRow(row: HTMLElement, newPassed: boolean): void {
+			// Remove any stale once-listener on the Skip button from the main reveal.
+			if (skipClickHandler) {
+				btnRevealSkip?.removeEventListener("click", skipClickHandler);
+				skipClickHandler = null;
+			}
+			for (const t of activeTimeouts) clearTimeout(t);
+			activeTimeouts = [];
+			row.dataset["passed"] = String(newPassed);
+			row.dataset["finalized"] = "false";
+			row.className = "result-criterion rc-pending";
+			row.style.opacity = "";
+			// Force CSS animation reset: clear → reflow → re-trigger.
+			row.style.animation = "none";
+			void row.offsetHeight;
+			// Rebuild char slot for new verdict.
+			const charType = (row.dataset["charType"] ?? "commissioner") as CharacterType;
+			const charSlot = row.querySelector<HTMLElement>(".rc-char")!;
+			charSlot.innerHTML = "";
+			buildCharSlotChildren(charSlot, charType, newPassed);
+			// Reset badge.
+			const badge = row.querySelector<HTMLSpanElement>(".rc-badge")!;
+			badge.className = "rc-badge rc-checking";
+			badge.textContent = "CHECKING…";
+			// Register a cancel hook so Keep Drawing can abort this animation too.
+			skipClickHandler = () => {
+				for (const t of activeTimeouts) clearTimeout(t);
+				activeTimeouts = [];
+				skipClickHandler = null;
+			};
+			if (reducedMotion) {
+				finalizeRow(row, /*withAudio=*/ true);
+				skipClickHandler = null;
+			} else {
+				const t1 = setTimeout(() => {
+					row.classList.remove("rc-pending");
+					row.style.animation = `criterionReveal ${ROW_FADE_MS}ms ease forwards`;
+					const t2 = setTimeout(() => {
+						finalizeRow(row, /*withAudio=*/ true);
+						skipClickHandler = null;
+					}, ROW_HOLD_MS);
+					activeTimeouts.push(t2);
+				}, 50);
+				activeTimeouts.push(t1);
+			}
 		}
 
 		// Build a criterion row element.
@@ -1020,50 +1125,25 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			row.appendChild(body);
 			row.appendChild(badge);
 			row.appendChild(charSlot);
+
+			if (IS_DEBUG) {
+				const dbgCtrl = document.createElement("div");
+				dbgCtrl.className = "rc-debug-ctrl";
+				const btnDbgPass = document.createElement("button");
+				btnDbgPass.className = "rc-debug-pass";
+				btnDbgPass.textContent = "✓ pass";
+				btnDbgPass.addEventListener("click", () => debugReplayRow(row, true));
+				const btnDbgFail = document.createElement("button");
+				btnDbgFail.className = "rc-debug-fail";
+				btnDbgFail.textContent = "✗ fail";
+				btnDbgFail.addEventListener("click", () => debugReplayRow(row, false));
+				dbgCtrl.appendChild(btnDbgPass);
+				dbgCtrl.appendChild(btnDbgFail);
+				row.appendChild(dbgCtrl);
+			}
+
 			return row;
 		}
-
-		// Snap a row to its final verdict state.
-		function finalizeRow(row: HTMLElement, withAudio = false): void {
-			if (row.dataset["finalized"] === "true") return;
-			row.dataset["finalized"] = "true";
-			const passed = row.dataset["passed"] === "true";
-			const required = row.dataset["required"] === "true";
-			const verdictCls = passed ? "passed" : required ? "failed-required" : "failed-optional";
-			row.className = `result-criterion ${verdictCls}`;
-			row.style.opacity = "1";
-			row.style.animation = "none";
-			const badge = row.querySelector<HTMLSpanElement>(".rc-badge")!;
-			badge.classList.remove("rc-checking");
-			badge.textContent = passed ? "PASS" : required ? "FAIL" : "OPTIONAL";
-			// Transition character slot neutral → verdict.
-			const neutral = row.querySelector<HTMLElement>(".rc-char-neutral");
-			const verdict = row.querySelector<HTMLElement>(".rc-char-verdict");
-			if (neutral && verdict) transitionCharSlot(neutral, verdict);
-			if (withAudio) {
-				const type = row.dataset["charType"] ?? "";
-				const democode = row.dataset["charDemo"] ?? "";
-				const state = passed ? "approve" : "disapprove";
-				// Governor/commissioner/legislator: gender-keyed clips.
-				// Judge: dedicated gavel clips.
-				// Party: party-approve / party-disapprove (disapprove is a stub — GAME-071).
-				let clipName: string;
-				if (type === "governor" || type === "commissioner" || type === "legislator") {
-					const gender = democode.length >= 2 ? democode.slice(-1) : "";
-					clipName = (gender === "m" || gender === "f")
-						? `${type}-${state}-${gender}`
-						: `${type}-${state}`;
-				} else if (type === "judge") {
-					clipName = `judge-${state}`;
-				} else {
-					// party
-					clipName = passed ? "party-approve" : "party-disapprove";
-				}
-				play(clipName);
-			}
-		}
-
-		const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 		if (reducedMotion) {
 			// Instant path: all rows in final state with verdict character poses immediately.
@@ -1075,8 +1155,6 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			// GAME-068: each row fully resolves before the next starts (no simultaneous CHECKING).
 			// Chain delay = 300ms fade + 1200ms hold + 150ms flip + 900ms settle = 2550ms per row.
 			// ROW_SETTLE_MS gives audio clips space to finish before the next row starts.
-			const ROW_FADE_MS = 300;
-			const ROW_HOLD_MS = 1200;
 			const ROW_FLIP_MS = 150;
 			const ROW_SETTLE_MS = 900;
 			const ROW_CHAIN_MS = ROW_FADE_MS + ROW_HOLD_MS + ROW_FLIP_MS + ROW_SETTLE_MS; // 2550ms
@@ -1091,7 +1169,6 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			// Show Skip button; hide it when reveal completes naturally.
 			if (resultRevealControls) resultRevealControls.style.display = "";
 
-			const pendingTimeouts: ReturnType<typeof setTimeout>[] = [];
 			let chainDelay = 0;
 
 			for (let i = 0; i < rowElements.length; i++) {
@@ -1120,12 +1197,12 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 								if (resultRevealControls) resultRevealControls.style.display = "none";
 								skipClickHandler = null;
 							}, 800);
-							pendingTimeouts.push(tDone);
+							activeTimeouts.push(tDone);
 						}
 					}, ROW_HOLD_MS);
-					pendingTimeouts.push(t2);
+					activeTimeouts.push(t2);
 				}, rowStart);
-				pendingTimeouts.push(t1);
+				activeTimeouts.push(t1);
 
 				// Next row starts only after this row has fully resolved.
 				chainDelay += ROW_CHAIN_MS;
@@ -1133,7 +1210,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 			// Skip button: clear all pending timeouts, finalize all rows immediately.
 			const skipHandler = () => {
-				for (const t of pendingTimeouts) clearTimeout(t);
+				for (const t of activeTimeouts) clearTimeout(t);
+				activeTimeouts = [];
 				for (const row of rowElements) finalizeRow(row);
 				if (resultRevealControls) resultRevealControls.style.display = "none";
 				skipClickHandler = null;
@@ -1177,19 +1255,13 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	});
 
 	// ── Debug force-win: visible only with ?debug in URL ─────────────────────
+	// Opens the result screen with all criteria forced to pass, so the full
+	// reveal animation and audio can be tested without solving the map.
 	const btnDebugWin = document.getElementById("btn-debug-win") as HTMLButtonElement | null;
 	if (btnDebugWin && IS_DEBUG) {
 		btnDebugWin.style.display = "";
 		btnDebugWin.addEventListener("click", () => {
-			progress = markCompleted(progress, scenario.id);
-			saveProgress(progress);
-			clearWip();
-			const allComplete = SCENARIO_MANIFEST.every((e) => isCompleted(progress, e.id));
-			if (allComplete) {
-				document.getElementById("wrap-up-screen")?.classList.remove("hidden");
-			} else {
-				window.location.assign(backUrl);
-			}
+			showResultScreen(/*debugForcePass=*/ true);
 		});
 	}
 
