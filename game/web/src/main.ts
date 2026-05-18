@@ -1031,13 +1031,16 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		// Debug: reset a single row to pending and re-run its reveal with a forced result.
 		// Cancels any in-flight animations (main reveal or a prior replay) before starting.
 		function debugReplayRow(row: HTMLElement, newPassed: boolean): void {
-			// Remove any stale once-listener on the Skip button from the main reveal.
+			// Finalize any in-flight reveal before starting. Calling skipClickHandler()
+			// snaps all pending rows to their natural results so only this row gets the
+			// debug override — prevents future rows from being abandoned in rc-pending.
 			if (skipClickHandler) {
 				btnRevealSkip?.removeEventListener("click", skipClickHandler);
-				skipClickHandler = null;
+				skipClickHandler(); // finalizes all pending rows + clears activeTimeouts
+			} else {
+				for (const t of activeTimeouts) clearTimeout(t);
+				activeTimeouts = [];
 			}
-			for (const t of activeTimeouts) clearTimeout(t);
-			activeTimeouts = [];
 			row.dataset["passed"] = String(newPassed);
 			row.dataset["finalized"] = "false";
 			row.className = "result-criterion rc-pending";
