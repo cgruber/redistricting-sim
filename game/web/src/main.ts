@@ -715,8 +715,12 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	 */
 	function buildValidityRows(validity: ReturnType<typeof computeValidityStats>): CriterionResult[] {
 		const rows: CriterionResult[] = [];
+		// Skip a validity row if the scenario already has a success criterion of the
+		// equivalent type — that criterion will appear in evalResult and already shows
+		// the failure, so the validity row would be a duplicate.
+		const scenarioCriterionTypes = new Set(scenario.success_criteria.map(sc => sc.criterion.type));
 
-		if (validity.unassignedCount > 0) {
+		if (validity.unassignedCount > 0 && !scenarioCriterionTypes.has("district_count")) {
 			rows.push({
 				criterionId: "validity:all-assigned" as CriterionId,
 				required: true,
@@ -727,7 +731,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		}
 
 		const badPop = validity.districtPop.filter(d => d.status !== "ok");
-		if (badPop.length > 0) {
+		if (badPop.length > 0 && !scenarioCriterionTypes.has("population_balance")) {
 			const worst = badPop[0]!;
 			const sign = worst.deviationPct >= 0 ? "+" : "";
 			rows.push({
@@ -998,6 +1002,11 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			const body = document.createElement("div");
 			body.className = "rc-body";
 
+			const charLabel = document.createElement("div");
+			charLabel.className = "rc-char-label";
+			charLabel.textContent = charInfo.type + ":";
+			body.appendChild(charLabel);
+
 			const desc = document.createElement("div");
 			desc.className = "rc-desc";
 			desc.textContent = cr.description;
@@ -1044,12 +1053,11 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				const type = row.dataset["charType"] ?? "";
 				const democode = row.dataset["charDemo"] ?? "";
 				const state = passed ? "approve" : "disapprove";
-				// Governor: gender-keyed murmur clips.
-				// Judge: dedicated gavel clips (judge-approve / judge-disapprove).
-				// All others (SVG placeholder rows): party-approve; disapprove falls back to
-				// judge-disapprove until a real crowd-boo clip exists (party-disapprove is a stub).
+				// Governor/commissioner/legislator: gender-keyed clips.
+				// Judge: dedicated gavel clips.
+				// Party: party-approve / party-disapprove (disapprove is a stub — GAME-071).
 				let clipName: string;
-				if (type === "governor") {
+				if (type === "governor" || type === "commissioner" || type === "legislator") {
 					const gender = democode.length >= 2 ? democode.slice(-1) : "";
 					clipName = (gender === "m" || gender === "f")
 						? `${type}-${state}-${gender}`
@@ -1057,7 +1065,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				} else if (type === "judge") {
 					clipName = `judge-${state}`;
 				} else {
-					clipName = passed ? "party-approve" : "judge-disapprove";
+					// party
+					clipName = passed ? "party-approve" : "party-disapprove";
 				}
 				play(clipName);
 			}
@@ -1194,6 +1203,11 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	}
 
 	btnKeepDrawing!.addEventListener("click", () => {
+		// Cancel any in-progress criteria reveal (timeouts + audio) before leaving.
+		if (skipClickHandler) {
+			btnRevealSkip?.removeEventListener("click", skipClickHandler);
+			skipClickHandler();
+		}
 		resultScreen!.classList.add("hidden");
 	});
 

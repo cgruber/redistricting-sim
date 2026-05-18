@@ -619,6 +619,12 @@ body {
   flex: 1;
 }
 
+.result-criterion .rc-char-label {
+  color: #8099b8;
+  font-size: 0.72rem;
+  margin-bottom: 1px;
+}
+
 .result-criterion .rc-desc {
   color: #c0d0e8;
   line-height: 1.4;
