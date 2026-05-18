@@ -8,8 +8,17 @@ sh_binary(
     name = "serve",
     srcs = [":serve.sh"],
     data = [
-        "//rust:wasm_calc_bindgen",
-        "//web:app",
-        "//web:html",
+        "//game/rust:wasm_calc_bindgen",
+        "//game/web:app",
+        "//game/web:html",
     ],
+)
+
+# Local serve via the deployable zip — matches exactly what ships.
+# Usage: bazel run //game:serve-local
+# For standalone (no bazel run): ./release.main.kts -- serve
+sh_binary(
+    name = "serve-local",
+    srcs = [":serve-local.sh"],
+    data = ["//game/web:deployable"],
 )

@@ -9,7 +9,7 @@ load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
 ts_config(
     name = "tsconfig",
     src = "tsconfig.json",
-    visibility = ["//web/src/testing:__pkg__"],
+    visibility = ["//game/web/src/testing:__pkg__"],
 )
 
 # ── test_runner_lib: shared TAP runner (BUILD-007) ────────────────────────────
@@ -20,5 +20,5 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     testonly = True,
-    visibility = ["//web:__subpackages__"],
+    visibility = ["//game/web:__subpackages__"],
 )

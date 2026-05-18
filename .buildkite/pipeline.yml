@@ -1,7 +1,7 @@
 # Buildkite CI Pipeline — redistricting-sim
 #
-# Runs on the macOS agent (native, no Docker). The game/ directory is the
-# Bazel workspace; all build and test commands run from there.
+# Runs on the macOS agent (native, no Docker). The repo root is the Bazel
+# workspace; bazel build/test commands run from there.
 #
 # Dependency graph:
 #   build ──── test
@@ -28,8 +28,7 @@ steps:
         - exit_status: "*"
           limit: 2
     command: |
-      cd game
-      ./setup.sh
+      game/setup.sh
       bazel clean
       bazel build --config=ci //...
 
@@ -47,8 +46,7 @@ steps:
         - exit_status: "*"
           limit: 2
     command: |
-      cd game
-      ./setup.sh
+      game/setup.sh
       bazel test --config=ci //...
 
   ##############################################################################
@@ -68,4 +66,3 @@ steps:
         echo "--- $$f"
         kotlin "$$f"
       done
-

@@ -15,7 +15,7 @@ load("@aspect_rules_js//js:defs.bzl", "js_test")
 ts_config(
     name = "tsconfig",
     src = "tsconfig.json",
-    visibility = ["//web/src/store:__pkg__"],
+    visibility = ["//game/web/src/store:__pkg__"],
 )
 
 # ── gameStore_lib: Zustand + zundo state machine ──────────────────────────────
@@ -26,14 +26,14 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [
-        "//:node_modules/zustand",
-        "//:node_modules/zundo",
-        "//web/src/model:adapter_lib",
-        "//web/src/model:model_lib",
-        "//web/src/model:types_lib",
-        "//web/src/simulation:election_lib",
+        "//game:node_modules/zustand",
+        "//game:node_modules/zundo",
+        "//game/web/src/model:adapter_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/model:types_lib",
+        "//game/web/src/simulation:election_lib",
     ],
-    visibility = ["//web:__subpackages__"],
+    visibility = ["//game/web:__subpackages__"],
 )
 
 # ── gameStore_test_lib: compile tests ─────────────────────────────────────────
@@ -45,9 +45,9 @@ ts_project(
     declaration = True,
     deps = [
         ":gameStore_lib",
-        "//web/src/model:model_lib",
-        "//web/src/model:types_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/model:types_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     testonly = True,
 )
@@ -60,14 +60,14 @@ js_test(
     data = [
         ":gameStore_test_lib",
         ":gameStore_lib",
-        "//:node_modules/zustand",
-        "//:node_modules/zundo",
-        "//web/src/model:adapter_lib",
-        "//web/src/model:model_lib",
-        "//web/src/model:types_lib",
-        "//web/src/model:hex_geometry_lib",
-        "//web/src/simulation:election_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game:node_modules/zustand",
+        "//game:node_modules/zundo",
+        "//game/web/src/model:adapter_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/model:types_lib",
+        "//game/web/src/model:hex_geometry_lib",
+        "//game/web/src/simulation:election_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",

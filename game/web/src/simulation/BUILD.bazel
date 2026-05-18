@@ -17,7 +17,7 @@ load("@bazel_skylib//rules:build_test.bzl", "build_test")
 ts_config(
     name = "tsconfig",
     src = "tsconfig.json",
-    visibility = ["//web/src/simulation:__pkg__"],
+    visibility = ["//game/web/src/simulation:__pkg__"],
 )
 
 # ── election_lib: runElection ─────────────────────────────────────────────────
@@ -28,9 +28,9 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [
-        "//web/src/model:types_lib",
+        "//game/web/src/model:types_lib",
     ],
-    visibility = ["//web:__subpackages__"],
+    visibility = ["//game/web:__subpackages__"],
 )
 
 # ── validity_lib: computeValidityStats ────────────────────────────────────────
@@ -41,10 +41,10 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [
-        "//web/src/model:types_lib",
-        "//web/src/model:model_lib",
+        "//game/web/src/model:types_lib",
+        "//game/web/src/model:model_lib",
     ],
-    visibility = ["//web:__pkg__", "//web/src/simulation:__pkg__"],
+    visibility = ["//game/web:__pkg__", "//game/web/src/simulation:__pkg__"],
 )
 
 # ── validity_typecheck_test: type-check passes ────────────────────────────────
@@ -64,9 +64,9 @@ ts_project(
     declaration = True,
     deps = [
         ":validity_lib",
-        "//web/src/model:types_lib",
-        "//web/src/model:model_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/model:types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     testonly = True,
 )
@@ -79,9 +79,9 @@ js_test(
     data = [
         ":validity_test_lib",
         ":validity_lib",
-        "//web/src/model:types_lib",
-        "//web/src/model:model_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/model:types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",
@@ -98,8 +98,8 @@ ts_project(
     declaration = True,
     deps = [
         ":election_lib",
-        "//web/src/model:types_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/model:types_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     testonly = True,
 )
@@ -112,8 +112,8 @@ js_test(
     data = [
         ":election_test_lib",
         ":election_lib",
-        "//web/src/model:types_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/model:types_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",
@@ -131,10 +131,10 @@ ts_project(
     deps = [
         ":validity_lib",
         ":election_lib",
-        "//web/src/model:model_lib",
-        "//web/src/model:types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/model:types_lib",
     ],
-    visibility = ["//web:__pkg__", "//web/src/simulation:__pkg__"],
+    visibility = ["//game/web:__pkg__", "//game/web/src/simulation:__pkg__"],
 )
 
 # ── evaluate_typecheck_test ───────────────────────────────────────────────────
@@ -156,9 +156,9 @@ ts_project(
         ":evaluate_lib",
         ":validity_lib",
         ":election_lib",
-        "//web/src/model:types_lib",
-        "//web/src/model:model_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/model:types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     testonly = True,
 )
@@ -173,9 +173,9 @@ js_test(
         ":evaluate_lib",
         ":validity_lib",
         ":election_lib",
-        "//web/src/model:types_lib",
-        "//web/src/model:model_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/model:types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",

@@ -13,10 +13,10 @@
 #
 # Runfiles layout (module name "redistricting_sim" from MODULE.bazel).
 # Bazel ≥ 7 uses canonical name _main for the current repo; we try both.
-#   $RUNFILES_DIR/_main/web/bundle.js          (Bazel ≥ 7)
-#   $RUNFILES_DIR/redistricting_sim/web/bundle.js  (older Bazel)
-#   $RUNFILES_DIR/_main/scenarios/tutorial-001.json
-#   $RUNFILES_DIR/_main/rust/wasm_calc_bindgen/wasm_calc_bindgen.js
+#   $RUNFILES_DIR/_main/game/web/bundle.js          (Bazel ≥ 7)
+#   $RUNFILES_DIR/redistricting_sim/game/web/bundle.js  (older Bazel)
+#   $RUNFILES_DIR/_main/game/scenarios/tutorial-001.json
+#   $RUNFILES_DIR/_main/game/rust/wasm_calc_bindgen/wasm_calc_bindgen.js
 
 set -euo pipefail
 
@@ -40,13 +40,13 @@ else
   echo "ERROR: runfiles module dir not found (tried ${MODULE} and _main under ${RUNFILES})" >&2
   exit 1
 fi
-WEB_BUNDLE="${RUNFILES_MOD}/web/bundle.js"
-WEB_HTML="${RUNFILES_MOD}/web/index.html"
-WEB_CSS="${RUNFILES_MOD}/web/styles.css"
-WASM_JS="${RUNFILES_MOD}/rust/wasm_calc_bindgen/wasm_calc_bindgen.js"
-WASM_BG="${RUNFILES_MOD}/rust/wasm_calc_bindgen/wasm_calc_bindgen_bg.wasm"
-SCENARIOS_DIR="${RUNFILES_MOD}/scenarios"
-ASSETS_DIR="${RUNFILES_MOD}/web/assets"
+WEB_BUNDLE="${RUNFILES_MOD}/game/web/bundle.js"
+WEB_HTML="${RUNFILES_MOD}/game/web/index.html"
+WEB_CSS="${RUNFILES_MOD}/game/web/styles.css"
+WASM_JS="${RUNFILES_MOD}/game/rust/wasm_calc_bindgen/wasm_calc_bindgen.js"
+WASM_BG="${RUNFILES_MOD}/game/rust/wasm_calc_bindgen/wasm_calc_bindgen_bg.wasm"
+SCENARIOS_DIR="${RUNFILES_MOD}/game/scenarios"
+ASSETS_DIR="${RUNFILES_MOD}/game/web/assets"
 
 # ── Verify all required artifacts exist ──────────────────────────────────────
 for f in "${WEB_BUNDLE}" "${WEB_HTML}" "${WASM_JS}" "${WASM_BG}"; do
@@ -105,24 +105,25 @@ if [[ "${SERVER_READY}" -eq 0 ]]; then
   exit 1
 fi
 
-# ── Resolve workspace root ────────────────────────────────────────────────────
+# ── Resolve game/ directory (node_modules + playwright live there) ────────────
 # @playwright/test and its transitive deps are declared as Bazel data deps via
-# //:node_modules/@playwright/test, ensuring the cache key includes playwright's
-# version.  At runtime we use the physical node_modules installed by setup.sh
-# so that the playwright runner and spec files share a single module instance —
-# a prerequisite for playwright's internal test registry to work.
+# //game:node_modules/@playwright/test, ensuring the cache key includes
+# playwright's version. At runtime we use the physical node_modules installed
+# by setup.sh so that the playwright runner and spec files share a single
+# module instance — a prerequisite for playwright's internal test registry.
 #
-# We locate the workspace root (game/) via a single readlink on the declared
-# runfiles symlink for playwright.config.ts.  This is a one-hop resolution that
-# lands in the current workspace's source tree; it never escapes to a stale
-# workspace the way recursive BASH_SOURCE symlink-following can.
-PLAYWRIGHT_CONFIG_LINK="${RUNFILES_MOD}/web/playwright.config.ts"
+# We locate game/ via a single readlink on the declared runfiles symlink for
+# playwright.config.ts. This is a one-hop resolution that lands in the current
+# workspace's source tree; it never escapes to a stale workspace the way
+# recursive BASH_SOURCE symlink-following can.
+PLAYWRIGHT_CONFIG_LINK="${RUNFILES_MOD}/game/web/playwright.config.ts"
 if [[ ! -L "${PLAYWRIGHT_CONFIG_LINK}" ]]; then
   echo "ERROR: playwright.config.ts not found as a runfiles symlink: ${PLAYWRIGHT_CONFIG_LINK}" >&2
   exit 1
 fi
 # Single readlink (not -f): resolves one symlink hop to the real source file.
 PLAYWRIGHT_CONFIG_REAL="$(readlink "${PLAYWRIGHT_CONFIG_LINK}")"
+# playwright.config.ts lives at game/web/playwright.config.ts; go up two dirs to game/.
 WORKSPACE_DIR="$(dirname "$(dirname "${PLAYWRIGHT_CONFIG_REAL}")")"
 
 PLAYWRIGHT_BIN="${WORKSPACE_DIR}/node_modules/.bin/playwright"

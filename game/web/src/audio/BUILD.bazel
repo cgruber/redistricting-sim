@@ -16,7 +16,7 @@ load("@bazel_skylib//rules:build_test.bzl", "build_test")
 ts_config(
     name = "tsconfig",
     src = "tsconfig.json",
-    visibility = ["//web/src/audio:__pkg__"],
+    visibility = ["//game/web/src/audio:__pkg__"],
 )
 
 # ── audioplayer_lib: preload, play, setMuted, isMuted ─────────────────────────
@@ -26,7 +26,7 @@ ts_project(
     srcs = ["audioPlayer.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    visibility = ["//web:__subpackages__"],
+    visibility = ["//game/web:__subpackages__"],
 )
 
 # ── audioplayer_typecheck_test: type-check passes ────────────────────────────
@@ -46,7 +46,7 @@ ts_project(
     declaration = True,
     deps = [
         ":audioplayer_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     testonly = True,
 )
@@ -59,7 +59,7 @@ js_test(
     data = [
         ":audioplayer_test_lib",
         ":audioplayer_lib",
-        "//web/src/testing:test_runner_lib",
+        "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
         "--experimental-vm-modules",

@@ -767,10 +767,21 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	const GOV_ROW_SCALE = 84 / 752;
 	const GOV_SHEET = { neutral: { x: 0, w: 400 }, approve: { x: 400, w: 480 }, disapprove: { x: 880, w: 496 } };
 
-	// All other character sheets: 1408×768px, equal-thirds columns (469/469/470).
+	// All other character sheets: 1408×768px. Pose boundaries measured via mid-gap split on each variant.
 	const CHAR_ROW_SCALE = 84 / 768;
-	const CHAR_SHEET_WIDTH = 1408;
-	const CHAR_SHEET = { neutral: { x: 0, w: 469 }, approve: { x: 469, w: 469 }, disapprove: { x: 938, w: 470 } };
+	type PoseCols = { neutral: { x: number; w: number }; approve: { x: number; w: number }; disapprove: { x: number; w: number } };
+	const CHAR_POSES: Record<string, PoseCols> = {
+		"commissioner-wm": { neutral: { x: 0, w: 458 }, approve: { x: 458, w: 482 }, disapprove: { x: 940, w: 468 } },
+		"commissioner-wf": { neutral: { x: 0, w: 451 }, approve: { x: 451, w: 481 }, disapprove: { x: 932, w: 476 } },
+		"commissioner-bf": { neutral: { x: 0, w: 462 }, approve: { x: 462, w: 492 }, disapprove: { x: 954, w: 454 } },
+		"judge":           { neutral: { x: 0, w: 463 }, approve: { x: 463, w: 480 }, disapprove: { x: 943, w: 465 } },
+		"judge-lm":        { neutral: { x: 0, w: 469 }, approve: { x: 469, w: 467 }, disapprove: { x: 936, w: 472 } },
+		"judge-naf":       { neutral: { x: 0, w: 464 }, approve: { x: 464, w: 473 }, disapprove: { x: 937, w: 471 } },
+		"legislator-wm":   { neutral: { x: 0, w: 435 }, approve: { x: 435, w: 499 }, disapprove: { x: 934, w: 474 } },
+		"legislator-wf":   { neutral: { x: 0, w: 419 }, approve: { x: 419, w: 479 }, disapprove: { x: 898, w: 510 } },
+		"legislator-bm":   { neutral: { x: 0, w: 420 }, approve: { x: 420, w: 522 }, disapprove: { x: 942, w: 466 } },
+		"party":           { neutral: { x: 0, w: 467 }, approve: { x: 467, w: 473 }, disapprove: { x: 940, w: 468 } },
+	};
 
 	// Placeholder SVG for non-governor character types.
 	function charPlaceholderSvg(state: "neutral" | "approve" | "disapprove"): string {
@@ -827,10 +838,40 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
 			verdictEl.appendChild(makeSprite(v, passed ? "Approves" : "Disapproves"));
 		} else {
-			// GAME-062: sprite offsets for commissioner/judge/legislator/party not yet measured.
-			// Use placeholder SVG until GAME-062 sprite wiring is complete.
-			neutralEl.innerHTML = charPlaceholderSvg("neutral");
-			verdictEl.innerHTML = charPlaceholderSvg(passed ? "approve" : "disapprove");
+			// Non-governor: resolve asset directory and pose data per type + demographic.
+			const dir =
+				charType === "party" ? "party" :
+				charType === "commissioner" ? `commissioner-${demo || "wm"}` :
+				charType === "judge" ? (demo ? `judge-${demo}` : "judge") :
+				charType === "legislator" ? `legislator-${demo || "wm"}` :
+				null;
+			const poses = dir ? CHAR_POSES[dir] : null;
+			if (poses) {
+				const n = poses.neutral;
+				const v = passed ? poses.approve : poses.disapprove;
+				const img = assetUrl(`assets/characters/${dir}/sheet.png`);
+				// Fixed viewport width = max pose width (scaled) so neutral→verdict doesn't shift position.
+				const vw = Math.round(Math.max(poses.neutral.w, poses.approve.w, poses.disapprove.w) * CHAR_ROW_SCALE);
+				const makeCharSprite = (col: { x: number; w: number }, label: string): HTMLElement => {
+					const s = document.createElement("div");
+					s.className = "character-sprite character-sprite--row";
+					s.setAttribute("role", "img");
+					s.setAttribute("aria-label", label);
+					s.style.width = `${vw}px`;
+					// Center pose column within fixed viewport so feet align between states.
+					const bgX = -(col.x * CHAR_ROW_SCALE) + (vw - col.w * CHAR_ROW_SCALE) / 2;
+					s.style.backgroundImage = `url('${img}')`;
+					s.style.backgroundPosition = `${bgX.toFixed(1)}px 0px`;
+					s.style.backgroundSize = `${Math.round(1408 * CHAR_ROW_SCALE)}px 84px`;
+					return s;
+				};
+				neutralEl.appendChild(makeCharSprite(n, "Character awaiting verdict"));
+				verdictEl.appendChild(makeCharSprite(v, passed ? "Approves" : "Disapproves"));
+			} else {
+				// Unknown/future character type — keep placeholder SVG as fallback.
+				neutralEl.innerHTML = charPlaceholderSvg("neutral");
+				verdictEl.innerHTML = charPlaceholderSvg(passed ? "approve" : "disapprove");
+			}
 		}
 
 		slot.appendChild(neutralEl);

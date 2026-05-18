@@ -88,17 +88,42 @@ test("GAME-069: every criterion row has a character slot (.rc-char)", async ({ p
   }
 });
 
-// GAME-069 / GAME-062: non-governor criterion rows show SVG placeholder checkmarks/X marks
-// until sprite offsets for each type are measured and wired (GAME-062 sprite wiring pending).
-test("GAME-069: non-governor criterion rows contain a placeholder SVG", async ({ page }) => {
+// GAME-062: commissioner rows use real sprite sheets (not placeholder SVG) after wiring.
+// scenario-002 (tutorial-002) has commissioner criteria with demo "bf".
+test("GAME-062: commissioner criterion rows render a character sprite", async ({ page }) => {
   await loadEditor(page);
   await openResultScreen(page);
 
-  // Governor row has a sprite; all other rows render charPlaceholderSvg() via innerHTML.
-  // Check that at least one .rc-char slot contains an svg element.
-  const svgSlots = page.locator(".rc-char svg");
-  const count = await svgSlots.count();
+  // All criterion rows with data-char-type="commissioner" must have a .character-sprite child.
+  const commRows = page.locator('.result-criterion[data-char-type="commissioner"]');
+  const count = await commRows.count();
   expect(count).toBeGreaterThan(0);
+
+  for (let i = 0; i < count; i++) {
+    // Neutral state: .rc-char-neutral holds the sprite
+    const sprite = commRows.nth(i).locator(".rc-char-neutral .character-sprite");
+    await expect(sprite).toBeVisible();
+    await expect(sprite).toHaveAttribute("aria-label", "Character awaiting verdict");
+  }
+});
+
+// GAME-062: verdict sprite aria-label reflects evaluation outcome.
+// In reduced-motion mode all verdict elements are already shown (opacity 1).
+test("GAME-062: verdict sprite aria-label reflects pass/fail outcome", async ({ page }) => {
+  await loadEditor(page);
+  await openResultScreen(page);
+
+  // All rows have a verdict sprite; aria-label must be "Approves" or "Disapproves".
+  const rows = page.locator(".result-criterion");
+  const count = await rows.count();
+  expect(count).toBeGreaterThan(0);
+
+  for (let i = 0; i < count; i++) {
+    const verdictSprite = rows.nth(i).locator(".rc-char-verdict .character-sprite");
+    if (await verdictSprite.count() === 0) continue; // governor row uses same pattern; covered
+    const label = await verdictSprite.getAttribute("aria-label");
+    expect(["Approves", "Disapproves"]).toContain(label);
+  }
 });
 
 // GAME-069: in reduced-motion mode (global Playwright default), rows are built with final=true
