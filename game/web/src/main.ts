@@ -1013,6 +1013,21 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			}
 		}
 
+		// Recompute the top-level verdict/subtitle/Next Scenario button from current row states.
+		// Called after a debug replay changes a single criterion's result.
+		function syncOverallVerdict(): void {
+			if (!resultVerdict || !resultSubtitle || !resultCriteriaList) return;
+			const rows = Array.from(resultCriteriaList.querySelectorAll<HTMLElement>(".result-criterion"));
+			const anyRequiredFailed = rows.some(r => r.classList.contains("failed-required"));
+			const nowPass = !anyRequiredFailed;
+			resultVerdict.textContent = nowPass ? "Map Passed!" : "Map Failed";
+			resultVerdict.className = nowPass ? "pass" : "fail";
+			resultSubtitle.textContent = nowPass
+				? "All required criteria met."
+				: "One or more required criteria were not met.";
+			btnNextScenario!.style.display = nowPass ? "" : "none";
+		}
+
 		// Debug: reset a single row to pending and re-run its reveal with a forced result.
 		// Cancels any in-flight animations (main reveal or a prior replay) before starting.
 		function debugReplayRow(row: HTMLElement, newPassed: boolean): void {
@@ -1047,6 +1062,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			};
 			if (reducedMotion) {
 				finalizeRow(row, /*withAudio=*/ true);
+				syncOverallVerdict();
 				skipClickHandler = null;
 			} else {
 				const t1 = setTimeout(() => {
@@ -1054,6 +1070,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 					row.style.animation = `criterionReveal ${ROW_FADE_MS}ms ease forwards`;
 					const t2 = setTimeout(() => {
 						finalizeRow(row, /*withAudio=*/ true);
+						syncOverallVerdict();
 						skipClickHandler = null;
 					}, ROW_HOLD_MS);
 					activeTimeouts.push(t2);
