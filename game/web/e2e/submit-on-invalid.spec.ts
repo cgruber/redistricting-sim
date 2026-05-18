@@ -15,6 +15,9 @@ import { test, expect } from "@playwright/test";
 /** Navigate, dismiss intro, wait for hex grid. */
 async function loadEditor(page: import("@playwright/test").Page): Promise<void> {
   await page.goto("/?s=tutorial-002");
+  // playwright.config reducedMotion:'reduce' is ignored in the Bazel-sandboxed Chromium;
+  // explicit emulation ensures the instant result path runs so verdict is visible immediately.
+  await page.emulateMedia({ reducedMotion: "reduce" });
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 10_000 });
   await skip.click();

@@ -156,3 +156,54 @@ test("GAME-052: final state has correct criteria count after skip (regression)",
   const badges = page.locator(".result-criterion .rc-badge");
   await expect(badges).toHaveCount(count);
 });
+
+// ─── GAME-073: deferred success banner + star count reveal ───────────────────
+
+// Reduced-motion path: failure banner shows immediately (map unsolved = failing).
+test("GAME-073: failure banner shown immediately in reduced-motion mode", async ({ page }) => {
+  await loadEditor(page);
+  await openResultScreen(page); // already emulates reducedMotion:'reduce'
+  // Unsolved tutorial-002 has required-failing criteria.
+  await expect(page.locator("#result-verdict")).toHaveText("Map Failed");
+  await expect(page.locator("#result-stars")).toBeHidden();
+});
+
+// Reduced-motion path: success banner + stars shown immediately on a force-win.
+test("GAME-073: success banner and stars shown immediately in reduced-motion mode (force-win)", async ({ page }) => {
+  await page.goto("/?s=tutorial-002&debug");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+  await page.locator("#btn-debug-win").click();
+  await expect(page.locator("#result-screen")).toBeVisible({ timeout: 10_000 });
+
+  await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+  await expect(page.locator("#result-stars")).toBeVisible();
+  // tutorial-002: 2 required + 1 optional → max 2 stars; force-win passes all → 2 stars
+  const starCount = await page.locator("#result-stars .result-star").count();
+  expect(starCount).toBe(2);
+});
+
+// Animated path: verdict starts empty, skip button reveals it with stars.
+test("GAME-073: skip reveals verdict and stars (animated mode, force-win)", async ({ page }) => {
+  await page.goto("/?s=tutorial-002&debug");
+  // Do NOT emulate reduced-motion — use animated path.
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+  await page.locator("#btn-debug-win").click();
+  await expect(page.locator("#result-screen")).toBeVisible({ timeout: 10_000 });
+
+  // Verdict starts empty before any row resolves.
+  await expect(page.locator("#result-verdict")).toHaveText("");
+
+  // Skip → all rows finalized → success banner appears.
+  await page.locator("#btn-reveal-skip").click();
+  await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+  await expect(page.locator("#result-stars")).toBeVisible();
+});

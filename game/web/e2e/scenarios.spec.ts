@@ -25,6 +25,9 @@ async function loadScenario(
   id: string,
 ): Promise<void> {
   await page.goto(`/?s=${id}&debug`);
+  // playwright.config reducedMotion:'reduce' is ignored in the Bazel-sandboxed Chromium;
+  // explicit emulation ensures the instant result path runs so verdict is visible immediately.
+  await page.emulateMedia({ reducedMotion: "reduce" });
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
   await skip.click();
@@ -781,6 +784,7 @@ test("scenario-005 precinct hover shows demographic group breakdown", async ({ p
 
 test("debug force-win button: visible with ?debug param, marks scenario complete", async ({ page }) => {
   await page.goto("/?s=tutorial-002&debug");
+  await page.emulateMedia({ reducedMotion: "reduce" });
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
   await skip.click();
@@ -1056,6 +1060,8 @@ test.describe("GAME-068: animated reveal path (no reduced-motion)", () => {
 
   test("Skip button finalises all rows instantly in animated reveal", async ({ page }) => {
     await loadScenario(page, "scenario-002");
+    // Override loadScenario's reduce emulation — this test specifically exercises animated path.
+    await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.locator("#btn-submit").click();
     await expect(page.locator("#result-screen")).toBeVisible();
 
