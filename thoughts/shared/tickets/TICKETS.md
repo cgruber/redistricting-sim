@@ -103,6 +103,9 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-065-character-sprite-art-refinement.md` | game, art, content | Quality fixes for known issues (judge eye, party mouth, legislator thumb); broker PNG production (stretch); not a blocker for GAME-062 |
 | `GAME-070-audio-settings.md` | game, UX, audio | Audio settings panel (main menu Settings item): master volume slider, mute toggle, localStorage persistence; coordinates with GAME-062 result-screen toggle |
 | `GAME-071-audio-character-assignment.md` | game, audio, content | Per-scenario character/audio inventory; audio clip selection per type; timing calibration; stub resolution |
+| `GAME-072-optional-criterion-neutral-audio.md` | game, audio | Neutral/meh audio clip for optional criteria that fail — party-disapprove is too strong for a missed bonus |
+| `GAME-073-result-screen-stars-and-success-banner.md` | game, UX, audio | Deferred success banner + star count reveal; tada/womp-womp completion audio; verdict hidden until all criteria revealed |
+| `GAME-074-criteria-only-validity-model.md` | game, architecture | Collapse dual validity/criteria system; population_balance gains tolerance field; contiguity becomes opt-in criterion; remove isMapSubmittable/buildValidityRows/mapIsValid |
 
 ---
 
