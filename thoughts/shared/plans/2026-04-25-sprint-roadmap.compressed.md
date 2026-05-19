@@ -1,6 +1,6 @@
 <!--COMPRESSED v1; source:2026-04-25-sprint-roadmap.md-->
 §META
-date:2026-04-25 last_updated:2026-05-04 status:active type:sprint-roadmap
+date:2026-04-25 last_updated:2026-05-18 status:active type:sprint-roadmap
 LIVING DOC — update at sprint start (fill tickets) + after demo (outcomes, re-evaluate next)
 
 §ABBREV
@@ -31,8 +31,9 @@ see game-vision.compressed.md for full scope
 | S9 | first release | deploy pastthepost.org; legal review; basic a11y | complete — 2026-04-29 |
 | S10 | code quality + tidy | test coverage gaps; dedup; extract modules; refactor for polish readiness | complete — 2026-04-29 |
 | S11 | main menu, campaigns + polish | title screen→campaign select→scenario flow; Tier2: design research, a11y | complete — 2026-05-02 |
-| S12 | character reactions + submit-on-invalid | result screen characters animate+react; audio; allow invalid map submission | planned |
-| S13 | code quality | split loader; break up main.ts; unify type systems | sketched |
+| S12 | character reactions + submit-on-invalid | result screen characters animate+react; audio; allow invalid map submission; deferred verdict+stars | complete — 2026-05-18 |
+| S13 | gameplay polish + scenario depth | tutorial walkthroughs; VRA scenarios; terrain features; scenario-002 tuning | planned |
+| S14 | code quality | split loader; break up main.ts; unify type systems | sketched |
 
 §SPRINT1 [COMPLETE 2026-04-25]
 goal: app renders tutorial-001.json; player paints+undoes; no sim/game-loop yet
@@ -116,23 +117,37 @@ outcome: all tier1+tier2 tickets closed
   deferred: GAME-053 electoral outcome diff → discuss S12 planning; DESIGN-009 open questions resolved in ticket
   new tickets filed for S12: DESIGN-009 GAME-059 GAME-060 GAME-061 GAME-062 GAME-063 GAME-064
 
-§SPRINT12 (in progress)
+§SPRINT12 [COMPLETE 2026-05-18]
 goal: character reactions + submit-on-invalid
-demo target: player submits map → result screen shows animated character + audio; invalid map shows Fix-It path
-art model (updated 2026-05-13): PNG sprite sheets (neutral|approve|disapprove horizontal strip, 200px row)
-  governor done+live; 4 remaining types: commissioner party judge legislator (DESIGN-011)
-  eval states: approve/neutral/disapprove (not 1:1 star-count); broker variants (sprite-spec.json) = stretch
-resolved: DESIGN-009 DESIGN-011 GAME-059 GAME-060 GAME-061 GAME-063 GAME-064 GAME-066 GAME-068 GAME-069
-tier2 (remaining):
-  GAME-062 [open] (wire commissioner/judge/legislator/party sprites + audio; governor done; SVG placeholders standing in)
-  GAME-065 [open] (art refinement; trails GAME-060; not blocker for GAME-062)
-  GAME-071 [open] (audio fine-tuning; stub resolution; per-scenario character/audio inventory)
-stretch: broker PNG variants × 3 states for scenario-006 (spec in sprite-spec.json)
-deferred to S13+: DESIGN-005/006/007 demographic overlays; DESIGN-008 geographic features; GAME-053
+outcome: all core tickets resolved; GAME-062 all 4 types wired(#227); GAME-073 deferred verdict+stars+tada/womp-womp(#236 #237); GAME-065+GAME-071 moved to S13 stretch
+resolved: DESIGN-009 DESIGN-011 GAME-059 GAME-060 GAME-061 GAME-062 GAME-063 GAME-064 GAME-066 GAME-067 GAME-068 GAME-069 GAME-073
+PRs: #192 #194 #196 #212 #213 #214 #215 #225 #226 #227 #228 #236 #237
 
-§SPRINT13 (sketched)
+§SPRINT13 (planned)
+goal: gameplay polish + scenario depth
+demo target: district demographic rollup live; 5-district layout no scroll; tutorial-001 guided; terrain features available
+priority note: VRA scenarios motivate sprint but can slip to S15/Backlog (S14=code-quality only); UI improvements are primary deliverable; Valle Verde tests GAME-080
+tier1-UI:
+  DESIGN-014 (non-partisan framing guidelines + about-page/Valle-Verde audit; prereq for scenario narrative authoring)
+  GAME-080 (district demographic rollup: live % derived from criteria; compact stat under district button)
+  DESIGN-015 (information density redesign: 5-district overflow; layout options; GAME-080 stat placement; DESIGN-004 fate)
+  GAME-081 (implement information density; trails DESIGN-015)
+tier1-content:
+  DESIGN-008 (expanded: terrain model — tiles+edge rivers+precinct annotations+rendering+validity rules)
+  GAME-075 (terrain implementation: schema+generator+renderer+contiguity; ≥1 terrain scenario)
+  DESIGN-012 (tutorial overlay UX design)
+  GAME-076 (tutorial-001 guided walkthrough: overlay engine + 9-step script)
+  GAME-077 (tutorial-002 guided mode; trails GAME-076)
+tier2 (can slip to S15/Backlog — S14 is code-quality only):
+  DESIGN-013 (VRA scenario design; trails DESIGN-014)
+  GAME-078 (VRA scenarios; trails DESIGN-013+GAME-075)
+  GAME-079 (scenario-002 playability tuning)
+stretch: GAME-065(art refinement) GAME-071(audio fine-tuning)
+research: thoughts/shared/research/2026-05-18-vra-legal-political-landscape.md
+
+§SPRINT14 (sketched)
 goal: code quality — split modules, unify type systems
-tickets: GAME-041 split loader; GAME-042 break up main.ts; GAME-043 unify type systems
+tickets: GAME-041 split loader; GAME-042 break up main.ts; GAME-043 unify type systems; GAME-046 panels unit tests
 rationale: isolated sprint; no feature work mixed in; large refactors need focused review
 
 §BACKLOG (not sprint-assigned)
@@ -146,10 +161,10 @@ DESIGN-005 population dot-density overlay  S14+
 DESIGN-006 zoom-adaptive dot density       S14+
 DESIGN-007 dimensional dot map overlay     S14+
 DESIGN-008 geographic features             S14+
-GAME-041  split loader.ts                  S13
-GAME-042  break up main.ts                 S13
-GAME-043  unify type systems               S13
-GAME-046  panels unit tests                S13
+GAME-041  split loader.ts                  S14
+GAME-042  break up main.ts                 S14
+GAME-043  unify type systems               S14
+GAME-046  panels unit tests                S14
 GAME-053  electoral outcome visual diff    S13+
 GAME-056  playtest feedback                any
 GAME-057  scenario randomization           any

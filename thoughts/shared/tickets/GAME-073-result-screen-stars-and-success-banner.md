@@ -2,7 +2,7 @@
 id: GAME-073
 title: "Result screen: deferred success banner + star count reveal"
 area: game, UX, audio
-status: open
+status: resolved
 created: 2026-05-18
 ---
 
