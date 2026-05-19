@@ -109,7 +109,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-013-vra-scenario-design.md` | design, content | VRA scenario design: "The 55% Problem" (Bethune-Hill dual-failure zone) and proxy-only redistricting post-Callais |
 | `DESIGN-014-nonpartisan-content-framing.md` | design, content | Non-partisan content guidelines: source standards, narrative language, naming conventions, about-page audit; prerequisite for VRA scenario authoring |
 | `DESIGN-015-information-density-redesign.md` | design, UX | Layout redesign for 5+ districts: evaluate map overlays, HUD strip, tabbed sidebar; specify where GAME-080 demographic stat lives; DESIGN-004 fate |
-| `GAME-075-terrain-implementation.md` | game, rendering, content | Terrain tiles (sea/lake/mountain), edge rivers, precinct annotations, symbolic renderer, map validity rules, population-gradient generator |
 | `GAME-076-tutorial-001-walkthrough.md` | game, UX, tutorial | Tutorial-001 guided walkthrough: overlay engine + 9-step script (district select → paint → undo/redo → UI tour → submit) |
 | `GAME-077-tutorial-002-guided-mode.md` | game, UX, tutorial | Tutorial-002 guided mode: advanced feature walkthrough (criteria panel, demographic overlay, goal orientation) |
 | `GAME-078-vra-scenarios-implementation.md` | game, content | Implement VRA scenarios: Scenario A + Scenario B; terrain features; proxy-data mechanic; hides race demographics; result-screen reveal |
@@ -123,6 +122,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-075: terrain implementation | DESIGN-008 fully implemented across 4 PRs: schema + loader (#241), renderer with tile/river/edge-stroke/internal-lake layers (#242), contiguity BFS reading passableNeighbors (#243), scenario-010 "Two Banks, One River" demo + e2e tests (#244); population-gradient generator deferred to GAME-078 per the ticket's authorized off-ramp |
 | GAME-073: deferred verdict banner + star count reveal | Verdict hidden until all criteria revealed; stars animate in; tada/womp-womp audio; layout preservation (visibility:hidden + min-height); merged PRs #236 #237 |
 | GAME-062: character reaction system | CHAR_POSES measured for all 1408×768 sheets; commissioner/judge/legislator/party wired in buildCharSlotChildren(); demographic selection reads scenario.character_demographics; placeholder SVG retained as unknown-type fallback; e2e tests for commissioner sprite + aria-labels; broker/scenario-006 deferred to GAME-065 |
 | GAME-061: audio clips | 12 real clips active (governor/commissioner/legislator gender-keyed, judge/party gender-neutral), all −16 LUFS; stubs for neutral variants + party-disapprove deferred to GAME-071 fine-tuning |
