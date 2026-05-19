@@ -4,6 +4,7 @@ title: Terrain visual treatment refinement — thicker rivers, prominent coast/l
 area: game, rendering, UX
 status: open
 created: 2026-05-19
+github_issue: 247
 ---
 
 ## Summary
