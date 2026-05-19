@@ -29,6 +29,7 @@ export const CAMPAIGN_REGISTRY: Campaign[] = [
 			"scenario-007",
 			"scenario-008",
 			"scenario-009",
+			"scenario-010",
 		],
 	},
 ];
