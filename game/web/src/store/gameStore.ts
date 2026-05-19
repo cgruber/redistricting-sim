@@ -44,7 +44,7 @@ function cloneAssignments(m: AssignmentMap): AssignmentMap {
  * Called once in main.ts after fetching + validating the scenario JSON.
  */
 export function createGameStore(scenario: Scenario) {
-	const { precincts, assignments, districtCount } = scenarioToSpike(scenario);
+	const { precincts, assignments, districtCount, terrainTiles, riverEdges } = scenarioToSpike(scenario);
 
 	// Snapshot of initial assignments — used by resetToInitial() to restore scenario start state
 	const initialAssignments: AssignmentMap = new Map(assignments);
@@ -55,6 +55,8 @@ export function createGameStore(scenario: Scenario) {
 		assignments,
 		activeDistrict: 1,
 		simulationResult: null,
+		terrainTiles,
+		riverEdges,
 	};
 	initialState.simulationResult = runElection(initialState);
 

@@ -34,7 +34,14 @@ import type {
   StateContext,
   SuccessCriterion,
   GeometrySpec,
+  TerrainTile,
+  TerrainAnnotation,
 } from "./scenario.js";
+
+// Flat-top axial hex direction vectors (mirrors HEX_DIRECTIONS in hex-geometry.ts)
+const HEX_DIRS: [number, number][] = [
+  [1, 0], [0, 1], [-1, 1], [-1, 0], [0, -1], [1, -1],
+];
 
 // ─── Epsilon for floating-point sum checks ───────────────────────────────────
 
@@ -206,6 +213,19 @@ function parsePrecinct(raw: unknown, idx: number): Omit<Precinct, "initial_distr
   if (r["neighbors"] !== undefined) {
     const nbRaw = requireArray(r["neighbors"], `${label}.neighbors`);
     pc.neighbors = nbRaw.map((n, i) => requireString(n, `${label}.neighbors[${i}]`) as PrecinctId);
+  }
+
+  // Terrain annotation (optional; derived from adjacency if absent)
+  if (r["terrain"] !== undefined) {
+    const t = requireString(r["terrain"], `${label}.terrain`);
+    const validAnnotations = ["coast", "lakeside", "riverside", "foothill"];
+    if (!validAnnotations.includes(t)) {
+      throw new Error(`${label}.terrain: unknown value "${t}"; expected one of: ${validAnnotations.join(", ")}`);
+    }
+    pc.terrain = t as TerrainAnnotation;
+  }
+  if (r["has_internal_lake"] !== undefined) {
+    pc.has_internal_lake = requireBoolean(r["has_internal_lake"], `${label}.has_internal_lake`);
   }
 
   // initial_district_id: absent, null, or a string
@@ -475,6 +495,19 @@ function parseStateContext(raw: unknown): StateContext {
   };
 }
 
+function parseTerrainTile(raw: unknown, idx: number): TerrainTile {
+  const label = `terrain_tiles[${idx}]`;
+  const r = requireObject(raw, label);
+  const posRaw = requireObject(r["position"], `${label}.position`);
+  const q = requireNumber(posRaw["q"], `${label}.position.q`);
+  const rr = requireNumber(posRaw["r"], `${label}.position.r`);
+  const type = requireString(r["type"], `${label}.type`);
+  if (type !== "sea" && type !== "lake" && type !== "mountain") {
+    throw new Error(`${label}.type: unknown value "${type}"; expected "sea", "lake", or "mountain"`);
+  }
+  return { position: { q, r: rr }, type };
+}
+
 // ─── Validation helpers ───────────────────────────────────────────────────────
 
 /** Collect all GroupId values referenced in a GroupFilter (only group_ids form; dimension form has no explicit GroupId refs). */
@@ -615,6 +648,33 @@ export function loadScenario(json: unknown): Scenario {
   let state_context: StateContext | undefined;
   if (raw["state_context"] !== undefined) {
     state_context = parseStateContext(raw["state_context"]);
+  }
+
+  // ── Parse terrain fields ─────────────────────────────────────────────────────
+  let terrain_tiles: TerrainTile[] | undefined;
+  if (raw["terrain_tiles"] !== undefined) {
+    const tilesRaw = requireArray(raw["terrain_tiles"], "terrain_tiles");
+    terrain_tiles = tilesRaw.map((t, i) => parseTerrainTile(t, i));
+  }
+
+  let river_edges: [PrecinctId, PrecinctId][] | undefined;
+  if (raw["river_edges"] !== undefined) {
+    const edgesRaw = requireArray(raw["river_edges"], "river_edges");
+    river_edges = edgesRaw.map((pair, i) => {
+      const pairArr = requireArray(pair, `river_edges[${i}]`);
+      if (pairArr.length !== 2) {
+        throw new Error(`river_edges[${i}]: expected array of 2 precinct IDs, got ${pairArr.length}`);
+      }
+      return [
+        requireString(pairArr[0], `river_edges[${i}][0]`) as PrecinctId,
+        requireString(pairArr[1], `river_edges[${i}][1]`) as PrecinctId,
+      ];
+    });
+  }
+
+  let river_blocks_contiguity: boolean | undefined;
+  if (raw["river_blocks_contiguity"] !== undefined) {
+    river_blocks_contiguity = requireBoolean(raw["river_blocks_contiguity"], "river_blocks_contiguity");
   }
 
   // ── VALIDATION INVARIANTS ────────────────────────────────────────────────────
@@ -903,6 +963,151 @@ export function loadScenario(json: unknown): Scenario {
     }
   }
 
+  // ── Terrain validation ────────────────────────────────────────────────────────
+  // Terrain features (terrain_tiles, river_edges) require hex_axial geometry in v1.
+  if (geometry.type === "custom") {
+    if (terrain_tiles !== undefined && terrain_tiles.length > 0) {
+      throw new Error(
+        `Terrain validation: terrain_tiles require geometry.type "hex_axial"; custom geometry is not supported in v1`
+      );
+    }
+    if (river_edges !== undefined && river_edges.length > 0) {
+      throw new Error(
+        `Terrain validation: river_edges require geometry.type "hex_axial"; custom geometry is not supported in v1`
+      );
+    }
+  }
+
+  if (terrain_tiles !== undefined && terrain_tiles.length > 0) {
+    // Build precinct position set for overlap check
+    const precinctPosSet = new Set<string>();
+    for (const pc of rawPrecincts) {
+      const pos = pc.position;
+      if ("q" in pos) precinctPosSet.add(`${pos.q},${pos.r}`);
+    }
+
+    // Build terrain position map for lake/sea adjacency check
+    const tileTypeMap = new Map<string, string>();
+    for (const tile of terrain_tiles) {
+      const key = `${tile.position.q},${tile.position.r}`;
+      // Terrain Validation 1: tile must not overlap a precinct position
+      if (precinctPosSet.has(key)) {
+        throw new Error(
+          `Terrain validation: terrain_tile at (${tile.position.q},${tile.position.r}) overlaps precinct position`
+        );
+      }
+      tileTypeMap.set(key, tile.type);
+    }
+
+    // Terrain Validation 2: lake tile must not be adjacent to sea tile
+    for (const tile of terrain_tiles) {
+      if (tile.type !== "lake") continue;
+      for (const [dq, dr] of HEX_DIRS) {
+        const nKey = `${tile.position.q + dq},${tile.position.r + dr}`;
+        if (tileTypeMap.get(nKey) === "sea") {
+          throw new Error(
+            `Terrain validation: lake tile at (${tile.position.q},${tile.position.r}) is adjacent to sea tile at (${tile.position.q + dq},${tile.position.r + dr})`
+          );
+        }
+      }
+    }
+
+    // Terrain Validation 3: no precinct fully enclosed by mountain tiles
+    // BFS from an outside position (one step beyond min bounding box) through non-mountain positions.
+    // Any precinct position unreachable from outside is enclosed.
+    {
+      const mountainSet = new Set<string>();
+      for (const tile of terrain_tiles) {
+        if (tile.type === "mountain") mountainSet.add(`${tile.position.q},${tile.position.r}`);
+      }
+
+      if (mountainSet.size > 0) {
+        // Find bounding box of all precinct + terrain tile positions
+        const allQs: number[] = [];
+        const allRs: number[] = [];
+        for (const pc of rawPrecincts) {
+          const pos = pc.position;
+          if ("q" in pos) { allQs.push(pos.q); allRs.push(pos.r); }
+        }
+        for (const tile of terrain_tiles) {
+          allQs.push(tile.position.q);
+          allRs.push(tile.position.r);
+        }
+        const minQ = Math.min(...allQs) - 2;
+        const maxQ = Math.max(...allQs) + 2;
+        const minR = Math.min(...allRs) - 2;
+        const maxR = Math.max(...allRs) + 2;
+
+        // BFS from a corner position outside the bounding box
+        const outsideKey = `${minQ},${minR}`;
+        const visited = new Set<string>([outsideKey]);
+        const queue: string[] = [outsideKey];
+
+        while (queue.length > 0) {
+          const curr = queue.shift()!;
+          const [cq, cr] = curr.split(",").map(Number) as [number, number];
+          for (const [dq, dr] of HEX_DIRS) {
+            const nq = cq + dq;
+            const nr = cr + dr;
+            // Expand only within a reasonable search bounds
+            if (nq < minQ - 1 || nq > maxQ + 1 || nr < minR - 1 || nr > maxR + 1) continue;
+            const nKey = `${nq},${nr}`;
+            if (!visited.has(nKey) && !mountainSet.has(nKey)) {
+              visited.add(nKey);
+              queue.push(nKey);
+            }
+          }
+        }
+
+        // Check every precinct is reachable from outside
+        for (const pc of rawPrecincts) {
+          const pos = pc.position;
+          if ("q" in pos) {
+            const key = `${pos.q},${pos.r}`;
+            if (!visited.has(key)) {
+              throw new Error(
+                `Terrain validation: precinct "${pc.id}" at (${pos.q},${pos.r}) is fully enclosed by mountain tiles`
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Validate river_edges: both precinct IDs must exist AND be geometrically adjacent.
+  if (river_edges !== undefined) {
+    // Build precinct position lookup for adjacency check (hex_axial only — custom rejected above)
+    const precinctPosByid = new Map<PrecinctId, { q: number; r: number }>();
+    if (geometry.type === "hex_axial") {
+      for (const pc of rawPrecincts) {
+        const pos = pc.position;
+        if ("q" in pos) precinctPosByid.set(pc.id, { q: pos.q, r: pos.r });
+      }
+    }
+
+    for (const [aId, bId] of river_edges) {
+      if (!precinctIds.has(aId)) {
+        throw new Error(`river_edges: precinct "${aId}" does not exist in precincts`);
+      }
+      if (!precinctIds.has(bId)) {
+        throw new Error(`river_edges: precinct "${bId}" does not exist in precincts`);
+      }
+      const aPos = precinctPosByid.get(aId);
+      const bPos = precinctPosByid.get(bId);
+      if (aPos !== undefined && bPos !== undefined) {
+        const dq = bPos.q - aPos.q;
+        const dr = bPos.r - aPos.r;
+        const isAdjacent = HEX_DIRS.some(([ddq, ddr]) => ddq === dq && ddr === dr);
+        if (!isAdjacent) {
+          throw new Error(
+            `river_edges: precincts "${aId}" (${aPos.q},${aPos.r}) and "${bId}" (${bPos.q},${bPos.r}) are not geometrically adjacent`
+          );
+        }
+      }
+    }
+  }
+
   // ── Auto-fill initial_district_id for editable precincts ─────────────────────
   const fillDistrictId = default_district_id ?? districts[0]!.id;
 
@@ -950,6 +1155,9 @@ export function loadScenario(json: unknown): Scenario {
   if (instigator_character !== undefined) scenario.instigator_character = instigator_character;
   if (character_demographics !== undefined) scenario.character_demographics = character_demographics;
   if (state_context !== undefined) scenario.state_context = state_context;
+  if (terrain_tiles !== undefined) scenario.terrain_tiles = terrain_tiles;
+  if (river_edges !== undefined) scenario.river_edges = river_edges;
+  if (river_blocks_contiguity !== undefined) scenario.river_blocks_contiguity = river_blocks_contiguity;
 
   return scenario;
 }

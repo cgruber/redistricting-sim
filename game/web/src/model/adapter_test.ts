@@ -244,4 +244,177 @@ test("scenarioToSpike: districtCount matches scenario.districts.length", () => {
 	assertEqual(districtCount, 3, "districtCount = 3");
 });
 
+// ─── Terrain ──────────────────────────────────────────────────────────────────
+
+test("scenarioToSpike: terrain tiles converted with pixel centers", () => {
+	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
+	const scenario = makeScenario({
+		parties: [PARTY_R, PARTY_D],
+		districts: [{ id: did("d1") }, { id: did("d2") }],
+		precincts: [makePrecinct(0, 0, [g], "d1")],
+		terrain_tiles: [
+			{ position: { q: 1, r: 0 }, type: "sea" },
+			{ position: { q: 0, r: 1 }, type: "mountain" },
+		],
+	});
+	const { terrainTiles } = scenarioToSpike(scenario);
+	assertEqual(terrainTiles.length, 2, "two terrain tiles");
+	assertEqual(terrainTiles[0]!.type, "sea", "first is sea");
+	assertEqual(terrainTiles[1]!.type, "mountain", "second is mountain");
+});
+
+test("scenarioToSpike: coast annotation derived from adjacency to sea tile", () => {
+	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
+	const scenario = makeScenario({
+		parties: [PARTY_R, PARTY_D],
+		districts: [{ id: did("d1") }, { id: did("d2") }],
+		precincts: [makePrecinct(0, 0, [g], "d1")],
+		terrain_tiles: [{ position: { q: 1, r: 0 }, type: "sea" }],
+	});
+	const { precincts } = scenarioToSpike(scenario);
+	assertEqual(precincts[0]!.terrain, "coast", "precinct adjacent to sea → coast");
+});
+
+test("scenarioToSpike: explicit terrain annotation overrides derivation", () => {
+	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
+	const scenario = makeScenario({
+		parties: [PARTY_R, PARTY_D],
+		districts: [{ id: did("d1") }, { id: did("d2") }],
+		precincts: [{
+			...makePrecinct(0, 0, [g], "d1"),
+			terrain: "lakeside" as const,
+		}],
+		terrain_tiles: [{ position: { q: 1, r: 0 }, type: "sea" }],
+	});
+	const { precincts } = scenarioToSpike(scenario);
+	assertEqual(precincts[0]!.terrain, "lakeside", "explicit terrain wins over derived coast");
+});
+
+test("scenarioToSpike: river edges converted to integer index pairs", () => {
+	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
+	const p1 = makePrecinct(0, 0, [g], "d1");
+	const p2 = makePrecinct(1, 0, [g], "d1");
+	const scenario = makeScenario({
+		parties: [PARTY_R, PARTY_D],
+		districts: [{ id: did("d1") }, { id: did("d2") }],
+		precincts: [p1, p2],
+		river_edges: [[p1.id, p2.id]],
+	});
+	const { riverEdges } = scenarioToSpike(scenario);
+	assertEqual(riverEdges.length, 1, "one river pair");
+	assertEqual(riverEdges[0]![0], 0, "p1 → index 0");
+	assertEqual(riverEdges[0]![1], 1, "p2 → index 1");
+});
+
+test("scenarioToSpike: passableNeighbors = neighbors when river_blocks_contiguity is false", () => {
+	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
+	const p1 = makePrecinct(0, 0, [g], "d1");
+	const p2 = makePrecinct(1, 0, [g], "d1");
+	const scenario = makeScenario({
+		parties: [PARTY_R, PARTY_D],
+		districts: [{ id: did("d1") }, { id: did("d2") }],
+		precincts: [p1, p2],
+		river_edges: [[p1.id, p2.id]],
+		river_blocks_contiguity: false,
+	});
+	const { precincts } = scenarioToSpike(scenario);
+	// p1.neighbors[0] = 1 (lower-right); passableNeighbors[0] should also be 1
+	assertEqual(precincts[0]!.neighbors[0], 1, "p1.neighbors[0] = 1");
+	assertEqual(precincts[0]!.passableNeighbors![0], 1, "passable unchanged when not blocking");
+});
+
+test("scenarioToSpike: sea takes priority over lake in derivation (coast wins)", () => {
+	// Precinct at (0,0) with sea at (1,0) and lake at (-1,0) on opposite sides.
+	// Per priority: sea > lake → terrain should be "coast", not "lakeside".
+	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
+	const scenario = makeScenario({
+		parties: [PARTY_R, PARTY_D],
+		districts: [{ id: did("d1") }, { id: did("d2") }],
+		precincts: [makePrecinct(0, 0, [g], "d1")],
+		terrain_tiles: [
+			{ position: { q: -1, r: 0 }, type: "lake" },
+			{ position: { q: 1, r: 0 }, type: "sea" },
+		],
+	});
+	const { precincts } = scenarioToSpike(scenario);
+	assertEqual(precincts[0]!.terrain, "coast", "sea priority over lake → coast");
+});
+
+test("scenarioToSpike: foothill annotation derived from mountain adjacency", () => {
+	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
+	const scenario = makeScenario({
+		parties: [PARTY_R, PARTY_D],
+		districts: [{ id: did("d1") }, { id: did("d2") }],
+		precincts: [makePrecinct(0, 0, [g], "d1")],
+		terrain_tiles: [{ position: { q: 1, r: 0 }, type: "mountain" }],
+	});
+	const { precincts } = scenarioToSpike(scenario);
+	assertEqual(precincts[0]!.terrain, "foothill", "precinct adjacent to mountain → foothill");
+});
+
+test("scenarioToSpike: riverside annotation derived when no terrain tile adjacency", () => {
+	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
+	const p1 = makePrecinct(0, 0, [g], "d1");
+	const p2 = makePrecinct(1, 0, [g], "d1");
+	const scenario = makeScenario({
+		parties: [PARTY_R, PARTY_D],
+		districts: [{ id: did("d1") }, { id: did("d2") }],
+		precincts: [p1, p2],
+		river_edges: [[p1.id, p2.id]],
+	});
+	const { precincts } = scenarioToSpike(scenario);
+	assertEqual(precincts[0]!.terrain, "riverside", "p1 in river edge → riverside");
+	assertEqual(precincts[1]!.terrain, "riverside", "p2 in river edge → riverside");
+});
+
+test("scenarioToSpike: foothill takes priority over riverside", () => {
+	// Precinct adjacent to a mountain tile AND in a river edge → foothill.
+	// Per priority: coast > lakeside > foothill > riverside.
+	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
+	const p1 = makePrecinct(0, 0, [g], "d1");
+	const p2 = makePrecinct(0, 1, [g], "d1"); // adjacent to p1 via edge 1 (down)
+	const scenario = makeScenario({
+		parties: [PARTY_R, PARTY_D],
+		districts: [{ id: did("d1") }, { id: did("d2") }],
+		precincts: [p1, p2],
+		terrain_tiles: [{ position: { q: 1, r: 0 }, type: "mountain" }],
+		river_edges: [[p1.id, p2.id]],
+	});
+	const { precincts } = scenarioToSpike(scenario);
+	assertEqual(precincts[0]!.terrain, "foothill", "foothill priority over riverside");
+});
+
+test("scenarioToSpike: has_internal_lake round-trips through adapter", () => {
+	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
+	const scenario = makeScenario({
+		parties: [PARTY_R, PARTY_D],
+		districts: [{ id: did("d1") }, { id: did("d2") }],
+		precincts: [{
+			...makePrecinct(0, 0, [g], "d1"),
+			terrain: "lakeside" as const,
+			has_internal_lake: true,
+		}],
+	});
+	const { precincts } = scenarioToSpike(scenario);
+	assertEqual(precincts[0]!.terrain, "lakeside", "lakeside set");
+	assertEqual(precincts[0]!.has_internal_lake, true, "has_internal_lake propagated");
+});
+
+test("scenarioToSpike: passableNeighbors nulls river edges when river_blocks_contiguity is true", () => {
+	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
+	const p1 = makePrecinct(0, 0, [g], "d1");
+	const p2 = makePrecinct(1, 0, [g], "d1");
+	const scenario = makeScenario({
+		parties: [PARTY_R, PARTY_D],
+		districts: [{ id: did("d1") }, { id: did("d2") }],
+		precincts: [p1, p2],
+		river_edges: [[p1.id, p2.id]],
+		river_blocks_contiguity: true,
+	});
+	const { precincts } = scenarioToSpike(scenario);
+	// neighbors retains 1 for geometry; passableNeighbors nulls it
+	assertEqual(precincts[0]!.neighbors[0], 1, "neighbors[0] still 1 (geometry preserved)");
+	assertNull(precincts[0]!.passableNeighbors![0], "passableNeighbors[0] nulled (river blocks)");
+});
+
 summarize();
