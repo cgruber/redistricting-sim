@@ -208,16 +208,16 @@ export class SvgMapRenderer implements MapRenderer {
 	private static readonly TERRAIN_GLYPH_COLOR = "rgba(255,255,255,0.45)";
 	private static readonly TERRAIN_GLYPH_FONT_SIZE = 22; // pixel size at 1× zoom
 	private static readonly RIVER_STROKE = "#38bdf8";
-	private static readonly RIVER_BASE_WIDTH = 2.5;
-	private static readonly RIVER_OPACITY = 0.7;
+	private static readonly RIVER_BASE_WIDTH = 9;
+	private static readonly RIVER_OPACITY = 0.9;
 	private static readonly INTERNAL_LAKE_FILL = "#4dd0e1";
 	private static readonly INTERNAL_LAKE_OPACITY = 0.55;
 	private static readonly INTERNAL_LAKE_RX_FACTOR = 0.55; // hex_size × factor = ellipse radius
 	private static readonly INTERNAL_LAKE_RY_FACTOR = 0.45;
 	private static readonly COAST_STROKE = "#3a7fc1";
 	private static readonly LAKESIDE_STROKE = "#4dd0e1";
-	private static readonly TERRAIN_EDGE_BASE_WIDTH = 3;
-	private static readonly TERRAIN_EDGE_OPACITY = 0.9;
+	private static readonly TERRAIN_EDGE_BASE_WIDTH = 5;
+	private static readonly TERRAIN_EDGE_OPACITY = 0.95;
 
 	// Keyboard precinct navigation state
 	private focusedPrecinctId: number | null = null;
