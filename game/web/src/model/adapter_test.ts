@@ -272,22 +272,7 @@ test("scenarioToSpike: coast annotation derived from adjacency to sea tile", () 
 		terrain_tiles: [{ position: { q: 1, r: 0 }, type: "sea" }],
 	});
 	const { precincts } = scenarioToSpike(scenario);
-	assertEqual(precincts[0]!.terrain, "coast", "precinct adjacent to sea → coast");
-});
-
-test("scenarioToSpike: explicit terrain annotation overrides derivation", () => {
-	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
-	const scenario = makeScenario({
-		parties: [PARTY_R, PARTY_D],
-		districts: [{ id: did("d1") }, { id: did("d2") }],
-		precincts: [{
-			...makePrecinct(0, 0, [g], "d1"),
-			terrain: "lakeside" as const,
-		}],
-		terrain_tiles: [{ position: { q: 1, r: 0 }, type: "sea" }],
-	});
-	const { precincts } = scenarioToSpike(scenario);
-	assertEqual(precincts[0]!.terrain, "lakeside", "explicit terrain wins over derived coast");
+	assertEqual(precincts[0]!.terrainAnnotation?.coast, true, "precinct adjacent to sea → coast");
 });
 
 test("scenarioToSpike: river edges converted to integer index pairs", () => {
@@ -323,23 +308,6 @@ test("scenarioToSpike: passableNeighbors = neighbors when river_blocks_contiguit
 	assertEqual(precincts[0]!.passableNeighbors![0], 1, "passable unchanged when not blocking");
 });
 
-test("scenarioToSpike: sea takes priority over lake in derivation (coast wins)", () => {
-	// Precinct at (0,0) with sea at (1,0) and lake at (-1,0) on opposite sides.
-	// Per priority: sea > lake → terrain should be "coast", not "lakeside".
-	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
-	const scenario = makeScenario({
-		parties: [PARTY_R, PARTY_D],
-		districts: [{ id: did("d1") }, { id: did("d2") }],
-		precincts: [makePrecinct(0, 0, [g], "d1")],
-		terrain_tiles: [
-			{ position: { q: -1, r: 0 }, type: "lake" },
-			{ position: { q: 1, r: 0 }, type: "sea" },
-		],
-	});
-	const { precincts } = scenarioToSpike(scenario);
-	assertEqual(precincts[0]!.terrain, "coast", "sea priority over lake → coast");
-});
-
 test("scenarioToSpike: foothill annotation derived from mountain adjacency", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const scenario = makeScenario({
@@ -349,7 +317,7 @@ test("scenarioToSpike: foothill annotation derived from mountain adjacency", () 
 		terrain_tiles: [{ position: { q: 1, r: 0 }, type: "mountain" }],
 	});
 	const { precincts } = scenarioToSpike(scenario);
-	assertEqual(precincts[0]!.terrain, "foothill", "precinct adjacent to mountain → foothill");
+	assertEqual(precincts[0]!.terrainAnnotation?.foothill, true, "precinct adjacent to mountain → foothill=true");
 });
 
 test("scenarioToSpike: riverside annotation derived when no terrain tile adjacency", () => {
@@ -363,13 +331,12 @@ test("scenarioToSpike: riverside annotation derived when no terrain tile adjacen
 		river_edges: [[p1.id, p2.id]],
 	});
 	const { precincts } = scenarioToSpike(scenario);
-	assertEqual(precincts[0]!.terrain, "riverside", "p1 in river edge → riverside");
-	assertEqual(precincts[1]!.terrain, "riverside", "p2 in river edge → riverside");
+	assertEqual(precincts[0]!.terrainAnnotation?.riverside, true, "p1 in river edge → riverside=true");
+	assertEqual(precincts[1]!.terrainAnnotation?.riverside, true, "p2 in river edge → riverside=true");
 });
 
-test("scenarioToSpike: foothill takes priority over riverside", () => {
-	// Precinct adjacent to a mountain tile AND in a river edge → foothill.
-	// Per priority: coast > lakeside > foothill > riverside.
+test("scenarioToSpike: foothill suppresses riverside when mountain is adjacent", () => {
+	// riverside is only set when isRiverside && !hasSea && !hasMountain.
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const p1 = makePrecinct(0, 0, [g], "d1");
 	const p2 = makePrecinct(0, 1, [g], "d1"); // adjacent to p1 via edge 1 (down)
@@ -381,23 +348,21 @@ test("scenarioToSpike: foothill takes priority over riverside", () => {
 		river_edges: [[p1.id, p2.id]],
 	});
 	const { precincts } = scenarioToSpike(scenario);
-	assertEqual(precincts[0]!.terrain, "foothill", "foothill priority over riverside");
+	assertEqual(precincts[0]!.terrainAnnotation?.foothill, true, "foothill=true (mountain adjacent)");
+	assertEqual(precincts[0]!.terrainAnnotation?.riverside, false, "riverside=false (suppressed by foothill)");
 });
 
-test("scenarioToSpike: has_internal_lake round-trips through adapter", () => {
+test("scenarioToSpike: lakeside annotation derived from adjacency to lake tile", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const scenario = makeScenario({
 		parties: [PARTY_R, PARTY_D],
-		districts: [{ id: did("d1") }, { id: did("d2") }],
-		precincts: [{
-			...makePrecinct(0, 0, [g], "d1"),
-			terrain: "lakeside" as const,
-			has_internal_lake: true,
-		}],
+		districts: [{ id: did("d1") }],
+		precincts: [makePrecinct(0, 0, [g], "d1")],
+		terrain_tiles: [{ position: { q: 1, r: 0 }, type: "lake" }],
 	});
 	const { precincts } = scenarioToSpike(scenario);
-	assertEqual(precincts[0]!.terrain, "lakeside", "lakeside set");
-	assertEqual(precincts[0]!.has_internal_lake, true, "has_internal_lake propagated");
+	assertEqual(precincts[0]!.terrainAnnotation?.lakeside, true, "precinct adjacent to lake → lakeside=true");
+	assertEqual(precincts[0]!.terrainAnnotation?.riverside, false, "riverside=false (suppressed by lakeside)");
 });
 
 test("scenarioToSpike: passableNeighbors nulls river edges when river_blocks_contiguity is true", () => {

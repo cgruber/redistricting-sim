@@ -35,7 +35,6 @@ import type {
   SuccessCriterion,
   GeometrySpec,
   TerrainTile,
-  TerrainAnnotation,
 } from "./scenario.js";
 
 // Flat-top axial hex direction vectors (mirrors HEX_DIRECTIONS in hex-geometry.ts)
@@ -213,19 +212,6 @@ function parsePrecinct(raw: unknown, idx: number): Omit<Precinct, "initial_distr
   if (r["neighbors"] !== undefined) {
     const nbRaw = requireArray(r["neighbors"], `${label}.neighbors`);
     pc.neighbors = nbRaw.map((n, i) => requireString(n, `${label}.neighbors[${i}]`) as PrecinctId);
-  }
-
-  // Terrain annotation (optional; derived from adjacency if absent)
-  if (r["terrain"] !== undefined) {
-    const t = requireString(r["terrain"], `${label}.terrain`);
-    const validAnnotations = ["coast", "lakeside", "riverside", "foothill"];
-    if (!validAnnotations.includes(t)) {
-      throw new Error(`${label}.terrain: unknown value "${t}"; expected one of: ${validAnnotations.join(", ")}`);
-    }
-    pc.terrain = t as TerrainAnnotation;
-  }
-  if (r["has_internal_lake"] !== undefined) {
-    pc.has_internal_lake = requireBoolean(r["has_internal_lake"], `${label}.has_internal_lake`);
   }
 
   // initial_district_id: absent, null, or a string

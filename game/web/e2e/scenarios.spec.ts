@@ -1073,28 +1073,32 @@ test.describe("GAME-068: animated reveal path (no reduced-motion)", () => {
 
 // ─── tutorial-003: "Hawthorn Bend — A Tour of the Map" (GAME-082 geo features tour) ───
 
-test("tutorial-003 smoke: loads and renders 36 precincts", async ({ page }) => {
+test("tutorial-003 smoke: loads and renders 119 precincts", async ({ page }) => {
   await page.goto("/?s=tutorial-003&debug");
-  await expect(page.locator("path.hex")).toHaveCount(36);
+  // 127 R=6 circle hexes minus 3 mountain tiles minus 4 sea tiles (now at r=6) minus 1 lake tile = 119.
+  await expect(page.locator("path.hex")).toHaveCount(119);
 });
 
-test("tutorial-003 terrain: 7 terrain tiles rendered (3 mountain + 3 sea + 1 lake)", async ({ page }) => {
+test("tutorial-003 terrain: 8 terrain tiles rendered (3 mountain + 4 sea + 1 lake)", async ({ page }) => {
   await page.goto("/?s=tutorial-003&debug");
-  await expect(page.locator("g.terrain-tile")).toHaveCount(7);
+  // Mountain tiles now at (-3,-3), (-2,-4), (-1,-5) — hexDist=6 boundary positions.
+  await expect(page.locator("g.terrain-tile")).toHaveCount(8);
   await expect(page.locator("g.terrain-tile[data-terrain-type='mountain']")).toHaveCount(3);
-  await expect(page.locator("g.terrain-tile[data-terrain-type='sea']")).toHaveCount(3);
+  await expect(page.locator("g.terrain-tile[data-terrain-type='sea']")).toHaveCount(4);
   await expect(page.locator("g.terrain-tile[data-terrain-type='lake']")).toHaveCount(1);
 });
 
-test("tutorial-003 terrain: river rendered as a single smoothed chain", async ({ page }) => {
+test("tutorial-003 terrain: river rendered as two smoothed chains (split at lake tile)", async ({ page }) => {
   await page.goto("/?s=tutorial-003&debug");
-  // 5 connected river edges form a single chain along the r=-1/r=0 boundary (q=0..2).
+  // 16 river edges split into two chains by the lake tile at (-1,1):
+  //   chain 1: NW foothill (-1,-4) → (-2,1)  [9 edges]
+  //   chain 2: (-2,2) → (-1,5) [7 edges] — downstream reach to coast area
   // Smoothing uses d3.curveCardinal.tension(0.4).
-  await expect(page.locator("path.river-chain")).toHaveCount(1);
-  const d = await page.locator("path.river-chain").getAttribute("d");
+  await expect(page.locator("path.river-chain")).toHaveCount(2);
+  const d = await page.locator("path.river-chain").first().getAttribute("d");
   expect(d).toBeTruthy();
   expect(d!.startsWith("M")).toBe(true);
-  // curveCardinal on 3+ points emits cubic bezier (C). 5 edges → 6 corners → C-rich path.
+  // curveCardinal on 3+ points emits cubic bezier (C).
   expect(d!.includes("C")).toBe(true);
 });
 
@@ -1108,38 +1112,36 @@ test("tutorial-003 terrain: terrain tiles are non-interactive (pointer-events: n
 
 test("tutorial-003 terrain: coast edge strokes on precincts adjacent to sea", async ({ page }) => {
   await page.goto("/?s=tutorial-003&debug");
-  // Coast precincts at r=2: (1,2) has 1 sea-facing edge, (2,2) and (3,2) each have 2
-  // (down + lower-left), (4,2) has 1 (lower-left to (3,3) sea).
-  // Total: 1+2+2+1 = 6 sea-facing edges, each rendered as a curved <path> (GAME-082).
-  await expect(page.locator("path.terrain-edge-sea")).toHaveCount(6);
+  // Sea tiles moved to r=6: (-3,6), (-2,6), (-1,6), (0,6). Coast precincts at r=5 / edge of map:
+  //   (-3,6): 3 precinct-facing edges → (-4,6), (-3,5), (-2,5)
+  //   (-2,6): 2 precinct-facing edges → (-2,5), (-1,5)
+  //   (-1,6): 2 precinct-facing edges → (-1,5), (0,5)
+  //   (0,6):  2 precinct-facing edges → (0,5), (1,5)
+  // Total: 3+2+2+2 = 9 sea-facing edges, each rendered as a curved <path> (GAME-082).
+  await expect(page.locator("path.terrain-edge-sea")).toHaveCount(9);
 });
 
-test("tutorial-003 terrain: lakeside edge strokes on precincts adjacent to lake", async ({ page }) => {
+test("tutorial-003 terrain: lake edge strokes on precincts adjacent to lake tile", async ({ page }) => {
   await page.goto("/?s=tutorial-003&debug");
-  // Lakeside precincts adjacent to lake at (6,-2): (5,-2) via lower-right, (5,-1) via upper-right.
-  // 2 lake-facing edges total. Lakeside still uses straight <line> (the lake fill provides weight).
-  await expect(page.locator("line.terrain-edge-lake")).toHaveCount(2);
+  // Lake tile at (-1,1). All 6 neighbours are valid precincts, each with 1 lake-facing edge:
+  //   (0,1), (-1,2), (-2,2), (-2,1), (-1,0), (0,0)
+  // Total: 6 lake-facing edges, each rendered as a curved <path>.
+  await expect(page.locator("path.terrain-edge-lake")).toHaveCount(6);
 });
 
 test("tutorial-003 terrain: foothill edge strokes on precincts adjacent to mountains", async ({ page }) => {
   await page.goto("/?s=tutorial-003&debug");
-  // Foothill precincts at r=-3 facing mountain tiles at (1,-4), (2,-4), (3,-4).
-  // In flat-top axial hex, a hex at (q, r-1) is the "up" neighbor and (q+1, r-1) is the
-  // "upper-right" neighbor — but (q-1, r-1) is NOT a neighbor (no hex direction with both
-  // q and r decreasing). So mountain edges per foothill:
-  //   (0,-3): 1 (upper-right to (1,-4))
-  //   (1,-3): 2 (up to (1,-4), upper-right to (2,-4))
-  //   (2,-3): 2 (up to (2,-4), upper-right to (3,-4))
-  //   (3,-3): 1 (up to (3,-4))
-  //   (4,-3): 0 — NOT a foothill
-  // Total: 1+2+2+1 = 6 mountain-facing edges, rendered as curved <path> (GAME-082).
-  await expect(page.locator("path.terrain-edge-mountain")).toHaveCount(6);
-});
-
-test("tutorial-003 terrain: internal lake ellipse renders for has_internal_lake precincts", async ({ page }) => {
-  await page.goto("/?s=tutorial-003&debug");
-  // (0,2) has has_internal_lake: true; exactly one aqua ellipse renders.
-  await expect(page.locator("ellipse.internal-lake")).toHaveCount(1);
+  // Mountain tiles at (-3,-3), (-2,-4), (-1,-5) are NOT precincts (terrain-position exclusion).
+  // Only positions with hexDist ≤ 6 are valid precincts. Foothill precincts are:
+  //   (-2,-3): 2 edges facing (-3,-3) and (-2,-4) [hexDist=5]
+  //   (-3,-2): 1 edge facing (-3,-3)              [hexDist=3]
+  //   (-4,-2): 1 edge facing (-3,-3)              [hexDist=4]
+  //   (-1,-4): 2 edges facing (-2,-4) and (-1,-5) [hexDist=5]
+  //   (0,-5):  1 edge facing (-1,-5)              [hexDist=5]
+  //   (0,-6):  1 edge facing (-1,-5)              [hexDist=6]
+  // Positions (-4,-3), (-3,-4), (-2,-5), (-1,-6) are hexDist=7 — outside the grid.
+  // Total: 2+1+1+2+1+1 = 8 mountain-facing edges, rendered as curved <path> (GAME-082).
+  await expect(page.locator("path.terrain-edge-mountain")).toHaveCount(8);
 });
 
 test("tutorial-003 contiguity: river is cosmetic, initial quadrant districts are contiguous", async ({ page }) => {

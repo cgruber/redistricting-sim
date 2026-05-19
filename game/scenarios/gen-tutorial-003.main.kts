@@ -2,119 +2,134 @@
 /**
  * Generator for tutorial-003.json: "Hawthorn Bend — A Tour of the Map"
  *
- * Tutorial-campaign scenario that introduces all four terrain annotations in one map:
- *   - foothill   (precincts adjacent to mountain tiles)
- *   - lakeside   (precincts adjacent to lake tiles, plus one explicit + internal lake)
- *   - riverside  (precincts on river edges)
- *   - coast      (precincts adjacent to sea tiles)
+ * Shape: R=6 hex circle centred at (0,0), minus terrain tile positions (124 precincts).
+ * Terrain tiles at hexDist ≤ R are excluded from precincts — tile-type wins over radius.
  *
- * Geography is cosmetic — `river_blocks_contiguity: false`. The initial quadrant
- * assignment is already contiguous and population-balanced, so the player can submit
- * immediately or repaint to experiment.
+ * Terrain:
+ *   Mountains  (-3,-3), (-2,-4), (-1,-5)  → inside R=6, excluded from precincts;
+ *                                            foothills on their inner neighbours
+ *   Sea        (-3,6), (-2,6), (-1,6), (0,6) → outside R=6 (hexDist=6 edge), coast on r=5 neighbours
+ *   Lake tile  (-1,1)                       → inside R=6, renders as aqua tile; lakeside on 6 neighbours
  *
- * Shape: 6 × 6 rectangular hex cluster (36 precincts), q=0..5, r=-3..2.
+ * River: 19 edges from NW foothill (-1,-4) through centre to S coast.
  *
- * Terrain placement:
- *   Mountain tiles at (1,-4), (2,-4), (3,-4) — row r=-3 precincts (0..4,-3) become foothill.
- *   Lake tile at (6,-2) — precincts (5,-2) and (5,-1) become lakeside.
- *   Sea tiles at (1,3), (2,3), (3,3) — precincts (1..4, 2) become coast.
- *   River: 5 edges along the r=-1/r=0 boundary, q=0..2 — (0..2, -1) and (0..2, 0) become riverside.
- *   Internal lake: (0,2) explicitly authored with terrain:"lakeside" + has_internal_lake:true
- *                  to showcase the ellipse rendering on a precinct without a neighboring lake tile.
- *
- * Initial assignment: 4 quadrants of 9 precincts each:
- *   d1 top-left  (q=0..2, r=-3..-1), d2 top-right (q=3..5, r=-3..-1),
- *   d3 bottom-left (q=0..2, r=0..2), d4 bottom-right (q=3..5, r=0..2).
- *
- * Demographics: 2 parties (Ash, Birch), small jitter, no strong partisan story.
+ * Districts: 4, angular split from centre (~31 precincts each).
  *
  * Run from repo root:
  *   ./game/scenarios/gen-tutorial-003.main.kts
  */
 
+import kotlin.math.*
 import kotlin.random.Random
 
 val rng = Random(42)
+
+fun hexDist(q: Int, r: Int) = (abs(q) + abs(r) + abs(q + r)) / 2
 
 data class Hex(val q: Int, val r: Int) {
     val id: String get() = "p_${q}_${r}".replace("-", "n")
 }
 
-// Precincts: 6 columns × 6 rows (r=-3..2, q=0..5)
-val precincts = buildList {
-    for (r in -3..2) {
-        for (q in 0..5) {
-            add(Hex(q, r))
+val R = 6
+
+// Declare terrain tiles first — positions at hexDist ≤ R are excluded from precincts.
+val mountainTiles = listOf(Hex(-3,-3), Hex(-2,-4), Hex(-1,-5))
+val seaTiles      = listOf(Hex(-3,6), Hex(-2,6), Hex(-1,6), Hex(0,6))
+val lakeTile      = Hex(-1, 1)
+val terrainPositions: Set<Hex> = (mountainTiles + seaTiles + listOf(lakeTile)).toSet()
+
+val hexes = buildList {
+    for (q in -R..R) {
+        val rMin = maxOf(-R, -q - R)
+        val rMax = minOf(R, -q + R)
+        for (r in rMin..rMax) {
+            val h = Hex(q, r)
+            if (h !in terrainPositions) add(h)
         }
+    }
+}.sortedWith(compareBy({ it.r }, { it.q }))
+
+// Angular 4-way split — gives ~32 precincts per district.
+fun initialDistrict(q: Int, r: Int): String {
+    if (q == 0 && r == 0) return "d1"
+    val x = q + r * 0.5
+    val y = r * sqrt(3.0) / 2.0
+    val a = atan2(y, x)
+    return when {
+        a >= -PI / 4 && a < PI / 4     -> "d1"  // east
+        a >= PI / 4  && a < 3 * PI / 4 -> "d2"  // north
+        a >= -3 * PI / 4 && a < -PI / 4 -> "d4" // south
+        else                            -> "d3"  // west
     }
 }
 
-// Initial quadrant assignment.
-fun initialDistrict(h: Hex): String = when {
-    h.q < 3 && h.r < 0 -> "d1"   // top-left
-    h.q >= 3 && h.r < 0 -> "d2"  // top-right
-    h.q < 3 && h.r >= 0 -> "d3"  // bottom-left
-    else -> "d4"                  // bottom-right
-}
-
-// Mild partisan jitter — no specific lesson, just realistic variation.
-fun baseAshShare(h: Hex): Double = 0.50
-
 val BASE_POP = 1000
-
-fun Double.fmt(decimals: Int = 4) = "%.${decimals}f".format(this)
-
-// Precinct (0,2) gets explicit lakeside + has_internal_lake to showcase the ellipse on
-// a precinct that isn't adjacent to a lake tile.
-val internalLakePrecincts = setOf(Hex(0, 2))
+fun Double.fmt(d: Int = 4) = "%.${d}f".format(this)
 
 val precinctsJson = buildString {
     var first = true
-    for (h in precincts) {
+    for (h in hexes) {
         if (!first) append(",\n")
         first = false
         val pop = BASE_POP + rng.nextInt(-100, 101)
-        val ashShare = (baseAshShare(h) + rng.nextDouble(-0.06, 0.06)).coerceIn(0.05, 0.95)
-        val ashStr = ashShare.fmt(4)
-        val birchStr = (1.0 - ashStr.toDouble()).fmt(4)
-        val turnout = rng.nextDouble(0.55, 0.70).fmt(2)
-        val name = "(${h.q},${h.r})"
-        val hasInternalLake = h in internalLakePrecincts
-        val extraFields = if (hasInternalLake) {
-            ",\n      \"terrain\": \"lakeside\",\n      \"has_internal_lake\": true"
-        } else ""
+        val ash = (0.50 + rng.nextDouble(-0.06, 0.06)).coerceIn(0.05, 0.95)
+        val birch = 1.0 - ash
+        val turnout = rng.nextDouble(0.55, 0.70)
         append("""    {
       "id": "${h.id}",
       "editable": true,
       "position": { "q": ${h.q}, "r": ${h.r} },
       "total_population": $pop,
-      "initial_district_id": "${initialDistrict(h)}",
-      "name": "$name"$extraFields,
+      "initial_district_id": "${initialDistrict(h.q, h.r)}",
+      "name": "(${h.q},${h.r})",
       "demographic_groups": [
         {
           "id": "${h.id}-all",
           "name": "All voters",
           "population_share": 1.0,
-          "turnout_rate": $turnout,
-          "vote_shares": { "ash": $ashStr, "birch": $birchStr }
+          "turnout_rate": ${turnout.fmt(2)},
+          "vote_shares": { "ash": ${ash.fmt(4)}, "birch": ${birch.fmt(4)} }
         }
       ]
     }""")
     }
 }
 
-// River: 5 edges along the r=-1 / r=0 boundary, western half (q=0..2).
+// River: two chains — NW foothill to lake, and lake to S coast.
+// Lake tile at (-1,1) splits the river; two reaches rendered as separate chains.
+// Starts at (-1,-4) rather than (-2,-4): the latter is now a mountain tile.
 val riverEdges = listOf(
-    Hex(0, -1) to Hex(0, 0),     // down across (0,-1)
-    Hex(1, -1) to Hex(0, 0),     // lower-left from (1,-1)
-    Hex(1, -1) to Hex(1, 0),     // down across (1,-1)
-    Hex(2, -1) to Hex(1, 0),     // lower-left from (2,-1)
-    Hex(2, -1) to Hex(2, 0),     // down across (2,-1)
+    Hex(-1,-4) to Hex(-2,-3),   // SW — start at foothill
+    Hex(-2,-3) to Hex(-1,-3),   // E
+    Hex(-1,-3) to Hex(-2,-2),   // SW
+    Hex(-2,-2) to Hex(-1,-2),   // E
+    Hex(-1,-2) to Hex(-2,-1),   // SW
+    Hex(-2,-1) to Hex(-1,-1),   // E
+    Hex(-1,-1) to Hex(-2, 0),   // SW
+    Hex(-2, 0) to Hex(-1, 0),   // E
+    Hex(-1, 0) to Hex(-2, 1),   // SW — upstream reach ends here (lake at (-1,1))
+    // gap: (-2,1)→(-1,1) and (-1,1)→(-2,2) removed — lake tile occupies (-1,1)
+    Hex(-2, 2) to Hex(-1, 2),   // E — downstream reach begins here
+    Hex(-1, 2) to Hex(-2, 3),   // SW
+    Hex(-2, 3) to Hex(-1, 3),   // E
+    Hex(-1, 3) to Hex(-2, 4),   // SW
+    Hex(-2, 4) to Hex(-1, 4),   // E
+    Hex(-1, 4) to Hex(-2, 5),   // SW
+    Hex(-2, 5) to Hex(-1, 5),   // E — reaches coast area (sea now at r=6)
 )
 
-val riverEdgesJson = riverEdges.joinToString(",\n") { (a, b) ->
+val riverJson = riverEdges.joinToString(",\n") { (a, b) ->
     "    [\"${a.id}\", \"${b.id}\"]"
 }
+
+
+val terrainJson = buildString {
+    for (t in mountainTiles) append("    { \"position\": { \"q\": ${t.q}, \"r\": ${t.r} }, \"type\": \"mountain\" },\n")
+    for (t in seaTiles)      append("    { \"position\": { \"q\": ${t.q}, \"r\": ${t.r} }, \"type\": \"sea\" },\n")
+    append("    { \"position\": { \"q\": ${lakeTile.q}, \"r\": ${lakeTile.r} }, \"type\": \"lake\" }")
+}
+
+val distCounts = hexes.groupBy { initialDistrict(it.q, it.r) }.mapValues { it.value.size }
 
 val json = """{
   "format_version": "1",
@@ -141,16 +156,10 @@ val json = """{
 $precinctsJson
   ],
   "terrain_tiles": [
-    { "position": { "q": 1, "r": -4 }, "type": "mountain" },
-    { "position": { "q": 2, "r": -4 }, "type": "mountain" },
-    { "position": { "q": 3, "r": -4 }, "type": "mountain" },
-    { "position": { "q": 6, "r": -2 }, "type": "lake" },
-    { "position": { "q": 1, "r":  3 }, "type": "sea" },
-    { "position": { "q": 2, "r":  3 }, "type": "sea" },
-    { "position": { "q": 3, "r":  3 }, "type": "sea" }
+$terrainJson
   ],
   "river_edges": [
-$riverEdgesJson
+$riverJson
   ],
   "river_blocks_contiguity": false,
   "events": [],
@@ -176,27 +185,28 @@ $riverEdgesJson
     "character": {
       "name": "Tutorial Guide",
       "role": "Tour Guide",
-      "motivation": "Welcome to Hawthorn Bend. This map shows every kind of terrain you'll see in the game — take a moment to look around before you start drawing districts."
+      "motivation": "Welcome to Hawthorn Bend. This map shows every kind of terrain feature that you will see in the game."
     },
     "intro_slides": [
       {
         "heading": "Reading the Map",
-        "body": "Maps in this game can include geographic features alongside the precincts you draw districts from.\n\n- **Mountains** (grey tiles, top of map) — not assignable. Precincts beside them are foothills, marked with a subtle grey edge.\n- **Sea** (dark blue tiles, bottom of map) — not assignable. Precincts beside them are coast, marked with a blue shoreline.\n- **Lake** (aqua tile, right side) — not assignable. Precincts beside it are lakeside, marked with an aqua edge.\n- **River** (blue line through the middle-left) — flows along hex edges, not on them. Precincts on a river are riverside.\n\nThere's also a small lake within one precinct on the south-west — an inland pond, drawn as an aqua oval inside the hex."
+        "body": "Maps can include geographic features alongside the precincts you draw districts from.\n\n- **Mountains** (grey tiles, northwest) — not assignable. Adjacent precincts are foothills with a soft grey fringe.\n- **Sea** (dark blue tiles, south) — not assignable. Adjacent precincts are coast with a blue shoreline.\n- **Lake** (aqua tile, centre) — not assignable. Adjacent precincts show a teal lakeside fringe.\n- **River** (teal line) — flows from the mountain area, through the lake, and down to the sea."
       },
       {
         "heading": "Geography is Cosmetic",
-        "body": "These features are visual: they show what the region looks like, but **they do not constrain district-drawing**.\n\nReal redistricting often uses rivers and mountains as district boundaries — but that's because of political choices (state lines, county lines, historical municipal limits) that *happen* to follow geography, not because geography is a physical barrier. A district can cross a river if the people on both sides share a community.\n\nThe initial map here divides the region into four quadrants. It's already a valid plan."
+        "body": "These features are visual: they show what the region looks like, but **they do not constrain district-drawing**.\n\nReal redistricting often uses rivers and mountains as district boundaries — but that is because of political choices (state lines, county lines, historical municipal limits) that happen to follow geography, not because geography is a physical barrier. A district can cross a river or lake if the people on both sides share a community.\n\nThe initial map divides the region into four sectors. It is already a valid plan."
       },
       {
         "heading": "Try It Out",
-        "body": "Click **Submit Map** to evaluate the starting districts. You can also repaint districts to experiment — drag across hexes to assign them, click district buttons to switch which district you're drawing.\n\nWhen you're done exploring, move on to the educational campaign."
+        "body": "Click **Submit Map** to evaluate the starting districts. You can also repaint districts to experiment — drag across hexes to assign them, click district buttons to switch which district you are drawing.\n\nWhen you are done exploring, move on to the educational campaign."
       }
     ],
-    "objective": "Look around the map at the four kinds of terrain. Submit the initial four-quadrant map, or repaint to experiment."
+    "objective": "Look around the map at the terrain features. Submit the initial four-district map, or repaint to experiment."
   }
 }
 """
 
 val outFile = java.io.File("game/scenarios/tutorial-003.json")
 outFile.writeText(json)
-println("Wrote ${precincts.size} precincts and ${riverEdges.size} river edges to ${outFile.path}")
+println("Wrote ${hexes.size} precincts, ${riverEdges.size} river edges → ${outFile.path}")
+println("District counts: $distCounts")

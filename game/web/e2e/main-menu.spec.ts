@@ -66,7 +66,9 @@ test("main menu: Continue navigates directly to last played scenario", async ({ 
   await page.reload();
   await expect(page.locator("#btn-main-continue")).toBeVisible({ timeout: 10_000 });
   await page.locator("#btn-main-continue").click();
+  // Must include campaign param — without it the app redirects to the main menu (bug: GAME-082).
   await expect(page).toHaveURL(/s=tutorial-002/);
+  await expect(page).toHaveURL(/campaign=tutorial/);
 });
 
 test("main menu: Load is visible but disabled", async ({ page }) => {

@@ -46,8 +46,6 @@ export interface HexAxialPosition {
 
 export type TerrainType = "sea" | "lake" | "mountain";
 
-export type TerrainAnnotation = "coast" | "lakeside" | "riverside" | "foothill";
-
 export interface TerrainTile {
 	position: HexAxialPosition;
 	type: TerrainType;
@@ -125,10 +123,6 @@ export interface Precinct {
 	initial_district_id?: DistrictId | null;
 	name?: string;
 	tags?: string[];
-	/** Explicit terrain annotation; derived from adjacency if absent */
-	terrain?: TerrainAnnotation;
-	/** When true and terrain === "lakeside": render small internal lake within hex */
-	has_internal_lake?: boolean;
 }
 
 // ─── Events ───────────────────────────────────────────────────────────────────

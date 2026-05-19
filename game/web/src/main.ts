@@ -267,9 +267,6 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	}
 
 	function buildContinueUrl(scenarioId: string): string {
-		if (SCENARIO_MANIFEST.some((e) => e.id === scenarioId)) {
-			return `./?s=${scenarioId}`;
-		}
 		for (const campaign of CAMPAIGN_REGISTRY) {
 			if (campaign.scenarioIds.includes(scenarioId)) {
 				return `./?s=${scenarioId}&campaign=${campaign.id}`;
@@ -679,6 +676,9 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		} else if (isCtrlOrCmd && (e.key === "y" || (isMac && e.shiftKey && e.key === "z"))) {
 			e.preventDefault();
 			temporalStore.getState().redo();
+		} else if (IS_DEBUG && e.key === "c" && !isCtrlOrCmd && !e.shiftKey && !e.altKey) {
+			const tag = (e.target as Element | null)?.tagName ?? "";
+			if (tag !== "INPUT" && tag !== "TEXTAREA") toggleCoordLabels();
 		}
 	});
 
@@ -1379,6 +1379,18 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		btnDebugWin.addEventListener("click", () => {
 			showResultScreen(/*debugForcePass=*/ true);
 		});
+	}
+
+	const btnDebugCoords = document.getElementById("btn-debug-coords") as HTMLButtonElement | null;
+	let coordLabelsOn = false;
+	const toggleCoordLabels = () => {
+		coordLabelsOn = !coordLabelsOn;
+		renderer.setCoordLabelsVisible(coordLabelsOn);
+		if (btnDebugCoords) btnDebugCoords.textContent = coordLabelsOn ? "⌖ Coords ON [C]" : "⌖ Coords [C]";
+	};
+	if (btnDebugCoords && IS_DEBUG) {
+		btnDebugCoords.style.display = "";
+		btnDebugCoords.addEventListener("click", toggleCoordLabels);
 	}
 
 	btnKeepDrawing!.addEventListener("click", () => {
