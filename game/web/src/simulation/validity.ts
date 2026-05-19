@@ -102,7 +102,11 @@ function isContiguous(
 		const curr = queue.shift()!;
 		const p = precincts[curr];
 		if (p === undefined) continue;
-		for (const nbId of p.neighbors) {
+		// passableNeighbors mirrors neighbors but nulls river-blocked edges when the
+		// scenario sets river_blocks_contiguity. Fall back to neighbors when absent
+		// (legacy/test precincts constructed without terrain data).
+		const traversable = p.passableNeighbors ?? p.neighbors;
+		for (const nbId of traversable) {
 			if (nbId !== null && inSet.has(nbId) && !visited.has(nbId)) {
 				visited.add(nbId);
 				queue.push(nbId);
