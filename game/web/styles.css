@@ -51,6 +51,24 @@ body {
   border-color: white;
 }
 
+.district-btn-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.district-demo-stat {
+  font-size: 0.68rem;
+  color: #a0a8c0;
+  white-space: nowrap;
+}
+
+.district-demo-stat.met {
+  color: #6fcf97;
+  font-weight: 600;
+}
+
 #btn-undo, #btn-redo, #btn-county-toggle {
   padding: 4px 10px;
   background: #0f3460;

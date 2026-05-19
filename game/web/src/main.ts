@@ -9,7 +9,7 @@
  */
 
 import { loadScenario } from "./model/loader.js";
-import type { Scenario, CriterionId, CharacterType } from "./model/scenario.js";
+import type { Scenario, CriterionId, CharacterType, Criterion } from "./model/scenario.js";
 import { type MapRenderer, type ViewMode, SvgMapRenderer } from "./render/mapRenderer.js";
 import {
 	renderDistrictButtons,
@@ -18,7 +18,14 @@ import {
 	renderValidityPanel,
 } from "./render/panels.js";
 import { createGameStore } from "./store/gameStore.js";
-import { evaluateCriteria, isMapSubmittable, type CriterionResult } from "./simulation/evaluate.js";
+import {
+	evaluateCriteria,
+	isMapSubmittable,
+	computeDistrictGroupShares,
+	groupFilterLabel,
+	type CriterionResult,
+	type DistrictDemoStat,
+} from "./simulation/evaluate.js";
 import { computeValidityStats } from "./simulation/validity.js";
 import {
 	loadProgress,
@@ -456,6 +463,12 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		return;
 	}
 
+	// GAME-080: detect majority_minority criterion for live district demographic stat
+	type MMCriterion = Extract<Criterion, { type: "majority_minority" }>;
+	const majorityMinorityCriterion = scenario.success_criteria
+		.map((sc) => sc.criterion)
+		.find((c): c is MMCriterion => c.type === "majority_minority");
+
 	// ── Preload audio clips (GAME-062) ───────────────────────────────────────
 	{
 		const clips: Record<string, string> = {};
@@ -566,9 +579,24 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		renderResults(resultsEl!, state, partyLabels);
 		renderValidityPanel(validityEl!, state, scenario.rules);
 		renderLegend(legendEl!, state.districtCount);
+
+		let demoStat: DistrictDemoStat | undefined;
+		if (majorityMinorityCriterion) {
+			demoStat = {
+				shares: computeDistrictGroupShares(
+					scenario.precincts,
+					state.assignments,
+					state.districtCount,
+					majorityMinorityCriterion.group_filter,
+				),
+				label: groupFilterLabel(majorityMinorityCriterion.group_filter),
+				threshold: majorityMinorityCriterion.min_eligible_share,
+			};
+		}
+
 		renderDistrictButtons(districtBtnsEl!, state.districtCount, state.activeDistrict, (id) => {
 			store.getState().setActiveDistrict(id);
-		});
+		}, demoStat);
 
 		btnUndo!.disabled = pastStates.length === 0;
 		btnRedo!.disabled = futureStates.length === 0;
