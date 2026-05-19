@@ -475,10 +475,12 @@ export class SvgMapRenderer implements MapRenderer {
 		// 2. Build chains of connected segments by walking the corner graph.
 		const chains = buildRiverChains(segs);
 
-		// 3. Render each chain as a smoothed SVG path. d3.curveBasis approximates
-		//    the corner points without strictly passing through them, producing a
-		//    gentle meander rather than the raw hex-edge zigzag.
-		const lineGen = d3.line<Point2D>().x((p) => p[0]).y((p) => p[1]).curve(d3.curveBasis);
+		// 3. Render each chain as a smoothed SVG path. d3.curveCardinal with
+		//    tension 0.4 passes through every corner with moderate swing — more
+		//    visible meander through hex vertices than curveBasis's tighter
+		//    approximation, while still avoiding the sharp Catmull-Rom overshoot
+		//    at sharp turns.
+		const lineGen = d3.line<Point2D>().x((p) => p[0]).y((p) => p[1]).curve(d3.curveCardinal.tension(0.4));
 
 		this.riverGroup
 			.selectAll<SVGPathElement, Point2D[]>("path.river-chain")

@@ -102,17 +102,21 @@ val precinctsJson = buildString {
     }
 }
 
-// River edges: all 7 edges between r=-1 and r=0
+// River edges form a single connected chain along the boundary between rows
+// r=-1 and r=0, ending with a hook that wraps over the top of (3,-1) into row
+// r=-2. The hook tests how the chain-walker + curveCardinal smoothing handle a
+// direction change. Edges 6 and 7 (originally going south at (3,-1)) are replaced
+// with edges 3 and 4 of (3,-1) — corners 3→4→5 traversing the top of (3,-1).
 val riverEdges = listOf(
-    // Direct (down)
-    Hex(0, -1) to Hex(0, 0),
-    Hex(1, -1) to Hex(1, 0),
-    Hex(2, -1) to Hex(2, 0),
-    Hex(3, -1) to Hex(3, 0),
-    // Diagonal (lower-left from north precinct)
-    Hex(1, -1) to Hex(0, 0),
-    Hex(2, -1) to Hex(1, 0),
-    Hex(3, -1) to Hex(2, 0),
+    // Western zigzag along the r=-1 / r=0 boundary
+    Hex(0, -1) to Hex(0, 0),     // down across (0,-1)
+    Hex(1, -1) to Hex(0, 0),     // lower-left from (1,-1)
+    Hex(1, -1) to Hex(1, 0),     // down across (1,-1)
+    Hex(2, -1) to Hex(1, 0),     // lower-left from (2,-1)
+    Hex(2, -1) to Hex(2, 0),     // down across (2,-1)
+    // Bend: wraps over the top of (3,-1) via corners 3 → 4 → 5
+    Hex(3, -1) to Hex(2, -1),    // upper-left edge of (3,-1) (corner 3→4)
+    Hex(3, -1) to Hex(3, -2),    // top (up) edge of (3,-1) (corner 4→5)
 )
 
 val riverEdgesJson = riverEdges.joinToString(",\n") { (a, b) ->
@@ -153,7 +157,7 @@ $precinctsJson
   "river_edges": [
 $riverEdgesJson
   ],
-  "river_blocks_contiguity": true,
+  "river_blocks_contiguity": false,
   "events": [],
   "rules": {
     "population_tolerance": 0.10,
@@ -175,25 +179,25 @@ $riverEdgesJson
   ],
   "narrative": {
     "character": {
-      "name": "You",
-      "role": "County Engineer, Hawthorn Bend",
-      "motivation": "The Hawthorn River has split this county in half for as long as anyone can remember. Now the bridge is out, and emergency services can't cross. The state wants a new district map that reflects how people actually live: each district must stay on one bank of the river."
+      "name": "Tutorial Guide",
+      "role": "Tour Guide",
+      "motivation": "Welcome to Hawthorn Bend — a small region with three kinds of terrain you'll see throughout the game: a sea coast, a mountain ridge, and a river."
     },
     "intro_slides": [
       {
-        "heading": "The River Constraint",
-        "body": "Hawthorn Bend is shaped by water and stone. The Hawthorn River cuts the county in two; the Brackenridge Mountains rise to the north; the Cobalt Sea laps the south.\n\nThe previous map ignored geography — its four districts each straddled the river. Now that the bridge is gone, those districts can't be served by a single emergency response unit."
+        "heading": "Reading the Map",
+        "body": "Maps in this game can include geographic features alongside the precincts you'll draw districts from.\n\n- The blue ribbon is a **river** — it flows along the edges between hexes.\n- The grey hexes at the top are **mountains**.\n- The blue hexes at the bottom are **sea**.\n\nMountains and sea are not assignable — you can't put a district there. Rivers run between hexes, not on them."
       },
       {
-        "heading": "Natural Boundaries",
-        "body": "Your task: redraw the four districts so each one stays entirely on one bank. The river is now a hard boundary.\n\nThe initial map has each district crossing the river vertically. Reset it. Try grouping precincts on the same side of the river instead."
+        "heading": "Geography is Cosmetic",
+        "body": "In this game, geographic features are visual: they show you what the region looks like, but they don't constrain district-drawing.\n\nReal redistricting often uses rivers as district boundaries, but that's because of political choices — state lines, county lines, historical municipal limits — not because rivers are physical barriers. A district can cross a river if the people on both sides share a community.\n\nThe initial map here is already a working district plan. Try submitting it."
       },
       {
-        "heading": "Why It Matters",
-        "body": "Real maps respect natural barriers. Rivers, mountains, and coastlines shape who lives near whom — and who shares a representative.\n\nA map that ignores geography can be technically equal in population but functionally broken. Drawing along natural lines isn't gerrymandering — it's responsiveness."
+        "heading": "Try It Out",
+        "body": "Click **Submit Map** to evaluate the starting districts. You can also repaint districts to experiment — drag across hexes to assign them, click district buttons to switch which district you're drawing.\n\nWhen you're ready, move on to the rest of the campaign."
       }
     ],
-    "objective": "Redraw the four districts so each one stays entirely on one bank of the Hawthorn River."
+    "objective": "Get familiar with how rivers, mountains, and coastlines look on the map. Submit the initial map, or repaint to experiment."
   }
 }
 """

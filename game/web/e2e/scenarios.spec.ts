@@ -904,13 +904,15 @@ test("about page: accessible from main menu and shows educational content", asyn
 
 // ─── GAME-048: Campaign-driven scenario select ──────────────────────────────
 
-test("campaign select: ?campaign=tutorial shows only tutorial-001 and tutorial-002", async ({ page }) => {
+test("campaign select: ?campaign=tutorial shows tutorial-001, tutorial-002, and scenario-010", async ({ page }) => {
   await page.goto("/?campaign=tutorial");
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
   const cards = page.locator(".scenario-card");
-  await expect(cards).toHaveCount(2);
+  // GAME-082: scenario-010 is now part of the tutorial campaign as a geographic-features intro.
+  await expect(cards).toHaveCount(3);
   await expect(cards.nth(0)).toContainText("Welcome to Redistricting");
   await expect(cards.nth(1)).toContainText("Three-District Challenge");
+  await expect(cards.nth(2)).toContainText("Two Banks, One River");
 });
 
 test("campaign select: ?campaign=tutorial Back button is visible", async ({ page }) => {
@@ -1100,17 +1102,18 @@ test("scenario-010 terrain: 5 terrain tiles rendered (2 mountain + 3 sea)", asyn
   await expect(page.locator("g.terrain-tile[data-terrain-type='sea']")).toHaveCount(3);
 });
 
-test("scenario-010 terrain: river rendered as a single smoothed chain", async ({ page }) => {
+test("scenario-010 terrain: river rendered as a single smoothed chain with bend", async ({ page }) => {
   await page.goto("/?s=scenario-010&debug");
-  // GAME-082: 7 connected river edges → 1 smoothed <path> via d3.curveBasis.
-  // Branch-free river ⇒ exactly 1 chain. Path's "d" attribute starts with "M".
+  // GAME-082: 7 connected river edges form a single chain.
+  // The chain runs west-east along the r=-1/r=0 boundary, then bends up over the
+  // top of (3,-1) via corners 3→4→5. Smoothing uses d3.curveCardinal.tension(0.4).
+  // Single chain ⇒ exactly 1 <path.river-chain>.
   await expect(page.locator("path.river-chain")).toHaveCount(1);
   const d = await page.locator("path.river-chain").getAttribute("d");
   expect(d).toBeTruthy();
   expect(d!.startsWith("M")).toBe(true);
-  // curveBasis on 3+ points emits cubic bezier (C). Scenario-010 has 7 edges → 8 points
-  // → C-rich path. Future scenarios with 1-edge rivers (2 points) emit only "L", so the
-  // `includes("C")` assertion is scenario-010-specific and intentional.
+  // curveCardinal on 3+ points emits cubic bezier (C). Scenario-010 has 7 edges → 8
+  // corners → C-rich path. The assertion is scenario-010-specific and intentional.
   expect(d!.includes("C")).toBe(true);
 });
 
@@ -1131,12 +1134,12 @@ test("scenario-010 terrain: coast edge strokes on precincts adjacent to sea", as
   await expect(page.locator("line.terrain-edge-sea")).toHaveCount(6);
 });
 
-test("scenario-010 contiguity: initial vertical-strip districts fail river-blocked BFS", async ({ page }) => {
+test("scenario-010 contiguity: river is cosmetic, initial districts are contiguous", async ({ page }) => {
   await loadScenario(page, "scenario-010");
-  // Initial assignment: 4 vertical strips spanning both banks.
-  // With river_blocks_contiguity:true, every district straddles the river → all non-contiguous.
+  // GAME-082: rivers are visual only — `river_blocks_contiguity: false` in scenario JSON.
+  // The initial vertical-strip assignment is contiguous (column hexes are adjacent).
   await expect(page.locator("#validity-container")).toBeVisible();
   const validityText = await page.locator("#validity-container").innerText();
-  // At least one "Non-contiguous" badge in the validity panel.
-  expect(validityText).toMatch(/Non-contiguous/);
+  expect(validityText).toMatch(/Connected/);
+  expect(validityText).not.toMatch(/Non-contiguous/);
 });
