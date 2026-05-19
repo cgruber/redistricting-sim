@@ -62,12 +62,12 @@ test("tutorial campaign has exactly 3 scenario IDs", () => {
 	assertEqual(tutorial!.scenarioIds.length, 3, "tutorial scenarioIds length");
 });
 
-test("tutorial campaign scenarioIds are tutorial-001, tutorial-002, scenario-010", () => {
+test("tutorial campaign scenarioIds are tutorial-001, tutorial-002, tutorial-003", () => {
 	const tutorial = getCampaign("tutorial");
 	assertNotNull(tutorial, "tutorial exists");
 	assertEqual(tutorial!.scenarioIds[0], "tutorial-001", "first scenario");
 	assertEqual(tutorial!.scenarioIds[1], "tutorial-002", "second scenario");
-	assertEqual(tutorial!.scenarioIds[2], "scenario-010", "third scenario (geographic-features intro)");
+	assertEqual(tutorial!.scenarioIds[2], "tutorial-003", "third scenario (geographic-features tour)");
 });
 
 test("educational campaign has exactly 8 scenario IDs", () => {

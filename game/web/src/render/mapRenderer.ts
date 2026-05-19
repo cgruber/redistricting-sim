@@ -290,8 +290,10 @@ export class SvgMapRenderer implements MapRenderer {
 	private static readonly INTERNAL_LAKE_RY_FACTOR = 0.45;
 	private static readonly COAST_STROKE = "#3a7fc1";
 	private static readonly LAKESIDE_STROKE = "#4dd0e1";
+	private static readonly FOOTHILL_STROKE = "#9aa0aa";
 	private static readonly TERRAIN_EDGE_BASE_WIDTH = 5;
 	private static readonly TERRAIN_EDGE_OPACITY = 0.95;
+	private static readonly FOOTHILL_EDGE_OPACITY = 0.7; // softer than coast/lakeside
 
 	// Keyboard precinct navigation state
 	private focusedPrecinctId: number | null = null;
@@ -516,9 +518,9 @@ export class SvgMapRenderer implements MapRenderer {
 	}
 
 	private renderTerrainEdges() {
-		// For each coast/lakeside precinct, draw a distinct stroke along the edge(s) that face
-		// a sea/lake tile. Edge i corresponds to corners[i] → corners[(i+1)%6] and direction
-		// HEX_DIRECTIONS[i] from the precinct's axial coord.
+		// For each coast/lakeside/foothill precinct, draw a distinct stroke along the edge(s)
+		// facing a sea/lake/mountain tile. Edge i corresponds to corners[i] → corners[(i+1)%6]
+		// and direction HEX_DIRECTIONS[i] from the precinct's axial coord.
 		const { precincts, terrainTiles } = this.getState();
 		if (!terrainTiles || terrainTiles.length === 0) return;
 
@@ -526,24 +528,41 @@ export class SvgMapRenderer implements MapRenderer {
 		const tilePosMap = new Map<string, TerrainTileRuntime["type"]>();
 		for (const tile of terrainTiles) tilePosMap.set(`${tile.coord.q},${tile.coord.r}`, tile.type);
 
-		interface EdgeSegment extends Segment { terrainType: "sea" | "lake"; }
+		interface EdgeSegment extends Segment { terrainType: "sea" | "lake" | "mountain"; }
 		const edges: EdgeSegment[] = [];
 
 		for (const p of precincts) {
-			if (p.terrain !== "coast" && p.terrain !== "lakeside") continue;
+			if (p.terrain !== "coast" && p.terrain !== "lakeside" && p.terrain !== "foothill") continue;
 			const corners = hexCorners(p.center);
 			for (let i = 0; i < 6; i++) {
 				const dir = HEX_DIRECTIONS[i];
 				if (dir === undefined) continue;
 				const nKey = `${p.coord.q + dir[0]},${p.coord.r + dir[1]}`;
 				const tileType = tilePosMap.get(nKey);
-				if (tileType !== "sea" && tileType !== "lake") continue;
+				if (tileType === undefined) continue;
+				// Match the terrain annotation to the right tile type:
+				// coast precincts get sea-facing strokes; lakeside → lake; foothill → mountain.
+				const matches =
+					(p.terrain === "coast" && tileType === "sea") ||
+					(p.terrain === "lakeside" && tileType === "lake") ||
+					(p.terrain === "foothill" && tileType === "mountain");
+				if (!matches) continue;
 				const c0 = corners[i];
 				const c1 = corners[(i + 1) % 6];
 				if (c0 === undefined || c1 === undefined) continue;
 				edges.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1], terrainType: tileType });
 			}
 		}
+
+		const strokeFor = (t: EdgeSegment["terrainType"]): string => {
+			switch (t) {
+				case "sea": return SvgMapRenderer.COAST_STROKE;
+				case "lake": return SvgMapRenderer.LAKESIDE_STROKE;
+				case "mountain": return SvgMapRenderer.FOOTHILL_STROKE;
+			}
+		};
+		const opacityFor = (t: EdgeSegment["terrainType"]): number =>
+			t === "mountain" ? SvgMapRenderer.FOOTHILL_EDGE_OPACITY : SvgMapRenderer.TERRAIN_EDGE_OPACITY;
 
 		this.terrainOverlayGroup
 			.selectAll<SVGLineElement, EdgeSegment>("line.terrain-edge")
@@ -554,10 +573,10 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("y1", (d) => d.y1)
 			.attr("x2", (d) => d.x2)
 			.attr("y2", (d) => d.y2)
-			.attr("stroke", (d) => d.terrainType === "sea" ? SvgMapRenderer.COAST_STROKE : SvgMapRenderer.LAKESIDE_STROKE)
+			.attr("stroke", (d) => strokeFor(d.terrainType))
 			.attr("stroke-width", SvgMapRenderer.TERRAIN_EDGE_BASE_WIDTH / this.currentK)
 			.attr("stroke-linecap", "round")
-			.attr("opacity", SvgMapRenderer.TERRAIN_EDGE_OPACITY)
+			.attr("opacity", (d) => opacityFor(d.terrainType))
 			.style("pointer-events", "none");
 	}
 

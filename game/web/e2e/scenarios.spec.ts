@@ -847,7 +847,7 @@ test("routing: unknown ?s= without campaign redirects to main menu", async ({ pa
 // ─── GAME-020: Wrap-up screen after final scenario ──────────────────────────
 
 test("wrap-up screen: completing last scenario shows wrap-up on Next Scenario", async ({ page }) => {
-  // Seed all but scenario-010 (the new last scenario) as complete
+  // Seed all but tutorial-003 (the new last scenario in SCENARIO_MANIFEST) as complete
   await page.goto("/");
   const allButLast = [
     "tutorial-002", "scenario-002", "scenario-003", "scenario-004",
@@ -856,26 +856,9 @@ test("wrap-up screen: completing last scenario shows wrap-up on Next Scenario", 
   await page.evaluate((ids) => {
     localStorage.setItem("redistricting-sim-progress", JSON.stringify({ completed: ids }));
   }, allButLast);
-  // Load scenario-010 and complete it with a bank-respecting assignment.
-  await loadScenario(page, "scenario-010");
-  await page.evaluate(() => {
-    const store = (window as unknown as Record<string, { getState: () => {
-      paintStroke: (ids: number[], district: number) => void;
-    } }>)["__gameStore"];
-    if (!store) throw new Error("__gameStore not found on window");
-    const { paintStroke } = store.getState();
-    // 16 precincts in scenario-axial-order: r=-2 (q=0..3), r=-1 (q=0..3), r=0 (q=0..3), r=1 (q=0..3).
-    // Pair adjacent halves within each bank so districts respect the river.
-    // North bank (indices 0-7): D1 = left half, D2 = right half
-    // South bank (indices 8-15): D3 = left half, D4 = right half
-    const assignment: number[][] = [
-      [0, 1, 4, 5],     // D1: north-left
-      [2, 3, 6, 7],     // D2: north-right
-      [8, 9, 12, 13],   // D3: south-left
-      [10, 11, 14, 15], // D4: south-right
-    ];
-    assignment.forEach((ids, d) => paintStroke(ids, d + 1));
-  });
+  // Load tutorial-003. Its initial 4-quadrant assignment is already contiguous + balanced,
+  // so no paintStroke is needed — submit passes on the starting map.
+  await loadScenario(page, "tutorial-003");
   await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
   await page.locator("#btn-submit").click();
   await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
@@ -904,15 +887,15 @@ test("about page: accessible from main menu and shows educational content", asyn
 
 // ─── GAME-048: Campaign-driven scenario select ──────────────────────────────
 
-test("campaign select: ?campaign=tutorial shows tutorial-001, tutorial-002, and scenario-010", async ({ page }) => {
+test("campaign select: ?campaign=tutorial shows tutorial-001, tutorial-002, and tutorial-003", async ({ page }) => {
   await page.goto("/?campaign=tutorial");
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
   const cards = page.locator(".scenario-card");
-  // GAME-082: scenario-010 is now part of the tutorial campaign as a geographic-features intro.
+  // GAME-082: tutorial-003 (geographic-features tour) is the third tutorial scenario.
   await expect(cards).toHaveCount(3);
   await expect(cards.nth(0)).toContainText("Welcome to Redistricting");
   await expect(cards.nth(1)).toContainText("Three-District Challenge");
-  await expect(cards.nth(2)).toContainText("Two Banks, One River");
+  await expect(cards.nth(2)).toContainText("Hawthorn Bend");
 });
 
 test("campaign select: ?campaign=tutorial Back button is visible", async ({ page }) => {
@@ -1088,56 +1071,81 @@ test.describe("GAME-068: animated reveal path (no reduced-motion)", () => {
   });
 });
 
-// ─── scenario-010: "Two Banks, One River" (GAME-075 terrain demo) ───────────
+// ─── tutorial-003: "Hawthorn Bend — A Tour of the Map" (GAME-082 geo features tour) ───
 
-test("scenario-010 smoke: loads and renders 16 precincts", async ({ page }) => {
-  await page.goto("/?s=scenario-010&debug");
-  await expect(page.locator("path.hex")).toHaveCount(16);
+test("tutorial-003 smoke: loads and renders 36 precincts", async ({ page }) => {
+  await page.goto("/?s=tutorial-003&debug");
+  await expect(page.locator("path.hex")).toHaveCount(36);
 });
 
-test("scenario-010 terrain: 5 terrain tiles rendered (2 mountain + 3 sea)", async ({ page }) => {
-  await page.goto("/?s=scenario-010&debug");
-  await expect(page.locator("g.terrain-tile")).toHaveCount(5);
-  await expect(page.locator("g.terrain-tile[data-terrain-type='mountain']")).toHaveCount(2);
+test("tutorial-003 terrain: 7 terrain tiles rendered (3 mountain + 3 sea + 1 lake)", async ({ page }) => {
+  await page.goto("/?s=tutorial-003&debug");
+  await expect(page.locator("g.terrain-tile")).toHaveCount(7);
+  await expect(page.locator("g.terrain-tile[data-terrain-type='mountain']")).toHaveCount(3);
   await expect(page.locator("g.terrain-tile[data-terrain-type='sea']")).toHaveCount(3);
+  await expect(page.locator("g.terrain-tile[data-terrain-type='lake']")).toHaveCount(1);
 });
 
-test("scenario-010 terrain: river rendered as a single smoothed chain with bend", async ({ page }) => {
-  await page.goto("/?s=scenario-010&debug");
-  // GAME-082: 7 connected river edges form a single chain.
-  // The chain runs west-east along the r=-1/r=0 boundary, then bends up over the
-  // top of (3,-1) via corners 3→4→5. Smoothing uses d3.curveCardinal.tension(0.4).
-  // Single chain ⇒ exactly 1 <path.river-chain>.
+test("tutorial-003 terrain: river rendered as a single smoothed chain", async ({ page }) => {
+  await page.goto("/?s=tutorial-003&debug");
+  // 5 connected river edges form a single chain along the r=-1/r=0 boundary (q=0..2).
+  // Smoothing uses d3.curveCardinal.tension(0.4).
   await expect(page.locator("path.river-chain")).toHaveCount(1);
   const d = await page.locator("path.river-chain").getAttribute("d");
   expect(d).toBeTruthy();
   expect(d!.startsWith("M")).toBe(true);
-  // curveCardinal on 3+ points emits cubic bezier (C). Scenario-010 has 7 edges → 8
-  // corners → C-rich path. The assertion is scenario-010-specific and intentional.
+  // curveCardinal on 3+ points emits cubic bezier (C). 5 edges → 6 corners → C-rich path.
   expect(d!.includes("C")).toBe(true);
 });
 
-test("scenario-010 terrain: terrain tiles are non-interactive (pointer-events: none)", async ({ page }) => {
-  await page.goto("/?s=scenario-010&debug");
-  // pointer-events on the tile group is "none" — assert via computed style.
+test("tutorial-003 terrain: terrain tiles are non-interactive (pointer-events: none)", async ({ page }) => {
+  await page.goto("/?s=tutorial-003&debug");
   const pointerEvents = await page.locator("g.terrain-tile").first().evaluate(
     (el) => getComputedStyle(el).pointerEvents,
   );
   expect(pointerEvents).toBe("none");
 });
 
-test("scenario-010 terrain: coast edge strokes on precincts adjacent to sea", async ({ page }) => {
-  await page.goto("/?s=scenario-010&debug");
-  // South-bank precincts at r=1: (0,1) has 1 sea-facing edge, (1,1) and (2,1) each have 2
-  // (down + lower-left), (3,1) has 1 (lower-left to (2,2) sea).
+test("tutorial-003 terrain: coast edge strokes on precincts adjacent to sea", async ({ page }) => {
+  await page.goto("/?s=tutorial-003&debug");
+  // Coast precincts at r=2: (1,2) has 1 sea-facing edge, (2,2) and (3,2) each have 2
+  // (down + lower-left), (4,2) has 1 (lower-left to (3,3) sea).
   // Total: 1+2+2+1 = 6 sea-facing edges.
   await expect(page.locator("line.terrain-edge-sea")).toHaveCount(6);
 });
 
-test("scenario-010 contiguity: river is cosmetic, initial districts are contiguous", async ({ page }) => {
-  await loadScenario(page, "scenario-010");
-  // GAME-082: rivers are visual only — `river_blocks_contiguity: false` in scenario JSON.
-  // The initial vertical-strip assignment is contiguous (column hexes are adjacent).
+test("tutorial-003 terrain: lakeside edge strokes on precincts adjacent to lake", async ({ page }) => {
+  await page.goto("/?s=tutorial-003&debug");
+  // Lakeside precincts adjacent to lake at (6,-2): (5,-2) via lower-right, (5,-1) via upper-right.
+  // 2 lake-facing edges total.
+  await expect(page.locator("line.terrain-edge-lake")).toHaveCount(2);
+});
+
+test("tutorial-003 terrain: foothill edge strokes on precincts adjacent to mountains", async ({ page }) => {
+  await page.goto("/?s=tutorial-003&debug");
+  // Foothill precincts at r=-3 facing mountain tiles at (1,-4), (2,-4), (3,-4).
+  // In flat-top axial hex, a hex at (q, r-1) is the "up" neighbor and (q+1, r-1) is the
+  // "upper-right" neighbor — but (q-1, r-1) is NOT a neighbor (no hex direction with both
+  // q and r decreasing). So mountain edges per foothill:
+  //   (0,-3): 1 (upper-right to (1,-4))
+  //   (1,-3): 2 (up to (1,-4), upper-right to (2,-4))
+  //   (2,-3): 2 (up to (2,-4), upper-right to (3,-4))
+  //   (3,-3): 1 (up to (3,-4))
+  //   (4,-3): 0 — NOT a foothill
+  // Total: 1+2+2+1 = 6 mountain-facing edges.
+  await expect(page.locator("line.terrain-edge-mountain")).toHaveCount(6);
+});
+
+test("tutorial-003 terrain: internal lake ellipse renders for has_internal_lake precincts", async ({ page }) => {
+  await page.goto("/?s=tutorial-003&debug");
+  // (0,2) has has_internal_lake: true; exactly one aqua ellipse renders.
+  await expect(page.locator("ellipse.internal-lake")).toHaveCount(1);
+});
+
+test("tutorial-003 contiguity: river is cosmetic, initial quadrant districts are contiguous", async ({ page }) => {
+  await loadScenario(page, "tutorial-003");
+  // GAME-082: rivers are visual only — `river_blocks_contiguity: false`. The initial 4-quadrant
+  // assignment (3×3 blocks of precincts) is contiguous and population-balanced; no repainting needed.
   await expect(page.locator("#validity-container")).toBeVisible();
   const validityText = await page.locator("#validity-container").innerText();
   expect(validityText).toMatch(/Connected/);

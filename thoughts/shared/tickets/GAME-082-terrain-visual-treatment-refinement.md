@@ -40,8 +40,8 @@ terrain features read clearly at default zoom and at the partisan-lean view tint
 
 ### Coast / lakeside edges
 
-- [ ] Coast stroke (`COAST_STROKE = #3a7fc1`) base width bumped to ~5 px so the shoreline reads as a coastline, not a faint stripe
-- [ ] Lakeside stroke (`LAKESIDE_STROKE = #4dd0e1`) bumped similarly
+- [x] Coast stroke (`COAST_STROKE = #3a7fc1`) base width bumped from 3 to 5 px — done in PR #248
+- [x] Lakeside stroke (`LAKESIDE_STROKE = #4dd0e1`) bumped similarly — done in PR #248
 - [ ] Consider drawing the edge stroke just *inside* the precinct fill (offset toward center) so it reads as a hex edge property rather than a free-floating line at the precinct boundary
 - [ ] Verify edges still read clearly when the partisan-lean view changes hex fills to PuOr palette
 
@@ -53,14 +53,14 @@ terrain features read clearly at default zoom and at the partisan-lean view tint
 
 ### Foothill rendering (deferred from GAME-075)
 
-- [ ] Subtle grey tint or hatched overlay on mountain-facing edges of `foothill` precincts
-- [ ] Implementation: extend `renderTerrainEdges` to handle `terrain === "foothill"`, looking up mountain-tile neighbors via the same axial-position map already built for coast/lakeside
+- [x] Subtle grey edge stroke (`FOOTHILL_STROKE = #9aa0aa`, opacity 0.7) on mountain-facing edges of `foothill` precincts — done in tutorial-003 PR (`renderTerrainEdges` extended to handle `terrain === "foothill"`)
+- [x] Implementation: extend `renderTerrainEdges` to handle `terrain === "foothill"`, looking up mountain-tile neighbors via the same axial-position map already built for coast/lakeside — done
 
 ### Internal lakes (still untested in real scenarios)
 
-- [ ] Hand-author a 2-precinct lakeside cluster with `has_internal_lake: true` in a test/demo scenario and verify visibility
-- [ ] Adjust `INTERNAL_LAKE_OPACITY` / size factors if the ellipses are hard to see against the district fill
-- [ ] Defer shared elongated ellipse for adjacent `has_internal_lake` precincts (still tracked from GAME-075 plan)
+- [x] Hand-author a precinct with `has_internal_lake: true` in tutorial-003 — `(0,2)` has explicit `terrain: "lakeside"` + `has_internal_lake: true`. Ellipse rendering exercised by e2e test.
+- [ ] Adjust `INTERNAL_LAKE_OPACITY` / size factors if the ellipses are hard to see against the district fill — pending manual review after dev deploy
+- [ ] N/A — Defer shared elongated ellipse for adjacent `has_internal_lake` precincts (still tracked from GAME-075 plan)
 
 ### Cross-view consistency
 
@@ -70,10 +70,11 @@ terrain features read clearly at default zoom and at the partisan-lean view tint
 
 ## Test Coverage
 
-- [ ] e2e: river stroke width attribute matches the new constant at default zoom
-- [ ] e2e: coast edge stroke width attribute matches the new constant
-- [ ] e2e: `line.terrain-edge-foothill` count matches expected number of mountain-facing edges in scenario-010 (4 north-bank precincts × 1 mountain-facing edge each, roughly — verify)
-- [ ] Manual: load scenario-010, eyeball at default zoom + max zoom — terrain features read clearly
+- [ ] N/A — e2e: river/coast stroke widths via attribute — not asserted directly; render-correctness is exercised via path/line counts and tested manually after dev deploy
+- [x] e2e: `line.terrain-edge-mountain` count matches 6 mountain-facing edges across foothill precincts in tutorial-003
+- [x] e2e: `line.terrain-edge-lake` count matches 2 lake-facing edges in tutorial-003
+- [x] e2e: `ellipse.internal-lake` count matches 1 (precinct (0,2) in tutorial-003)
+- [ ] Manual: load tutorial-003, eyeball at default zoom + max zoom — all four terrain annotations and the internal lake read clearly
 - [ ] Manual: switch to partisan-lean view — terrain still distinguishable
 
 ## Out of scope
