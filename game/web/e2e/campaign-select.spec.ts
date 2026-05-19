@@ -27,12 +27,13 @@ test("campaign select: clicking Educational Campaign navigates to ?campaign=educ
   await expect(page).toHaveURL(/campaign=educational/);
 });
 
-test("campaign select: progress shows 0 / 2 for Tutorial with fresh localStorage", async ({ page }) => {
+test("campaign select: progress shows 0 / 3 for Tutorial with fresh localStorage", async ({ page }) => {
   await page.goto("/?view=campaigns");
   await page.evaluate((key) => localStorage.removeItem(key), PROGRESS_KEY);
   await page.reload();
   await expect(page.locator("#campaign-select")).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator(".campaign-card").first()).toContainText("0 / 2 scenarios complete");
+  // GAME-082: scenario-010 moved from educational to tutorial as a geographic-features intro.
+  await expect(page.locator(".campaign-card").first()).toContainText("0 / 3 scenarios complete");
 });
 
 test("campaign select: Back button is present", async ({ page }) => {

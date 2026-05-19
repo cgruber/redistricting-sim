@@ -56,23 +56,24 @@ test("CAMPAIGN_REGISTRY: first campaign is tutorial", () => {
 	assertEqual(CAMPAIGN_REGISTRY[0]?.id, "tutorial", "first id");
 });
 
-test("tutorial campaign has exactly 2 scenario IDs", () => {
+test("tutorial campaign has exactly 3 scenario IDs", () => {
 	const tutorial = getCampaign("tutorial");
 	assertNotNull(tutorial, "tutorial exists");
-	assertEqual(tutorial!.scenarioIds.length, 2, "tutorial scenarioIds length");
+	assertEqual(tutorial!.scenarioIds.length, 3, "tutorial scenarioIds length");
 });
 
-test("tutorial campaign scenarioIds are tutorial-001 and tutorial-002", () => {
+test("tutorial campaign scenarioIds are tutorial-001, tutorial-002, scenario-010", () => {
 	const tutorial = getCampaign("tutorial");
 	assertNotNull(tutorial, "tutorial exists");
 	assertEqual(tutorial!.scenarioIds[0], "tutorial-001", "first scenario");
 	assertEqual(tutorial!.scenarioIds[1], "tutorial-002", "second scenario");
+	assertEqual(tutorial!.scenarioIds[2], "scenario-010", "third scenario (geographic-features intro)");
 });
 
-test("educational campaign has exactly 9 scenario IDs", () => {
+test("educational campaign has exactly 8 scenario IDs", () => {
 	const edu = getCampaign("educational");
 	assertNotNull(edu, "educational exists");
-	assertEqual(edu!.scenarioIds.length, 9, "educational scenarioIds length");
+	assertEqual(edu!.scenarioIds.length, 8, "educational scenarioIds length");
 });
 
 test("educational campaign starts with scenario-002", () => {
@@ -81,10 +82,10 @@ test("educational campaign starts with scenario-002", () => {
 	assertEqual(edu!.scenarioIds[0], "scenario-002", "first scenario");
 });
 
-test("educational campaign ends with scenario-010", () => {
+test("educational campaign ends with scenario-009", () => {
 	const edu = getCampaign("educational");
 	assertNotNull(edu, "educational exists");
-	assertEqual(edu!.scenarioIds[edu!.scenarioIds.length - 1], "scenario-010", "last scenario");
+	assertEqual(edu!.scenarioIds[edu!.scenarioIds.length - 1], "scenario-009", "last scenario");
 });
 
 // ─── getCampaign ──────────────────────────────────────────────────────────────

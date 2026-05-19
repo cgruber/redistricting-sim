@@ -12,14 +12,14 @@ export const CAMPAIGN_REGISTRY: Campaign[] = [
 		id: "tutorial",
 		title: "Tutorial",
 		description:
-			"Learn the basics of district drawing with two introductory maps.",
-		scenarioIds: ["tutorial-001", "tutorial-002"],
+			"Learn the basics of district drawing and the map's geographic features.",
+		scenarioIds: ["tutorial-001", "tutorial-002", "scenario-010"],
 	},
 	{
 		id: "educational",
 		title: "Educational Campaign",
 		description:
-			"Explore nine scenarios that illustrate real gerrymandering techniques and their effects on elections.",
+			"Explore eight scenarios that illustrate real gerrymandering techniques and their effects on elections.",
 		scenarioIds: [
 			"scenario-002",
 			"scenario-003",
@@ -29,7 +29,6 @@ export const CAMPAIGN_REGISTRY: Campaign[] = [
 			"scenario-007",
 			"scenario-008",
 			"scenario-009",
-			"scenario-010",
 		],
 	},
 ];
