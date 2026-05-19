@@ -141,11 +141,15 @@ function hexPolygonPath(p: Precinct): string {
 /**
  * Returns all boundary segments for the given assignment map.
  * A segment is drawn for every hex edge where the two adjacent precincts
- * belong to different districts, and for every grid-boundary edge.
+ * belong to different districts, and for every grid-boundary edge — EXCEPT
+ * edges that face a terrain tile (sea/lake/mountain). Those edges represent
+ * "the end of the usable map" rather than a district boundary, and the
+ * terrain-intrusion fill (in terrainOverlayGroup) covers them visually.
  */
 function computeBoundarySegments(
 	precincts: Precinct[],
 	assignments: Map<number, number | null>,
+	terrainFacingEdges?: Set<string>,
 ): Segment[] {
 	const segments: Segment[] = [];
 	for (const p of precincts) {
@@ -157,6 +161,8 @@ function computeBoundarySegments(
 			const c1 = corners[(i + 1) % 6];
 			if (c0 === undefined || c1 === undefined) continue;
 			if (nId === null) {
+				// Skip terrain-facing outer edges — the intrusion fill replaces them.
+				if (terrainFacingEdges?.has(`${p.id}:${i}`)) continue;
 				segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
 				continue;
 			}
@@ -166,6 +172,29 @@ function computeBoundarySegments(
 		}
 	}
 	return segments;
+}
+
+/**
+ * Build a set of `precinctId:edgeIndex` keys for every precinct edge that faces a
+ * terrain tile (sea / lake / mountain). Used by computeBoundarySegments to suppress
+ * the white district-boundary line on edges that are "off the map."
+ */
+function computeTerrainFacingEdges(
+	precincts: Precinct[],
+	terrainTiles: TerrainTileRuntime[] | undefined,
+): Set<string> {
+	const set = new Set<string>();
+	if (!terrainTiles || terrainTiles.length === 0) return set;
+	const tilePosSet = new Set<string>(terrainTiles.map((t) => `${t.coord.q},${t.coord.r}`));
+	for (const p of precincts) {
+		for (let i = 0; i < 6; i++) {
+			const dir = HEX_DIRECTIONS[i];
+			if (!dir) continue;
+			const key = `${p.coord.q + dir[0]},${p.coord.r + dir[1]}`;
+			if (tilePosSet.has(key)) set.add(`${p.id}:${i}`);
+		}
+	}
+	return set;
 }
 
 // ─── County boundary segment computation (GAME-012) ──────────────────────────
@@ -271,6 +300,9 @@ export class SvgMapRenderer implements MapRenderer {
 
 	// County border overlay (GAME-012): computed once at load, toggled on/off
 	private countySegments: Segment[] = [];
+	// Edges that face a terrain tile — set of "precinctId:edgeIndex" keys. Used to suppress
+	// the district boundary line on these edges (the terrain intrusion fill covers them).
+	private terrainFacingEdges: Set<string> = new Set();
 	private countyBordersVisible = false;
 
 	// Terrain styling (DESIGN-008): fills, glyphs, opacity for sea/lake/mountain tiles
@@ -288,12 +320,14 @@ export class SvgMapRenderer implements MapRenderer {
 	private static readonly INTERNAL_LAKE_OPACITY = 0.55;
 	private static readonly INTERNAL_LAKE_RX_FACTOR = 0.55; // hex_size × factor = ellipse radius
 	private static readonly INTERNAL_LAKE_RY_FACTOR = 0.45;
-	private static readonly COAST_STROKE = "#3a7fc1";
 	private static readonly LAKESIDE_STROKE = "#4dd0e1";
-	private static readonly FOOTHILL_STROKE = "#9aa0aa";
-	private static readonly TERRAIN_EDGE_BASE_WIDTH = 5;
+	private static readonly LAKESIDE_EDGE_BASE_WIDTH = 5; // lakeside still rendered as a straight line
 	private static readonly TERRAIN_EDGE_OPACITY = 0.95;
-	private static readonly FOOTHILL_EDGE_OPACITY = 0.7; // softer than coast/lakeside
+	// Coast/foothill render as filled intrusion shapes (not strokes). The intrusion's curved
+	// inner edge bulges this many pixels into the precinct at its deepest point (at the edge
+	// midpoint). Filled with the exact terrain-tile color (TERRAIN_FILL_SEA / TERRAIN_FILL_MOUNTAIN).
+	private static readonly COAST_INTRUSION_DEPTH = 5;
+	private static readonly FOOTHILL_INTRUSION_DEPTH = 6;
 
 	// Keyboard precinct navigation state
 	private focusedPrecinctId: number | null = null;
@@ -339,6 +373,7 @@ export class SvgMapRenderer implements MapRenderer {
 		this.popMax = Math.max(...pops);
 
 		this.countySegments = computeCountySegments(getState().precincts);
+		this.terrainFacingEdges = computeTerrainFacingEdges(getState().precincts, getState().terrainTiles);
 
 		this.initZoom();
 		this.initBrushEvents();
@@ -518,30 +553,93 @@ export class SvgMapRenderer implements MapRenderer {
 	}
 
 	private renderTerrainEdges() {
-		// For each coast/lakeside/foothill precinct, draw a distinct stroke along the edge(s)
-		// facing a sea/lake/mountain tile. Edge i corresponds to corners[i] → corners[(i+1)%6]
-		// and direction HEX_DIRECTIONS[i] from the precinct's axial coord.
+		// For each coast/foothill precinct, draw an "intrusion" — a filled closed shape that
+		// looks like the adjacent terrain has bled into the precinct. The shape is bounded by
+		//   - the hex edge (flat outer boundary; the district boundary line is suppressed here)
+		//   - an inward curving inner boundary built from multiple sample points with slight
+		//     irregularity ("crinkly" not perfectly circular)
+		// Filled with the EXACT same color as the adjacent terrain tile.
+		//
+		// Additionally: when TWO adjacent edges of the same precinct face the same terrain
+		// type, the shared corner would otherwise be a pointy bit of land sticking out between
+		// two intrusions. We render a "corner cap" (filled rounded shape) at those corners to
+		// chop off the point and merge the two intrusions visually.
+		//
+		// Lakeside still uses a straight stroked line — the lake tile fill (plus any internal
+		// lake ellipse) already carries the visual weight.
 		const { precincts, terrainTiles } = this.getState();
 		if (!terrainTiles || terrainTiles.length === 0) return;
 
-		// Build axial-position → terrain type map for fast neighbor lookup.
 		const tilePosMap = new Map<string, TerrainTileRuntime["type"]>();
 		for (const tile of terrainTiles) tilePosMap.set(`${tile.coord.q},${tile.coord.r}`, tile.type);
 
-		interface EdgeSegment extends Segment { terrainType: "sea" | "lake" | "mountain"; }
-		const edges: EdgeSegment[] = [];
+		interface IntrusionShape { terrainType: "sea" | "mountain"; path: string; boundaryPath: string; }
+		interface StraightEdge extends Segment { terrainType: "lake"; }
+		interface CornerCap { cx: number; cy: number; r: number; terrainType: "sea" | "mountain"; }
+		const intrusions: IntrusionShape[] = [];
+		const straight: StraightEdge[] = [];
+		const cornerCaps: CornerCap[] = [];
+
+		// Curve generator for the inner (eaten-away) boundary. d3.curveBasis approximates the
+		// sample points smoothly without rigidly passing through them — gives a "crinkly but
+		// not jagged" feel when the depth profile has small ripples.
+		const innerCurve = d3.line<Point2D>().x((p) => p[0]).y((p) => p[1]).curve(d3.curveBasis);
+
+		// Per-variant inward-depth profile sampled at fixed t along the edge.
+		// Profile entries are (t, depth-multiplier). Endpoints anchor at depth 0 (the
+		// outer hex edge corners) so adjacent intrusions meet cleanly at corners.
+		// "smooth": symmetric with a slight midpoint dip — gentle coastline ripple.
+		// "rugged": asymmetric with two unequal peaks — feels like an uneven mountain edge.
+		const profileSmooth: ReadonlyArray<[number, number]> = [
+			[0, 0], [0.18, 0.55], [0.38, 0.90], [0.55, 0.70], [0.72, 0.95], [0.85, 0.55], [1, 0],
+		];
+		const profileRugged: ReadonlyArray<[number, number]> = [
+			[0, 0], [0.15, 0.70], [0.30, 1.05], [0.48, 0.55], [0.65, 1.10], [0.82, 0.65], [1, 0],
+		];
+
+		const buildIntrusionAndBoundary = (
+			c0: Point2D,
+			c1: Point2D,
+			center: { x: number; y: number },
+			depth: number,
+			profile: ReadonlyArray<[number, number]>,
+		): { fillPath: string; boundaryPath: string } => {
+			// Inward unit normal: from edge midpoint toward hex center.
+			const midX = (c0[0] + c1[0]) / 2;
+			const midY = (c0[1] + c1[1]) / 2;
+			const dx = center.x - midX;
+			const dy = center.y - midY;
+			const len = Math.hypot(dx, dy) || 1;
+			const nx = dx / len;
+			const ny = dy / len;
+			// Build inner-curve sample points from c1 back to c0 (reverse t so we walk c1 → c0).
+			const innerPts: Point2D[] = profile.map(([tAlong, dProfile]) => {
+				const t = 1 - tAlong; // walk from c1 (t=1) back to c0 (t=0)
+				const ex = c0[0] + t * (c1[0] - c0[0]);
+				const ey = c0[1] + t * (c1[1] - c0[1]);
+				const off = depth * dProfile;
+				return [ex + nx * off, ey + ny * off];
+			});
+			// d3.line emits an open curve from the first to last point. That curve IS the
+			// district outline for this terrain-facing edge.
+			const inner = innerCurve(innerPts) ?? "";
+			// To build the closed intrusion fill, prefix the outer straight edge and replace
+			// the inner curve's leading "M" with "L" so the pen continues.
+			const innerContinued = inner.replace(/^M/, "L");
+			const fillPath = `M${c0[0]},${c0[1]} L${c1[0]},${c1[1]}${innerContinued} Z`;
+			return { fillPath, boundaryPath: inner };
+		};
 
 		for (const p of precincts) {
 			if (p.terrain !== "coast" && p.terrain !== "lakeside" && p.terrain !== "foothill") continue;
 			const corners = hexCorners(p.center);
+			// First pass: per-edge intrusion shapes (or straight lakeside line)
 			for (let i = 0; i < 6; i++) {
 				const dir = HEX_DIRECTIONS[i];
 				if (dir === undefined) continue;
 				const nKey = `${p.coord.q + dir[0]},${p.coord.r + dir[1]}`;
 				const tileType = tilePosMap.get(nKey);
 				if (tileType === undefined) continue;
-				// Match the terrain annotation to the right tile type:
-				// coast precincts get sea-facing strokes; lakeside → lake; foothill → mountain.
 				const matches =
 					(p.terrain === "coast" && tileType === "sea") ||
 					(p.terrain === "lakeside" && tileType === "lake") ||
@@ -550,33 +648,96 @@ export class SvgMapRenderer implements MapRenderer {
 				const c0 = corners[i];
 				const c1 = corners[(i + 1) % 6];
 				if (c0 === undefined || c1 === undefined) continue;
-				edges.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1], terrainType: tileType });
+				if (tileType === "lake") {
+					straight.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1], terrainType: "lake" });
+				} else if (tileType === "sea") {
+					const { fillPath, boundaryPath } = buildIntrusionAndBoundary(
+						c0, c1, p.center, SvgMapRenderer.COAST_INTRUSION_DEPTH, profileSmooth,
+					);
+					intrusions.push({ terrainType: "sea", path: fillPath, boundaryPath });
+				} else {
+					const { fillPath, boundaryPath } = buildIntrusionAndBoundary(
+						c0, c1, p.center, SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH, profileRugged,
+					);
+					intrusions.push({ terrainType: "mountain", path: fillPath, boundaryPath });
+				}
+			}
+			// Second pass: corner caps. Corner i is shared between edge (i+5)%6 (which ENDS
+			// at corner i) and edge i (which STARTS at corner i). If both face the same
+			// terrain type (sea or mountain — lakeside is straight, no point issue), add a
+			// filled circle at the corner to chop off the pointy bit.
+			for (let i = 0; i < 6; i++) {
+				const leftEdge = (i + 5) % 6;
+				const rightEdge = i;
+				const lDir = HEX_DIRECTIONS[leftEdge];
+				const rDir = HEX_DIRECTIONS[rightEdge];
+				if (!lDir || !rDir) continue;
+				const lType = tilePosMap.get(`${p.coord.q + lDir[0]},${p.coord.r + lDir[1]}`);
+				const rType = tilePosMap.get(`${p.coord.q + rDir[0]},${p.coord.r + rDir[1]}`);
+				if (lType !== rType) continue;
+				if (lType !== "sea" && lType !== "mountain") continue;
+				const corner = corners[i];
+				if (corner === undefined) continue;
+				const r = lType === "sea" ? SvgMapRenderer.COAST_INTRUSION_DEPTH + 2 : SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH + 2;
+				cornerCaps.push({ cx: corner[0], cy: corner[1], r, terrainType: lType });
 			}
 		}
 
-		const strokeFor = (t: EdgeSegment["terrainType"]): string => {
-			switch (t) {
-				case "sea": return SvgMapRenderer.COAST_STROKE;
-				case "lake": return SvgMapRenderer.LAKESIDE_STROKE;
-				case "mountain": return SvgMapRenderer.FOOTHILL_STROKE;
-			}
-		};
-		const opacityFor = (t: EdgeSegment["terrainType"]): number =>
-			t === "mountain" ? SvgMapRenderer.FOOTHILL_EDGE_OPACITY : SvgMapRenderer.TERRAIN_EDGE_OPACITY;
+		const fillForIntrusion = (t: "sea" | "mountain"): string =>
+			t === "sea" ? SvgMapRenderer.TERRAIN_FILL_SEA : SvgMapRenderer.TERRAIN_FILL_MOUNTAIN;
 
 		this.terrainOverlayGroup
-			.selectAll<SVGLineElement, EdgeSegment>("line.terrain-edge")
-			.data(edges)
-			.join("line")
+			.selectAll<SVGPathElement, IntrusionShape>("path.terrain-edge")
+			.data(intrusions)
+			.join("path")
 			.attr("class", (d) => `terrain-edge terrain-edge-${d.terrainType}`)
+			.attr("d", (d) => d.path)
+			.attr("fill", (d) => fillForIntrusion(d.terrainType))
+			.attr("stroke", "none")
+			.style("pointer-events", "none");
+
+		// Corner caps render AFTER intrusions so they sit on top of any pointy bits.
+		this.terrainOverlayGroup
+			.selectAll<SVGCircleElement, CornerCap>("circle.terrain-corner-cap")
+			.data(cornerCaps)
+			.join("circle")
+			.attr("class", (d) => `terrain-corner-cap terrain-corner-cap-${d.terrainType}`)
+			.attr("cx", (d) => d.cx)
+			.attr("cy", (d) => d.cy)
+			.attr("r", (d) => d.r)
+			.attr("fill", (d) => fillForIntrusion(d.terrainType))
+			.attr("stroke", "none")
+			.style("pointer-events", "none");
+
+		this.terrainOverlayGroup
+			.selectAll<SVGLineElement, StraightEdge>("line.terrain-edge")
+			.data(straight)
+			.join("line")
+			.attr("class", "terrain-edge terrain-edge-lake")
 			.attr("x1", (d) => d.x1)
 			.attr("y1", (d) => d.y1)
 			.attr("x2", (d) => d.x2)
 			.attr("y2", (d) => d.y2)
-			.attr("stroke", (d) => strokeFor(d.terrainType))
-			.attr("stroke-width", SvgMapRenderer.TERRAIN_EDGE_BASE_WIDTH / this.currentK)
+			.attr("stroke", SvgMapRenderer.LAKESIDE_STROKE)
+			.attr("stroke-width", SvgMapRenderer.LAKESIDE_EDGE_BASE_WIDTH / this.currentK)
 			.attr("stroke-linecap", "round")
-			.attr("opacity", (d) => opacityFor(d.terrainType))
+			.attr("opacity", SvgMapRenderer.TERRAIN_EDGE_OPACITY)
+			.style("pointer-events", "none");
+
+		// Terrain boundary curves — the district outline follows the eaten-away inner
+		// curve of each intrusion. Renders last so it sits on top of the intrusion fill
+		// (and any corner caps). Same styling as the straight district boundary lines.
+		this.terrainOverlayGroup
+			.selectAll<SVGPathElement, IntrusionShape>("path.terrain-boundary")
+			.data(intrusions)
+			.join("path")
+			.attr("class", (d) => `terrain-boundary terrain-boundary-${d.terrainType}`)
+			.attr("d", (d) => d.boundaryPath)
+			.attr("fill", "none")
+			.attr("stroke", "#ffffff")
+			.attr("stroke-width", SvgMapRenderer.BOUNDARY_BASE_WIDTH / this.currentK)
+			.attr("stroke-linecap", "round")
+			.attr("opacity", SvgMapRenderer.BOUNDARY_OPACITY)
 			.style("pointer-events", "none");
 	}
 
@@ -642,9 +803,15 @@ export class SvgMapRenderer implements MapRenderer {
 				this.riverGroup
 					.selectAll<SVGPathElement, Point2D[]>("path.river-chain")
 					.attr("stroke-width", SvgMapRenderer.RIVER_BASE_WIDTH / this.currentK);
+				// Coast/foothill render as filled <path> (no stroke, no scaling needed).
+				// Lakeside is still a straight stroked <line>; scale its width inversely.
 				this.terrainOverlayGroup
 					.selectAll<SVGLineElement, Segment>("line.terrain-edge")
-					.attr("stroke-width", SvgMapRenderer.TERRAIN_EDGE_BASE_WIDTH / this.currentK);
+					.attr("stroke-width", SvgMapRenderer.LAKESIDE_EDGE_BASE_WIDTH / this.currentK);
+				// Terrain-boundary curves (district outline along intrusion inner curve).
+				this.terrainOverlayGroup
+					.selectAll<SVGPathElement, unknown>("path.terrain-boundary")
+					.attr("stroke-width", SvgMapRenderer.BOUNDARY_BASE_WIDTH / this.currentK);
 				this.countyBorderGroup
 					.selectAll<SVGLineElement, Segment>("line.county-boundary")
 					.attr("stroke-width", SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK)
@@ -708,7 +875,7 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("fill", (d) => this.hexFill(d, assignments))
 			.attr("opacity", (d) => this.hexOpacity(d, assignments));
 
-		this.renderBoundaries(computeBoundarySegments(precincts, assignments));
+		this.renderBoundaries(computeBoundarySegments(precincts, assignments, this.terrainFacingEdges));
 	}
 
 	private renderBoundaries(segments: Segment[]) {
@@ -748,7 +915,7 @@ export class SvgMapRenderer implements MapRenderer {
 			previewAssignments.set(id, this.strokeDistrict);
 		}
 
-		const segments = computeBoundarySegments(precincts, previewAssignments);
+		const segments = computeBoundarySegments(precincts, previewAssignments, this.terrainFacingEdges);
 		const strokeWidth = SvgMapRenderer.PREVIEW_BASE_WIDTH / this.currentK;
 
 		this.previewBorderGroup

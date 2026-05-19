@@ -145,10 +145,12 @@ export interface StrokeDiff {
  *  Source: https://jfly.uni-koeln.de/color/
  *  Safe for deuteranopia, protanopia, and tritanopia.
  *  Chosen to avoid collision with party colors D=#3a7bd5 and R=#e94560.
+ *  Sky blue (#56B4E9) was swapped for yellow (#F0E442) to avoid visual conflict
+ *  with water-terrain fills (sea #3a7fc1, lake #4dd0e1, river #38bdf8) — GAME-082.
  */
 export const DISTRICT_COLORS: readonly string[] = [
 	"#E69F00", // amber
-	"#56B4E9", // sky blue
+	"#F0E442", // yellow
 	"#009E73", // bluish green
 	"#CC79A7", // mauve
 	"#D55E00", // vermilion

@@ -1110,14 +1110,14 @@ test("tutorial-003 terrain: coast edge strokes on precincts adjacent to sea", as
   await page.goto("/?s=tutorial-003&debug");
   // Coast precincts at r=2: (1,2) has 1 sea-facing edge, (2,2) and (3,2) each have 2
   // (down + lower-left), (4,2) has 1 (lower-left to (3,3) sea).
-  // Total: 1+2+2+1 = 6 sea-facing edges.
-  await expect(page.locator("line.terrain-edge-sea")).toHaveCount(6);
+  // Total: 1+2+2+1 = 6 sea-facing edges, each rendered as a curved <path> (GAME-082).
+  await expect(page.locator("path.terrain-edge-sea")).toHaveCount(6);
 });
 
 test("tutorial-003 terrain: lakeside edge strokes on precincts adjacent to lake", async ({ page }) => {
   await page.goto("/?s=tutorial-003&debug");
   // Lakeside precincts adjacent to lake at (6,-2): (5,-2) via lower-right, (5,-1) via upper-right.
-  // 2 lake-facing edges total.
+  // 2 lake-facing edges total. Lakeside still uses straight <line> (the lake fill provides weight).
   await expect(page.locator("line.terrain-edge-lake")).toHaveCount(2);
 });
 
@@ -1132,8 +1132,8 @@ test("tutorial-003 terrain: foothill edge strokes on precincts adjacent to mount
   //   (2,-3): 2 (up to (2,-4), upper-right to (3,-4))
   //   (3,-3): 1 (up to (3,-4))
   //   (4,-3): 0 — NOT a foothill
-  // Total: 1+2+2+1 = 6 mountain-facing edges.
-  await expect(page.locator("line.terrain-edge-mountain")).toHaveCount(6);
+  // Total: 1+2+2+1 = 6 mountain-facing edges, rendered as curved <path> (GAME-082).
+  await expect(page.locator("path.terrain-edge-mountain")).toHaveCount(6);
 });
 
 test("tutorial-003 terrain: internal lake ellipse renders for has_internal_lake precincts", async ({ page }) => {
