@@ -201,4 +201,74 @@ test("contiguity: two non-adjacent precincts in same district — not contiguous
   assertEqual(stats.contiguity!.get(2), true, "single-precinct district 2 is contiguous");
 });
 
+// ─── River-blocking contiguity (GAME-075) ─────────────────────────────────────
+
+/** Build a precinct with both neighbors and an explicit passableNeighbors override. */
+function makePrecinctWithBlocked(
+  id: number,
+  neighbors: (number | null)[],
+  passableNeighbors: (number | null)[],
+): Precinct {
+  return {
+    id,
+    coord: { q: 0, r: id },
+    center: { x: id * 10, y: 0 },
+    neighbors,
+    passableNeighbors,
+    population: 100,
+    partyShare: { R: 0.5, D: 0.5, L: 0, G: 0, I: 0 },
+    previousResult: { winner: "D", margin: 0 },
+    demographics: { male: 0.49, female: 0.49, nonbinary: 0.02 },
+  };
+}
+
+test("contiguity: river-blocked edge (passableNeighbors null) breaks BFS traversal", () => {
+  // P0 — P1 (adjacent geographically, river blocks)
+  // P0.neighbors[0] = 1 (river edge); P0.passableNeighbors[0] = null
+  // P1.neighbors[3] = 0; P1.passableNeighbors[3] = null
+  // Same district assignment → should be non-contiguous because the river blocks traversal.
+  const p0 = makePrecinctWithBlocked(
+    0,
+    [1, null, null, null, null, null],
+    [null, null, null, null, null, null],
+  );
+  const p1 = makePrecinctWithBlocked(
+    1,
+    [null, null, null, 0, null, null],
+    [null, null, null, null, null, null],
+  );
+  const precincts = [p0, p1];
+  const assignments = new Map([[0, 1], [1, 1]]);
+  const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
+  assertNotNull(stats.contiguity, "contiguity map should exist");
+  assertEqual(stats.contiguity!.get(1), false, "river-blocked edge should break contiguity");
+});
+
+test("contiguity: passableNeighbors absent falls back to neighbors", () => {
+  // Legacy precincts (no passableNeighbors) — BFS uses neighbors as before.
+  // P0 — P1 contiguous via neighbors[0]/neighbors[3].
+  const precincts = [P0, P1];
+  const assignments = new Map([[0, 1], [1, 1]]);
+  const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
+  assertNotNull(stats.contiguity, "contiguity map should exist");
+  assertEqual(stats.contiguity!.get(1), true, "legacy precincts (no passableNeighbors) still work");
+});
+
+test("contiguity: passableNeighbors preserves traversability for non-river edges", () => {
+  // P0 — P1 — P2 chain. River blocks only P1-P2 edge; P0-P1 stays passable.
+  // All three in district 1: P0-P1 connected via passable; P2 isolated → not contiguous overall.
+  const p0 = makePrecinctWithBlocked(0, [1, null, null, null, null, null], [1, null, null, null, null, null]);
+  const p1 = makePrecinctWithBlocked(
+    1,
+    [2, null, null, 0, null, null],
+    [null, null, null, 0, null, null], // edge to 2 blocked; edge to 0 passable
+  );
+  const p2 = makePrecinctWithBlocked(2, [null, null, null, 1, null, null], [null, null, null, null, null, null]);
+  const precincts = [p0, p1, p2];
+  const assignments = new Map([[0, 1], [1, 1], [2, 1]]);
+  const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
+  assertNotNull(stats.contiguity, "contiguity map should exist");
+  assertEqual(stats.contiguity!.get(1), false, "river splits district into two components");
+});
+
 summarize();
