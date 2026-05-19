@@ -45,7 +45,10 @@ See `thoughts/shared/vision/game-vision.compressed.md` for full scope.
 | 8 | Hardening | CSP, extract CSS, loader error handling, scenario compression | complete — 2026-04-28 |
 | 9 | First release | Deploy to pastthepost.org; legal review; basic accessibility | complete — 2026-04-29 |
 | 10 | Code quality + tidy | Test coverage gaps, deduplication, module extraction, pre-polish housekeeping | complete — 2026-04-29 |
-| 11 | Main menu, campaigns + polish | Title screen → campaign select → scenario flow; optional: design research, accessibility | backlog |
+| 11 | Main menu, campaigns + polish | Title screen → campaign select → scenario flow; optional: design research, accessibility | complete — 2026-05-02 |
+| 12 | Character reactions + submit-on-invalid | Result screen animated character + audio; invalid map Fix-It path; deferred verdict + stars | complete — 2026-05-18 |
+| 13 | Gameplay polish + scenario depth | Tutorial walkthroughs; VRA scenarios; terrain features; scenario-002 tuning | planned |
+| 14 | Code quality | Split loader; break up main.ts; unify type systems | sketched |
 
 ---
 
@@ -235,7 +238,7 @@ extract modules. Makes Sprint 11 design work safer and faster to implement.
 
 ---
 
-## Sprint 11 — Main Menu, Campaigns + Polish [BACKLOG]
+## Sprint 11 — Main Menu, Campaigns + Polish [COMPLETE 2026-05-02]
 
 **Goal**: First-impression polish sprint — proper main menu, campaign navigation
 model, and the most impactful UX improvements. Players should experience the
@@ -244,30 +247,21 @@ game as a real game, not a scenario picker.
 **Demo target**: A player lands on a title screen, picks a campaign, plays a
 scenario, and returns to the menu — end-to-end navigation working.
 
-**Tier 1 (core delivery):**
-- GAME-047: Campaign data model + authored campaign definitions
-- GAME-048: Campaign-driven scenario select (routing + data wiring)
-- GAME-049: Campaign select screen
-- GAME-050: Main menu / title screen
-- GAME-051: In-game navigation cleanup
+**Outcome**: All Tier 1 and Tier 2 tickets closed. Tier 1: GAME-047 campaign
+data model + registry (#159); GAME-048 campaign-driven scenario select (#162);
+GAME-049 campaign select screen (#169); GAME-050 main menu / title screen (#165);
+GAME-051 in-game navigation cleanup (#175). Tier 2: DESIGN-001 star system
+research; GAME-008 full a11y pass (CVD-safe palette, keyboard nav, ARIA); GAME-031
+gameplay critique followup; GAME-052 animated criteria reveal (#189). GAME-053
+deferred.
 
-**Tier 2 (if Tier 1 done early):**
-- DESIGN-001: Achievement/star UX research (blocks animated criteria eval)
-- GAME-008: Full accessibility pass (remainder after S9 basics)
-- GAME-031: Gameplay critique followup
-- GAME-052: Animated criteria evaluation (blocked on DESIGN-001)
-- GAME-053: Electoral outcome visual diff (placeholder)
-
-**Deferred to S12:** DESIGN-005/006/007 (demographic overlays), DESIGN-008
-(geographic features) — these require dedicated research + implementation time
-that would crowd out the navigation work.
-
-**Known tickets (Tier 1)**: GAME-047, GAME-048, GAME-049, GAME-050, GAME-051.
-**Known tickets (Tier 2)**: DESIGN-001, GAME-008, GAME-031, GAME-052, GAME-053.
+**Tickets (Tier 1)**: GAME-047, GAME-048, GAME-049, GAME-050, GAME-051
+**Tickets (Tier 2)**: DESIGN-001, GAME-008, GAME-031, GAME-052
+PRs: #159 #162 #165 #169 #175 #177 #180 #189
 
 ---
 
-## Sprint 12 — Character Reactions + Submit-on-Invalid [IN PROGRESS]
+## Sprint 12 — Character Reactions + Submit-on-Invalid [COMPLETE 2026-05-18]
 
 **Goal**: Result screen shows animated character sprites with audio; invalid maps
 can be submitted and trigger a Fix-It path.
@@ -276,57 +270,79 @@ can be submitted and trigger a Fix-It path.
 animated character + audio reaction; invalid map shows Fix-It path; valid
 pass/fail shows correct character animation.
 
-**Art model (updated 2026-05-13)**: PNG sprite sheets (horizontal strip:
-neutral | approve | disapprove), 200 px row height. Governor sheet is complete
-and live. Remaining types: commissioner, party, judge, legislator (DESIGN-011).
-Evaluation states are **approve / neutral / disapprove**, not 1:1 star-count poses.
-Bipartisan-broker variants (3 demographic pairs × 3 states, for scenario-006
-instigator) are defined in `tools/sprite-spec.json` and are separate from the
-per-criterion roster.
+**Outcome**: All core tickets resolved. DESIGN-009 (character visual style);
+DESIGN-011 (per-criterion character roster); GAME-059 (submit-on-invalid; PR #196);
+GAME-060 (PNG sprite sheets); GAME-061 (12 audio clips at −16 LUFS; PR #225);
+GAME-062 (all 4 character types wired; PR #227); GAME-063 (asset pipeline; PR #192);
+GAME-064 (audio infrastructure; PR #194); GAME-066 (dramatic reveal; PR #213);
+GAME-067 (asset versioning; PR #212); GAME-068 (reveal pacing; PR #214); GAME-069
+(per-criterion character slots; PR #215); GAME-073 (deferred verdict + stars +
+tada/womp-womp audio; PRs #236 #237). GAME-065 and GAME-071 moved to S13 as stretch.
 
-**Dependency chain**:
-- DESIGN-009 [resolved] — character reaction visual style; 3 evaluation states
-  (approve/neutral/disapprove)
-- DESIGN-011 [resolved] — per-criterion character roster; all 4 types done
-- GAME-059 [resolved] — submit-on-invalid
-- GAME-060 [resolved] — commissioner/party/judge/legislator PNG sheets produced
-- GAME-061 [resolved] — 12 real audio clips active; stubs + tuning deferred to GAME-071
-- GAME-063 [resolved] — asset pipeline
-- GAME-064 [resolved] — audio playback infrastructure
-- GAME-066 [resolved] — result screen dramatic reveal (sequential criteria reveal)
-- GAME-068 [resolved] — result reveal pacing
-- GAME-069 [resolved] — per-criterion `.rc-char` slots + governor PNG wired
-- GAME-062 — wire remaining character types + audio to result screen (SVG placeholders standing in)
-- GAME-065 — art quality iteration (trails GAME-060; not a blocker for GAME-062)
-- GAME-071 — audio fine-tuning; stub resolution; per-scenario character/audio inventory
+**Resolved**: DESIGN-009, DESIGN-011, GAME-059, GAME-060, GAME-061, GAME-062,
+GAME-063, GAME-064, GAME-066, GAME-067, GAME-068, GAME-069, GAME-073
 
-**Tier 1 (core — all resolved)**: DESIGN-009, GAME-059, GAME-063, GAME-064,
-GAME-066, GAME-068, GAME-069
+**Moved to S13 stretch**: GAME-065 (art refinement), GAME-071 (audio fine-tuning)
 
-**Tier 2 (remaining)**:
-- GAME-062: wire remaining types + audio (governor already wired; 4 types pending)
-- GAME-065: art refinement (polish pass after GAME-060; not a blocker)
-- GAME-071: audio fine-tuning; stub resolution; per-scenario character/audio inventory
-
-**Stretch / S12+ if time allows**:
-- Bipartisan-broker PNG variants for scenario-006 (spec in sprite-spec.json; 9 images)
-
-**Deferred to S13+**: DESIGN-005/006/007 demographic overlays; DESIGN-008
-geographic features; GAME-053 electoral outcome diff.
+PRs: #192 #194 #196 #212 #213 #214 #215 #225 #226 #227 #228 #236 #237
 
 ---
 
-## Sprint 12+ (later)
+## Sprint 13 — Gameplay Polish + Scenario Depth [PLANNED]
 
-| Ticket | Area | Notes |
-|---|---|---|
-| DESIGN-005 | Population dot-density overlay | Deferred from S11 |
-| DESIGN-006 | Zoom-adaptive dot density | Deferred from S11; refinement on DESIGN-005 |
-| DESIGN-007 | Dimensional dot map demographic overlay | Deferred from S11 |
-| DESIGN-008 | Geographic features (lakes, mountains) | Decorative tiles; blocks contiguity |
-| GAME-041 | Split loader.ts | Structural; own sprint alongside GAME-042/043 |
-| GAME-042 | Break up main.ts | Structural; own sprint |
-| GAME-043 | Unify type systems | Largest refactor; own sprint; do last |
+**Goal**: Tutorial walkthroughs, new VRA scenarios with terrain features, population
+realism, scenario-002 difficulty tuning.
+
+**Demo target**: Tutorial-001 has full step-by-step guided walkthrough; at least
+one new VRA-era scenario is playable; maps feel geographically plausible with
+terrain features.
+
+**Priority note**: The VRA scenarios are the motivation for this sprint, but the UI
+improvements they surface are more urgent than the scenarios themselves. VRA scenarios
+can slip to S14 if needed; Valle Verde already exercises majority_minority for testing
+GAME-080. The sprint succeeds if the UI improvements land — the scenarios are a bonus.
+
+**Tier 1 (UI improvements — primary drivers):**
+- DESIGN-014: non-partisan content framing guidelines + about-page/Valle-Verde audit;
+  prerequisite for all new scenario narrative authoring
+- GAME-080: district demographic rollup — live per-district demographic stat derived
+  from criteria; compact line under district button; updates on paint
+- DESIGN-015: information density redesign — 5-district overflow; evaluate layout options;
+  specify where GAME-080 stat lives; DESIGN-004 fate
+- GAME-081: implement information density improvements (trails DESIGN-015)
+
+**Tier 1 (content infrastructure):**
+- DESIGN-008 (expanded): full terrain model spec — tiles, edge rivers, precinct annotations,
+  symbolic rendering, map validity rules
+- GAME-075: terrain implementation — schema, generator, renderer, contiguity, ≥1 terrain scenario
+- DESIGN-012: tutorial overlay UX design (step model, highlight, input pause, skip/persist)
+- GAME-076: tutorial-001 guided walkthrough — overlay engine + 9-step script
+- GAME-077: tutorial-002 guided mode — advanced feature walkthrough (trails GAME-076)
+
+**Tier 2 (can slip to S15/Backlog — S14 is code-quality only, no feature work):**
+- DESIGN-013: VRA scenario design (trails DESIGN-014 for framing guidelines)
+- GAME-078: VRA scenario implementation (trails DESIGN-013 + GAME-075)
+- GAME-079: scenario-002 playability tuning
+
+**Stretch:**
+- GAME-065: art refinement (judge eye, party mouth, legislator thumb; broker PNGs)
+- GAME-071: audio fine-tuning; stub resolution; per-scenario character/audio inventory
+
+**Research available:**
+- `thoughts/shared/research/2026-05-18-vra-legal-political-landscape.md` — legal/political
+  background for DESIGN-013/DESIGN-014 scenario authoring
+
+---
+
+## Sprint 14 — Code Quality [SKETCHED]
+
+**Goal**: Split modules, unify type systems. No feature work mixed in.
+
+**Rationale**: Large structural refactors need focused review; mixing with feature
+work creates compounding rebase conflicts and harder-to-review PRs.
+
+**Tickets**: GAME-041 (split loader.ts), GAME-042 (break up main.ts),
+GAME-043 (unify type systems), GAME-046 (panels unit tests)
 
 ---
 
@@ -340,10 +356,10 @@ geographic features; GAME-053 electoral outcome diff.
 | CI-001 | GitHub Action ticket-close sync | Any (low priority) |
 | AGENT-003 | Infra PR review bot comment handling | Any |
 | DESIGN-004 | Legend layout (horizontal strip above map) | Any |
-| GAME-041 | Split loader.ts into focused modules | S12 |
-| GAME-042 | Break up main.ts god module | S12 |
-| GAME-043 | Unify spike + scenario type systems | S12 |
-| GAME-046 | Unit tests for render/panels.ts | S12 |
+| GAME-041 | Split loader.ts into focused modules | S14 |
+| GAME-042 | Break up main.ts god module | S14 |
+| GAME-043 | Unify spike + scenario type systems | S14 |
+| GAME-046 | Unit tests for render/panels.ts | S14 |
 
 ---
 

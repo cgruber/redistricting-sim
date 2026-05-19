@@ -104,8 +104,18 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-070-audio-settings.md` | game, UX, audio | Audio settings panel (main menu Settings item): master volume slider, mute toggle, localStorage persistence; coordinates with GAME-062 result-screen toggle |
 | `GAME-071-audio-character-assignment.md` | game, audio, content | Per-scenario character/audio inventory; audio clip selection per type; timing calibration; stub resolution |
 | `GAME-072-optional-criterion-neutral-audio.md` | game, audio | Neutral/meh audio clip for optional criteria that fail — party-disapprove is too strong for a missed bonus |
-| `GAME-073-result-screen-stars-and-success-banner.md` | game, UX, audio | Deferred success banner + star count reveal; tada/womp-womp completion audio; verdict hidden until all criteria revealed |
 | `GAME-074-criteria-only-validity-model.md` | game, architecture | Collapse dual validity/criteria system; population_balance gains tolerance field; contiguity becomes opt-in criterion; remove isMapSubmittable/buildValidityRows/mapIsValid |
+| `DESIGN-012-tutorial-overlay-ux.md` | design, UX, tutorial | Tutorial overlay UX spec: step sequencing model, highlight mechanics, input-pause semantics, skip/persist, tutorial-001 step script |
+| `DESIGN-013-vra-scenario-design.md` | design, content | VRA scenario design: "The 55% Problem" (Bethune-Hill dual-failure zone) and proxy-only redistricting post-Callais |
+| `DESIGN-014-nonpartisan-content-framing.md` | design, content | Non-partisan content guidelines: source standards, narrative language, naming conventions, about-page audit; prerequisite for VRA scenario authoring |
+| `DESIGN-015-information-density-redesign.md` | design, UX | Layout redesign for 5+ districts: evaluate map overlays, HUD strip, tabbed sidebar; specify where GAME-080 demographic stat lives; DESIGN-004 fate |
+| `GAME-075-terrain-implementation.md` | game, rendering, content | Terrain tiles (sea/lake/mountain), edge rivers, precinct annotations, symbolic renderer, map validity rules, population-gradient generator |
+| `GAME-076-tutorial-001-walkthrough.md` | game, UX, tutorial | Tutorial-001 guided walkthrough: overlay engine + 9-step script (district select → paint → undo/redo → UI tour → submit) |
+| `GAME-077-tutorial-002-guided-mode.md` | game, UX, tutorial | Tutorial-002 guided mode: advanced feature walkthrough (criteria panel, demographic overlay, goal orientation) |
+| `GAME-078-vra-scenarios-implementation.md` | game, content | Implement VRA scenarios: Scenario A + Scenario B; terrain features; proxy-data mechanic; hides race demographics; result-screen reveal |
+| `GAME-079-scenario-002-playability-tuning.md` | game, content | Tighten scenario-002 — trivially-easy first educational campaign scenario requires genuine engagement |
+| `GAME-080-district-demographic-rollup.md` | game, UX | Live per-district demographic stat derived from criteria (majority_minority → show % of target group); compact line under district button; updates on paint |
+| `GAME-081-information-density-implementation.md` | game, UX | Implement DESIGN-015 layout: district state visible at 5+ districts without scrolling; integrates GAME-080 stat placement |
 
 ---
 
@@ -113,6 +123,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-073: deferred verdict banner + star count reveal | Verdict hidden until all criteria revealed; stars animate in; tada/womp-womp audio; layout preservation (visibility:hidden + min-height); merged PRs #236 #237 |
 | GAME-062: character reaction system | CHAR_POSES measured for all 1408×768 sheets; commissioner/judge/legislator/party wired in buildCharSlotChildren(); demographic selection reads scenario.character_demographics; placeholder SVG retained as unknown-type fallback; e2e tests for commissioner sprite + aria-labels; broker/scenario-006 deferred to GAME-065 |
 | GAME-061: audio clips | 12 real clips active (governor/commissioner/legislator gender-keyed, judge/party gender-neutral), all −16 LUFS; stubs for neutral variants + party-disapprove deferred to GAME-071 fine-tuning |
 | GAME-060: character sprite assets | commissioner/judge/legislator/party PNG sheets produced with demographic variants (1408×768, 3-state); old SVG placeholders deleted |
