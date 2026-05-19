@@ -69,10 +69,10 @@ test("tutorial campaign scenarioIds are tutorial-001 and tutorial-002", () => {
 	assertEqual(tutorial!.scenarioIds[1], "tutorial-002", "second scenario");
 });
 
-test("educational campaign has exactly 8 scenario IDs", () => {
+test("educational campaign has exactly 9 scenario IDs", () => {
 	const edu = getCampaign("educational");
 	assertNotNull(edu, "educational exists");
-	assertEqual(edu!.scenarioIds.length, 8, "educational scenarioIds length");
+	assertEqual(edu!.scenarioIds.length, 9, "educational scenarioIds length");
 });
 
 test("educational campaign starts with scenario-002", () => {
@@ -81,10 +81,10 @@ test("educational campaign starts with scenario-002", () => {
 	assertEqual(edu!.scenarioIds[0], "scenario-002", "first scenario");
 });
 
-test("educational campaign ends with scenario-009", () => {
+test("educational campaign ends with scenario-010", () => {
 	const edu = getCampaign("educational");
 	assertNotNull(edu, "educational exists");
-	assertEqual(edu!.scenarioIds[edu!.scenarioIds.length - 1], "scenario-009", "last scenario");
+	assertEqual(edu!.scenarioIds[edu!.scenarioIds.length - 1], "scenario-010", "last scenario");
 });
 
 // ─── getCampaign ──────────────────────────────────────────────────────────────

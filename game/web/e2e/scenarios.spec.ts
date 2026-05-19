@@ -847,30 +847,32 @@ test("routing: unknown ?s= without campaign redirects to main menu", async ({ pa
 // ─── GAME-020: Wrap-up screen after final scenario ──────────────────────────
 
 test("wrap-up screen: completing last scenario shows wrap-up on Next Scenario", async ({ page }) => {
-  // Seed all but scenario-009 as complete
+  // Seed all but scenario-010 (the new last scenario) as complete
   await page.goto("/");
   const allButLast = [
     "tutorial-002", "scenario-002", "scenario-003", "scenario-004",
-    "scenario-005", "scenario-006", "scenario-007", "scenario-008",
+    "scenario-005", "scenario-006", "scenario-007", "scenario-008", "scenario-009",
   ];
   await page.evaluate((ids) => {
     localStorage.setItem("redistricting-sim-progress", JSON.stringify({ completed: ids }));
   }, allButLast);
-  // Load scenario-009 and complete it
-  await loadScenario(page, "scenario-009");
-  // Use paintStroke to apply the known winning assignment
+  // Load scenario-010 and complete it with a bank-respecting assignment.
+  await loadScenario(page, "scenario-010");
   await page.evaluate(() => {
     const store = (window as unknown as Record<string, { getState: () => {
       paintStroke: (ids: number[], district: number) => void;
     } }>)["__gameStore"];
     if (!store) throw new Error("__gameStore not found on window");
     const { paintStroke } = store.getState();
+    // 16 precincts in scenario-axial-order: r=-2 (q=0..3), r=-1 (q=0..3), r=0 (q=0..3), r=1 (q=0..3).
+    // Pair adjacent halves within each bank so districts respect the river.
+    // North bank (indices 0-7): D1 = left half, D2 = right half
+    // South bank (indices 8-15): D3 = left half, D4 = right half
     const assignment: number[][] = [
-      [27,28,29,30,37,38,39,40,41,49,50,51,52,61,62,63,64,65,74,75,76,77,86,87,88],
-      [55,66,67,68,72,73,78,79,80,83,84,85,89,90,95,96,97,98,99,100,105,106,107,108,109],
-      [8,9,10,11,12,13,16,17,18,19,20,21,22,25,26,31,32,36,42,47,48,53,54,59,60],
-      [82,91,92,93,94,101,102,103,104,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126],
-      [0,1,2,3,4,5,6,7,14,15,23,24,33,34,35,43,44,45,46,56,57,58,69,70,71,81],
+      [0, 1, 4, 5],     // D1: north-left
+      [2, 3, 6, 7],     // D2: north-right
+      [8, 9, 12, 13],   // D3: south-left
+      [10, 11, 14, 15], // D4: south-right
     ];
     assignment.forEach((ids, d) => paintStroke(ids, d + 1));
   });
@@ -1082,4 +1084,50 @@ test.describe("GAME-068: animated reveal path (no reduced-motion)", () => {
     // Skip button gone after skipping.
     await expect(page.locator("#result-reveal-controls")).toBeHidden();
   });
+});
+
+// ─── scenario-010: "Two Banks, One River" (GAME-075 terrain demo) ───────────
+
+test("scenario-010 smoke: loads and renders 16 precincts", async ({ page }) => {
+  await page.goto("/?s=scenario-010&debug");
+  await expect(page.locator("path.hex")).toHaveCount(16);
+});
+
+test("scenario-010 terrain: 5 terrain tiles rendered (2 mountain + 3 sea)", async ({ page }) => {
+  await page.goto("/?s=scenario-010&debug");
+  await expect(page.locator("g.terrain-tile")).toHaveCount(5);
+  await expect(page.locator("g.terrain-tile[data-terrain-type='mountain']")).toHaveCount(2);
+  await expect(page.locator("g.terrain-tile[data-terrain-type='sea']")).toHaveCount(3);
+});
+
+test("scenario-010 terrain: 7 river edges rendered along the bank boundary", async ({ page }) => {
+  await page.goto("/?s=scenario-010&debug");
+  await expect(page.locator("line.river-edge")).toHaveCount(7);
+});
+
+test("scenario-010 terrain: terrain tiles are non-interactive (pointer-events: none)", async ({ page }) => {
+  await page.goto("/?s=scenario-010&debug");
+  // pointer-events on the tile group is "none" — assert via computed style.
+  const pointerEvents = await page.locator("g.terrain-tile").first().evaluate(
+    (el) => getComputedStyle(el).pointerEvents,
+  );
+  expect(pointerEvents).toBe("none");
+});
+
+test("scenario-010 terrain: coast edge strokes on precincts adjacent to sea", async ({ page }) => {
+  await page.goto("/?s=scenario-010&debug");
+  // South-bank precincts at r=1: (0,1) has 1 sea-facing edge, (1,1) and (2,1) each have 2
+  // (down + lower-left), (3,1) has 1 (lower-left to (2,2) sea).
+  // Total: 1+2+2+1 = 6 sea-facing edges.
+  await expect(page.locator("line.terrain-edge-sea")).toHaveCount(6);
+});
+
+test("scenario-010 contiguity: initial vertical-strip districts fail river-blocked BFS", async ({ page }) => {
+  await loadScenario(page, "scenario-010");
+  // Initial assignment: 4 vertical strips spanning both banks.
+  // With river_blocks_contiguity:true, every district straddles the river → all non-contiguous.
+  await expect(page.locator("#validity-container")).toBeVisible();
+  const validityText = await page.locator("#validity-container").innerText();
+  // At least one "Non-contiguous" badge in the validity panel.
+  expect(validityText).toMatch(/Non-contiguous/);
 });
