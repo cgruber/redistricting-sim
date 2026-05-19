@@ -66,7 +66,7 @@ Current about page resources list should be reviewed:
 ## Scope of audit
 
 **Existing scenarios to review:**
-- Valle Verde (scenario-006): majority_minority narrative — check for loaded framing
+- Valle Verde (scenario-005): majority_minority narrative — check for loaded framing
 - Harden the Map: incumbency protection framing
 - Reform Map: "neutral rules" framing — "neutral" is itself a contested term in redistricting
 - Any scenario where the winning condition implies a political judgment
@@ -78,12 +78,15 @@ Current about page resources list should be reviewed:
 
 ## Goals / Acceptance Criteria
 
-- [ ] Content principles documented (this ticket) — reviewed and approved before use
-- [ ] About page resources list audited; advocacy-only sources removed or balanced
-- [ ] About page framing statement reviewed for political valence
-- [ ] Valle Verde scenario narrative reviewed; edits made if needed
-- [ ] Naming guidelines applied to DESIGN-013 scenario names
-- [ ] All new scenario narratives (DESIGN-013) reviewed against guidelines before GAME-078
+- [x] Content principles documented (this ticket) — reviewed and approved before use
+- [x] About page resources list audited; Brennan Center + FairVote removed; replaced with Princeton Gerrymandering Project + Redistricting Data Hub (Loyola kept)
+- [x] About page framing statement reviewed — no changes needed; "better questions, not predetermined answers" framing is sound
+- [x] Valle Verde scenario narrative reviewed; "fairness law" → "this legal requirement" (one edit)
+- [x] Reform Map narrative reviewed; "Reformers have long argued" → "Proponents of independent redistricting have long argued"
+- [x] Naming guidelines applied to DESIGN-013 scenario names ("The Proxy Problem" replacing "The Colorblind Trap")
+- [x] Harden the Map (scenario-006) narrative reviewed — incumbency protection framing is intentional storytelling; editorial tone reflects the character's partisan perspective appropriately; no neutrality violation; no changes needed
+- [x] Tutorial-001/002 overlay text (DESIGN-012) — overlay text not yet authored; this review gate cannot be applied until DESIGN-012 content is written; deferred to the DESIGN-012 authoring phase
+- [ ] All new scenario narratives (DESIGN-013) reviewed against guidelines before GAME-078 — PENDING: narratives not yet written; gate to be applied when DESIGN-013 content is authored
 
 ## References
 
