@@ -1,5 +1,6 @@
 import type { ScenarioRules } from "../model/scenario.js";
 import { DISTRICT_COLORS, PARTY_COLORS, PARTY_LABELS, type PartyKey } from "../model/types.js";
+import type { DistrictDemoStat } from "../simulation/evaluate.js";
 import { computeValidityStats } from "../simulation/validity.js";
 import type { GameStore } from "../store/gameStore.js";
 
@@ -55,17 +56,35 @@ export function renderDistrictButtons(
 	districtCount: number,
 	activeDistrict: number,
 	onSelect: (id: number) => void,
+	demoStat?: DistrictDemoStat,
 ): void {
 	container.innerHTML = "";
 	for (let i = 1; i <= districtCount; i++) {
 		const color = DISTRICT_COLORS[i - 1] ?? "#888";
+
+		const wrapper = document.createElement("div");
+		wrapper.className = "district-btn-wrap";
+
 		const btn = document.createElement("button");
 		btn.className = `district-btn${i === activeDistrict ? " active" : ""}`;
 		btn.textContent = `District ${i}`;
 		btn.style.background = color;
 		btn.style.color = "#fff";
 		btn.addEventListener("click", () => onSelect(i));
-		container.appendChild(btn);
+		wrapper.appendChild(btn);
+
+		if (demoStat) {
+			const share = demoStat.shares[i - 1] ?? 0;
+			const pct = Math.round(share * 100);
+			const thresholdPct = Math.round(demoStat.threshold * 100);
+			const met = pct >= thresholdPct;
+			const stat = document.createElement("div");
+			stat.className = `district-demo-stat${met ? " met" : ""}`;
+			stat.textContent = `${pct}% ${demoStat.label}`;
+			wrapper.appendChild(stat);
+		}
+
+		container.appendChild(wrapper);
 	}
 }
 

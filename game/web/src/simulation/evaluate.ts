@@ -39,6 +39,20 @@ export interface EvaluationResult {
 	overallPass: boolean;
 }
 
+export interface DistrictDemoStat {
+	shares: number[];
+	label: string;
+	threshold: number;
+}
+
+export function groupFilterLabel(filter: GroupFilter): string {
+	if ("dimension" in filter) {
+		const v = filter.value;
+		return v.charAt(0).toUpperCase() + v.slice(1);
+	}
+	return (filter.group_ids as string[]).join(", ");
+}
+
 // ─── Helper: comparison operator ─────────────────────────────────────────────
 
 function applyOp(actual: number, op: CompareOp, threshold: number): boolean {
@@ -102,7 +116,7 @@ function matchesGroupFilter(group: DemographicGroup, filter: GroupFilter): boole
 // Returns the fraction of each district's total population that belongs to
 // groups matching the filter.  Range: 0.0–1.0.
 
-function computeDistrictGroupShares(
+export function computeDistrictGroupShares(
 	scenarioPrecincts: ScenarioPrecinct[],
 	assignments: AssignmentMap,
 	districtCount: number,
