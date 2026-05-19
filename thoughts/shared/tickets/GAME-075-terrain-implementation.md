@@ -2,8 +2,9 @@
 id: GAME-075
 title: Terrain implementation — tiles, edge rivers, precinct annotations, renderer
 area: game, rendering, content
-status: open
+status: resolved
 created: 2026-05-18
+resolved: 2026-05-19
 ---
 
 ## Summary
