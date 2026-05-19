@@ -1100,9 +1100,18 @@ test("scenario-010 terrain: 5 terrain tiles rendered (2 mountain + 3 sea)", asyn
   await expect(page.locator("g.terrain-tile[data-terrain-type='sea']")).toHaveCount(3);
 });
 
-test("scenario-010 terrain: 7 river edges rendered along the bank boundary", async ({ page }) => {
+test("scenario-010 terrain: river rendered as a single smoothed chain", async ({ page }) => {
   await page.goto("/?s=scenario-010&debug");
-  await expect(page.locator("line.river-edge")).toHaveCount(7);
+  // GAME-082: 7 connected river edges → 1 smoothed <path> via d3.curveBasis.
+  // Branch-free river ⇒ exactly 1 chain. Path's "d" attribute starts with "M".
+  await expect(page.locator("path.river-chain")).toHaveCount(1);
+  const d = await page.locator("path.river-chain").getAttribute("d");
+  expect(d).toBeTruthy();
+  expect(d!.startsWith("M")).toBe(true);
+  // curveBasis on 3+ points emits cubic bezier (C). Scenario-010 has 7 edges → 8 points
+  // → C-rich path. Future scenarios with 1-edge rivers (2 points) emit only "L", so the
+  // `includes("C")` assertion is scenario-010-specific and intentional.
+  expect(d!.includes("C")).toBe(true);
 });
 
 test("scenario-010 terrain: terrain tiles are non-interactive (pointer-events: none)", async ({ page }) => {

@@ -54,6 +54,80 @@ type SVGSel = d3.Selection<SVGSVGElement, unknown, null, undefined>;
 // D3's append returns a Selection with parent type null when chained from select(element)
 type GSel = d3.Selection<SVGGElement, unknown, null, undefined>;
 type Segment = { x1: number; y1: number; x2: number; y2: number };
+type Point2D = [number, number];
+
+// ─── River chain building (GAME-082) ─────────────────────────────────────────
+
+/**
+ * Group river-edge corner-pair segments into connected chains so each chain
+ * can be rendered as a single smoothed SVG path rather than N separate lines.
+ *
+ * Two segments are considered connected when they share a corner (same pixel
+ * coordinates). Corners that appear in exactly 2 segments are interior to a
+ * chain; corners that appear in 1 segment are chain endpoints; corners with
+ * degree >= 3 are Y/T junctions where chains terminate (each branch becomes
+ * its own chain — visually they meet at the junction).
+ *
+ * Walking strategy: start from each endpoint (degree-1 corner) and follow
+ * unvisited segments through degree-2 corners. After all endpoint-rooted walks
+ * complete, any remaining unvisited segments form closed loops or branches at
+ * junctions — emit those as their own chains from an arbitrary starting point.
+ */
+function buildRiverChains(segs: [Point2D, Point2D][]): Point2D[][] {
+	// Quantize corner coordinates to handle hexCorners() float drift.
+	// 2 decimals = 0.01 px precision — well below any real edge mismatch.
+	const key = (p: Point2D): string => `${p[0].toFixed(2)},${p[1].toFixed(2)}`;
+
+	// corner-key → indices of segments touching that corner
+	const cornerToSegs = new Map<string, number[]>();
+	segs.forEach((seg, i) => {
+		for (const c of seg) {
+			const k = key(c);
+			if (!cornerToSegs.has(k)) cornerToSegs.set(k, []);
+			cornerToSegs.get(k)!.push(i);
+		}
+	});
+
+	const visited = new Set<number>();
+	const chains: Point2D[][] = [];
+
+	const walk = (startSeg: number, startCorner: Point2D): Point2D[] => {
+		const points: Point2D[] = [startCorner];
+		let segIdx = startSeg;
+		let corner = startCorner;
+		while (!visited.has(segIdx)) {
+			visited.add(segIdx);
+			const seg = segs[segIdx];
+			if (seg === undefined) break;
+			const other = key(seg[0]) === key(corner) ? seg[1] : seg[0];
+			points.push(other);
+			const candidates = (cornerToSegs.get(key(other)) ?? []).filter((s) => !visited.has(s));
+			if (candidates.length !== 1) break; // endpoint, junction, or dead end
+			segIdx = candidates[0]!;
+			corner = other;
+		}
+		return points;
+	};
+
+	// Pass 1: start from endpoints (degree-1 corners) — these are the natural
+	// chain heads and produce the longest/cleanest chains.
+	for (const [k, ss] of cornerToSegs) {
+		if (ss.length !== 1) continue;
+		const segIdx = ss[0]!;
+		if (visited.has(segIdx)) continue;
+		const seg = segs[segIdx]!;
+		const startCorner = key(seg[0]) === k ? seg[0] : seg[1];
+		chains.push(walk(segIdx, startCorner));
+	}
+	// Pass 2: any remaining unvisited segments belong to closed loops or live
+	// past a junction. Emit each as its own chain from an arbitrary start.
+	segs.forEach((seg, i) => {
+		if (visited.has(i)) return;
+		chains.push(walk(i, seg[0]));
+	});
+
+	return chains;
+}
 
 // ─── Polygon path helper ─────────────────────────────────────────────────────
 
@@ -378,7 +452,8 @@ export class SvgMapRenderer implements MapRenderer {
 		const { precincts, riverEdges } = this.getState();
 		if (!riverEdges || riverEdges.length === 0) return;
 
-		const segments: Segment[] = [];
+		// 1. Convert each river edge to its corner pair.
+		const segs: [Point2D, Point2D][] = [];
 		for (const [aIdx, bIdx] of riverEdges) {
 			const a = precincts[aIdx];
 			if (a === undefined) {
@@ -387,8 +462,6 @@ export class SvgMapRenderer implements MapRenderer {
 			}
 			const edge = a.neighbors.findIndex((n) => n === bIdx);
 			if (edge < 0) {
-				// Loader validates geometric adjacency, so this branch is unreachable for
-				// validated scenarios. Warn defensively in case data bypasses the loader.
 				console.warn(`renderRivers: precinct ${aIdx} is not a geometric neighbor of ${bIdx}`);
 				continue;
 			}
@@ -396,21 +469,28 @@ export class SvgMapRenderer implements MapRenderer {
 			const c0 = corners[edge];
 			const c1 = corners[(edge + 1) % 6];
 			if (c0 === undefined || c1 === undefined) continue;
-			segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
+			segs.push([c0, c1]);
 		}
 
+		// 2. Build chains of connected segments by walking the corner graph.
+		const chains = buildRiverChains(segs);
+
+		// 3. Render each chain as a smoothed SVG path. d3.curveBasis approximates
+		//    the corner points without strictly passing through them, producing a
+		//    gentle meander rather than the raw hex-edge zigzag.
+		const lineGen = d3.line<Point2D>().x((p) => p[0]).y((p) => p[1]).curve(d3.curveBasis);
+
 		this.riverGroup
-			.selectAll<SVGLineElement, Segment>("line.river-edge")
-			.data(segments)
-			.join("line")
-			.attr("class", "river-edge")
-			.attr("x1", (d) => d.x1)
-			.attr("y1", (d) => d.y1)
-			.attr("x2", (d) => d.x2)
-			.attr("y2", (d) => d.y2)
+			.selectAll<SVGPathElement, Point2D[]>("path.river-chain")
+			.data(chains)
+			.join("path")
+			.attr("class", "river-chain")
+			.attr("d", (d) => lineGen(d) ?? "")
+			.attr("fill", "none")
 			.attr("stroke", SvgMapRenderer.RIVER_STROKE)
 			.attr("stroke-width", SvgMapRenderer.RIVER_BASE_WIDTH / this.currentK)
 			.attr("stroke-linecap", "round")
+			.attr("stroke-linejoin", "round")
 			.attr("opacity", SvgMapRenderer.RIVER_OPACITY)
 			.style("pointer-events", "none");
 	}
@@ -539,7 +619,7 @@ export class SvgMapRenderer implements MapRenderer {
 					.attr("stroke-width", pw);
 				// Terrain feature stroke widths also scale inversely.
 				this.riverGroup
-					.selectAll<SVGLineElement, Segment>("line.river-edge")
+					.selectAll<SVGPathElement, Point2D[]>("path.river-chain")
 					.attr("stroke-width", SvgMapRenderer.RIVER_BASE_WIDTH / this.currentK);
 				this.terrainOverlayGroup
 					.selectAll<SVGLineElement, Segment>("line.terrain-edge")
