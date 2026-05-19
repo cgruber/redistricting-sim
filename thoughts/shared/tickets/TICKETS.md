@@ -115,6 +115,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-079-scenario-002-playability-tuning.md` | game, content | Tighten scenario-002 — trivially-easy first educational campaign scenario requires genuine engagement |
 | `GAME-080-district-demographic-rollup.md` | game, UX | Live per-district demographic stat derived from criteria (majority_minority → show % of target group); compact line under district button; updates on paint |
 | `GAME-081-information-density-implementation.md` | game, UX | Implement DESIGN-015 layout: district state visible at 5+ districts without scrolling; integrates GAME-080 stat placement |
+| `GAME-082-terrain-visual-treatment-refinement.md` | game, rendering, UX | Visual-tuning pass over GAME-075 terrain layer: thicker rivers, more prominent coast/lakeside edges, foothill rendering pickup, internal-lake validation |
 
 ---
 
