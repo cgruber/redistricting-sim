@@ -32,7 +32,7 @@ test("campaign select: progress shows 0 / 3 for Tutorial with fresh localStorage
   await page.evaluate((key) => localStorage.removeItem(key), PROGRESS_KEY);
   await page.reload();
   await expect(page.locator("#campaign-select")).toBeVisible({ timeout: 10_000 });
-  // GAME-082: scenario-010 moved from educational to tutorial as a geographic-features intro.
+  // GAME-082: tutorial-003 (geographic-features tour) is now part of the tutorial campaign.
   await expect(page.locator(".campaign-card").first()).toContainText("0 / 3 scenarios complete");
 });
 
