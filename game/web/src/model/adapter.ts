@@ -165,8 +165,9 @@ export function scenarioToSpike(scenario: Scenario): {
 		assignments.set(i, spikeDistId);
 	});
 
-	// Build runtime terrain tiles with pixel centers
+	// Build runtime terrain tiles with axial coord + pixel center
 	const terrainTiles: TerrainTileRuntime[] = (scenario.terrain_tiles ?? []).map((tile) => ({
+		coord: { q: tile.position.q, r: tile.position.r },
 		center: hexToPixel(tile.position.q, tile.position.r),
 		type: tile.type,
 	}));

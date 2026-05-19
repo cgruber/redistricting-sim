@@ -21,8 +21,8 @@
  */
 
 import * as d3 from "d3";
-import { hexCorners, mapBounds } from "../model/hex-geometry.js";
-import type { Precinct } from "../model/types.js";
+import { HEX_DIRECTIONS, HEX_SIZE, hexCorners, mapBounds } from "../model/hex-geometry.js";
+import type { Precinct, TerrainTileRuntime } from "../model/types.js";
 import { DISTRICT_COLORS, PARTY_LABELS } from "../model/types.js";
 import type { GameStore } from "../store/gameStore.js";
 
@@ -127,9 +127,12 @@ function computeCountySegments(precincts: Precinct[]): Segment[] {
 export class SvgMapRenderer implements MapRenderer {
 	private svg: SVGSel;
 	private zoomGroup: GSel;
+	private terrainGroup: GSel;
 	private countyBorderGroup: GSel;
 	private borderGroup: GSel;
 	private hexGroup: GSel;
+	private terrainOverlayGroup: GSel;
+	private riverGroup: GSel;
 	private previewBorderGroup: GSel;
 	private getState: () => GameStore;
 	private paintStroke: GameStore["paintStroke"];
@@ -196,6 +199,26 @@ export class SvgMapRenderer implements MapRenderer {
 	private countySegments: Segment[] = [];
 	private countyBordersVisible = false;
 
+	// Terrain styling (DESIGN-008): fills, glyphs, opacity for sea/lake/mountain tiles
+	private static readonly TERRAIN_FILL_SEA = "#3a7fc1";
+	private static readonly TERRAIN_FILL_LAKE = "#4dd0e1";
+	private static readonly TERRAIN_FILL_MOUNTAIN = "#6b7280";
+	private static readonly TERRAIN_GLYPH_SEA = "∿";
+	private static readonly TERRAIN_GLYPH_MOUNTAIN = "△";
+	private static readonly TERRAIN_GLYPH_COLOR = "rgba(255,255,255,0.45)";
+	private static readonly TERRAIN_GLYPH_FONT_SIZE = 22; // pixel size at 1× zoom
+	private static readonly RIVER_STROKE = "#38bdf8";
+	private static readonly RIVER_BASE_WIDTH = 2.5;
+	private static readonly RIVER_OPACITY = 0.7;
+	private static readonly INTERNAL_LAKE_FILL = "#4dd0e1";
+	private static readonly INTERNAL_LAKE_OPACITY = 0.55;
+	private static readonly INTERNAL_LAKE_RX_FACTOR = 0.55; // hex_size × factor = ellipse radius
+	private static readonly INTERNAL_LAKE_RY_FACTOR = 0.45;
+	private static readonly COAST_STROKE = "#3a7fc1";
+	private static readonly LAKESIDE_STROKE = "#4dd0e1";
+	private static readonly TERRAIN_EDGE_BASE_WIDTH = 3;
+	private static readonly TERRAIN_EDGE_OPACITY = 0.9;
+
 	// Keyboard precinct navigation state
 	private focusedPrecinctId: number | null = null;
 	private keyboardFocusPath: SVGPathElement | null = null;
@@ -213,12 +236,26 @@ export class SvgMapRenderer implements MapRenderer {
 		this.svg = d3.select(svgEl);
 
 		// Zoom group wraps all map layers so the single transform drives pan/zoom.
-		// Layer order (bottom → top inside zoomGroup): district borders, hexes, county borders, preview.
-		// County borders must sit above hexes so filled hex paths don't obscure them.
+		// Layer order (bottom → top inside zoomGroup):
+		//   terrainGroup        — non-precinct tiles (sea/lake/mountain), bottom
+		//   borderGroup         — committed district boundaries (solid white)
+		//   hexGroup            — precinct fills
+		//   terrainOverlayGroup — coast/lakeside edge strokes + internal lakes (above hex fills)
+		//   countyBorderGroup   — county boundary overlay (dashed gray; off by default)
+		//   riverGroup          — blue river strokes along hex edges (above precincts + county borders)
+		//   previewBorderGroup  — in-stroke boundary preview (top)
+		// Note on riverGroup placement: DESIGN-008 describes rivers as "above hex fills but
+		// below district outlines". In this renderer borderGroup is *below* hexGroup (district
+		// boundaries shine through semi-transparent hex fills), so the spec's two constraints
+		// are mutually exclusive. We choose "above hex fills" because rivers must be visible
+		// as natural geographic boundaries; they sit above district outlines as a result.
 		this.zoomGroup = this.svg.append("g").attr("class", "zoom-layer");
+		this.terrainGroup = this.zoomGroup.append("g").attr("class", "terrain");
 		this.borderGroup = this.zoomGroup.append("g").attr("class", "borders");
 		this.hexGroup = this.zoomGroup.append("g").attr("class", "hexes");
+		this.terrainOverlayGroup = this.zoomGroup.append("g").attr("class", "terrain-overlay");
 		this.countyBorderGroup = this.zoomGroup.append("g").attr("class", "county-borders");
+		this.riverGroup = this.zoomGroup.append("g").attr("class", "rivers");
 		this.previewBorderGroup = this.zoomGroup.append("g").attr("class", "preview-borders");
 
 		const pops = getState().precincts.map((p) => p.population);
@@ -231,6 +268,12 @@ export class SvgMapRenderer implements MapRenderer {
 		this.initBrushEvents();
 		this.initKeyboardNav();
 		this.initHoverEvents();
+
+		// One-shot terrain rendering — terrain is immutable per scenario.
+		this.renderTerrainTiles();
+		this.renderRivers();
+		this.renderInternalLakes();
+		this.renderTerrainEdges();
 	}
 
 	setViewMode(mode: ViewMode) {
@@ -268,6 +311,172 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("stroke-width", SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK)
 			.attr("stroke-dasharray", `${SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`)
 			.attr("opacity", SvgMapRenderer.COUNTY_OPACITY);
+	}
+
+	// ─── Terrain rendering (GAME-075) ─────────────────────────────────────────
+
+	private terrainFill(type: TerrainTileRuntime["type"]): string {
+		switch (type) {
+			case "sea": return SvgMapRenderer.TERRAIN_FILL_SEA;
+			case "lake": return SvgMapRenderer.TERRAIN_FILL_LAKE;
+			case "mountain": return SvgMapRenderer.TERRAIN_FILL_MOUNTAIN;
+		}
+	}
+
+	private terrainGlyph(type: TerrainTileRuntime["type"]): string {
+		// DESIGN-008: lake glyph is optional and is omitted here — the aqua fill alone
+		// distinguishes lakes from the darker sea, and white-on-aqua has low contrast.
+		switch (type) {
+			case "sea": return SvgMapRenderer.TERRAIN_GLYPH_SEA;
+			case "lake": return "";
+			case "mountain": return SvgMapRenderer.TERRAIN_GLYPH_MOUNTAIN;
+		}
+	}
+
+	private renderTerrainTiles() {
+		const tiles = this.getState().terrainTiles ?? [];
+		if (tiles.length === 0) return;
+
+		// One group per tile so the fill polygon and glyph stay paired.
+		const tileGroups = this.terrainGroup
+			.selectAll<SVGGElement, TerrainTileRuntime>("g.terrain-tile")
+			.data(tiles, (_d, i) => String(i))
+			.join("g")
+			.attr("class", (d) => `terrain-tile terrain-${d.type}`)
+			.attr("data-terrain-type", (d) => d.type)
+			.style("pointer-events", "none"); // non-interactive — no hover, no click
+
+		// Hex polygon fill
+		tileGroups
+			.selectAll<SVGPathElement, TerrainTileRuntime>("path.terrain-fill")
+			.data((d) => [d])
+			.join("path")
+			.attr("class", "terrain-fill")
+			.attr("d", (d) => {
+				const corners = hexCorners(d.center);
+				return `M${corners.map((c) => c.join(",")).join("L")}Z`;
+			})
+			.attr("fill", (d) => this.terrainFill(d.type))
+			.attr("stroke", "none");
+
+		// Glyph centered in the tile
+		tileGroups
+			.selectAll<SVGTextElement, TerrainTileRuntime>("text.terrain-glyph")
+			.data((d) => [d])
+			.join("text")
+			.attr("class", "terrain-glyph")
+			.attr("x", (d) => d.center.x)
+			.attr("y", (d) => d.center.y)
+			.attr("text-anchor", "middle")
+			.attr("dominant-baseline", "central")
+			.attr("font-size", SvgMapRenderer.TERRAIN_GLYPH_FONT_SIZE)
+			.attr("fill", SvgMapRenderer.TERRAIN_GLYPH_COLOR)
+			.text((d) => this.terrainGlyph(d.type));
+	}
+
+	private renderRivers() {
+		const { precincts, riverEdges } = this.getState();
+		if (!riverEdges || riverEdges.length === 0) return;
+
+		const segments: Segment[] = [];
+		for (const [aIdx, bIdx] of riverEdges) {
+			const a = precincts[aIdx];
+			if (a === undefined) {
+				console.warn(`renderRivers: river_edge references unknown precinct index ${aIdx}`);
+				continue;
+			}
+			const edge = a.neighbors.findIndex((n) => n === bIdx);
+			if (edge < 0) {
+				// Loader validates geometric adjacency, so this branch is unreachable for
+				// validated scenarios. Warn defensively in case data bypasses the loader.
+				console.warn(`renderRivers: precinct ${aIdx} is not a geometric neighbor of ${bIdx}`);
+				continue;
+			}
+			const corners = hexCorners(a.center);
+			const c0 = corners[edge];
+			const c1 = corners[(edge + 1) % 6];
+			if (c0 === undefined || c1 === undefined) continue;
+			segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
+		}
+
+		this.riverGroup
+			.selectAll<SVGLineElement, Segment>("line.river-edge")
+			.data(segments)
+			.join("line")
+			.attr("class", "river-edge")
+			.attr("x1", (d) => d.x1)
+			.attr("y1", (d) => d.y1)
+			.attr("x2", (d) => d.x2)
+			.attr("y2", (d) => d.y2)
+			.attr("stroke", SvgMapRenderer.RIVER_STROKE)
+			.attr("stroke-width", SvgMapRenderer.RIVER_BASE_WIDTH / this.currentK)
+			.attr("stroke-linecap", "round")
+			.attr("opacity", SvgMapRenderer.RIVER_OPACITY)
+			.style("pointer-events", "none");
+	}
+
+	private renderInternalLakes() {
+		const precincts = this.getState().precincts.filter((p) => p.has_internal_lake === true);
+		if (precincts.length === 0) return;
+
+		this.terrainOverlayGroup
+			.selectAll<SVGEllipseElement, Precinct>("ellipse.internal-lake")
+			.data(precincts, (d) => String(d.id))
+			.join("ellipse")
+			.attr("class", "internal-lake")
+			.attr("cx", (d) => d.center.x)
+			.attr("cy", (d) => d.center.y)
+			.attr("rx", HEX_SIZE * SvgMapRenderer.INTERNAL_LAKE_RX_FACTOR)
+			.attr("ry", HEX_SIZE * SvgMapRenderer.INTERNAL_LAKE_RY_FACTOR)
+			.attr("fill", SvgMapRenderer.INTERNAL_LAKE_FILL)
+			.attr("opacity", SvgMapRenderer.INTERNAL_LAKE_OPACITY)
+			.style("pointer-events", "none");
+	}
+
+	private renderTerrainEdges() {
+		// For each coast/lakeside precinct, draw a distinct stroke along the edge(s) that face
+		// a sea/lake tile. Edge i corresponds to corners[i] → corners[(i+1)%6] and direction
+		// HEX_DIRECTIONS[i] from the precinct's axial coord.
+		const { precincts, terrainTiles } = this.getState();
+		if (!terrainTiles || terrainTiles.length === 0) return;
+
+		// Build axial-position → terrain type map for fast neighbor lookup.
+		const tilePosMap = new Map<string, TerrainTileRuntime["type"]>();
+		for (const tile of terrainTiles) tilePosMap.set(`${tile.coord.q},${tile.coord.r}`, tile.type);
+
+		interface EdgeSegment extends Segment { terrainType: "sea" | "lake"; }
+		const edges: EdgeSegment[] = [];
+
+		for (const p of precincts) {
+			if (p.terrain !== "coast" && p.terrain !== "lakeside") continue;
+			const corners = hexCorners(p.center);
+			for (let i = 0; i < 6; i++) {
+				const dir = HEX_DIRECTIONS[i];
+				if (dir === undefined) continue;
+				const nKey = `${p.coord.q + dir[0]},${p.coord.r + dir[1]}`;
+				const tileType = tilePosMap.get(nKey);
+				if (tileType !== "sea" && tileType !== "lake") continue;
+				const c0 = corners[i];
+				const c1 = corners[(i + 1) % 6];
+				if (c0 === undefined || c1 === undefined) continue;
+				edges.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1], terrainType: tileType });
+			}
+		}
+
+		this.terrainOverlayGroup
+			.selectAll<SVGLineElement, EdgeSegment>("line.terrain-edge")
+			.data(edges)
+			.join("line")
+			.attr("class", (d) => `terrain-edge terrain-edge-${d.terrainType}`)
+			.attr("x1", (d) => d.x1)
+			.attr("y1", (d) => d.y1)
+			.attr("x2", (d) => d.x2)
+			.attr("y2", (d) => d.y2)
+			.attr("stroke", (d) => d.terrainType === "sea" ? SvgMapRenderer.COAST_STROKE : SvgMapRenderer.LAKESIDE_STROKE)
+			.attr("stroke-width", SvgMapRenderer.TERRAIN_EDGE_BASE_WIDTH / this.currentK)
+			.attr("stroke-linecap", "round")
+			.attr("opacity", SvgMapRenderer.TERRAIN_EDGE_OPACITY)
+			.style("pointer-events", "none");
 	}
 
 	// ─── Zoom init (GAME-009) ─────────────────────────────────────────────────
@@ -328,6 +537,17 @@ export class SvgMapRenderer implements MapRenderer {
 				this.previewBorderGroup
 					.selectAll<SVGLineElement, Segment>("line.preview-boundary")
 					.attr("stroke-width", pw);
+				// Terrain feature stroke widths also scale inversely.
+				this.riverGroup
+					.selectAll<SVGLineElement, Segment>("line.river-edge")
+					.attr("stroke-width", SvgMapRenderer.RIVER_BASE_WIDTH / this.currentK);
+				this.terrainOverlayGroup
+					.selectAll<SVGLineElement, Segment>("line.terrain-edge")
+					.attr("stroke-width", SvgMapRenderer.TERRAIN_EDGE_BASE_WIDTH / this.currentK);
+				this.countyBorderGroup
+					.selectAll<SVGLineElement, Segment>("line.county-boundary")
+					.attr("stroke-width", SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK)
+					.attr("stroke-dasharray", `${SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`);
 				if (this.keyboardFocusPath !== null) {
 					d3.select(this.keyboardFocusPath)
 						.attr("stroke-width", 2 / this.currentK)

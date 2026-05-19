@@ -2,7 +2,7 @@ import type { HexCoord, Point, Precinct } from "./types.js";
 
 export type { HexCoord };
 
-const HEX_SIZE = 36; // pixel radius (center to corner)
+export const HEX_SIZE = 36; // pixel radius (center to corner)
 
 /** Flat-top axial hex → pixel center (offset layout) */
 export function hexToPixel(q: number, r: number): Point {
