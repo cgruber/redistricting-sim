@@ -14,7 +14,7 @@
  */
 
 import type { Scenario } from "./scenario.js";
-import type { AssignmentMap, DistrictId, Precinct } from "./types.js";
+import type { AssignmentMap, DistrictId, Precinct, TerrainTileRuntime } from "./types.js";
 import { HEX_DIRECTIONS, hexToPixel } from "./hex-geometry.js";
 
 // vote_shares is Record<PartyId, number> with branded keys; cast to plain string map at runtime
@@ -24,6 +24,8 @@ export function scenarioToSpike(scenario: Scenario): {
 	precincts: Precinct[];
 	assignments: AssignmentMap;
 	districtCount: number;
+	terrainTiles: TerrainTileRuntime[];
+	riverEdges: [number, number][];
 } {
 	// Map scenario DistrictId (branded string) → spike DistrictId (1-based number)
 	const districtIndexMap = new Map<string, DistrictId>();
@@ -38,6 +40,31 @@ export function scenarioToSpike(scenario: Scenario): {
 		if ("q" in pos) posMap.set(`${pos.q},${pos.r}`, i);
 	});
 
+	// Build terrain tile position map for annotation derivation
+	const terrainPosMap = new Map<string, "sea" | "lake" | "mountain">();
+	for (const tile of scenario.terrain_tiles ?? []) {
+		terrainPosMap.set(`${tile.position.q},${tile.position.r}`, tile.type);
+	}
+
+	// Build ID→index map for river edge conversion (precincts are ordered by scenario.precincts array)
+	const idToIndex = new Map<string, number>();
+	scenario.precincts.forEach((pc, i) => idToIndex.set(pc.id, i));
+
+	// Build river edge set: "idxA,idxB" (both orderings) for fast passableNeighbors lookup
+	const riverPairs: [number, number][] = [];
+	const riverEdgeSet = new Set<string>();
+	for (const [aId, bId] of scenario.river_edges ?? []) {
+		const aIdx = idToIndex.get(aId);
+		const bIdx = idToIndex.get(bId);
+		if (aIdx !== undefined && bIdx !== undefined) {
+			riverPairs.push([aIdx, bIdx]);
+			riverEdgeSet.add(`${aIdx},${bIdx}`);
+			riverEdgeSet.add(`${bIdx},${aIdx}`);
+		}
+	}
+
+	const blocksContiguity = scenario.river_blocks_contiguity ?? false;
+
 	const precincts: Precinct[] = scenario.precincts.map((pc, i) => {
 		const pos = pc.position;
 		const q = "q" in pos ? (pos as { q: number; r: number }).q : 0;
@@ -50,6 +77,33 @@ export function scenarioToSpike(scenario: Scenario): {
 			const idx = posMap.get(`${q + dq},${r + dr}`);
 			return idx !== undefined ? idx : null;
 		});
+
+		// passableNeighbors: same as neighbors but river edges nulled when blocking
+		const passableNeighbors: (number | null)[] = neighbors.map((nbIdx) => {
+			if (!blocksContiguity || nbIdx === null) return nbIdx;
+			return riverEdgeSet.has(`${i},${nbIdx}`) ? null : nbIdx;
+		});
+
+		// Derive terrain annotation from adjacency (explicit value overrides derivation).
+		// Priority: explicit > coast (sea) > lakeside (lake) > foothill (mountain) > riverside (river edge).
+		// Terrain tiles are dominant features; rivers are edge features, so tiles take priority.
+		let terrain: Precinct["terrain"] = pc.terrain as Precinct["terrain"] | undefined;
+		if (terrain === undefined) {
+			let hasSea = false;
+			let hasLake = false;
+			let hasMountain = false;
+			for (const [dq, dr] of HEX_DIRECTIONS) {
+				const tileType = terrainPosMap.get(`${q + dq},${r + dr}`);
+				if (tileType === "sea") hasSea = true;
+				else if (tileType === "lake") hasLake = true;
+				else if (tileType === "mountain") hasMountain = true;
+			}
+			const isRiverside = riverPairs.some(([a, b]) => a === i || b === i);
+			if (hasSea) terrain = "coast";
+			else if (hasLake) terrain = "lakeside";
+			else if (hasMountain) terrain = "foothill";
+			else if (isRiverside) terrain = "riverside";
+		}
 
 		// Population-weighted vote shares (turnout ignored until Sprint 3)
 		// Map first scenario party → R, second → D (matches partyIdToKey in main.ts)
@@ -79,6 +133,7 @@ export function scenarioToSpike(scenario: Scenario): {
 			coord: { q, r },
 			center,
 			neighbors,
+			passableNeighbors,
 			population: pc.total_population,
 			partyShare,
 			previousResult: { winner, margin },
@@ -86,6 +141,8 @@ export function scenarioToSpike(scenario: Scenario): {
 		};
 		if (pc.name !== undefined) spikePrecinct.name = pc.name;
 		if (pc.county_id !== undefined) spikePrecinct.county_id = pc.county_id;
+		if (terrain !== undefined) spikePrecinct.terrain = terrain;
+		if (pc.has_internal_lake) spikePrecinct.has_internal_lake = true;
 		if (pc.demographic_groups.length > 1) {
 			spikePrecinct.groupShares = pc.demographic_groups.map((g) => {
 				const entry: { name: string; share: number; dimensions?: Record<string, string> } = {
@@ -108,5 +165,11 @@ export function scenarioToSpike(scenario: Scenario): {
 		assignments.set(i, spikeDistId);
 	});
 
-	return { precincts, assignments, districtCount: scenario.districts.length };
+	// Build runtime terrain tiles with pixel centers
+	const terrainTiles: TerrainTileRuntime[] = (scenario.terrain_tiles ?? []).map((tile) => ({
+		center: hexToPixel(tile.position.q, tile.position.r),
+		type: tile.type,
+	}));
+
+	return { precincts, assignments, districtCount: scenario.districts.length, terrainTiles, riverEdges: riverPairs };
 }

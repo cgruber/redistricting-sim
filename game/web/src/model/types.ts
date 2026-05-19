@@ -61,6 +61,16 @@ export interface Precinct {
 	 * Directions: [0]=lower-right, [1]=down, [2]=lower-left, [3]=upper-left, [4]=up, [5]=upper-right
 	 */
 	neighbors: (number | null)[];
+	/**
+	 * Like neighbors, but river-edge pairs are nulled out when river_blocks_contiguity is true.
+	 * BFS uses this; geometry/rendering uses neighbors.
+	 * Absent only on legacy/test precincts without terrain — BFS falls back to neighbors.
+	 */
+	passableNeighbors?: (number | null)[];
+	/** Terrain annotation derived from adjacency (or explicitly authored) */
+	terrain?: "coast" | "lakeside" | "riverside" | "foothill";
+	/** When true: precinct is lakeside with a small lake rendered within the hex */
+	has_internal_lake?: boolean;
 	/** Population count (arbitrary units) */
 	population: number;
 	/** Partisan vote share, floats summing to 1.0 */
@@ -71,6 +81,12 @@ export interface Precinct {
 	demographics: Demographics;
 	/** Per-group population shares from scenario demographic_groups (for info panel) */
 	groupShares?: { name: string; share: number; dimensions?: Record<string, string> }[];
+}
+
+/** Runtime terrain tile (non-precinct; non-assignable; non-interactive) */
+export interface TerrainTileRuntime {
+	center: Point;
+	type: "sea" | "lake" | "mountain";
 }
 
 /** A district is identified by a 1-based integer index */
@@ -113,6 +129,10 @@ export interface GameState {
 	activeDistrict: DistrictId;
 	/** Last simulation result (null if no districts assigned) */
 	simulationResult: SimulationResult | null;
+	/** Non-precinct terrain tiles with pixel positions (absent = no terrain in scenario) */
+	terrainTiles?: TerrainTileRuntime[];
+	/** River edge pairs as precinct index pairs (absent = no rivers in scenario) */
+	riverEdges?: [number, number][];
 }
 
 /** A brush stroke undo/redo diff: maps precinctId → {from, to} */

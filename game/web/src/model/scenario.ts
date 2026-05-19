@@ -42,6 +42,17 @@ export interface HexAxialPosition {
 	r: number;
 }
 
+// ─── Terrain ──────────────────────────────────────────────────────────────────
+
+export type TerrainType = "sea" | "lake" | "mountain";
+
+export type TerrainAnnotation = "coast" | "lakeside" | "riverside" | "foothill";
+
+export interface TerrainTile {
+	position: HexAxialPosition;
+	type: TerrainType;
+}
+
 export interface CartesianPosition {
 	x: number;
 	y: number;
@@ -114,6 +125,10 @@ export interface Precinct {
 	initial_district_id?: DistrictId | null;
 	name?: string;
 	tags?: string[];
+	/** Explicit terrain annotation; derived from adjacency if absent */
+	terrain?: TerrainAnnotation;
+	/** When true and terrain === "lakeside": render small internal lake within hex */
+	has_internal_lake?: boolean;
 }
 
 // ─── Events ───────────────────────────────────────────────────────────────────
@@ -263,4 +278,10 @@ export interface Scenario {
 	character_demographics?: Partial<Record<CharacterType, string>>;
 	/** v1: parsed but may be ignored by renderer */
 	state_context?: StateContext;
+	/** Non-precinct terrain tiles (sea, lake, mountain) */
+	terrain_tiles?: TerrainTile[];
+	/** Pairs of adjacent precinct IDs with a river along their shared edge */
+	river_edges?: [PrecinctId, PrecinctId][];
+	/** When true, river edges are excluded from contiguity BFS (hard boundaries) */
+	river_blocks_contiguity?: boolean;
 }
