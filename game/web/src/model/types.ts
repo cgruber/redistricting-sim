@@ -85,6 +85,7 @@ export interface Precinct {
 
 /** Runtime terrain tile (non-precinct; non-assignable; non-interactive) */
 export interface TerrainTileRuntime {
+	coord: HexCoord;
 	center: Point;
 	type: "sea" | "lake" | "mountain";
 }
