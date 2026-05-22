@@ -792,7 +792,6 @@ test("terrain: happy path — terrain_tiles, river_edges, river_blocks_contiguit
         position: { q: 1, r: 0 },
         total_population: 800,
         demographic_groups: [{ id: "g2", population_share: 1.0, vote_shares: { blue: 0.5, red: 0.5 }, turnout_rate: 0.6 }],
-        terrain: "coast",
       },
     ],
     terrain_tiles: [
@@ -859,24 +858,6 @@ test("terrain: rejects river_edges referencing unknown precinct", () => {
     })),
     /river_edges.*p_unknown.*does not exist/
   );
-});
-
-test("terrain: precinct terrain field parsed and returned", () => {
-  const result = loadScenario(minimalScenario({
-    precincts: [
-      {
-        id: "p1",
-        editable: true,
-        position: { q: 0, r: 0 },
-        total_population: 1000,
-        demographic_groups: [{ id: "g1", population_share: 1.0, vote_shares: { blue: 0.6, red: 0.4 }, turnout_rate: 0.7 }],
-        terrain: "riverside",
-        has_internal_lake: true,
-      },
-    ],
-  }));
-  assertEqual(result.precincts[0]!.terrain, "riverside");
-  assertEqual(result.precincts[0]!.has_internal_lake, true);
 });
 
 test("terrain: rejects river edge between non-adjacent precincts", () => {
@@ -949,24 +930,6 @@ test("terrain: rejects river_edges when geometry is custom", () => {
       river_edges: [["p1", "p2"]],
     })),
     /custom geometry is not supported/
-  );
-});
-
-test("terrain: rejects unknown terrain annotation value", () => {
-  assertThrows(
-    () => loadScenario(minimalScenario({
-      precincts: [
-        {
-          id: "p1",
-          editable: true,
-          position: { q: 0, r: 0 },
-          total_population: 1000,
-          demographic_groups: [{ id: "g1", population_share: 1.0, vote_shares: { blue: 0.6, red: 0.4 }, turnout_rate: 0.7 }],
-          terrain: "volcano",
-        },
-      ],
-    })),
-    /terrain.*unknown value.*volcano/
   );
 });
 

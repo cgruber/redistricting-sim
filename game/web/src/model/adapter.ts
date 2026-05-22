@@ -14,7 +14,7 @@
  */
 
 import type { Scenario } from "./scenario.js";
-import type { AssignmentMap, DistrictId, Precinct, TerrainTileRuntime } from "./types.js";
+import type { AssignmentMap, DistrictId, Precinct, TerrainAnnotation, TerrainTileRuntime } from "./types.js";
 import { HEX_DIRECTIONS, hexToPixel } from "./hex-geometry.js";
 
 // vote_shares is Record<PartyId, number> with branded keys; cast to plain string map at runtime
@@ -84,26 +84,24 @@ export function scenarioToSpike(scenario: Scenario): {
 			return riverEdgeSet.has(`${i},${nbIdx}`) ? null : nbIdx;
 		});
 
-		// Derive terrain annotation from adjacency (explicit value overrides derivation).
-		// Priority: explicit > coast (sea) > lakeside (lake) > foothill (mountain) > riverside (river edge).
-		// Terrain tiles are dominant features; rivers are edge features, so tiles take priority.
-		let terrain: Precinct["terrain"] = pc.terrain as Precinct["terrain"] | undefined;
-		if (terrain === undefined) {
-			let hasSea = false;
-			let hasLake = false;
-			let hasMountain = false;
-			for (const [dq, dr] of HEX_DIRECTIONS) {
-				const tileType = terrainPosMap.get(`${q + dq},${r + dr}`);
-				if (tileType === "sea") hasSea = true;
-				else if (tileType === "lake") hasLake = true;
-				else if (tileType === "mountain") hasMountain = true;
-			}
-			const isRiverside = riverPairs.some(([a, b]) => a === i || b === i);
-			if (hasSea) terrain = "coast";
-			else if (hasLake) terrain = "lakeside";
-			else if (hasMountain) terrain = "foothill";
-			else if (isRiverside) terrain = "riverside";
+		// Derive composable terrain annotations — all independent, any combination valid.
+		// coast/foothill/lakeside/riverside: purely derived from adjacency (never authored in JSON).
+		let hasSea = false;
+		let hasMountain = false;
+		let hasLakeAdj = false;
+		for (const [dq, dr] of HEX_DIRECTIONS) {
+			const tileType = terrainPosMap.get(`${q + dq},${r + dr}`);
+			if (tileType === "sea") hasSea = true;
+			else if (tileType === "mountain") hasMountain = true;
+			else if (tileType === "lake") hasLakeAdj = true;
 		}
+		const isRiverside = riverPairs.some(([a, b]) => a === i || b === i);
+		const terrainAnnotation: TerrainAnnotation = {
+			coast: hasSea,
+			foothill: hasMountain,
+			lakeside: hasLakeAdj,
+			riverside: isRiverside && !hasSea && !hasMountain && !hasLakeAdj,
+		};
 
 		// Population-weighted vote shares (turnout ignored until Sprint 3)
 		// Map first scenario party → R, second → D (matches partyIdToKey in main.ts)
@@ -141,8 +139,10 @@ export function scenarioToSpike(scenario: Scenario): {
 		};
 		if (pc.name !== undefined) spikePrecinct.name = pc.name;
 		if (pc.county_id !== undefined) spikePrecinct.county_id = pc.county_id;
-		if (terrain !== undefined) spikePrecinct.terrain = terrain;
-		if (pc.has_internal_lake) spikePrecinct.has_internal_lake = true;
+		// Only store annotation when at least one flag is true (avoids polluting all precincts)
+		if (hasSea || hasMountain || isRiverside || hasLakeAdj) {
+			spikePrecinct.terrainAnnotation = terrainAnnotation;
+		}
 		if (pc.demographic_groups.length > 1) {
 			spikePrecinct.groupShares = pc.demographic_groups.map((g) => {
 				const entry: { name: string; share: number; dimensions?: Record<string, string> } = {
@@ -165,7 +165,7 @@ export function scenarioToSpike(scenario: Scenario): {
 		assignments.set(i, spikeDistId);
 	});
 
-	// Build runtime terrain tiles with axial coord + pixel center
+	// Build initial runtime terrain tiles with axial coord + pixel center
 	const terrainTiles: TerrainTileRuntime[] = (scenario.terrain_tiles ?? []).map((tile) => ({
 		coord: { q: tile.position.q, r: tile.position.r },
 		center: hexToPixel(tile.position.q, tile.position.r),

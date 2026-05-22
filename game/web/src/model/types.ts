@@ -67,10 +67,8 @@ export interface Precinct {
 	 * Absent only on legacy/test precincts without terrain — BFS falls back to neighbors.
 	 */
 	passableNeighbors?: (number | null)[];
-	/** Terrain annotation derived from adjacency (or explicitly authored) */
-	terrain?: "coast" | "lakeside" | "riverside" | "foothill";
-	/** When true: precinct is lakeside with a small lake rendered within the hex */
-	has_internal_lake?: boolean;
+	/** Composable terrain annotations — independent booleans, any combination valid. */
+	terrainAnnotation?: TerrainAnnotation;
 	/** Population count (arbitrary units) */
 	population: number;
 	/** Partisan vote share, floats summing to 1.0 */
@@ -81,6 +79,18 @@ export interface Precinct {
 	demographics: Demographics;
 	/** Per-group population shares from scenario demographic_groups (for info panel) */
 	groupShares?: { name: string; share: number; dimensions?: Record<string, string> }[];
+}
+
+/**
+ * Composable terrain annotations for a precinct. All fields are independent —
+ * a single precinct can be coast AND foothill AND lakeside simultaneously.
+ * All derived at adapter time from tile adjacency and river membership.
+ */
+export interface TerrainAnnotation {
+	coast: boolean;
+	foothill: boolean;
+	lakeside: boolean;
+	riverside: boolean;
 }
 
 /** Runtime terrain tile (non-precinct; non-assignable; non-interactive) */
@@ -146,7 +156,7 @@ export interface StrokeDiff {
  *  Safe for deuteranopia, protanopia, and tritanopia.
  *  Chosen to avoid collision with party colors D=#3a7bd5 and R=#e94560.
  *  Sky blue (#56B4E9) was swapped for yellow (#F0E442) to avoid visual conflict
- *  with water-terrain fills (sea #3a7fc1, lake #4dd0e1, river #38bdf8) — GAME-082.
+ *  with water-terrain fills (sea #3a7fc1, lake/river #4dd0e1) — GAME-082.
  */
 export const DISTRICT_COLORS: readonly string[] = [
 	"#E69F00", // amber

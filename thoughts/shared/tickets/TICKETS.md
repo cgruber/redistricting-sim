@@ -116,6 +116,10 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-080-district-demographic-rollup.md` | game, UX | Live per-district demographic stat derived from criteria (majority_minority → show % of target group); compact line under district button; updates on paint |
 | `GAME-081-information-density-implementation.md` | game, UX | Implement DESIGN-015 layout: district state visible at 5+ districts without scrolling; integrates GAME-080 stat placement |
 | `GAME-082-terrain-visual-treatment-refinement.md` | game, rendering, UX | Visual-tuning pass over GAME-075 terrain layer: thicker rivers, more prominent coast/lakeside edges, foothill rendering pickup, internal-lake validation |
+| `GAME-083-unassigned-precinct-visual-feedback.md` | game, rendering, UX | Unassigned precincts need a distinct neutral fill (white→dark-grey range); currently indistinguishable from assigned ones |
+| `GAME-084-map-generation-pipeline.md` | game, tooling | Spec-driven staged pipeline (terrain→population→demographics→assembler); single scenario JSON format throughout; requires loader validation split |
+| `GAME-085-composable-terrain-annotations.md` | game, rendering, model | Replace single `terrain` type with composable boolean properties; `has_lake` explicit, coast/foothill/riverside derived; enclosed-precinct auto-promotion rule |
+| `GAME-086-lake-rendering.md` | game, rendering, UX | Lakeside precinct visual overlay deferred from GAME-085; metaball approach removed; needs fresh design — edge stroke or intrusion shape consistent with coast/foothill treatment |
 
 ---
 
