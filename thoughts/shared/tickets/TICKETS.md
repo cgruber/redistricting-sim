@@ -118,8 +118,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-082-terrain-visual-treatment-refinement.md` | game, rendering, UX | Visual-tuning pass over GAME-075 terrain layer: thicker rivers, more prominent coast/lakeside edges, foothill rendering pickup, internal-lake validation |
 | `GAME-083-unassigned-precinct-visual-feedback.md` | game, rendering, UX | Unassigned precincts need a distinct neutral fill (white→dark-grey range); currently indistinguishable from assigned ones |
 | `GAME-084-map-generation-pipeline.md` | game, tooling | Spec-driven staged pipeline (terrain→population→demographics→assembler); single scenario JSON format throughout; requires loader validation split |
-| `GAME-085-composable-terrain-annotations.md` | game, rendering, model | Replace single `terrain` type with composable boolean properties; `has_lake` explicit, coast/foothill/riverside derived; enclosed-precinct auto-promotion rule |
-| `GAME-086-lake-rendering.md` | game, rendering, UX | Lakeside precinct visual overlay deferred from GAME-085; metaball approach removed; needs fresh design — edge stroke or intrusion shape consistent with coast/foothill treatment |
 
 ---
 
@@ -127,6 +125,8 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-086: lake rendering | `lakeside: boolean` derived in adapter from lake-tile adjacency; lake intrusion fill (smooth profile, `#4dd0e1`, depth 5px) rendered in `renderTerrainEdges` with corner caps; river stroke unified with lake colour; tutorial-003 lake tile moved to centre (-1,1); 6 lakeside precincts; e2e + unit tests; merged PR #253 |
+| GAME-085: composable terrain annotations | `Precinct.terrain` and `has_internal_lake` removed from types/loader/adapter/scenario; coast/foothill/lakeside/riverside derived as independent booleans from tile adjacency; `renderTerrainEdges` handles all four simultaneously; scenario JSON cleaned; unit + e2e tests; merged PR #253 |
 | GAME-075: terrain implementation | DESIGN-008 fully implemented across 4 PRs: schema + loader (#241), renderer with tile/river/edge-stroke/internal-lake layers (#242), contiguity BFS reading passableNeighbors (#243), scenario-010 "Two Banks, One River" demo + e2e tests (#244); population-gradient generator deferred to GAME-078 per the ticket's authorized off-ramp |
 | GAME-073: deferred verdict banner + star count reveal | Verdict hidden until all criteria revealed; stars animate in; tada/womp-womp audio; layout preservation (visibility:hidden + min-height); merged PRs #236 #237 |
 | GAME-062: character reaction system | CHAR_POSES measured for all 1408×768 sheets; commissioner/judge/legislator/party wired in buildCharSlotChildren(); demographic selection reads scenario.character_demographics; placeholder SVG retained as unknown-type fallback; e2e tests for commissioner sprite + aria-labels; broker/scenario-006 deferred to GAME-065 |
