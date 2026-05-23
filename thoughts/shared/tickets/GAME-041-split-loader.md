@@ -2,8 +2,9 @@
 id: GAME-041
 title: Split loader.ts into focused modules
 area: game, code-quality
-status: open
+status: resolved
 created: 2026-04-29
+github_issue: 255
 ---
 
 ## Summary
@@ -21,13 +22,13 @@ to warrant its own `validateScenario()` private function or module.
 
 ## Goals / Acceptance Criteria
 
-- [ ] `model/runtime-types.ts` exported module with `requireString`, `requireNumber`,
+- [x] `model/runtime-types.ts` exported module with `requireString`, `requireNumber`,
   `requireBoolean`, `requireArray`, `requireObject`, and friends
-- [ ] `model/loader.ts` imports from `runtime-types.ts`; reduced by ~50 lines
-- [ ] `validateScenario(raw: unknown): Scenario` extracted as a named internal function
-  (not necessarily a separate file — the split can stay within `loader.ts` if preferred)
-- [ ] All existing `loader_test.ts` tests continue to pass unchanged
-- [ ] No behavior change; purely structural
+- [x] `model/loader.ts` imports from `runtime-types.ts`; reduced by ~50 lines
+- [x] `validateScenarioInvariants()` extracted as a named internal function in `loader.ts`;
+  takes parsed data structures (not raw JSON); `cartesianProduct` moved to module level
+- [x] All existing `loader_test.ts` tests continue to pass unchanged
+- [x] No behavior change; purely structural
 
 ## Test Coverage
 
@@ -39,3 +40,4 @@ No new tests needed — full loader test suite already covers the code being reo
 - `game/web/src/model/loader.ts`
 - `game/web/src/model/loader_test.ts`
 - `game/web/src/model/BUILD.bazel`
+- GAME-084 (map generation pipeline) — depends on this ticket; the named `validateScenario()` extraction is a prerequisite for GAME-084's load/validate behavioral split

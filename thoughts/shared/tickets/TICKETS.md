@@ -95,7 +95,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-058-manual-playability-test-thresholds.md` | game, content, QA | Manual playthrough of scenarios 007 and 008 to verify tightened thresholds (GAME-031) feel right |
 | `GAME-030-main-menu-and-campaigns.md` | game, UX, architecture | Main menu, campaign model, campaign select, layered navigation; replaces scenario-select-as-home |
 | `DESIGN-008-geographic-features.md` | design, rendering | Geographic features (lakes=aqua+wave, mountains=grey+hatch) as decorative non-precinct tiles; blocks contiguity |
-| `GAME-041-split-loader.md` | game, code-quality | Split loader.ts: extract runtime-types.ts primitives; name validateScenario() internally |
 | `GAME-042-break-up-main.md` | game, code-quality | Break up main.ts god module into testable units (scenarioSelect, resultScreen, introFlow) |
 | `GAME-043-unify-type-systems.md` | game, code-quality | Unify spike and scenario type systems; retire adapter.ts and types.ts spike layer |
 | `GAME-046-panels-unit-tests.md` | game, testing | Unit tests for render/panels.ts (deferred): jsdom or extract-pure-helpers approach |
@@ -125,6 +124,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-041: split loader.ts | `runtime-types.ts` extracted (requireString etc.); `validateScenarioInvariants()` named function in loader.ts; cartesianProduct at module level; all 8 model tests pass; no behavior change |
 | GAME-086: lake rendering | `lakeside: boolean` derived in adapter from lake-tile adjacency; lake intrusion fill (smooth profile, `#4dd0e1`, depth 5px) rendered in `renderTerrainEdges` with corner caps; river stroke unified with lake colour; tutorial-003 lake tile moved to centre (-1,1); 6 lakeside precincts; e2e + unit tests; merged PR #253 |
 | GAME-085: composable terrain annotations | `Precinct.terrain` and `has_internal_lake` removed from types/loader/adapter/scenario; coast/foothill/lakeside/riverside derived as independent booleans from tile adjacency; `renderTerrainEdges` handles all four simultaneously; scenario JSON cleaned; unit + e2e tests; merged PR #253 |
 | GAME-075: terrain implementation | DESIGN-008 fully implemented across 4 PRs: schema + loader (#241), renderer with tile/river/edge-stroke/internal-lake layers (#242), contiguity BFS reading passableNeighbors (#243), scenario-010 "Two Banks, One River" demo + e2e tests (#244); population-gradient generator deferred to GAME-078 per the ticket's authorized off-ramp |

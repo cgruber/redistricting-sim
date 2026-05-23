@@ -78,5 +78,6 @@ are not deleted until the pipeline covers their use cases.
 
 ## References
 
+- GAME-041 (split loader) — prerequisite; `validateScenario()` must be a named function before the load/validate behavioral split can be done cleanly
 - GAME-083: unassigned precinct visual feedback (related UX work)
 - Discussed after tutorial-003 R=6 expansion (2026-05-20)
