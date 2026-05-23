@@ -284,6 +284,49 @@ js_test(
     visibility = ["//visibility:public"],
 )
 
+# ── tsconfig_integration: tsconfig that adds Node types for integration tests ─
+
+ts_config(
+    name = "tsconfig_integration",
+    src = "tsconfig.integration.json",
+    deps = [":tsconfig"],
+    visibility = ["//game/web/src/model:__pkg__"],
+)
+
+# ── loader_integration_test_lib: compile integration tests ───────────────────
+
+ts_project(
+    name = "loader_integration_test_lib",
+    srcs = ["loader_integration_test.ts"],
+    tsconfig = ":tsconfig_integration",
+    declaration = True,
+    deps = [
+        ":loader_lib",
+        "//game:node_modules/@types/node",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+# ── loader_integration_test: load every real scenario JSON through loadScenario ─
+
+js_test(
+    name = "loader_integration_test",
+    entry_point = "loader_integration_test.js",
+    data = [
+        ":loader_integration_test_lib",
+        ":loader_lib",
+        ":runtime_types_lib",
+        ":model_lib",
+        "//game/scenarios:scenario_json",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 # ── loader_typecheck_test: type-check passes ──────────────────────────────────
 
 build_test(

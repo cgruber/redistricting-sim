@@ -1,5 +1,16 @@
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+
 filegroup(
     name = "scenario_files",
+    srcs = glob(["*.json"]),
+    visibility = ["//visibility:public"],
+)
+
+# js_library wrapper so aspect_rules_js js_test targets can reference these
+# JSON files as data deps (aspect_rules_js requires cross-package data to be
+# in the bazel bin tree, which js_library handles via copy_to_bin).
+js_library(
+    name = "scenario_json",
     srcs = glob(["*.json"]),
     visibility = ["//visibility:public"],
 )
