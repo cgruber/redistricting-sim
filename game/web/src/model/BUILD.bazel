@@ -58,6 +58,16 @@ ts_project(
     visibility = ["//game/web:__subpackages__"],
 )
 
+# ── runtime_types_lib: JSON parsing helpers (requireString, requireNumber, etc.) ─
+
+ts_project(
+    name = "runtime_types_lib",
+    srcs = ["runtime-types.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    visibility = ["//game/web:__subpackages__"],
+)
+
 # ── model_lib: scenario.ts types (GAME-001) ───────────────────────────────────
 
 ts_project(
@@ -75,7 +85,7 @@ ts_project(
     srcs = ["loader.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    deps = [":model_lib"],
+    deps = [":model_lib", ":runtime_types_lib"],
     visibility = ["//game/web:__pkg__", "//game/web/src/model:__pkg__"],
 )
 
@@ -305,6 +315,7 @@ js_test(
     data = [
         ":loader_test_lib",
         ":loader_lib",
+        ":runtime_types_lib",
         ":model_lib",
         "//game/web/src/testing:test_runner_lib",
     ],

@@ -37,6 +37,14 @@ import type {
   TerrainTile,
 } from "./scenario.js";
 
+import {
+  requireString,
+  requireNumber,
+  requireBoolean,
+  requireArray,
+  requireObject,
+} from "./runtime-types.js";
+
 // Flat-top axial hex direction vectors (mirrors HEX_DIRECTIONS in hex-geometry.ts)
 const HEX_DIRS: [number, number][] = [
   [1, 0], [0, 1], [-1, 1], [-1, 0], [0, -1], [1, -1],
@@ -46,52 +54,8 @@ const HEX_DIRS: [number, number][] = [
 
 const EPSILON = 1e-6;
 
-// ─── Thin runtime-type helpers ───────────────────────────────────────────────
-
-function isObject(v: unknown): v is Record<string, unknown> {
-  return typeof v === "object" && v !== null && !Array.isArray(v);
-}
-
-function isString(v: unknown): v is string {
-  return typeof v === "string";
-}
-
-function isNumber(v: unknown): v is number {
-  return typeof v === "number";
-}
-
-function isBoolean(v: unknown): v is boolean {
-  return typeof v === "boolean";
-}
-
-function isArray(v: unknown): v is unknown[] {
-  return Array.isArray(v);
-}
-
-function requireString(v: unknown, label: string): string {
-  if (!isString(v)) throw new Error(`${label}: expected string, got ${typeof v}`);
-  return v;
-}
-
-function requireNumber(v: unknown, label: string): number {
-  if (!isNumber(v)) throw new Error(`${label}: expected number, got ${typeof v}`);
-  return v;
-}
-
-function requireBoolean(v: unknown, label: string): boolean {
-  if (!isBoolean(v)) throw new Error(`${label}: expected boolean, got ${typeof v}`);
-  return v;
-}
-
-function requireArray(v: unknown, label: string): unknown[] {
-  if (!isArray(v)) throw new Error(`${label}: expected array, got ${typeof v}`);
-  return v;
-}
-
-function requireObject(v: unknown, label: string): Record<string, unknown> {
-  if (!isObject(v)) throw new Error(`${label}: expected object, got ${typeof v}`);
-  return v;
-}
+// Parsed precinct before initial_district_id is resolved/auto-filled.
+type RawPrecinct = Omit<Precinct, "initial_district_id"> & { initial_district_id?: DistrictId | null };
 
 // ─── Sub-parsers ─────────────────────────────────────────────────────────────
 
@@ -165,7 +129,7 @@ function parseDemographicGroup(raw: unknown, precinctId: string, idx: number): D
   return grp;
 }
 
-function parsePrecinct(raw: unknown, idx: number): Omit<Precinct, "initial_district_id"> & { initial_district_id?: DistrictId | null } {
+function parsePrecinct(raw: unknown, idx: number): RawPrecinct {
   const label = `precincts[${idx}]`;
   const r = requireObject(raw, label);
   const id = requireString(r["id"], `${label}.id`) as PrecinctId;
@@ -533,6 +497,428 @@ function validateDimensionFilter(gf: GroupFilter, schema: GroupSchema | undefine
 /** Collect all PartyId values referenced in a GroupFilter context (none directly — party refs are on events/criteria). */
 // (no-op helper; kept for symmetry; party refs extracted per-event below)
 
+// ─── Validation invariants ────────────────────────────────────────────────────
+
+function cartesianProduct(dimNames: string[], dims: Record<string, string[]>): Record<string, string>[] {
+  if (dimNames.length === 0) return [{}];
+  const first = dimNames[0] as string;
+  const rest = dimNames.slice(1);
+  const restCombos = cartesianProduct(rest, dims);
+  const result: Record<string, string>[] = [];
+  for (const val of dims[first] ?? []) {
+    for (const combo of restCombos) {
+      result.push({ [first]: val, ...combo });
+    }
+  }
+  return result;
+}
+
+/**
+ * Validate all spec invariants for a parsed scenario. Throws on the first violation.
+ * Called by loadScenario after field parsing, before auto-fill and assembly.
+ * Extracted as a named function so GAME-084's load/validate split can call it independently.
+ */
+function validateScenarioInvariants(fields: {
+  rawPrecincts: RawPrecinct[];
+  parties: Party[];
+  districts: District[];
+  events: DemographicEvent[];
+  success_criteria: SuccessCriterion[];
+  geometry: GeometrySpec;
+  group_schema: GroupSchema | undefined;
+  terrain_tiles: TerrainTile[] | undefined;
+  river_edges: [PrecinctId, PrecinctId][] | undefined;
+  default_district_id: DistrictId | undefined;
+}): void {
+  const { rawPrecincts, parties, districts, events, success_criteria,
+          geometry, group_schema, terrain_tiles, river_edges, default_district_id } = fields;
+
+  // Build lookup sets for fast validation
+  const partyIds = new Set(parties.map(p => p.id));
+  const districtIds = new Set(districts.map(d => d.id));
+  const precinctIds = new Set(rawPrecincts.map(p => p.id));
+
+  // Build set of all GroupIds defined across all precincts
+  const definedGroupIds = new Set<GroupId>();
+  for (const pc of rawPrecincts) {
+    for (const grp of pc.demographic_groups) {
+      definedGroupIds.add(grp.id);
+    }
+  }
+
+  // ── Invariant 12: precincts.length ≥ 1 ──────────────────────────────────────
+  if (rawPrecincts.length < 1) {
+    throw new Error("Invariant 12: precincts must have at least 1 element");
+  }
+
+  // ── Invariant 10: districts.length ≥ 2 ──────────────────────────────────────
+  if (districts.length < 2) {
+    throw new Error("Invariant 10: districts must have at least 2 elements");
+  }
+
+  // ── Invariant 11: All IDs unique within scenario ─────────────────────────────
+  {
+    const allIds = new Map<string, string>(); // id -> namespace label
+    const checkId = (id: string, label: string) => {
+      const existing = allIds.get(id);
+      if (existing !== undefined) {
+        throw new Error(`Invariant 11: duplicate id "${id}" found in both ${existing} and ${label}`);
+      }
+      allIds.set(id, label);
+    };
+    for (const p of parties) checkId(p.id, "parties");
+    for (const d of districts) checkId(d.id, "districts");
+    for (const pc of rawPrecincts) {
+      checkId(pc.id, "precincts");
+      for (const grp of pc.demographic_groups) checkId(grp.id, `precincts[${pc.id}].demographic_groups`);
+    }
+    for (const ev of events) checkId(ev.id, "events");
+    for (const cr of success_criteria) checkId(cr.id, "success_criteria");
+  }
+
+  // ── Invariant 5: sum(population_shares) == 1.0 per precinct (±ε) ─────────────
+  for (const pc of rawPrecincts) {
+    const sum = pc.demographic_groups.reduce((acc, g) => acc + g.population_share, 0);
+    if (Math.abs(sum - 1.0) > EPSILON) {
+      throw new Error(
+        `Invariant 5: precinct "${pc.id}" demographic_groups population_share sum is ${sum}, expected 1.0 (±${EPSILON})`
+      );
+    }
+  }
+
+  // ── Invariant 6: sum(vote_shares) == 1.0 per group (±ε); all parties present ─
+  for (const pc of rawPrecincts) {
+    for (const grp of pc.demographic_groups) {
+      for (const partyId of partyIds) {
+        if (!(partyId in grp.vote_shares)) {
+          throw new Error(
+            `Invariant 6: precinct "${pc.id}" group "${grp.id}" is missing vote_share for party "${partyId}"`
+          );
+        }
+      }
+      const sum = Object.values(grp.vote_shares).reduce((acc: number, v) => acc + (v as number), 0);
+      if (Math.abs(sum - 1.0) > EPSILON) {
+        throw new Error(
+          `Invariant 6: precinct "${pc.id}" group "${grp.id}" vote_shares sum is ${sum}, expected 1.0 (±${EPSILON})`
+        );
+      }
+    }
+  }
+
+  // ── Invariant 1: All PartyId refs exist in scenario.parties ─────────────────
+  for (const pc of rawPrecincts) {
+    for (const grp of pc.demographic_groups) {
+      for (const pid of Object.keys(grp.vote_shares)) {
+        if (!partyIds.has(pid as PartyId)) {
+          throw new Error(
+            `Invariant 1: precinct "${pc.id}" group "${grp.id}" references unknown party "${pid}" in vote_shares`
+          );
+        }
+      }
+    }
+  }
+  for (const ev of events) {
+    if (ev.type === "vote_share_shift") {
+      if (!partyIds.has(ev.party)) {
+        throw new Error(
+          `Invariant 1: event "${ev.id}" references unknown party "${ev.party}"`
+        );
+      }
+    }
+  }
+  for (const cr of success_criteria) {
+    const c = cr.criterion;
+    if (c.type === "seat_count" || c.type === "mean_median" || c.type === "safe_seats") {
+      if (!partyIds.has(c.party)) {
+        throw new Error(
+          `Invariant 1: criterion "${cr.id}" references unknown party "${c.party}"`
+        );
+      }
+    }
+  }
+
+  // ── Invariant 2: All DistrictId refs in initial_district_id exist in scenario.districts ─
+  for (const pc of rawPrecincts) {
+    if (pc.initial_district_id !== undefined && pc.initial_district_id !== null) {
+      if (!districtIds.has(pc.initial_district_id)) {
+        throw new Error(
+          `Invariant 2: precinct "${pc.id}" initial_district_id "${pc.initial_district_id}" does not exist in districts`
+        );
+      }
+    }
+  }
+  if (default_district_id !== undefined && !districtIds.has(default_district_id)) {
+    throw new Error(
+      `Invariant 2: default_district_id "${default_district_id}" does not exist in districts`
+    );
+  }
+
+  // ── Invariant 3: All GroupId refs in events/criteria exist in ≥1 precinct's demographic_groups ─
+  for (const ev of events) {
+    const gf = ev.group_filter;
+    const gids = groupFilterGroupIds(gf);
+    for (const gid of gids) {
+      if (!definedGroupIds.has(gid)) {
+        throw new Error(
+          `Invariant 3: event "${ev.id}" group_filter references unknown group "${gid}"`
+        );
+      }
+    }
+    validateDimensionFilter(gf, group_schema, `event "${ev.id}"`);
+  }
+  for (const cr of success_criteria) {
+    const c = cr.criterion;
+    if (c.type === "majority_minority") {
+      const gf = c.group_filter;
+      const gids = groupFilterGroupIds(gf);
+      for (const gid of gids) {
+        if (!definedGroupIds.has(gid)) {
+          throw new Error(
+            `Invariant 3: criterion "${cr.id}" group_filter references unknown group "${gid}"`
+          );
+        }
+      }
+      validateDimensionFilter(gf, group_schema, `criterion "${cr.id}"`);
+    }
+  }
+
+  // ── Invariant 4: Every context precinct (editable:false) must have non-null initial_district_id ─
+  for (const pc of rawPrecincts) {
+    if (!pc.editable) {
+      if (pc.initial_district_id === undefined || pc.initial_district_id === null) {
+        throw new Error(
+          `Invariant 4: context precinct "${pc.id}" (editable: false) must have a non-null initial_district_id`
+        );
+      }
+    }
+  }
+
+  // ── Invariant 8: hex_axial → no neighbors field; custom → neighbors present + symmetric ─
+  if (geometry.type === "hex_axial") {
+    for (const pc of rawPrecincts) {
+      if (pc.neighbors !== undefined) {
+        throw new Error(
+          `Invariant 8: hex_axial geometry precinct "${pc.id}" must not have a neighbors field`
+        );
+      }
+    }
+  } else {
+    for (const pc of rawPrecincts) {
+      if (pc.neighbors === undefined) {
+        throw new Error(
+          `Invariant 8: custom geometry precinct "${pc.id}" must have a neighbors field`
+        );
+      }
+    }
+
+    // ── Invariant 9: custom geometry: all PrecinctId values in neighbors[] exist in scenario.precincts ─
+    for (const pc of rawPrecincts) {
+      for (const nbId of pc.neighbors!) {
+        if (!precinctIds.has(nbId)) {
+          throw new Error(
+            `Invariant 9: precinct "${pc.id}" neighbors[] references unknown precinct "${nbId}"`
+          );
+        }
+      }
+    }
+
+    // ── Invariant 8 (symmetric): neighbors must be symmetric ─────────────────
+    const adjMap = new Map<PrecinctId, Set<PrecinctId>>();
+    for (const pc of rawPrecincts) {
+      adjMap.set(pc.id, new Set(pc.neighbors!));
+    }
+    for (const pc of rawPrecincts) {
+      for (const nbId of pc.neighbors!) {
+        const nbNeighbors = adjMap.get(nbId);
+        if (nbNeighbors === undefined || !nbNeighbors.has(pc.id)) {
+          throw new Error(
+            `Invariant 8: custom geometry neighbors not symmetric: precinct "${pc.id}" lists "${nbId}" as neighbor, but "${nbId}" does not list "${pc.id}"`
+          );
+        }
+      }
+    }
+  }
+
+  // ── Invariant 7: If group_schema declared: completeness constraint ─────────────
+  if (group_schema !== undefined) {
+    const dims = group_schema.dimensions;
+    const dimNames = Object.keys(dims);
+
+    for (const pc of rawPrecincts) {
+      for (const grp of pc.demographic_groups) {
+        for (const dimName of dimNames) {
+          if (grp.dimensions === undefined || !(dimName in grp.dimensions)) {
+            throw new Error(
+              `Invariant 7: precinct "${pc.id}" group "${grp.id}" is missing dimension "${dimName}" (required by group_schema)`
+            );
+          }
+          const val = grp.dimensions[dimName];
+          const allowed = dims[dimName];
+          if (allowed === undefined || !allowed.includes(val!)) {
+            throw new Error(
+              `Invariant 7: precinct "${pc.id}" group "${grp.id}" dimension "${dimName}" value "${val}" is not in schema values [${allowed?.join(", ")}]`
+            );
+          }
+        }
+      }
+    }
+
+    const expectedCombos = cartesianProduct(dimNames, dims);
+
+    for (const pc of rawPrecincts) {
+      for (const expectedCombo of expectedCombos) {
+        const matchingGroups = pc.demographic_groups.filter(grp => {
+          if (grp.dimensions === undefined) return false;
+          return dimNames.every(d => grp.dimensions![d] === expectedCombo[d]);
+        });
+        if (matchingGroups.length === 0) {
+          const comboStr = Object.entries(expectedCombo).map(([k, v]) => `${k}=${v}`).join(", ");
+          throw new Error(
+            `Invariant 7: precinct "${pc.id}" is missing a group for dimension combo {${comboStr}} (required by group_schema)`
+          );
+        }
+        if (matchingGroups.length > 1) {
+          const comboStr = Object.entries(expectedCombo).map(([k, v]) => `${k}=${v}`).join(", ");
+          throw new Error(
+            `Invariant 7: precinct "${pc.id}" has ${matchingGroups.length} groups for dimension combo {${comboStr}}; expected exactly 1`
+          );
+        }
+      }
+    }
+  }
+
+  // ── Terrain validation ────────────────────────────────────────────────────────
+  if (geometry.type === "custom") {
+    if (terrain_tiles !== undefined && terrain_tiles.length > 0) {
+      throw new Error(
+        `Terrain validation: terrain_tiles require geometry.type "hex_axial"; custom geometry is not supported in v1`
+      );
+    }
+    if (river_edges !== undefined && river_edges.length > 0) {
+      throw new Error(
+        `Terrain validation: river_edges require geometry.type "hex_axial"; custom geometry is not supported in v1`
+      );
+    }
+  }
+
+  if (terrain_tiles !== undefined && terrain_tiles.length > 0) {
+    const precinctPosSet = new Set<string>();
+    for (const pc of rawPrecincts) {
+      const pos = pc.position;
+      if ("q" in pos) precinctPosSet.add(`${pos.q},${pos.r}`);
+    }
+
+    const tileTypeMap = new Map<string, string>();
+    for (const tile of terrain_tiles) {
+      const key = `${tile.position.q},${tile.position.r}`;
+      if (precinctPosSet.has(key)) {
+        throw new Error(
+          `Terrain validation: terrain_tile at (${tile.position.q},${tile.position.r}) overlaps precinct position`
+        );
+      }
+      tileTypeMap.set(key, tile.type);
+    }
+
+    for (const tile of terrain_tiles) {
+      if (tile.type !== "lake") continue;
+      for (const [dq, dr] of HEX_DIRS) {
+        const nKey = `${tile.position.q + dq},${tile.position.r + dr}`;
+        if (tileTypeMap.get(nKey) === "sea") {
+          throw new Error(
+            `Terrain validation: lake tile at (${tile.position.q},${tile.position.r}) is adjacent to sea tile at (${tile.position.q + dq},${tile.position.r + dr})`
+          );
+        }
+      }
+    }
+
+    {
+      const mountainSet = new Set<string>();
+      for (const tile of terrain_tiles) {
+        if (tile.type === "mountain") mountainSet.add(`${tile.position.q},${tile.position.r}`);
+      }
+
+      if (mountainSet.size > 0) {
+        const allQs: number[] = [];
+        const allRs: number[] = [];
+        for (const pc of rawPrecincts) {
+          const pos = pc.position;
+          if ("q" in pos) { allQs.push(pos.q); allRs.push(pos.r); }
+        }
+        for (const tile of terrain_tiles) {
+          allQs.push(tile.position.q);
+          allRs.push(tile.position.r);
+        }
+        const minQ = Math.min(...allQs) - 2;
+        const maxQ = Math.max(...allQs) + 2;
+        const minR = Math.min(...allRs) - 2;
+        const maxR = Math.max(...allRs) + 2;
+
+        const outsideKey = `${minQ},${minR}`;
+        const visited = new Set<string>([outsideKey]);
+        const queue: string[] = [outsideKey];
+
+        while (queue.length > 0) {
+          const curr = queue.shift()!;
+          const [cq, cr] = curr.split(",").map(Number) as [number, number];
+          for (const [dq, dr] of HEX_DIRS) {
+            const nq = cq + dq;
+            const nr = cr + dr;
+            if (nq < minQ - 1 || nq > maxQ + 1 || nr < minR - 1 || nr > maxR + 1) continue;
+            const nKey = `${nq},${nr}`;
+            if (!visited.has(nKey) && !mountainSet.has(nKey)) {
+              visited.add(nKey);
+              queue.push(nKey);
+            }
+          }
+        }
+
+        for (const pc of rawPrecincts) {
+          const pos = pc.position;
+          if ("q" in pos) {
+            const key = `${pos.q},${pos.r}`;
+            if (!visited.has(key)) {
+              throw new Error(
+                `Terrain validation: precinct "${pc.id}" at (${pos.q},${pos.r}) is fully enclosed by mountain tiles`
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (river_edges !== undefined) {
+    const precinctPosByid = new Map<PrecinctId, { q: number; r: number }>();
+    if (geometry.type === "hex_axial") {
+      for (const pc of rawPrecincts) {
+        const pos = pc.position;
+        if ("q" in pos) precinctPosByid.set(pc.id, { q: pos.q, r: pos.r });
+      }
+    }
+
+    for (const [aId, bId] of river_edges) {
+      if (!precinctIds.has(aId)) {
+        throw new Error(`river_edges: precinct "${aId}" does not exist in precincts`);
+      }
+      if (!precinctIds.has(bId)) {
+        throw new Error(`river_edges: precinct "${bId}" does not exist in precincts`);
+      }
+      const aPos = precinctPosByid.get(aId);
+      const bPos = precinctPosByid.get(bId);
+      if (aPos !== undefined && bPos !== undefined) {
+        const dq = bPos.q - aPos.q;
+        const dr = bPos.r - aPos.r;
+        const isAdjacent = HEX_DIRS.some(([ddq, ddr]) => ddq === dq && ddr === dr);
+        if (!isAdjacent) {
+          throw new Error(
+            `river_edges: precincts "${aId}" (${aPos.q},${aPos.r}) and "${bId}" (${bPos.q},${bPos.r}) are not geometrically adjacent`
+          );
+        }
+      }
+    }
+  }
+}
+
 // ─── Main entry point ─────────────────────────────────────────────────────────
 
 /**
@@ -663,436 +1049,10 @@ export function loadScenario(json: unknown): Scenario {
     river_blocks_contiguity = requireBoolean(raw["river_blocks_contiguity"], "river_blocks_contiguity");
   }
 
-  // ── VALIDATION INVARIANTS ────────────────────────────────────────────────────
-
-  // Build lookup sets for fast validation
-  const partyIds = new Set(parties.map(p => p.id));
-  const districtIds = new Set(districts.map(d => d.id));
-  const precinctIds = new Set(rawPrecincts.map(p => p.id));
-
-  // Build set of all GroupIds defined across all precincts
-  const definedGroupIds = new Set<GroupId>();
-  for (const pc of rawPrecincts) {
-    for (const grp of pc.demographic_groups) {
-      definedGroupIds.add(grp.id);
-    }
-  }
-
-  // ── Invariant 12: precincts.length ≥ 1 ──────────────────────────────────────
-  if (rawPrecincts.length < 1) {
-    throw new Error("Invariant 12: precincts must have at least 1 element");
-  }
-
-  // ── Invariant 10: districts.length ≥ 2 ──────────────────────────────────────
-  if (districts.length < 2) {
-    throw new Error("Invariant 10: districts must have at least 2 elements");
-  }
-
-  // ── Invariant 11: All IDs unique within scenario ─────────────────────────────
-  // Spec: "All ids (EventId, CriterionId, PcId, DistId, GroupId, PartyId) unique within scenario"
-  {
-    const allIds = new Map<string, string>(); // id -> namespace label
-    const checkId = (id: string, label: string) => {
-      const existing = allIds.get(id);
-      if (existing !== undefined) {
-        throw new Error(`Invariant 11: duplicate id "${id}" found in both ${existing} and ${label}`);
-      }
-      allIds.set(id, label);
-    };
-    for (const p of parties) checkId(p.id, "parties");
-    for (const d of districts) checkId(d.id, "districts");
-    for (const pc of rawPrecincts) {
-      checkId(pc.id, "precincts");
-      for (const grp of pc.demographic_groups) checkId(grp.id, `precincts[${pc.id}].demographic_groups`);
-    }
-    for (const ev of events) checkId(ev.id, "events");
-    for (const cr of success_criteria) checkId(cr.id, "success_criteria");
-  }
-
-  // ── Invariant 5: sum(population_shares) == 1.0 per precinct (±ε) ─────────────
-  for (const pc of rawPrecincts) {
-    const sum = pc.demographic_groups.reduce((acc, g) => acc + g.population_share, 0);
-    if (Math.abs(sum - 1.0) > EPSILON) {
-      throw new Error(
-        `Invariant 5: precinct "${pc.id}" demographic_groups population_share sum is ${sum}, expected 1.0 (±${EPSILON})`
-      );
-    }
-  }
-
-  // ── Invariant 6: sum(vote_shares) == 1.0 per group (±ε); all parties present ─
-  for (const pc of rawPrecincts) {
-    for (const grp of pc.demographic_groups) {
-      // All parties must be present
-      for (const partyId of partyIds) {
-        if (!(partyId in grp.vote_shares)) {
-          throw new Error(
-            `Invariant 6: precinct "${pc.id}" group "${grp.id}" is missing vote_share for party "${partyId}"`
-          );
-        }
-      }
-      const sum = Object.values(grp.vote_shares).reduce((acc: number, v) => acc + (v as number), 0);
-      if (Math.abs(sum - 1.0) > EPSILON) {
-        throw new Error(
-          `Invariant 6: precinct "${pc.id}" group "${grp.id}" vote_shares sum is ${sum}, expected 1.0 (±${EPSILON})`
-        );
-      }
-    }
-  }
-
-  // ── Invariant 1: All PartyId refs exist in scenario.parties ─────────────────
-  // Check group vote_shares keys
-  for (const pc of rawPrecincts) {
-    for (const grp of pc.demographic_groups) {
-      for (const pid of Object.keys(grp.vote_shares)) {
-        if (!partyIds.has(pid as PartyId)) {
-          throw new Error(
-            `Invariant 1: precinct "${pc.id}" group "${grp.id}" references unknown party "${pid}" in vote_shares`
-          );
-        }
-      }
-    }
-  }
-  // Check events for party refs
-  for (const ev of events) {
-    if (ev.type === "vote_share_shift") {
-      if (!partyIds.has(ev.party)) {
-        throw new Error(
-          `Invariant 1: event "${ev.id}" references unknown party "${ev.party}"`
-        );
-      }
-    }
-  }
-  // Check criteria for party refs
-  for (const cr of success_criteria) {
-    const c = cr.criterion;
-    if (c.type === "seat_count" || c.type === "mean_median" || c.type === "safe_seats") {
-      if (!partyIds.has(c.party)) {
-        throw new Error(
-          `Invariant 1: criterion "${cr.id}" references unknown party "${c.party}"`
-        );
-      }
-    }
-  }
-
-  // ── Invariant 2: All DistrictId refs in initial_district_id exist in scenario.districts ─
-  for (const pc of rawPrecincts) {
-    if (pc.initial_district_id !== undefined && pc.initial_district_id !== null) {
-      if (!districtIds.has(pc.initial_district_id)) {
-        throw new Error(
-          `Invariant 2: precinct "${pc.id}" initial_district_id "${pc.initial_district_id}" does not exist in districts`
-        );
-      }
-    }
-  }
-  if (default_district_id !== undefined && !districtIds.has(default_district_id)) {
-    throw new Error(
-      `Invariant 2: default_district_id "${default_district_id}" does not exist in districts`
-    );
-  }
-
-  // ── Invariant 3: All GroupId refs in events/criteria exist in ≥1 precinct's demographic_groups ─
-  // For dimension-based filters, also validate dimension name and value against group_schema.
-  for (const ev of events) {
-    const gf = ev.group_filter;
-    const gids = groupFilterGroupIds(gf);
-    for (const gid of gids) {
-      if (!definedGroupIds.has(gid)) {
-        throw new Error(
-          `Invariant 3: event "${ev.id}" group_filter references unknown group "${gid}"`
-        );
-      }
-    }
-    validateDimensionFilter(gf, group_schema, `event "${ev.id}"`);
-  }
-  for (const cr of success_criteria) {
-    const c = cr.criterion;
-    if (c.type === "majority_minority") {
-      const gf = c.group_filter;
-      const gids = groupFilterGroupIds(gf);
-      for (const gid of gids) {
-        if (!definedGroupIds.has(gid)) {
-          throw new Error(
-            `Invariant 3: criterion "${cr.id}" group_filter references unknown group "${gid}"`
-          );
-        }
-      }
-      validateDimensionFilter(gf, group_schema, `criterion "${cr.id}"`);
-    }
-  }
-
-  // ── Invariant 4: Every context precinct (editable:false) must have non-null initial_district_id ─
-  for (const pc of rawPrecincts) {
-    if (!pc.editable) {
-      if (pc.initial_district_id === undefined || pc.initial_district_id === null) {
-        throw new Error(
-          `Invariant 4: context precinct "${pc.id}" (editable: false) must have a non-null initial_district_id`
-        );
-      }
-    }
-  }
-
-  // ── Invariant 8: hex_axial → no neighbors field; custom → neighbors present + symmetric ─
-  if (geometry.type === "hex_axial") {
-    for (const pc of rawPrecincts) {
-      if (pc.neighbors !== undefined) {
-        throw new Error(
-          `Invariant 8: hex_axial geometry precinct "${pc.id}" must not have a neighbors field`
-        );
-      }
-    }
-  } else {
-    // custom geometry
-    // Invariant 8 (custom part): neighbors must be present
-    for (const pc of rawPrecincts) {
-      if (pc.neighbors === undefined) {
-        throw new Error(
-          `Invariant 8: custom geometry precinct "${pc.id}" must have a neighbors field`
-        );
-      }
-    }
-
-    // ── Invariant 9: custom geometry: all PrecinctId values in neighbors[] exist in scenario.precincts ─
-    for (const pc of rawPrecincts) {
-      for (const nbId of pc.neighbors!) {
-        if (!precinctIds.has(nbId)) {
-          throw new Error(
-            `Invariant 9: precinct "${pc.id}" neighbors[] references unknown precinct "${nbId}"`
-          );
-        }
-      }
-    }
-
-    // ── Invariant 8 (symmetric): neighbors must be symmetric ─────────────────
-    // Build adjacency map
-    const adjMap = new Map<PrecinctId, Set<PrecinctId>>();
-    for (const pc of rawPrecincts) {
-      adjMap.set(pc.id, new Set(pc.neighbors!));
-    }
-    for (const pc of rawPrecincts) {
-      for (const nbId of pc.neighbors!) {
-        const nbNeighbors = adjMap.get(nbId);
-        if (nbNeighbors === undefined || !nbNeighbors.has(pc.id)) {
-          throw new Error(
-            `Invariant 8: custom geometry neighbors not symmetric: precinct "${pc.id}" lists "${nbId}" as neighbor, but "${nbId}" does not list "${pc.id}"`
-          );
-        }
-      }
-    }
-  }
-
-  // ── Invariant 7: If group_schema declared: completeness constraint ─────────────
-  if (group_schema !== undefined) {
-    const dims = group_schema.dimensions;
-    const dimNames = Object.keys(dims);
-
-    // Build expected set of dimension combos (cartesian product)
-    // For each precinct: must have exactly one group per dim-value combo
-    // Also: each group must have a value for every dimension
-
-    // First verify every group has a value for every dimension
-    for (const pc of rawPrecincts) {
-      for (const grp of pc.demographic_groups) {
-        for (const dimName of dimNames) {
-          if (grp.dimensions === undefined || !(dimName in grp.dimensions)) {
-            throw new Error(
-              `Invariant 7: precinct "${pc.id}" group "${grp.id}" is missing dimension "${dimName}" (required by group_schema)`
-            );
-          }
-          const val = grp.dimensions[dimName];
-          const allowed = dims[dimName];
-          if (allowed === undefined || !allowed.includes(val!)) {
-            throw new Error(
-              `Invariant 7: precinct "${pc.id}" group "${grp.id}" dimension "${dimName}" value "${val}" is not in schema values [${allowed?.join(", ")}]`
-            );
-          }
-        }
-      }
-    }
-
-    // For each precinct: one group per dim-value combo (completeness)
-    // Cartesian product of all dimension values
-    function cartesianProduct(dimNames: string[], dims: Record<string, string[]>): Record<string, string>[] {
-      if (dimNames.length === 0) return [{}];
-      const first = dimNames[0] as string;
-      const rest = dimNames.slice(1);
-      const restCombos = cartesianProduct(rest, dims);
-      const result: Record<string, string>[] = [];
-      for (const val of dims[first] ?? []) {
-        for (const combo of restCombos) {
-          result.push({ [first]: val, ...combo });
-        }
-      }
-      return result;
-    }
-
-    const expectedCombos = cartesianProduct(dimNames, dims);
-
-    for (const pc of rawPrecincts) {
-      for (const expectedCombo of expectedCombos) {
-        const matchingGroups = pc.demographic_groups.filter(grp => {
-          if (grp.dimensions === undefined) return false;
-          return dimNames.every(d => grp.dimensions![d] === expectedCombo[d]);
-        });
-        if (matchingGroups.length === 0) {
-          const comboStr = Object.entries(expectedCombo).map(([k, v]) => `${k}=${v}`).join(", ");
-          throw new Error(
-            `Invariant 7: precinct "${pc.id}" is missing a group for dimension combo {${comboStr}} (required by group_schema)`
-          );
-        }
-        if (matchingGroups.length > 1) {
-          const comboStr = Object.entries(expectedCombo).map(([k, v]) => `${k}=${v}`).join(", ");
-          throw new Error(
-            `Invariant 7: precinct "${pc.id}" has ${matchingGroups.length} groups for dimension combo {${comboStr}}; expected exactly 1`
-          );
-        }
-      }
-    }
-  }
-
-  // ── Terrain validation ────────────────────────────────────────────────────────
-  // Terrain features (terrain_tiles, river_edges) require hex_axial geometry in v1.
-  if (geometry.type === "custom") {
-    if (terrain_tiles !== undefined && terrain_tiles.length > 0) {
-      throw new Error(
-        `Terrain validation: terrain_tiles require geometry.type "hex_axial"; custom geometry is not supported in v1`
-      );
-    }
-    if (river_edges !== undefined && river_edges.length > 0) {
-      throw new Error(
-        `Terrain validation: river_edges require geometry.type "hex_axial"; custom geometry is not supported in v1`
-      );
-    }
-  }
-
-  if (terrain_tiles !== undefined && terrain_tiles.length > 0) {
-    // Build precinct position set for overlap check
-    const precinctPosSet = new Set<string>();
-    for (const pc of rawPrecincts) {
-      const pos = pc.position;
-      if ("q" in pos) precinctPosSet.add(`${pos.q},${pos.r}`);
-    }
-
-    // Build terrain position map for lake/sea adjacency check
-    const tileTypeMap = new Map<string, string>();
-    for (const tile of terrain_tiles) {
-      const key = `${tile.position.q},${tile.position.r}`;
-      // Terrain Validation 1: tile must not overlap a precinct position
-      if (precinctPosSet.has(key)) {
-        throw new Error(
-          `Terrain validation: terrain_tile at (${tile.position.q},${tile.position.r}) overlaps precinct position`
-        );
-      }
-      tileTypeMap.set(key, tile.type);
-    }
-
-    // Terrain Validation 2: lake tile must not be adjacent to sea tile
-    for (const tile of terrain_tiles) {
-      if (tile.type !== "lake") continue;
-      for (const [dq, dr] of HEX_DIRS) {
-        const nKey = `${tile.position.q + dq},${tile.position.r + dr}`;
-        if (tileTypeMap.get(nKey) === "sea") {
-          throw new Error(
-            `Terrain validation: lake tile at (${tile.position.q},${tile.position.r}) is adjacent to sea tile at (${tile.position.q + dq},${tile.position.r + dr})`
-          );
-        }
-      }
-    }
-
-    // Terrain Validation 3: no precinct fully enclosed by mountain tiles
-    // BFS from an outside position (one step beyond min bounding box) through non-mountain positions.
-    // Any precinct position unreachable from outside is enclosed.
-    {
-      const mountainSet = new Set<string>();
-      for (const tile of terrain_tiles) {
-        if (tile.type === "mountain") mountainSet.add(`${tile.position.q},${tile.position.r}`);
-      }
-
-      if (mountainSet.size > 0) {
-        // Find bounding box of all precinct + terrain tile positions
-        const allQs: number[] = [];
-        const allRs: number[] = [];
-        for (const pc of rawPrecincts) {
-          const pos = pc.position;
-          if ("q" in pos) { allQs.push(pos.q); allRs.push(pos.r); }
-        }
-        for (const tile of terrain_tiles) {
-          allQs.push(tile.position.q);
-          allRs.push(tile.position.r);
-        }
-        const minQ = Math.min(...allQs) - 2;
-        const maxQ = Math.max(...allQs) + 2;
-        const minR = Math.min(...allRs) - 2;
-        const maxR = Math.max(...allRs) + 2;
-
-        // BFS from a corner position outside the bounding box
-        const outsideKey = `${minQ},${minR}`;
-        const visited = new Set<string>([outsideKey]);
-        const queue: string[] = [outsideKey];
-
-        while (queue.length > 0) {
-          const curr = queue.shift()!;
-          const [cq, cr] = curr.split(",").map(Number) as [number, number];
-          for (const [dq, dr] of HEX_DIRS) {
-            const nq = cq + dq;
-            const nr = cr + dr;
-            // Expand only within a reasonable search bounds
-            if (nq < minQ - 1 || nq > maxQ + 1 || nr < minR - 1 || nr > maxR + 1) continue;
-            const nKey = `${nq},${nr}`;
-            if (!visited.has(nKey) && !mountainSet.has(nKey)) {
-              visited.add(nKey);
-              queue.push(nKey);
-            }
-          }
-        }
-
-        // Check every precinct is reachable from outside
-        for (const pc of rawPrecincts) {
-          const pos = pc.position;
-          if ("q" in pos) {
-            const key = `${pos.q},${pos.r}`;
-            if (!visited.has(key)) {
-              throw new Error(
-                `Terrain validation: precinct "${pc.id}" at (${pos.q},${pos.r}) is fully enclosed by mountain tiles`
-              );
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // Validate river_edges: both precinct IDs must exist AND be geometrically adjacent.
-  if (river_edges !== undefined) {
-    // Build precinct position lookup for adjacency check (hex_axial only — custom rejected above)
-    const precinctPosByid = new Map<PrecinctId, { q: number; r: number }>();
-    if (geometry.type === "hex_axial") {
-      for (const pc of rawPrecincts) {
-        const pos = pc.position;
-        if ("q" in pos) precinctPosByid.set(pc.id, { q: pos.q, r: pos.r });
-      }
-    }
-
-    for (const [aId, bId] of river_edges) {
-      if (!precinctIds.has(aId)) {
-        throw new Error(`river_edges: precinct "${aId}" does not exist in precincts`);
-      }
-      if (!precinctIds.has(bId)) {
-        throw new Error(`river_edges: precinct "${bId}" does not exist in precincts`);
-      }
-      const aPos = precinctPosByid.get(aId);
-      const bPos = precinctPosByid.get(bId);
-      if (aPos !== undefined && bPos !== undefined) {
-        const dq = bPos.q - aPos.q;
-        const dr = bPos.r - aPos.r;
-        const isAdjacent = HEX_DIRS.some(([ddq, ddr]) => ddq === dq && ddr === dr);
-        if (!isAdjacent) {
-          throw new Error(
-            `river_edges: precincts "${aId}" (${aPos.q},${aPos.r}) and "${bId}" (${bPos.q},${bPos.r}) are not geometrically adjacent`
-          );
-        }
-      }
-    }
-  }
+  validateScenarioInvariants({
+    rawPrecincts, parties, districts, events, success_criteria,
+    geometry, group_schema, terrain_tiles, river_edges, default_district_id,
+  });
 
   // ── Auto-fill initial_district_id for editable precincts ─────────────────────
   const fillDistrictId = default_district_id ?? districts[0]!.id;
