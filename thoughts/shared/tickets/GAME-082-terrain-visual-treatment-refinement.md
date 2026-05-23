@@ -18,63 +18,56 @@ This ticket is a focused visual-tuning pass over the terrain layer. No schema or
 changes — just bumping stroke weights, opacities, and possibly adding fills or hatches to make
 terrain features read clearly at default zoom and at the partisan-lean view tint.
 
-## Current State
+## Current State (as of GAME-086 merge)
 
 `mapRenderer.ts` constants (all sized in pre-zoom map units):
-- `RIVER_BASE_WIDTH = 2.5`, `RIVER_OPACITY = 0.7` — too thin; reads as a hairline
-- `TERRAIN_EDGE_BASE_WIDTH = 3`, `TERRAIN_EDGE_OPACITY = 0.9` — coast/lakeside strokes; visible but doesn't read as a shoreline
-- `INTERNAL_LAKE_OPACITY = 0.55` — internal-lake ellipse; not yet exercised by any scenario, untested in practice
-- Foothill rendering: not implemented (`renderTerrainEdges` matches only `coast` and `lakeside`)
-- Terrain tile fills (sea `#3a7fc1`, lake `#4dd0e1`, mountain `#6b7280`) have no stroke around them, so they blend into the SVG background where the boundary isn't a precinct
-
-`HEX_SIZE = 36` px is the precinct radius — a hex edge is ~36 px long. River stroke at 2.5 px ≈ 7% of edge length, which is too thin.
+- `RIVER_BASE_WIDTH = 9`, `RIVER_OPACITY = 0.9`, `stroke-linecap/linejoin: round` — done
+- Coast/foothill/lakeside rendered as **filled intrusion shapes** (not edge strokes) — each bleeds the terrain tile colour into the adjacent precinct, with a white boundary curve and corner caps where two intrusions meet. Depth: coast=5px, foothill=6px, lake=5px.
+- `RIVER_STROKE = "#4dd0e1"` — unified with lake fill colour (was `#38bdf8`)
+- `has_internal_lake` / `INTERNAL_LAKE_OPACITY`: **removed** in GAME-085 (composable terrain schema cleanup). Internal-lake ellipses no longer exist.
+- Terrain tile fills (sea `#3a7fc1`, lake `#4dd0e1`, mountain `#6b7280`) have no stroke — still the case.
 
 ## Goals / Acceptance Criteria
 
 ### Rivers
 
-- [ ] River stroke base width bumped to ~5–7 px (target: clearly visible at default zoom without dominating)
-- [ ] River opacity bumped to 0.85–0.95 (currently 0.7)
-- [ ] River endpoints should not pinch off awkwardly — confirm `stroke-linecap: round` continues to work at the larger width
-- [ ] River segments meeting at a shared corner (T-junctions) should join cleanly — assess whether `stroke-linejoin` matters
+- [x] River stroke base width bumped — `RIVER_BASE_WIDTH = 9` (exceeds 5–7px target; reads clearly)
+- [x] River opacity bumped to 0.9 (`RIVER_OPACITY = 0.9`)
+- [x] `stroke-linecap: round` confirmed
+- [x] `stroke-linejoin: round` applied
 
-### Coast / lakeside edges
+### Coast / lakeside / foothill edges
 
-- [x] Coast stroke (`COAST_STROKE = #3a7fc1`) base width bumped from 3 to 5 px — done in PR #248
-- [x] Lakeside stroke (`LAKESIDE_STROKE = #4dd0e1`) bumped similarly — done in PR #248
-- [ ] Consider drawing the edge stroke just *inside* the precinct fill (offset toward center) so it reads as a hex edge property rather than a free-floating line at the precinct boundary
-- [ ] Verify edges still read clearly when the partisan-lean view changes hex fills to PuOr palette
+- [x] Coast rendered as filled intrusion shape bleeding sea colour into precinct (smooth profile, depth 5px) — PR #252 / #253
+- [x] Lakeside rendered identically with lake colour (`#4dd0e1`) — GAME-086 / PR #253
+- [x] Foothill rendered as filled intrusion (rugged profile, depth 6px) — GAME-082 / PR #252
+- [x] Corner caps where two same-type intrusions meet at a shared corner — PR #252
+- [x] White boundary curve along inner edge of each intrusion — PR #252
+- [ ] Manual: verify intrusions read clearly in partisan-lean view (PuOr fill tint)
 
 ### Terrain tiles
 
-- [ ] Optional thin border around sea/lake/mountain tile fills so they have a defined boundary against empty SVG background (not against precincts — terrain–precinct boundary is already drawn by district borders)
-- [ ] Mountain glyph: currently a single `△` at the tile center; consider 2–3 small triangles to feel more like a ridge (per DESIGN-008's original spec — partially deferred during GAME-075)
-- [ ] Sea glyph (`∿`) prominence — verify it's legible at default zoom
+- [ ] Optional: thin border around sea/lake/mountain tile fills (boundary against empty SVG background)
+- [ ] Optional: mountain glyph 2–3 small triangles instead of single `△`
+- [ ] Manual: sea glyph (`∿`) legibility at default zoom
 
-### Foothill rendering (deferred from GAME-075)
+### Internal lakes
 
-- [x] Subtle grey edge stroke (`FOOTHILL_STROKE = #9aa0aa`, opacity 0.7) on mountain-facing edges of `foothill` precincts — done in tutorial-003 PR (`renderTerrainEdges` extended to handle `terrain === "foothill"`)
-- [x] Implementation: extend `renderTerrainEdges` to handle `terrain === "foothill"`, looking up mountain-tile neighbors via the same axial-position map already built for coast/lakeside — done
-
-### Internal lakes (still untested in real scenarios)
-
-- [x] Hand-author a precinct with `has_internal_lake: true` in tutorial-003 — `(0,2)` has explicit `terrain: "lakeside"` + `has_internal_lake: true`. Ellipse rendering exercised by e2e test.
-- [ ] Adjust `INTERNAL_LAKE_OPACITY` / size factors if the ellipses are hard to see against the district fill — pending manual review after dev deploy
-- [ ] N/A — Defer shared elongated ellipse for adjacent `has_internal_lake` precincts (still tracked from GAME-075 plan)
+- [x] N/A — `has_internal_lake` and internal-lake ellipse rendering removed entirely in GAME-085. Superseded by `lakeside` composable annotation.
 
 ### Cross-view consistency
 
-- [ ] Terrain treatment readable in both districts view and partisan-lean view
-- [ ] Terrain treatment readable when assigned and unassigned hex opacities differ
-- [ ] Terrain tiles + river do not visually compete with the district boundary stroke
+- [ ] Manual: terrain treatment readable in both districts view and partisan-lean view
+- [ ] Manual: terrain tiles + river do not visually compete with district boundary stroke
 
 ## Test Coverage
 
-- [ ] N/A — e2e: river/coast stroke widths via attribute — not asserted directly; render-correctness is exercised via path/line counts and tested manually after dev deploy
-- [x] e2e: `line.terrain-edge-mountain` count matches 6 mountain-facing edges across foothill precincts in tutorial-003
-- [x] e2e: `line.terrain-edge-lake` count matches 2 lake-facing edges in tutorial-003
-- [x] e2e: `ellipse.internal-lake` count matches 1 (precinct (0,2) in tutorial-003)
-- [ ] Manual: load tutorial-003, eyeball at default zoom + max zoom — all four terrain annotations and the internal lake read clearly
+- [x] N/A — e2e: stroke widths not asserted directly; tested manually after dev deploy
+- [x] e2e: `path.terrain-edge-mountain` count = 8 across foothill precincts in tutorial-003
+- [x] e2e: `path.terrain-edge-lake` count = 6 (lake tile at (-1,1), 6 neighbours) in tutorial-003
+- [x] e2e: `path.terrain-edge-sea` count = 9 in tutorial-003
+- [x] Unit: adapter derives `coast`, `foothill`, `lakeside`, `riverside` independently
+- [ ] Manual: load tutorial-003, eyeball at default zoom + max zoom — all terrain annotations read clearly
 - [ ] Manual: switch to partisan-lean view — terrain still distinguishable
 
 ## Out of scope
