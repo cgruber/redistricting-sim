@@ -1,0 +1,82 @@
+"""
+Bazel targets for the GAME-084 map generation pipeline.
+
+  spec_types_lib        — spec-types.ts (YAML pipeline spec TypeScript types)
+  terrain_generator_lib — terrain-generator.ts (Stage 1: hex grid + terrain + rivers)
+"""
+
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
+load("@aspect_rules_js//js:defs.bzl", "js_test")
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
+
+ts_config(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    visibility = ["//game/web/src/pipeline:__pkg__"],
+)
+
+# ── spec_types_lib: TypeScript types for the YAML pipeline spec format ────────
+
+ts_project(
+    name = "spec_types_lib",
+    srcs = ["spec-types.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    visibility = ["//game/web:__subpackages__"],
+)
+
+# ── terrain_generator_lib: Stage 1 — hex grid + terrain tiles + river edges ──
+
+ts_project(
+    name = "terrain_generator_lib",
+    srcs = ["terrain-generator.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+    ],
+    visibility = ["//game/web:__subpackages__"],
+)
+
+# ── terrain_generator_typecheck_test: type-check passes ──────────────────────
+
+build_test(
+    name = "terrain_generator_typecheck_test",
+    targets = [":terrain_generator_lib"],
+    visibility = ["//visibility:public"],
+)
+
+# ── terrain_generator_test_lib: compile tests ─────────────────────────────────
+
+ts_project(
+    name = "terrain_generator_test_lib",
+    srcs = ["terrain-generator_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":terrain_generator_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+# ── terrain_generator_test: run tests with Node ───────────────────────────────
+
+js_test(
+    name = "terrain_generator_test",
+    entry_point = "terrain-generator_test.js",
+    data = [
+        ":terrain_generator_test_lib",
+        ":terrain_generator_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
