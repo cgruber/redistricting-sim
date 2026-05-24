@@ -243,6 +243,61 @@ export interface StateContext {
 	other_region_results: Record<RegionId, RegionResult>;
 }
 
+// ─── Partial (pipeline-stage) types ──────────────────────────────────────────
+
+/**
+ * A precinct as it exists during pipeline stages before population/demographics
+ * are added. `total_population` and `demographic_groups` become optional so that
+ * terrain-stage output (no demographics yet) can be parsed and inspected without
+ * failing game-start completeness checks.
+ */
+export interface PartialPrecinct {
+	id: PrecinctId;
+	editable: boolean;
+	county_id?: string;
+	position: HexAxialPosition | CartesianPosition;
+	neighbors?: PrecinctId[];
+	total_population?: number;
+	demographic_groups?: DemographicGroup[];
+	initial_district_id?: DistrictId | null;
+	name?: string;
+	tags?: string[];
+}
+
+/**
+ * A scenario as it exists during pipeline stages before all required fields are
+ * populated. Structural fields (id, geometry, precincts) are always required;
+ * gameplay fields (parties, districts, narrative, etc.) are optional so pipeline
+ * intermediates can be parsed without failing game-start completeness checks.
+ *
+ * Use `loadScenario` for gameplay (parse + validate completeness + auto-fill).
+ * Use `parseScenario` + `validateScenarioComplete` to split load-time from
+ * game-start validation (GAME-084 pipeline support).
+ */
+export interface PartialScenario {
+	format_version: "1";
+	id: ScenarioId;
+	title: string;
+	election_type: "congressional" | "state_senate" | "state_house";
+	region: RegionSpec;
+	geometry: GeometrySpec;
+	precincts: PartialPrecinct[];
+	parties?: Party[];
+	districts?: District[];
+	group_schema?: GroupSchema;
+	default_district_id?: DistrictId;
+	events?: DemographicEvent[];
+	rules?: ScenarioRules;
+	success_criteria?: SuccessCriterion[];
+	narrative?: Narrative;
+	instigator_character?: CharacterType;
+	character_demographics?: Partial<Record<CharacterType, string>>;
+	state_context?: StateContext;
+	terrain_tiles?: TerrainTile[];
+	river_edges?: [PrecinctId, PrecinctId][];
+	river_blocks_contiguity?: boolean;
+}
+
 // ─── Top-level Scenario ───────────────────────────────────────────────────────
 
 export interface Scenario {

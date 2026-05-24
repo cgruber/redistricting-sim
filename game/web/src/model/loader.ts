@@ -1,13 +1,24 @@
 /**
  * Scenario JSON loader and validator.
  *
- * `loadScenario(json: unknown): Scenario` is the single entry point.
- * It validates all 13 spec invariants, auto-fills missing initial_district_id
- * on editable precincts, and returns a fully-typed Scenario.
+ * Three exported entry points:
+ *
+ *  `parseScenario(json: unknown): PartialScenario`
+ *    Structural parse: validates types and invariants that can be checked with
+ *    partial data (geometry consistency, unique IDs, context precincts, terrain).
+ *    Tolerates absent gameplay fields (parties, districts, population, demographics).
+ *    Use for pipeline intermediates and terrain-preview rendering.
+ *
+ *  `validateScenarioComplete(partial: PartialScenario): Scenario`
+ *    Completeness validation + full invariant check + auto-fill + assembly.
+ *    Throws if any gameplay field is absent. Call at game-start.
+ *
+ *  `loadScenario(json: unknown): Scenario`
+ *    Combined convenience: parseScenario + validateScenarioComplete.
+ *    Equivalent to the pre-GAME-084 single entry point; all callers continue to work.
  *
  * Every error message names the invariant number and identifies the offending
- * element (precinct id, group id, party id, etc.) so the caller knows where
- * the violation is.
+ * element so the caller knows where the violation is.
  */
 
 import type {
@@ -24,6 +35,8 @@ import type {
   Narrative,
   Party,
   PartyId,
+  PartialPrecinct,
+  PartialScenario,
   Precinct,
   PrecinctId,
   RegionSpec,
@@ -54,7 +67,7 @@ const HEX_DIRS: [number, number][] = [
 
 const EPSILON = 1e-6;
 
-// Parsed precinct before initial_district_id is resolved/auto-filled.
+// Internal type used by validateScenarioInvariants: all fields required (post-completeness-check).
 type RawPrecinct = Omit<Precinct, "initial_district_id"> & { initial_district_id?: DistrictId | null };
 
 // ─── Sub-parsers ─────────────────────────────────────────────────────────────
@@ -129,12 +142,11 @@ function parseDemographicGroup(raw: unknown, precinctId: string, idx: number): D
   return grp;
 }
 
-function parsePrecinct(raw: unknown, idx: number): RawPrecinct {
+function parsePrecinct(raw: unknown, idx: number): PartialPrecinct {
   const label = `precincts[${idx}]`;
   const r = requireObject(raw, label);
   const id = requireString(r["id"], `${label}.id`) as PrecinctId;
   const editable = requireBoolean(r["editable"], `${label}.editable`);
-  const total_population = requireNumber(r["total_population"], `${label}.total_population`);
 
   const posRaw = requireObject(r["position"], `${label}.position`);
   let position: Precinct["position"];
@@ -152,16 +164,16 @@ function parsePrecinct(raw: unknown, idx: number): RawPrecinct {
     throw new Error(`${label}.position: must have {q,r} for hex_axial or {x,y} for custom`);
   }
 
-  const groupsRaw = requireArray(r["demographic_groups"], `${label}.demographic_groups`);
-  const demographic_groups = groupsRaw.map((g, i) => parseDemographicGroup(g, id, i));
+  const pc: PartialPrecinct = { id, editable, position };
 
-  const pc: Omit<Precinct, "initial_district_id"> & { initial_district_id?: DistrictId | null } = {
-    id,
-    editable,
-    position,
-    total_population,
-    demographic_groups,
-  };
+  // total_population and demographic_groups are optional at parse time (pipeline stages)
+  if (r["total_population"] !== undefined) {
+    pc.total_population = requireNumber(r["total_population"], `${label}.total_population`);
+  }
+  if (r["demographic_groups"] !== undefined) {
+    const groupsRaw = requireArray(r["demographic_groups"], `${label}.demographic_groups`);
+    pc.demographic_groups = groupsRaw.map((g, i) => parseDemographicGroup(g, id, i));
+  }
 
   if (r["county_id"] !== undefined) {
     pc.county_id = requireString(r["county_id"], `${label}.county_id`);
@@ -186,7 +198,6 @@ function parsePrecinct(raw: unknown, idx: number): RawPrecinct {
       pc.initial_district_id = requireString(r["initial_district_id"], `${label}.initial_district_id`) as DistrictId;
     }
   }
-  // if key absent: pc.initial_district_id is undefined (not set)
 
   return pc;
 }
@@ -919,29 +930,15 @@ function validateScenarioInvariants(fields: {
   }
 }
 
-// ─── Main entry point ─────────────────────────────────────────────────────────
+// ─── Shared parsing helper ────────────────────────────────────────────────────
 
 /**
- * Parse and validate a raw JSON value as a Scenario.
- *
- * Throws a descriptive Error if:
- *  - format_version is unknown
- *  - any required field is missing or the wrong type
- *  - any of the 13 spec validation invariants is violated
- *
- * Returns a fully-typed Scenario with explicit initial_district_id on all
- * editable precincts (auto-filled from default_district_id or districts[0]).
+ * Parse all fields from a raw JSON object, making gameplay-required fields
+ * optional. Returns a PartialScenario. Called by parseScenario (and transitively
+ * by loadScenario via validateScenarioComplete(parseScenario(json))).
  */
-export function loadScenario(json: unknown): Scenario {
-  const raw = requireObject(json, "scenario");
-
-  // ── format_version check ────────────────────────────────────────────────────
-  const fv = requireString(raw["format_version"], "format_version");
-  if (fv !== "1") {
-    throw new Error(`format_version: unknown version "${fv}"; only "1" is supported`);
-  }
-
-  // ── Parse all fields ────────────────────────────────────────────────────────
+function parseAllFields(raw: Record<string, unknown>): PartialScenario {
+  // ── Required structural fields ───────────────────────────────────────────────
   const id = requireString(raw["id"], "id") as ScenarioId;
   const title = requireString(raw["title"], "title");
   const etRaw = requireString(raw["election_type"], "election_type");
@@ -953,14 +950,19 @@ export function loadScenario(json: unknown): Scenario {
   const region = parseRegion(raw["region"]);
   const geometry = parseGeometry(raw["geometry"]);
 
-  const partiesRaw = requireArray(raw["parties"], "parties");
-  const parties = partiesRaw.map((p, i) => parseParty(p, i));
-
-  const districtsRaw = requireArray(raw["districts"], "districts");
-  const districts = districtsRaw.map((d, i) => parseDistrict(d, i));
-
   const precinctsRaw = requireArray(raw["precincts"], "precincts");
-  const rawPrecincts = precinctsRaw.map((p, i) => parsePrecinct(p, i));
+  const partialPrecincts = precinctsRaw.map((p, i) => parsePrecinct(p, i));
+
+  // ── Optional gameplay fields ─────────────────────────────────────────────────
+  let parties: Party[] | undefined;
+  if (raw["parties"] !== undefined) {
+    parties = requireArray(raw["parties"], "parties").map((p, i) => parseParty(p, i));
+  }
+
+  let districts: District[] | undefined;
+  if (raw["districts"] !== undefined) {
+    districts = requireArray(raw["districts"], "districts").map((d, i) => parseDistrict(d, i));
+  }
 
   let group_schema: GroupSchema | undefined;
   if (raw["group_schema"] !== undefined) {
@@ -972,15 +974,25 @@ export function loadScenario(json: unknown): Scenario {
     default_district_id = requireString(raw["default_district_id"], "default_district_id") as DistrictId;
   }
 
-  const eventsRaw = requireArray(raw["events"], "events");
-  const events = eventsRaw.map((e, i) => parseEvent(e, i));
+  let events: DemographicEvent[] | undefined;
+  if (raw["events"] !== undefined) {
+    events = requireArray(raw["events"], "events").map((e, i) => parseEvent(e, i));
+  }
 
-  const rules = parseRules(raw["rules"]);
+  let rules: ScenarioRules | undefined;
+  if (raw["rules"] !== undefined) {
+    rules = parseRules(raw["rules"]);
+  }
 
-  const criteriaRaw = requireArray(raw["success_criteria"], "success_criteria");
-  const success_criteria = criteriaRaw.map((c, i) => parseCriterion(c, i));
+  let success_criteria: SuccessCriterion[] | undefined;
+  if (raw["success_criteria"] !== undefined) {
+    success_criteria = requireArray(raw["success_criteria"], "success_criteria").map((c, i) => parseCriterion(c, i));
+  }
 
-  const narrative = parseNarrative(raw["narrative"]);
+  let narrative: Narrative | undefined;
+  if (raw["narrative"] !== undefined) {
+    narrative = parseNarrative(raw["narrative"]);
+  }
 
   let instigator_character: CharacterType | undefined;
   if (raw["instigator_character"] !== undefined) {
@@ -999,7 +1011,6 @@ export function loadScenario(json: unknown): Scenario {
       throw new Error("character_demographics: must be an object");
     }
     const validChars: string[] = ["governor", "commissioner", "judge", "legislator"];
-    // Types that have no bare directory — a demographic suffix is required.
     const requiresSuffix = new Set(["governor", "commissioner", "legislator"]);
     character_demographics = {};
     for (const key of Object.keys(cd)) {
@@ -1022,7 +1033,6 @@ export function loadScenario(json: unknown): Scenario {
     state_context = parseStateContext(raw["state_context"]);
   }
 
-  // ── Parse terrain fields ─────────────────────────────────────────────────────
   let terrain_tiles: TerrainTile[] | undefined;
   if (raw["terrain_tiles"] !== undefined) {
     const tilesRaw = requireArray(raw["terrain_tiles"], "terrain_tiles");
@@ -1049,13 +1059,406 @@ export function loadScenario(json: unknown): Scenario {
     river_blocks_contiguity = requireBoolean(raw["river_blocks_contiguity"], "river_blocks_contiguity");
   }
 
-  validateScenarioInvariants({
-    rawPrecincts, parties, districts, events, success_criteria,
-    geometry, group_schema, terrain_tiles, river_edges, default_district_id,
-  });
+  const partial: PartialScenario = {
+    format_version: "1", id, title, election_type, region, geometry,
+    precincts: partialPrecincts,
+  };
+  if (parties !== undefined) partial.parties = parties;
+  if (districts !== undefined) partial.districts = districts;
+  if (group_schema !== undefined) partial.group_schema = group_schema;
+  if (default_district_id !== undefined) partial.default_district_id = default_district_id;
+  if (events !== undefined) partial.events = events;
+  if (rules !== undefined) partial.rules = rules;
+  if (success_criteria !== undefined) partial.success_criteria = success_criteria;
+  if (narrative !== undefined) partial.narrative = narrative;
+  if (instigator_character !== undefined) partial.instigator_character = instigator_character;
+  if (character_demographics !== undefined) partial.character_demographics = character_demographics;
+  if (state_context !== undefined) partial.state_context = state_context;
+  if (terrain_tiles !== undefined) partial.terrain_tiles = terrain_tiles;
+  if (river_edges !== undefined) partial.river_edges = river_edges;
+  if (river_blocks_contiguity !== undefined) partial.river_blocks_contiguity = river_blocks_contiguity;
 
-  // ── Auto-fill initial_district_id for editable precincts ─────────────────────
-  const fillDistrictId = default_district_id ?? districts[0]!.id;
+  return partial;
+}
+
+// ─── Structural validation (parse-time) ──────────────────────────────────────
+
+/**
+ * Validate invariants checkable with partial data: uniqueness, geometry
+ * consistency, context precinct district assignment, terrain adjacency.
+ * Conditionally validates demographic and party refs when the data is present.
+ */
+function validateStructural(s: PartialScenario): void {
+  const { precincts, parties, districts, events, success_criteria,
+          geometry, group_schema, terrain_tiles, river_edges, default_district_id } = s;
+
+  // Invariant 12: precincts ≥ 1
+  if (precincts.length < 1) {
+    throw new Error("Invariant 12: precincts must have at least 1 element");
+  }
+
+  // Invariant 4: context precincts must have non-null initial_district_id
+  for (const pc of precincts) {
+    if (!pc.editable) {
+      if (pc.initial_district_id === undefined || pc.initial_district_id === null) {
+        throw new Error(
+          `Invariant 4: context precinct "${pc.id}" (editable: false) must have a non-null initial_district_id`
+        );
+      }
+    }
+  }
+
+  // Invariant 11: All IDs unique within present data
+  {
+    const allIds = new Map<string, string>();
+    const checkId = (id: string, label: string) => {
+      const existing = allIds.get(id);
+      if (existing !== undefined) {
+        throw new Error(`Invariant 11: duplicate id "${id}" found in both ${existing} and ${label}`);
+      }
+      allIds.set(id, label);
+    };
+    if (parties !== undefined) for (const p of parties) checkId(p.id, "parties");
+    if (districts !== undefined) for (const d of districts) checkId(d.id, "districts");
+    for (const pc of precincts) {
+      checkId(pc.id, "precincts");
+      if (pc.demographic_groups !== undefined) {
+        for (const grp of pc.demographic_groups) checkId(grp.id, `precincts[${pc.id}].demographic_groups`);
+      }
+    }
+    if (events !== undefined) for (const ev of events) checkId(ev.id, "events");
+    if (success_criteria !== undefined) for (const cr of success_criteria) checkId(cr.id, "success_criteria");
+  }
+
+  // Invariant 8: geometry/neighbors consistency
+  const precinctIds = new Set(precincts.map(p => p.id));
+  if (geometry.type === "hex_axial") {
+    for (const pc of precincts) {
+      if (pc.neighbors !== undefined) {
+        throw new Error(
+          `Invariant 8: hex_axial geometry precinct "${pc.id}" must not have a neighbors field`
+        );
+      }
+    }
+  } else {
+    for (const pc of precincts) {
+      if (pc.neighbors === undefined) {
+        throw new Error(
+          `Invariant 8: custom geometry precinct "${pc.id}" must have a neighbors field`
+        );
+      }
+    }
+    // Invariant 9: neighbor IDs must exist
+    for (const pc of precincts) {
+      for (const nbId of pc.neighbors!) {
+        if (!precinctIds.has(nbId)) {
+          throw new Error(
+            `Invariant 9: precinct "${pc.id}" neighbors[] references unknown precinct "${nbId}"`
+          );
+        }
+      }
+    }
+    // Invariant 8 (symmetric): neighbors must be symmetric
+    const adjMap = new Map<PrecinctId, Set<PrecinctId>>();
+    for (const pc of precincts) adjMap.set(pc.id, new Set(pc.neighbors!));
+    for (const pc of precincts) {
+      for (const nbId of pc.neighbors!) {
+        const nbNeighbors = adjMap.get(nbId);
+        if (nbNeighbors === undefined || !nbNeighbors.has(pc.id)) {
+          throw new Error(
+            `Invariant 8: custom geometry neighbors not symmetric: precinct "${pc.id}" lists "${nbId}" as neighbor, but "${nbId}" does not list "${pc.id}"`
+          );
+        }
+      }
+    }
+  }
+
+  // Conditional: when parties present, check party refs in demographics
+  if (parties !== undefined) {
+    const partyIds = new Set(parties.map(p => p.id));
+    for (const pc of precincts) {
+      if (pc.demographic_groups === undefined) continue;
+      for (const grp of pc.demographic_groups) {
+        // Invariant 1: unknown party in vote_shares
+        for (const pid of Object.keys(grp.vote_shares)) {
+          if (!partyIds.has(pid as PartyId)) {
+            throw new Error(
+              `Invariant 1: precinct "${pc.id}" group "${grp.id}" references unknown party "${pid}" in vote_shares`
+            );
+          }
+        }
+        // Invariant 6: all parties present in vote_shares + sum == 1.0
+        for (const pid of partyIds) {
+          if (!(pid in grp.vote_shares)) {
+            throw new Error(
+              `Invariant 6: precinct "${pc.id}" group "${grp.id}" is missing vote_share for party "${pid}"`
+            );
+          }
+        }
+        const vsum = Object.values(grp.vote_shares).reduce((a, v) => a + (v as number), 0);
+        if (Math.abs(vsum - 1.0) > EPSILON) {
+          throw new Error(
+            `Invariant 6: precinct "${pc.id}" group "${grp.id}" vote_shares sum is ${vsum}, expected 1.0 (±${EPSILON})`
+          );
+        }
+      }
+    }
+    // Invariant 1: event party refs
+    if (events !== undefined) {
+      for (const ev of events) {
+        if (ev.type === "vote_share_shift" && !partyIds.has(ev.party)) {
+          throw new Error(`Invariant 1: event "${ev.id}" references unknown party "${ev.party}"`);
+        }
+      }
+    }
+    // Invariant 1: criteria party refs
+    if (success_criteria !== undefined) {
+      for (const cr of success_criteria) {
+        const c = cr.criterion;
+        if (c.type === "seat_count" || c.type === "mean_median" || c.type === "safe_seats") {
+          if (!partyIds.has(c.party)) {
+            throw new Error(`Invariant 1: criterion "${cr.id}" references unknown party "${c.party}"`);
+          }
+        }
+      }
+    }
+  }
+
+  // Conditional: population_share sums when demographic_groups present
+  for (const pc of precincts) {
+    if (pc.demographic_groups === undefined) continue;
+    const sum = pc.demographic_groups.reduce((acc, g) => acc + g.population_share, 0);
+    if (Math.abs(sum - 1.0) > EPSILON) {
+      throw new Error(
+        `Invariant 5: precinct "${pc.id}" demographic_groups population_share sum is ${sum}, expected 1.0 (±${EPSILON})`
+      );
+    }
+  }
+
+  // Conditional: district refs when districts present
+  if (districts !== undefined) {
+    const districtIds = new Set(districts.map(d => d.id));
+    for (const pc of precincts) {
+      if (pc.initial_district_id !== undefined && pc.initial_district_id !== null) {
+        if (!districtIds.has(pc.initial_district_id)) {
+          throw new Error(
+            `Invariant 2: precinct "${pc.id}" initial_district_id "${pc.initial_district_id}" does not exist in districts`
+          );
+        }
+      }
+    }
+    if (default_district_id !== undefined && !districtIds.has(default_district_id)) {
+      throw new Error(`Invariant 2: default_district_id "${default_district_id}" does not exist in districts`);
+    }
+  }
+
+  // Conditional: group refs in events when both events and groups present
+  if (events !== undefined) {
+    const definedGroupIds = new Set<GroupId>();
+    for (const pc of precincts) {
+      if (pc.demographic_groups !== undefined) {
+        for (const grp of pc.demographic_groups) definedGroupIds.add(grp.id);
+      }
+    }
+    if (definedGroupIds.size > 0) {
+      for (const ev of events) {
+        const gids = groupFilterGroupIds(ev.group_filter);
+        for (const gid of gids) {
+          if (!definedGroupIds.has(gid)) {
+            throw new Error(`Invariant 3: event "${ev.id}" group_filter references unknown group "${gid}"`);
+          }
+        }
+        validateDimensionFilter(ev.group_filter, group_schema, `event "${ev.id}"`);
+      }
+    }
+  }
+  if (success_criteria !== undefined) {
+    const definedGroupIds = new Set<GroupId>();
+    for (const pc of precincts) {
+      if (pc.demographic_groups !== undefined) {
+        for (const grp of pc.demographic_groups) definedGroupIds.add(grp.id);
+      }
+    }
+    if (definedGroupIds.size > 0) {
+      for (const cr of success_criteria) {
+        const c = cr.criterion;
+        if (c.type === "majority_minority") {
+          const gids = groupFilterGroupIds(c.group_filter);
+          for (const gid of gids) {
+            if (!definedGroupIds.has(gid)) {
+              throw new Error(`Invariant 3: criterion "${cr.id}" group_filter references unknown group "${gid}"`);
+            }
+          }
+          validateDimensionFilter(c.group_filter, group_schema, `criterion "${cr.id}"`);
+        }
+      }
+    }
+  }
+
+  // Conditional: group_schema completeness when both schema and demographic_groups present
+  if (group_schema !== undefined) {
+    const dims = group_schema.dimensions;
+    const dimNames = Object.keys(dims);
+    for (const pc of precincts) {
+      if (pc.demographic_groups === undefined) continue;
+      for (const grp of pc.demographic_groups) {
+        for (const dimName of dimNames) {
+          if (grp.dimensions === undefined || !(dimName in grp.dimensions)) {
+            throw new Error(
+              `Invariant 7: precinct "${pc.id}" group "${grp.id}" is missing dimension "${dimName}" (required by group_schema)`
+            );
+          }
+          const val = grp.dimensions[dimName];
+          const allowed = dims[dimName];
+          if (allowed === undefined || !allowed.includes(val!)) {
+            throw new Error(
+              `Invariant 7: precinct "${pc.id}" group "${grp.id}" dimension "${dimName}" value "${val}" is not in schema values [${allowed?.join(", ")}]`
+            );
+          }
+        }
+      }
+      const expectedCombos = cartesianProduct(dimNames, dims);
+      for (const expectedCombo of expectedCombos) {
+        const matchingGroups = pc.demographic_groups.filter(grp => {
+          if (grp.dimensions === undefined) return false;
+          return dimNames.every(d => grp.dimensions![d] === expectedCombo[d]);
+        });
+        if (matchingGroups.length === 0) {
+          const comboStr = Object.entries(expectedCombo).map(([k, v]) => `${k}=${v}`).join(", ");
+          throw new Error(
+            `Invariant 7: precinct "${pc.id}" is missing a group for dimension combo {${comboStr}} (required by group_schema)`
+          );
+        }
+        if (matchingGroups.length > 1) {
+          const comboStr = Object.entries(expectedCombo).map(([k, v]) => `${k}=${v}`).join(", ");
+          throw new Error(
+            `Invariant 7: precinct "${pc.id}" has ${matchingGroups.length} groups for dimension combo {${comboStr}}; expected exactly 1`
+          );
+        }
+      }
+    }
+  }
+
+  // Terrain validation (conditional on terrain_tiles / river_edges)
+  if (geometry.type === "custom") {
+    if (terrain_tiles !== undefined && terrain_tiles.length > 0) {
+      throw new Error(
+        `Terrain validation: terrain_tiles require geometry.type "hex_axial"; custom geometry is not supported in v1`
+      );
+    }
+    if (river_edges !== undefined && river_edges.length > 0) {
+      throw new Error(
+        `Terrain validation: river_edges require geometry.type "hex_axial"; custom geometry is not supported in v1`
+      );
+    }
+  }
+
+  if (terrain_tiles !== undefined && terrain_tiles.length > 0) {
+    const precinctPosSet = new Set<string>();
+    for (const pc of precincts) {
+      const pos = pc.position;
+      if ("q" in pos) precinctPosSet.add(`${pos.q},${pos.r}`);
+    }
+    const tileTypeMap = new Map<string, string>();
+    for (const tile of terrain_tiles) {
+      const key = `${tile.position.q},${tile.position.r}`;
+      if (precinctPosSet.has(key)) {
+        throw new Error(`Terrain validation: terrain_tile at (${tile.position.q},${tile.position.r}) overlaps precinct position`);
+      }
+      tileTypeMap.set(key, tile.type);
+    }
+    for (const tile of terrain_tiles) {
+      if (tile.type !== "lake") continue;
+      for (const [dq, dr] of HEX_DIRS) {
+        const nKey = `${tile.position.q + dq},${tile.position.r + dr}`;
+        if (tileTypeMap.get(nKey) === "sea") {
+          throw new Error(
+            `Terrain validation: lake tile at (${tile.position.q},${tile.position.r}) is adjacent to sea tile at (${tile.position.q + dq},${tile.position.r + dr})`
+          );
+        }
+      }
+    }
+    {
+      const mountainSet = new Set<string>();
+      for (const tile of terrain_tiles) {
+        if (tile.type === "mountain") mountainSet.add(`${tile.position.q},${tile.position.r}`);
+      }
+      if (mountainSet.size > 0) {
+        const allQs: number[] = [];
+        const allRs: number[] = [];
+        for (const pc of precincts) {
+          const pos = pc.position;
+          if ("q" in pos) { allQs.push(pos.q); allRs.push(pos.r); }
+        }
+        for (const tile of terrain_tiles) { allQs.push(tile.position.q); allRs.push(tile.position.r); }
+        const minQ = Math.min(...allQs) - 2, maxQ = Math.max(...allQs) + 2;
+        const minR = Math.min(...allRs) - 2, maxR = Math.max(...allRs) + 2;
+        const outsideKey = `${minQ},${minR}`;
+        const visited = new Set<string>([outsideKey]);
+        const queue: string[] = [outsideKey];
+        while (queue.length > 0) {
+          const curr = queue.shift()!;
+          const [cq, cr] = curr.split(",").map(Number) as [number, number];
+          for (const [dq, dr] of HEX_DIRS) {
+            const nq = cq + dq, nr = cr + dr;
+            if (nq < minQ - 1 || nq > maxQ + 1 || nr < minR - 1 || nr > maxR + 1) continue;
+            const nKey = `${nq},${nr}`;
+            if (!visited.has(nKey) && !mountainSet.has(nKey)) { visited.add(nKey); queue.push(nKey); }
+          }
+        }
+        for (const pc of precincts) {
+          const pos = pc.position;
+          if ("q" in pos) {
+            const key = `${pos.q},${pos.r}`;
+            if (!visited.has(key)) {
+              throw new Error(`Terrain validation: precinct "${pc.id}" at (${pos.q},${pos.r}) is fully enclosed by mountain tiles`);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (river_edges !== undefined) {
+    const precinctPosByid = new Map<PrecinctId, { q: number; r: number }>();
+    if (geometry.type === "hex_axial") {
+      for (const pc of precincts) {
+        const pos = pc.position;
+        if ("q" in pos) precinctPosByid.set(pc.id, { q: pos.q, r: pos.r });
+      }
+    }
+    for (const [aId, bId] of river_edges) {
+      if (!precinctIds.has(aId)) {
+        throw new Error(`river_edges: precinct "${aId}" does not exist in precincts`);
+      }
+      if (!precinctIds.has(bId)) {
+        throw new Error(`river_edges: precinct "${bId}" does not exist in precincts`);
+      }
+      const aPos = precinctPosByid.get(aId), bPos = precinctPosByid.get(bId);
+      if (aPos !== undefined && bPos !== undefined) {
+        const dq = bPos.q - aPos.q, dr = bPos.r - aPos.r;
+        const isAdjacent = HEX_DIRS.some(([ddq, ddr]) => ddq === dq && ddr === dr);
+        if (!isAdjacent) {
+          throw new Error(`river_edges: precincts "${aId}" (${aPos.q},${aPos.r}) and "${bId}" (${bPos.q},${bPos.r}) are not geometrically adjacent`);
+        }
+      }
+    }
+  }
+}
+
+// ─── Assembly helper ──────────────────────────────────────────────────────────
+
+function assembleScenario(
+  partial: PartialScenario,
+  parties: Party[],
+  districts: District[],
+  events: DemographicEvent[],
+  rules: ScenarioRules,
+  success_criteria: SuccessCriterion[],
+  narrative: Narrative,
+): Scenario {
+  const rawPrecincts = partial.precincts as RawPrecinct[];
+  const fillDistrictId = partial.default_district_id ?? districts[0]!.id;
 
   const precincts: Precinct[] = rawPrecincts.map(pc => {
     if (pc.editable) {
@@ -1063,30 +1466,19 @@ export function loadScenario(json: unknown): Scenario {
         (pc.initial_district_id !== undefined && pc.initial_district_id !== null)
           ? pc.initial_district_id
           : fillDistrictId;
-      const result: Precinct = {
-        ...pc,
-        initial_district_id: resolved,
-      };
-      return result;
+      return { ...pc, initial_district_id: resolved };
     } else {
-      // Context precinct: initial_district_id is required (checked in invariant 4)
-      // It must be non-null at this point
-      const result: Precinct = {
-        ...pc,
-        initial_district_id: pc.initial_district_id as DistrictId,
-      };
-      return result;
+      return { ...pc, initial_district_id: pc.initial_district_id as DistrictId };
     }
   });
 
-  // ── Assemble and return ──────────────────────────────────────────────────────
   const scenario: Scenario = {
     format_version: "1",
-    id,
-    title,
-    election_type,
-    region,
-    geometry,
+    id: partial.id,
+    title: partial.title,
+    election_type: partial.election_type,
+    region: partial.region,
+    geometry: partial.geometry,
     parties,
     districts,
     precincts,
@@ -1096,14 +1488,115 @@ export function loadScenario(json: unknown): Scenario {
     narrative,
   };
 
-  if (group_schema !== undefined) scenario.group_schema = group_schema;
-  if (default_district_id !== undefined) scenario.default_district_id = default_district_id;
-  if (instigator_character !== undefined) scenario.instigator_character = instigator_character;
-  if (character_demographics !== undefined) scenario.character_demographics = character_demographics;
-  if (state_context !== undefined) scenario.state_context = state_context;
-  if (terrain_tiles !== undefined) scenario.terrain_tiles = terrain_tiles;
-  if (river_edges !== undefined) scenario.river_edges = river_edges;
-  if (river_blocks_contiguity !== undefined) scenario.river_blocks_contiguity = river_blocks_contiguity;
+  if (partial.group_schema !== undefined) scenario.group_schema = partial.group_schema;
+  if (partial.default_district_id !== undefined) scenario.default_district_id = partial.default_district_id;
+  if (partial.instigator_character !== undefined) scenario.instigator_character = partial.instigator_character;
+  if (partial.character_demographics !== undefined) scenario.character_demographics = partial.character_demographics;
+  if (partial.state_context !== undefined) scenario.state_context = partial.state_context;
+  if (partial.terrain_tiles !== undefined) scenario.terrain_tiles = partial.terrain_tiles;
+  if (partial.river_edges !== undefined) scenario.river_edges = partial.river_edges;
+  if (partial.river_blocks_contiguity !== undefined) scenario.river_blocks_contiguity = partial.river_blocks_contiguity;
 
   return scenario;
+}
+
+// ─── Public API ───────────────────────────────────────────────────────────────
+
+/**
+ * Structural parse: validates types and structural invariants (geometry
+ * consistency, unique IDs, context precinct assignment, terrain adjacency).
+ * Tolerates absent gameplay fields (parties, districts, population, demographics).
+ *
+ * Use for pipeline intermediates and terrain-preview rendering.
+ * Call `validateScenarioComplete` before gameplay.
+ */
+export function parseScenario(json: unknown): PartialScenario {
+  const raw = requireObject(json, "scenario");
+  const fv = requireString(raw["format_version"], "format_version");
+  if (fv !== "1") {
+    throw new Error(`format_version: unknown version "${fv}"; only "1" is supported`);
+  }
+  const partial = parseAllFields(raw);
+  validateStructural(partial);
+  return partial;
+}
+
+/**
+ * Completeness validation: asserts all gameplay-required fields are present,
+ * runs the full 13-invariant suite, auto-fills initial_district_id, and
+ * assembles the final Scenario.
+ *
+ * Throws if any field required for gameplay is absent.
+ * Call at game-start after parseScenario.
+ */
+export function validateScenarioComplete(partial: PartialScenario): Scenario {
+  // ── Completeness checks ──────────────────────────────────────────────────────
+  if (partial.parties === undefined || partial.parties.length === 0) {
+    throw new Error("completeness: parties is required for gameplay and must not be empty");
+  }
+  if (partial.districts === undefined || partial.districts.length < 2) {
+    throw new Error("Invariant 10: districts must have at least 2 elements");
+  }
+  if (partial.events === undefined) {
+    throw new Error("completeness: events is required for gameplay (use [] for none)");
+  }
+  if (partial.rules === undefined) {
+    throw new Error("completeness: rules is required for gameplay");
+  }
+  if (partial.success_criteria === undefined) {
+    throw new Error("completeness: success_criteria is required for gameplay (use [] for none)");
+  }
+  if (partial.narrative === undefined) {
+    throw new Error("completeness: narrative is required for gameplay");
+  }
+  for (const pc of partial.precincts) {
+    if (pc.total_population === undefined) {
+      throw new Error(`completeness: precinct "${pc.id}" is missing total_population (required for gameplay)`);
+    }
+    if (pc.demographic_groups === undefined) {
+      throw new Error(`completeness: precinct "${pc.id}" is missing demographic_groups (required for gameplay)`);
+    }
+  }
+
+  // ── Full invariant check (all 13) ────────────────────────────────────────────
+  validateScenarioInvariants({
+    rawPrecincts: partial.precincts as RawPrecinct[],
+    parties: partial.parties,
+    districts: partial.districts,
+    events: partial.events,
+    success_criteria: partial.success_criteria,
+    geometry: partial.geometry,
+    group_schema: partial.group_schema,
+    terrain_tiles: partial.terrain_tiles,
+    river_edges: partial.river_edges,
+    default_district_id: partial.default_district_id,
+  });
+
+  return assembleScenario(
+    partial,
+    partial.parties,
+    partial.districts,
+    partial.events,
+    partial.rules,
+    partial.success_criteria,
+    partial.narrative,
+  );
+}
+
+/**
+ * Parse and validate a raw JSON value as a Scenario.
+ *
+ * Equivalent to validateScenarioComplete(parseScenario(json)).
+ * All existing callers continue to work unchanged.
+ *
+ * Throws a descriptive Error if:
+ *  - format_version is unknown
+ *  - any required field is missing or the wrong type
+ *  - any of the 13 spec validation invariants is violated
+ *
+ * Returns a fully-typed Scenario with explicit initial_district_id on all
+ * editable precincts (auto-filled from default_district_id or districts[0]).
+ */
+export function loadScenario(json: unknown): Scenario {
+  return validateScenarioComplete(parseScenario(json));
 }
