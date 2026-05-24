@@ -327,6 +327,39 @@ js_test(
     visibility = ["//visibility:public"],
 )
 
+# ── loader_parse_test_lib: compile parseScenario / validateScenarioComplete tests ──
+
+ts_project(
+    name = "loader_parse_test_lib",
+    srcs = ["loader_parse_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":loader_lib",
+        ":model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+# ── loader_parse_test: run parseScenario + validateScenarioComplete tests ─────
+
+js_test(
+    name = "loader_parse_test",
+    entry_point = "loader_parse_test.js",
+    data = [
+        ":loader_parse_test_lib",
+        ":loader_lib",
+        ":runtime_types_lib",
+        ":model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 # ── loader_typecheck_test: type-check passes ──────────────────────────────────
 
 build_test(

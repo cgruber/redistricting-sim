@@ -59,7 +59,7 @@ the final scenario format.
 
 ## Goals / Acceptance Criteria
 
-- [ ] Loader separates load-time parsing from game-start completeness validation
+- [x] Loader separates load-time parsing from game-start completeness validation
 - [ ] Terrain generator: takes map spec, produces valid (partial) scenario JSON
       with hex positions + terrain tiles + lake clusters + river edges
 - [ ] Population stage: takes partial scenario JSON + params, enriches with
