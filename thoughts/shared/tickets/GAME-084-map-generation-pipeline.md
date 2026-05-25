@@ -4,6 +4,7 @@ title: Map generation pipeline — spec-driven, staged, single format
 area: GAME
 status: open
 created: 2026-05-20
+github_issue: 259
 ---
 
 ## Summary
