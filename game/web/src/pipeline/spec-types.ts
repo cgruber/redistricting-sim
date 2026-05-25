@@ -66,6 +66,41 @@ export interface PopulationSpec {
   variance: number;
 }
 
+// ─── Stage 3: Demographics ────────────────────────────────────────────────────
+
+export interface ZoneFilter {
+  q_lte?: number;
+  q_gte?: number;
+  hex_dist_lte?: number;
+  default?: true;
+}
+
+export interface ZoneSpec {
+  name: string;
+  filter: ZoneFilter;
+  party_base: Record<string, number>;
+}
+
+export interface CountyLabelSpec {
+  id: string;
+  filter: ZoneFilter;
+}
+
+export interface DemographicsGroupSpec {
+  id_suffix: string;
+  name?: string;
+}
+
+export interface DemographicsSpec {
+  seed: number;
+  parties: string[];
+  group: DemographicsGroupSpec;
+  turnout: { min: number; max: number };
+  jitter: number;
+  zones: ZoneSpec[];
+  county_labels?: CountyLabelSpec[];
+}
+
 // ─── Pipeline spec (full file) ────────────────────────────────────────────────
 
 export interface PipelineSpec {
@@ -74,5 +109,6 @@ export interface PipelineSpec {
   map: MapSpec;
   terrain?: TerrainSpec;
   population?: PopulationSpec;
-  // demographics, assembly sections added in later stages
+  demographics?: DemographicsSpec;
+  // assembly section added in later stages
 }

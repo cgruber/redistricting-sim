@@ -1,10 +1,11 @@
 """
 Bazel targets for the GAME-084 map generation pipeline.
 
-  spec_types_lib        — spec-types.ts (YAML pipeline spec TypeScript types)
-  terrain_generator_lib — terrain-generator.ts (Stage 1: hex grid + terrain + rivers)
-  prng_lib              — prng.ts (seeded mulberry32 PRNG, shared across stages)
-  population_stage_lib  — population-stage.ts (Stage 2: per-precinct total_population)
+  spec_types_lib         — spec-types.ts (YAML pipeline spec TypeScript types)
+  terrain_generator_lib  — terrain-generator.ts (Stage 1: hex grid + terrain + rivers)
+  prng_lib               — prng.ts (seeded mulberry32 PRNG, shared across stages)
+  population_stage_lib   — population-stage.ts (Stage 2: per-precinct total_population)
+  demographics_stage_lib — demographics-stage.ts (Stage 3: zone-based vote share generation)
 """
 
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
@@ -167,6 +168,59 @@ js_test(
     data = [
         ":population_stage_test_lib",
         ":population_stage_lib",
+        ":terrain_generator_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# ── demographics_stage_lib: Stage 3 — zone-based vote share generation ────────
+
+ts_project(
+    name = "demographics_stage_lib",
+    srcs = ["demographics-stage.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":prng_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+    ],
+    visibility = ["//game/web:__subpackages__"],
+)
+
+build_test(
+    name = "demographics_stage_typecheck_test",
+    targets = [":demographics_stage_lib"],
+    visibility = ["//visibility:public"],
+)
+
+ts_project(
+    name = "demographics_stage_test_lib",
+    srcs = ["demographics-stage_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":demographics_stage_lib",
+        ":terrain_generator_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+js_test(
+    name = "demographics_stage_test",
+    entry_point = "demographics-stage_test.js",
+    data = [
+        ":demographics_stage_test_lib",
+        ":demographics_stage_lib",
         ":terrain_generator_lib",
         ":spec_types_lib",
         "//game/web/src/model:model_lib",

@@ -5,7 +5,7 @@
 # Stage completion:
 #   [x] Stage 1: map + terrain  (terrain-generator.ts)
 #   [x] Stage 2: population     (population-stage.ts)
-#   [ ] Stage 3: demographics   (demographics-stage.ts — not yet implemented)
+#   [x] Stage 3: demographics   (demographics-stage.ts)
 #   [ ] Stage 4: assembly       (assembler.ts — not yet implemented)
 
 format_version: "1"
@@ -42,34 +42,34 @@ population:
   variance: 150
 
 # ── Stage 3: Demographics ─────────────────────────────────────────────────────
-# (populated by demographics-stage.ts once implemented)
-#
-# demographics:
-#   seed: 42
-#   group:
-#     id_suffix: all
-#     name: All voters
-#   turnout:
-#     min: 0.55
-#     max: 0.70
-#   jitter: 0.04
-#   zones:
-#     - name: west
-#       filter: { q_lte: 0 }
-#       party_base: { ken: 0.62 }
-#     - name: inner_east
-#       filter: { q_gte: 1, hex_dist_lte: 3 }
-#       party_base: { ken: 0.25 }
-#     - name: outer_east
-#       filter: { default: true }
-#       party_base: { ken: 0.52 }
-#   county_labels:
-#     - id: clearwater_west
-#       filter: { q_lte: 0 }
-#     - id: clearwater_east
-#       filter: { q_gte: 1, hex_dist_lte: 3 }
-#     - id: clearwater_central
-#       filter: { default: true }
+
+demographics:
+  seed: 42
+  parties: [ken, ryu]
+  group:
+    id_suffix: all
+    name: All voters
+  turnout:
+    min: 0.55
+    max: 0.70
+  jitter: 0.04
+  zones:
+    - name: west
+      filter: { q_lte: 0 }
+      party_base: { ken: 0.62 }
+    - name: inner_east
+      filter: { q_gte: 1, hex_dist_lte: 3 }
+      party_base: { ken: 0.25 }
+    - name: outer_east
+      filter: { default: true }
+      party_base: { ken: 0.52 }
+  county_labels:
+    - id: clearwater_west
+      filter: { q_lte: 0 }
+    - id: clearwater_east
+      filter: { q_gte: 1, hex_dist_lte: 3 }
+    - id: clearwater_central
+      filter: { default: true }
 
 # ── Stage 4: Assembly ─────────────────────────────────────────────────────────
 # (populated by assembler.ts once implemented)
