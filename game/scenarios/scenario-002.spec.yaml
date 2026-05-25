@@ -6,7 +6,7 @@
 #   [x] Stage 1: map + terrain  (terrain-generator.ts)
 #   [x] Stage 2: population     (population-stage.ts)
 #   [x] Stage 3: demographics   (demographics-stage.ts)
-#   [ ] Stage 4: assembly       (assembler.ts — not yet implemented)
+#   [x] Stage 4: assembly       (assembler.ts)
 
 format_version: "1"
 
@@ -72,81 +72,81 @@ demographics:
       filter: { default: true }
 
 # ── Stage 4: Assembly ─────────────────────────────────────────────────────────
-# (populated by assembler.ts once implemented)
-#
-# assembly:
-#   parties:
-#     - { id: ken, name: Ken Party, abbreviation: KEN }
-#     - { id: ryu, name: Ryu Party, abbreviation: RYU }
-#   districts:
-#     - { id: d1, name: District 1 }
-#     - { id: d2, name: District 2 }
-#     - { id: d3, name: District 3 }
-#     - { id: d4, name: District 4 }
-#   default_district_id: d1
-#   initial_district_rule:
-#     type: diagonal_strip
-#     strips:
-#       - { max_k: -3, district: d1 }
-#       - { max_k: -1, district: d2 }
-#       - { max_k: 1,  district: d3 }
-#       - { default: true, district: d4 }
-#   rules:
-#     population_tolerance: 0.10
-#     contiguity: required
-#   success_criteria:
-#     - id: sc-district-count
-#       required: true
-#       description: All four districts are in use and every precinct is assigned.
-#       criterion: { type: district_count }
-#     - id: sc-population-balance
-#       required: true
-#       description: All four districts have roughly equal population (within 10%).
-#       criterion: { type: population_balance }
-#     - id: sc-ken-seats
-#       required: true
-#       description: The governor's Ken Party wins at least 3 of the 4 districts.
-#       criterion: { type: seat_count, party: ken, operator: gte, count: 3 }
-#     - id: sc-compactness
-#       required: false
-#       description: All districts are reasonably compact (≥ 40%).
-#       criterion: { type: compactness, operator: gte, threshold: 0.40 }
-#   narrative:
-#     character:
-#       name: You
-#       role: Ken Party Campaign Strategist, Clearwater County
-#       motivation: >
-#         The governor wants a reliable majority in Clearwater County. The current
-#         map splits the vote evenly — two Ken, two Ryu. That's not good enough.
-#         You've been brought in to redraw the lines so Ken wins three of four seats.
-#     intro_slides:
-#       - heading: The Governor's Problem
-#         body: >
-#           Clearwater County elects four representatives. Right now, the map gives
-#           each party two seats. The governor — a Ken partisan — wants three.
-#
-#           The population hasn't changed. The voters haven't changed. But the lines
-#           can change.
-#       - heading: How Redistricting Works
-#         body: >
-#           Every ten years, district boundaries are redrawn. The official reason is
-#           to reflect population changes. The real reason, often, is to change who
-#           wins.
-#
-#           You're looking at a map of precincts — small geographic units with known
-#           voting patterns. Your job is to group them into districts that favor the
-#           Ken Party.
-#       - heading: Your First Gerrymander
-#         body: >
-#           Look at the map. The southeast corner votes heavily Ryu. The north and
-#           southwest lean Ken.
-#
-#           If you can contain the Ryu stronghold in one district and spread Ken
-#           voters across the other three, the governor gets the majority. The tools
-#           are simple — the consequences are not.
-#     objective: Redraw the map so the Ken Party wins at least 3 of 4 districts.
-#   instigator_character: governor
-#   character_demographics:
-#     governor: bm
-#     commissioner: bf
-#     judge: lm
+
+assembly:
+  parties:
+    - { id: ken, name: Ken Party, abbreviation: KEN }
+    - { id: ryu, name: Ryu Party, abbreviation: RYU }
+  districts:
+    - { id: d1, name: District 1 }
+    - { id: d2, name: District 2 }
+    - { id: d3, name: District 3 }
+    - { id: d4, name: District 4 }
+  default_district_id: d1
+  initial_district_rule:
+    type: diagonal_strip
+    strips:
+      - { max_k: -3, district: d1 }
+      - { max_k: -1, district: d2 }
+      - { max_k: 1,  district: d3 }
+      - { default: true, district: d4 }
+  rules:
+    population_tolerance: 0.10
+    contiguity: required
+  success_criteria:
+    - id: sc-district-count
+      required: true
+      description: All four districts are in use and every precinct is assigned.
+      criterion: { type: district_count }
+    - id: sc-population-balance
+      required: true
+      description: All four districts have roughly equal population (within 10%).
+      criterion: { type: population_balance }
+    - id: sc-ken-seats
+      required: true
+      description: The governor's Ken Party wins at least 3 of the 4 districts.
+      criterion: { type: seat_count, party: ken, operator: gte, count: 3 }
+      character: instigator
+    - id: sc-compactness
+      required: false
+      description: All districts are reasonably compact (≥ 40%).
+      criterion: { type: compactness, operator: gte, threshold: 0.40 }
+  narrative:
+    character:
+      name: You
+      role: Ken Party Campaign Strategist, Clearwater County
+      motivation: >
+        The governor wants a reliable majority in Clearwater County. The current
+        map splits the vote evenly — two Ken, two Ryu. That's not good enough.
+        You've been brought in to redraw the lines so Ken wins three of four seats.
+    intro_slides:
+      - heading: The Governor's Problem
+        body: >
+          Clearwater County elects four representatives. Right now, the map gives
+          each party two seats. The governor — a Ken partisan — wants three.
+
+          The population hasn't changed. The voters haven't changed. But the lines
+          can change.
+      - heading: How Redistricting Works
+        body: >
+          Every ten years, district boundaries are redrawn. The official reason is
+          to reflect population changes. The real reason, often, is to change who
+          wins.
+
+          You're looking at a map of precincts — small geographic units with known
+          voting patterns. Your job is to group them into districts that favor the
+          Ken Party.
+      - heading: Your First Gerrymander
+        body: >
+          Look at the map. The southeast corner votes heavily Ryu. The north and
+          southwest lean Ken.
+
+          If you can contain the Ryu stronghold in one district and spread Ken
+          voters across the other three, the governor gets the majority. The tools
+          are simple — the consequences are not.
+    objective: Redraw the map so the Ken Party wins at least 3 of 4 districts.
+  instigator_character: governor
+  character_demographics:
+    governor: bm
+    commissioner: bf
+    judge: lm

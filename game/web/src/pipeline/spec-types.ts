@@ -101,6 +101,84 @@ export interface DemographicsSpec {
   county_labels?: CountyLabelSpec[];
 }
 
+// ─── Stage 4: Assembly ───────────────────────────────────────────────────────
+
+export interface PartySpec {
+  id: string;
+  name: string;
+  abbreviation: string;
+}
+
+export interface DistrictSpec {
+  id: string;
+  name?: string;
+}
+
+export interface DiagonalStripEntry {
+  max_k?: number;
+  default?: true;
+  district: string;
+}
+
+export interface DiagonalStripRule {
+  type: "diagonal_strip";
+  strips: DiagonalStripEntry[];
+}
+
+export type InitialDistrictRule = DiagonalStripRule;
+
+export interface AssemblyRulesSpec {
+  population_tolerance: number;
+  contiguity: "required" | "preferred" | "allowed";
+  compactness_threshold?: number;
+}
+
+export interface CriterionSpec {
+  type: string;
+  party?: string;
+  operator?: string;
+  count?: number;
+  threshold?: number;
+  margin?: number;
+  min_count?: number;
+  min_districts?: number;
+  min_eligible_share?: number;
+}
+
+export interface SuccessCriterionSpec {
+  id: string;
+  required: boolean;
+  description: string;
+  criterion: CriterionSpec;
+  character?: string;
+  party_id?: string;
+}
+
+export interface SlideSpec {
+  heading?: string;
+  body: string;
+  image?: string;
+}
+
+export interface NarrativeSpec {
+  character: { name: string; role: string; motivation: string };
+  intro_slides: SlideSpec[];
+  objective: string;
+  flavor_text?: string;
+}
+
+export interface AssemblySpec {
+  parties: PartySpec[];
+  districts: DistrictSpec[];
+  default_district_id?: string;
+  initial_district_rule?: InitialDistrictRule;
+  rules: AssemblyRulesSpec;
+  success_criteria: SuccessCriterionSpec[];
+  narrative: NarrativeSpec;
+  instigator_character?: string;
+  character_demographics?: Record<string, string>;
+}
+
 // ─── Pipeline spec (full file) ────────────────────────────────────────────────
 
 export interface PipelineSpec {
@@ -110,5 +188,5 @@ export interface PipelineSpec {
   terrain?: TerrainSpec;
   population?: PopulationSpec;
   demographics?: DemographicsSpec;
-  // assembly section added in later stages
+  assembly?: AssemblySpec;
 }
