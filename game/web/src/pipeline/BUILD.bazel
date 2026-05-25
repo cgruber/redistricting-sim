@@ -6,6 +6,7 @@ Bazel targets for the GAME-084 map generation pipeline.
   prng_lib               — prng.ts (seeded mulberry32 PRNG, shared across stages)
   population_stage_lib   — population-stage.ts (Stage 2: per-precinct total_population)
   demographics_stage_lib — demographics-stage.ts (Stage 3: zone-based vote share generation)
+  assembler_lib          — assembler.ts (Stage 4: scenario assembly)
 """
 
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
@@ -221,6 +222,62 @@ js_test(
     data = [
         ":demographics_stage_test_lib",
         ":demographics_stage_lib",
+        ":terrain_generator_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# ── assembler_lib: Stage 4 — scenario assembly ────────────────────────────────
+
+ts_project(
+    name = "assembler_lib",
+    srcs = ["assembler.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+    ],
+    visibility = ["//game/web:__subpackages__"],
+)
+
+build_test(
+    name = "assembler_typecheck_test",
+    targets = [":assembler_lib"],
+    visibility = ["//visibility:public"],
+)
+
+ts_project(
+    name = "assembler_test_lib",
+    srcs = ["assembler_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":assembler_lib",
+        ":demographics_stage_lib",
+        ":population_stage_lib",
+        ":terrain_generator_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+js_test(
+    name = "assembler_test",
+    entry_point = "assembler_test.js",
+    data = [
+        ":assembler_test_lib",
+        ":assembler_lib",
+        ":demographics_stage_lib",
+        ":population_stage_lib",
         ":terrain_generator_lib",
         ":spec_types_lib",
         "//game/web/src/model:model_lib",
