@@ -86,7 +86,7 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [":model_lib", ":runtime_types_lib"],
-    visibility = ["//game/web:__pkg__", "//game/web/src/model:__pkg__"],
+    visibility = ["//game/web:__subpackages__"],
 )
 
 # ── campaigns_lib: Campaign type + registry + last-played persistence ─────────
