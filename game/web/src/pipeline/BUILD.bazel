@@ -3,6 +3,8 @@ Bazel targets for the GAME-084 map generation pipeline.
 
   spec_types_lib        — spec-types.ts (YAML pipeline spec TypeScript types)
   terrain_generator_lib — terrain-generator.ts (Stage 1: hex grid + terrain + rivers)
+  prng_lib              — prng.ts (seeded mulberry32 PRNG, shared across stages)
+  population_stage_lib  — population-stage.ts (Stage 2: per-precinct total_population)
 """
 
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
@@ -70,6 +72,101 @@ js_test(
     entry_point = "terrain-generator_test.js",
     data = [
         ":terrain_generator_test_lib",
+        ":terrain_generator_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# ── prng_lib: seeded mulberry32 PRNG, shared across pipeline stages ───────────
+
+ts_project(
+    name = "prng_lib",
+    srcs = ["prng.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    visibility = ["//game/web:__subpackages__"],
+)
+
+build_test(
+    name = "prng_typecheck_test",
+    targets = [":prng_lib"],
+    visibility = ["//visibility:public"],
+)
+
+ts_project(
+    name = "prng_test_lib",
+    srcs = ["prng_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":prng_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+js_test(
+    name = "prng_test",
+    entry_point = "prng_test.js",
+    data = [
+        ":prng_test_lib",
+        ":prng_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# ── population_stage_lib: Stage 2 — per-precinct total_population ─────────────
+
+ts_project(
+    name = "population_stage_lib",
+    srcs = ["population-stage.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":prng_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+    ],
+    visibility = ["//game/web:__subpackages__"],
+)
+
+build_test(
+    name = "population_stage_typecheck_test",
+    targets = [":population_stage_lib"],
+    visibility = ["//visibility:public"],
+)
+
+ts_project(
+    name = "population_stage_test_lib",
+    srcs = ["population-stage_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":population_stage_lib",
+        ":terrain_generator_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+js_test(
+    name = "population_stage_test",
+    entry_point = "population-stage_test.js",
+    data = [
+        ":population_stage_test_lib",
+        ":population_stage_lib",
         ":terrain_generator_lib",
         ":spec_types_lib",
         "//game/web/src/model:model_lib",

@@ -55,6 +55,17 @@ export interface TerrainSpec {
   river_edges?: [HexPos, HexPos][];
 }
 
+// ─── Stage 2: Population ─────────────────────────────────────────────────────
+
+export interface PopulationSpec {
+  /** Seed for the deterministic PRNG used to generate per-precinct populations. */
+  seed: number;
+  /** Base population per precinct before random variance is applied. */
+  base: number;
+  /** Maximum +/- deviation from base (uniform distribution, integer output). */
+  variance: number;
+}
+
 // ─── Pipeline spec (full file) ────────────────────────────────────────────────
 
 export interface PipelineSpec {
@@ -62,5 +73,6 @@ export interface PipelineSpec {
   scenario: ScenarioMetaSpec;
   map: MapSpec;
   terrain?: TerrainSpec;
-  // population, demographics, assembly sections added in later stages
+  population?: PopulationSpec;
+  // demographics, assembly sections added in later stages
 }
