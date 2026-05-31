@@ -7,10 +7,12 @@ Bazel targets for the GAME-084 map generation pipeline.
   population_stage_lib   — population-stage.ts (Stage 2: per-precinct total_population)
   demographics_stage_lib — demographics-stage.ts (Stage 3: zone-based vote share generation)
   assembler_lib          — assembler.ts (Stage 4: scenario assembly)
+  pipeline_runner_lib    — pipeline-runner.ts (orchestrates all four stages)
+  generate_scenario      — generate-scenario.ts (CLI: spec YAML → scenario JSON)
 """
 
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
-load("@aspect_rules_js//js:defs.bzl", "js_test")
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_test")
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
 
 ts_config(
@@ -285,6 +287,117 @@ js_test(
     ],
     node_options = [
         "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# ── pipeline_runner_lib: orchestrates all four stages ─────────────────────────
+
+ts_project(
+    name = "pipeline_runner_lib",
+    srcs = ["pipeline-runner.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":spec_types_lib",
+        ":terrain_generator_lib",
+        ":population_stage_lib",
+        ":demographics_stage_lib",
+        ":assembler_lib",
+        "//game/web/src/model:model_lib",
+    ],
+    visibility = ["//game/web:__subpackages__"],
+)
+
+build_test(
+    name = "pipeline_runner_typecheck_test",
+    targets = [":pipeline_runner_lib"],
+    visibility = ["//visibility:public"],
+)
+
+ts_project(
+    name = "pipeline_runner_test_lib",
+    srcs = ["pipeline-runner_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":pipeline_runner_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+js_test(
+    name = "pipeline_runner_test",
+    entry_point = "pipeline-runner_test.js",
+    data = [
+        ":pipeline_runner_test_lib",
+        ":pipeline_runner_lib",
+        ":assembler_lib",
+        ":demographics_stage_lib",
+        ":population_stage_lib",
+        ":terrain_generator_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# ── tsconfig_cli: adds Node.js types for the generate-scenario CLI ────────────
+
+ts_config(
+    name = "tsconfig_cli",
+    src = "tsconfig.cli.json",
+    deps = [":tsconfig"],
+    visibility = ["//game/web/src/pipeline:__pkg__"],
+)
+
+# ── generate_scenario_lib: compile generate-scenario.ts ──────────────────────
+
+ts_project(
+    name = "generate_scenario_lib",
+    srcs = ["generate-scenario.ts"],
+    tsconfig = ":tsconfig_cli",
+    declaration = True,
+    deps = [
+        ":pipeline_runner_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:loader_lib",
+        "//game:node_modules/yaml",
+        "//game:node_modules/@types/node",
+    ],
+    visibility = ["//game/web/src/pipeline:__pkg__"],
+)
+
+build_test(
+    name = "generate_scenario_typecheck_test",
+    targets = [":generate_scenario_lib"],
+    visibility = ["//visibility:public"],
+)
+
+# ── generate_scenario: CLI binary (bazel run //game/web/src/pipeline:generate_scenario) ──
+
+js_binary(
+    name = "generate_scenario",
+    entry_point = "generate-scenario.js",
+    data = [
+        ":generate_scenario_lib",
+        ":pipeline_runner_lib",
+        ":assembler_lib",
+        ":demographics_stage_lib",
+        ":population_stage_lib",
+        ":terrain_generator_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:loader_lib",
+        "//game/web/src/model:model_lib",
+        "//game:node_modules/yaml",
+        "//game:node_modules/@types/node",
     ],
     visibility = ["//visibility:public"],
 )
