@@ -35,11 +35,26 @@ map:
 terrain: {}
 
 # ── Stage 2: Population ───────────────────────────────────────────────────────
+#
+# Clearwater County urban/suburban mix:
+#   Clearwater City: the county seat, located in the center of the county.
+#   East Mills: a smaller mill town to the east.
+# Both settlements add Gaussian population bumps on top of the terrain-suitability base.
+# The scenario has no terrain features so all precincts start at suitability 1.0.
 
 population:
   seed: 42
   base: 1500
   variance: 150
+  settlements:
+    - label: Clearwater City
+      anchor: center
+      peak: 600
+      radius: 3
+    - label: East Mills
+      anchor: east
+      peak: 200
+      radius: 1
 
 # ── Stage 3: Demographics ─────────────────────────────────────────────────────
 

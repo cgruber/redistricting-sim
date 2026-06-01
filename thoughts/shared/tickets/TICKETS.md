@@ -117,13 +117,13 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-082-terrain-visual-treatment-refinement.md` | game, rendering, UX | Visual-tuning pass over GAME-075 terrain layer: thicker rivers, more prominent coast/lakeside edges, foothill rendering pickup, internal-lake validation |
 | `GAME-083-unassigned-precinct-visual-feedback.md` | game, rendering, UX | Unassigned precincts need a distinct neutral fill (white→dark-grey range); currently indistinguishable from assigned ones |
 | `GAME-084-map-generation-pipeline.md` | game, tooling | Spec-driven staged pipeline (terrain→population→demographics→assembler); single scenario JSON format throughout; requires loader validation split |
-
 ---
 
 ## Resolved
 
 | Summary | Resolution |
 |---|---|
+| GAME-087: terrain-aware population stage | `populateScenario` rewritten with terrain suitability (lakeside 1.4×/riverside 1.3×/coastal 0.9×/mountain 0.5×), Gaussian settlement bumps, and all anchor types (center, cardinal, feature, exact coords); scenario-002 updated with Clearwater City + East Mills settlements; peaks tuned to keep e2e district balance within ±5% of mean; all 10 ACs met; merged PR #265 |
 | GAME-041: split loader.ts | `runtime-types.ts` extracted (requireString etc.); `validateScenarioInvariants()` named function in loader.ts; cartesianProduct at module level; all 8 model tests pass; no behavior change |
 | GAME-086: lake rendering | `lakeside: boolean` derived in adapter from lake-tile adjacency; lake intrusion fill (smooth profile, `#4dd0e1`, depth 5px) rendered in `renderTerrainEdges` with corner caps; river stroke unified with lake colour; tutorial-003 lake tile moved to centre (-1,1); 6 lakeside precincts; e2e + unit tests; merged PR #253 |
 | GAME-085: composable terrain annotations | `Precinct.terrain` and `has_internal_lake` removed from types/loader/adapter/scenario; coast/foothill/lakeside/riverside derived as independent booleans from tile adjacency; `renderTerrainEdges` handles all four simultaneously; scenario JSON cleaned; unit + e2e tests; merged PR #253 |
