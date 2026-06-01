@@ -57,13 +57,39 @@ export interface TerrainSpec {
 
 // ─── Stage 2: Population ─────────────────────────────────────────────────────
 
+export interface TerrainWeightsSpec {
+  lakeside?: number;
+  riverside?: number;
+  coastal?: number;
+  mountain_adjacent?: number;
+}
+
+export type SettlementAnchorNamed =
+  | "lakeside" | "riverside" | "coastal" | "center"
+  | "north" | "northeast" | "east" | "southeast"
+  | "south" | "southwest" | "west" | "northwest";
+
+export type SettlementAnchor = SettlementAnchorNamed | HexPos;
+
+export interface SettlementSpec {
+  type?: "city" | "town" | "village";
+  label?: string;
+  anchor: SettlementAnchor;
+  peak: number;
+  radius: number;
+}
+
 export interface PopulationSpec {
   /** Seed for the deterministic PRNG used to generate per-precinct populations. */
   seed: number;
-  /** Base population per precinct before random variance is applied. */
+  /** Base population per precinct (before terrain suitability and jitter). */
   base: number;
-  /** Maximum +/- deviation from base (uniform distribution, integer output). */
+  /** Maximum +/- jitter per precinct, scaled by suitability. */
   variance: number;
+  /** Override default terrain multipliers. Unspecified keys use defaults. */
+  terrain_weights?: TerrainWeightsSpec;
+  /** Optional named settlement zones that add Gaussian population bumps. */
+  settlements?: SettlementSpec[];
 }
 
 // ─── Stage 3: Demographics ────────────────────────────────────────────────────
