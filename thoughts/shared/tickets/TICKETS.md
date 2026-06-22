@@ -117,6 +117,8 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-082-terrain-visual-treatment-refinement.md` | game, rendering, UX | Visual-tuning pass over GAME-075 terrain layer: thicker rivers, more prominent coast/lakeside edges, foothill rendering pickup, internal-lake validation |
 | `GAME-083-unassigned-precinct-visual-feedback.md` | game, rendering, UX | Unassigned precincts need a distinct neutral fill (white→dark-grey range); currently indistinguishable from assigned ones |
 | `GAME-084-map-generation-pipeline.md` | game, tooling | Spec-driven staged pipeline (terrain→population→demographics→assembler); single scenario JSON format throughout; requires loader validation split |
+| `GAME-088-coherent-population-field.md` | game, tooling | Coherent population field: neighbour-correlated noise (smoothing/value-noise) + optional radial gradient + pow contrast + normalize-to-existing-total; replaces salt-and-pepper independent jitter; extends GAME-087 |
+| `GAME-089-population-aware-county-stage.md` | game, tooling | Population-aware cosmetic counties: one seeded flood-fill algo + named model preset (seat_and_hinterland / city_county[SF] / split_metro[Portland]) from county-formation research; replaces geometric county_labels; borders wrap pop centers + snap to troughs/rivers; depends on GAME-088 |
 ---
 
 ## Resolved
