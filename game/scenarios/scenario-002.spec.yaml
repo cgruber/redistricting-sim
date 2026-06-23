@@ -46,6 +46,13 @@ population:
   seed: 42
   base: 1500
   variance: 150
+  # GAME-088 field-shaping (opt-in). Tuned conservatively so the fixed e2e
+  # painting stays within ±10% district balance; tune up once the e2e re-solves.
+  gradient:
+    strength: 0.25          # gentle monocentric tilt (Clearwater City core → rural rim)
+  smoothing: 2              # neighbour-average the jitter — removes salt-and-pepper
+  contrast: 1.25            # widen dynamic range so density reads as a gradient
+  target_total: 144891     # preserve the existing total (shape change, not magnitude)
   settlements:
     - label: Clearwater City
       anchor: center

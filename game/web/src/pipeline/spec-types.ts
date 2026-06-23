@@ -79,6 +79,20 @@ export interface SettlementSpec {
   radius: number;
 }
 
+/**
+ * Optional monocentric density gradient (GAME-088).
+ *
+ * Tilts population toward an anchor so the map reads as "dense core → rural
+ * fringe" instead of a flat field with a central spike. Multiplier ranges from
+ * `1 - strength` at the rim to `1 + strength` at the anchor (mean ~1).
+ */
+export interface PopulationGradientSpec {
+  /** Where density peaks. Defaults to "center". */
+  anchor?: SettlementAnchor;
+  /** 0 = flat (off); higher tilts more population toward the anchor. Suggested 0.2–0.6. */
+  strength: number;
+}
+
 export interface PopulationSpec {
   /** Seed for the deterministic PRNG used to generate per-precinct populations. */
   seed: number;
@@ -90,6 +104,25 @@ export interface PopulationSpec {
   terrain_weights?: TerrainWeightsSpec;
   /** Optional named settlement zones that add Gaussian population bumps. */
   settlements?: SettlementSpec[];
+  // ── GAME-088 field-shaping layers (all opt-in; unset = legacy additive field) ──
+  /** Monocentric density gradient (urban core → rural fringe). Default: off. */
+  gradient?: PopulationGradientSpec;
+  /**
+   * Neighbour-averaging passes applied to the jitter component to remove
+   * salt-and-pepper noise (so neighbours correlate). Default 0 = independent jitter.
+   */
+  smoothing?: number;
+  /**
+   * Contrast exponent (pow) applied to the normalized field. >1 sharpens dense
+   * areas and lightens the fringe; widens dynamic range. Default 1 = off.
+   */
+  contrast?: number;
+  /**
+   * If set, the final field is scaled so total population equals this. Lets us
+   * change the *shape* of the distribution without changing its magnitude
+   * (keeps district-balance tests stable). Default: unset = no normalization.
+   */
+  target_total?: number;
 }
 
 // ─── Stage 3: Demographics ────────────────────────────────────────────────────
