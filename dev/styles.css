@@ -51,6 +51,24 @@ body {
   border-color: white;
 }
 
+.district-btn-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.district-demo-stat {
+  font-size: 0.68rem;
+  color: #a0a8c0;
+  white-space: nowrap;
+}
+
+.district-demo-stat.met {
+  color: #6fcf97;
+  font-weight: 600;
+}
+
 #btn-undo, #btn-redo, #btn-county-toggle {
   padding: 4px 10px;
   background: #0f3460;
@@ -561,6 +579,7 @@ body {
   font-weight: 700;
   text-align: center;
   padding: 10px 0 6px;
+  transition: opacity 0.3s ease;
 }
 
 #result-verdict.pass { color: #4caf80; }
@@ -571,6 +590,36 @@ body {
   font-size: 0.84rem;
   color: #808098;
   margin-top: -10px;
+  min-height: 1.2rem; /* reserve space while hidden — prevents layout shift */
+  transition: opacity 0.3s ease;
+}
+
+#result-stars {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: -4px;
+  min-height: 2rem; /* reserve space even when empty/hidden — prevents layout shift on reveal */
+}
+
+#result-stars.hidden { visibility: hidden; }
+
+.result-star {
+  font-size: 1.6rem;
+  animation: starReveal 0.3s ease forwards;
+}
+
+.result-star.filled { color: #f4c430; }
+.result-star.empty  { color: #404060; }
+
+@keyframes starReveal {
+  from { opacity: 0; transform: scale(0.5); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-star { animation: none; }
+  #result-verdict, #result-subtitle { transition: none; }
 }
 
 #result-criteria-list {
@@ -617,6 +666,12 @@ body {
 
 .result-criterion .rc-body {
   flex: 1;
+}
+
+.result-criterion .rc-char-label {
+  color: #8099b8;
+  font-size: 0.72rem;
+  margin-bottom: 1px;
 }
 
 .result-criterion .rc-desc {
@@ -710,6 +765,26 @@ body {
   height: 84px;
   background-size: auto 84px;
 }
+
+/* Debug per-criterion pass/fail controls — only rendered in ?debug mode */
+.rc-debug-ctrl {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-left: 6px;
+  flex-shrink: 0;
+}
+.rc-debug-ctrl button {
+  font-size: 0.6rem;
+  padding: 2px 5px;
+  border-radius: 3px;
+  border: 1px solid;
+  cursor: pointer;
+  background: transparent;
+  line-height: 1;
+}
+.rc-debug-pass { color: #4caf80; border-color: #4caf80; }
+.rc-debug-fail { color: #e94560; border-color: #e94560; }
 
 @media (prefers-reduced-motion: reduce) {
   .character-sprite {

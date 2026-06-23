@@ -90,7 +90,7 @@ var __yieldStar = (value) => {
   }, "return" in obj && method("return"), it;
 };
 
-// web/src/model/loader.js
+// game/web/src/model/runtime-types.js
 function isObject(v2) {
   return typeof v2 === "object" && v2 !== null && !Array.isArray(v2);
 }
@@ -131,6 +131,12 @@ function requireObject(v2, label) {
     throw new Error(`${label}: expected object, got ${typeof v2}`);
   return v2;
 }
+var init_runtime_types = __esm({
+  "game/web/src/model/runtime-types.js"() {
+  }
+});
+
+// game/web/src/model/loader.js
 function parseRegion(raw) {
   const r = requireObject(raw, "region");
   return {
@@ -200,7 +206,6 @@ function parsePrecinct(raw, idx) {
   const r = requireObject(raw, label);
   const id2 = requireString(r["id"], `${label}.id`);
   const editable = requireBoolean(r["editable"], `${label}.editable`);
-  const total_population = requireNumber(r["total_population"], `${label}.total_population`);
   const posRaw = requireObject(r["position"], `${label}.position`);
   let position;
   if ("q" in posRaw && "r" in posRaw) {
@@ -216,15 +221,14 @@ function parsePrecinct(raw, idx) {
   } else {
     throw new Error(`${label}.position: must have {q,r} for hex_axial or {x,y} for custom`);
   }
-  const groupsRaw = requireArray(r["demographic_groups"], `${label}.demographic_groups`);
-  const demographic_groups = groupsRaw.map((g, i) => parseDemographicGroup(g, id2, i));
-  const pc = {
-    id: id2,
-    editable,
-    position,
-    total_population,
-    demographic_groups
-  };
+  const pc = { id: id2, editable, position };
+  if (r["total_population"] !== void 0) {
+    pc.total_population = requireNumber(r["total_population"], `${label}.total_population`);
+  }
+  if (r["demographic_groups"] !== void 0) {
+    const groupsRaw = requireArray(r["demographic_groups"], `${label}.demographic_groups`);
+    pc.demographic_groups = groupsRaw.map((g, i) => parseDemographicGroup(g, id2, i));
+  }
   if (r["county_id"] !== void 0) {
     pc.county_id = requireString(r["county_id"], `${label}.county_id`);
   }
@@ -488,6 +492,18 @@ function parseStateContext(raw) {
     other_region_results
   };
 }
+function parseTerrainTile(raw, idx) {
+  const label = `terrain_tiles[${idx}]`;
+  const r = requireObject(raw, label);
+  const posRaw = requireObject(r["position"], `${label}.position`);
+  const q = requireNumber(posRaw["q"], `${label}.position.q`);
+  const rr = requireNumber(posRaw["r"], `${label}.position.r`);
+  const type2 = requireString(r["type"], `${label}.type`);
+  if (type2 !== "sea" && type2 !== "lake" && type2 !== "mountain") {
+    throw new Error(`${label}.type: unknown value "${type2}"; expected "sea", "lake", or "mountain"`);
+  }
+  return { position: { q, r: rr }, type: type2 };
+}
 function groupFilterGroupIds(gf) {
   if ("group_ids" in gf)
     return gf.group_ids;
@@ -507,77 +523,23 @@ function validateDimensionFilter(gf, schema, label) {
     throw new Error(`Invariant 3: ${label} group_filter dimension "${gf.dimension}" value "${gf.value}" is not in schema values [${allowed == null ? void 0 : allowed.join(", ")}]`);
   }
 }
-function loadScenario(json) {
-  const raw = requireObject(json, "scenario");
-  const fv = requireString(raw["format_version"], "format_version");
-  if (fv !== "1") {
-    throw new Error(`format_version: unknown version "${fv}"; only "1" is supported`);
-  }
-  const id2 = requireString(raw["id"], "id");
-  const title = requireString(raw["title"], "title");
-  const etRaw = requireString(raw["election_type"], "election_type");
-  if (etRaw !== "congressional" && etRaw !== "state_senate" && etRaw !== "state_house") {
-    throw new Error(`election_type: must be "congressional", "state_senate", or "state_house"`);
-  }
-  const election_type = etRaw;
-  const region = parseRegion(raw["region"]);
-  const geometry = parseGeometry(raw["geometry"]);
-  const partiesRaw = requireArray(raw["parties"], "parties");
-  const parties = partiesRaw.map((p, i) => parseParty(p, i));
-  const districtsRaw = requireArray(raw["districts"], "districts");
-  const districts = districtsRaw.map((d, i) => parseDistrict(d, i));
-  const precinctsRaw = requireArray(raw["precincts"], "precincts");
-  const rawPrecincts = precinctsRaw.map((p, i) => parsePrecinct(p, i));
-  let group_schema;
-  if (raw["group_schema"] !== void 0) {
-    group_schema = parseGroupSchema(raw["group_schema"]);
-  }
-  let default_district_id;
-  if (raw["default_district_id"] !== void 0) {
-    default_district_id = requireString(raw["default_district_id"], "default_district_id");
-  }
-  const eventsRaw = requireArray(raw["events"], "events");
-  const events = eventsRaw.map((e, i) => parseEvent(e, i));
-  const rules = parseRules(raw["rules"]);
-  const criteriaRaw = requireArray(raw["success_criteria"], "success_criteria");
-  const success_criteria = criteriaRaw.map((c3, i) => parseCriterion(c3, i));
-  const narrative = parseNarrative(raw["narrative"]);
-  let instigator_character;
-  if (raw["instigator_character"] !== void 0) {
-    const icVal = requireString(raw["instigator_character"], "instigator_character");
-    const validChars = ["governor", "commissioner", "party", "judge", "legislator"];
-    if (!validChars.includes(icVal)) {
-      throw new Error(`instigator_character: unknown value "${icVal}"; expected one of: ${validChars.join(", ")}`);
-    }
-    instigator_character = icVal;
-  }
-  let character_demographics;
-  if (raw["character_demographics"] !== void 0) {
-    const cd2 = raw["character_demographics"];
-    if (typeof cd2 !== "object" || cd2 === null || Array.isArray(cd2)) {
-      throw new Error("character_demographics: must be an object");
-    }
-    const validChars = ["governor", "commissioner", "judge", "legislator"];
-    const requiresSuffix = /* @__PURE__ */ new Set(["governor", "commissioner", "legislator"]);
-    character_demographics = {};
-    for (const key of Object.keys(cd2)) {
-      if (key === "party") {
-        throw new Error(`character_demographics: "party" has no demographic variants and must be omitted`);
-      }
-      if (!validChars.includes(key)) {
-        throw new Error(`character_demographics: unknown key "${key}"; expected one of: ${validChars.join(", ")}`);
-      }
-      const val = requireString(cd2[key], `character_demographics.${key}`);
-      if (requiresSuffix.has(key) && val === "") {
-        throw new Error(`character_demographics.${key}: demographic suffix must be non-empty (no bare "${key}/" directory exists)`);
-      }
-      character_demographics[key] = val;
+function cartesianProduct(dimNames, dims) {
+  var _a;
+  if (dimNames.length === 0)
+    return [{}];
+  const first = dimNames[0];
+  const rest = dimNames.slice(1);
+  const restCombos = cartesianProduct(rest, dims);
+  const result = [];
+  for (const val of (_a = dims[first]) != null ? _a : []) {
+    for (const combo of restCombos) {
+      result.push(__spreadValues({ [first]: val }, combo));
     }
   }
-  let state_context;
-  if (raw["state_context"] !== void 0) {
-    state_context = parseStateContext(raw["state_context"]);
-  }
+  return result;
+}
+function validateScenarioInvariants(fields) {
+  const { rawPrecincts, parties, districts, events, success_criteria, geometry, group_schema, terrain_tiles, river_edges, default_district_id } = fields;
   const partyIds = new Set(parties.map((p) => p.id));
   const districtIds = new Set(districts.map((d) => d.id));
   const precinctIds = new Set(rawPrecincts.map((p) => p.id));
@@ -595,12 +557,12 @@ function loadScenario(json) {
   }
   {
     const allIds = /* @__PURE__ */ new Map();
-    const checkId = (id3, label) => {
-      const existing = allIds.get(id3);
+    const checkId = (id2, label) => {
+      const existing = allIds.get(id2);
       if (existing !== void 0) {
-        throw new Error(`Invariant 11: duplicate id "${id3}" found in both ${existing} and ${label}`);
+        throw new Error(`Invariant 11: duplicate id "${id2}" found in both ${existing} and ${label}`);
       }
-      allIds.set(id3, label);
+      allIds.set(id2, label);
     };
     for (const p of parties)
       checkId(p.id, "parties");
@@ -732,21 +694,6 @@ function loadScenario(json) {
     }
   }
   if (group_schema !== void 0) {
-    let cartesianProduct = function(dimNames2, dims2) {
-      var _a;
-      if (dimNames2.length === 0)
-        return [{}];
-      const first = dimNames2[0];
-      const rest = dimNames2.slice(1);
-      const restCombos = cartesianProduct(rest, dims2);
-      const result = [];
-      for (const val of (_a = dims2[first]) != null ? _a : []) {
-        for (const combo of restCombos) {
-          result.push(__spreadValues({ [first]: val }, combo));
-        }
-      }
-      return result;
-    };
     const dims = group_schema.dimensions;
     const dimNames = Object.keys(dims);
     for (const pc of rawPrecincts) {
@@ -782,28 +729,607 @@ function loadScenario(json) {
       }
     }
   }
-  const fillDistrictId = default_district_id != null ? default_district_id : districts[0].id;
-  const precincts = rawPrecincts.map((pc) => {
-    if (pc.editable) {
-      const resolved = pc.initial_district_id !== void 0 && pc.initial_district_id !== null ? pc.initial_district_id : fillDistrictId;
-      const result = __spreadProps(__spreadValues({}, pc), {
-        initial_district_id: resolved
-      });
-      return result;
-    } else {
-      const result = __spreadProps(__spreadValues({}, pc), {
-        initial_district_id: pc.initial_district_id
-      });
-      return result;
+  if (geometry.type === "custom") {
+    if (terrain_tiles !== void 0 && terrain_tiles.length > 0) {
+      throw new Error(`Terrain validation: terrain_tiles require geometry.type "hex_axial"; custom geometry is not supported in v1`);
     }
-  });
-  const scenario = {
+    if (river_edges !== void 0 && river_edges.length > 0) {
+      throw new Error(`Terrain validation: river_edges require geometry.type "hex_axial"; custom geometry is not supported in v1`);
+    }
+  }
+  if (terrain_tiles !== void 0 && terrain_tiles.length > 0) {
+    const precinctPosSet = /* @__PURE__ */ new Set();
+    for (const pc of rawPrecincts) {
+      const pos = pc.position;
+      if ("q" in pos)
+        precinctPosSet.add(`${pos.q},${pos.r}`);
+    }
+    const tileTypeMap = /* @__PURE__ */ new Map();
+    for (const tile of terrain_tiles) {
+      const key = `${tile.position.q},${tile.position.r}`;
+      if (precinctPosSet.has(key)) {
+        throw new Error(`Terrain validation: terrain_tile at (${tile.position.q},${tile.position.r}) overlaps precinct position`);
+      }
+      tileTypeMap.set(key, tile.type);
+    }
+    for (const tile of terrain_tiles) {
+      if (tile.type !== "lake")
+        continue;
+      for (const [dq, dr] of HEX_DIRS) {
+        const nKey = `${tile.position.q + dq},${tile.position.r + dr}`;
+        if (tileTypeMap.get(nKey) === "sea") {
+          throw new Error(`Terrain validation: lake tile at (${tile.position.q},${tile.position.r}) is adjacent to sea tile at (${tile.position.q + dq},${tile.position.r + dr})`);
+        }
+      }
+    }
+    {
+      const mountainSet = /* @__PURE__ */ new Set();
+      for (const tile of terrain_tiles) {
+        if (tile.type === "mountain")
+          mountainSet.add(`${tile.position.q},${tile.position.r}`);
+      }
+      if (mountainSet.size > 0) {
+        const allQs = [];
+        const allRs = [];
+        for (const pc of rawPrecincts) {
+          const pos = pc.position;
+          if ("q" in pos) {
+            allQs.push(pos.q);
+            allRs.push(pos.r);
+          }
+        }
+        for (const tile of terrain_tiles) {
+          allQs.push(tile.position.q);
+          allRs.push(tile.position.r);
+        }
+        const minQ = Math.min(...allQs) - 2;
+        const maxQ = Math.max(...allQs) + 2;
+        const minR = Math.min(...allRs) - 2;
+        const maxR = Math.max(...allRs) + 2;
+        const outsideKey = `${minQ},${minR}`;
+        const visited = /* @__PURE__ */ new Set([outsideKey]);
+        const queue = [outsideKey];
+        while (queue.length > 0) {
+          const curr = queue.shift();
+          const [cq, cr] = curr.split(",").map(Number);
+          for (const [dq, dr] of HEX_DIRS) {
+            const nq = cq + dq;
+            const nr = cr + dr;
+            if (nq < minQ - 1 || nq > maxQ + 1 || nr < minR - 1 || nr > maxR + 1)
+              continue;
+            const nKey = `${nq},${nr}`;
+            if (!visited.has(nKey) && !mountainSet.has(nKey)) {
+              visited.add(nKey);
+              queue.push(nKey);
+            }
+          }
+        }
+        for (const pc of rawPrecincts) {
+          const pos = pc.position;
+          if ("q" in pos) {
+            const key = `${pos.q},${pos.r}`;
+            if (!visited.has(key)) {
+              throw new Error(`Terrain validation: precinct "${pc.id}" at (${pos.q},${pos.r}) is fully enclosed by mountain tiles`);
+            }
+          }
+        }
+      }
+    }
+  }
+  if (river_edges !== void 0) {
+    const precinctPosByid = /* @__PURE__ */ new Map();
+    if (geometry.type === "hex_axial") {
+      for (const pc of rawPrecincts) {
+        const pos = pc.position;
+        if ("q" in pos)
+          precinctPosByid.set(pc.id, { q: pos.q, r: pos.r });
+      }
+    }
+    for (const [aId, bId] of river_edges) {
+      if (!precinctIds.has(aId)) {
+        throw new Error(`river_edges: precinct "${aId}" does not exist in precincts`);
+      }
+      if (!precinctIds.has(bId)) {
+        throw new Error(`river_edges: precinct "${bId}" does not exist in precincts`);
+      }
+      const aPos = precinctPosByid.get(aId);
+      const bPos = precinctPosByid.get(bId);
+      if (aPos !== void 0 && bPos !== void 0) {
+        const dq = bPos.q - aPos.q;
+        const dr = bPos.r - aPos.r;
+        const isAdjacent = HEX_DIRS.some(([ddq, ddr]) => ddq === dq && ddr === dr);
+        if (!isAdjacent) {
+          throw new Error(`river_edges: precincts "${aId}" (${aPos.q},${aPos.r}) and "${bId}" (${bPos.q},${bPos.r}) are not geometrically adjacent`);
+        }
+      }
+    }
+  }
+}
+function parseAllFields(raw) {
+  const id2 = requireString(raw["id"], "id");
+  const title = requireString(raw["title"], "title");
+  const etRaw = requireString(raw["election_type"], "election_type");
+  if (etRaw !== "congressional" && etRaw !== "state_senate" && etRaw !== "state_house") {
+    throw new Error(`election_type: must be "congressional", "state_senate", or "state_house"`);
+  }
+  const election_type = etRaw;
+  const region = parseRegion(raw["region"]);
+  const geometry = parseGeometry(raw["geometry"]);
+  const precinctsRaw = requireArray(raw["precincts"], "precincts");
+  const partialPrecincts = precinctsRaw.map((p, i) => parsePrecinct(p, i));
+  let parties;
+  if (raw["parties"] !== void 0) {
+    parties = requireArray(raw["parties"], "parties").map((p, i) => parseParty(p, i));
+  }
+  let districts;
+  if (raw["districts"] !== void 0) {
+    districts = requireArray(raw["districts"], "districts").map((d, i) => parseDistrict(d, i));
+  }
+  let group_schema;
+  if (raw["group_schema"] !== void 0) {
+    group_schema = parseGroupSchema(raw["group_schema"]);
+  }
+  let default_district_id;
+  if (raw["default_district_id"] !== void 0) {
+    default_district_id = requireString(raw["default_district_id"], "default_district_id");
+  }
+  let events;
+  if (raw["events"] !== void 0) {
+    events = requireArray(raw["events"], "events").map((e, i) => parseEvent(e, i));
+  }
+  let rules;
+  if (raw["rules"] !== void 0) {
+    rules = parseRules(raw["rules"]);
+  }
+  let success_criteria;
+  if (raw["success_criteria"] !== void 0) {
+    success_criteria = requireArray(raw["success_criteria"], "success_criteria").map((c3, i) => parseCriterion(c3, i));
+  }
+  let narrative;
+  if (raw["narrative"] !== void 0) {
+    narrative = parseNarrative(raw["narrative"]);
+  }
+  let instigator_character;
+  if (raw["instigator_character"] !== void 0) {
+    const icVal = requireString(raw["instigator_character"], "instigator_character");
+    const validChars = ["governor", "commissioner", "party", "judge", "legislator"];
+    if (!validChars.includes(icVal)) {
+      throw new Error(`instigator_character: unknown value "${icVal}"; expected one of: ${validChars.join(", ")}`);
+    }
+    instigator_character = icVal;
+  }
+  let character_demographics;
+  if (raw["character_demographics"] !== void 0) {
+    const cd2 = raw["character_demographics"];
+    if (typeof cd2 !== "object" || cd2 === null || Array.isArray(cd2)) {
+      throw new Error("character_demographics: must be an object");
+    }
+    const validChars = ["governor", "commissioner", "judge", "legislator"];
+    const requiresSuffix = /* @__PURE__ */ new Set(["governor", "commissioner", "legislator"]);
+    character_demographics = {};
+    for (const key of Object.keys(cd2)) {
+      if (key === "party") {
+        throw new Error(`character_demographics: "party" has no demographic variants and must be omitted`);
+      }
+      if (!validChars.includes(key)) {
+        throw new Error(`character_demographics: unknown key "${key}"; expected one of: ${validChars.join(", ")}`);
+      }
+      const val = requireString(cd2[key], `character_demographics.${key}`);
+      if (requiresSuffix.has(key) && val === "") {
+        throw new Error(`character_demographics.${key}: demographic suffix must be non-empty (no bare "${key}/" directory exists)`);
+      }
+      character_demographics[key] = val;
+    }
+  }
+  let state_context;
+  if (raw["state_context"] !== void 0) {
+    state_context = parseStateContext(raw["state_context"]);
+  }
+  let terrain_tiles;
+  if (raw["terrain_tiles"] !== void 0) {
+    const tilesRaw = requireArray(raw["terrain_tiles"], "terrain_tiles");
+    terrain_tiles = tilesRaw.map((t, i) => parseTerrainTile(t, i));
+  }
+  let river_edges;
+  if (raw["river_edges"] !== void 0) {
+    const edgesRaw = requireArray(raw["river_edges"], "river_edges");
+    river_edges = edgesRaw.map((pair, i) => {
+      const pairArr = requireArray(pair, `river_edges[${i}]`);
+      if (pairArr.length !== 2) {
+        throw new Error(`river_edges[${i}]: expected array of 2 precinct IDs, got ${pairArr.length}`);
+      }
+      return [
+        requireString(pairArr[0], `river_edges[${i}][0]`),
+        requireString(pairArr[1], `river_edges[${i}][1]`)
+      ];
+    });
+  }
+  let river_blocks_contiguity;
+  if (raw["river_blocks_contiguity"] !== void 0) {
+    river_blocks_contiguity = requireBoolean(raw["river_blocks_contiguity"], "river_blocks_contiguity");
+  }
+  const partial = {
     format_version: "1",
     id: id2,
     title,
     election_type,
     region,
     geometry,
+    precincts: partialPrecincts
+  };
+  if (parties !== void 0)
+    partial.parties = parties;
+  if (districts !== void 0)
+    partial.districts = districts;
+  if (group_schema !== void 0)
+    partial.group_schema = group_schema;
+  if (default_district_id !== void 0)
+    partial.default_district_id = default_district_id;
+  if (events !== void 0)
+    partial.events = events;
+  if (rules !== void 0)
+    partial.rules = rules;
+  if (success_criteria !== void 0)
+    partial.success_criteria = success_criteria;
+  if (narrative !== void 0)
+    partial.narrative = narrative;
+  if (instigator_character !== void 0)
+    partial.instigator_character = instigator_character;
+  if (character_demographics !== void 0)
+    partial.character_demographics = character_demographics;
+  if (state_context !== void 0)
+    partial.state_context = state_context;
+  if (terrain_tiles !== void 0)
+    partial.terrain_tiles = terrain_tiles;
+  if (river_edges !== void 0)
+    partial.river_edges = river_edges;
+  if (river_blocks_contiguity !== void 0)
+    partial.river_blocks_contiguity = river_blocks_contiguity;
+  return partial;
+}
+function validateStructural(s2) {
+  const { precincts, parties, districts, events, success_criteria, geometry, group_schema, terrain_tiles, river_edges, default_district_id } = s2;
+  if (precincts.length < 1) {
+    throw new Error("Invariant 12: precincts must have at least 1 element");
+  }
+  for (const pc of precincts) {
+    if (!pc.editable) {
+      if (pc.initial_district_id === void 0 || pc.initial_district_id === null) {
+        throw new Error(`Invariant 4: context precinct "${pc.id}" (editable: false) must have a non-null initial_district_id`);
+      }
+    }
+  }
+  {
+    const allIds = /* @__PURE__ */ new Map();
+    const checkId = (id2, label) => {
+      const existing = allIds.get(id2);
+      if (existing !== void 0) {
+        throw new Error(`Invariant 11: duplicate id "${id2}" found in both ${existing} and ${label}`);
+      }
+      allIds.set(id2, label);
+    };
+    if (parties !== void 0)
+      for (const p of parties)
+        checkId(p.id, "parties");
+    if (districts !== void 0)
+      for (const d of districts)
+        checkId(d.id, "districts");
+    for (const pc of precincts) {
+      checkId(pc.id, "precincts");
+      if (pc.demographic_groups !== void 0) {
+        for (const grp of pc.demographic_groups)
+          checkId(grp.id, `precincts[${pc.id}].demographic_groups`);
+      }
+    }
+    if (events !== void 0)
+      for (const ev of events)
+        checkId(ev.id, "events");
+    if (success_criteria !== void 0)
+      for (const cr of success_criteria)
+        checkId(cr.id, "success_criteria");
+  }
+  const precinctIds = new Set(precincts.map((p) => p.id));
+  if (geometry.type === "hex_axial") {
+    for (const pc of precincts) {
+      if (pc.neighbors !== void 0) {
+        throw new Error(`Invariant 8: hex_axial geometry precinct "${pc.id}" must not have a neighbors field`);
+      }
+    }
+  } else {
+    for (const pc of precincts) {
+      if (pc.neighbors === void 0) {
+        throw new Error(`Invariant 8: custom geometry precinct "${pc.id}" must have a neighbors field`);
+      }
+    }
+    for (const pc of precincts) {
+      for (const nbId of pc.neighbors) {
+        if (!precinctIds.has(nbId)) {
+          throw new Error(`Invariant 9: precinct "${pc.id}" neighbors[] references unknown precinct "${nbId}"`);
+        }
+      }
+    }
+    const adjMap = /* @__PURE__ */ new Map();
+    for (const pc of precincts)
+      adjMap.set(pc.id, new Set(pc.neighbors));
+    for (const pc of precincts) {
+      for (const nbId of pc.neighbors) {
+        const nbNeighbors = adjMap.get(nbId);
+        if (nbNeighbors === void 0 || !nbNeighbors.has(pc.id)) {
+          throw new Error(`Invariant 8: custom geometry neighbors not symmetric: precinct "${pc.id}" lists "${nbId}" as neighbor, but "${nbId}" does not list "${pc.id}"`);
+        }
+      }
+    }
+  }
+  if (parties !== void 0) {
+    const partyIds = new Set(parties.map((p) => p.id));
+    for (const pc of precincts) {
+      if (pc.demographic_groups === void 0)
+        continue;
+      for (const grp of pc.demographic_groups) {
+        for (const pid of Object.keys(grp.vote_shares)) {
+          if (!partyIds.has(pid)) {
+            throw new Error(`Invariant 1: precinct "${pc.id}" group "${grp.id}" references unknown party "${pid}" in vote_shares`);
+          }
+        }
+        for (const pid of partyIds) {
+          if (!(pid in grp.vote_shares)) {
+            throw new Error(`Invariant 6: precinct "${pc.id}" group "${grp.id}" is missing vote_share for party "${pid}"`);
+          }
+        }
+        const vsum = Object.values(grp.vote_shares).reduce((a2, v2) => a2 + v2, 0);
+        if (Math.abs(vsum - 1) > EPSILON) {
+          throw new Error(`Invariant 6: precinct "${pc.id}" group "${grp.id}" vote_shares sum is ${vsum}, expected 1.0 (\xB1${EPSILON})`);
+        }
+      }
+    }
+    if (events !== void 0) {
+      for (const ev of events) {
+        if (ev.type === "vote_share_shift" && !partyIds.has(ev.party)) {
+          throw new Error(`Invariant 1: event "${ev.id}" references unknown party "${ev.party}"`);
+        }
+      }
+    }
+    if (success_criteria !== void 0) {
+      for (const cr of success_criteria) {
+        const c3 = cr.criterion;
+        if (c3.type === "seat_count" || c3.type === "mean_median" || c3.type === "safe_seats") {
+          if (!partyIds.has(c3.party)) {
+            throw new Error(`Invariant 1: criterion "${cr.id}" references unknown party "${c3.party}"`);
+          }
+        }
+      }
+    }
+  }
+  for (const pc of precincts) {
+    if (pc.demographic_groups === void 0)
+      continue;
+    const sum4 = pc.demographic_groups.reduce((acc, g) => acc + g.population_share, 0);
+    if (Math.abs(sum4 - 1) > EPSILON) {
+      throw new Error(`Invariant 5: precinct "${pc.id}" demographic_groups population_share sum is ${sum4}, expected 1.0 (\xB1${EPSILON})`);
+    }
+  }
+  if (districts !== void 0) {
+    const districtIds = new Set(districts.map((d) => d.id));
+    for (const pc of precincts) {
+      if (pc.initial_district_id !== void 0 && pc.initial_district_id !== null) {
+        if (!districtIds.has(pc.initial_district_id)) {
+          throw new Error(`Invariant 2: precinct "${pc.id}" initial_district_id "${pc.initial_district_id}" does not exist in districts`);
+        }
+      }
+    }
+    if (default_district_id !== void 0 && !districtIds.has(default_district_id)) {
+      throw new Error(`Invariant 2: default_district_id "${default_district_id}" does not exist in districts`);
+    }
+  }
+  if (events !== void 0) {
+    const definedGroupIds = /* @__PURE__ */ new Set();
+    for (const pc of precincts) {
+      if (pc.demographic_groups !== void 0) {
+        for (const grp of pc.demographic_groups)
+          definedGroupIds.add(grp.id);
+      }
+    }
+    if (definedGroupIds.size > 0) {
+      for (const ev of events) {
+        const gids = groupFilterGroupIds(ev.group_filter);
+        for (const gid of gids) {
+          if (!definedGroupIds.has(gid)) {
+            throw new Error(`Invariant 3: event "${ev.id}" group_filter references unknown group "${gid}"`);
+          }
+        }
+        validateDimensionFilter(ev.group_filter, group_schema, `event "${ev.id}"`);
+      }
+    }
+  }
+  if (success_criteria !== void 0) {
+    const definedGroupIds = /* @__PURE__ */ new Set();
+    for (const pc of precincts) {
+      if (pc.demographic_groups !== void 0) {
+        for (const grp of pc.demographic_groups)
+          definedGroupIds.add(grp.id);
+      }
+    }
+    if (definedGroupIds.size > 0) {
+      for (const cr of success_criteria) {
+        const c3 = cr.criterion;
+        if (c3.type === "majority_minority") {
+          const gids = groupFilterGroupIds(c3.group_filter);
+          for (const gid of gids) {
+            if (!definedGroupIds.has(gid)) {
+              throw new Error(`Invariant 3: criterion "${cr.id}" group_filter references unknown group "${gid}"`);
+            }
+          }
+          validateDimensionFilter(c3.group_filter, group_schema, `criterion "${cr.id}"`);
+        }
+      }
+    }
+  }
+  if (group_schema !== void 0) {
+    const dims = group_schema.dimensions;
+    const dimNames = Object.keys(dims);
+    for (const pc of precincts) {
+      if (pc.demographic_groups === void 0)
+        continue;
+      for (const grp of pc.demographic_groups) {
+        for (const dimName of dimNames) {
+          if (grp.dimensions === void 0 || !(dimName in grp.dimensions)) {
+            throw new Error(`Invariant 7: precinct "${pc.id}" group "${grp.id}" is missing dimension "${dimName}" (required by group_schema)`);
+          }
+          const val = grp.dimensions[dimName];
+          const allowed = dims[dimName];
+          if (allowed === void 0 || !allowed.includes(val)) {
+            throw new Error(`Invariant 7: precinct "${pc.id}" group "${grp.id}" dimension "${dimName}" value "${val}" is not in schema values [${allowed == null ? void 0 : allowed.join(", ")}]`);
+          }
+        }
+      }
+      const expectedCombos = cartesianProduct(dimNames, dims);
+      for (const expectedCombo of expectedCombos) {
+        const matchingGroups = pc.demographic_groups.filter((grp) => {
+          if (grp.dimensions === void 0)
+            return false;
+          return dimNames.every((d) => grp.dimensions[d] === expectedCombo[d]);
+        });
+        if (matchingGroups.length === 0) {
+          const comboStr = Object.entries(expectedCombo).map(([k2, v2]) => `${k2}=${v2}`).join(", ");
+          throw new Error(`Invariant 7: precinct "${pc.id}" is missing a group for dimension combo {${comboStr}} (required by group_schema)`);
+        }
+        if (matchingGroups.length > 1) {
+          const comboStr = Object.entries(expectedCombo).map(([k2, v2]) => `${k2}=${v2}`).join(", ");
+          throw new Error(`Invariant 7: precinct "${pc.id}" has ${matchingGroups.length} groups for dimension combo {${comboStr}}; expected exactly 1`);
+        }
+      }
+    }
+  }
+  if (geometry.type === "custom") {
+    if (terrain_tiles !== void 0 && terrain_tiles.length > 0) {
+      throw new Error(`Terrain validation: terrain_tiles require geometry.type "hex_axial"; custom geometry is not supported in v1`);
+    }
+    if (river_edges !== void 0 && river_edges.length > 0) {
+      throw new Error(`Terrain validation: river_edges require geometry.type "hex_axial"; custom geometry is not supported in v1`);
+    }
+  }
+  if (terrain_tiles !== void 0 && terrain_tiles.length > 0) {
+    const precinctPosSet = /* @__PURE__ */ new Set();
+    for (const pc of precincts) {
+      const pos = pc.position;
+      if ("q" in pos)
+        precinctPosSet.add(`${pos.q},${pos.r}`);
+    }
+    const tileTypeMap = /* @__PURE__ */ new Map();
+    for (const tile of terrain_tiles) {
+      const key = `${tile.position.q},${tile.position.r}`;
+      if (precinctPosSet.has(key)) {
+        throw new Error(`Terrain validation: terrain_tile at (${tile.position.q},${tile.position.r}) overlaps precinct position`);
+      }
+      tileTypeMap.set(key, tile.type);
+    }
+    for (const tile of terrain_tiles) {
+      if (tile.type !== "lake")
+        continue;
+      for (const [dq, dr] of HEX_DIRS) {
+        const nKey = `${tile.position.q + dq},${tile.position.r + dr}`;
+        if (tileTypeMap.get(nKey) === "sea") {
+          throw new Error(`Terrain validation: lake tile at (${tile.position.q},${tile.position.r}) is adjacent to sea tile at (${tile.position.q + dq},${tile.position.r + dr})`);
+        }
+      }
+    }
+    {
+      const mountainSet = /* @__PURE__ */ new Set();
+      for (const tile of terrain_tiles) {
+        if (tile.type === "mountain")
+          mountainSet.add(`${tile.position.q},${tile.position.r}`);
+      }
+      if (mountainSet.size > 0) {
+        const allQs = [];
+        const allRs = [];
+        for (const pc of precincts) {
+          const pos = pc.position;
+          if ("q" in pos) {
+            allQs.push(pos.q);
+            allRs.push(pos.r);
+          }
+        }
+        for (const tile of terrain_tiles) {
+          allQs.push(tile.position.q);
+          allRs.push(tile.position.r);
+        }
+        const minQ = Math.min(...allQs) - 2, maxQ = Math.max(...allQs) + 2;
+        const minR = Math.min(...allRs) - 2, maxR = Math.max(...allRs) + 2;
+        const outsideKey = `${minQ},${minR}`;
+        const visited = /* @__PURE__ */ new Set([outsideKey]);
+        const queue = [outsideKey];
+        while (queue.length > 0) {
+          const curr = queue.shift();
+          const [cq, cr] = curr.split(",").map(Number);
+          for (const [dq, dr] of HEX_DIRS) {
+            const nq = cq + dq, nr = cr + dr;
+            if (nq < minQ - 1 || nq > maxQ + 1 || nr < minR - 1 || nr > maxR + 1)
+              continue;
+            const nKey = `${nq},${nr}`;
+            if (!visited.has(nKey) && !mountainSet.has(nKey)) {
+              visited.add(nKey);
+              queue.push(nKey);
+            }
+          }
+        }
+        for (const pc of precincts) {
+          const pos = pc.position;
+          if ("q" in pos) {
+            const key = `${pos.q},${pos.r}`;
+            if (!visited.has(key)) {
+              throw new Error(`Terrain validation: precinct "${pc.id}" at (${pos.q},${pos.r}) is fully enclosed by mountain tiles`);
+            }
+          }
+        }
+      }
+    }
+  }
+  if (river_edges !== void 0) {
+    const precinctPosByid = /* @__PURE__ */ new Map();
+    if (geometry.type === "hex_axial") {
+      for (const pc of precincts) {
+        const pos = pc.position;
+        if ("q" in pos)
+          precinctPosByid.set(pc.id, { q: pos.q, r: pos.r });
+      }
+    }
+    for (const [aId, bId] of river_edges) {
+      if (!precinctIds.has(aId)) {
+        throw new Error(`river_edges: precinct "${aId}" does not exist in precincts`);
+      }
+      if (!precinctIds.has(bId)) {
+        throw new Error(`river_edges: precinct "${bId}" does not exist in precincts`);
+      }
+      const aPos = precinctPosByid.get(aId), bPos = precinctPosByid.get(bId);
+      if (aPos !== void 0 && bPos !== void 0) {
+        const dq = bPos.q - aPos.q, dr = bPos.r - aPos.r;
+        const isAdjacent = HEX_DIRS.some(([ddq, ddr]) => ddq === dq && ddr === dr);
+        if (!isAdjacent) {
+          throw new Error(`river_edges: precincts "${aId}" (${aPos.q},${aPos.r}) and "${bId}" (${bPos.q},${bPos.r}) are not geometrically adjacent`);
+        }
+      }
+    }
+  }
+}
+function assembleScenario(partial, parties, districts, events, rules, success_criteria, narrative) {
+  var _a;
+  const rawPrecincts = partial.precincts;
+  const fillDistrictId = (_a = partial.default_district_id) != null ? _a : districts[0].id;
+  const precincts = rawPrecincts.map((pc) => {
+    if (pc.editable) {
+      const resolved = pc.initial_district_id !== void 0 && pc.initial_district_id !== null ? pc.initial_district_id : fillDistrictId;
+      return __spreadProps(__spreadValues({}, pc), { initial_district_id: resolved });
+    } else {
+      return __spreadProps(__spreadValues({}, pc), { initial_district_id: pc.initial_district_id });
+    }
+  });
+  const scenario = {
+    format_version: "1",
+    id: partial.id,
+    title: partial.title,
+    election_type: partial.election_type,
+    region: partial.region,
+    geometry: partial.geometry,
     parties,
     districts,
     precincts,
@@ -812,44 +1338,113 @@ function loadScenario(json) {
     success_criteria,
     narrative
   };
-  if (group_schema !== void 0)
-    scenario.group_schema = group_schema;
-  if (default_district_id !== void 0)
-    scenario.default_district_id = default_district_id;
-  if (instigator_character !== void 0)
-    scenario.instigator_character = instigator_character;
-  if (character_demographics !== void 0)
-    scenario.character_demographics = character_demographics;
-  if (state_context !== void 0)
-    scenario.state_context = state_context;
+  if (partial.group_schema !== void 0)
+    scenario.group_schema = partial.group_schema;
+  if (partial.default_district_id !== void 0)
+    scenario.default_district_id = partial.default_district_id;
+  if (partial.instigator_character !== void 0)
+    scenario.instigator_character = partial.instigator_character;
+  if (partial.character_demographics !== void 0)
+    scenario.character_demographics = partial.character_demographics;
+  if (partial.state_context !== void 0)
+    scenario.state_context = partial.state_context;
+  if (partial.terrain_tiles !== void 0)
+    scenario.terrain_tiles = partial.terrain_tiles;
+  if (partial.river_edges !== void 0)
+    scenario.river_edges = partial.river_edges;
+  if (partial.river_blocks_contiguity !== void 0)
+    scenario.river_blocks_contiguity = partial.river_blocks_contiguity;
   return scenario;
 }
-var EPSILON;
+function parseScenario(json) {
+  const raw = requireObject(json, "scenario");
+  const fv = requireString(raw["format_version"], "format_version");
+  if (fv !== "1") {
+    throw new Error(`format_version: unknown version "${fv}"; only "1" is supported`);
+  }
+  const partial = parseAllFields(raw);
+  validateStructural(partial);
+  return partial;
+}
+function validateScenarioComplete(partial) {
+  if (partial.parties === void 0 || partial.parties.length === 0) {
+    throw new Error("completeness: parties is required for gameplay and must not be empty");
+  }
+  if (partial.districts === void 0 || partial.districts.length < 2) {
+    throw new Error("Invariant 10: districts must have at least 2 elements");
+  }
+  if (partial.events === void 0) {
+    throw new Error("completeness: events is required for gameplay (use [] for none)");
+  }
+  if (partial.rules === void 0) {
+    throw new Error("completeness: rules is required for gameplay");
+  }
+  if (partial.success_criteria === void 0) {
+    throw new Error("completeness: success_criteria is required for gameplay (use [] for none)");
+  }
+  if (partial.narrative === void 0) {
+    throw new Error("completeness: narrative is required for gameplay");
+  }
+  for (const pc of partial.precincts) {
+    if (pc.total_population === void 0) {
+      throw new Error(`completeness: precinct "${pc.id}" is missing total_population (required for gameplay)`);
+    }
+    if (pc.demographic_groups === void 0) {
+      throw new Error(`completeness: precinct "${pc.id}" is missing demographic_groups (required for gameplay)`);
+    }
+  }
+  validateScenarioInvariants({
+    rawPrecincts: partial.precincts,
+    parties: partial.parties,
+    districts: partial.districts,
+    events: partial.events,
+    success_criteria: partial.success_criteria,
+    geometry: partial.geometry,
+    group_schema: partial.group_schema,
+    terrain_tiles: partial.terrain_tiles,
+    river_edges: partial.river_edges,
+    default_district_id: partial.default_district_id
+  });
+  return assembleScenario(partial, partial.parties, partial.districts, partial.events, partial.rules, partial.success_criteria, partial.narrative);
+}
+function loadScenario(json) {
+  return validateScenarioComplete(parseScenario(json));
+}
+var HEX_DIRS, EPSILON;
 var init_loader = __esm({
-  "web/src/model/loader.js"() {
+  "game/web/src/model/loader.js"() {
+    init_runtime_types();
+    HEX_DIRS = [
+      [1, 0],
+      [0, 1],
+      [-1, 1],
+      [-1, 0],
+      [0, -1],
+      [1, -1]
+    ];
     EPSILON = 1e-6;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/ascending.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/ascending.js
 function ascending(a2, b) {
   return a2 == null || b == null ? NaN : a2 < b ? -1 : a2 > b ? 1 : a2 >= b ? 0 : NaN;
 }
 var init_ascending = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/ascending.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/ascending.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/descending.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/descending.js
 function descending(a2, b) {
   return a2 == null || b == null ? NaN : b < a2 ? -1 : b > a2 ? 1 : b >= a2 ? 0 : NaN;
 }
 var init_descending = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/descending.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/descending.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/bisector.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/bisector.js
 function bisector(f) {
   let compare1, compare2, delta;
   if (f.length !== 2) {
@@ -899,25 +1494,25 @@ function zero() {
   return 0;
 }
 var init_bisector = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/bisector.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/bisector.js"() {
     init_ascending();
     init_descending();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/number.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/number.js
 function number(x3) {
   return x3 === null ? NaN : +x3;
 }
 var init_number = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/number.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/number.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/bisect.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/bisect.js
 var ascendingBisect, bisectRight, bisectLeft, bisectCenter;
 var init_bisect = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/bisect.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/bisect.js"() {
     init_ascending();
     init_bisector();
     init_number();
@@ -928,7 +1523,7 @@ var init_bisect = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/blur.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/blur.js
 function Blur2(blur3) {
   return function(data, rx, ry = rx) {
     if (!((rx = +rx) >= 0))
@@ -1025,53 +1620,53 @@ function bluri(radius) {
 }
 var blur2, blurImage;
 var init_blur = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/blur.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/blur.js"() {
     blur2 = Blur2(blurf);
     blurImage = Blur2(blurfImage);
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/count.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/count.js
 var init_count = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/count.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/count.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/cross.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/cross.js
 var init_cross = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/cross.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/cross.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/cumsum.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/cumsum.js
 var init_cumsum = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/cumsum.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/cumsum.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/variance.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/variance.js
 var init_variance = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/variance.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/variance.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/deviation.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/deviation.js
 var init_deviation = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/deviation.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/deviation.js"() {
     init_variance();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/extent.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/extent.js
 var init_extent = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/extent.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/extent.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/fsum.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/fsum.js
 var Adder;
 var init_fsum = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/fsum.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/fsum.js"() {
     Adder = class {
       constructor() {
         this._partials = new Float64Array(32);
@@ -1116,66 +1711,66 @@ var init_fsum = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/internmap@2.0.3/node_modules/internmap/src/index.js
+// game/node_modules/.aspect_rules_js/internmap@2.0.3/node_modules/internmap/src/index.js
 var init_src = __esm({
-  "node_modules/.aspect_rules_js/internmap@2.0.3/node_modules/internmap/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/internmap@2.0.3/node_modules/internmap/src/index.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/identity.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/identity.js
 var init_identity = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/identity.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/identity.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/group.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/group.js
 var init_group = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/group.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/group.js"() {
     init_src();
     init_identity();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/permute.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/permute.js
 var init_permute = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/permute.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/permute.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/sort.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/sort.js
 var init_sort = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/sort.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/sort.js"() {
     init_ascending();
     init_permute();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/groupSort.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/groupSort.js
 var init_groupSort = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/groupSort.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/groupSort.js"() {
     init_ascending();
     init_group();
     init_sort();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/array.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/array.js
 var array, slice, map;
 var init_array = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/array.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/array.js"() {
     array = Array.prototype;
     slice = array.slice;
     map = array.map;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/constant.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/constant.js
 var init_constant = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/constant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/constant.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/ticks.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/ticks.js
 function tickSpec(start2, stop, count3) {
   const step = (stop - start2) / Math.max(0, count3), power = Math.floor(Math.log10(step)), error = step / Math.pow(10, power), factor = error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1;
   let i1, i2, inc;
@@ -1212,30 +1807,30 @@ function tickStep(start2, stop, count3) {
 }
 var e10, e5, e2;
 var init_ticks = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/ticks.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/ticks.js"() {
     e10 = Math.sqrt(50);
     e5 = Math.sqrt(10);
     e2 = Math.sqrt(2);
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/nice.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/nice.js
 var init_nice = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/nice.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/nice.js"() {
     init_ticks();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/threshold/sturges.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/threshold/sturges.js
 var init_sturges = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/threshold/sturges.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/threshold/sturges.js"() {
     init_count();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/bin.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/bin.js
 var init_bin = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/bin.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/bin.js"() {
     init_array();
     init_bisect();
     init_constant();
@@ -1247,47 +1842,47 @@ var init_bin = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/max.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/max.js
 var init_max = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/max.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/max.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/maxIndex.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/maxIndex.js
 var init_maxIndex = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/maxIndex.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/maxIndex.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/min.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/min.js
 var init_min = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/min.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/min.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/minIndex.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/minIndex.js
 var init_minIndex = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/minIndex.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/minIndex.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/quickselect.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/quickselect.js
 var init_quickselect = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/quickselect.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/quickselect.js"() {
     init_sort();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/greatest.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/greatest.js
 var init_greatest = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/greatest.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/greatest.js"() {
     init_ascending();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/quantile.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/quantile.js
 var init_quantile = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/quantile.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/quantile.js"() {
     init_max();
     init_maxIndex();
     init_min();
@@ -1299,36 +1894,36 @@ var init_quantile = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/threshold/freedmanDiaconis.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/threshold/freedmanDiaconis.js
 var init_freedmanDiaconis = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/threshold/freedmanDiaconis.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/threshold/freedmanDiaconis.js"() {
     init_count();
     init_quantile();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/threshold/scott.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/threshold/scott.js
 var init_scott = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/threshold/scott.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/threshold/scott.js"() {
     init_count();
     init_deviation();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/mean.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/mean.js
 var init_mean = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/mean.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/mean.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/median.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/median.js
 var init_median = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/median.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/median.js"() {
     init_quantile();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/merge.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/merge.js
 function* flatten(arrays) {
   for (const array4 of arrays) {
     yield* __yieldStar(array4);
@@ -1338,68 +1933,68 @@ function merge(arrays) {
   return Array.from(flatten(arrays));
 }
 var init_merge = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/merge.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/merge.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/mode.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/mode.js
 var init_mode = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/mode.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/mode.js"() {
     init_src();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/pairs.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/pairs.js
 var init_pairs = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/pairs.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/pairs.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/range.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/range.js
 var init_range = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/range.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/range.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/rank.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/rank.js
 var init_rank = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/rank.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/rank.js"() {
     init_ascending();
     init_sort();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/least.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/least.js
 var init_least = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/least.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/least.js"() {
     init_ascending();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/leastIndex.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/leastIndex.js
 var init_leastIndex = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/leastIndex.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/leastIndex.js"() {
     init_ascending();
     init_minIndex();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/greatestIndex.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/greatestIndex.js
 var init_greatestIndex = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/greatestIndex.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/greatestIndex.js"() {
     init_ascending();
     init_maxIndex();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/scan.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/scan.js
 var init_scan = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/scan.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/scan.js"() {
     init_leastIndex();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/shuffle.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/shuffle.js
 function shuffler(random) {
   return function shuffle2(array4, i0 = 0, i1 = array4.length) {
     let m = i1 - (i0 = +i0);
@@ -1413,111 +2008,111 @@ function shuffler(random) {
 }
 var shuffle_default;
 var init_shuffle = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/shuffle.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/shuffle.js"() {
     shuffle_default = shuffler(Math.random);
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/sum.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/sum.js
 var init_sum = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/sum.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/sum.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/transpose.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/transpose.js
 var init_transpose = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/transpose.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/transpose.js"() {
     init_min();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/zip.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/zip.js
 var init_zip = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/zip.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/zip.js"() {
     init_transpose();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/every.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/every.js
 var init_every = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/every.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/every.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/some.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/some.js
 var init_some = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/some.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/some.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/filter.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/filter.js
 var init_filter = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/filter.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/filter.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/map.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/map.js
 var init_map = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/map.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/map.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/reduce.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/reduce.js
 var init_reduce = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/reduce.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/reduce.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/reverse.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/reverse.js
 var init_reverse = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/reverse.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/reverse.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/difference.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/difference.js
 var init_difference = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/difference.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/difference.js"() {
     init_src();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/disjoint.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/disjoint.js
 var init_disjoint = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/disjoint.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/disjoint.js"() {
     init_src();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/intersection.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/intersection.js
 var init_intersection = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/intersection.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/intersection.js"() {
     init_src();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/superset.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/superset.js
 var init_superset = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/superset.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/superset.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/subset.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/subset.js
 var init_subset = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/subset.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/subset.js"() {
     init_superset();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/union.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/union.js
 var init_union = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/union.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/union.js"() {
     init_src();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/index.js
+// game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/index.js
 var init_src2 = __esm({
-  "node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-array@3.2.4/node_modules/d3-array/src/index.js"() {
     init_bisect();
     init_ascending();
     init_bisector();
@@ -1578,27 +2173,27 @@ var init_src2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-axis@3.0.0/node_modules/d3-axis/src/identity.js
+// game/node_modules/.aspect_rules_js/d3-axis@3.0.0/node_modules/d3-axis/src/identity.js
 var init_identity2 = __esm({
-  "node_modules/.aspect_rules_js/d3-axis@3.0.0/node_modules/d3-axis/src/identity.js"() {
+  "game/node_modules/.aspect_rules_js/d3-axis@3.0.0/node_modules/d3-axis/src/identity.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-axis@3.0.0/node_modules/d3-axis/src/axis.js
+// game/node_modules/.aspect_rules_js/d3-axis@3.0.0/node_modules/d3-axis/src/axis.js
 var init_axis = __esm({
-  "node_modules/.aspect_rules_js/d3-axis@3.0.0/node_modules/d3-axis/src/axis.js"() {
+  "game/node_modules/.aspect_rules_js/d3-axis@3.0.0/node_modules/d3-axis/src/axis.js"() {
     init_identity2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-axis@3.0.0/node_modules/d3-axis/src/index.js
+// game/node_modules/.aspect_rules_js/d3-axis@3.0.0/node_modules/d3-axis/src/index.js
 var init_src3 = __esm({
-  "node_modules/.aspect_rules_js/d3-axis@3.0.0/node_modules/d3-axis/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-axis@3.0.0/node_modules/d3-axis/src/index.js"() {
     init_axis();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-dispatch@3.0.1/node_modules/d3-dispatch/src/dispatch.js
+// game/node_modules/.aspect_rules_js/d3-dispatch@3.0.1/node_modules/d3-dispatch/src/dispatch.js
 function dispatch() {
   for (var i = 0, n = arguments.length, _ = {}, t; i < n; ++i) {
     if (!(t = arguments[i] + "") || t in _ || /[\s.]/.test(t))
@@ -1640,7 +2235,7 @@ function set(type2, name, callback) {
 }
 var noop, dispatch_default;
 var init_dispatch = __esm({
-  "node_modules/.aspect_rules_js/d3-dispatch@3.0.1/node_modules/d3-dispatch/src/dispatch.js"() {
+  "game/node_modules/.aspect_rules_js/d3-dispatch@3.0.1/node_modules/d3-dispatch/src/dispatch.js"() {
     noop = { value: () => {
     } };
     Dispatch.prototype = dispatch.prototype = {
@@ -1690,17 +2285,17 @@ var init_dispatch = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-dispatch@3.0.1/node_modules/d3-dispatch/src/index.js
+// game/node_modules/.aspect_rules_js/d3-dispatch@3.0.1/node_modules/d3-dispatch/src/index.js
 var init_src4 = __esm({
-  "node_modules/.aspect_rules_js/d3-dispatch@3.0.1/node_modules/d3-dispatch/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-dispatch@3.0.1/node_modules/d3-dispatch/src/index.js"() {
     init_dispatch();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/namespaces.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/namespaces.js
 var xhtml, namespaces_default;
 var init_namespaces = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/namespaces.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/namespaces.js"() {
     xhtml = "http://www.w3.org/1999/xhtml";
     namespaces_default = {
       svg: "http://www.w3.org/2000/svg",
@@ -1712,7 +2307,7 @@ var init_namespaces = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/namespace.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/namespace.js
 function namespace_default(name) {
   var prefix = name += "", i = prefix.indexOf(":");
   if (i >= 0 && (prefix = name.slice(0, i)) !== "xmlns")
@@ -1720,12 +2315,12 @@ function namespace_default(name) {
   return namespaces_default.hasOwnProperty(prefix) ? { space: namespaces_default[prefix], local: name } : name;
 }
 var init_namespace = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/namespace.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/namespace.js"() {
     init_namespaces();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/creator.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/creator.js
 function creatorInherit(name) {
   return function() {
     var document2 = this.ownerDocument, uri = this.namespaceURI;
@@ -1742,13 +2337,13 @@ function creator_default(name) {
   return (fullname.local ? creatorFixed : creatorInherit)(fullname);
 }
 var init_creator = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/creator.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/creator.js"() {
     init_namespace();
     init_namespaces();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selector.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selector.js
 function none() {
 }
 function selector_default(selector) {
@@ -1757,11 +2352,11 @@ function selector_default(selector) {
   };
 }
 var init_selector = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selector.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selector.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/select.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/select.js
 function select_default(select) {
   if (typeof select !== "function")
     select = selector_default(select);
@@ -1777,22 +2372,22 @@ function select_default(select) {
   return new Selection(subgroups, this._parents);
 }
 var init_select = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/select.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/select.js"() {
     init_selection();
     init_selector();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/array.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/array.js
 function array2(x3) {
   return x3 == null ? [] : Array.isArray(x3) ? x3 : Array.from(x3);
 }
 var init_array2 = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/array.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/array.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selectorAll.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selectorAll.js
 function empty() {
   return [];
 }
@@ -1802,11 +2397,11 @@ function selectorAll_default(selector) {
   };
 }
 var init_selectorAll = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selectorAll.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selectorAll.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectAll.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectAll.js
 function arrayAll(select) {
   return function() {
     return array2(select.apply(this, arguments));
@@ -1828,14 +2423,14 @@ function selectAll_default(select) {
   return new Selection(subgroups, parents);
 }
 var init_selectAll = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectAll.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectAll.js"() {
     init_selection();
     init_array2();
     init_selectorAll();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/matcher.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/matcher.js
 function matcher_default(selector) {
   return function() {
     return this.matches(selector);
@@ -1847,11 +2442,11 @@ function childMatcher(selector) {
   };
 }
 var init_matcher = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/matcher.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/matcher.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectChild.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectChild.js
 function childFind(match) {
   return function() {
     return find.call(this.children, match);
@@ -1865,13 +2460,13 @@ function selectChild_default(match) {
 }
 var find;
 var init_selectChild = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectChild.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectChild.js"() {
     init_matcher();
     find = Array.prototype.find;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectChildren.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectChildren.js
 function children() {
   return Array.from(this.children);
 }
@@ -1885,13 +2480,13 @@ function selectChildren_default(match) {
 }
 var filter2;
 var init_selectChildren = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectChildren.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectChildren.js"() {
     init_matcher();
     filter2 = Array.prototype.filter;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/filter.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/filter.js
 function filter_default(match) {
   if (typeof match !== "function")
     match = matcher_default(match);
@@ -1905,22 +2500,22 @@ function filter_default(match) {
   return new Selection(subgroups, this._parents);
 }
 var init_filter2 = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/filter.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/filter.js"() {
     init_selection();
     init_matcher();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/sparse.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/sparse.js
 function sparse_default(update) {
   return new Array(update.length);
 }
 var init_sparse = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/sparse.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/sparse.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/enter.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/enter.js
 function enter_default() {
   return new Selection(this._enter || this._groups.map(sparse_default), this._parents);
 }
@@ -1932,7 +2527,7 @@ function EnterNode(parent, datum2) {
   this.__data__ = datum2;
 }
 var init_enter = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/enter.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/enter.js"() {
     init_sparse();
     init_selection();
     EnterNode.prototype = {
@@ -1953,18 +2548,18 @@ var init_enter = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/constant.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/constant.js
 function constant_default(x3) {
   return function() {
     return x3;
   };
 }
 var init_constant2 = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/constant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/constant.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/data.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/data.js
 function bindIndex(parent, group2, enter, update, exit, data) {
   var i = 0, node, groupLength = group2.length, dataLength = data.length;
   for (; i < dataLength; ++i) {
@@ -2040,25 +2635,25 @@ function arraylike(data) {
   return typeof data === "object" && "length" in data ? data : Array.from(data);
 }
 var init_data = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/data.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/data.js"() {
     init_selection();
     init_enter();
     init_constant2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/exit.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/exit.js
 function exit_default() {
   return new Selection(this._exit || this._groups.map(sparse_default), this._parents);
 }
 var init_exit = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/exit.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/exit.js"() {
     init_sparse();
     init_selection();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/join.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/join.js
 function join_default(onenter, onupdate, onexit) {
   var enter = this.enter(), update = this, exit = this.exit();
   if (typeof onenter === "function") {
@@ -2080,11 +2675,11 @@ function join_default(onenter, onupdate, onexit) {
   return enter && update ? enter.merge(update).order() : update;
 }
 var init_join = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/join.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/join.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/merge.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/merge.js
 function merge_default(context) {
   var selection2 = context.selection ? context.selection() : context;
   for (var groups0 = this._groups, groups1 = selection2._groups, m0 = groups0.length, m1 = groups1.length, m = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m; ++j) {
@@ -2100,12 +2695,12 @@ function merge_default(context) {
   return new Selection(merges, this._parents);
 }
 var init_merge2 = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/merge.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/merge.js"() {
     init_selection();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/order.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/order.js
 function order_default() {
   for (var groups2 = this._groups, j = -1, m = groups2.length; ++j < m; ) {
     for (var group2 = groups2[j], i = group2.length - 1, next = group2[i], node; --i >= 0; ) {
@@ -2119,11 +2714,11 @@ function order_default() {
   return this;
 }
 var init_order = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/order.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/order.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/sort.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/sort.js
 function sort_default(compare) {
   if (!compare)
     compare = ascending2;
@@ -2144,12 +2739,12 @@ function ascending2(a2, b) {
   return a2 < b ? -1 : a2 > b ? 1 : a2 >= b ? 0 : NaN;
 }
 var init_sort2 = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/sort.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/sort.js"() {
     init_selection();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/call.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/call.js
 function call_default() {
   var callback = arguments[0];
   arguments[0] = this;
@@ -2157,20 +2752,20 @@ function call_default() {
   return this;
 }
 var init_call = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/call.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/call.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/nodes.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/nodes.js
 function nodes_default() {
   return Array.from(this);
 }
 var init_nodes = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/nodes.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/nodes.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/node.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/node.js
 function node_default() {
   for (var groups2 = this._groups, j = 0, m = groups2.length; j < m; ++j) {
     for (var group2 = groups2[j], i = 0, n = group2.length; i < n; ++i) {
@@ -2182,11 +2777,11 @@ function node_default() {
   return null;
 }
 var init_node = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/node.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/node.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/size.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/size.js
 function size_default() {
   let size = 0;
   for (const node of this)
@@ -2194,20 +2789,20 @@ function size_default() {
   return size;
 }
 var init_size = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/size.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/size.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/empty.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/empty.js
 function empty_default() {
   return !this.node();
 }
 var init_empty = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/empty.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/empty.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/each.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/each.js
 function each_default(callback) {
   for (var groups2 = this._groups, j = 0, m = groups2.length; j < m; ++j) {
     for (var group2 = groups2[j], i = 0, n = group2.length, node; i < n; ++i) {
@@ -2218,11 +2813,11 @@ function each_default(callback) {
   return this;
 }
 var init_each = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/each.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/each.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/attr.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/attr.js
 function attrRemove(name) {
   return function() {
     this.removeAttribute(name);
@@ -2270,21 +2865,21 @@ function attr_default(name, value) {
   return this.each((value == null ? fullname.local ? attrRemoveNS : attrRemove : typeof value === "function" ? fullname.local ? attrFunctionNS : attrFunction : fullname.local ? attrConstantNS : attrConstant)(fullname, value));
 }
 var init_attr = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/attr.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/attr.js"() {
     init_namespace();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/window.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/window.js
 function window_default(node) {
   return node.ownerDocument && node.ownerDocument.defaultView || node.document && node || node.defaultView;
 }
 var init_window = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/window.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/window.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/style.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/style.js
 function styleRemove(name) {
   return function() {
     this.style.removeProperty(name);
@@ -2311,12 +2906,12 @@ function styleValue(node, name) {
   return node.style.getPropertyValue(name) || window_default(node).getComputedStyle(node, null).getPropertyValue(name);
 }
 var init_style = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/style.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/style.js"() {
     init_window();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/property.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/property.js
 function propertyRemove(name) {
   return function() {
     delete this[name];
@@ -2340,11 +2935,11 @@ function property_default(name, value) {
   return arguments.length > 1 ? this.each((value == null ? propertyRemove : typeof value === "function" ? propertyFunction : propertyConstant)(name, value)) : this.node()[name];
 }
 var init_property = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/property.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/property.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/classed.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/classed.js
 function classArray(string) {
   return string.trim().split(/^|\s+/);
 }
@@ -2392,7 +2987,7 @@ function classed_default(name, value) {
   return this.each((typeof value === "function" ? classedFunction : value ? classedTrue : classedFalse)(names, value));
 }
 var init_classed = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/classed.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/classed.js"() {
     ClassList.prototype = {
       add: function(name) {
         var i = this._names.indexOf(name);
@@ -2415,7 +3010,7 @@ var init_classed = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/text.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/text.js
 function textRemove() {
   this.textContent = "";
 }
@@ -2434,11 +3029,11 @@ function text_default(value) {
   return arguments.length ? this.each(value == null ? textRemove : (typeof value === "function" ? textFunction : textConstant)(value)) : this.node().textContent;
 }
 var init_text = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/text.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/text.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/html.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/html.js
 function htmlRemove() {
   this.innerHTML = "";
 }
@@ -2457,11 +3052,11 @@ function html_default(value) {
   return arguments.length ? this.each(value == null ? htmlRemove : (typeof value === "function" ? htmlFunction : htmlConstant)(value)) : this.node().innerHTML;
 }
 var init_html = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/html.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/html.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/raise.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/raise.js
 function raise() {
   if (this.nextSibling)
     this.parentNode.appendChild(this);
@@ -2470,11 +3065,11 @@ function raise_default() {
   return this.each(raise);
 }
 var init_raise = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/raise.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/raise.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/lower.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/lower.js
 function lower() {
   if (this.previousSibling)
     this.parentNode.insertBefore(this, this.parentNode.firstChild);
@@ -2483,11 +3078,11 @@ function lower_default() {
   return this.each(lower);
 }
 var init_lower = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/lower.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/lower.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/append.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/append.js
 function append_default(name) {
   var create2 = typeof name === "function" ? name : creator_default(name);
   return this.select(function() {
@@ -2495,12 +3090,12 @@ function append_default(name) {
   });
 }
 var init_append = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/append.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/append.js"() {
     init_creator();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/insert.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/insert.js
 function constantNull() {
   return null;
 }
@@ -2511,13 +3106,13 @@ function insert_default(name, before) {
   });
 }
 var init_insert = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/insert.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/insert.js"() {
     init_creator();
     init_selector();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/remove.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/remove.js
 function remove() {
   var parent = this.parentNode;
   if (parent)
@@ -2527,11 +3122,11 @@ function remove_default() {
   return this.each(remove);
 }
 var init_remove = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/remove.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/remove.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/clone.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/clone.js
 function selection_cloneShallow() {
   var clone = this.cloneNode(false), parent = this.parentNode;
   return parent ? parent.insertBefore(clone, this.nextSibling) : clone;
@@ -2544,20 +3139,20 @@ function clone_default(deep) {
   return this.select(deep ? selection_cloneDeep : selection_cloneShallow);
 }
 var init_clone = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/clone.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/clone.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/datum.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/datum.js
 function datum_default(value) {
   return arguments.length ? this.property("__data__", value) : this.node().__data__;
 }
 var init_datum = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/datum.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/datum.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/on.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/on.js
 function contextListener(listener) {
   return function(event) {
     listener.call(this, event, this.__data__);
@@ -2629,11 +3224,11 @@ function on_default(typename, value, options) {
   return this;
 }
 var init_on = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/on.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/on.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/dispatch.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/dispatch.js
 function dispatchEvent(node, type2, params) {
   var window2 = window_default(node), event = window2.CustomEvent;
   if (typeof event === "function") {
@@ -2661,12 +3256,12 @@ function dispatch_default2(type2, params) {
   return this.each((typeof params === "function" ? dispatchFunction : dispatchConstant)(type2, params));
 }
 var init_dispatch2 = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/dispatch.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/dispatch.js"() {
     init_window();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/iterator.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/iterator.js
 function* iterator_default() {
   for (var groups2 = this._groups, j = 0, m = groups2.length; j < m; ++j) {
     for (var group2 = groups2[j], i = 0, n = group2.length, node; i < n; ++i) {
@@ -2676,11 +3271,11 @@ function* iterator_default() {
   }
 }
 var init_iterator = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/iterator.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/iterator.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/index.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/index.js
 function Selection(groups2, parents) {
   this._groups = groups2;
   this._parents = parents;
@@ -2693,7 +3288,7 @@ function selection_selection() {
 }
 var root, selection_default;
 var init_selection = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selection/index.js"() {
     init_select();
     init_selectAll();
     init_selectChild();
@@ -2771,25 +3366,25 @@ var init_selection = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/select.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/select.js
 function select_default2(selector) {
   return typeof selector === "string" ? new Selection([[document.querySelector(selector)]], [document.documentElement]) : new Selection([[selector]], root);
 }
 var init_select2 = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/select.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/select.js"() {
     init_selection();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/create.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/create.js
 var init_create = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/create.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/create.js"() {
     init_creator();
     init_select2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/local.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/local.js
 function local() {
   return new Local();
 }
@@ -2798,7 +3393,7 @@ function Local() {
 }
 var nextId;
 var init_local = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/local.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/local.js"() {
     nextId = 0;
     Local.prototype = local.prototype = {
       constructor: Local,
@@ -2822,7 +3417,7 @@ var init_local = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/sourceEvent.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/sourceEvent.js
 function sourceEvent_default(event) {
   let sourceEvent;
   while (sourceEvent = event.sourceEvent)
@@ -2830,11 +3425,11 @@ function sourceEvent_default(event) {
   return event;
 }
 var init_sourceEvent = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/sourceEvent.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/sourceEvent.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/pointer.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/pointer.js
 function pointer_default(event, node) {
   event = sourceEvent_default(event);
   if (node === void 0)
@@ -2855,30 +3450,30 @@ function pointer_default(event, node) {
   return [event.pageX, event.pageY];
 }
 var init_pointer = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/pointer.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/pointer.js"() {
     init_sourceEvent();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/pointers.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/pointers.js
 var init_pointers = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/pointers.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/pointers.js"() {
     init_pointer();
     init_sourceEvent();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selectAll.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selectAll.js
 var init_selectAll2 = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selectAll.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/selectAll.js"() {
     init_array2();
     init_selection();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/index.js
+// game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/index.js
 var init_src5 = __esm({
-  "node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-selection@3.0.0/node_modules/d3-selection/src/index.js"() {
     init_create();
     init_creator();
     init_local();
@@ -2897,19 +3492,19 @@ var init_src5 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/noevent.js
+// game/node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/noevent.js
 function noevent_default(event) {
   event.preventDefault();
   event.stopImmediatePropagation();
 }
 var nonpassivecapture;
 var init_noevent = __esm({
-  "node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/noevent.js"() {
+  "game/node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/noevent.js"() {
     nonpassivecapture = { capture: true, passive: false };
   }
 });
 
-// node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/nodrag.js
+// game/node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/nodrag.js
 function nodrag_default(view) {
   var root2 = view.document.documentElement, selection2 = select_default2(view).on("dragstart.drag", noevent_default, nonpassivecapture);
   if ("onselectstart" in root2) {
@@ -2935,19 +3530,19 @@ function yesdrag(view, noclick) {
   }
 }
 var init_nodrag = __esm({
-  "node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/nodrag.js"() {
+  "game/node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/nodrag.js"() {
     init_src5();
     init_noevent();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/constant.js
+// game/node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/constant.js
 var init_constant3 = __esm({
-  "node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/constant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/constant.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/event.js
+// game/node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/event.js
 function DragEvent(type2, {
   sourceEvent,
   subject,
@@ -2975,7 +3570,7 @@ function DragEvent(type2, {
   });
 }
 var init_event = __esm({
-  "node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/event.js"() {
+  "game/node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/event.js"() {
     DragEvent.prototype.on = function() {
       var value = this._.on.apply(this._, arguments);
       return value === this._ ? this : value;
@@ -2983,9 +3578,9 @@ var init_event = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/drag.js
+// game/node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/drag.js
 var init_drag = __esm({
-  "node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/drag.js"() {
+  "game/node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/drag.js"() {
     init_src4();
     init_src5();
     init_nodrag();
@@ -2995,15 +3590,15 @@ var init_drag = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/index.js
+// game/node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/index.js
 var init_src6 = __esm({
-  "node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-drag@3.0.0/node_modules/d3-drag/src/index.js"() {
     init_drag();
     init_nodrag();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/define.js
+// game/node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/define.js
 function define_default(constructor, factory, prototype) {
   constructor.prototype = factory.prototype = prototype;
   prototype.constructor = constructor;
@@ -3015,11 +3610,11 @@ function extend(parent, definition) {
   return prototype;
 }
 var init_define = __esm({
-  "node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/define.js"() {
+  "game/node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/define.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/color.js
+// game/node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/color.js
 function Color() {
 }
 function color_formatHex() {
@@ -3139,7 +3734,7 @@ function hsl2rgb(h, m1, m2) {
 }
 var darker, brighter, reI, reN, reP, reHex, reRgbInteger, reRgbPercent, reRgbaInteger, reRgbaPercent, reHslPercent, reHslaPercent, named;
 var init_color = __esm({
-  "node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/color.js"() {
+  "game/node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/color.js"() {
     init_define();
     darker = 0.7;
     brighter = 1 / darker;
@@ -3375,16 +3970,16 @@ var init_color = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/math.js
+// game/node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/math.js
 var radians, degrees;
 var init_math = __esm({
-  "node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/math.js"() {
+  "game/node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/math.js"() {
     radians = Math.PI / 180;
     degrees = 180 / Math.PI;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/lab.js
+// game/node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/lab.js
 function labConvert(o) {
   if (o instanceof Lab)
     return new Lab(o.l, o.a, o.b, o.opacity);
@@ -3449,7 +4044,7 @@ function hcl2lab(o) {
 }
 var K, Xn, Yn, Zn, t0, t1, t2, t3;
 var init_lab = __esm({
-  "node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/lab.js"() {
+  "game/node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/lab.js"() {
     init_define();
     init_color();
     init_math();
@@ -3495,7 +4090,7 @@ var init_lab = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/cubehelix.js
+// game/node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/cubehelix.js
 function cubehelixConvert(o) {
   if (o instanceof Cubehelix)
     return new Cubehelix(o.h, o.s, o.l, o.opacity);
@@ -3515,7 +4110,7 @@ function Cubehelix(h, s2, l, opacity) {
 }
 var A, B, C, D, E, ED, EB, BC_DA;
 var init_cubehelix = __esm({
-  "node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/cubehelix.js"() {
+  "game/node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/cubehelix.js"() {
     init_define();
     init_color();
     init_math();
@@ -3549,16 +4144,16 @@ var init_cubehelix = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/index.js
+// game/node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/index.js
 var init_src7 = __esm({
-  "node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-color@3.1.0/node_modules/d3-color/src/index.js"() {
     init_color();
     init_lab();
     init_cubehelix();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/basis.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/basis.js
 function basis(t13, v0, v1, v2, v3) {
   var t22 = t13 * t13, t32 = t22 * t13;
   return ((1 - 3 * t13 + 3 * t22 - t32) * v0 + (4 - 6 * t22 + 3 * t32) * v1 + (1 + 3 * t13 + 3 * t22 - 3 * t32) * v2 + t32 * v3) / 6;
@@ -3571,11 +4166,11 @@ function basis_default(values) {
   };
 }
 var init_basis = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/basis.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/basis.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/basisClosed.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/basisClosed.js
 function basisClosed_default(values) {
   var n = values.length;
   return function(t) {
@@ -3584,20 +4179,20 @@ function basisClosed_default(values) {
   };
 }
 var init_basisClosed = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/basisClosed.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/basisClosed.js"() {
     init_basis();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/constant.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/constant.js
 var constant_default3;
 var init_constant4 = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/constant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/constant.js"() {
     constant_default3 = (x3) => () => x3;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/color.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/color.js
 function linear(a2, d) {
   return function(t) {
     return a2 + t * d;
@@ -3622,12 +4217,12 @@ function nogamma(a2, b) {
   return d ? linear(a2, d) : constant_default3(isNaN(a2) ? b : a2);
 }
 var init_color2 = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/color.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/color.js"() {
     init_constant4();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/rgb.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/rgb.js
 function rgbSpline(spline) {
   return function(colors) {
     var n = colors.length, r = new Array(n), g = new Array(n), b = new Array(n), i, color2;
@@ -3651,7 +4246,7 @@ function rgbSpline(spline) {
 }
 var rgb_default, rgbBasis, rgbBasisClosed;
 var init_rgb = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/rgb.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/rgb.js"() {
     init_src7();
     init_basis();
     init_basisClosed();
@@ -3676,45 +4271,45 @@ var init_rgb = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/numberArray.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/numberArray.js
 var init_numberArray = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/numberArray.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/numberArray.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/array.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/array.js
 var init_array3 = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/array.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/array.js"() {
     init_value();
     init_numberArray();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/date.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/date.js
 var init_date = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/date.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/date.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/number.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/number.js
 function number_default(a2, b) {
   return a2 = +a2, b = +b, function(t) {
     return a2 * (1 - t) + b * t;
   };
 }
 var init_number2 = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/number.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/number.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/object.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/object.js
 var init_object = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/object.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/object.js"() {
     init_value();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/string.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/string.js
 function zero2(b) {
   return function() {
     return b;
@@ -3762,16 +4357,16 @@ function string_default(a2, b) {
 }
 var reA, reB;
 var init_string = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/string.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/string.js"() {
     init_number2();
     reA = /[-+]?(?:\d+\.?\d*|\.?\d+)(?:[eE][-+]?\d+)?/g;
     reB = new RegExp(reA.source, "g");
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/value.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/value.js
 var init_value = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/value.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/value.js"() {
     init_src7();
     init_rgb();
     init_array3();
@@ -3784,26 +4379,26 @@ var init_value = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/discrete.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/discrete.js
 var init_discrete = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/discrete.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/discrete.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/hue.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/hue.js
 var init_hue = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/hue.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/hue.js"() {
     init_color2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/round.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/round.js
 var init_round = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/round.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/round.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/decompose.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/decompose.js
 function decompose_default(a2, b, c3, d, e, f) {
   var scaleX, scaleY, skewX;
   if (scaleX = Math.sqrt(a2 * a2 + b * b))
@@ -3825,7 +4420,7 @@ function decompose_default(a2, b, c3, d, e, f) {
 }
 var degrees2, identity2;
 var init_decompose = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/decompose.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/decompose.js"() {
     degrees2 = 180 / Math.PI;
     identity2 = {
       translateX: 0,
@@ -3838,7 +4433,7 @@ var init_decompose = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/parse.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/parse.js
 function parseCss(value) {
   const m = new (typeof DOMMatrix === "function" ? DOMMatrix : WebKitCSSMatrix)(value + "");
   return m.isIdentity ? identity2 : decompose_default(m.a, m.b, m.c, m.d, m.e, m.f);
@@ -3856,12 +4451,12 @@ function parseSvg(value) {
 }
 var svgNode;
 var init_parse = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/parse.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/parse.js"() {
     init_decompose();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/index.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/index.js
 function interpolateTransform(parse, pxComma, pxParen, degParen) {
   function pop(s2) {
     return s2.length ? s2.pop() + " " : "";
@@ -3918,7 +4513,7 @@ function interpolateTransform(parse, pxComma, pxParen, degParen) {
 }
 var interpolateTransformCss, interpolateTransformSvg;
 var init_transform = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/index.js"() {
     init_number2();
     init_parse();
     interpolateTransformCss = interpolateTransform(parseCss, "px, ", "px)", "deg)");
@@ -3926,7 +4521,7 @@ var init_transform = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/zoom.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/zoom.js
 function cosh(x3) {
   return ((x3 = Math.exp(x3)) + 1 / x3) / 2;
 }
@@ -3938,7 +4533,7 @@ function tanh(x3) {
 }
 var epsilon2, zoom_default;
 var init_zoom = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/zoom.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/zoom.js"() {
     epsilon2 = 1e-12;
     zoom_default = function zoomRho(rho, rho2, rho4) {
       function zoom(p0, p1) {
@@ -3976,7 +4571,7 @@ var init_zoom = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/hsl.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/hsl.js
 function hsl2(hue2) {
   return function(start2, end) {
     var h = hue2((start2 = hsl(start2)).h, (end = hsl(end)).h), s2 = nogamma(start2.s, end.s), l = nogamma(start2.l, end.l), opacity = nogamma(start2.opacity, end.opacity);
@@ -3991,7 +4586,7 @@ function hsl2(hue2) {
 }
 var hsl_default, hslLong;
 var init_hsl = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/hsl.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/hsl.js"() {
     init_src7();
     init_color2();
     hsl_default = hsl2(hue);
@@ -3999,15 +4594,15 @@ var init_hsl = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/lab.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/lab.js
 var init_lab2 = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/lab.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/lab.js"() {
     init_src7();
     init_color2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/hcl.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/hcl.js
 function hcl2(hue2) {
   return function(start2, end) {
     var h = hue2((start2 = hcl(start2)).h, (end = hcl(end)).h), c3 = nogamma(start2.c, end.c), l = nogamma(start2.l, end.l), opacity = nogamma(start2.opacity, end.opacity);
@@ -4022,7 +4617,7 @@ function hcl2(hue2) {
 }
 var hcl_default, hclLong;
 var init_hcl = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/hcl.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/hcl.js"() {
     init_src7();
     init_color2();
     hcl_default = hcl2(hue);
@@ -4030,7 +4625,7 @@ var init_hcl = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/cubehelix.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/cubehelix.js
 function cubehelix2(hue2) {
   return function cubehelixGamma(y3) {
     y3 = +y3;
@@ -4050,7 +4645,7 @@ function cubehelix2(hue2) {
 }
 var cubehelix_default, cubehelixLong;
 var init_cubehelix2 = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/cubehelix.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/cubehelix.js"() {
     init_src7();
     init_color2();
     cubehelix_default = cubehelix2(hue);
@@ -4058,22 +4653,22 @@ var init_cubehelix2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/piecewise.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/piecewise.js
 var init_piecewise = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/piecewise.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/piecewise.js"() {
     init_value();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/quantize.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/quantize.js
 var init_quantize = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/quantize.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/quantize.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/index.js
+// game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/index.js
 var init_src8 = __esm({
-  "node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/index.js"() {
     init_value();
     init_array3();
     init_basis();
@@ -4098,7 +4693,7 @@ var init_src8 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/timer.js
+// game/node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/timer.js
 function now() {
   return clockNow || (setFrame(clearNow), clockNow = clock.now() + clockSkew);
 }
@@ -4174,7 +4769,7 @@ function sleep(time2) {
 }
 var frame, timeout, interval, pokeDelay, taskHead, taskTail, clockLast, clockNow, clockSkew, clock, setFrame;
 var init_timer = __esm({
-  "node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/timer.js"() {
+  "game/node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/timer.js"() {
     frame = 0;
     timeout = 0;
     interval = 0;
@@ -4214,7 +4809,7 @@ var init_timer = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/timeout.js
+// game/node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/timeout.js
 function timeout_default(callback, delay, time2) {
   var t = new Timer();
   delay = delay == null ? 0 : +delay;
@@ -4225,28 +4820,28 @@ function timeout_default(callback, delay, time2) {
   return t;
 }
 var init_timeout = __esm({
-  "node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/timeout.js"() {
+  "game/node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/timeout.js"() {
     init_timer();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/interval.js
+// game/node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/interval.js
 var init_interval = __esm({
-  "node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/interval.js"() {
+  "game/node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/interval.js"() {
     init_timer();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/index.js
+// game/node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/index.js
 var init_src9 = __esm({
-  "node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-timer@3.0.1/node_modules/d3-timer/src/index.js"() {
     init_timer();
     init_timeout();
     init_interval();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/schedule.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/schedule.js
 function schedule_default(node, name, id2, index2, group2, timing) {
   var schedules = node.__transition;
   if (!schedules)
@@ -4360,7 +4955,7 @@ function create(node, id2, self) {
 }
 var emptyOn, emptyTween, CREATED, SCHEDULED, STARTING, STARTED, RUNNING, ENDING, ENDED;
 var init_schedule = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/schedule.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/schedule.js"() {
     init_src4();
     init_src9();
     emptyOn = dispatch_default("start", "end", "cancel", "interrupt");
@@ -4375,7 +4970,7 @@ var init_schedule = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/interrupt.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/interrupt.js
 function interrupt_default(node, name) {
   var schedules = node.__transition, schedule, active, empty2 = true, i;
   if (!schedules)
@@ -4396,24 +4991,24 @@ function interrupt_default(node, name) {
     delete node.__transition;
 }
 var init_interrupt = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/interrupt.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/interrupt.js"() {
     init_schedule();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/selection/interrupt.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/selection/interrupt.js
 function interrupt_default2(name) {
   return this.each(function() {
     interrupt_default(this, name);
   });
 }
 var init_interrupt2 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/selection/interrupt.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/selection/interrupt.js"() {
     init_interrupt();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/tween.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/tween.js
 function tweenRemove(id2, name) {
   var tween0, tween1;
   return function() {
@@ -4476,24 +5071,24 @@ function tweenValue(transition2, name, value) {
   };
 }
 var init_tween = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/tween.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/tween.js"() {
     init_schedule();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/interpolate.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/interpolate.js
 function interpolate_default(a2, b) {
   var c3;
   return (typeof b === "number" ? number_default : b instanceof color ? rgb_default : (c3 = color(b)) ? (b = c3, rgb_default) : string_default)(a2, b);
 }
 var init_interpolate = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/interpolate.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/interpolate.js"() {
     init_src7();
     init_src8();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/attr.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/attr.js
 function attrRemove2(name) {
   return function() {
     this.removeAttribute(name);
@@ -4545,7 +5140,7 @@ function attr_default2(name, value) {
   return this.attrTween(name, typeof value === "function" ? (fullname.local ? attrFunctionNS2 : attrFunction2)(fullname, i, tweenValue(this, "attr." + name, value)) : value == null ? (fullname.local ? attrRemoveNS2 : attrRemove2)(fullname) : (fullname.local ? attrConstantNS2 : attrConstant2)(fullname, i, value));
 }
 var init_attr2 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/attr.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/attr.js"() {
     init_src8();
     init_src5();
     init_tween();
@@ -4553,7 +5148,7 @@ var init_attr2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/attrTween.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/attrTween.js
 function attrInterpolate(name, i) {
   return function(t) {
     this.setAttribute(name, i.call(this, t));
@@ -4598,12 +5193,12 @@ function attrTween_default(name, value) {
   return this.tween(key, (fullname.local ? attrTweenNS : attrTween)(fullname, value));
 }
 var init_attrTween = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/attrTween.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/attrTween.js"() {
     init_src5();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/delay.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/delay.js
 function delayFunction(id2, value) {
   return function() {
     init(this, id2).delay = +value.apply(this, arguments);
@@ -4619,12 +5214,12 @@ function delay_default(value) {
   return arguments.length ? this.each((typeof value === "function" ? delayFunction : delayConstant)(id2, value)) : get2(this.node(), id2).delay;
 }
 var init_delay = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/delay.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/delay.js"() {
     init_schedule();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/duration.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/duration.js
 function durationFunction(id2, value) {
   return function() {
     set2(this, id2).duration = +value.apply(this, arguments);
@@ -4640,12 +5235,12 @@ function duration_default(value) {
   return arguments.length ? this.each((typeof value === "function" ? durationFunction : durationConstant)(id2, value)) : get2(this.node(), id2).duration;
 }
 var init_duration = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/duration.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/duration.js"() {
     init_schedule();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/ease.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/ease.js
 function easeConstant(id2, value) {
   if (typeof value !== "function")
     throw new Error();
@@ -4658,12 +5253,12 @@ function ease_default(value) {
   return arguments.length ? this.each(easeConstant(id2, value)) : get2(this.node(), id2).ease;
 }
 var init_ease = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/ease.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/ease.js"() {
     init_schedule();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/easeVarying.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/easeVarying.js
 function easeVarying(id2, value) {
   return function() {
     var v2 = value.apply(this, arguments);
@@ -4678,12 +5273,12 @@ function easeVarying_default(value) {
   return this.each(easeVarying(this._id, value));
 }
 var init_easeVarying = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/easeVarying.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/easeVarying.js"() {
     init_schedule();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/filter.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/filter.js
 function filter_default2(match) {
   if (typeof match !== "function")
     match = matcher_default(match);
@@ -4697,13 +5292,13 @@ function filter_default2(match) {
   return new Transition(subgroups, this._parents, this._name, this._id);
 }
 var init_filter3 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/filter.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/filter.js"() {
     init_src5();
     init_transition2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/merge.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/merge.js
 function merge_default2(transition2) {
   if (transition2._id !== this._id)
     throw new Error();
@@ -4720,12 +5315,12 @@ function merge_default2(transition2) {
   return new Transition(merges, this._parents, this._name, this._id);
 }
 var init_merge3 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/merge.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/merge.js"() {
     init_transition2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/on.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/on.js
 function start(name) {
   return (name + "").trim().split(/^|\s+/).every(function(t) {
     var i = t.indexOf(".");
@@ -4748,12 +5343,12 @@ function on_default2(name, listener) {
   return arguments.length < 2 ? get2(this.node(), id2).on.on(name) : this.each(onFunction(id2, name, listener));
 }
 var init_on2 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/on.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/on.js"() {
     init_schedule();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/remove.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/remove.js
 function removeFunction(id2) {
   return function() {
     var parent = this.parentNode;
@@ -4768,11 +5363,11 @@ function remove_default2() {
   return this.on("end.remove", removeFunction(this._id));
 }
 var init_remove2 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/remove.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/remove.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/select.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/select.js
 function select_default3(select) {
   var name = this._name, id2 = this._id;
   if (typeof select !== "function")
@@ -4790,14 +5385,14 @@ function select_default3(select) {
   return new Transition(subgroups, this._parents, name, id2);
 }
 var init_select3 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/select.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/select.js"() {
     init_src5();
     init_transition2();
     init_schedule();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/selectAll.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/selectAll.js
 function selectAll_default3(select) {
   var name = this._name, id2 = this._id;
   if (typeof select !== "function")
@@ -4818,26 +5413,26 @@ function selectAll_default3(select) {
   return new Transition(subgroups, parents, name, id2);
 }
 var init_selectAll3 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/selectAll.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/selectAll.js"() {
     init_src5();
     init_transition2();
     init_schedule();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/selection.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/selection.js
 function selection_default2() {
   return new Selection2(this._groups, this._parents);
 }
 var Selection2;
 var init_selection2 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/selection.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/selection.js"() {
     init_src5();
     Selection2 = selection_default.prototype.constructor;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/style.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/style.js
 function styleNull(name, interpolate) {
   var string00, string10, interpolate0;
   return function() {
@@ -4880,7 +5475,7 @@ function style_default2(name, value, priority) {
   return value == null ? this.styleTween(name, styleNull(name, i)).on("end.style." + name, styleRemove2(name)) : typeof value === "function" ? this.styleTween(name, styleFunction2(name, i, tweenValue(this, "style." + name, value))).each(styleMaybeRemove(this._id, name)) : this.styleTween(name, styleConstant2(name, i, value), priority).on("end.style." + name, null);
 }
 var init_style2 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/style.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/style.js"() {
     init_src8();
     init_src5();
     init_schedule();
@@ -4889,7 +5484,7 @@ var init_style2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/styleTween.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/styleTween.js
 function styleInterpolate(name, i, priority) {
   return function(t) {
     this.style.setProperty(name, i.call(this, t), priority);
@@ -4917,11 +5512,11 @@ function styleTween_default(name, value, priority) {
   return this.tween(key, styleTween(name, value, priority == null ? "" : priority));
 }
 var init_styleTween = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/styleTween.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/styleTween.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/text.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/text.js
 function textConstant2(value) {
   return function() {
     this.textContent = value;
@@ -4937,12 +5532,12 @@ function text_default2(value) {
   return this.tween("text", typeof value === "function" ? textFunction2(tweenValue(this, "text", value)) : textConstant2(value == null ? "" : value + ""));
 }
 var init_text2 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/text.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/text.js"() {
     init_tween();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/textTween.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/textTween.js
 function textInterpolate(i) {
   return function(t) {
     this.textContent = i.call(this, t);
@@ -4970,11 +5565,11 @@ function textTween_default(value) {
   return this.tween(key, textTween(value));
 }
 var init_textTween = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/textTween.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/textTween.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/transition.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/transition.js
 function transition_default() {
   var name = this._name, id0 = this._id, id1 = newId();
   for (var groups2 = this._groups, m = groups2.length, j = 0; j < m; ++j) {
@@ -4993,13 +5588,13 @@ function transition_default() {
   return new Transition(groups2, this._parents, name, id1);
 }
 var init_transition = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/transition.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/transition.js"() {
     init_transition2();
     init_schedule();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/end.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/end.js
 function end_default() {
   var on0, on1, that = this, id2 = that._id, size = that.size();
   return new Promise(function(resolve, reject) {
@@ -5022,12 +5617,12 @@ function end_default() {
   });
 }
 var init_end = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/end.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/end.js"() {
     init_schedule();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/index.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/index.js
 function Transition(groups2, parents, name, id2) {
   this._groups = groups2;
   this._parents = parents;
@@ -5042,7 +5637,7 @@ function newId() {
 }
 var id, selection_prototype;
 var init_transition2 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/transition/index.js"() {
     init_src5();
     init_attr2();
     init_attrTween();
@@ -5101,31 +5696,31 @@ var init_transition2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/linear.js
+// game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/linear.js
 var init_linear = __esm({
-  "node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/linear.js"() {
+  "game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/linear.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/quad.js
+// game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/quad.js
 var init_quad = __esm({
-  "node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/quad.js"() {
+  "game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/quad.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/cubic.js
+// game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/cubic.js
 function cubicInOut(t) {
   return ((t *= 2) <= 1 ? t * t * t : (t -= 2) * t * t + 2) / 2;
 }
 var init_cubic = __esm({
-  "node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/cubic.js"() {
+  "game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/cubic.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/poly.js
+// game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/poly.js
 var exponent, polyIn, polyOut, polyInOut;
 var init_poly = __esm({
-  "node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/poly.js"() {
+  "game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/poly.js"() {
     exponent = 3;
     polyIn = function custom(e) {
       e = +e;
@@ -5154,41 +5749,41 @@ var init_poly = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/sin.js
+// game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/sin.js
 var pi, halfPi;
 var init_sin = __esm({
-  "node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/sin.js"() {
+  "game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/sin.js"() {
     pi = Math.PI;
     halfPi = pi / 2;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/math.js
+// game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/math.js
 function tpmt(x3) {
   return (Math.pow(2, -10 * x3) - 9765625e-10) * 1.0009775171065494;
 }
 var init_math2 = __esm({
-  "node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/math.js"() {
+  "game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/math.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/exp.js
+// game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/exp.js
 var init_exp = __esm({
-  "node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/exp.js"() {
+  "game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/exp.js"() {
     init_math2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/circle.js
+// game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/circle.js
 var init_circle = __esm({
-  "node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/circle.js"() {
+  "game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/circle.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/bounce.js
+// game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/bounce.js
 var b1, b2, b3, b4, b5, b6, b7, b8, b9, b0;
 var init_bounce = __esm({
-  "node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/bounce.js"() {
+  "game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/bounce.js"() {
     b1 = 4 / 11;
     b2 = 6 / 11;
     b3 = 8 / 11;
@@ -5202,10 +5797,10 @@ var init_bounce = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/back.js
+// game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/back.js
 var overshoot, backIn, backOut, backInOut;
 var init_back = __esm({
-  "node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/back.js"() {
+  "game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/back.js"() {
     overshoot = 1.70158;
     backIn = function custom4(s2) {
       s2 = +s2;
@@ -5234,10 +5829,10 @@ var init_back = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/elastic.js
+// game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/elastic.js
 var tau, amplitude, period, elasticIn, elasticOut, elasticInOut;
 var init_elastic = __esm({
-  "node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/elastic.js"() {
+  "game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/elastic.js"() {
     init_math2();
     tau = 2 * Math.PI;
     amplitude = 1;
@@ -5284,9 +5879,9 @@ var init_elastic = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/index.js
+// game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/index.js
 var init_src10 = __esm({
-  "node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-ease@3.0.1/node_modules/d3-ease/src/index.js"() {
     init_linear();
     init_quad();
     init_cubic();
@@ -5300,7 +5895,7 @@ var init_src10 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/selection/transition.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/selection/transition.js
 function inherit(node, id2) {
   var timing;
   while (!(timing = node.__transition) || !(timing = timing[id2])) {
@@ -5328,7 +5923,7 @@ function transition_default2(name) {
 }
 var defaultTiming;
 var init_transition3 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/selection/transition.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/selection/transition.js"() {
     init_transition2();
     init_schedule();
     init_src10();
@@ -5343,9 +5938,9 @@ var init_transition3 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/selection/index.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/selection/index.js
 var init_selection3 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/selection/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/selection/index.js"() {
     init_src5();
     init_interrupt2();
     init_transition3();
@@ -5354,17 +5949,17 @@ var init_selection3 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/active.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/active.js
 var init_active = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/active.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/active.js"() {
     init_transition2();
     init_schedule();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/index.js
+// game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/index.js
 var init_src11 = __esm({
-  "node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-transition@3.0.1_d3-selection_3.0.0/node_modules/d3-transition/src/index.js"() {
     init_selection3();
     init_transition2();
     init_active();
@@ -5372,25 +5967,25 @@ var init_src11 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/constant.js
+// game/node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/constant.js
 var init_constant5 = __esm({
-  "node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/constant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/constant.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/event.js
+// game/node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/event.js
 var init_event2 = __esm({
-  "node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/event.js"() {
+  "game/node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/event.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/noevent.js
+// game/node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/noevent.js
 var init_noevent2 = __esm({
-  "node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/noevent.js"() {
+  "game/node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/noevent.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/brush.js
+// game/node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/brush.js
 function number1(e) {
   return [+e[0], +e[1]];
 }
@@ -5402,7 +5997,7 @@ function type(t) {
 }
 var abs, max2, min2, X, Y, XY;
 var init_brush = __esm({
-  "node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/brush.js"() {
+  "game/node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/brush.js"() {
     init_src4();
     init_src6();
     init_src8();
@@ -5445,31 +6040,31 @@ var init_brush = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/index.js
+// game/node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/index.js
 var init_src12 = __esm({
-  "node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-brush@3.0.0/node_modules/d3-brush/src/index.js"() {
     init_brush();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/math.js
+// game/node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/math.js
 var pi2, halfPi2, tau2;
 var init_math3 = __esm({
-  "node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/math.js"() {
+  "game/node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/math.js"() {
     pi2 = Math.PI;
     halfPi2 = pi2 / 2;
     tau2 = pi2 * 2;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/chord.js
+// game/node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/chord.js
 var init_chord = __esm({
-  "node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/chord.js"() {
+  "game/node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/chord.js"() {
     init_math3();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-path@3.1.0/node_modules/d3-path/src/path.js
+// game/node_modules/.aspect_rules_js/d3-path@3.1.0/node_modules/d3-path/src/path.js
 function append(strings) {
   this._ += strings[0];
   for (let i = 1, n = strings.length; i < n; ++i) {
@@ -5495,7 +6090,7 @@ function path() {
 }
 var pi3, tau3, epsilon, tauEpsilon, Path;
 var init_path = __esm({
-  "node_modules/.aspect_rules_js/d3-path@3.1.0/node_modules/d3-path/src/path.js"() {
+  "game/node_modules/.aspect_rules_js/d3-path@3.1.0/node_modules/d3-path/src/path.js"() {
     pi3 = Math.PI;
     tau3 = 2 * pi3;
     epsilon = 1e-6;
@@ -5575,30 +6170,30 @@ var init_path = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-path@3.1.0/node_modules/d3-path/src/index.js
+// game/node_modules/.aspect_rules_js/d3-path@3.1.0/node_modules/d3-path/src/index.js
 var init_src13 = __esm({
-  "node_modules/.aspect_rules_js/d3-path@3.1.0/node_modules/d3-path/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-path@3.1.0/node_modules/d3-path/src/index.js"() {
     init_path();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/array.js
+// game/node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/array.js
 var slice2;
 var init_array4 = __esm({
-  "node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/array.js"() {
+  "game/node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/array.js"() {
     slice2 = Array.prototype.slice;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/constant.js
+// game/node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/constant.js
 var init_constant6 = __esm({
-  "node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/constant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/constant.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/ribbon.js
+// game/node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/ribbon.js
 var init_ribbon = __esm({
-  "node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/ribbon.js"() {
+  "game/node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/ribbon.js"() {
     init_src13();
     init_array4();
     init_constant6();
@@ -5606,56 +6201,56 @@ var init_ribbon = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/index.js
+// game/node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/index.js
 var init_src14 = __esm({
-  "node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-chord@3.0.1/node_modules/d3-chord/src/index.js"() {
     init_chord();
     init_ribbon();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/array.js
+// game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/array.js
 var array3, slice3;
 var init_array5 = __esm({
-  "node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/array.js"() {
+  "game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/array.js"() {
     array3 = Array.prototype;
     slice3 = array3.slice;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/ascending.js
+// game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/ascending.js
 var init_ascending2 = __esm({
-  "node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/ascending.js"() {
+  "game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/ascending.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/area.js
+// game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/area.js
 var init_area = __esm({
-  "node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/area.js"() {
+  "game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/area.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/constant.js
+// game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/constant.js
 var init_constant7 = __esm({
-  "node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/constant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/constant.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/contains.js
+// game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/contains.js
 var init_contains = __esm({
-  "node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/contains.js"() {
+  "game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/contains.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/noop.js
+// game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/noop.js
 var init_noop = __esm({
-  "node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/noop.js"() {
+  "game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/noop.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/contours.js
+// game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/contours.js
 var init_contours = __esm({
-  "node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/contours.js"() {
+  "game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/contours.js"() {
     init_src2();
     init_array5();
     init_ascending2();
@@ -5666,9 +6261,9 @@ var init_contours = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/density.js
+// game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/density.js
 var init_density = __esm({
-  "node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/density.js"() {
+  "game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/density.js"() {
     init_src2();
     init_array5();
     init_constant7();
@@ -5676,30 +6271,30 @@ var init_density = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/index.js
+// game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/index.js
 var init_src15 = __esm({
-  "node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-contour@4.0.2/node_modules/d3-contour/src/index.js"() {
     init_contours();
     init_density();
   }
 });
 
-// node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/util.js
+// game/node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/util.js
 function vec(n) {
   return new Float64Array(n);
 }
 var epsilon4, resulterrbound;
 var init_util = __esm({
-  "node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/util.js"() {
+  "game/node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/util.js"() {
     epsilon4 = 11102230246251565e-32;
     resulterrbound = (3 + 8 * epsilon4) * epsilon4;
   }
 });
 
-// node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/orient2d.js
+// game/node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/orient2d.js
 var ccwerrboundA, ccwerrboundB, ccwerrboundC, B2, C1, C2, D2, u;
 var init_orient2d = __esm({
-  "node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/orient2d.js"() {
+  "game/node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/orient2d.js"() {
     init_util();
     ccwerrboundA = (3 + 16 * epsilon4) * epsilon4;
     ccwerrboundB = (2 + 12 * epsilon4) * epsilon4;
@@ -5712,10 +6307,10 @@ var init_orient2d = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/orient3d.js
+// game/node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/orient3d.js
 var o3derrboundA, o3derrboundB, o3derrboundC, bc, ca, ab, at_b, at_c, bt_c, bt_a, ct_a, ct_b, bct, cat, abt, u2, _8, _8b, _16, _12, fin, fin2;
 var init_orient3d = __esm({
-  "node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/orient3d.js"() {
+  "game/node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/orient3d.js"() {
     init_util();
     o3derrboundA = (7 + 56 * epsilon4) * epsilon4;
     o3derrboundB = (3 + 28 * epsilon4) * epsilon4;
@@ -5742,10 +6337,10 @@ var init_orient3d = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/incircle.js
+// game/node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/incircle.js
 var iccerrboundA, iccerrboundB, iccerrboundC, bc2, ca2, ab2, aa, bb, cc, u3, v, axtbc, aytbc, bxtca, bytca, cxtab, cytab, abt2, bct2, cat2, abtt, bctt, catt, _82, _162, _16b, _16c, _32, _32b, _48, _64, fin3, fin22;
 var init_incircle = __esm({
-  "node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/incircle.js"() {
+  "game/node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/incircle.js"() {
     init_util();
     iccerrboundA = (10 + 96 * epsilon4) * epsilon4;
     iccerrboundB = (4 + 48 * epsilon4) * epsilon4;
@@ -5783,10 +6378,10 @@ var init_incircle = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/insphere.js
+// game/node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/insphere.js
 var isperrboundA, isperrboundB, isperrboundC, ab3, bc3, cd, de, ea, ac, bd, ce, da, eb, abc, bcd, cde, dea, eab, abd, bce, cda, deb, eac, adet, bdet, cdet, ddet, edet, abdet, cddet, cdedet, deter, _83, _8b2, _8c, _163, _24, _482, _48b, _96, _192, _384x, _384y, _384z, _768, xdet, ydet, zdet, fin4;
 var init_insphere = __esm({
-  "node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/insphere.js"() {
+  "game/node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/esm/insphere.js"() {
     init_util();
     isperrboundA = (16 + 224 * epsilon4) * epsilon4;
     isperrboundB = (5 + 72 * epsilon4) * epsilon4;
@@ -5840,9 +6435,9 @@ var init_insphere = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/index.js
+// game/node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/index.js
 var init_robust_predicates = __esm({
-  "node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/index.js"() {
+  "game/node_modules/.aspect_rules_js/robust-predicates@3.0.3/node_modules/robust-predicates/index.js"() {
     init_orient2d();
     init_orient3d();
     init_incircle();
@@ -5850,40 +6445,40 @@ var init_robust_predicates = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/delaunator@5.1.0/node_modules/delaunator/index.js
+// game/node_modules/.aspect_rules_js/delaunator@5.1.0/node_modules/delaunator/index.js
 var EPSILON2, EDGE_STACK;
 var init_delaunator = __esm({
-  "node_modules/.aspect_rules_js/delaunator@5.1.0/node_modules/delaunator/index.js"() {
+  "game/node_modules/.aspect_rules_js/delaunator@5.1.0/node_modules/delaunator/index.js"() {
     init_robust_predicates();
     EPSILON2 = Math.pow(2, -52);
     EDGE_STACK = new Uint32Array(512);
   }
 });
 
-// node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/path.js
+// game/node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/path.js
 var init_path2 = __esm({
-  "node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/path.js"() {
+  "game/node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/path.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/polygon.js
+// game/node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/polygon.js
 var init_polygon = __esm({
-  "node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/polygon.js"() {
+  "game/node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/polygon.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/voronoi.js
+// game/node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/voronoi.js
 var init_voronoi = __esm({
-  "node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/voronoi.js"() {
+  "game/node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/voronoi.js"() {
     init_path2();
     init_polygon();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/delaunay.js
+// game/node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/delaunay.js
 var tau4;
 var init_delaunay = __esm({
-  "node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/delaunay.js"() {
+  "game/node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/delaunay.js"() {
     init_delaunator();
     init_path2();
     init_polygon();
@@ -5892,15 +6487,15 @@ var init_delaunay = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/index.js
+// game/node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/index.js
 var init_src16 = __esm({
-  "node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/index.js"() {
     init_delaunay();
     init_voronoi();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/dsv.js
+// game/node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/dsv.js
 function objectConverter(columns) {
   return new Function("d", "return {" + columns.map(function(name, i) {
     return JSON.stringify(name) + ": d[" + i + '] || ""';
@@ -6032,7 +6627,7 @@ function dsv_default(delimiter) {
 }
 var EOL, EOF, QUOTE, NEWLINE, RETURN;
 var init_dsv = __esm({
-  "node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/dsv.js"() {
+  "game/node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/dsv.js"() {
     EOL = {};
     EOF = {};
     QUOTE = 34;
@@ -6041,10 +6636,10 @@ var init_dsv = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/csv.js
+// game/node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/csv.js
 var csv, csvParse, csvParseRows, csvFormat, csvFormatBody, csvFormatRows, csvFormatRow, csvFormatValue;
 var init_csv = __esm({
-  "node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/csv.js"() {
+  "game/node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/csv.js"() {
     init_dsv();
     csv = dsv_default(",");
     csvParse = csv.parse;
@@ -6057,10 +6652,10 @@ var init_csv = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/tsv.js
+// game/node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/tsv.js
 var tsv, tsvParse, tsvParseRows, tsvFormat, tsvFormatBody, tsvFormatRows, tsvFormatRow, tsvFormatValue;
 var init_tsv = __esm({
-  "node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/tsv.js"() {
+  "game/node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/tsv.js"() {
     init_dsv();
     tsv = dsv_default("	");
     tsvParse = tsv.parse;
@@ -6073,17 +6668,17 @@ var init_tsv = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/autoType.js
+// game/node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/autoType.js
 var fixtz;
 var init_autoType = __esm({
-  "node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/autoType.js"() {
+  "game/node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/autoType.js"() {
     fixtz = (/* @__PURE__ */ new Date("2019-01-01T00:00")).getHours() || (/* @__PURE__ */ new Date("2019-07-01T00:00")).getHours();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/index.js
+// game/node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/index.js
 var init_src17 = __esm({
-  "node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-dsv@3.0.1/node_modules/d3-dsv/src/index.js"() {
     init_dsv();
     init_csv();
     init_tsv();
@@ -6091,19 +6686,19 @@ var init_src17 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/blob.js
+// game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/blob.js
 var init_blob = __esm({
-  "node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/blob.js"() {
+  "game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/blob.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/buffer.js
+// game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/buffer.js
 var init_buffer = __esm({
-  "node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/buffer.js"() {
+  "game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/buffer.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/text.js
+// game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/text.js
 function responseText(response) {
   if (!response.ok)
     throw new Error(response.status + " " + response.statusText);
@@ -6113,11 +6708,11 @@ function text_default3(input, init2) {
   return fetch(input, init2).then(responseText);
 }
 var init_text3 = __esm({
-  "node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/text.js"() {
+  "game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/text.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/dsv.js
+// game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/dsv.js
 function dsvParse(parse) {
   return function(input, init2, row) {
     if (arguments.length === 2 && typeof init2 === "function")
@@ -6129,7 +6724,7 @@ function dsvParse(parse) {
 }
 var csv2, tsv2;
 var init_dsv2 = __esm({
-  "node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/dsv.js"() {
+  "game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/dsv.js"() {
     init_src17();
     init_text3();
     csv2 = dsvParse(csvParse);
@@ -6137,25 +6732,25 @@ var init_dsv2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/image.js
+// game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/image.js
 var init_image = __esm({
-  "node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/image.js"() {
+  "game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/image.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/json.js
+// game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/json.js
 var init_json = __esm({
-  "node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/json.js"() {
+  "game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/json.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/xml.js
+// game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/xml.js
 function parser(type2) {
   return (input, init2) => text_default3(input, init2).then((text) => new DOMParser().parseFromString(text, type2));
 }
 var xml_default, html, svg;
 var init_xml = __esm({
-  "node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/xml.js"() {
+  "game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/xml.js"() {
     init_text3();
     xml_default = parser("application/xml");
     html = parser("text/html");
@@ -6163,9 +6758,9 @@ var init_xml = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/index.js
+// game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/index.js
 var init_src18 = __esm({
-  "node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-fetch@3.0.1/node_modules/d3-fetch/src/index.js"() {
     init_blob();
     init_buffer();
     init_dsv2();
@@ -6176,13 +6771,13 @@ var init_src18 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/center.js
+// game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/center.js
 var init_center = __esm({
-  "node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/center.js"() {
+  "game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/center.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/add.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/add.js
 function add_default(d) {
   const x3 = +this._x.call(null, d), y3 = +this._y.call(null, d);
   return add(this.cover(x3, y3), x3, y3, d);
@@ -6247,11 +6842,11 @@ function addAll(data) {
   return this;
 }
 var init_add = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/add.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/add.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/cover.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/cover.js
 function cover_default(x3, y3) {
   if (isNaN(x3 = +x3) || isNaN(y3 = +y3))
     return this;
@@ -6289,11 +6884,11 @@ function cover_default(x3, y3) {
   return this;
 }
 var init_cover = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/cover.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/cover.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/data.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/data.js
 function data_default2() {
   var data = [];
   this.visit(function(node) {
@@ -6305,20 +6900,20 @@ function data_default2() {
   return data;
 }
 var init_data2 = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/data.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/data.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/extent.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/extent.js
 function extent_default(_) {
   return arguments.length ? this.cover(+_[0][0], +_[0][1]).cover(+_[1][0], +_[1][1]) : isNaN(this._x0) ? void 0 : [[this._x0, this._y0], [this._x1, this._y1]];
 }
 var init_extent2 = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/extent.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/extent.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/quad.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/quad.js
 function quad_default(node, x02, y0, x12, y1) {
   this.node = node;
   this.x0 = x02;
@@ -6327,11 +6922,11 @@ function quad_default(node, x02, y0, x12, y1) {
   this.y1 = y1;
 }
 var init_quad2 = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/quad.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/quad.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/find.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/find.js
 function find_default(x3, y3, radius) {
   var data, x02 = this._x0, y0 = this._y0, x12, y1, x22, y22, x32 = this._x1, y32 = this._y1, quads = [], node = this._root, q, i;
   if (node)
@@ -6372,12 +6967,12 @@ function find_default(x3, y3, radius) {
   return data;
 }
 var init_find = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/find.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/find.js"() {
     init_quad2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/remove.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/remove.js
 function remove_default3(d) {
   if (isNaN(x3 = +this._x.call(null, d)) || isNaN(y3 = +this._y.call(null, d)))
     return this;
@@ -6425,20 +7020,20 @@ function removeAll(data) {
   return this;
 }
 var init_remove3 = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/remove.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/remove.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/root.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/root.js
 function root_default() {
   return this._root;
 }
 var init_root = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/root.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/root.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/size.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/size.js
 function size_default2() {
   var size = 0;
   this.visit(function(node) {
@@ -6450,11 +7045,11 @@ function size_default2() {
   return size;
 }
 var init_size2 = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/size.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/size.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/visit.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/visit.js
 function visit_default(callback) {
   var quads = [], q, node = this._root, child, x02, y0, x12, y1;
   if (node)
@@ -6475,12 +7070,12 @@ function visit_default(callback) {
   return this;
 }
 var init_visit = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/visit.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/visit.js"() {
     init_quad2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/visitAfter.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/visitAfter.js
 function visitAfter_default(callback) {
   var quads = [], next = [], q;
   if (this._root)
@@ -6506,12 +7101,12 @@ function visitAfter_default(callback) {
   return this;
 }
 var init_visitAfter = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/visitAfter.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/visitAfter.js"() {
     init_quad2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/x.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/x.js
 function defaultX(d) {
   return d[0];
 }
@@ -6519,11 +7114,11 @@ function x_default(_) {
   return arguments.length ? (this._x = _, this) : this._x;
 }
 var init_x = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/x.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/x.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/y.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/y.js
 function defaultY(d) {
   return d[1];
 }
@@ -6531,11 +7126,11 @@ function y_default(_) {
   return arguments.length ? (this._y = _, this) : this._y;
 }
 var init_y = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/y.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/y.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/quadtree.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/quadtree.js
 function quadtree(nodes, x3, y3) {
   var tree = new Quadtree(x3 == null ? defaultX : x3, y3 == null ? defaultY : y3, NaN, NaN, NaN, NaN);
   return nodes == null ? tree : tree.addAll(nodes);
@@ -6557,7 +7152,7 @@ function leaf_copy(leaf) {
 }
 var treeProto;
 var init_quadtree = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/quadtree.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/quadtree.js"() {
     init_add();
     init_cover();
     init_data2();
@@ -6607,52 +7202,52 @@ var init_quadtree = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/index.js
+// game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/index.js
 var init_src19 = __esm({
-  "node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/index.js"() {
     init_quadtree();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/constant.js
+// game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/constant.js
 var init_constant8 = __esm({
-  "node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/constant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/constant.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/jiggle.js
+// game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/jiggle.js
 var init_jiggle = __esm({
-  "node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/jiggle.js"() {
+  "game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/jiggle.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/collide.js
+// game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/collide.js
 var init_collide = __esm({
-  "node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/collide.js"() {
+  "game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/collide.js"() {
     init_src19();
     init_constant8();
     init_jiggle();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/link.js
+// game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/link.js
 var init_link = __esm({
-  "node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/link.js"() {
+  "game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/link.js"() {
     init_constant8();
     init_jiggle();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/lcg.js
+// game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/lcg.js
 var init_lcg = __esm({
-  "node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/lcg.js"() {
+  "game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/lcg.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/simulation.js
+// game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/simulation.js
 var initialAngle;
 var init_simulation = __esm({
-  "node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/simulation.js"() {
+  "game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/simulation.js"() {
     init_src4();
     init_src9();
     init_lcg();
@@ -6660,9 +7255,9 @@ var init_simulation = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/manyBody.js
+// game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/manyBody.js
 var init_manyBody = __esm({
-  "node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/manyBody.js"() {
+  "game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/manyBody.js"() {
     init_src19();
     init_constant8();
     init_jiggle();
@@ -6670,30 +7265,30 @@ var init_manyBody = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/radial.js
+// game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/radial.js
 var init_radial = __esm({
-  "node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/radial.js"() {
+  "game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/radial.js"() {
     init_constant8();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/x.js
+// game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/x.js
 var init_x2 = __esm({
-  "node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/x.js"() {
+  "game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/x.js"() {
     init_constant8();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/y.js
+// game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/y.js
 var init_y2 = __esm({
-  "node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/y.js"() {
+  "game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/y.js"() {
     init_constant8();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/index.js
+// game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/index.js
 var init_src20 = __esm({
-  "node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-force@3.0.0/node_modules/d3-force/src/index.js"() {
     init_center();
     init_collide();
     init_link();
@@ -6705,7 +7300,7 @@ var init_src20 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatDecimal.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatDecimal.js
 function formatDecimal_default(x3) {
   return Math.abs(x3 = Math.round(x3)) >= 1e21 ? x3.toLocaleString("en").replace(/,/g, "") : x3.toString(10);
 }
@@ -6719,21 +7314,21 @@ function formatDecimalParts(x3, p) {
   ];
 }
 var init_formatDecimal = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatDecimal.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatDecimal.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/exponent.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/exponent.js
 function exponent_default(x3) {
   return x3 = formatDecimalParts(Math.abs(x3)), x3 ? x3[1] : NaN;
 }
 var init_exponent = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/exponent.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/exponent.js"() {
     init_formatDecimal();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatGroup.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatGroup.js
 function formatGroup_default(grouping, thousands) {
   return function(value, width) {
     var i = value.length, t = [], j = 0, g = grouping[0], length = 0;
@@ -6749,11 +7344,11 @@ function formatGroup_default(grouping, thousands) {
   };
 }
 var init_formatGroup = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatGroup.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatGroup.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatNumerals.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatNumerals.js
 function formatNumerals_default(numerals) {
   return function(value) {
     return value.replace(/[0-9]/g, function(i) {
@@ -6762,11 +7357,11 @@ function formatNumerals_default(numerals) {
   };
 }
 var init_formatNumerals = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatNumerals.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatNumerals.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatSpecifier.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatSpecifier.js
 function formatSpecifier(specifier) {
   if (!(match = re.exec(specifier)))
     throw new Error("invalid format: " + specifier);
@@ -6798,7 +7393,7 @@ function FormatSpecifier(specifier) {
 }
 var re;
 var init_formatSpecifier = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatSpecifier.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatSpecifier.js"() {
     re = /^(?:(.)?([<>=^]))?([+\-( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?(~)?([a-z%])?$/i;
     formatSpecifier.prototype = FormatSpecifier.prototype;
     FormatSpecifier.prototype.toString = function() {
@@ -6807,7 +7402,7 @@ var init_formatSpecifier = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatTrim.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatTrim.js
 function formatTrim_default(s2) {
   out:
     for (var n = s2.length, i = 1, i0 = -1, i1; i < n; ++i) {
@@ -6831,11 +7426,11 @@ function formatTrim_default(s2) {
   return i0 > 0 ? s2.slice(0, i0) + s2.slice(i1 + 1) : s2;
 }
 var init_formatTrim = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatTrim.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatTrim.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatPrefixAuto.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatPrefixAuto.js
 function formatPrefixAuto_default(x3, p) {
   var d = formatDecimalParts(x3, p);
   if (!d)
@@ -6845,12 +7440,12 @@ function formatPrefixAuto_default(x3, p) {
 }
 var prefixExponent;
 var init_formatPrefixAuto = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatPrefixAuto.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatPrefixAuto.js"() {
     init_formatDecimal();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatRounded.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatRounded.js
 function formatRounded_default(x3, p) {
   var d = formatDecimalParts(x3, p);
   if (!d)
@@ -6859,15 +7454,15 @@ function formatRounded_default(x3, p) {
   return exponent2 < 0 ? "0." + new Array(-exponent2).join("0") + coefficient : coefficient.length > exponent2 + 1 ? coefficient.slice(0, exponent2 + 1) + "." + coefficient.slice(exponent2 + 1) : coefficient + new Array(exponent2 - coefficient.length + 2).join("0");
 }
 var init_formatRounded = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatRounded.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatRounded.js"() {
     init_formatDecimal();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatTypes.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatTypes.js
 var formatTypes_default;
 var init_formatTypes = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatTypes.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/formatTypes.js"() {
     init_formatDecimal();
     init_formatPrefixAuto();
     init_formatRounded();
@@ -6889,16 +7484,16 @@ var init_formatTypes = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/identity.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/identity.js
 function identity_default2(x3) {
   return x3;
 }
 var init_identity3 = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/identity.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/identity.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/locale.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/locale.js
 function locale_default(locale3) {
   var group2 = locale3.grouping === void 0 || locale3.thousands === void 0 ? identity_default2 : formatGroup_default(map3.call(locale3.grouping, Number), locale3.thousands + ""), currencyPrefix = locale3.currency === void 0 ? "" : locale3.currency[0] + "", currencySuffix = locale3.currency === void 0 ? "" : locale3.currency[1] + "", decimal = locale3.decimal === void 0 ? "." : locale3.decimal + "", numerals = locale3.numerals === void 0 ? identity_default2 : formatNumerals_default(map3.call(locale3.numerals, String)), percent = locale3.percent === void 0 ? "%" : locale3.percent + "", minus = locale3.minus === void 0 ? "\u2212" : locale3.minus + "", nan = locale3.nan === void 0 ? "NaN" : locale3.nan + "";
   function newFormat(specifier, options) {
@@ -6978,7 +7573,7 @@ function locale_default(locale3) {
 }
 var map3, prefixes;
 var init_locale = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/locale.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/locale.js"() {
     init_exponent();
     init_formatGroup();
     init_formatNumerals();
@@ -6992,7 +7587,7 @@ var init_locale = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/defaultLocale.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/defaultLocale.js
 function defaultLocale(definition) {
   locale = locale_default(definition);
   format = locale.format;
@@ -7001,7 +7596,7 @@ function defaultLocale(definition) {
 }
 var locale, format, formatPrefix;
 var init_defaultLocale = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/defaultLocale.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/defaultLocale.js"() {
     init_locale();
     defaultLocale({
       thousands: ",",
@@ -7011,30 +7606,30 @@ var init_defaultLocale = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/precisionFixed.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/precisionFixed.js
 var init_precisionFixed = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/precisionFixed.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/precisionFixed.js"() {
     init_exponent();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/precisionPrefix.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/precisionPrefix.js
 var init_precisionPrefix = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/precisionPrefix.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/precisionPrefix.js"() {
     init_exponent();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/precisionRound.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/precisionRound.js
 var init_precisionRound = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/precisionRound.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/precisionRound.js"() {
     init_exponent();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/index.js
+// game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/index.js
 var init_src21 = __esm({
-  "node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-format@3.1.2/node_modules/d3-format/src/index.js"() {
     init_defaultLocale();
     init_locale();
     init_formatSpecifier();
@@ -7044,7 +7639,7 @@ var init_src21 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/math.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/math.js
 function acos(x3) {
   return x3 > 1 ? 0 : x3 < -1 ? pi4 : Math.acos(x3);
 }
@@ -7053,7 +7648,7 @@ function asin(x3) {
 }
 var epsilon5, epsilon22, pi4, halfPi3, quarterPi, tau5, degrees3, radians2, abs3, atan, atan2, cos2, exp, log, sin2, sign, sqrt, tan;
 var init_math4 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/math.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/math.js"() {
     epsilon5 = 1e-6;
     epsilon22 = 1e-12;
     pi4 = Math.PI;
@@ -7077,24 +7672,24 @@ var init_math4 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/noop.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/noop.js
 function noop2() {
 }
 var init_noop2 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/noop.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/noop.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/stream.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/stream.js
 var init_stream = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/stream.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/stream.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/area.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/area.js
 var areaRingSum, areaSum;
 var init_area2 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/area.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/area.js"() {
     init_src2();
     init_math4();
     init_noop2();
@@ -7104,7 +7699,7 @@ var init_area2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/cartesian.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/cartesian.js
 function cartesian(spherical2) {
   var lambda = spherical2[0], phi2 = spherical2[1], cosPhi = cos2(phi2);
   return [cosPhi * cos2(lambda), cosPhi * sin2(lambda), sin2(phi2)];
@@ -7117,14 +7712,14 @@ function cartesianNormalizeInPlace(d) {
   d[0] /= l, d[1] /= l, d[2] /= l;
 }
 var init_cartesian = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/cartesian.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/cartesian.js"() {
     init_math4();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/bounds.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/bounds.js
 var init_bounds = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/bounds.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/bounds.js"() {
     init_src2();
     init_area2();
     init_cartesian();
@@ -7133,9 +7728,9 @@ var init_bounds = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/centroid.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/centroid.js
 var init_centroid = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/centroid.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/centroid.js"() {
     init_src2();
     init_math4();
     init_noop2();
@@ -7143,35 +7738,35 @@ var init_centroid = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/constant.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/constant.js
 var init_constant9 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/constant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/constant.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/compose.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/compose.js
 var init_compose = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/compose.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/compose.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/rotation.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/rotation.js
 function rotationIdentity(lambda, phi2) {
   if (abs3(lambda) > pi4)
     lambda -= Math.round(lambda / tau5) * tau5;
   return [lambda, phi2];
 }
 var init_rotation = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/rotation.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/rotation.js"() {
     init_compose();
     init_math4();
     rotationIdentity.invert = rotationIdentity;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/circle.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/circle.js
 var init_circle2 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/circle.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/circle.js"() {
     init_cartesian();
     init_constant9();
     init_math4();
@@ -7179,7 +7774,7 @@ var init_circle2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/buffer.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/buffer.js
 function buffer_default2() {
   var lines = [], line;
   return {
@@ -7203,22 +7798,22 @@ function buffer_default2() {
   };
 }
 var init_buffer2 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/buffer.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/buffer.js"() {
     init_noop2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/pointEqual.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/pointEqual.js
 function pointEqual_default(a2, b) {
   return abs3(a2[0] - b[0]) < epsilon5 && abs3(a2[1] - b[1]) < epsilon5;
 }
 var init_pointEqual = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/pointEqual.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/pointEqual.js"() {
     init_math4();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/rejoin.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/rejoin.js
 function Intersection(point6, points, other, entry) {
   this.x = point6;
   this.z = points;
@@ -7304,13 +7899,13 @@ function link(array4) {
   b.p = a2;
 }
 var init_rejoin = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/rejoin.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/rejoin.js"() {
     init_pointEqual();
     init_math4();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/polygonContains.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/polygonContains.js
 function longitude(point6) {
   return abs3(point6[0]) <= pi4 ? point6[0] : sign(point6[0]) * ((abs3(point6[0]) + pi4) % tau5 - pi4);
 }
@@ -7344,14 +7939,14 @@ function polygonContains_default(polygon, point6) {
   return (angle < -epsilon5 || angle < epsilon5 && sum4 < -epsilon22) ^ winding & 1;
 }
 var init_polygonContains = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/polygonContains.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/polygonContains.js"() {
     init_src2();
     init_cartesian();
     init_math4();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/index.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/index.js
 function clip_default(pointVisible, clipLine, interpolate, start2) {
   return function(sink) {
     var line = clipLine(sink), ringBuffer = buffer_default2(), ringSink = clipLine(ringBuffer), polygonStarted = false, polygon, segments, ring;
@@ -7453,7 +8048,7 @@ function compareIntersection(a2, b) {
   return ((a2 = a2.x)[0] < 0 ? a2[1] - halfPi3 - epsilon5 : halfPi3 - a2[1]) - ((b = b.x)[0] < 0 ? b[1] - halfPi3 - epsilon5 : halfPi3 - b[1]);
 }
 var init_clip = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/index.js"() {
     init_buffer2();
     init_rejoin();
     init_math4();
@@ -7462,7 +8057,7 @@ var init_clip = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/antimeridian.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/antimeridian.js
 function clipAntimeridianLine(stream) {
   var lambda0 = NaN, phi0 = NaN, sign0 = NaN, clean;
   return {
@@ -7533,7 +8128,7 @@ function clipAntimeridianInterpolate(from, to, direction, stream) {
 }
 var antimeridian_default;
 var init_antimeridian = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/antimeridian.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/antimeridian.js"() {
     init_clip();
     init_math4();
     antimeridian_default = clip_default(
@@ -7547,9 +8142,9 @@ var init_antimeridian = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/circle.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/circle.js
 var init_circle3 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/circle.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/circle.js"() {
     init_cartesian();
     init_circle2();
     init_math4();
@@ -7558,16 +8153,16 @@ var init_circle3 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/line.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/line.js
 var init_line = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/line.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/line.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/rectangle.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/rectangle.js
 var clipMax, clipMin;
 var init_rectangle = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/rectangle.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/rectangle.js"() {
     init_math4();
     init_buffer2();
     init_line();
@@ -7578,16 +8173,16 @@ var init_rectangle = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/extent.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/extent.js
 var init_extent3 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/extent.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/clip/extent.js"() {
     init_rectangle();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/length.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/length.js
 var init_length = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/length.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/length.js"() {
     init_src2();
     init_math4();
     init_noop2();
@@ -7595,47 +8190,47 @@ var init_length = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/distance.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/distance.js
 var init_distance = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/distance.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/distance.js"() {
     init_length();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/contains.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/contains.js
 var init_contains2 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/contains.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/contains.js"() {
     init_polygonContains();
     init_distance();
     init_math4();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/graticule.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/graticule.js
 var init_graticule = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/graticule.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/graticule.js"() {
     init_src2();
     init_math4();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/interpolate.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/interpolate.js
 var init_interpolate2 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/interpolate.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/interpolate.js"() {
     init_math4();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/identity.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/identity.js
 var init_identity4 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/identity.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/identity.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/area.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/area.js
 var areaSum2, areaRingSum2;
 var init_area3 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/area.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/area.js"() {
     init_src2();
     init_math4();
     init_noop2();
@@ -7644,29 +8239,29 @@ var init_area3 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/bounds.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/bounds.js
 var x0, x1;
 var init_bounds2 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/bounds.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/bounds.js"() {
     init_noop2();
     x0 = Infinity;
     x1 = -x0;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/centroid.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/centroid.js
 var init_centroid2 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/centroid.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/centroid.js"() {
     init_math4();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/context.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/context.js
 function PathContext(context) {
   this._context = context;
 }
 var init_context = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/context.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/context.js"() {
     init_math4();
     init_noop2();
     PathContext.prototype = {
@@ -7711,10 +8306,10 @@ var init_context = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/measure.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/measure.js
 var lengthSum;
 var init_measure = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/measure.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/measure.js"() {
     init_src2();
     init_math4();
     init_noop2();
@@ -7722,15 +8317,15 @@ var init_measure = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/string.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/string.js
 var init_string2 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/string.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/string.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/index.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/index.js
 var init_path3 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/path/index.js"() {
     init_identity4();
     init_stream();
     init_area3();
@@ -7742,7 +8337,7 @@ var init_path3 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/transform.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/transform.js
 function transformer(methods) {
   return function(stream) {
     var s2 = new TransformStream();
@@ -7755,7 +8350,7 @@ function transformer(methods) {
 function TransformStream() {
 }
 var init_transform2 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/transform.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/transform.js"() {
     TransformStream.prototype = {
       constructor: TransformStream,
       point: function(x3, y3) {
@@ -7780,18 +8375,18 @@ var init_transform2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/fit.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/fit.js
 var init_fit = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/fit.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/fit.js"() {
     init_stream();
     init_bounds2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/resample.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/resample.js
 var cosMinDistance;
 var init_resample = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/resample.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/resample.js"() {
     init_cartesian();
     init_math4();
     init_transform2();
@@ -7799,10 +8394,10 @@ var init_resample = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/index.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/index.js
 var transformRadians;
 var init_projection = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/index.js"() {
     init_antimeridian();
     init_circle3();
     init_rectangle();
@@ -7821,40 +8416,40 @@ var init_projection = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conic.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conic.js
 var init_conic = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conic.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conic.js"() {
     init_math4();
     init_projection();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/cylindricalEqualArea.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/cylindricalEqualArea.js
 var init_cylindricalEqualArea = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/cylindricalEqualArea.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/cylindricalEqualArea.js"() {
     init_math4();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conicEqualArea.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conicEqualArea.js
 var init_conicEqualArea = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conicEqualArea.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conicEqualArea.js"() {
     init_math4();
     init_conic();
     init_cylindricalEqualArea();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/albers.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/albers.js
 var init_albers = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/albers.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/albers.js"() {
     init_conicEqualArea();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/albersUsa.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/albersUsa.js
 var init_albersUsa = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/albersUsa.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/albersUsa.js"() {
     init_math4();
     init_albers();
     init_conicEqualArea();
@@ -7862,7 +8457,7 @@ var init_albersUsa = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthal.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthal.js
 function azimuthalRaw(scale2) {
   return function(x3, y3) {
     var cx = cos2(x3), cy = cos2(y3), k2 = scale2(cx * cy);
@@ -7884,15 +8479,15 @@ function azimuthalInvert(angle) {
   };
 }
 var init_azimuthal = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthal.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthal.js"() {
     init_math4();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthalEqualArea.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthalEqualArea.js
 var azimuthalEqualAreaRaw;
 var init_azimuthalEqualArea = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthalEqualArea.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthalEqualArea.js"() {
     init_math4();
     init_azimuthal();
     init_projection();
@@ -7905,10 +8500,10 @@ var init_azimuthalEqualArea = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthalEquidistant.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthalEquidistant.js
 var azimuthalEquidistantRaw;
 var init_azimuthalEquidistant = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthalEquidistant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthalEquidistant.js"() {
     init_math4();
     init_azimuthal();
     init_projection();
@@ -7921,12 +8516,12 @@ var init_azimuthalEquidistant = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/mercator.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/mercator.js
 function mercatorRaw(lambda, phi2) {
   return [lambda, log(tan((halfPi3 + phi2) / 2))];
 }
 var init_mercator = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/mercator.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/mercator.js"() {
     init_math4();
     init_rotation();
     init_projection();
@@ -7936,36 +8531,36 @@ var init_mercator = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conicConformal.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conicConformal.js
 var init_conicConformal = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conicConformal.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conicConformal.js"() {
     init_math4();
     init_conic();
     init_mercator();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/equirectangular.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/equirectangular.js
 function equirectangularRaw(lambda, phi2) {
   return [lambda, phi2];
 }
 var init_equirectangular = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/equirectangular.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/equirectangular.js"() {
     init_projection();
     equirectangularRaw.invert = equirectangularRaw;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conicEquidistant.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conicEquidistant.js
 var init_conicEquidistant = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conicEquidistant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/conicEquidistant.js"() {
     init_math4();
     init_conic();
     init_equirectangular();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/equalEarth.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/equalEarth.js
 function equalEarthRaw(lambda, phi2) {
   var l = asin(M * sin2(phi2)), l2 = l * l, l6 = l2 * l2 * l2;
   return [
@@ -7975,7 +8570,7 @@ function equalEarthRaw(lambda, phi2) {
 }
 var A1, A2, A3, A4, M, iterations;
 var init_equalEarth = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/equalEarth.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/equalEarth.js"() {
     init_projection();
     init_math4();
     A1 = 1.340264;
@@ -8001,13 +8596,13 @@ var init_equalEarth = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/gnomonic.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/gnomonic.js
 function gnomonicRaw(x3, y3) {
   var cy = cos2(y3), k2 = cos2(x3) * cy;
   return [cy * sin2(x3) / k2, sin2(y3) / k2];
 }
 var init_gnomonic = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/gnomonic.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/gnomonic.js"() {
     init_math4();
     init_azimuthal();
     init_projection();
@@ -8015,9 +8610,9 @@ var init_gnomonic = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/identity.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/identity.js
 var init_identity5 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/identity.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/identity.js"() {
     init_rectangle();
     init_identity4();
     init_transform2();
@@ -8026,7 +8621,7 @@ var init_identity5 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/naturalEarth1.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/naturalEarth1.js
 function naturalEarth1Raw(lambda, phi2) {
   var phi22 = phi2 * phi2, phi4 = phi22 * phi22;
   return [
@@ -8035,7 +8630,7 @@ function naturalEarth1Raw(lambda, phi2) {
   ];
 }
 var init_naturalEarth1 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/naturalEarth1.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/naturalEarth1.js"() {
     init_projection();
     init_math4();
     naturalEarth1Raw.invert = function(x3, y3) {
@@ -8052,12 +8647,12 @@ var init_naturalEarth1 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/orthographic.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/orthographic.js
 function orthographicRaw(x3, y3) {
   return [cos2(y3) * sin2(x3), sin2(y3)];
 }
 var init_orthographic = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/orthographic.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/orthographic.js"() {
     init_math4();
     init_azimuthal();
     init_projection();
@@ -8065,13 +8660,13 @@ var init_orthographic = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/stereographic.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/stereographic.js
 function stereographicRaw(x3, y3) {
   var cy = cos2(y3), k2 = 1 + cos2(x3) * cy;
   return [cy * sin2(x3) / k2, sin2(y3) / k2];
 }
 var init_stereographic = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/stereographic.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/stereographic.js"() {
     init_math4();
     init_azimuthal();
     init_projection();
@@ -8081,12 +8676,12 @@ var init_stereographic = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/transverseMercator.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/transverseMercator.js
 function transverseMercatorRaw(lambda, phi2) {
   return [log(tan((halfPi3 + phi2) / 2)), -lambda];
 }
 var init_transverseMercator = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/transverseMercator.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/projection/transverseMercator.js"() {
     init_math4();
     init_mercator();
     transverseMercatorRaw.invert = function(x3, y3) {
@@ -8095,9 +8690,9 @@ var init_transverseMercator = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/index.js
+// game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/index.js
 var init_src22 = __esm({
-  "node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-geo@3.1.1/node_modules/d3-geo/src/index.js"() {
     init_area2();
     init_bounds();
     init_centroid();
@@ -8135,13 +8730,13 @@ var init_src22 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/cluster.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/cluster.js
 var init_cluster = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/cluster.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/cluster.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/count.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/count.js
 function count2(node) {
   var sum4 = 0, children2 = node.children, i = children2 && children2.length;
   if (!i)
@@ -8155,11 +8750,11 @@ function count_default() {
   return this.eachAfter(count2);
 }
 var init_count2 = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/count.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/count.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/each.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/each.js
 function each_default2(callback, that) {
   let index2 = -1;
   for (const node of this) {
@@ -8168,11 +8763,11 @@ function each_default2(callback, that) {
   return this;
 }
 var init_each2 = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/each.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/each.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/eachBefore.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/eachBefore.js
 function eachBefore_default(callback, that) {
   var node = this, nodes = [node], children2, i, index2 = -1;
   while (node = nodes.pop()) {
@@ -8186,11 +8781,11 @@ function eachBefore_default(callback, that) {
   return this;
 }
 var init_eachBefore = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/eachBefore.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/eachBefore.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/eachAfter.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/eachAfter.js
 function eachAfter_default(callback, that) {
   var node = this, nodes = [node], next = [], children2, i, n, index2 = -1;
   while (node = nodes.pop()) {
@@ -8207,11 +8802,11 @@ function eachAfter_default(callback, that) {
   return this;
 }
 var init_eachAfter = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/eachAfter.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/eachAfter.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/find.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/find.js
 function find_default2(callback, that) {
   let index2 = -1;
   for (const node of this) {
@@ -8221,11 +8816,11 @@ function find_default2(callback, that) {
   }
 }
 var init_find2 = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/find.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/find.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/sum.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/sum.js
 function sum_default(value) {
   return this.eachAfter(function(node) {
     var sum4 = +value(node.data) || 0, children2 = node.children, i = children2 && children2.length;
@@ -8235,11 +8830,11 @@ function sum_default(value) {
   });
 }
 var init_sum2 = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/sum.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/sum.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/sort.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/sort.js
 function sort_default2(compare) {
   return this.eachBefore(function(node) {
     if (node.children) {
@@ -8248,11 +8843,11 @@ function sort_default2(compare) {
   });
 }
 var init_sort3 = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/sort.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/sort.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/path.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/path.js
 function path_default2(end) {
   var start2 = this, ancestor = leastCommonAncestor(start2, end), nodes = [start2];
   while (start2 !== ancestor) {
@@ -8280,11 +8875,11 @@ function leastCommonAncestor(a2, b) {
   return c3;
 }
 var init_path4 = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/path.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/path.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/ancestors.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/ancestors.js
 function ancestors_default() {
   var node = this, nodes = [node];
   while (node = node.parent) {
@@ -8293,20 +8888,20 @@ function ancestors_default() {
   return nodes;
 }
 var init_ancestors = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/ancestors.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/ancestors.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/descendants.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/descendants.js
 function descendants_default() {
   return Array.from(this);
 }
 var init_descendants = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/descendants.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/descendants.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/leaves.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/leaves.js
 function leaves_default() {
   var leaves = [];
   this.eachBefore(function(node) {
@@ -8317,11 +8912,11 @@ function leaves_default() {
   return leaves;
 }
 var init_leaves = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/leaves.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/leaves.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/links.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/links.js
 function links_default() {
   var root2 = this, links = [];
   root2.each(function(node) {
@@ -8332,11 +8927,11 @@ function links_default() {
   return links;
 }
 var init_links = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/links.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/links.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/iterator.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/iterator.js
 function* iterator_default2() {
   var node = this, current, next = [node], children2, i, n;
   do {
@@ -8352,11 +8947,11 @@ function* iterator_default2() {
   } while (next.length);
 }
 var init_iterator2 = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/iterator.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/iterator.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/index.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/index.js
 function hierarchy(data, children2) {
   if (data instanceof Map) {
     data = [void 0, data];
@@ -8404,7 +8999,7 @@ function Node(data) {
   this.parent = null;
 }
 var init_hierarchy = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/index.js"() {
     init_count2();
     init_each2();
     init_eachBefore();
@@ -8438,50 +9033,50 @@ var init_hierarchy = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/accessors.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/accessors.js
 var init_accessors = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/accessors.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/accessors.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/constant.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/constant.js
 var init_constant10 = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/constant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/constant.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/lcg.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/lcg.js
 var init_lcg2 = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/lcg.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/lcg.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/array.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/array.js
 var init_array6 = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/array.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/array.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/pack/enclose.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/pack/enclose.js
 var init_enclose = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/pack/enclose.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/pack/enclose.js"() {
     init_array6();
     init_lcg2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/pack/siblings.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/pack/siblings.js
 var init_siblings = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/pack/siblings.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/pack/siblings.js"() {
     init_array6();
     init_lcg2();
     init_enclose();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/pack/index.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/pack/index.js
 var init_pack = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/pack/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/pack/index.js"() {
     init_accessors();
     init_constant10();
     init_lcg2();
@@ -8489,13 +9084,13 @@ var init_pack = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/round.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/round.js
 var init_round2 = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/round.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/round.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/dice.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/dice.js
 function dice_default(parent, x02, y0, x12, y1) {
   var nodes = parent.children, node, i = -1, n = nodes.length, k2 = parent.value && (x12 - x02) / parent.value;
   while (++i < n) {
@@ -8504,27 +9099,27 @@ function dice_default(parent, x02, y0, x12, y1) {
   }
 }
 var init_dice = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/dice.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/dice.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/partition.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/partition.js
 var init_partition = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/partition.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/partition.js"() {
     init_round2();
     init_dice();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/stratify.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/stratify.js
 var init_stratify = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/stratify.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/stratify.js"() {
     init_accessors();
     init_hierarchy();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/tree.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/tree.js
 function TreeNode(node, i) {
   this._ = node;
   this.parent = null;
@@ -8539,13 +9134,13 @@ function TreeNode(node, i) {
   this.i = i;
 }
 var init_tree = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/tree.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/tree.js"() {
     init_hierarchy();
     TreeNode.prototype = Object.create(Node.prototype);
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/slice.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/slice.js
 function slice_default(parent, x02, y0, x12, y1) {
   var nodes = parent.children, node, i = -1, n = nodes.length, k2 = parent.value && (y1 - y0) / parent.value;
   while (++i < n) {
@@ -8554,11 +9149,11 @@ function slice_default(parent, x02, y0, x12, y1) {
   }
 }
 var init_slice = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/slice.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/slice.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/squarify.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/squarify.js
 function squarifyRatio(ratio, parent, x02, y0, x12, y1) {
   var rows = [], nodes = parent.children, row, nodeValue, i0 = 0, i1 = 0, n = nodes.length, dx, dy, value = parent.value, sumValue, minValue, maxValue, newRatio, minRatio, alpha, beta;
   while (i0 < n) {
@@ -8595,7 +9190,7 @@ function squarifyRatio(ratio, parent, x02, y0, x12, y1) {
 }
 var phi, squarify_default;
 var init_squarify = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/squarify.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/squarify.js"() {
     init_dice();
     init_slice();
     phi = (1 + Math.sqrt(5)) / 2;
@@ -8611,9 +9206,9 @@ var init_squarify = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/index.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/index.js
 var init_treemap = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/index.js"() {
     init_round2();
     init_squarify();
     init_accessors();
@@ -8621,24 +9216,24 @@ var init_treemap = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/binary.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/binary.js
 var init_binary = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/binary.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/binary.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/sliceDice.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/sliceDice.js
 var init_sliceDice = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/sliceDice.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/sliceDice.js"() {
     init_dice();
     init_slice();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/resquarify.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/resquarify.js
 var resquarify_default;
 var init_resquarify = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/resquarify.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/resquarify.js"() {
     init_dice();
     init_slice();
     init_squarify();
@@ -8669,9 +9264,9 @@ var init_resquarify = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/index.js
+// game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/index.js
 var init_src23 = __esm({
-  "node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/index.js"() {
     init_cluster();
     init_hierarchy();
     init_pack();
@@ -8690,46 +9285,46 @@ var init_src23 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/area.js
+// game/node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/area.js
 var init_area4 = __esm({
-  "node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/area.js"() {
+  "game/node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/area.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/centroid.js
+// game/node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/centroid.js
 var init_centroid3 = __esm({
-  "node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/centroid.js"() {
+  "game/node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/centroid.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/cross.js
+// game/node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/cross.js
 var init_cross2 = __esm({
-  "node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/cross.js"() {
+  "game/node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/cross.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/hull.js
+// game/node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/hull.js
 var init_hull = __esm({
-  "node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/hull.js"() {
+  "game/node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/hull.js"() {
     init_cross2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/contains.js
+// game/node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/contains.js
 var init_contains3 = __esm({
-  "node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/contains.js"() {
+  "game/node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/contains.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/length.js
+// game/node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/length.js
 var init_length2 = __esm({
-  "node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/length.js"() {
+  "game/node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/length.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/index.js
+// game/node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/index.js
 var init_src24 = __esm({
-  "node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-polygon@3.0.1/node_modules/d3-polygon/src/index.js"() {
     init_area4();
     init_centroid3();
     init_hull();
@@ -8738,18 +9333,18 @@ var init_src24 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/defaultSource.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/defaultSource.js
 var defaultSource_default;
 var init_defaultSource = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/defaultSource.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/defaultSource.js"() {
     defaultSource_default = Math.random;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/uniform.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/uniform.js
 var uniform_default;
 var init_uniform = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/uniform.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/uniform.js"() {
     init_defaultSource();
     uniform_default = function sourceRandomUniform(source) {
       function randomUniform(min4, max5) {
@@ -8769,10 +9364,10 @@ var init_uniform = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/int.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/int.js
 var int_default;
 var init_int = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/int.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/int.js"() {
     init_defaultSource();
     int_default = function sourceRandomInt(source) {
       function randomInt(min4, max5) {
@@ -8790,10 +9385,10 @@ var init_int = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/normal.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/normal.js
 var normal_default;
 var init_normal = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/normal.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/normal.js"() {
     init_defaultSource();
     normal_default = function sourceRandomNormal(source) {
       function randomNormal(mu, sigma) {
@@ -8819,10 +9414,10 @@ var init_normal = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/logNormal.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/logNormal.js
 var logNormal_default;
 var init_logNormal = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/logNormal.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/logNormal.js"() {
     init_defaultSource();
     init_normal();
     logNormal_default = function sourceRandomLogNormal(source) {
@@ -8839,10 +9434,10 @@ var init_logNormal = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/irwinHall.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/irwinHall.js
 var irwinHall_default;
 var init_irwinHall = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/irwinHall.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/irwinHall.js"() {
     init_defaultSource();
     irwinHall_default = function sourceRandomIrwinHall(source) {
       function randomIrwinHall(n) {
@@ -8860,10 +9455,10 @@ var init_irwinHall = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/bates.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/bates.js
 var bates_default;
 var init_bates = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/bates.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/bates.js"() {
     init_defaultSource();
     init_irwinHall();
     bates_default = function sourceRandomBates(source) {
@@ -8882,10 +9477,10 @@ var init_bates = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/exponential.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/exponential.js
 var exponential_default;
 var init_exponential = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/exponential.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/exponential.js"() {
     init_defaultSource();
     exponential_default = function sourceRandomExponential(source) {
       function randomExponential(lambda) {
@@ -8899,10 +9494,10 @@ var init_exponential = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/pareto.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/pareto.js
 var pareto_default;
 var init_pareto = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/pareto.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/pareto.js"() {
     init_defaultSource();
     pareto_default = function sourceRandomPareto(source) {
       function randomPareto(alpha) {
@@ -8919,10 +9514,10 @@ var init_pareto = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/bernoulli.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/bernoulli.js
 var bernoulli_default;
 var init_bernoulli = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/bernoulli.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/bernoulli.js"() {
     init_defaultSource();
     bernoulli_default = function sourceRandomBernoulli(source) {
       function randomBernoulli(p) {
@@ -8938,10 +9533,10 @@ var init_bernoulli = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/geometric.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/geometric.js
 var geometric_default;
 var init_geometric = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/geometric.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/geometric.js"() {
     init_defaultSource();
     geometric_default = function sourceRandomGeometric(source) {
       function randomGeometric(p) {
@@ -8962,10 +9557,10 @@ var init_geometric = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/gamma.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/gamma.js
 var gamma_default;
 var init_gamma = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/gamma.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/gamma.js"() {
     init_defaultSource();
     init_normal();
     gamma_default = function sourceRandomGamma(source) {
@@ -8996,10 +9591,10 @@ var init_gamma = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/beta.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/beta.js
 var beta_default;
 var init_beta = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/beta.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/beta.js"() {
     init_defaultSource();
     init_gamma();
     beta_default = function sourceRandomBeta(source) {
@@ -9017,10 +9612,10 @@ var init_beta = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/binomial.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/binomial.js
 var binomial_default;
 var init_binomial = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/binomial.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/binomial.js"() {
     init_defaultSource();
     init_beta();
     init_geometric();
@@ -9057,10 +9652,10 @@ var init_binomial = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/weibull.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/weibull.js
 var weibull_default;
 var init_weibull = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/weibull.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/weibull.js"() {
     init_defaultSource();
     weibull_default = function sourceRandomWeibull(source) {
       function randomWeibull(k2, a2, b) {
@@ -9083,10 +9678,10 @@ var init_weibull = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/cauchy.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/cauchy.js
 var cauchy_default;
 var init_cauchy = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/cauchy.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/cauchy.js"() {
     init_defaultSource();
     cauchy_default = function sourceRandomCauchy(source) {
       function randomCauchy(a2, b) {
@@ -9102,10 +9697,10 @@ var init_cauchy = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/logistic.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/logistic.js
 var logistic_default;
 var init_logistic = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/logistic.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/logistic.js"() {
     init_defaultSource();
     logistic_default = function sourceRandomLogistic(source) {
       function randomLogistic(a2, b) {
@@ -9122,10 +9717,10 @@ var init_logistic = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/poisson.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/poisson.js
 var poisson_default;
 var init_poisson = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/poisson.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/poisson.js"() {
     init_defaultSource();
     init_binomial();
     init_gamma();
@@ -9152,17 +9747,17 @@ var init_poisson = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/lcg.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/lcg.js
 var eps;
 var init_lcg3 = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/lcg.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/lcg.js"() {
     eps = 1 / 4294967296;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/index.js
+// game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/index.js
 var init_src25 = __esm({
-  "node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-random@3.0.1/node_modules/d3-random/src/index.js"() {
     init_uniform();
     init_int();
     init_normal();
@@ -9184,46 +9779,46 @@ var init_src25 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/init.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/init.js
 var init_init = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/init.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/init.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/ordinal.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/ordinal.js
 var implicit;
 var init_ordinal = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/ordinal.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/ordinal.js"() {
     init_src2();
     init_init();
     implicit = Symbol("implicit");
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/band.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/band.js
 var init_band = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/band.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/band.js"() {
     init_src2();
     init_init();
     init_ordinal();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/constant.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/constant.js
 var init_constant11 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/constant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/constant.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/number.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/number.js
 var init_number3 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/number.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/number.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/continuous.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/continuous.js
 var init_continuous = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/continuous.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/continuous.js"() {
     init_src2();
     init_src8();
     init_constant11();
@@ -9231,17 +9826,17 @@ var init_continuous = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/tickFormat.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/tickFormat.js
 var init_tickFormat = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/tickFormat.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/tickFormat.js"() {
     init_src2();
     init_src21();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/linear.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/linear.js
 var init_linear2 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/linear.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/linear.js"() {
     init_src2();
     init_continuous();
     init_init();
@@ -9249,23 +9844,23 @@ var init_linear2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/identity.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/identity.js
 var init_identity6 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/identity.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/identity.js"() {
     init_linear2();
     init_number3();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/nice.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/nice.js
 var init_nice2 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/nice.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/nice.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/log.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/log.js
 var init_log = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/log.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/log.js"() {
     init_src2();
     init_src21();
     init_nice2();
@@ -9274,27 +9869,27 @@ var init_log = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/symlog.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/symlog.js
 var init_symlog = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/symlog.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/symlog.js"() {
     init_linear2();
     init_continuous();
     init_init();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/pow.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/pow.js
 var init_pow = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/pow.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/pow.js"() {
     init_linear2();
     init_continuous();
     init_init();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/radial.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/radial.js
 var init_radial2 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/radial.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/radial.js"() {
     init_continuous();
     init_init();
     init_linear2();
@@ -9302,32 +9897,32 @@ var init_radial2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/quantile.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/quantile.js
 var init_quantile2 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/quantile.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/quantile.js"() {
     init_src2();
     init_init();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/quantize.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/quantize.js
 var init_quantize2 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/quantize.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/quantize.js"() {
     init_src2();
     init_linear2();
     init_init();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/threshold.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/threshold.js
 var init_threshold = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/threshold.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/threshold.js"() {
     init_src2();
     init_init();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/interval.js
+// game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/interval.js
 function timeInterval(floori, offseti, count3, field) {
   function interval2(date) {
     return floori(date = arguments.length === 0 ? /* @__PURE__ */ new Date() : /* @__PURE__ */ new Date(+date)), date;
@@ -9392,16 +9987,16 @@ function timeInterval(floori, offseti, count3, field) {
 }
 var t02, t12;
 var init_interval2 = __esm({
-  "node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/interval.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/interval.js"() {
     t02 = /* @__PURE__ */ new Date();
     t12 = /* @__PURE__ */ new Date();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/millisecond.js
+// game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/millisecond.js
 var millisecond, milliseconds;
 var init_millisecond = __esm({
-  "node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/millisecond.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/millisecond.js"() {
     init_interval2();
     millisecond = timeInterval(() => {
     }, (date, step) => {
@@ -9427,10 +10022,10 @@ var init_millisecond = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/duration.js
+// game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/duration.js
 var durationSecond, durationMinute, durationHour, durationDay, durationWeek, durationMonth, durationYear;
 var init_duration2 = __esm({
-  "node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/duration.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/duration.js"() {
     durationSecond = 1e3;
     durationMinute = durationSecond * 60;
     durationHour = durationMinute * 60;
@@ -9441,10 +10036,10 @@ var init_duration2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/second.js
+// game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/second.js
 var second, seconds;
 var init_second = __esm({
-  "node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/second.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/second.js"() {
     init_interval2();
     init_duration2();
     second = timeInterval((date) => {
@@ -9460,10 +10055,10 @@ var init_second = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/minute.js
+// game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/minute.js
 var timeMinute, timeMinutes, utcMinute, utcMinutes;
 var init_minute = __esm({
-  "node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/minute.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/minute.js"() {
     init_interval2();
     init_duration2();
     timeMinute = timeInterval((date) => {
@@ -9489,10 +10084,10 @@ var init_minute = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/hour.js
+// game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/hour.js
 var timeHour, timeHours, utcHour, utcHours;
 var init_hour = __esm({
-  "node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/hour.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/hour.js"() {
     init_interval2();
     init_duration2();
     timeHour = timeInterval((date) => {
@@ -9518,10 +10113,10 @@ var init_hour = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/day.js
+// game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/day.js
 var timeDay, timeDays, utcDay, utcDays, unixDay, unixDays;
 var init_day = __esm({
-  "node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/day.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/day.js"() {
     init_interval2();
     init_duration2();
     timeDay = timeInterval(
@@ -9554,7 +10149,7 @@ var init_day = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/week.js
+// game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/week.js
 function timeWeekday(i) {
   return timeInterval((date) => {
     date.setDate(date.getDate() - (date.getDay() + 7 - i) % 7);
@@ -9577,7 +10172,7 @@ function utcWeekday(i) {
 }
 var timeSunday, timeMonday, timeTuesday, timeWednesday, timeThursday, timeFriday, timeSaturday, timeSundays, timeMondays, timeTuesdays, timeWednesdays, timeThursdays, timeFridays, timeSaturdays, utcSunday, utcMonday, utcTuesday, utcWednesday, utcThursday, utcFriday, utcSaturday, utcSundays, utcMondays, utcTuesdays, utcWednesdays, utcThursdays, utcFridays, utcSaturdays;
 var init_week = __esm({
-  "node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/week.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/week.js"() {
     init_interval2();
     init_duration2();
     timeSunday = timeWeekday(0);
@@ -9611,10 +10206,10 @@ var init_week = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/month.js
+// game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/month.js
 var timeMonth, timeMonths, utcMonth, utcMonths;
 var init_month = __esm({
-  "node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/month.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/month.js"() {
     init_interval2();
     timeMonth = timeInterval((date) => {
       date.setDate(1);
@@ -9641,10 +10236,10 @@ var init_month = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/year.js
+// game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/year.js
 var timeYear, timeYears, utcYear, utcYears;
 var init_year = __esm({
-  "node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/year.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/year.js"() {
     init_interval2();
     timeYear = timeInterval((date) => {
       date.setMonth(0, 1);
@@ -9689,7 +10284,7 @@ var init_year = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/ticks.js
+// game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/ticks.js
 function ticker(year, month, week, day, hour, minute) {
   const tickIntervals = [
     [second, 1, durationSecond],
@@ -9733,7 +10328,7 @@ function ticker(year, month, week, day, hour, minute) {
 }
 var utcTicks, utcTickInterval, timeTicks, timeTickInterval;
 var init_ticks2 = __esm({
-  "node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/ticks.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/ticks.js"() {
     init_src2();
     init_duration2();
     init_millisecond();
@@ -9749,9 +10344,9 @@ var init_ticks2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/index.js
+// game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/index.js
 var init_src26 = __esm({
-  "node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time@3.1.0/node_modules/d3-time/src/index.js"() {
     init_interval2();
     init_millisecond();
     init_second();
@@ -9765,7 +10360,7 @@ var init_src26 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/locale.js
+// game/node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/locale.js
 function localDate(d) {
   if (0 <= d.y && d.y < 100) {
     var date = new Date(-1, d.m, d.d, d.H, d.M, d.S, d.L);
@@ -10318,7 +10913,7 @@ function formatUnixTimestampSeconds(d) {
 }
 var pads, numberRe, percentRe, requoteRe;
 var init_locale2 = __esm({
-  "node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/locale.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/locale.js"() {
     init_src26();
     pads = { "-": "", "_": " ", "0": "0" };
     numberRe = /^\s*\d+/;
@@ -10327,7 +10922,7 @@ var init_locale2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/defaultLocale.js
+// game/node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/defaultLocale.js
 function defaultLocale2(definition) {
   locale2 = formatLocale(definition);
   timeFormat = locale2.format;
@@ -10338,7 +10933,7 @@ function defaultLocale2(definition) {
 }
 var locale2, timeFormat, timeParse, utcFormat, utcParse;
 var init_defaultLocale2 = __esm({
-  "node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/defaultLocale.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/defaultLocale.js"() {
     init_locale2();
     defaultLocale2({
       dateTime: "%x, %X",
@@ -10353,36 +10948,36 @@ var init_defaultLocale2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/isoFormat.js
+// game/node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/isoFormat.js
 function formatIsoNative(date) {
   return date.toISOString();
 }
 var isoSpecifier, formatIso;
 var init_isoFormat = __esm({
-  "node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/isoFormat.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/isoFormat.js"() {
     init_defaultLocale2();
     isoSpecifier = "%Y-%m-%dT%H:%M:%S.%LZ";
     formatIso = Date.prototype.toISOString ? formatIsoNative : utcFormat(isoSpecifier);
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/isoParse.js
+// game/node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/isoParse.js
 function parseIsoNative(string) {
   var date = new Date(string);
   return isNaN(date) ? null : date;
 }
 var parseIso;
 var init_isoParse = __esm({
-  "node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/isoParse.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/isoParse.js"() {
     init_isoFormat();
     init_defaultLocale2();
     parseIso = +/* @__PURE__ */ new Date("2000-01-01T00:00:00.000Z") ? parseIsoNative : utcParse(isoSpecifier);
   }
 });
 
-// node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/index.js
+// game/node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/index.js
 var init_src27 = __esm({
-  "node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-time-format@4.1.0/node_modules/d3-time-format/src/index.js"() {
     init_defaultLocale2();
     init_locale2();
     init_isoFormat();
@@ -10390,9 +10985,9 @@ var init_src27 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/time.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/time.js
 var init_time = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/time.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/time.js"() {
     init_src26();
     init_src27();
     init_continuous();
@@ -10401,9 +10996,9 @@ var init_time = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/utcTime.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/utcTime.js
 var init_utcTime = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/utcTime.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/utcTime.js"() {
     init_src26();
     init_src27();
     init_time();
@@ -10411,9 +11006,9 @@ var init_utcTime = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/sequential.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/sequential.js
 var init_sequential = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/sequential.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/sequential.js"() {
     init_src8();
     init_continuous();
     init_init();
@@ -10424,18 +11019,18 @@ var init_sequential = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/sequentialQuantile.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/sequentialQuantile.js
 var init_sequentialQuantile = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/sequentialQuantile.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/sequentialQuantile.js"() {
     init_src2();
     init_continuous();
     init_init();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/diverging.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/diverging.js
 var init_diverging = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/diverging.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/diverging.js"() {
     init_src8();
     init_continuous();
     init_init();
@@ -10447,9 +11042,9 @@ var init_diverging = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/index.js
+// game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/index.js
 var init_src28 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale@4.0.2/node_modules/d3-scale/src/index.js"() {
     init_band();
     init_identity6();
     init_linear2();
@@ -10470,7 +11065,7 @@ var init_src28 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/colors.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/colors.js
 function colors_default(specifier) {
   var n = specifier.length / 6 | 0, colors = new Array(n), i = 0;
   while (i < n)
@@ -10478,122 +11073,122 @@ function colors_default(specifier) {
   return colors;
 }
 var init_colors = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/colors.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/colors.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/category10.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/category10.js
 var category10_default;
 var init_category10 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/category10.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/category10.js"() {
     init_colors();
     category10_default = colors_default("1f77b4ff7f0e2ca02cd627289467bd8c564be377c27f7f7fbcbd2217becf");
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Accent.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Accent.js
 var Accent_default;
 var init_Accent = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Accent.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Accent.js"() {
     init_colors();
     Accent_default = colors_default("7fc97fbeaed4fdc086ffff99386cb0f0027fbf5b17666666");
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Dark2.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Dark2.js
 var Dark2_default;
 var init_Dark2 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Dark2.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Dark2.js"() {
     init_colors();
     Dark2_default = colors_default("1b9e77d95f027570b3e7298a66a61ee6ab02a6761d666666");
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/observable10.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/observable10.js
 var observable10_default;
 var init_observable10 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/observable10.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/observable10.js"() {
     init_colors();
     observable10_default = colors_default("4269d0efb118ff725c6cc5b03ca951ff8ab7a463f297bbf59c6b4e9498a0");
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Paired.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Paired.js
 var Paired_default;
 var init_Paired = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Paired.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Paired.js"() {
     init_colors();
     Paired_default = colors_default("a6cee31f78b4b2df8a33a02cfb9a99e31a1cfdbf6fff7f00cab2d66a3d9affff99b15928");
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Pastel1.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Pastel1.js
 var Pastel1_default;
 var init_Pastel1 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Pastel1.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Pastel1.js"() {
     init_colors();
     Pastel1_default = colors_default("fbb4aeb3cde3ccebc5decbe4fed9a6ffffcce5d8bdfddaecf2f2f2");
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Pastel2.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Pastel2.js
 var Pastel2_default;
 var init_Pastel2 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Pastel2.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Pastel2.js"() {
     init_colors();
     Pastel2_default = colors_default("b3e2cdfdcdaccbd5e8f4cae4e6f5c9fff2aef1e2cccccccc");
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set1.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set1.js
 var Set1_default;
 var init_Set1 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set1.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set1.js"() {
     init_colors();
     Set1_default = colors_default("e41a1c377eb84daf4a984ea3ff7f00ffff33a65628f781bf999999");
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set2.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set2.js
 var Set2_default;
 var init_Set2 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set2.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set2.js"() {
     init_colors();
     Set2_default = colors_default("66c2a5fc8d628da0cbe78ac3a6d854ffd92fe5c494b3b3b3");
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set3.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set3.js
 var Set3_default;
 var init_Set3 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set3.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set3.js"() {
     init_colors();
     Set3_default = colors_default("8dd3c7ffffb3bebadafb807280b1d3fdb462b3de69fccde5d9d9d9bc80bdccebc5ffed6f");
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Tableau10.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Tableau10.js
 var Tableau10_default;
 var init_Tableau10 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Tableau10.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Tableau10.js"() {
     init_colors();
     Tableau10_default = colors_default("4e79a7f28e2ce1575976b7b259a14fedc949af7aa1ff9da79c755fbab0ab");
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/ramp.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/ramp.js
 var ramp_default;
 var init_ramp = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/ramp.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/ramp.js"() {
     init_src8();
     ramp_default = (scheme28) => rgbBasis(scheme28[scheme28.length - 1]);
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/BrBG.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/BrBG.js
 var scheme, BrBG_default;
 var init_BrBG = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/BrBG.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/BrBG.js"() {
     init_colors();
     init_ramp();
     scheme = new Array(3).concat(
@@ -10611,10 +11206,10 @@ var init_BrBG = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PRGn.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PRGn.js
 var scheme2, PRGn_default;
 var init_PRGn = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PRGn.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PRGn.js"() {
     init_colors();
     init_ramp();
     scheme2 = new Array(3).concat(
@@ -10632,10 +11227,10 @@ var init_PRGn = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PiYG.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PiYG.js
 var scheme3, PiYG_default;
 var init_PiYG = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PiYG.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PiYG.js"() {
     init_colors();
     init_ramp();
     scheme3 = new Array(3).concat(
@@ -10653,10 +11248,10 @@ var init_PiYG = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PuOr.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PuOr.js
 var scheme4, PuOr_default;
 var init_PuOr = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PuOr.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PuOr.js"() {
     init_colors();
     init_ramp();
     scheme4 = new Array(3).concat(
@@ -10674,10 +11269,10 @@ var init_PuOr = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdBu.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdBu.js
 var scheme5, RdBu_default;
 var init_RdBu = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdBu.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdBu.js"() {
     init_colors();
     init_ramp();
     scheme5 = new Array(3).concat(
@@ -10695,10 +11290,10 @@ var init_RdBu = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdGy.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdGy.js
 var scheme6, RdGy_default;
 var init_RdGy = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdGy.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdGy.js"() {
     init_colors();
     init_ramp();
     scheme6 = new Array(3).concat(
@@ -10716,10 +11311,10 @@ var init_RdGy = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdYlBu.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdYlBu.js
 var scheme7, RdYlBu_default;
 var init_RdYlBu = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdYlBu.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdYlBu.js"() {
     init_colors();
     init_ramp();
     scheme7 = new Array(3).concat(
@@ -10737,10 +11332,10 @@ var init_RdYlBu = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdYlGn.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdYlGn.js
 var scheme8, RdYlGn_default;
 var init_RdYlGn = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdYlGn.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdYlGn.js"() {
     init_colors();
     init_ramp();
     scheme8 = new Array(3).concat(
@@ -10758,10 +11353,10 @@ var init_RdYlGn = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/Spectral.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/Spectral.js
 var scheme9, Spectral_default;
 var init_Spectral = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/Spectral.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/Spectral.js"() {
     init_colors();
     init_ramp();
     scheme9 = new Array(3).concat(
@@ -10779,10 +11374,10 @@ var init_Spectral = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/BuGn.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/BuGn.js
 var scheme10, BuGn_default;
 var init_BuGn = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/BuGn.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/BuGn.js"() {
     init_colors();
     init_ramp();
     scheme10 = new Array(3).concat(
@@ -10798,10 +11393,10 @@ var init_BuGn = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/BuPu.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/BuPu.js
 var scheme11, BuPu_default;
 var init_BuPu = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/BuPu.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/BuPu.js"() {
     init_colors();
     init_ramp();
     scheme11 = new Array(3).concat(
@@ -10817,10 +11412,10 @@ var init_BuPu = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/GnBu.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/GnBu.js
 var scheme12, GnBu_default;
 var init_GnBu = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/GnBu.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/GnBu.js"() {
     init_colors();
     init_ramp();
     scheme12 = new Array(3).concat(
@@ -10836,10 +11431,10 @@ var init_GnBu = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/OrRd.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/OrRd.js
 var scheme13, OrRd_default;
 var init_OrRd = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/OrRd.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/OrRd.js"() {
     init_colors();
     init_ramp();
     scheme13 = new Array(3).concat(
@@ -10855,10 +11450,10 @@ var init_OrRd = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuBuGn.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuBuGn.js
 var scheme14, PuBuGn_default;
 var init_PuBuGn = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuBuGn.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuBuGn.js"() {
     init_colors();
     init_ramp();
     scheme14 = new Array(3).concat(
@@ -10874,10 +11469,10 @@ var init_PuBuGn = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuBu.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuBu.js
 var scheme15, PuBu_default;
 var init_PuBu = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuBu.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuBu.js"() {
     init_colors();
     init_ramp();
     scheme15 = new Array(3).concat(
@@ -10893,10 +11488,10 @@ var init_PuBu = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuRd.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuRd.js
 var scheme16, PuRd_default;
 var init_PuRd = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuRd.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuRd.js"() {
     init_colors();
     init_ramp();
     scheme16 = new Array(3).concat(
@@ -10912,10 +11507,10 @@ var init_PuRd = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/RdPu.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/RdPu.js
 var scheme17, RdPu_default;
 var init_RdPu = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/RdPu.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/RdPu.js"() {
     init_colors();
     init_ramp();
     scheme17 = new Array(3).concat(
@@ -10931,10 +11526,10 @@ var init_RdPu = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlGnBu.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlGnBu.js
 var scheme18, YlGnBu_default;
 var init_YlGnBu = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlGnBu.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlGnBu.js"() {
     init_colors();
     init_ramp();
     scheme18 = new Array(3).concat(
@@ -10950,10 +11545,10 @@ var init_YlGnBu = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlGn.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlGn.js
 var scheme19, YlGn_default;
 var init_YlGn = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlGn.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlGn.js"() {
     init_colors();
     init_ramp();
     scheme19 = new Array(3).concat(
@@ -10969,10 +11564,10 @@ var init_YlGn = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlOrBr.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlOrBr.js
 var scheme20, YlOrBr_default;
 var init_YlOrBr = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlOrBr.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlOrBr.js"() {
     init_colors();
     init_ramp();
     scheme20 = new Array(3).concat(
@@ -10988,10 +11583,10 @@ var init_YlOrBr = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlOrRd.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlOrRd.js
 var scheme21, YlOrRd_default;
 var init_YlOrRd = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlOrRd.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlOrRd.js"() {
     init_colors();
     init_ramp();
     scheme21 = new Array(3).concat(
@@ -11007,10 +11602,10 @@ var init_YlOrRd = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Blues.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Blues.js
 var scheme22, Blues_default;
 var init_Blues = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Blues.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Blues.js"() {
     init_colors();
     init_ramp();
     scheme22 = new Array(3).concat(
@@ -11026,10 +11621,10 @@ var init_Blues = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Greens.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Greens.js
 var scheme23, Greens_default;
 var init_Greens = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Greens.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Greens.js"() {
     init_colors();
     init_ramp();
     scheme23 = new Array(3).concat(
@@ -11045,10 +11640,10 @@ var init_Greens = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Greys.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Greys.js
 var scheme24, Greys_default;
 var init_Greys = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Greys.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Greys.js"() {
     init_colors();
     init_ramp();
     scheme24 = new Array(3).concat(
@@ -11064,10 +11659,10 @@ var init_Greys = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Purples.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Purples.js
 var scheme25, Purples_default;
 var init_Purples = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Purples.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Purples.js"() {
     init_colors();
     init_ramp();
     scheme25 = new Array(3).concat(
@@ -11083,10 +11678,10 @@ var init_Purples = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Reds.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Reds.js
 var scheme26, Reds_default;
 var init_Reds = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Reds.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Reds.js"() {
     init_colors();
     init_ramp();
     scheme26 = new Array(3).concat(
@@ -11102,10 +11697,10 @@ var init_Reds = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Oranges.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Oranges.js
 var scheme27, Oranges_default;
 var init_Oranges = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Oranges.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Oranges.js"() {
     init_colors();
     init_ramp();
     scheme27 = new Array(3).concat(
@@ -11121,26 +11716,26 @@ var init_Oranges = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/cividis.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/cividis.js
 var init_cividis = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/cividis.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/cividis.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/cubehelix.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/cubehelix.js
 var cubehelix_default2;
 var init_cubehelix3 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/cubehelix.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/cubehelix.js"() {
     init_src7();
     init_src8();
     cubehelix_default2 = cubehelixLong(cubehelix(300, 0.5, 0), cubehelix(-240, 0.5, 1));
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/rainbow.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/rainbow.js
 var warm, cool, c;
 var init_rainbow = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/rainbow.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/rainbow.js"() {
     init_src7();
     init_src8();
     warm = cubehelixLong(cubehelix(-100, 0.75, 0.35), cubehelix(80, 1.5, 0.8));
@@ -11149,10 +11744,10 @@ var init_rainbow = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/sinebow.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/sinebow.js
 var c2, pi_1_3, pi_2_3;
 var init_sinebow = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/sinebow.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/sinebow.js"() {
     init_src7();
     c2 = rgb();
     pi_1_3 = Math.PI / 3;
@@ -11160,13 +11755,13 @@ var init_sinebow = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/turbo.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/turbo.js
 var init_turbo = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/turbo.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/turbo.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/viridis.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/viridis.js
 function ramp(range2) {
   var n = range2.length;
   return function(t) {
@@ -11175,7 +11770,7 @@ function ramp(range2) {
 }
 var viridis_default, magma, inferno, plasma;
 var init_viridis = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/viridis.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/viridis.js"() {
     init_colors();
     viridis_default = ramp(colors_default("44015444025645045745055946075a46085c460a5d460b5e470d60470e6147106347116447136548146748166848176948186a481a6c481b6d481c6e481d6f481f70482071482173482374482475482576482677482878482979472a7a472c7a472d7b472e7c472f7d46307e46327e46337f463480453581453781453882443983443a83443b84433d84433e85423f854240864241864142874144874045884046883f47883f48893e49893e4a893e4c8a3d4d8a3d4e8a3c4f8a3c508b3b518b3b528b3a538b3a548c39558c39568c38588c38598c375a8c375b8d365c8d365d8d355e8d355f8d34608d34618d33628d33638d32648e32658e31668e31678e31688e30698e306a8e2f6b8e2f6c8e2e6d8e2e6e8e2e6f8e2d708e2d718e2c718e2c728e2c738e2b748e2b758e2a768e2a778e2a788e29798e297a8e297b8e287c8e287d8e277e8e277f8e27808e26818e26828e26828e25838e25848e25858e24868e24878e23888e23898e238a8d228b8d228c8d228d8d218e8d218f8d21908d21918c20928c20928c20938c1f948c1f958b1f968b1f978b1f988b1f998a1f9a8a1e9b8a1e9c891e9d891f9e891f9f881fa0881fa1881fa1871fa28720a38620a48621a58521a68522a78522a88423a98324aa8325ab8225ac8226ad8127ad8128ae8029af7f2ab07f2cb17e2db27d2eb37c2fb47c31b57b32b67a34b67935b77937b87838b9773aba763bbb753dbc743fbc7340bd7242be7144bf7046c06f48c16e4ac16d4cc26c4ec36b50c46a52c56954c56856c66758c7655ac8645cc8635ec96260ca6063cb5f65cb5e67cc5c69cd5b6ccd5a6ece5870cf5773d05675d05477d1537ad1517cd2507fd34e81d34d84d44b86d54989d5488bd6468ed64590d74393d74195d84098d83e9bd93c9dd93ba0da39a2da37a5db36a8db34aadc32addc30b0dd2fb2dd2db5de2bb8de29bade28bddf26c0df25c2df23c5e021c8e020cae11fcde11dd0e11cd2e21bd5e21ad8e219dae319dde318dfe318e2e418e5e419e7e419eae51aece51befe51cf1e51df4e61ef6e620f8e621fbe723fde725"));
     magma = ramp(colors_default("00000401000501010601010802010902020b02020d03030f03031204041405041606051806051a07061c08071e0907200a08220b09240c09260d0a290e0b2b100b2d110c2f120d31130d34140e36150e38160f3b180f3d19103f1a10421c10441d11471e114920114b21114e22115024125325125527125829115a2a115c2c115f2d11612f116331116533106734106936106b38106c390f6e3b0f703d0f713f0f72400f74420f75440f764510774710784910784a10794c117a4e117b4f127b51127c52137c54137d56147d57157e59157e5a167e5c167f5d177f5f187f601880621980641a80651a80671b80681c816a1c816b1d816d1d816e1e81701f81721f817320817521817621817822817922827b23827c23827e24828025828125818326818426818627818827818928818b29818c29818e2a81902a81912b81932b80942c80962c80982d80992d809b2e7f9c2e7f9e2f7fa02f7fa1307ea3307ea5317ea6317da8327daa337dab337cad347cae347bb0357bb2357bb3367ab5367ab73779b83779ba3878bc3978bd3977bf3a77c03a76c23b75c43c75c53c74c73d73c83e73ca3e72cc3f71cd4071cf4070d0416fd2426fd3436ed5446dd6456cd8456cd9466bdb476adc4869de4968df4a68e04c67e24d66e34e65e44f64e55064e75263e85362e95462ea5661eb5760ec5860ed5a5fee5b5eef5d5ef05f5ef1605df2625df2645cf3655cf4675cf4695cf56b5cf66c5cf66e5cf7705cf7725cf8745cf8765cf9785df9795df97b5dfa7d5efa7f5efa815ffb835ffb8560fb8761fc8961fc8a62fc8c63fc8e64fc9065fd9266fd9467fd9668fd9869fd9a6afd9b6bfe9d6cfe9f6dfea16efea36ffea571fea772fea973feaa74feac76feae77feb078feb27afeb47bfeb67cfeb77efeb97ffebb81febd82febf84fec185fec287fec488fec68afec88cfeca8dfecc8ffecd90fecf92fed194fed395fed597fed799fed89afdda9cfddc9efddea0fde0a1fde2a3fde3a5fde5a7fde7a9fde9aafdebacfcecaefceeb0fcf0b2fcf2b4fcf4b6fcf6b8fcf7b9fcf9bbfcfbbdfcfdbf"));
@@ -11184,9 +11779,9 @@ var init_viridis = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/index.js
+// game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/index.js
 var init_src29 = __esm({
-  "node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/index.js"() {
     init_category10();
     init_Accent();
     init_Dark2();
@@ -11234,16 +11829,21 @@ var init_src29 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/constant.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/constant.js
+function constant_default10(x3) {
+  return function constant2() {
+    return x3;
+  };
+}
 var init_constant12 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/constant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/constant.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/math.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/math.js
 var cos3, sin3, sqrt3, epsilon6, pi5, halfPi4, tau6;
 var init_math5 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/math.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/math.js"() {
     cos3 = Math.cos;
     sin3 = Math.sin;
     sqrt3 = Math.sqrt;
@@ -11254,31 +11854,51 @@ var init_math5 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/path.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/path.js
+function withPath(shape) {
+  let digits = 3;
+  shape.digits = function(_) {
+    if (!arguments.length)
+      return digits;
+    if (_ == null) {
+      digits = null;
+    } else {
+      const d = Math.floor(_);
+      if (!(d >= 0))
+        throw new RangeError(`invalid digits: ${_}`);
+      digits = d;
+    }
+    return shape;
+  };
+  return () => new Path(digits);
+}
 var init_path5 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/path.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/path.js"() {
     init_src13();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/arc.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/arc.js
 var init_arc = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/arc.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/arc.js"() {
     init_constant12();
     init_math5();
     init_path5();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/array.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/array.js
+function array_default3(x3) {
+  return typeof x3 === "object" && "length" in x3 ? x3 : Array.from(x3);
+}
 var slice4;
 var init_array7 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/array.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/array.js"() {
     slice4 = Array.prototype.slice;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/linear.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/linear.js
 function Linear(context) {
   this._context = context;
 }
@@ -11286,7 +11906,7 @@ function linear_default(context) {
   return new Linear(context);
 }
 var init_linear3 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/linear.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/linear.js"() {
     Linear.prototype = {
       areaStart: function() {
         this._line = 0;
@@ -11320,15 +11940,59 @@ var init_linear3 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/point.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/point.js
+function x2(p) {
+  return p[0];
+}
+function y2(p) {
+  return p[1];
+}
 var init_point = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/point.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/point.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/line.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/line.js
+function line_default2(x3, y3) {
+  var defined = constant_default10(true), context = null, curve = linear_default, output = null, path2 = withPath(line);
+  x3 = typeof x3 === "function" ? x3 : x3 === void 0 ? x2 : constant_default10(x3);
+  y3 = typeof y3 === "function" ? y3 : y3 === void 0 ? y2 : constant_default10(y3);
+  function line(data) {
+    var i, n = (data = array_default3(data)).length, d, defined0 = false, buffer;
+    if (context == null)
+      output = curve(buffer = path2());
+    for (i = 0; i <= n; ++i) {
+      if (!(i < n && defined(d = data[i], i, data)) === defined0) {
+        if (defined0 = !defined0)
+          output.lineStart();
+        else
+          output.lineEnd();
+      }
+      if (defined0)
+        output.point(+x3(d, i, data), +y3(d, i, data));
+    }
+    if (buffer)
+      return output = null, buffer + "" || null;
+  }
+  line.x = function(_) {
+    return arguments.length ? (x3 = typeof _ === "function" ? _ : constant_default10(+_), line) : x3;
+  };
+  line.y = function(_) {
+    return arguments.length ? (y3 = typeof _ === "function" ? _ : constant_default10(+_), line) : y3;
+  };
+  line.defined = function(_) {
+    return arguments.length ? (defined = typeof _ === "function" ? _ : constant_default10(!!_), line) : defined;
+  };
+  line.curve = function(_) {
+    return arguments.length ? (curve = _, context != null && (output = curve(context)), line) : curve;
+  };
+  line.context = function(_) {
+    return arguments.length ? (_ == null ? context = output = null : output = curve(context = _), line) : context;
+  };
+  return line;
+}
 var init_line2 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/line.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/line.js"() {
     init_array7();
     init_constant12();
     init_linear3();
@@ -11337,9 +12001,9 @@ var init_line2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/area.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/area.js
 var init_area5 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/area.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/area.js"() {
     init_array7();
     init_constant12();
     init_linear3();
@@ -11349,21 +12013,21 @@ var init_area5 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/descending.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/descending.js
 var init_descending2 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/descending.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/descending.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/identity.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/identity.js
 var init_identity7 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/identity.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/identity.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/pie.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/pie.js
 var init_pie = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/pie.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/pie.js"() {
     init_array7();
     init_constant12();
     init_descending2();
@@ -11372,7 +12036,7 @@ var init_pie = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/radial.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/radial.js
 function Radial(curve) {
   this._curve = curve;
 }
@@ -11385,7 +12049,7 @@ function curveRadial(curve) {
 }
 var curveRadialLinear;
 var init_radial3 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/radial.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/radial.js"() {
     init_linear3();
     curveRadialLinear = curveRadial(linear_default);
     Radial.prototype = {
@@ -11408,39 +12072,39 @@ var init_radial3 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/lineRadial.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/lineRadial.js
 var init_lineRadial = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/lineRadial.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/lineRadial.js"() {
     init_radial3();
     init_line2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/areaRadial.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/areaRadial.js
 var init_areaRadial = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/areaRadial.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/areaRadial.js"() {
     init_radial3();
     init_area5();
     init_lineRadial();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/pointRadial.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/pointRadial.js
 var init_pointRadial = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/pointRadial.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/pointRadial.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/bump.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/bump.js
 var init_bump = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/bump.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/bump.js"() {
     init_pointRadial();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/link.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/link.js
 var init_link2 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/link.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/link.js"() {
     init_array7();
     init_constant12();
     init_bump();
@@ -11449,71 +12113,71 @@ var init_link2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/asterisk.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/asterisk.js
 var sqrt32;
 var init_asterisk = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/asterisk.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/asterisk.js"() {
     init_math5();
     sqrt32 = sqrt3(3);
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/circle.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/circle.js
 var init_circle4 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/circle.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/circle.js"() {
     init_math5();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/cross.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/cross.js
 var init_cross3 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/cross.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/cross.js"() {
     init_math5();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/diamond.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/diamond.js
 var tan30, tan30_2;
 var init_diamond = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/diamond.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/diamond.js"() {
     init_math5();
     tan30 = sqrt3(1 / 3);
     tan30_2 = tan30 * 2;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/diamond2.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/diamond2.js
 var init_diamond2 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/diamond2.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/diamond2.js"() {
     init_math5();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/plus.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/plus.js
 var init_plus = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/plus.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/plus.js"() {
     init_math5();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/square.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/square.js
 var init_square = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/square.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/square.js"() {
     init_math5();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/square2.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/square2.js
 var init_square2 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/square2.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/square2.js"() {
     init_math5();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/star.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/star.js
 var kr, kx, ky;
 var init_star = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/star.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/star.js"() {
     init_math5();
     kr = sin3(pi5 / 10) / sin3(7 * pi5 / 10);
     kx = sin3(tau6 / 10) * kr;
@@ -11521,28 +12185,28 @@ var init_star = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/triangle.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/triangle.js
 var sqrt33;
 var init_triangle = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/triangle.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/triangle.js"() {
     init_math5();
     sqrt33 = sqrt3(3);
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/triangle2.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/triangle2.js
 var sqrt34;
 var init_triangle2 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/triangle2.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/triangle2.js"() {
     init_math5();
     sqrt34 = sqrt3(3);
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/wye.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/wye.js
 var s, k, a;
 var init_wye = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/wye.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/wye.js"() {
     init_math5();
     s = sqrt3(3) / 2;
     k = 1 / sqrt3(12);
@@ -11550,16 +12214,16 @@ var init_wye = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/times.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/times.js
 var init_times = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/times.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/times.js"() {
     init_math5();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol.js
 var init_symbol = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/symbol.js"() {
     init_constant12();
     init_path5();
     init_asterisk();
@@ -11578,15 +12242,15 @@ var init_symbol = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/noop.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/noop.js
 function noop_default2() {
 }
 var init_noop3 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/noop.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/noop.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basis.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basis.js
 function point2(that, x3, y3) {
   that._context.bezierCurveTo(
     (2 * that._x0 + that._x1) / 3,
@@ -11600,8 +12264,11 @@ function point2(that, x3, y3) {
 function Basis(context) {
   this._context = context;
 }
+function basis_default2(context) {
+  return new Basis(context);
+}
 var init_basis2 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basis.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basis.js"() {
     Basis.prototype = {
       areaStart: function() {
         this._line = 0;
@@ -11649,12 +12316,12 @@ var init_basis2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basisClosed.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basisClosed.js
 function BasisClosed(context) {
   this._context = context;
 }
 var init_basisClosed2 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basisClosed.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basisClosed.js"() {
     init_noop3();
     init_basis2();
     BasisClosed.prototype = {
@@ -11712,12 +12379,12 @@ var init_basisClosed2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basisOpen.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basisOpen.js
 function BasisOpen(context) {
   this._context = context;
 }
 var init_basisOpen = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basisOpen.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basisOpen.js"() {
     init_basis2();
     BasisOpen.prototype = {
       areaStart: function() {
@@ -11762,14 +12429,14 @@ var init_basisOpen = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/bundle.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/bundle.js
 function Bundle(context, beta) {
   this._basis = new Basis(context);
   this._beta = beta;
 }
 var bundle_default;
 var init_bundle = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/bundle.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/bundle.js"() {
     init_basis2();
     Bundle.prototype = {
       lineStart: function() {
@@ -11809,7 +12476,7 @@ var init_bundle = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinal.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinal.js
 function point3(that, x3, y3) {
   that._context.bezierCurveTo(
     that._x1 + that._k * (that._x2 - that._x0),
@@ -11826,7 +12493,7 @@ function Cardinal(context, tension) {
 }
 var cardinal_default;
 var init_cardinal = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinal.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinal.js"() {
     Cardinal.prototype = {
       areaStart: function() {
         this._line = 0;
@@ -11884,14 +12551,14 @@ var init_cardinal = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinalClosed.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinalClosed.js
 function CardinalClosed(context, tension) {
   this._context = context;
   this._k = (1 - tension) / 6;
 }
 var cardinalClosed_default;
 var init_cardinalClosed = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinalClosed.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinalClosed.js"() {
     init_noop3();
     init_cardinal();
     CardinalClosed.prototype = {
@@ -11956,14 +12623,14 @@ var init_cardinalClosed = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinalOpen.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinalOpen.js
 function CardinalOpen(context, tension) {
   this._context = context;
   this._k = (1 - tension) / 6;
 }
 var cardinalOpen_default;
 var init_cardinalOpen = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinalOpen.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinalOpen.js"() {
     init_cardinal();
     CardinalOpen.prototype = {
       areaStart: function() {
@@ -12016,7 +12683,7 @@ var init_cardinalOpen = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRom.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRom.js
 function point4(that, x3, y3) {
   var x12 = that._x1, y1 = that._y1, x22 = that._x2, y22 = that._y2;
   if (that._l01_a > epsilon6) {
@@ -12037,7 +12704,7 @@ function CatmullRom(context, alpha) {
 }
 var catmullRom_default;
 var init_catmullRom = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRom.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRom.js"() {
     init_math5();
     init_cardinal();
     CatmullRom.prototype = {
@@ -12102,14 +12769,14 @@ var init_catmullRom = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRomClosed.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRomClosed.js
 function CatmullRomClosed(context, alpha) {
   this._context = context;
   this._alpha = alpha;
 }
 var catmullRomClosed_default;
 var init_catmullRomClosed = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRomClosed.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRomClosed.js"() {
     init_cardinalClosed();
     init_noop3();
     init_catmullRom();
@@ -12181,14 +12848,14 @@ var init_catmullRomClosed = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRomOpen.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRomOpen.js
 function CatmullRomOpen(context, alpha) {
   this._context = context;
   this._alpha = alpha;
 }
 var catmullRomOpen_default;
 var init_catmullRomOpen = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRomOpen.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRomOpen.js"() {
     init_cardinalOpen();
     init_catmullRom();
     CatmullRomOpen.prototype = {
@@ -12248,12 +12915,12 @@ var init_catmullRomOpen = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/linearClosed.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/linearClosed.js
 function LinearClosed(context) {
   this._context = context;
 }
 var init_linearClosed = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/linearClosed.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/linearClosed.js"() {
     init_noop3();
     LinearClosed.prototype = {
       areaStart: noop_default2,
@@ -12276,7 +12943,7 @@ var init_linearClosed = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/monotone.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/monotone.js
 function sign2(x3) {
   return x3 < 0 ? -1 : 1;
 }
@@ -12302,7 +12969,7 @@ function ReflectContext(context) {
   this._context = context;
 }
 var init_monotone = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/monotone.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/monotone.js"() {
     MonotoneX.prototype = {
       areaStart: function() {
         this._line = 0;
@@ -12373,7 +13040,7 @@ var init_monotone = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/natural.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/natural.js
 function Natural(context) {
   this._context = context;
 }
@@ -12394,7 +13061,7 @@ function controlPoints(x3) {
   return [a2, b];
 }
 var init_natural = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/natural.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/natural.js"() {
     Natural.prototype = {
       areaStart: function() {
         this._line = 0;
@@ -12432,13 +13099,13 @@ var init_natural = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/step.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/step.js
 function Step(context, t) {
   this._context = context;
   this._t = t;
 }
 var init_step = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/step.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/curve/step.js"() {
     Step.prototype = {
       areaStart: function() {
         this._line = 0;
@@ -12485,21 +13152,21 @@ var init_step = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/none.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/none.js
 var init_none = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/none.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/none.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/none.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/none.js
 var init_none2 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/none.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/none.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/stack.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/stack.js
 var init_stack = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/stack.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/stack.js"() {
     init_array7();
     init_constant12();
     init_none();
@@ -12507,72 +13174,72 @@ var init_stack = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/expand.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/expand.js
 var init_expand = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/expand.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/expand.js"() {
     init_none();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/diverging.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/diverging.js
 var init_diverging2 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/diverging.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/diverging.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/silhouette.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/silhouette.js
 var init_silhouette = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/silhouette.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/silhouette.js"() {
     init_none();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/wiggle.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/wiggle.js
 var init_wiggle = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/wiggle.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/offset/wiggle.js"() {
     init_none();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/appearance.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/appearance.js
 var init_appearance = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/appearance.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/appearance.js"() {
     init_none2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/ascending.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/ascending.js
 var init_ascending3 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/ascending.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/ascending.js"() {
     init_none2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/descending.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/descending.js
 var init_descending3 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/descending.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/descending.js"() {
     init_ascending3();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/insideOut.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/insideOut.js
 var init_insideOut = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/insideOut.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/insideOut.js"() {
     init_appearance();
     init_ascending3();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/reverse.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/reverse.js
 var init_reverse2 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/reverse.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/order/reverse.js"() {
     init_none2();
   }
 });
 
-// node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/index.js
+// game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/index.js
 var init_src30 = __esm({
-  "node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-shape@3.2.0/node_modules/d3-shape/src/index.js"() {
     init_arc();
     init_area5();
     init_line2();
@@ -12626,15 +13293,15 @@ var init_src30 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/constant.js
+// game/node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/constant.js
 var constant_default11;
 var init_constant13 = __esm({
-  "node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/constant.js"() {
+  "game/node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/constant.js"() {
     constant_default11 = (x3) => () => x3;
   }
 });
 
-// node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/event.js
+// game/node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/event.js
 function ZoomEvent(type2, {
   sourceEvent,
   target,
@@ -12650,11 +13317,11 @@ function ZoomEvent(type2, {
   });
 }
 var init_event3 = __esm({
-  "node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/event.js"() {
+  "game/node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/event.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/transform.js
+// game/node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/transform.js
 function Transform(k2, x3, y3) {
   this.k = k2;
   this.x = x3;
@@ -12668,7 +13335,7 @@ function transform(node) {
 }
 var identity5;
 var init_transform3 = __esm({
-  "node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/transform.js"() {
+  "game/node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/transform.js"() {
     Transform.prototype = {
       constructor: Transform,
       scale: function(k2) {
@@ -12710,7 +13377,7 @@ var init_transform3 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/noevent.js
+// game/node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/noevent.js
 function nopropagation3(event) {
   event.stopImmediatePropagation();
 }
@@ -12719,11 +13386,11 @@ function noevent_default3(event) {
   event.stopImmediatePropagation();
 }
 var init_noevent3 = __esm({
-  "node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/noevent.js"() {
+  "game/node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/noevent.js"() {
   }
 });
 
-// node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/zoom.js
+// game/node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/zoom.js
 function defaultFilter(event) {
   return (!event.ctrlKey || event.type === "wheel") && !event.button;
 }
@@ -13066,7 +13733,7 @@ function zoom_default2() {
   return zoom;
 }
 var init_zoom2 = __esm({
-  "node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/zoom.js"() {
+  "game/node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/zoom.js"() {
     init_src4();
     init_src6();
     init_src8();
@@ -13079,17 +13746,17 @@ var init_zoom2 = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/index.js
+// game/node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/index.js
 var init_src31 = __esm({
-  "node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3-zoom@3.0.0/node_modules/d3-zoom/src/index.js"() {
     init_zoom2();
     init_transform3();
   }
 });
 
-// node_modules/.aspect_rules_js/d3@7.9.0/node_modules/d3/src/index.js
+// game/node_modules/.aspect_rules_js/d3@7.9.0/node_modules/d3/src/index.js
 var init_src32 = __esm({
-  "node_modules/.aspect_rules_js/d3@7.9.0/node_modules/d3/src/index.js"() {
+  "game/node_modules/.aspect_rules_js/d3@7.9.0/node_modules/d3/src/index.js"() {
     init_src2();
     init_src3();
     init_src12();
@@ -13123,7 +13790,7 @@ var init_src32 = __esm({
   }
 });
 
-// web/src/model/hex-geometry.js
+// game/web/src/model/hex-geometry.js
 function hexToPixel(q, r) {
   const x3 = HEX_SIZE * (1.5 * q);
   const y3 = HEX_SIZE * (Math.sqrt(3) * r + Math.sqrt(3) / 2 * q);
@@ -13153,7 +13820,7 @@ function mapBounds(precincts) {
 }
 var HEX_SIZE, HEX_DIRECTIONS;
 var init_hex_geometry = __esm({
-  "web/src/model/hex-geometry.js"() {
+  "game/web/src/model/hex-geometry.js"() {
     HEX_SIZE = 36;
     HEX_DIRECTIONS = [
       [1, 0],
@@ -13172,15 +13839,15 @@ var init_hex_geometry = __esm({
   }
 });
 
-// web/src/model/types.js
+// game/web/src/model/types.js
 var DISTRICT_COLORS, PARTY_COLORS, PARTY_LABELS;
 var init_types = __esm({
-  "web/src/model/types.js"() {
+  "game/web/src/model/types.js"() {
     DISTRICT_COLORS = [
       "#E69F00",
       // amber
-      "#56B4E9",
-      // sky blue
+      "#F0E442",
+      // yellow
       "#009E73",
       // bluish green
       "#CC79A7",
@@ -13205,12 +13872,62 @@ var init_types = __esm({
   }
 });
 
-// web/src/render/mapRenderer.ts
+// game/web/src/render/mapRenderer.ts
+function buildRiverChains(segs) {
+  const key = (p) => `${p[0].toFixed(2)},${p[1].toFixed(2)}`;
+  const cornerToSegs = /* @__PURE__ */ new Map();
+  segs.forEach((seg, i) => {
+    for (const c3 of seg) {
+      const k2 = key(c3);
+      if (!cornerToSegs.has(k2))
+        cornerToSegs.set(k2, []);
+      cornerToSegs.get(k2).push(i);
+    }
+  });
+  const visited = /* @__PURE__ */ new Set();
+  const chains = [];
+  const walk = (startSeg, startCorner) => {
+    var _a;
+    const points = [startCorner];
+    let segIdx = startSeg;
+    let corner = startCorner;
+    while (!visited.has(segIdx)) {
+      visited.add(segIdx);
+      const seg = segs[segIdx];
+      if (seg === void 0)
+        break;
+      const other = key(seg[0]) === key(corner) ? seg[1] : seg[0];
+      points.push(other);
+      const candidates = ((_a = cornerToSegs.get(key(other))) != null ? _a : []).filter((s2) => !visited.has(s2));
+      if (candidates.length !== 1)
+        break;
+      segIdx = candidates[0];
+      corner = other;
+    }
+    return points;
+  };
+  for (const [k2, ss] of cornerToSegs) {
+    if (ss.length !== 1)
+      continue;
+    const segIdx = ss[0];
+    if (visited.has(segIdx))
+      continue;
+    const seg = segs[segIdx];
+    const startCorner = key(seg[0]) === k2 ? seg[0] : seg[1];
+    chains.push(walk(segIdx, startCorner));
+  }
+  segs.forEach((seg, i) => {
+    if (visited.has(i))
+      return;
+    chains.push(walk(i, seg[0]));
+  });
+  return chains;
+}
 function hexPolygonPath(p) {
   const corners = hexCorners(p.center);
   return `M${corners.map((c3) => c3.join(",")).join("L")}Z`;
 }
-function computeBoundarySegments(precincts, assignments) {
+function computeBoundarySegments(precincts, assignments, terrainFacingEdges) {
   var _a;
   const segments = [];
   for (const p of precincts) {
@@ -13223,6 +13940,8 @@ function computeBoundarySegments(precincts, assignments) {
       if (c0 === void 0 || c1 === void 0)
         continue;
       if (nId === null) {
+        if (terrainFacingEdges == null ? void 0 : terrainFacingEdges.has(`${p.id}:${i}`))
+          continue;
         segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
         continue;
       }
@@ -13232,6 +13951,23 @@ function computeBoundarySegments(precincts, assignments) {
     }
   }
   return segments;
+}
+function computeTerrainFacingEdges(precincts, terrainTiles) {
+  const set3 = /* @__PURE__ */ new Set();
+  if (!terrainTiles || terrainTiles.length === 0)
+    return set3;
+  const tilePosSet = new Set(terrainTiles.map((t) => `${t.coord.q},${t.coord.r}`));
+  for (const p of precincts) {
+    for (let i = 0; i < 6; i++) {
+      const dir = HEX_DIRECTIONS[i];
+      if (!dir)
+        continue;
+      const key = `${p.coord.q + dir[0]},${p.coord.r + dir[1]}`;
+      if (tilePosSet.has(key))
+        set3.add(`${p.id}:${i}`);
+    }
+  }
+  return set3;
 }
 function computeCountySegments(precincts) {
   var _a;
@@ -13260,7 +13996,7 @@ function computeCountySegments(precincts) {
 }
 var _SvgMapRenderer, SvgMapRenderer;
 var init_mapRenderer = __esm({
-  "web/src/render/mapRenderer.ts"() {
+  "game/web/src/render/mapRenderer.ts"() {
     init_src32();
     init_hex_geometry();
     init_types();
@@ -13268,9 +14004,13 @@ var init_mapRenderer = __esm({
       constructor(svgEl, getState, paintStroke, setActiveDistrict) {
         __publicField(this, "svg");
         __publicField(this, "zoomGroup");
+        __publicField(this, "terrainGroup");
         __publicField(this, "countyBorderGroup");
         __publicField(this, "borderGroup");
         __publicField(this, "hexGroup");
+        __publicField(this, "terrainOverlayGroup");
+        __publicField(this, "hoverHighlightGroup");
+        __publicField(this, "riverGroup");
         __publicField(this, "previewBorderGroup");
         __publicField(this, "getState");
         __publicField(this, "paintStroke");
@@ -13294,7 +14034,14 @@ var init_mapRenderer = __esm({
         __publicField(this, "currentK", 1);
         // County border overlay (GAME-012): computed once at load, toggled on/off
         __publicField(this, "countySegments", []);
+        // Edges that face a terrain tile — set of "precinctId:edgeIndex" keys. Used to suppress
+        // the district boundary line on these edges (the terrain intrusion fill covers them).
+        __publicField(this, "terrainFacingEdges", /* @__PURE__ */ new Set());
         __publicField(this, "countyBordersVisible", false);
+        __publicField(this, "coordLabelsVisible", false);
+        __publicField(this, "coordLabelsRendered", false);
+        __publicField(this, "coordLabelGroup");
+        // apparent px at any zoom level
         // Keyboard precinct navigation state
         __publicField(this, "focusedPrecinctId", null);
         __publicField(this, "keyboardFocusPath", null);
@@ -13303,18 +14050,27 @@ var init_mapRenderer = __esm({
         this.setActiveDistrict = setActiveDistrict;
         this.svg = select_default2(svgEl);
         this.zoomGroup = this.svg.append("g").attr("class", "zoom-layer");
+        this.terrainGroup = this.zoomGroup.append("g").attr("class", "terrain");
         this.borderGroup = this.zoomGroup.append("g").attr("class", "borders");
         this.hexGroup = this.zoomGroup.append("g").attr("class", "hexes");
+        this.terrainOverlayGroup = this.zoomGroup.append("g").attr("class", "terrain-overlay");
+        this.hoverHighlightGroup = this.zoomGroup.append("g").attr("class", "hover-highlight");
         this.countyBorderGroup = this.zoomGroup.append("g").attr("class", "county-borders");
+        this.riverGroup = this.zoomGroup.append("g").attr("class", "rivers");
         this.previewBorderGroup = this.zoomGroup.append("g").attr("class", "preview-borders");
+        this.coordLabelGroup = this.zoomGroup.append("g").attr("class", "coord-labels").attr("display", "none");
         const pops = getState().precincts.map((p) => p.population);
         this.popMin = Math.min(...pops);
         this.popMax = Math.max(...pops);
         this.countySegments = computeCountySegments(getState().precincts);
+        this.terrainFacingEdges = computeTerrainFacingEdges(getState().precincts, getState().terrainTiles);
         this.initZoom();
         this.initBrushEvents();
         this.initKeyboardNav();
         this.initHoverEvents();
+        this.renderTerrainTiles();
+        this.renderRivers();
+        this.renderTerrainEdges();
       }
       setViewMode(mode2) {
         this.viewMode = mode2;
@@ -13328,12 +14084,254 @@ var init_mapRenderer = __esm({
           this.countyBorderGroup.selectAll("line.county-boundary").remove();
         }
       }
+      setCoordLabelsVisible(visible) {
+        this.coordLabelsVisible = visible;
+        this.renderCoordLabels();
+      }
+      renderCoordLabels() {
+        if (!this.coordLabelsRendered) {
+          const { precincts, terrainTiles } = this.getState();
+          const fs = _SvgMapRenderer.COORD_LABEL_FONT_SIZE / this.currentK;
+          const sw = 3 / this.currentK;
+          const labelAttrs = (sel) => sel.attr("text-anchor", "middle").attr("dominant-baseline", "central").attr("font-family", "monospace").attr("font-size", fs).attr("fill", "white").attr("stroke", "rgba(0,0,0,0.75)").attr("stroke-width", sw).attr("paint-order", "stroke").attr("pointer-events", "none");
+          labelAttrs(
+            this.coordLabelGroup.selectAll("text.coord-label").data(precincts).join("text").attr("class", "coord-label").attr("x", (d) => d.center.x).attr("y", (d) => d.center.y)
+          ).text((d) => `${d.coord.q},${d.coord.r}`);
+          labelAttrs(
+            this.coordLabelGroup.selectAll("text.coord-label-tile").data(terrainTiles != null ? terrainTiles : []).join("text").attr("class", "coord-label-tile").attr("x", (d) => d.center.x).attr("y", (d) => d.center.y)
+          ).text((d) => `${d.coord.q},${d.coord.r}`);
+          this.coordLabelsRendered = true;
+        }
+        this.coordLabelGroup.attr("display", this.coordLabelsVisible ? null : "none");
+      }
       renderCountyBorders() {
         this.countyBorderGroup.selectAll("line.county-boundary").data(this.countySegments).join(
           (enter) => enter.append("line").attr("class", "county-boundary").attr("stroke-linecap", "round"),
           (update) => update,
           (exit) => exit.remove()
         ).attr("x1", (d) => d.x1).attr("y1", (d) => d.y1).attr("x2", (d) => d.x2).attr("y2", (d) => d.y2).attr("stroke", "#606060").attr("stroke-width", _SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK).attr("stroke-dasharray", `${_SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${_SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`).attr("opacity", _SvgMapRenderer.COUNTY_OPACITY);
+      }
+      // ─── Terrain rendering (GAME-075) ─────────────────────────────────────────
+      terrainFill(type2) {
+        switch (type2) {
+          case "sea":
+            return _SvgMapRenderer.TERRAIN_FILL_SEA;
+          case "lake":
+            return _SvgMapRenderer.TERRAIN_FILL_LAKE;
+          case "mountain":
+            return _SvgMapRenderer.TERRAIN_FILL_MOUNTAIN;
+        }
+      }
+      terrainGlyph(type2) {
+        switch (type2) {
+          case "sea":
+            return _SvgMapRenderer.TERRAIN_GLYPH_SEA;
+          case "lake":
+            return "";
+          case "mountain":
+            return _SvgMapRenderer.TERRAIN_GLYPH_MOUNTAIN;
+        }
+      }
+      renderTerrainTiles() {
+        var _a;
+        const tiles = (_a = this.getState().terrainTiles) != null ? _a : [];
+        if (tiles.length === 0)
+          return;
+        const tileGroups = this.terrainGroup.selectAll("g.terrain-tile").data(tiles, (_d, i) => String(i)).join("g").attr("class", (d) => `terrain-tile terrain-${d.type}`).attr("data-terrain-type", (d) => d.type).style("pointer-events", "none");
+        tileGroups.selectAll("path.terrain-fill").data((d) => [d]).join("path").attr("class", "terrain-fill").attr("d", (d) => {
+          const corners = hexCorners(d.center);
+          return `M${corners.map((c3) => c3.join(",")).join("L")}Z`;
+        }).attr("fill", (d) => this.terrainFill(d.type)).attr("stroke", "none");
+        tileGroups.selectAll("text.terrain-glyph").data((d) => [d]).join("text").attr("class", "terrain-glyph").attr("x", (d) => d.center.x).attr("y", (d) => d.center.y).attr("text-anchor", "middle").attr("dominant-baseline", "central").attr("font-size", _SvgMapRenderer.TERRAIN_GLYPH_FONT_SIZE).attr("fill", _SvgMapRenderer.TERRAIN_GLYPH_COLOR).text((d) => this.terrainGlyph(d.type));
+      }
+      renderRivers() {
+        const { precincts, riverEdges } = this.getState();
+        if (!riverEdges || riverEdges.length === 0)
+          return;
+        const segs = [];
+        for (const [aIdx, bIdx] of riverEdges) {
+          const a2 = precincts[aIdx];
+          if (a2 === void 0) {
+            console.warn(`renderRivers: river_edge references unknown precinct index ${aIdx}`);
+            continue;
+          }
+          const edge = a2.neighbors.findIndex((n) => n === bIdx);
+          if (edge < 0) {
+            console.warn(`renderRivers: precinct ${aIdx} is not a geometric neighbor of ${bIdx}`);
+            continue;
+          }
+          const corners = hexCorners(a2.center);
+          const c0 = corners[edge];
+          const c1 = corners[(edge + 1) % 6];
+          if (c0 === void 0 || c1 === void 0)
+            continue;
+          segs.push([c0, c1]);
+        }
+        const chains = buildRiverChains(segs);
+        const lineGen = line_default2().x((p) => p[0]).y((p) => p[1]).curve(cardinal_default.tension(0.4));
+        this.riverGroup.selectAll("path.river-chain").data(chains).join("path").attr("class", "river-chain").attr("d", (d) => {
+          var _a;
+          return (_a = lineGen(d)) != null ? _a : "";
+        }).attr("fill", "none").attr("stroke", _SvgMapRenderer.RIVER_STROKE).attr("stroke-width", _SvgMapRenderer.RIVER_BASE_WIDTH / this.currentK).attr("stroke-linecap", "round").attr("stroke-linejoin", "round").attr("opacity", _SvgMapRenderer.RIVER_OPACITY).style("pointer-events", "none");
+      }
+      renderTerrainEdges() {
+        var _a, _b, _c, _d, _e, _f;
+        const { precincts, terrainTiles } = this.getState();
+        if (!terrainTiles || terrainTiles.length === 0)
+          return;
+        const tilePosMap = /* @__PURE__ */ new Map();
+        for (const tile of terrainTiles)
+          tilePosMap.set(`${tile.coord.q},${tile.coord.r}`, tile.type);
+        const intrusions = [];
+        const cornerCaps = [];
+        const capArcs = [];
+        const innerCurve = line_default2().x((p) => p[0]).y((p) => p[1]).curve(basis_default2);
+        const profileSmooth = [
+          [0, 0],
+          [0.13, 0.5],
+          [0.27, 0.95],
+          [0.42, 0.58],
+          [0.55, 1.05],
+          [0.68, 0.52],
+          [0.8, 0.9],
+          [0.92, 0.42],
+          [1, 0]
+        ];
+        const profileRugged = [
+          [0, 0],
+          [0.12, 0.72],
+          [0.25, 1.2],
+          [0.38, 0.38],
+          [0.52, 1.25],
+          [0.65, 0.32],
+          [0.78, 1.1],
+          [0.9, 0.55],
+          [1, 0]
+        ];
+        const buildIntrusionAndBoundary = (c0, c1, center, depth, profile) => {
+          var _a2, _b2;
+          const midX = (c0[0] + c1[0]) / 2;
+          const midY = (c0[1] + c1[1]) / 2;
+          const dx = center.x - midX;
+          const dy = center.y - midY;
+          const len = Math.hypot(dx, dy) || 1;
+          const nx = dx / len;
+          const ny = dy / len;
+          const innerPts = profile.map(([tAlong, dProfile]) => {
+            const t = 1 - tAlong;
+            const ex = c0[0] + t * (c1[0] - c0[0]);
+            const ey = c0[1] + t * (c1[1] - c0[1]);
+            const off = depth * dProfile;
+            return [ex + nx * off, ey + ny * off];
+          });
+          const innerFull = (_a2 = innerCurve(innerPts)) != null ? _a2 : "";
+          const innerContinued = innerFull.replace(/^M/, "L");
+          const fillPath = `M${c0[0]},${c0[1]} L${c1[0]},${c1[1]}${innerContinued} Z`;
+          const boundaryPath = innerPts.length >= 2 ? (_b2 = innerCurve(innerPts)) != null ? _b2 : "" : "";
+          return { fillPath, boundaryPath };
+        };
+        for (const p of precincts) {
+          if (!((_a = p.terrainAnnotation) == null ? void 0 : _a.coast) && !((_b = p.terrainAnnotation) == null ? void 0 : _b.foothill) && !((_c = p.terrainAnnotation) == null ? void 0 : _c.lakeside))
+            continue;
+          const corners = hexCorners(p.center);
+          for (let i = 0; i < 6; i++) {
+            const dir = HEX_DIRECTIONS[i];
+            if (dir === void 0)
+              continue;
+            const nKey = `${p.coord.q + dir[0]},${p.coord.r + dir[1]}`;
+            const tileType = tilePosMap.get(nKey);
+            if (tileType === void 0)
+              continue;
+            const matches = ((_d = p.terrainAnnotation) == null ? void 0 : _d.coast) === true && tileType === "sea" || ((_e = p.terrainAnnotation) == null ? void 0 : _e.foothill) === true && tileType === "mountain" || ((_f = p.terrainAnnotation) == null ? void 0 : _f.lakeside) === true && tileType === "lake";
+            if (!matches)
+              continue;
+            const c0 = corners[i];
+            const c1 = corners[(i + 1) % 6];
+            if (c0 === void 0 || c1 === void 0)
+              continue;
+            if (tileType === "sea") {
+              const { fillPath, boundaryPath } = buildIntrusionAndBoundary(
+                c0,
+                c1,
+                p.center,
+                _SvgMapRenderer.COAST_INTRUSION_DEPTH,
+                profileSmooth
+              );
+              intrusions.push({ terrainType: "sea", path: fillPath, boundaryPath });
+            } else if (tileType === "lake") {
+              const { fillPath, boundaryPath } = buildIntrusionAndBoundary(
+                c0,
+                c1,
+                p.center,
+                _SvgMapRenderer.LAKE_INTRUSION_DEPTH,
+                profileSmooth
+              );
+              intrusions.push({ terrainType: "lake", path: fillPath, boundaryPath });
+            } else {
+              const { fillPath, boundaryPath } = buildIntrusionAndBoundary(
+                c0,
+                c1,
+                p.center,
+                _SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH,
+                profileRugged
+              );
+              intrusions.push({ terrainType: "mountain", path: fillPath, boundaryPath });
+            }
+          }
+          for (let i = 0; i < 6; i++) {
+            const leftEdge = (i + 5) % 6;
+            const rightEdge = i;
+            const lDir = HEX_DIRECTIONS[leftEdge];
+            const rDir = HEX_DIRECTIONS[rightEdge];
+            if (!lDir || !rDir)
+              continue;
+            const lType = tilePosMap.get(`${p.coord.q + lDir[0]},${p.coord.r + lDir[1]}`);
+            const rType = tilePosMap.get(`${p.coord.q + rDir[0]},${p.coord.r + rDir[1]}`);
+            if (lType !== rType)
+              continue;
+            if (lType !== "sea" && lType !== "mountain" && lType !== "lake")
+              continue;
+            const capCenter = corners[i];
+            if (capCenter === void 0)
+              continue;
+            const r = lType === "sea" || lType === "lake" ? _SvgMapRenderer.COAST_INTRUSION_DEPTH + 4 : _SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH + 4;
+            cornerCaps.push({ cx: capCenter[0], cy: capCenter[1], r, terrainType: lType });
+            const leftAdj = corners[(i - 1 + 6) % 6];
+            const rightAdj = corners[(i + 1) % 6];
+            if (leftAdj === void 0 || rightAdj === void 0)
+              continue;
+            const depthVal = lType === "mountain" ? _SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH : lType === "lake" ? _SvgMapRenderer.LAKE_INTRUSION_DEPTH : _SvgMapRenderer.COAST_INTRUSION_DEPTH;
+            const [tFracL, dProfL] = lType === "mountain" ? [0.12, 0.72] : [0.13, 0.5];
+            const [tFracR, dProfR] = lType === "mountain" ? [0.1, 0.55] : [0.08, 0.42];
+            const lMidX = (leftAdj[0] + capCenter[0]) / 2, lMidY = (leftAdj[1] + capCenter[1]) / 2;
+            const lNLen = Math.hypot(p.center.x - lMidX, p.center.y - lMidY) || 1;
+            const lNx = (p.center.x - lMidX) / lNLen, lNy = (p.center.y - lMidY) / lNLen;
+            const rMidX = (capCenter[0] + rightAdj[0]) / 2, rMidY = (capCenter[1] + rightAdj[1]) / 2;
+            const rNLen = Math.hypot(p.center.x - rMidX, p.center.y - rMidY) || 1;
+            const rNx = (p.center.x - rMidX) / rNLen, rNy = (p.center.y - rMidY) / rNLen;
+            const lDx = tFracL * (leftAdj[0] - capCenter[0]) + depthVal * dProfL * lNx;
+            const lDy = tFracL * (leftAdj[1] - capCenter[1]) + depthVal * dProfL * lNy;
+            const lDLen = Math.hypot(lDx, lDy) || 1;
+            const startX = capCenter[0] + r * lDx / lDLen;
+            const startY = capCenter[1] + r * lDy / lDLen;
+            const rDx = tFracR * (rightAdj[0] - capCenter[0]) + depthVal * dProfR * rNx;
+            const rDy = tFracR * (rightAdj[1] - capCenter[1]) + depthVal * dProfR * rNy;
+            const rDLen = Math.hypot(rDx, rDy) || 1;
+            const endX = capCenter[0] + r * rDx / rDLen;
+            const endY = capCenter[1] + r * rDy / rDLen;
+            const cross2 = lDx * rDy - lDy * rDx;
+            const sweep = cross2 > 0 ? 1 : 0;
+            capArcs.push({
+              path: `M${startX},${startY} A${r},${r} 0 0,${sweep} ${endX},${endY}`,
+              terrainType: lType
+            });
+          }
+        }
+        const fillForIntrusion = (t) => t === "sea" ? _SvgMapRenderer.TERRAIN_FILL_SEA : t === "lake" ? _SvgMapRenderer.TERRAIN_FILL_LAKE : _SvgMapRenderer.TERRAIN_FILL_MOUNTAIN;
+        this.terrainOverlayGroup.selectAll("path.terrain-edge").data(intrusions).join("path").attr("class", (d) => `terrain-edge terrain-edge-${d.terrainType}`).attr("d", (d) => d.path).attr("fill", (d) => fillForIntrusion(d.terrainType)).attr("stroke", "none").style("pointer-events", "none");
+        this.terrainOverlayGroup.selectAll("path.terrain-boundary").data(intrusions).join("path").attr("class", (d) => `terrain-boundary terrain-boundary-${d.terrainType}`).attr("d", (d) => d.boundaryPath).attr("fill", "none").attr("stroke", "#ffffff").attr("stroke-width", _SvgMapRenderer.TERRAIN_BOUNDARY_WIDTH / this.currentK).attr("stroke-linecap", "round").attr("opacity", _SvgMapRenderer.TERRAIN_BOUNDARY_OPACITY).style("pointer-events", "none");
+        this.terrainOverlayGroup.selectAll("circle.terrain-corner-cap").data(cornerCaps).join("circle").attr("class", (d) => `terrain-corner-cap terrain-corner-cap-${d.terrainType}`).attr("cx", (d) => d.cx).attr("cy", (d) => d.cy).attr("r", (d) => d.r).attr("fill", (d) => fillForIntrusion(d.terrainType)).attr("stroke", "none").style("pointer-events", "none");
+        this.terrainOverlayGroup.selectAll("path.terrain-cap-arc").data(capArcs).join("path").attr("class", (d) => `terrain-cap-arc terrain-cap-arc-${d.terrainType}`).attr("d", (d) => d.path).attr("fill", "none").attr("stroke", "#ffffff").attr("stroke-width", _SvgMapRenderer.TERRAIN_BOUNDARY_WIDTH / this.currentK).attr("stroke-linecap", "round").attr("opacity", _SvgMapRenderer.TERRAIN_BOUNDARY_OPACITY).style("pointer-events", "none");
       }
       // ─── Zoom init (GAME-009) ─────────────────────────────────────────────────
       /**
@@ -13372,8 +14370,18 @@ var init_mapRenderer = __esm({
           this.borderGroup.selectAll("line.boundary").attr("stroke-width", bw);
           const pw = _SvgMapRenderer.PREVIEW_BASE_WIDTH / this.currentK;
           this.previewBorderGroup.selectAll("line.preview-boundary").attr("stroke-width", pw);
+          this.riverGroup.selectAll("path.river-chain").attr("stroke-width", _SvgMapRenderer.RIVER_BASE_WIDTH / this.currentK);
+          const tbw = _SvgMapRenderer.TERRAIN_BOUNDARY_WIDTH / this.currentK;
+          this.terrainOverlayGroup.selectAll("path.terrain-boundary").attr("stroke-width", tbw);
+          this.terrainOverlayGroup.selectAll("path.terrain-cap-arc").attr("stroke-width", tbw);
+          this.hoverHighlightGroup.selectAll("line.hover-edge").attr("stroke-width", _SvgMapRenderer.HOVER_STROKE_WIDTH / this.currentK);
+          this.countyBorderGroup.selectAll("line.county-boundary").attr("stroke-width", _SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK).attr("stroke-dasharray", `${_SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${_SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`);
           if (this.keyboardFocusPath !== null) {
             select_default2(this.keyboardFocusPath).attr("stroke-width", 2 / this.currentK).attr("stroke-dasharray", `${4 / this.currentK},${2 / this.currentK}`);
+          }
+          if (this.coordLabelsRendered) {
+            const fs = _SvgMapRenderer.COORD_LABEL_FONT_SIZE / this.currentK;
+            this.coordLabelGroup.selectAll("text.coord-label, text.coord-label-tile").attr("font-size", fs).attr("stroke-width", 3 / this.currentK);
           }
         });
         svgNode2.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -13404,7 +14412,7 @@ var init_mapRenderer = __esm({
           (update) => update,
           (exit) => exit.remove()
         ).attr("fill", (d) => this.hexFill(d, assignments)).attr("opacity", (d) => this.hexOpacity(d, assignments));
-        this.renderBoundaries(computeBoundarySegments(precincts, assignments));
+        this.renderBoundaries(computeBoundarySegments(precincts, assignments, this.terrainFacingEdges));
       }
       renderBoundaries(segments) {
         const strokeWidth = _SvgMapRenderer.BOUNDARY_BASE_WIDTH / this.currentK;
@@ -13428,7 +14436,7 @@ var init_mapRenderer = __esm({
         for (const id2 of this.strokePrecincts) {
           previewAssignments.set(id2, this.strokeDistrict);
         }
-        const segments = computeBoundarySegments(precincts, previewAssignments);
+        const segments = computeBoundarySegments(precincts, previewAssignments, this.terrainFacingEdges);
         const strokeWidth = _SvgMapRenderer.PREVIEW_BASE_WIDTH / this.currentK;
         this.previewBorderGroup.selectAll("line.preview-boundary").data(segments).join(
           (enter) => enter.append("line").attr("class", "preview-boundary").attr("stroke-linecap", "round"),
@@ -13442,8 +14450,9 @@ var init_mapRenderer = __esm({
       // ─── Hover events ─────────────────────────────────────────────────────────
       /**
        * Single delegated mousemove/mouseout on the SVG.
-       * Hover only sets stroke/opacity — never fill — so clearHover never needs to
-       * restore fill (which would clobber in-progress paint visuals).
+       * Hover brightens opacity and draws edge highlights in hoverHighlightGroup for
+       * non-terrain-facing edges only — terrain-facing edges are skipped so the highlight
+       * doesn't float over intrusion fills or show clipped corners at corner caps.
        */
       initHoverEvents() {
         const svgNode2 = this.svg.node();
@@ -13463,7 +14472,17 @@ var init_mapRenderer = __esm({
             if (path2 === this.keyboardFocusPath)
               return;
             this.hoveredPath = path2;
-            select_default2(path2).attr("stroke", "#ffffff").attr("stroke-width", _SvgMapRenderer.HOVER_STROKE_WIDTH / this.currentK).attr("opacity", _SvgMapRenderer.HOVER_OPACITY);
+            select_default2(path2).attr("opacity", _SvgMapRenderer.HOVER_OPACITY);
+            const corners = hexCorners(d.center);
+            const segs = [];
+            for (let i = 0; i < 6; i++) {
+              if (this.terrainFacingEdges.has(`${d.id}:${i}`))
+                continue;
+              const c0 = corners[i], c1 = corners[(i + 1) % 6];
+              if (c0 && c1)
+                segs.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
+            }
+            this.hoverHighlightGroup.selectAll("line.hover-edge").data(segs).join("line").attr("class", "hover-edge").attr("x1", (s2) => s2.x1).attr("y1", (s2) => s2.y1).attr("x2", (s2) => s2.x2).attr("y2", (s2) => s2.y2).attr("stroke", "#ffffff").attr("stroke-width", _SvgMapRenderer.HOVER_STROKE_WIDTH / this.currentK).attr("stroke-linecap", "round").attr("opacity", _SvgMapRenderer.BOUNDARY_OPACITY).style("pointer-events", "none");
             const { assignments } = this.getState();
             const dId = assignments.get(d.id);
             const infoPanel = document.getElementById("precinct-info");
@@ -13499,10 +14518,11 @@ var init_mapRenderer = __esm({
           infoPanel.innerHTML = '<div class="precinct-placeholder">Hover over a precinct to see details.<br>Click and drag to paint districts.</div>';
         }
       }
-      /** Restores stroke/opacity only — never fill (hover never changes fill). */
+      /** Restores hex opacity and removes hover edge segments. Never touches fill. */
       clearHover() {
         if (this.hoveredPath === null)
           return;
+        this.hoverHighlightGroup.selectAll("line.hover-edge").remove();
         if (this.hoveredPath === this.keyboardFocusPath) {
           this.hoveredPath = null;
           return;
@@ -13512,7 +14532,7 @@ var init_mapRenderer = __esm({
         const { assignments } = this.getState();
         const d = select_default2(path2).datum();
         if (d !== void 0) {
-          select_default2(path2).attr("stroke", "none").attr("stroke-width", 0.5).attr("opacity", this.hexOpacity(d, assignments));
+          select_default2(path2).attr("opacity", this.hexOpacity(d, assignments));
         }
       }
       // ─── Brush events ─────────────────────────────────────────────────────────
@@ -13698,6 +14718,7 @@ var init_mapRenderer = __esm({
     // current zoom scale; stroke widths divided by this
     // Base stroke widths (apparent px at any zoom level)
     __publicField(_SvgMapRenderer, "BOUNDARY_BASE_WIDTH", 2);
+    __publicField(_SvgMapRenderer, "TERRAIN_BOUNDARY_WIDTH", 2);
     __publicField(_SvgMapRenderer, "PREVIEW_BASE_WIDTH", 2.5);
     __publicField(_SvgMapRenderer, "COUNTY_BASE_WIDTH", 3);
     // Zoom parameters
@@ -13710,6 +14731,9 @@ var init_mapRenderer = __esm({
     __publicField(_SvgMapRenderer, "ZOOM_DURATION_RESET", 300);
     // Opacity values
     __publicField(_SvgMapRenderer, "BOUNDARY_OPACITY", 0.6);
+    // Terrain boundary sits above hex fills (no hex-fill attenuation); lower opacity
+    // compensates so it appears the same visual weight as district boundaries below hex fills.
+    __publicField(_SvgMapRenderer, "TERRAIN_BOUNDARY_OPACITY", 0.4);
     __publicField(_SvgMapRenderer, "COUNTY_OPACITY", 0.7);
     __publicField(_SvgMapRenderer, "PREVIEW_OPACITY", 0.85);
     __publicField(_SvgMapRenderer, "LEAN_OPACITY", 0.9);
@@ -13726,11 +14750,30 @@ var init_mapRenderer = __esm({
     __publicField(_SvgMapRenderer, "COUNTY_DASH_OFF", 4);
     __publicField(_SvgMapRenderer, "PREVIEW_DASH_ON", 5);
     __publicField(_SvgMapRenderer, "PREVIEW_DASH_OFF", 4);
+    // Terrain styling (DESIGN-008): fills, glyphs, opacity for sea/lake/mountain tiles
+    __publicField(_SvgMapRenderer, "TERRAIN_FILL_SEA", "#3a7fc1");
+    __publicField(_SvgMapRenderer, "TERRAIN_FILL_LAKE", "#4dd0e1");
+    __publicField(_SvgMapRenderer, "TERRAIN_FILL_MOUNTAIN", "#6b7280");
+    __publicField(_SvgMapRenderer, "TERRAIN_GLYPH_SEA", "\u223F");
+    __publicField(_SvgMapRenderer, "TERRAIN_GLYPH_MOUNTAIN", "\u25B3");
+    __publicField(_SvgMapRenderer, "TERRAIN_GLYPH_COLOR", "rgba(255,255,255,0.45)");
+    __publicField(_SvgMapRenderer, "TERRAIN_GLYPH_FONT_SIZE", 22);
+    // pixel size at 1× zoom
+    __publicField(_SvgMapRenderer, "RIVER_STROKE", "#4dd0e1");
+    __publicField(_SvgMapRenderer, "RIVER_BASE_WIDTH", 9);
+    __publicField(_SvgMapRenderer, "RIVER_OPACITY", 0.9);
+    // Coast/foothill render as filled intrusion shapes (not strokes). The intrusion's curved
+    // inner edge bulges this many pixels into the precinct at its deepest point (at the edge
+    // midpoint). Filled with the exact terrain-tile color (TERRAIN_FILL_SEA / TERRAIN_FILL_MOUNTAIN).
+    __publicField(_SvgMapRenderer, "COAST_INTRUSION_DEPTH", 5);
+    __publicField(_SvgMapRenderer, "FOOTHILL_INTRUSION_DEPTH", 6);
+    __publicField(_SvgMapRenderer, "LAKE_INTRUSION_DEPTH", 5);
+    __publicField(_SvgMapRenderer, "COORD_LABEL_FONT_SIZE", 9);
     SvgMapRenderer = _SvgMapRenderer;
   }
 });
 
-// web/src/simulation/validity.js
+// game/web/src/simulation/validity.js
 function computeValidityStats(precincts, assignments, districtCount, rules) {
   var _a, _b;
   const totalPopulation = precincts.reduce((s2, p) => s2 + p.population, 0);
@@ -13773,6 +14816,7 @@ function computeValidityStats(precincts, assignments, districtCount, rules) {
   return { idealPopulation, totalPopulation, unassignedCount, districtPop, contiguity };
 }
 function isContiguous(precincts, assignments, districtId) {
+  var _a;
   const inDistrict = [];
   for (const [pid, did] of assignments) {
     if (did === districtId)
@@ -13789,7 +14833,8 @@ function isContiguous(precincts, assignments, districtId) {
     const p = precincts[curr];
     if (p === void 0)
       continue;
-    for (const nbId of p.neighbors) {
+    const traversable = (_a = p.passableNeighbors) != null ? _a : p.neighbors;
+    for (const nbId of traversable) {
       if (nbId !== null && inSet.has(nbId) && !visited.has(nbId)) {
         visited.add(nbId);
         queue.push(nbId);
@@ -13799,11 +14844,11 @@ function isContiguous(precincts, assignments, districtId) {
   return visited.size === inSet.size;
 }
 var init_validity = __esm({
-  "web/src/simulation/validity.js"() {
+  "game/web/src/simulation/validity.js"() {
   }
 });
 
-// web/src/render/panels.ts
+// game/web/src/render/panels.ts
 function renderResults(container, state, partyLabels) {
   if (state.simulationResult === null || state.simulationResult.districtResults.length === 0) {
     container.innerHTML = '<div style="color:#606080;font-size:0.85rem;">Draw districts to see results</div>';
@@ -13842,18 +14887,31 @@ function renderLegend(container, districtCount) {
   });
   container.innerHTML = items.join("");
 }
-function renderDistrictButtons(container, districtCount, activeDistrict, onSelect) {
-  var _a;
+function renderDistrictButtons(container, districtCount, activeDistrict, onSelect, demoStat) {
+  var _a, _b;
   container.innerHTML = "";
   for (let i = 1; i <= districtCount; i++) {
     const color2 = (_a = DISTRICT_COLORS[i - 1]) != null ? _a : "#888";
+    const wrapper = document.createElement("div");
+    wrapper.className = "district-btn-wrap";
     const btn = document.createElement("button");
     btn.className = `district-btn${i === activeDistrict ? " active" : ""}`;
     btn.textContent = `District ${i}`;
     btn.style.background = color2;
     btn.style.color = "#fff";
     btn.addEventListener("click", () => onSelect(i));
-    container.appendChild(btn);
+    wrapper.appendChild(btn);
+    if (demoStat) {
+      const share = (_b = demoStat.shares[i - 1]) != null ? _b : 0;
+      const pct = Math.round(share * 100);
+      const thresholdPct = Math.round(demoStat.threshold * 100);
+      const met = pct >= thresholdPct;
+      const stat = document.createElement("div");
+      stat.className = `district-demo-stat${met ? " met" : ""}`;
+      stat.textContent = `${pct}% ${demoStat.label}`;
+      wrapper.appendChild(stat);
+    }
+    container.appendChild(wrapper);
   }
 }
 function renderValidityPanel(container, state, rules) {
@@ -13891,16 +14949,16 @@ function renderValidityPanel(container, state, rules) {
   container.innerHTML = html2;
 }
 var init_panels = __esm({
-  "web/src/render/panels.ts"() {
+  "game/web/src/render/panels.ts"() {
     init_types();
     init_validity();
   }
 });
 
-// node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/vanilla.mjs
+// game/node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/vanilla.mjs
 var createStoreImpl, createStore;
 var init_vanilla = __esm({
-  "node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/vanilla.mjs"() {
+  "game/node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/vanilla.mjs"() {
     createStoreImpl = (createState) => {
       let state;
       const listeners = /* @__PURE__ */ new Set();
@@ -13926,26 +14984,26 @@ var init_vanilla = __esm({
   }
 });
 
-// node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/react.mjs
+// game/node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/react.mjs
 import React from "react";
 var init_react = __esm({
-  "node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/react.mjs"() {
+  "game/node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/react.mjs"() {
     init_vanilla();
   }
 });
 
-// node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/index.mjs
+// game/node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/index.mjs
 var init_esm = __esm({
-  "node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/index.mjs"() {
+  "game/node_modules/.aspect_rules_js/zustand@5.0.12_react_18.3.1/node_modules/zustand/esm/index.mjs"() {
     init_vanilla();
     init_react();
   }
 });
 
-// node_modules/.aspect_rules_js/zundo@2.3.0_zustand_5.0.12(react_18.3.1/node_modules/zundo/dist/index.js
+// game/node_modules/.aspect_rules_js/zundo@2.3.0_zustand_5.0.12(react_18.3.1/node_modules/zundo/dist/index.js
 var temporalStateCreator, temporal;
 var init_dist = __esm({
-  "node_modules/.aspect_rules_js/zundo@2.3.0_zustand_5.0.12(react_18.3.1/node_modules/zundo/dist/index.js"() {
+  "game/node_modules/.aspect_rules_js/zundo@2.3.0_zustand_5.0.12(react_18.3.1/node_modules/zundo/dist/index.js"() {
     init_esm();
     temporalStateCreator = (userSet, userGet, options) => {
       const stateCreator = (set3, get3) => {
@@ -14060,8 +15118,9 @@ var init_dist = __esm({
   }
 });
 
-// web/src/model/adapter.js
+// game/web/src/model/adapter.js
 function scenarioToSpike(scenario) {
+  var _a, _b, _c, _d;
   const districtIndexMap = /* @__PURE__ */ new Map();
   scenario.districts.forEach((d, i) => {
     districtIndexMap.set(d.id, i + 1);
@@ -14072,8 +15131,26 @@ function scenarioToSpike(scenario) {
     if ("q" in pos)
       posMap.set(`${pos.q},${pos.r}`, i);
   });
+  const terrainPosMap = /* @__PURE__ */ new Map();
+  for (const tile of (_a = scenario.terrain_tiles) != null ? _a : []) {
+    terrainPosMap.set(`${tile.position.q},${tile.position.r}`, tile.type);
+  }
+  const idToIndex = /* @__PURE__ */ new Map();
+  scenario.precincts.forEach((pc, i) => idToIndex.set(pc.id, i));
+  const riverPairs = [];
+  const riverEdgeSet = /* @__PURE__ */ new Set();
+  for (const [aId, bId] of (_b = scenario.river_edges) != null ? _b : []) {
+    const aIdx = idToIndex.get(aId);
+    const bIdx = idToIndex.get(bId);
+    if (aIdx !== void 0 && bIdx !== void 0) {
+      riverPairs.push([aIdx, bIdx]);
+      riverEdgeSet.add(`${aIdx},${bIdx}`);
+      riverEdgeSet.add(`${bIdx},${aIdx}`);
+    }
+  }
+  const blocksContiguity = (_c = scenario.river_blocks_contiguity) != null ? _c : false;
   const precincts = scenario.precincts.map((pc, i) => {
-    var _a, _b, _c, _d;
+    var _a2, _b2, _c2, _d2;
     const pos = pc.position;
     const q = "q" in pos ? pos.q : 0;
     const r = "q" in pos ? pos.r : 0;
@@ -14082,16 +15159,40 @@ function scenarioToSpike(scenario) {
       const idx = posMap.get(`${q + dq},${r + dr}`);
       return idx !== void 0 ? idx : null;
     });
-    const firstPartyId = (_a = scenario.parties[0]) == null ? void 0 : _a.id;
-    const secondPartyId = (_b = scenario.parties[1]) == null ? void 0 : _b.id;
+    const passableNeighbors = neighbors.map((nbIdx) => {
+      if (!blocksContiguity || nbIdx === null)
+        return nbIdx;
+      return riverEdgeSet.has(`${i},${nbIdx}`) ? null : nbIdx;
+    });
+    let hasSea = false;
+    let hasMountain = false;
+    let hasLakeAdj = false;
+    for (const [dq, dr] of HEX_DIRECTIONS) {
+      const tileType = terrainPosMap.get(`${q + dq},${r + dr}`);
+      if (tileType === "sea")
+        hasSea = true;
+      else if (tileType === "mountain")
+        hasMountain = true;
+      else if (tileType === "lake")
+        hasLakeAdj = true;
+    }
+    const isRiverside = riverPairs.some(([a2, b]) => a2 === i || b === i);
+    const terrainAnnotation = {
+      coast: hasSea,
+      foothill: hasMountain,
+      lakeside: hasLakeAdj,
+      riverside: isRiverside && !hasSea && !hasMountain && !hasLakeAdj
+    };
+    const firstPartyId = (_a2 = scenario.parties[0]) == null ? void 0 : _a2.id;
+    const secondPartyId = (_b2 = scenario.parties[1]) == null ? void 0 : _b2.id;
     let firstShare = 0;
     let secondShare = 0;
     for (const g of pc.demographic_groups) {
       const vs = g.vote_shares;
       if (firstPartyId)
-        firstShare += g.population_share * ((_c = vs[firstPartyId]) != null ? _c : 0);
+        firstShare += g.population_share * ((_c2 = vs[firstPartyId]) != null ? _c2 : 0);
       if (secondPartyId)
-        secondShare += g.population_share * ((_d = vs[secondPartyId]) != null ? _d : 0);
+        secondShare += g.population_share * ((_d2 = vs[secondPartyId]) != null ? _d2 : 0);
     }
     const partyShare = {
       R: Math.round(firstShare * 1e3) / 1e3,
@@ -14107,6 +15208,7 @@ function scenarioToSpike(scenario) {
       coord: { q, r },
       center,
       neighbors,
+      passableNeighbors,
       population: pc.total_population,
       partyShare,
       previousResult: { winner, margin },
@@ -14116,11 +15218,14 @@ function scenarioToSpike(scenario) {
       spikePrecinct.name = pc.name;
     if (pc.county_id !== void 0)
       spikePrecinct.county_id = pc.county_id;
+    if (hasSea || hasMountain || isRiverside || hasLakeAdj) {
+      spikePrecinct.terrainAnnotation = terrainAnnotation;
+    }
     if (pc.demographic_groups.length > 1) {
       spikePrecinct.groupShares = pc.demographic_groups.map((g) => {
-        var _a2;
+        var _a3;
         const entry = {
-          name: (_a2 = g.name) != null ? _a2 : g.id,
+          name: (_a3 = g.name) != null ? _a3 : g.id,
           share: g.population_share
         };
         if (g.dimensions)
@@ -14132,20 +15237,25 @@ function scenarioToSpike(scenario) {
   });
   const assignments = /* @__PURE__ */ new Map();
   scenario.precincts.forEach((pc, i) => {
-    var _a;
+    var _a2;
     const sDistId = pc.initial_district_id;
-    const spikeDistId = sDistId != null ? (_a = districtIndexMap.get(sDistId)) != null ? _a : null : null;
+    const spikeDistId = sDistId != null ? (_a2 = districtIndexMap.get(sDistId)) != null ? _a2 : null : null;
     assignments.set(i, spikeDistId);
   });
-  return { precincts, assignments, districtCount: scenario.districts.length };
+  const terrainTiles = ((_d = scenario.terrain_tiles) != null ? _d : []).map((tile) => ({
+    coord: { q: tile.position.q, r: tile.position.r },
+    center: hexToPixel(tile.position.q, tile.position.r),
+    type: tile.type
+  }));
+  return { precincts, assignments, districtCount: scenario.districts.length, terrainTiles, riverEdges: riverPairs };
 }
 var init_adapter = __esm({
-  "web/src/model/adapter.js"() {
+  "game/web/src/model/adapter.js"() {
     init_hex_geometry();
   }
 });
 
-// web/src/simulation/election.js
+// game/web/src/simulation/election.js
 function zeroShare() {
   return { R: 0, D: 0, L: 0, G: 0, I: 0 };
 }
@@ -14209,24 +15319,26 @@ function runElection(state) {
 }
 var ALL_PARTIES;
 var init_election = __esm({
-  "web/src/simulation/election.js"() {
+  "game/web/src/simulation/election.js"() {
     ALL_PARTIES = ["R", "D", "L", "G", "I"];
   }
 });
 
-// web/src/store/gameStore.js
+// game/web/src/store/gameStore.js
 function cloneAssignments(m) {
   return new Map(m);
 }
 function createGameStore(scenario) {
-  const { precincts, assignments, districtCount } = scenarioToSpike(scenario);
+  const { precincts, assignments, districtCount, terrainTiles, riverEdges } = scenarioToSpike(scenario);
   const initialAssignments = new Map(assignments);
   const initialState = {
     precincts,
     districtCount,
     assignments,
     activeDistrict: 1,
-    simulationResult: null
+    simulationResult: null,
+    terrainTiles,
+    riverEdges
   };
   initialState.simulationResult = runElection(initialState);
   const store = createStore()(temporal((set3, get3) => __spreadProps(__spreadValues({}, initialState), {
@@ -14296,7 +15408,7 @@ function createGameStore(scenario) {
   return { store };
 }
 var init_gameStore = __esm({
-  "web/src/store/gameStore.js"() {
+  "game/web/src/store/gameStore.js"() {
     init_dist();
     init_vanilla();
     init_adapter();
@@ -14304,7 +15416,14 @@ var init_gameStore = __esm({
   }
 });
 
-// web/src/simulation/evaluate.js
+// game/web/src/simulation/evaluate.js
+function groupFilterLabel(filter3) {
+  if ("dimension" in filter3) {
+    const v2 = filter3.value;
+    return v2.charAt(0).toUpperCase() + v2.slice(1);
+  }
+  return filter3.group_ids.join(", ");
+}
 function applyOp(actual, op, threshold2) {
   switch (op) {
     case "lt":
@@ -14529,12 +15648,12 @@ function isMapSubmittable(validityStats, rules) {
 }
 var OP_LABEL;
 var init_evaluate = __esm({
-  "web/src/simulation/evaluate.js"() {
+  "game/web/src/simulation/evaluate.js"() {
     OP_LABEL = { lt: "<", lte: "\u2264", eq: "=", gte: "\u2265", gt: ">" };
   }
 });
 
-// web/src/model/progress.js
+// game/web/src/model/progress.js
 function saveWip(wip) {
   try {
     localStorage.setItem(WIP_KEY, JSON.stringify(wip));
@@ -14601,13 +15720,13 @@ function saveProgress(progress) {
 }
 var PROGRESS_KEY, WIP_KEY;
 var init_progress = __esm({
-  "web/src/model/progress.js"() {
+  "game/web/src/model/progress.js"() {
     PROGRESS_KEY = "redistricting-sim-progress";
     WIP_KEY = "redistricting-sim-wip";
   }
 });
 
-// web/src/model/campaigns.js
+// game/web/src/model/campaigns.js
 function getCampaign(id2) {
   return CAMPAIGN_REGISTRY.find((c3) => c3.id === id2);
 }
@@ -14626,19 +15745,19 @@ function loadLastPlayedScenario() {
 }
 var LAST_PLAYED_KEY, CAMPAIGN_REGISTRY;
 var init_campaigns = __esm({
-  "web/src/model/campaigns.js"() {
+  "game/web/src/model/campaigns.js"() {
     LAST_PLAYED_KEY = "redistricting-sim-last-played-scenario";
     CAMPAIGN_REGISTRY = [
       {
         id: "tutorial",
         title: "Tutorial",
-        description: "Learn the basics of district drawing with two introductory maps.",
-        scenarioIds: ["tutorial-001", "tutorial-002"]
+        description: "Learn the basics of district drawing and the map's geographic features.",
+        scenarioIds: ["tutorial-001", "tutorial-002", "tutorial-003"]
       },
       {
         id: "educational",
         title: "Educational Campaign",
-        description: "Explore nine scenarios that illustrate real gerrymandering techniques and their effects on elections.",
+        description: "Explore eight scenarios that illustrate real gerrymandering techniques and their effects on elections.",
         scenarioIds: [
           "scenario-002",
           "scenario-003",
@@ -14654,7 +15773,7 @@ var init_campaigns = __esm({
   }
 });
 
-// web/src/assets.ts
+// game/web/src/assets.ts
 function initAssets() {
   var _a, _b;
   const versionMeta = document.querySelector('meta[name="app-version"]');
@@ -14687,13 +15806,13 @@ function showVersionBadge() {
 }
 var _version, _environment;
 var init_assets = __esm({
-  "web/src/assets.ts"() {
+  "game/web/src/assets.ts"() {
     _version = null;
     _environment = null;
   }
 });
 
-// web/src/criterion-icons.ts
+// game/web/src/criterion-icons.ts
 function getCriterionIcon(criterionId, criterionType) {
   if (criterionType in ICONS)
     return ICONS[criterionType];
@@ -14707,7 +15826,7 @@ function getCriterionIcon(criterionId, criterionType) {
 }
 var ICONS;
 var init_criterion_icons = __esm({
-  "web/src/criterion-icons.ts"() {
+  "game/web/src/criterion-icons.ts"() {
     ICONS = {
       district_count: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <rect x="3" y="3" width="7" height="7" rx="1"/>
@@ -14783,7 +15902,7 @@ var init_criterion_icons = __esm({
   }
 });
 
-// web/src/audio/audioPlayer.js
+// game/web/src/audio/audioPlayer.js
 function preload(clips) {
   for (const [name, url] of Object.entries(clips)) {
     const el = new Audio(url);
@@ -14826,16 +15945,16 @@ function isMuted() {
 }
 var MUTE_KEY, _clips, _mutedCache;
 var init_audioPlayer = __esm({
-  "web/src/audio/audioPlayer.js"() {
+  "game/web/src/audio/audioPlayer.js"() {
     MUTE_KEY = "redistricting-sim-audio-muted";
     _clips = /* @__PURE__ */ new Map();
     _mutedCache = void 0;
   }
 });
 
-// web/src/main.ts
+// game/web/src/main.ts
 var require_main = __commonJS({
-  "web/src/main.ts"(exports) {
+  "game/web/src/main.ts"(exports) {
     init_loader();
     init_mapRenderer();
     init_panels();
@@ -14856,7 +15975,8 @@ var require_main = __commonJS({
       { id: "scenario-006", title: "Harden the Map" },
       { id: "scenario-007", title: "The Reform Map" },
       { id: "scenario-008", title: "Both Sides Unhappy" },
-      { id: "scenario-009", title: "Cats vs. Dogs" }
+      { id: "scenario-009", title: "Cats vs. Dogs" },
+      { id: "tutorial-003", title: "Hawthorn Bend \u2014 A Tour of the Map" }
     ];
     var CAMPAIGN_ONLY_SCENARIOS = [
       { id: "tutorial-001", title: "Welcome to Redistricting: Millbrook County" }
@@ -14890,6 +16010,7 @@ var require_main = __commonJS({
     var resultCriteriaList = document.getElementById("result-criteria-list");
     var btnKeepDrawing = document.getElementById("btn-keep-drawing");
     var btnNextScenario = document.getElementById("btn-next-scenario");
+    var resultStars = document.getElementById("result-stars");
     var resultRevealControls = document.getElementById("result-reveal-controls");
     var btnRevealSkip = document.getElementById("btn-reveal-skip");
     var btnMuteAudio = document.getElementById("btn-mute-audio");
@@ -15007,9 +16128,6 @@ var require_main = __commonJS({
         cancelBtn.addEventListener("click", onCancel);
       }
       function buildContinueUrl(scenarioId) {
-        if (SCENARIO_MANIFEST.some((e) => e.id === scenarioId)) {
-          return `./?s=${scenarioId}`;
-        }
         for (const campaign of CAMPAIGN_REGISTRY) {
           if (campaign.scenarioIds.includes(scenarioId)) {
             return `./?s=${scenarioId}&campaign=${campaign.id}`;
@@ -15090,7 +16208,7 @@ var require_main = __commonJS({
         mainMenuEl.classList.remove("hidden");
       }
       function showScenarioSelect() {
-        var _a2, _b2, _c2;
+        var _a2;
         renderScenarioCards();
         scenarioSelectEl == null ? void 0 : scenarioSelectEl.classList.remove("hidden");
         const backBtn = document.getElementById("btn-back-to-campaign");
@@ -15109,16 +16227,6 @@ var require_main = __commonJS({
           saveProgress(progress);
           clearWip();
           renderScenarioCards();
-        });
-        (_b2 = document.getElementById("btn-about")) == null ? void 0 : _b2.addEventListener("click", () => {
-          var _a3;
-          scenarioSelectEl == null ? void 0 : scenarioSelectEl.classList.add("hidden");
-          (_a3 = document.getElementById("about-screen")) == null ? void 0 : _a3.classList.remove("hidden");
-        });
-        (_c2 = document.getElementById("btn-about-close")) == null ? void 0 : _c2.addEventListener("click", () => {
-          var _a3;
-          (_a3 = document.getElementById("about-screen")) == null ? void 0 : _a3.classList.add("hidden");
-          scenarioSelectEl == null ? void 0 : scenarioSelectEl.classList.remove("hidden");
         });
       }
       const requestedId = (_b = urlParams.get("s")) != null ? _b : "";
@@ -15190,6 +16298,7 @@ var require_main = __commonJS({
         showLoadError(`Scenario <strong>${entryToLoad.id}</strong> could not be loaded due to a validation error.`, msg);
         return;
       }
+      const majorityMinorityCriterion = scenario.success_criteria.map((sc) => sc.criterion).find((c3) => c3.type === "majority_minority");
       {
         const clips = {};
         for (const type2 of ["governor", "commissioner", "legislator"]) {
@@ -15277,9 +16386,22 @@ var require_main = __commonJS({
         renderResults(resultsEl, state, partyLabels);
         renderValidityPanel(validityEl, state, scenario.rules);
         renderLegend(legendEl, state.districtCount);
+        let demoStat;
+        if (majorityMinorityCriterion) {
+          demoStat = {
+            shares: computeDistrictGroupShares(
+              scenario.precincts,
+              state.assignments,
+              state.districtCount,
+              majorityMinorityCriterion.group_filter
+            ),
+            label: groupFilterLabel(majorityMinorityCriterion.group_filter),
+            threshold: majorityMinorityCriterion.min_eligible_share
+          };
+        }
         renderDistrictButtons(districtBtnsEl, state.districtCount, state.activeDistrict, (id2) => {
           store.getState().setActiveDistrict(id2);
-        });
+        }, demoStat);
         btnUndo.disabled = pastStates.length === 0;
         btnRedo.disabled = futureStates.length === 0;
         btnSubmit.disabled = false;
@@ -15352,6 +16474,7 @@ var require_main = __commonJS({
         }, { signal });
       }
       document.addEventListener("keydown", (e) => {
+        var _a2, _b2;
         const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
         const isCtrlOrCmd = isMac ? e.metaKey : e.ctrlKey;
         if (isCtrlOrCmd && e.key === "z") {
@@ -15360,6 +16483,10 @@ var require_main = __commonJS({
         } else if (isCtrlOrCmd && (e.key === "y" || isMac && e.shiftKey && e.key === "z")) {
           e.preventDefault();
           temporalStore.getState().redo();
+        } else if (IS_DEBUG && e.key === "c" && !isCtrlOrCmd && !e.shiftKey && !e.altKey) {
+          const tag = (_b2 = (_a2 = e.target) == null ? void 0 : _a2.tagName) != null ? _b2 : "";
+          if (tag !== "INPUT" && tag !== "TEXTAREA")
+            toggleCoordLabels();
         }
       });
       btnUndo.addEventListener("click", () => {
@@ -15397,7 +16524,8 @@ var require_main = __commonJS({
       });
       function buildValidityRows(validity) {
         const rows = [];
-        if (validity.unassignedCount > 0) {
+        const scenarioCriterionTypes = new Set(scenario.success_criteria.map((sc) => sc.criterion.type));
+        if (validity.unassignedCount > 0 && !scenarioCriterionTypes.has("district_count")) {
           rows.push({
             criterionId: "validity:all-assigned",
             required: true,
@@ -15407,7 +16535,7 @@ var require_main = __commonJS({
           });
         }
         const badPop = validity.districtPop.filter((d) => d.status !== "ok");
-        if (badPop.length > 0) {
+        if (badPop.length > 0 && !scenarioCriterionTypes.has("population_balance")) {
           const worst = badPop[0];
           const sign3 = worst.deviationPct >= 0 ? "+" : "";
           rows.push({
@@ -15434,15 +16562,26 @@ var require_main = __commonJS({
         return rows;
       }
       function computeStarCount(criterionResults, mapIsValid) {
-        if (!mapIsValid)
+        const allRequiredPass = criterionResults.every((cr) => !cr.required || cr.passed);
+        if (!mapIsValid || !allRequiredPass)
           return 0;
-        return criterionResults.filter((cr) => cr.required && cr.passed).length;
+        return 1 + criterionResults.filter((cr) => !cr.required && cr.passed).length;
       }
       const GOV_ROW_SCALE = 84 / 752;
       const GOV_SHEET = { neutral: { x: 0, w: 400 }, approve: { x: 400, w: 480 }, disapprove: { x: 880, w: 496 } };
       const CHAR_ROW_SCALE = 84 / 768;
-      const CHAR_SHEET_WIDTH = 1408;
-      const CHAR_SHEET = { neutral: { x: 0, w: 469 }, approve: { x: 469, w: 469 }, disapprove: { x: 938, w: 470 } };
+      const CHAR_POSES = {
+        "commissioner-wm": { neutral: { x: 0, w: 458 }, approve: { x: 458, w: 482 }, disapprove: { x: 940, w: 468 } },
+        "commissioner-wf": { neutral: { x: 0, w: 451 }, approve: { x: 451, w: 481 }, disapprove: { x: 932, w: 476 } },
+        "commissioner-bf": { neutral: { x: 0, w: 462 }, approve: { x: 462, w: 492 }, disapprove: { x: 954, w: 454 } },
+        "judge": { neutral: { x: 0, w: 463 }, approve: { x: 463, w: 480 }, disapprove: { x: 943, w: 465 } },
+        "judge-lm": { neutral: { x: 0, w: 469 }, approve: { x: 469, w: 467 }, disapprove: { x: 936, w: 472 } },
+        "judge-naf": { neutral: { x: 0, w: 464 }, approve: { x: 464, w: 473 }, disapprove: { x: 937, w: 471 } },
+        "legislator-wm": { neutral: { x: 0, w: 435 }, approve: { x: 435, w: 499 }, disapprove: { x: 934, w: 474 } },
+        "legislator-wf": { neutral: { x: 0, w: 419 }, approve: { x: 419, w: 479 }, disapprove: { x: 898, w: 510 } },
+        "legislator-bm": { neutral: { x: 0, w: 420 }, approve: { x: 420, w: 522 }, disapprove: { x: 942, w: 466 } },
+        "party": { neutral: { x: 0, w: 467 }, approve: { x: 467, w: 473 }, disapprove: { x: 940, w: 468 } }
+      };
       function charPlaceholderSvg(state) {
         if (state === "neutral") {
           return `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
@@ -15488,8 +16627,31 @@ var require_main = __commonJS({
           neutralEl.appendChild(makeSprite(n, "Character awaiting verdict"));
           verdictEl.appendChild(makeSprite(v2, passed ? "Approves" : "Disapproves"));
         } else {
-          neutralEl.innerHTML = charPlaceholderSvg("neutral");
-          verdictEl.innerHTML = charPlaceholderSvg(passed ? "approve" : "disapprove");
+          const dir = charType === "party" ? "party" : charType === "commissioner" ? `commissioner-${demo || "wm"}` : charType === "judge" ? demo ? `judge-${demo}` : "judge" : charType === "legislator" ? `legislator-${demo || "wm"}` : null;
+          const poses = dir ? CHAR_POSES[dir] : null;
+          if (poses) {
+            const n = poses.neutral;
+            const v2 = passed ? poses.approve : poses.disapprove;
+            const img = assetUrl(`assets/characters/${dir}/sheet.png`);
+            const vw = Math.round(Math.max(poses.neutral.w, poses.approve.w, poses.disapprove.w) * CHAR_ROW_SCALE);
+            const makeCharSprite = (col, label) => {
+              const s2 = document.createElement("div");
+              s2.className = "character-sprite character-sprite--row";
+              s2.setAttribute("role", "img");
+              s2.setAttribute("aria-label", label);
+              s2.style.width = `${vw}px`;
+              const bgX = -(col.x * CHAR_ROW_SCALE) + (vw - col.w * CHAR_ROW_SCALE) / 2;
+              s2.style.backgroundImage = `url('${img}')`;
+              s2.style.backgroundPosition = `${bgX.toFixed(1)}px 0px`;
+              s2.style.backgroundSize = `${Math.round(1408 * CHAR_ROW_SCALE)}px 84px`;
+              return s2;
+            };
+            neutralEl.appendChild(makeCharSprite(n, "Character awaiting verdict"));
+            verdictEl.appendChild(makeCharSprite(v2, passed ? "Approves" : "Disapproves"));
+          } else {
+            neutralEl.innerHTML = charPlaceholderSvg("neutral");
+            verdictEl.innerHTML = charPlaceholderSvg(passed ? "approve" : "disapprove");
+          }
         }
         slot.appendChild(neutralEl);
         slot.appendChild(verdictEl);
@@ -15499,7 +16661,7 @@ var require_main = __commonJS({
         neutral.style.opacity = "0";
         verdict.style.opacity = "1";
       }
-      function showResultScreen() {
+      function showResultScreen(debugForcePass = false) {
         var _a2;
         if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList)
           return;
@@ -15516,7 +16678,7 @@ var require_main = __commonJS({
           state.districtCount,
           scenario.rules
         );
-        const mapIsValid = isMapSubmittable(validity, scenario.rules);
+        let mapIsValid = isMapSubmittable(validity, scenario.rules);
         const evalResult = evaluateCriteria(
           scenario.success_criteria,
           validity,
@@ -15528,11 +16690,22 @@ var require_main = __commonJS({
           partyIdToKey,
           scenario.precincts
         );
-        const overallPass = mapIsValid && evalResult.overallPass;
-        resultVerdict.textContent = overallPass ? "Map Passed!" : "Map Failed";
-        resultVerdict.className = overallPass ? "pass" : "fail";
-        resultSubtitle.textContent = overallPass ? "All required criteria met." : mapIsValid ? "One or more required criteria were not met." : "The map has structural issues that must be fixed.";
-        const stars = computeStarCount(evalResult.criterionResults, mapIsValid);
+        let overallPass = mapIsValid && evalResult.overallPass;
+        if (debugForcePass) {
+          mapIsValid = true;
+          overallPass = true;
+        }
+        resultVerdict.textContent = "";
+        resultVerdict.className = "";
+        resultVerdict.style.opacity = "0";
+        resultSubtitle.textContent = "";
+        resultSubtitle.style.opacity = "0";
+        if (resultStars) {
+          resultStars.innerHTML = "";
+          resultStars.classList.add("hidden");
+        }
+        const maxStars = 1 + evalResult.criterionResults.filter((cr) => !cr.required).length;
+        const stars = debugForcePass ? maxStars : computeStarCount(evalResult.criterionResults, mapIsValid);
         const criterionTypeMap = /* @__PURE__ */ new Map();
         for (const sc of scenario.success_criteria) {
           criterionTypeMap.set(sc.id, sc.criterion.type);
@@ -15554,11 +16727,168 @@ var require_main = __commonJS({
           charInfoMap.set(sc.id, entry);
         }
         const validityRows = mapIsValid ? [] : buildValidityRows(validity);
-        const allRows = [...validityRows, ...evalResult.criterionResults];
+        const criterionRows = debugForcePass ? evalResult.criterionResults.map((cr) => __spreadProps(__spreadValues({}, cr), { passed: true })) : evalResult.criterionResults;
+        const allRows = [...validityRows, ...criterionRows];
         resultCriteriaList.innerHTML = "";
         function resolveCharInfo(cr) {
           var _a3;
           return (_a3 = charInfoMap.get(cr.criterionId)) != null ? _a3 : { type: "commissioner" };
+        }
+        const ROW_FADE_MS = 300;
+        const ROW_HOLD_MS = 1200;
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        let activeTimeouts = [];
+        let verdictShown = false;
+        function renderStars(el, earned, max5) {
+          el.innerHTML = "";
+          el.setAttribute("aria-label", `${earned} of ${max5} star${max5 !== 1 ? "s" : ""}`);
+          for (let i = 1; i <= max5; i++) {
+            const s2 = document.createElement("span");
+            s2.className = `result-star ${i <= earned ? "filled" : "empty"}`;
+            s2.setAttribute("aria-hidden", "true");
+            s2.textContent = i <= earned ? "\u2605" : "\u2606";
+            el.appendChild(s2);
+          }
+        }
+        function revealVerdict(pass, starCount) {
+          if (verdictShown)
+            return;
+          verdictShown = true;
+          resultVerdict.textContent = pass ? "Map Passed!" : "Map Failed";
+          resultVerdict.className = pass ? "pass" : "fail";
+          resultVerdict.style.opacity = "1";
+          resultSubtitle.textContent = pass ? "All required criteria met." : mapIsValid ? "One or more required criteria were not met." : "The map has structural issues that must be fixed.";
+          resultSubtitle.style.opacity = "1";
+          btnNextScenario.style.display = pass ? "" : "none";
+          if (pass && resultStars) {
+            renderStars(resultStars, starCount, maxStars);
+            resultStars.classList.remove("hidden");
+          }
+          if (pass) {
+            play("tada");
+          } else {
+            setTimeout(() => play("womp-womp"), 400);
+          }
+        }
+        function finalizeVerdict() {
+          if (!verdictShown)
+            revealVerdict(overallPass, stars);
+        }
+        function finalizeRow(row, withAudio = false) {
+          var _a3, _b2;
+          if (row.dataset["finalized"] === "true")
+            return;
+          row.dataset["finalized"] = "true";
+          const passed = row.dataset["passed"] === "true";
+          const required2 = row.dataset["required"] === "true";
+          const verdictCls = passed ? "passed" : required2 ? "failed-required" : "failed-optional";
+          row.className = `result-criterion ${verdictCls}`;
+          row.style.opacity = "1";
+          row.style.animation = "none";
+          const badge = row.querySelector(".rc-badge");
+          badge.classList.remove("rc-checking");
+          badge.textContent = passed ? "PASS" : required2 ? "FAIL" : "OPTIONAL";
+          const neutral = row.querySelector(".rc-char-neutral");
+          const verdict = row.querySelector(".rc-char-verdict");
+          if (neutral && verdict)
+            transitionCharSlot(neutral, verdict);
+          if (!passed && required2)
+            revealVerdict(false, 0);
+          if (withAudio) {
+            const type2 = (_a3 = row.dataset["charType"]) != null ? _a3 : "";
+            const democode = (_b2 = row.dataset["charDemo"]) != null ? _b2 : "";
+            const audioState = passed ? "approve" : "disapprove";
+            let clipName;
+            if (type2 === "governor" || type2 === "commissioner" || type2 === "legislator") {
+              const gender = democode.length >= 2 ? democode.slice(-1) : "";
+              clipName = gender === "m" || gender === "f" ? `${type2}-${audioState}-${gender}` : `${type2}-${audioState}`;
+            } else if (type2 === "judge") {
+              clipName = `judge-${audioState}`;
+            } else {
+              clipName = passed ? "party-approve" : "party-disapprove";
+            }
+            play(clipName);
+          }
+        }
+        function syncOverallVerdict() {
+          if (!resultVerdict || !resultSubtitle || !resultCriteriaList)
+            return;
+          const rows = Array.from(resultCriteriaList.querySelectorAll(".result-criterion"));
+          const anyRequiredFailed = rows.some((r) => r.classList.contains("failed-required"));
+          const nowPass = !anyRequiredFailed;
+          verdictShown = true;
+          resultVerdict.textContent = nowPass ? "Map Passed!" : "Map Failed";
+          resultVerdict.className = nowPass ? "pass" : "fail";
+          resultVerdict.style.opacity = "1";
+          resultSubtitle.textContent = nowPass ? "All required criteria met." : "One or more required criteria were not met.";
+          resultSubtitle.style.opacity = "1";
+          btnNextScenario.style.display = nowPass ? "" : "none";
+          if (resultStars) {
+            if (nowPass) {
+              const optionalPassed = rows.filter(
+                (r) => r.dataset["required"] === "false" && r.dataset["passed"] === "true"
+              ).length;
+              renderStars(resultStars, 1 + optionalPassed, maxStars);
+              resultStars.classList.remove("hidden");
+            } else {
+              resultStars.classList.add("hidden");
+            }
+          }
+        }
+        function debugReplayRow(row, newPassed) {
+          var _a3;
+          if (skipClickHandler) {
+            btnRevealSkip == null ? void 0 : btnRevealSkip.removeEventListener("click", skipClickHandler);
+            skipClickHandler();
+          } else {
+            for (const t of activeTimeouts)
+              clearTimeout(t);
+            activeTimeouts = [];
+          }
+          row.dataset["passed"] = String(newPassed);
+          row.dataset["finalized"] = "false";
+          row.className = "result-criterion rc-pending";
+          row.style.opacity = "";
+          row.style.animation = "none";
+          void row.offsetHeight;
+          const charType = (_a3 = row.dataset["charType"]) != null ? _a3 : "commissioner";
+          const charSlot = row.querySelector(".rc-char");
+          charSlot.innerHTML = "";
+          buildCharSlotChildren(charSlot, charType, newPassed);
+          const badge = row.querySelector(".rc-badge");
+          badge.className = "rc-badge rc-checking";
+          badge.textContent = "CHECKING\u2026";
+          skipClickHandler = () => {
+            for (const t of activeTimeouts)
+              clearTimeout(t);
+            activeTimeouts = [];
+            skipClickHandler = null;
+          };
+          if (reducedMotion) {
+            finalizeRow(
+              row,
+              /*withAudio=*/
+              true
+            );
+            syncOverallVerdict();
+            skipClickHandler = null;
+          } else {
+            const t13 = setTimeout(() => {
+              row.classList.remove("rc-pending");
+              row.style.animation = `criterionReveal ${ROW_FADE_MS}ms ease forwards`;
+              const t22 = setTimeout(() => {
+                finalizeRow(
+                  row,
+                  /*withAudio=*/
+                  true
+                );
+                syncOverallVerdict();
+                skipClickHandler = null;
+              }, ROW_HOLD_MS);
+              activeTimeouts.push(t22);
+            }, 50);
+            activeTimeouts.push(t13);
+          }
         }
         function buildRowElement(cr, final) {
           var _a3, _b2, _c2;
@@ -15584,6 +16914,10 @@ var require_main = __commonJS({
           iconEl.innerHTML = getCriterionIcon(cr.criterionId, criterionType);
           const body = document.createElement("div");
           body.className = "rc-body";
+          const charLabel = document.createElement("div");
+          charLabel.className = "rc-char-label";
+          charLabel.textContent = charInfo.type + ":";
+          body.appendChild(charLabel);
           const desc = document.createElement("div");
           desc.className = "rc-desc";
           desc.textContent = cr.description;
@@ -15601,41 +16935,26 @@ var require_main = __commonJS({
           row.appendChild(body);
           row.appendChild(badge);
           row.appendChild(charSlot);
+          if (IS_DEBUG) {
+            const dbgCtrl = document.createElement("div");
+            dbgCtrl.className = "rc-debug-ctrl";
+            const btnDbgPass = document.createElement("button");
+            btnDbgPass.className = "rc-debug-pass";
+            btnDbgPass.textContent = "\u2713 pass";
+            btnDbgPass.addEventListener("click", () => debugReplayRow(row, true));
+            const btnDbgFail = document.createElement("button");
+            btnDbgFail.className = "rc-debug-fail";
+            btnDbgFail.textContent = "\u2717 fail";
+            btnDbgFail.addEventListener("click", () => debugReplayRow(row, false));
+            dbgCtrl.appendChild(btnDbgPass);
+            dbgCtrl.appendChild(btnDbgFail);
+            row.appendChild(dbgCtrl);
+          }
           return row;
         }
-        function finalizeRow(row, withAudio = false) {
-          var _a3, _b2;
-          if (row.dataset["finalized"] === "true")
-            return;
-          row.dataset["finalized"] = "true";
-          const passed = row.dataset["passed"] === "true";
-          const required2 = row.dataset["required"] === "true";
-          const verdictCls = passed ? "passed" : required2 ? "failed-required" : "failed-optional";
-          row.className = `result-criterion ${verdictCls}`;
-          row.style.opacity = "1";
-          row.style.animation = "none";
-          const badge = row.querySelector(".rc-badge");
-          badge.classList.remove("rc-checking");
-          badge.textContent = passed ? "PASS" : required2 ? "FAIL" : "OPTIONAL";
-          const neutral = row.querySelector(".rc-char-neutral");
-          const verdict = row.querySelector(".rc-char-verdict");
-          if (neutral && verdict)
-            transitionCharSlot(neutral, verdict);
-          if (withAudio) {
-            const type2 = (_a3 = row.dataset["charType"]) != null ? _a3 : "";
-            const democode = (_b2 = row.dataset["charDemo"]) != null ? _b2 : "";
-            const state2 = passed ? "approve" : "disapprove";
-            let clipName;
-            if (type2 === "governor") {
-              const gender = democode.length >= 2 ? democode.slice(-1) : "";
-              clipName = gender === "m" || gender === "f" ? `${type2}-${state2}-${gender}` : `${type2}-${state2}`;
-            } else {
-              clipName = `party-${state2}`;
-            }
-            play(clipName);
-          }
-        }
-        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        btnKeepDrawing.textContent = mapIsValid ? "\u2190 Keep Drawing" : "\u2190 Fix It";
+        btnKeepDrawing.style.display = "";
+        btnNextScenario.style.display = "none";
         if (reducedMotion) {
           for (const cr of allRows) {
             resultCriteriaList.appendChild(buildRowElement(
@@ -15644,9 +16963,8 @@ var require_main = __commonJS({
               true
             ));
           }
+          revealVerdict(overallPass, stars);
         } else {
-          const ROW_FADE_MS = 300;
-          const ROW_HOLD_MS = 1200;
           const ROW_FLIP_MS = 150;
           const ROW_SETTLE_MS = 900;
           const ROW_CHAIN_MS = ROW_FADE_MS + ROW_HOLD_MS + ROW_FLIP_MS + ROW_SETTLE_MS;
@@ -15662,7 +16980,6 @@ var require_main = __commonJS({
           }
           if (resultRevealControls)
             resultRevealControls.style.display = "";
-          const pendingTimeouts = [];
           let chainDelay = 0;
           for (let i = 0; i < rowElements.length; i++) {
             const row = rowElements[i];
@@ -15685,23 +17002,26 @@ var require_main = __commonJS({
                 if (i === rowElements.length - 1) {
                   const tDone = setTimeout(() => {
                     btnRevealSkip == null ? void 0 : btnRevealSkip.removeEventListener("click", skipHandler);
+                    finalizeVerdict();
                     if (resultRevealControls)
                       resultRevealControls.style.display = "none";
                     skipClickHandler = null;
                   }, 800);
-                  pendingTimeouts.push(tDone);
+                  activeTimeouts.push(tDone);
                 }
               }, ROW_HOLD_MS);
-              pendingTimeouts.push(t22);
+              activeTimeouts.push(t22);
             }, rowStart);
-            pendingTimeouts.push(t13);
+            activeTimeouts.push(t13);
             chainDelay += ROW_CHAIN_MS;
           }
           const skipHandler = () => {
-            for (const t of pendingTimeouts)
+            for (const t of activeTimeouts)
               clearTimeout(t);
+            activeTimeouts = [];
             for (const row of rowElements)
               finalizeRow(row);
+            finalizeVerdict();
             if (resultRevealControls)
               resultRevealControls.style.display = "none";
             skipClickHandler = null;
@@ -15709,9 +17029,6 @@ var require_main = __commonJS({
           skipClickHandler = skipHandler;
           btnRevealSkip == null ? void 0 : btnRevealSkip.addEventListener("click", skipHandler, { once: true });
         }
-        btnKeepDrawing.textContent = mapIsValid ? "\u2190 Keep Drawing" : "\u2190 Fix It";
-        btnKeepDrawing.style.display = "";
-        btnNextScenario.style.display = overallPass ? "" : "none";
         if (overallPass) {
           progress = markCompleted(progress, scenario.id);
           saveProgress(progress);
@@ -15738,19 +17055,29 @@ var require_main = __commonJS({
       if (btnDebugWin && IS_DEBUG) {
         btnDebugWin.style.display = "";
         btnDebugWin.addEventListener("click", () => {
-          var _a2;
-          progress = markCompleted(progress, scenario.id);
-          saveProgress(progress);
-          clearWip();
-          const allComplete = SCENARIO_MANIFEST.every((e) => isCompleted(progress, e.id));
-          if (allComplete) {
-            (_a2 = document.getElementById("wrap-up-screen")) == null ? void 0 : _a2.classList.remove("hidden");
-          } else {
-            window.location.assign(backUrl);
-          }
+          showResultScreen(
+            /*debugForcePass=*/
+            true
+          );
         });
       }
+      const btnDebugCoords = document.getElementById("btn-debug-coords");
+      let coordLabelsOn = false;
+      const toggleCoordLabels = () => {
+        coordLabelsOn = !coordLabelsOn;
+        renderer.setCoordLabelsVisible(coordLabelsOn);
+        if (btnDebugCoords)
+          btnDebugCoords.textContent = coordLabelsOn ? "\u2316 Coords ON [C]" : "\u2316 Coords [C]";
+      };
+      if (btnDebugCoords && IS_DEBUG) {
+        btnDebugCoords.style.display = "";
+        btnDebugCoords.addEventListener("click", toggleCoordLabels);
+      }
       btnKeepDrawing.addEventListener("click", () => {
+        if (skipClickHandler) {
+          btnRevealSkip == null ? void 0 : btnRevealSkip.removeEventListener("click", skipClickHandler);
+          skipClickHandler();
+        }
         resultScreen.classList.add("hidden");
       });
       const navBackTrigger = document.getElementById("btn-nav-back-trigger");
