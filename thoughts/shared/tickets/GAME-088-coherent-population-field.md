@@ -2,7 +2,7 @@
 id: GAME-088
 title: Coherent population field — spatial structure, contrast, normalize-to-total
 area: game, tooling
-status: open
+status: resolved
 created: 2026-06-22
 ---
 

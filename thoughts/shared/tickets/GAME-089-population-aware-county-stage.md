@@ -2,7 +2,7 @@
 id: GAME-089
 title: Population-aware county stage — flood-fill counties that wrap population centers
 area: game, tooling
-status: open
+status: resolved
 created: 2026-06-22
 ---
 

@@ -51,6 +51,8 @@ export interface Precinct {
 	name?: string;
 	/** County identifier from scenario (used for county border overlay) */
 	county_id?: string;
+	/** Human-readable county name (shown in the precinct-info panel) */
+	county_name?: string;
 	/** Axial hex grid coordinates */
 	coord: HexCoord;
 	/** Pixel center (pre-computed for rendering) */

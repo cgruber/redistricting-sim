@@ -598,4 +598,23 @@ test("contrast: widens dynamic range (denser core) at a fixed total", () => {
   assertEqual(maxOf(sharp) > maxOf(flat), true);
 });
 
+test("settlement plateau: flat top within inner radius, zero beyond radius", () => {
+  const partial = makePartial(4);
+  const spec = basePopSpec({
+    base: 1000, variance: 0,
+    settlements: [{ anchor: "center", peak: 5000, radius: 2, profile: "plateau" }],
+  });
+  const result = populateScenario(partial, spec);
+  const at = (q: number, r: number) =>
+    result.precincts.find(p => {
+      const pos = p.position as { q: number; r: number };
+      return pos.q === q && pos.r === r;
+    })!;
+  // inner = radius/2 = 1 → dist 0 and dist 1 both sit on the flat top (base + peak).
+  assertEqual(at(0, 0).total_population, at(1, 0).total_population);
+  assertEqual(at(0, 0).total_population, 6000);
+  // dist 4 > radius 2 → no bump, base only.
+  assertEqual(at(4, 0).total_population, 1000);
+});
+
 summarize();

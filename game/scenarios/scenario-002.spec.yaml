@@ -36,32 +36,48 @@ terrain: {}
 
 # ── Stage 2: Population ───────────────────────────────────────────────────────
 #
-# Clearwater County urban/suburban mix:
-#   Clearwater City: the county seat, located in the center of the county.
-#   East Mills: a smaller mill town to the east.
-# Both settlements add Gaussian population bumps on top of the terrain-suitability base.
-# The scenario has no terrain features so all precincts start at suitability 1.0.
+# Clearwater County urban/suburban mix — three density clusters so the field is
+# non-monotonic (not a single cone) and the county stage gets clean seeds:
+#   Clearwater City: the county seat, in the centre (dominant).
+#   East Mills:      a mill town to the east.
+#   West Bend:       a smaller town to the west.
+# Settlements add Gaussian bumps on top of the terrain-suitability base; the
+# gradient is kept gentle so the secondary towns survive as local maxima.
 
 population:
   seed: 42
-  base: 1500
-  variance: 150
-  # GAME-088 field-shaping (opt-in). Tuned conservatively so the fixed e2e
-  # painting stays within ±10% district balance; tune up once the e2e re-solves.
+  base: 800                 # low rural floor; the cores (settlements) carry the density
+  variance: 120
+  # "Big core, low floor" experiment (A): near-zero gradient, big settlement peaks,
+  # so density is core-defined with a ~5-7x urban/rural ratio rather than a smooth cone.
   gradient:
-    strength: 0.25          # gentle monocentric tilt (Clearwater City core → rural rim)
+    strength: 0.05          # near-flat macro tilt — cores define density, not a radial slope
   smoothing: 2              # neighbour-average the jitter — removes salt-and-pepper
-  contrast: 1.25            # widen dynamic range so density reads as a gradient
+  contrast: 1.2             # mild; the peaks already carry the dynamic range
   target_total: 144891     # preserve the existing total (shape change, not magnitude)
   settlements:
+    # City core sculpted from two overlapping plateaus so the dense area fans out
+    # (an irregular blob with a sharp edge) instead of a smooth circular cone.
     - label: Clearwater City
       anchor: center
-      peak: 600
+      peak: 4200
       radius: 3
+      profile: plateau
+    - label: Clearwater City (NE lobe)
+      anchor: { q: 1, r: -1 }
+      peak: 3200
+      radius: 2
+      profile: plateau
     - label: East Mills
       anchor: east
-      peak: 200
-      radius: 1
+      peak: 2200
+      radius: 2
+      profile: plateau
+    - label: West Bend
+      anchor: west
+      peak: 1400
+      radius: 2
+      profile: plateau
 
 # ── Stage 3: Demographics ─────────────────────────────────────────────────────
 
@@ -85,13 +101,22 @@ demographics:
     - name: outer_east
       filter: { default: true }
       party_base: { ken: 0.52 }
-  county_labels:
-    - id: clearwater_west
-      filter: { q_lte: 0 }
-    - id: clearwater_east
-      filter: { q_gte: 1, hex_dist_lte: 3 }
-    - id: clearwater_central
-      filter: { default: true }
+
+# ── Stage 3b: Counties (GAME-089) ─────────────────────────────────────────────
+#
+# Cosmetic county boundaries that follow the population field (replaces the old
+# geometric county_labels slices). county_id only drives the dashed border overlay.
+#
+# model: city_county — "like San Francisco / Denver": the dense Clearwater City
+#   core becomes its own county; the surrounding area is absorbed by the West Bend
+#   and East Mills counties. Gives a centred city county + a west + an east county.
+# (Other presets: seat_and_hinterland = town+rural surround; split_metro = Portland.)
+
+counties:
+  model: city_county
+  target_count: 3          # Clearwater City + West Bend + East Mills
+  core_density: 0.32       # how far "out to a certain density" the city county reaches
+  id_prefix: clearwater
 
 # ── Stage 4: Assembly ─────────────────────────────────────────────────────────
 

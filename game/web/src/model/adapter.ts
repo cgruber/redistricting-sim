@@ -139,6 +139,7 @@ export function scenarioToSpike(scenario: Scenario): {
 		};
 		if (pc.name !== undefined) spikePrecinct.name = pc.name;
 		if (pc.county_id !== undefined) spikePrecinct.county_id = pc.county_id;
+		if (pc.county_name !== undefined) spikePrecinct.county_name = pc.county_name;
 		// Only store annotation when at least one flag is true (avoids polluting all precincts)
 		if (hasSea || hasMountain || isRiverside || hasLakeAdj) {
 			spikePrecinct.terrainAnnotation = terrainAnnotation;

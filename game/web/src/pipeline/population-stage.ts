@@ -114,6 +114,28 @@ function buildTerrainContexts(partial: PartialScenario): Map<string, TerrainCont
   return result;
 }
 
+/**
+ * Settlement population contribution at a given hex distance from the anchor.
+ *   gaussian — peak × exp(-dist²/2σ²), σ = radius/2 (smooth cone).
+ *   plateau  — flat at peak within the inner half-radius, then linear to 0 at
+ *              `radius` (dense core with a sharp edge).
+ */
+function settlementBump(
+  peak: number,
+  radius: number,
+  dist: number,
+  profile: "gaussian" | "plateau",
+): number {
+  if (profile === "plateau") {
+    const inner = radius / 2;
+    if (dist <= inner) return peak;
+    if (dist >= radius) return 0;
+    return peak * (1 - (dist - inner) / (radius - inner));
+  }
+  const sigma = radius / 2;
+  return peak * Math.exp(-(dist * dist) / (2 * sigma * sigma));
+}
+
 function computeSuitability(ctx: TerrainContext, w: Required<TerrainWeightsSpec>): number {
   let s = 1.0;
   if (ctx.lakeside) s *= w.lakeside;
@@ -320,11 +342,10 @@ export function populateScenario(
       suitabilities,
       terrainContexts,
     );
-    const sigma = settlement.radius / 2;
-    const twoSigmaSq = 2 * sigma * sigma;
+    const profile = settlement.profile ?? "gaussian";
     for (const p of partial.precincts) {
       const dist = hexDist(p.position as HexPos, anchorPos);
-      const bump = settlement.peak * Math.exp(-(dist * dist) / twoSigmaSq);
+      const bump = settlementBump(settlement.peak, settlement.radius, dist, profile);
       settlementBumps.set(p.id, (settlementBumps.get(p.id) ?? 0) + bump);
     }
   }

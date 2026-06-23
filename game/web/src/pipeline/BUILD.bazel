@@ -235,6 +235,60 @@ js_test(
     visibility = ["//visibility:public"],
 )
 
+# ── county_stage_lib: Stage 3b — population-aware county assignment (GAME-089) ──
+
+ts_project(
+    name = "county_stage_lib",
+    srcs = ["county-stage.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+    ],
+    visibility = ["//game/web:__subpackages__"],
+)
+
+build_test(
+    name = "county_stage_typecheck_test",
+    targets = [":county_stage_lib"],
+    visibility = ["//visibility:public"],
+)
+
+ts_project(
+    name = "county_stage_test_lib",
+    srcs = ["county-stage_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":county_stage_lib",
+        ":population_stage_lib",
+        ":terrain_generator_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+js_test(
+    name = "county_stage_test",
+    entry_point = "county-stage_test.js",
+    data = [
+        ":county_stage_test_lib",
+        ":county_stage_lib",
+        ":population_stage_lib",
+        ":terrain_generator_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 # ── assembler_lib: Stage 4 — scenario assembly ────────────────────────────────
 
 ts_project(
@@ -303,6 +357,7 @@ ts_project(
         ":terrain_generator_lib",
         ":population_stage_lib",
         ":demographics_stage_lib",
+        ":county_stage_lib",
         ":assembler_lib",
         "//game/web/src/model:model_lib",
     ],
@@ -337,6 +392,7 @@ js_test(
         ":pipeline_runner_lib",
         ":assembler_lib",
         ":demographics_stage_lib",
+        ":county_stage_lib",
         ":population_stage_lib",
         ":terrain_generator_lib",
         ":spec_types_lib",
@@ -391,6 +447,7 @@ js_binary(
         ":pipeline_runner_lib",
         ":assembler_lib",
         ":demographics_stage_lib",
+        ":county_stage_lib",
         ":population_stage_lib",
         ":terrain_generator_lib",
         ":spec_types_lib",

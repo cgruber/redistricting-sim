@@ -48,7 +48,7 @@
         "q": 0,
         "r": -5
       },
-      "total_population": 1290,
+      "total_population": 667,
       "demographic_groups": [
         {
           "id": "p001-all",
@@ -61,8 +61,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_west",
-      "name": "West (0,-5)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (0,-5)",
       "initial_district_id": "d1"
     },
     {
@@ -72,7 +73,7 @@
         "q": 1,
         "r": -5
       },
-      "total_population": 1307,
+      "total_population": 675,
       "demographic_groups": [
         {
           "id": "p002-all",
@@ -85,8 +86,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (1,-5)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (1,-5)",
       "initial_district_id": "d1"
     },
     {
@@ -96,7 +98,7 @@
         "q": 2,
         "r": -5
       },
-      "total_population": 1313,
+      "total_population": 677,
       "demographic_groups": [
         {
           "id": "p003-all",
@@ -109,8 +111,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (2,-5)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (2,-5)",
       "initial_district_id": "d1"
     },
     {
@@ -120,7 +123,7 @@
         "q": 3,
         "r": -5
       },
-      "total_population": 1296,
+      "total_population": 669,
       "demographic_groups": [
         {
           "id": "p004-all",
@@ -133,8 +136,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (3,-5)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (3,-5)",
       "initial_district_id": "d2"
     },
     {
@@ -144,7 +148,7 @@
         "q": 4,
         "r": -5
       },
-      "total_population": 1304,
+      "total_population": 2270,
       "demographic_groups": [
         {
           "id": "p005-all",
@@ -157,8 +161,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (4,-5)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (4,-5)",
       "initial_district_id": "d2"
     },
     {
@@ -168,7 +173,7 @@
         "q": 5,
         "r": -5
       },
-      "total_population": 1474,
+      "total_population": 2284,
       "demographic_groups": [
         {
           "id": "p006-all",
@@ -181,8 +186,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (5,-5)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (5,-5)",
       "initial_district_id": "d3"
     },
     {
@@ -192,7 +198,7 @@
         "q": -1,
         "r": -4
       },
-      "total_population": 1268,
+      "total_population": 656,
       "demographic_groups": [
         {
           "id": "p007-all",
@@ -206,6 +212,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-1,-4)",
       "initial_district_id": "d1"
     },
@@ -216,7 +223,7 @@
         "q": 0,
         "r": -4
       },
-      "total_population": 1426,
+      "total_population": 672,
       "demographic_groups": [
         {
           "id": "p008-all",
@@ -229,8 +236,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_west",
-      "name": "West (0,-4)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (0,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -240,7 +248,7 @@
         "q": 1,
         "r": -4
       },
-      "total_population": 1448,
+      "total_population": 680,
       "demographic_groups": [
         {
           "id": "p009-all",
@@ -253,8 +261,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (1,-4)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (1,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -264,7 +273,7 @@
         "q": 2,
         "r": -4
       },
-      "total_population": 1432,
+      "total_population": 674,
       "demographic_groups": [
         {
           "id": "p010-all",
@@ -277,8 +286,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (2,-4)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (2,-4)",
       "initial_district_id": "d2"
     },
     {
@@ -288,7 +298,7 @@
         "q": 3,
         "r": -4
       },
-      "total_population": 1416,
+      "total_population": 668,
       "demographic_groups": [
         {
           "id": "p011-all",
@@ -301,8 +311,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (3,-4)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (3,-4)",
       "initial_district_id": "d2"
     },
     {
@@ -312,7 +323,7 @@
         "q": 4,
         "r": -4
       },
-      "total_population": 1460,
+      "total_population": 2293,
       "demographic_groups": [
         {
           "id": "p012-all",
@@ -325,8 +336,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (4,-4)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (4,-4)",
       "initial_district_id": "d3"
     },
     {
@@ -336,7 +348,7 @@
         "q": 5,
         "r": -4
       },
-      "total_population": 1323,
+      "total_population": 2287,
       "demographic_groups": [
         {
           "id": "p013-all",
@@ -349,8 +361,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (5,-4)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (5,-4)",
       "initial_district_id": "d3"
     },
     {
@@ -360,7 +373,7 @@
         "q": -2,
         "r": -3
       },
-      "total_population": 1260,
+      "total_population": 652,
       "demographic_groups": [
         {
           "id": "p014-all",
@@ -374,6 +387,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-2,-3)",
       "initial_district_id": "d1"
     },
@@ -384,7 +398,7 @@
         "q": -1,
         "r": -3
       },
-      "total_population": 1396,
+      "total_population": 661,
       "demographic_groups": [
         {
           "id": "p015-all",
@@ -398,6 +412,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-1,-3)",
       "initial_district_id": "d1"
     },
@@ -408,7 +423,7 @@
         "q": 0,
         "r": -3
       },
-      "total_population": 1633,
+      "total_population": 675,
       "demographic_groups": [
         {
           "id": "p016-all",
@@ -422,6 +437,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (0,-3)",
       "initial_district_id": "d1"
     },
@@ -432,7 +448,7 @@
         "q": 1,
         "r": -3
       },
-      "total_population": 1635,
+      "total_population": 676,
       "demographic_groups": [
         {
           "id": "p017-all",
@@ -446,6 +462,7 @@
         }
       ],
       "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
       "name": "East (1,-3)",
       "initial_district_id": "d2"
     },
@@ -456,7 +473,7 @@
         "q": 2,
         "r": -3
       },
-      "total_population": 1622,
+      "total_population": 671,
       "demographic_groups": [
         {
           "id": "p018-all",
@@ -470,6 +487,7 @@
         }
       ],
       "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
       "name": "East (2,-3)",
       "initial_district_id": "d2"
     },
@@ -480,7 +498,7 @@
         "q": 3,
         "r": -3
       },
-      "total_population": 1615,
+      "total_population": 669,
       "demographic_groups": [
         {
           "id": "p019-all",
@@ -494,6 +512,7 @@
         }
       ],
       "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
       "name": "East (3,-3)",
       "initial_district_id": "d3"
     },
@@ -504,7 +523,7 @@
         "q": 4,
         "r": -3
       },
-      "total_population": 1424,
+      "total_population": 671,
       "demographic_groups": [
         {
           "id": "p020-all",
@@ -517,8 +536,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (4,-3)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (4,-3)",
       "initial_district_id": "d3"
     },
     {
@@ -528,7 +548,7 @@
         "q": 5,
         "r": -3
       },
-      "total_population": 1300,
+      "total_population": 671,
       "demographic_groups": [
         {
           "id": "p021-all",
@@ -541,8 +561,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (5,-3)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (5,-3)",
       "initial_district_id": "d4"
     },
     {
@@ -552,7 +573,7 @@
         "q": -3,
         "r": -2
       },
-      "total_population": 1262,
+      "total_population": 653,
       "demographic_groups": [
         {
           "id": "p022-all",
@@ -566,6 +587,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-3,-2)",
       "initial_district_id": "d1"
     },
@@ -576,7 +598,7 @@
         "q": -2,
         "r": -2
       },
-      "total_population": 1393,
+      "total_population": 660,
       "demographic_groups": [
         {
           "id": "p023-all",
@@ -590,6 +612,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-2,-2)",
       "initial_district_id": "d1"
     },
@@ -600,7 +623,7 @@
         "q": -1,
         "r": -2
       },
-      "total_population": 1615,
+      "total_population": 669,
       "demographic_groups": [
         {
           "id": "p024-all",
@@ -614,6 +637,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-1,-2)",
       "initial_district_id": "d1"
     },
@@ -624,7 +648,7 @@
         "q": 0,
         "r": -2
       },
-      "total_population": 1996,
+      "total_population": 2834,
       "demographic_groups": [
         {
           "id": "p025-all",
@@ -638,6 +662,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (0,-2)",
       "initial_district_id": "d2"
     },
@@ -648,7 +673,7 @@
         "q": 1,
         "r": -2
       },
-      "total_population": 1979,
+      "total_population": 5988,
       "demographic_groups": [
         {
           "id": "p026-all",
@@ -661,8 +686,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_east",
-      "name": "East (1,-2)",
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (1,-2)",
       "initial_district_id": "d2"
     },
     {
@@ -672,7 +698,7 @@
         "q": 2,
         "r": -2
       },
-      "total_population": 1962,
+      "total_population": 5977,
       "demographic_groups": [
         {
           "id": "p027-all",
@@ -685,8 +711,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_east",
-      "name": "East (2,-2)",
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (2,-2)",
       "initial_district_id": "d3"
     },
     {
@@ -696,7 +723,7 @@
         "q": 3,
         "r": -2
       },
-      "total_population": 1612,
+      "total_population": 668,
       "demographic_groups": [
         {
           "id": "p028-all",
@@ -710,6 +737,7 @@
         }
       ],
       "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
       "name": "East (3,-2)",
       "initial_district_id": "d3"
     },
@@ -720,7 +748,7 @@
         "q": 4,
         "r": -2
       },
-      "total_population": 1408,
+      "total_population": 666,
       "demographic_groups": [
         {
           "id": "p029-all",
@@ -733,8 +761,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (4,-2)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (4,-2)",
       "initial_district_id": "d4"
     },
     {
@@ -744,7 +773,7 @@
         "q": 5,
         "r": -2
       },
-      "total_population": 1273,
+      "total_population": 658,
       "demographic_groups": [
         {
           "id": "p030-all",
@@ -757,8 +786,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (5,-2)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (5,-2)",
       "initial_district_id": "d4"
     },
     {
@@ -768,7 +798,7 @@
         "q": -4,
         "r": -1
       },
-      "total_population": 1272,
+      "total_population": 1594,
       "demographic_groups": [
         {
           "id": "p031-all",
@@ -782,6 +812,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-4,-1)",
       "initial_district_id": "d1"
     },
@@ -792,7 +823,7 @@
         "q": -3,
         "r": -1
       },
-      "total_population": 1408,
+      "total_population": 666,
       "demographic_groups": [
         {
           "id": "p032-all",
@@ -806,6 +837,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-3,-1)",
       "initial_district_id": "d1"
     },
@@ -816,7 +848,7 @@
         "q": -2,
         "r": -1
       },
-      "total_population": 1633,
+      "total_population": 675,
       "demographic_groups": [
         {
           "id": "p033-all",
@@ -830,6 +862,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-2,-1)",
       "initial_district_id": "d1"
     },
@@ -840,7 +873,7 @@
         "q": -1,
         "r": -1
       },
-      "total_population": 2013,
+      "total_population": 2844,
       "demographic_groups": [
         {
           "id": "p034-all",
@@ -854,6 +887,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-1,-1)",
       "initial_district_id": "d2"
     },
@@ -864,7 +898,7 @@
         "q": 0,
         "r": -1
       },
-      "total_population": 2512,
+      "total_population": 7532,
       "demographic_groups": [
         {
           "id": "p035-all",
@@ -877,8 +911,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_west",
-      "name": "West (0,-1)",
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (0,-1)",
       "initial_district_id": "d2"
     },
     {
@@ -888,7 +923,7 @@
         "q": 1,
         "r": -1
       },
-      "total_population": 2496,
+      "total_population": 7521,
       "demographic_groups": [
         {
           "id": "p036-all",
@@ -901,8 +936,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_east",
-      "name": "East (1,-1)",
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (1,-1)",
       "initial_district_id": "d3"
     },
     {
@@ -912,7 +948,7 @@
         "q": 2,
         "r": -1
       },
-      "total_population": 1964,
+      "total_population": 5979,
       "demographic_groups": [
         {
           "id": "p037-all",
@@ -925,8 +961,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_east",
-      "name": "East (2,-1)",
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (2,-1)",
       "initial_district_id": "d3"
     },
     {
@@ -936,7 +973,7 @@
         "q": 3,
         "r": -1
       },
-      "total_population": 1597,
+      "total_population": 663,
       "demographic_groups": [
         {
           "id": "p038-all",
@@ -950,6 +987,7 @@
         }
       ],
       "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
       "name": "East (3,-1)",
       "initial_district_id": "d4"
     },
@@ -960,7 +998,7 @@
         "q": 4,
         "r": -1
       },
-      "total_population": 1390,
+      "total_population": 659,
       "demographic_groups": [
         {
           "id": "p039-all",
@@ -973,8 +1011,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (4,-1)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (4,-1)",
       "initial_district_id": "d4"
     },
     {
@@ -984,7 +1023,7 @@
         "q": 5,
         "r": -1
       },
-      "total_population": 1257,
+      "total_population": 651,
       "demographic_groups": [
         {
           "id": "p040-all",
@@ -997,8 +1036,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (5,-1)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (5,-1)",
       "initial_district_id": "d4"
     },
     {
@@ -1008,7 +1048,7 @@
         "q": -5,
         "r": 0
       },
-      "total_population": 1275,
+      "total_population": 1597,
       "demographic_groups": [
         {
           "id": "p041-all",
@@ -1022,6 +1062,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-5,0)",
       "initial_district_id": "d1"
     },
@@ -1032,7 +1073,7 @@
         "q": -4,
         "r": 0
       },
-      "total_population": 1413,
+      "total_population": 1613,
       "demographic_groups": [
         {
           "id": "p042-all",
@@ -1046,6 +1087,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-4,0)",
       "initial_district_id": "d1"
     },
@@ -1056,7 +1098,7 @@
         "q": -3,
         "r": 0
       },
-      "total_population": 1647,
+      "total_population": 679,
       "demographic_groups": [
         {
           "id": "p043-all",
@@ -1070,6 +1112,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-3,0)",
       "initial_district_id": "d1"
     },
@@ -1080,7 +1123,7 @@
         "q": -2,
         "r": 0
       },
-      "total_population": 2031,
+      "total_population": 2854,
       "demographic_groups": [
         {
           "id": "p044-all",
@@ -1094,6 +1137,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-2,0)",
       "initial_district_id": "d2"
     },
@@ -1104,7 +1148,7 @@
         "q": -1,
         "r": 0
       },
-      "total_population": 2559,
+      "total_population": 4208,
       "demographic_groups": [
         {
           "id": "p045-all",
@@ -1117,8 +1161,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_west",
-      "name": "West (-1,0)",
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (-1,0)",
       "initial_district_id": "d2"
     },
     {
@@ -1128,7 +1173,7 @@
         "q": 0,
         "r": 0
       },
-      "total_population": 2935,
+      "total_population": 7571,
       "demographic_groups": [
         {
           "id": "p046-all",
@@ -1141,8 +1186,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_west",
-      "name": "West (0,0)",
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (0,0)",
       "initial_district_id": "d3"
     },
     {
@@ -1152,7 +1198,7 @@
         "q": 1,
         "r": 0
       },
-      "total_population": 2512,
+      "total_population": 7532,
       "demographic_groups": [
         {
           "id": "p047-all",
@@ -1165,8 +1211,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_east",
-      "name": "East (1,0)",
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (1,0)",
       "initial_district_id": "d3"
     },
     {
@@ -1176,7 +1223,7 @@
         "q": 2,
         "r": 0
       },
-      "total_population": 1990,
+      "total_population": 2831,
       "demographic_groups": [
         {
           "id": "p048-all",
@@ -1190,6 +1237,7 @@
         }
       ],
       "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
       "name": "East (2,0)",
       "initial_district_id": "d4"
     },
@@ -1200,7 +1248,7 @@
         "q": 3,
         "r": 0
       },
-      "total_population": 1604,
+      "total_population": 666,
       "demographic_groups": [
         {
           "id": "p049-all",
@@ -1214,6 +1262,7 @@
         }
       ],
       "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
       "name": "East (3,0)",
       "initial_district_id": "d4"
     },
@@ -1224,7 +1273,7 @@
         "q": 4,
         "r": 0
       },
-      "total_population": 1373,
+      "total_population": 653,
       "demographic_groups": [
         {
           "id": "p050-all",
@@ -1237,8 +1286,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (4,0)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (4,0)",
       "initial_district_id": "d4"
     },
     {
@@ -1248,7 +1298,7 @@
         "q": 5,
         "r": 0
       },
-      "total_population": 1247,
+      "total_population": 645,
       "demographic_groups": [
         {
           "id": "p051-all",
@@ -1261,8 +1311,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (5,0)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (5,0)",
       "initial_district_id": "d4"
     },
     {
@@ -1272,7 +1323,7 @@
         "q": -5,
         "r": 1
       },
-      "total_population": 1280,
+      "total_population": 1601,
       "demographic_groups": [
         {
           "id": "p052-all",
@@ -1286,6 +1337,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-5,1)",
       "initial_district_id": "d1"
     },
@@ -1296,7 +1348,7 @@
         "q": -4,
         "r": 1
       },
-      "total_population": 1421,
+      "total_population": 671,
       "demographic_groups": [
         {
           "id": "p053-all",
@@ -1310,6 +1362,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-4,1)",
       "initial_district_id": "d1"
     },
@@ -1320,7 +1373,7 @@
         "q": -3,
         "r": 1
       },
-      "total_population": 1654,
+      "total_population": 682,
       "demographic_groups": [
         {
           "id": "p054-all",
@@ -1334,6 +1387,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-3,1)",
       "initial_district_id": "d2"
     },
@@ -1344,7 +1398,7 @@
         "q": -2,
         "r": 1
       },
-      "total_population": 2055,
+      "total_population": 2868,
       "demographic_groups": [
         {
           "id": "p055-all",
@@ -1357,8 +1411,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_west",
-      "name": "West (-2,1)",
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (-2,1)",
       "initial_district_id": "d2"
     },
     {
@@ -1368,7 +1423,7 @@
         "q": -1,
         "r": 1
       },
-      "total_population": 2568,
+      "total_population": 4213,
       "demographic_groups": [
         {
           "id": "p056-all",
@@ -1381,8 +1436,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_west",
-      "name": "West (-1,1)",
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (-1,1)",
       "initial_district_id": "d3"
     },
     {
@@ -1392,7 +1448,7 @@
         "q": 0,
         "r": 1
       },
-      "total_population": 2561,
+      "total_population": 4209,
       "demographic_groups": [
         {
           "id": "p057-all",
@@ -1405,8 +1461,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_west",
-      "name": "West (0,1)",
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (0,1)",
       "initial_district_id": "d3"
     },
     {
@@ -1416,7 +1473,7 @@
         "q": 1,
         "r": 1
       },
-      "total_population": 2033,
+      "total_population": 2855,
       "demographic_groups": [
         {
           "id": "p058-all",
@@ -1430,6 +1487,7 @@
         }
       ],
       "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
       "name": "East (1,1)",
       "initial_district_id": "d4"
     },
@@ -1440,7 +1498,7 @@
         "q": 2,
         "r": 1
       },
-      "total_population": 1646,
+      "total_population": 679,
       "demographic_groups": [
         {
           "id": "p059-all",
@@ -1454,6 +1512,7 @@
         }
       ],
       "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
       "name": "East (2,1)",
       "initial_district_id": "d4"
     },
@@ -1464,7 +1523,7 @@
         "q": 3,
         "r": 1
       },
-      "total_population": 1401,
+      "total_population": 663,
       "demographic_groups": [
         {
           "id": "p060-all",
@@ -1477,8 +1536,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (3,1)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (3,1)",
       "initial_district_id": "d4"
     },
     {
@@ -1488,7 +1548,7 @@
         "q": 4,
         "r": 1
       },
-      "total_population": 1255,
+      "total_population": 649,
       "demographic_groups": [
         {
           "id": "p061-all",
@@ -1501,8 +1561,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (4,1)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (4,1)",
       "initial_district_id": "d4"
     },
     {
@@ -1512,7 +1573,7 @@
         "q": -5,
         "r": 2
       },
-      "total_population": 1274,
+      "total_population": 659,
       "demographic_groups": [
         {
           "id": "p062-all",
@@ -1526,6 +1587,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-5,2)",
       "initial_district_id": "d1"
     },
@@ -1536,7 +1598,7 @@
         "q": -4,
         "r": 2
       },
-      "total_population": 1415,
+      "total_population": 668,
       "demographic_groups": [
         {
           "id": "p063-all",
@@ -1550,6 +1612,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-4,2)",
       "initial_district_id": "d2"
     },
@@ -1560,7 +1623,7 @@
         "q": -3,
         "r": 2
       },
-      "total_population": 1652,
+      "total_population": 681,
       "demographic_groups": [
         {
           "id": "p064-all",
@@ -1574,6 +1637,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-3,2)",
       "initial_district_id": "d2"
     },
@@ -1584,7 +1648,7 @@
         "q": -2,
         "r": 2
       },
-      "total_population": 2048,
+      "total_population": 2864,
       "demographic_groups": [
         {
           "id": "p065-all",
@@ -1597,8 +1661,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_west",
-      "name": "West (-2,2)",
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (-2,2)",
       "initial_district_id": "d3"
     },
     {
@@ -1608,7 +1673,7 @@
         "q": -1,
         "r": 2
       },
-      "total_population": 2054,
+      "total_population": 2867,
       "demographic_groups": [
         {
           "id": "p066-all",
@@ -1621,8 +1686,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_west",
-      "name": "West (-1,2)",
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (-1,2)",
       "initial_district_id": "d3"
     },
     {
@@ -1632,7 +1698,7 @@
         "q": 0,
         "r": 2
       },
-      "total_population": 2043,
+      "total_population": 2861,
       "demographic_groups": [
         {
           "id": "p067-all",
@@ -1645,8 +1711,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_west",
-      "name": "West (0,2)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (0,2)",
       "initial_district_id": "d4"
     },
     {
@@ -1656,7 +1723,7 @@
         "q": 1,
         "r": 2
       },
-      "total_population": 1680,
+      "total_population": 690,
       "demographic_groups": [
         {
           "id": "p068-all",
@@ -1670,6 +1737,7 @@
         }
       ],
       "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
       "name": "East (1,2)",
       "initial_district_id": "d4"
     },
@@ -1680,7 +1748,7 @@
         "q": 2,
         "r": 2
       },
-      "total_population": 1448,
+      "total_population": 680,
       "demographic_groups": [
         {
           "id": "p069-all",
@@ -1693,8 +1761,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (2,2)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (2,2)",
       "initial_district_id": "d4"
     },
     {
@@ -1704,7 +1773,7 @@
         "q": 3,
         "r": 2
       },
-      "total_population": 1279,
+      "total_population": 661,
       "demographic_groups": [
         {
           "id": "p070-all",
@@ -1717,8 +1786,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (3,2)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (3,2)",
       "initial_district_id": "d4"
     },
     {
@@ -1728,7 +1798,7 @@
         "q": -5,
         "r": 3
       },
-      "total_population": 1275,
+      "total_population": 659,
       "demographic_groups": [
         {
           "id": "p071-all",
@@ -1742,6 +1812,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-5,3)",
       "initial_district_id": "d2"
     },
@@ -1752,7 +1823,7 @@
         "q": -4,
         "r": 3
       },
-      "total_population": 1415,
+      "total_population": 668,
       "demographic_groups": [
         {
           "id": "p072-all",
@@ -1766,6 +1837,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-4,3)",
       "initial_district_id": "d2"
     },
@@ -1776,7 +1848,7 @@
         "q": -3,
         "r": 3
       },
-      "total_population": 1660,
+      "total_population": 684,
       "demographic_groups": [
         {
           "id": "p073-all",
@@ -1790,6 +1862,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-3,3)",
       "initial_district_id": "d3"
     },
@@ -1800,7 +1873,7 @@
         "q": -2,
         "r": 3
       },
-      "total_population": 1666,
+      "total_population": 686,
       "demographic_groups": [
         {
           "id": "p074-all",
@@ -1814,6 +1887,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-2,3)",
       "initial_district_id": "d3"
     },
@@ -1824,7 +1898,7 @@
         "q": -1,
         "r": 3
       },
-      "total_population": 1666,
+      "total_population": 686,
       "demographic_groups": [
         {
           "id": "p075-all",
@@ -1838,6 +1912,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-1,3)",
       "initial_district_id": "d4"
     },
@@ -1848,7 +1923,7 @@
         "q": 0,
         "r": 3
       },
-      "total_population": 1685,
+      "total_population": 692,
       "demographic_groups": [
         {
           "id": "p076-all",
@@ -1861,8 +1936,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_west",
-      "name": "West (0,3)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (0,3)",
       "initial_district_id": "d4"
     },
     {
@@ -1872,7 +1948,7 @@
         "q": 1,
         "r": 3
       },
-      "total_population": 1459,
+      "total_population": 685,
       "demographic_groups": [
         {
           "id": "p077-all",
@@ -1885,8 +1961,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (1,3)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (1,3)",
       "initial_district_id": "d4"
     },
     {
@@ -1896,7 +1973,7 @@
         "q": 2,
         "r": 3
       },
-      "total_population": 1311,
+      "total_population": 676,
       "demographic_groups": [
         {
           "id": "p078-all",
@@ -1909,8 +1986,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (2,3)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (2,3)",
       "initial_district_id": "d4"
     },
     {
@@ -1920,7 +1998,7 @@
         "q": -5,
         "r": 4
       },
-      "total_population": 1280,
+      "total_population": 662,
       "demographic_groups": [
         {
           "id": "p079-all",
@@ -1934,6 +2012,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-5,4)",
       "initial_district_id": "d2"
     },
@@ -1944,7 +2023,7 @@
         "q": -4,
         "r": 4
       },
-      "total_population": 1433,
+      "total_population": 675,
       "demographic_groups": [
         {
           "id": "p080-all",
@@ -1958,6 +2037,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-4,4)",
       "initial_district_id": "d3"
     },
@@ -1968,7 +2048,7 @@
         "q": -3,
         "r": 4
       },
-      "total_population": 1445,
+      "total_population": 679,
       "demographic_groups": [
         {
           "id": "p081-all",
@@ -1982,6 +2062,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-3,4)",
       "initial_district_id": "d3"
     },
@@ -1992,7 +2073,7 @@
         "q": -2,
         "r": 4
       },
-      "total_population": 1460,
+      "total_population": 685,
       "demographic_groups": [
         {
           "id": "p082-all",
@@ -2006,6 +2087,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-2,4)",
       "initial_district_id": "d4"
     },
@@ -2016,7 +2098,7 @@
         "q": -1,
         "r": 4
       },
-      "total_population": 1456,
+      "total_population": 683,
       "demographic_groups": [
         {
           "id": "p083-all",
@@ -2030,6 +2112,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-1,4)",
       "initial_district_id": "d4"
     },
@@ -2040,7 +2123,7 @@
         "q": 0,
         "r": 4
       },
-      "total_population": 1460,
+      "total_population": 685,
       "demographic_groups": [
         {
           "id": "p084-all",
@@ -2053,8 +2136,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_west",
-      "name": "West (0,4)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (0,4)",
       "initial_district_id": "d4"
     },
     {
@@ -2064,7 +2148,7 @@
         "q": 1,
         "r": 4
       },
-      "total_population": 1314,
+      "total_population": 678,
       "demographic_groups": [
         {
           "id": "p085-all",
@@ -2077,8 +2161,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_central",
-      "name": "Central (1,4)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (1,4)",
       "initial_district_id": "d4"
     },
     {
@@ -2088,7 +2173,7 @@
         "q": -5,
         "r": 5
       },
-      "total_population": 1293,
+      "total_population": 668,
       "demographic_groups": [
         {
           "id": "p086-all",
@@ -2102,6 +2187,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-5,5)",
       "initial_district_id": "d3"
     },
@@ -2112,7 +2198,7 @@
         "q": -4,
         "r": 5
       },
-      "total_population": 1307,
+      "total_population": 674,
       "demographic_groups": [
         {
           "id": "p087-all",
@@ -2126,6 +2212,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-4,5)",
       "initial_district_id": "d3"
     },
@@ -2136,7 +2223,7 @@
         "q": -3,
         "r": 5
       },
-      "total_population": 1316,
+      "total_population": 679,
       "demographic_groups": [
         {
           "id": "p088-all",
@@ -2150,6 +2237,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-3,5)",
       "initial_district_id": "d4"
     },
@@ -2160,7 +2248,7 @@
         "q": -2,
         "r": 5
       },
-      "total_population": 1322,
+      "total_population": 682,
       "demographic_groups": [
         {
           "id": "p089-all",
@@ -2174,6 +2262,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-2,5)",
       "initial_district_id": "d4"
     },
@@ -2184,7 +2273,7 @@
         "q": -1,
         "r": 5
       },
-      "total_population": 1319,
+      "total_population": 680,
       "demographic_groups": [
         {
           "id": "p090-all",
@@ -2198,6 +2287,7 @@
         }
       ],
       "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "West (-1,5)",
       "initial_district_id": "d4"
     },
@@ -2208,7 +2298,7 @@
         "q": 0,
         "r": 5
       },
-      "total_population": 1312,
+      "total_population": 677,
       "demographic_groups": [
         {
           "id": "p091-all",
@@ -2221,8 +2311,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_west",
-      "name": "West (0,5)",
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (0,5)",
       "initial_district_id": "d4"
     }
   ],
