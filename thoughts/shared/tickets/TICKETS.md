@@ -125,6 +125,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| BUILD-010: release.main.kts missing clikt import | Added `import com.github.ajalt.clikt.parameters.options.default`; the `Serve` subcommand's `.default()` call broke compilation of the whole script (prepare/deploy/serve all failed). Verified via dev deploy of GAME-088 |
 | GAME-087: terrain-aware population stage | `populateScenario` rewritten with terrain suitability (lakeside 1.4×/riverside 1.3×/coastal 0.9×/mountain 0.5×), Gaussian settlement bumps, and all anchor types (center, cardinal, feature, exact coords); scenario-002 updated with Clearwater City + East Mills settlements; peaks tuned to keep e2e district balance within ±5% of mean; all 10 ACs met; merged PR #265 |
 | GAME-041: split loader.ts | `runtime-types.ts` extracted (requireString etc.); `validateScenarioInvariants()` named function in loader.ts; cartesianProduct at module level; all 8 model tests pass; no behavior change |
 | GAME-086: lake rendering | `lakeside: boolean` derived in adapter from lake-tile adjacency; lake intrusion fill (smooth profile, `#4dd0e1`, depth 5px) rendered in `renderTerrainEdges` with corner caps; river stroke unified with lake colour; tutorial-003 lake tile moved to centre (-1,1); 6 lakeside precincts; e2e + unit tests; merged PR #253 |
