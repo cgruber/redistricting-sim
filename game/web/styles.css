@@ -37,31 +37,87 @@ body {
   flex-wrap: wrap;
 }
 
-.district-btn {
-  padding: 4px 12px;
-  border: 2px solid transparent;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 500;
-  transition: all 0.15s;
+/* GAME-095: left-side district paint toolbar (mirrors the view filter toolbar). */
+#district-toolbar {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
 }
 
-.district-btn.active {
-  border-color: white;
+#district-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
 }
+
+.map-toolbar-toggle {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  background: rgba(22, 33, 62, 0.94);
+  border: 1px solid #0f3460;
+  border-radius: 10px;
+  color: #8898b0;
+  cursor: pointer;
+  position: relative;
+}
+.map-toolbar-toggle:hover { background: rgba(15, 52, 96, 0.98); color: #dfe7f5; }
+.map-toolbar-title { font-size: 0.78rem; white-space: nowrap; }
+.map-toolbar-chevron { font-size: 1rem; line-height: 1; transition: transform 0.15s ease; }
+#district-toolbar.collapsed .map-toolbar-chevron { transform: rotate(180deg); }
+#district-toolbar.collapsed .map-toolbar-title { display: none; }
 
 .district-btn-wrap {
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: 2px;
 }
 
+.district-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.district-btn.active {
+  border-color: #fff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.district-num { min-width: 1ch; text-align: center; }
+.district-label { white-space: nowrap; }
+
+/* Expanded shows the full "District N" label; collapsed shows just the number. */
+#district-toolbar.expanded .district-num { display: none; }
+#district-toolbar.collapsed .district-label { display: none; }
+#district-toolbar.collapsed .district-btn { width: 36px; padding: 0; justify-content: center; }
+#district-toolbar.collapsed .district-demo-stat { display: none; }
+
 .district-demo-stat {
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   color: #a0a8c0;
   white-space: nowrap;
+  padding-left: 2px;
 }
 
 .district-demo-stat.met {
@@ -69,7 +125,30 @@ body {
   font-weight: 600;
 }
 
-#btn-undo, #btn-redo, #btn-county-toggle {
+/* Tooltip (collapsed) — this toolbar hugs the LEFT edge, so it shows on the right. */
+.district-btn[data-tip]::after,
+.map-toolbar-toggle[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #0f1c33;
+  color: #dfe7f5;
+  border: 1px solid #2a3a5a;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.74rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+  z-index: 10;
+}
+#district-toolbar.collapsed .district-btn[data-tip]:hover::after,
+.map-toolbar-toggle[data-tip]:hover::after { opacity: 1; }
+
+#btn-undo, #btn-redo {
   padding: 4px 10px;
   background: #0f3460;
   color: #e0e0e0;
@@ -79,18 +158,13 @@ body {
   font-size: 0.85rem;
 }
 
-#btn-undo:hover, #btn-redo:hover, #btn-county-toggle:hover {
+#btn-undo:hover, #btn-redo:hover {
   background: #1a4a7a;
 }
 
 #btn-undo:disabled, #btn-redo:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-}
-
-#btn-county-toggle.active {
-  background: #1a4a7a;
-  border-color: #3a7abd;
 }
 
 #btn-submit {
@@ -191,6 +265,121 @@ body {
   height: 100%;
   display: block;
 }
+
+/* GAME-093: right-side map view filter toolbar (placeholder icons).
+   Expandable: labels shown by default (.expanded), collapse to icons (.collapsed).
+   Grouped by axis: coloring (radio) | overlays (toggles), split by a divider. */
+#map-filters {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.map-filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.map-filter-section-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6f7d96;
+  padding: 0 2px 1px;
+}
+
+.map-filter-divider {
+  height: 1px;
+  margin: 2px 4px;
+  background: #2a3a5a;
+  border-radius: 1px;
+}
+
+/* Toggle (expand/collapse) sits at the top, hugging the right edge. */
+.map-filters-toggle {
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  background: rgba(22, 33, 62, 0.94);
+  border: 1px solid #0f3460;
+  border-radius: 10px;
+  color: #8898b0;
+  cursor: pointer;
+  position: relative;
+}
+.map-filters-toggle:hover { background: rgba(15, 52, 96, 0.95); color: #dfe7f5; }
+.map-filters-chevron { font-size: 1rem; line-height: 1; transition: transform 0.15s ease; }
+#map-filters.collapsed .map-filters-chevron { transform: rotate(180deg); }
+
+.map-filter {
+  position: relative;
+  height: 40px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  background: rgba(22, 33, 62, 0.94);
+  border: 1px solid #0f3460;
+  border-radius: 10px;
+  color: #8898b0;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.map-filter:hover {
+  background: rgba(15, 52, 96, 0.95);
+  color: #dfe7f5;
+}
+
+.map-filter.active {
+  border-color: #5a7fb0;
+  background: rgba(90, 127, 176, 0.45);
+  color: #eaf1fb;
+}
+
+.map-filter-icon { display: flex; flex: 0 0 auto; }
+.map-filter-icon svg { width: 22px; height: 22px; display: block; }
+.map-filter-label { font-size: 0.8rem; white-space: nowrap; }
+
+/* Collapsed: hide labels + section headers; buttons become icon-only squares. */
+#map-filters.collapsed .map-filter-label,
+#map-filters.collapsed .map-filter-section-label { display: none; }
+#map-filters.collapsed .map-filter { width: 40px; padding: 0; justify-content: center; }
+
+/* Theme tooltip — used when collapsed (labels hidden) and always on the toggle.
+   Appears to the LEFT (toolbar hugs the right edge), instantly, matching the HUD. */
+.map-filter[data-tip]::after,
+.map-filters-toggle[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #0f1c33;
+  color: #dfe7f5;
+  border: 1px solid #2a3a5a;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.74rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+  z-index: 10;
+}
+#map-filters.collapsed .map-filter[data-tip]:hover::after,
+.map-filters-toggle[data-tip]:hover::after { opacity: 1; }
 
 #sidebar {
   width: 260px;

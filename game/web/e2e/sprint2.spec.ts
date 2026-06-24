@@ -52,21 +52,8 @@ test("pan/zoom: keyboard shortcut 0 fires without console error", async ({ page 
   expect(consoleErrors).toHaveLength(0);
 });
 
-// ─── DESIGN-002: View toggle label convention ─────────────────────────────────
-
-test("view toggle: initial label is 'Switch to Partisan Lean'", async ({ page }) => {
-  await loadApp(page);
-  await expect(page.locator("#btn-view-toggle")).toHaveText("Switch to Partisan Lean");
-});
-
-test("view toggle: clicking cycles label districts → lean → districts", async ({ page }) => {
-  await loadApp(page);
-  const btn = page.locator("#btn-view-toggle");
-  await btn.click();
-  await expect(btn).toHaveText("Switch to Districts");
-  await btn.click();
-  await expect(btn).toHaveText("Switch to Partisan Lean");
-});
+// (View toggle + county overlay are exercised via the map filter toolbar — see the
+//  GAME-093 section below. The old header toggle buttons were removed in GAME-093.)
 
 // ─── GAME-010: Map validity panel ────────────────────────────────────────────
 
@@ -125,14 +112,52 @@ test("precinct info: hover over hex shows precinct details; mouseout restores pl
   await expect(placeholder).toBeVisible();
 });
 
-// ─── GAME-012: County border overlay ─────────────────────────────────────────
+// ─── GAME-093: map view filter toolbar (replaces old header view/county toggles) ──
 
-test("county toggle: initial button text is 'Show County Borders'", async ({ page }) => {
+test("filter toolbar: present; coloring radio + overlay sections, defaults correct", async ({ page }) => {
   await loadApp(page);
-  await expect(page.locator("#btn-county-toggle")).toHaveText("Show County Borders");
+  await expect(page.locator("#map-filters")).toBeVisible();
+  // Section 1 — precinct coloring (radio): districts selected by default.
+  await expect(page.locator("#filter-districts")).toHaveClass(/active/);
+  await expect(page.locator("#filter-districts")).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator("#filter-lean")).toHaveAttribute("aria-checked", "false");
+  // Section 2 — overlay (toggle): county off by default.
+  await expect(page.locator("#filter-county")).toHaveAttribute("aria-pressed", "false");
+  // Section headers + visible labels (expanded by default).
+  await expect(page.locator(".map-filter-section-label").first()).toBeVisible();
+  await expect(page.locator("#filter-districts .map-filter-label")).toHaveText("Districts");
+  // Theme tooltip text present (used when collapsed).
+  await expect(page.locator("#filter-districts")).toHaveAttribute("data-tip", /district/i);
 });
 
-test("county toggle: clicking cycles text and county-borders layer is in DOM", async ({
+test("filter toolbar: expand/collapse toggle hides/shows labels", async ({ page }) => {
+  await loadApp(page);
+  await expect(page.locator("#map-filters")).toHaveClass(/expanded/);
+  await expect(page.locator("#filter-districts .map-filter-label")).toBeVisible();
+  // Collapse → labels hidden, toggle reflects state.
+  await page.locator("#map-filters-toggle").click();
+  await expect(page.locator("#map-filters")).toHaveClass(/collapsed/);
+  await expect(page.locator("#filter-districts .map-filter-label")).toBeHidden();
+  await expect(page.locator("#map-filters-toggle")).toHaveAttribute("aria-expanded", "false");
+  // Expand again.
+  await page.locator("#map-filters-toggle").click();
+  await expect(page.locator("#map-filters")).toHaveClass(/expanded/);
+  await expect(page.locator("#filter-districts .map-filter-label")).toBeVisible();
+});
+
+test("filter toolbar: coloring is mutually exclusive (districts <-> lean)", async ({ page }) => {
+  await loadApp(page);
+  await page.locator("#filter-lean").click();
+  await expect(page.locator("#filter-lean")).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator("#filter-lean")).toHaveClass(/active/);
+  await expect(page.locator("#filter-districts")).toHaveAttribute("aria-checked", "false");
+  await expect(page.locator("#filter-districts")).not.toHaveClass(/active/);
+  await page.locator("#filter-districts").click();
+  await expect(page.locator("#filter-districts")).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator("#filter-lean")).toHaveAttribute("aria-checked", "false");
+});
+
+test("filter toolbar: county overlay toggles independently; layer in DOM; no errors", async ({
   page,
 }) => {
   const consoleErrors: string[] = [];
@@ -142,15 +167,17 @@ test("county toggle: clicking cycles text and county-borders layer is in DOM", a
   page.on("pageerror", (err) => consoleErrors.push(`[pageerror] ${err.message}`));
 
   await loadApp(page);
-  const btn = page.locator("#btn-county-toggle");
+  const btn = page.locator("#filter-county");
 
   await btn.click();
-  await expect(btn).toHaveText("Hide County Borders");
+  await expect(btn).toHaveAttribute("aria-pressed", "true");
+  await expect(btn).toHaveClass(/active/);
   // Layer group must exist in DOM (may be empty if scenario has no county_id data)
   await expect(page.locator("svg g.county-borders")).toBeAttached();
 
   await btn.click();
-  await expect(btn).toHaveText("Show County Borders");
+  await expect(btn).toHaveAttribute("aria-pressed", "false");
+  await expect(btn).not.toHaveClass(/active/);
 
   expect(consoleErrors).toHaveLength(0);
 });

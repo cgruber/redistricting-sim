@@ -67,9 +67,18 @@ export function renderDistrictButtons(
 
 		const btn = document.createElement("button");
 		btn.className = `district-btn${i === activeDistrict ? " active" : ""}`;
-		btn.textContent = `District ${i}`;
 		btn.style.background = color;
 		btn.style.color = "#fff";
+		btn.setAttribute("aria-label", `Paint District ${i}`);
+		btn.setAttribute("data-tip", `District ${i}`);
+		// Number shows when the toolbar is collapsed; full label when expanded.
+		const num = document.createElement("span");
+		num.className = "district-num";
+		num.textContent = String(i);
+		const label = document.createElement("span");
+		label.className = "district-label";
+		label.textContent = `District ${i}`;
+		btn.append(num, label);
 		btn.addEventListener("click", () => onSelect(i));
 		wrapper.appendChild(btn);
 

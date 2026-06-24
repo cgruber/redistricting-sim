@@ -81,8 +81,6 @@ const legendEl = document.getElementById("legend-container") as HTMLElement | nu
 const districtBtnsEl = document.getElementById("district-buttons") as HTMLElement | null;
 const btnUndo = document.getElementById("btn-undo") as HTMLButtonElement | null;
 const btnRedo = document.getElementById("btn-redo") as HTMLButtonElement | null;
-const btnViewToggle = document.getElementById("btn-view-toggle") as HTMLButtonElement | null;
-const btnCountyToggle = document.getElementById("btn-county-toggle") as HTMLButtonElement | null;
 const btnReset = document.getElementById("btn-reset") as HTMLButtonElement | null;
 const resetConfirm = document.getElementById("reset-confirm") as HTMLElement | null;
 const btnResetConfirm = document.getElementById("btn-reset-confirm") as HTMLButtonElement | null;
@@ -131,8 +129,6 @@ if (
 	districtBtnsEl === null ||
 	btnUndo === null ||
 	btnRedo === null ||
-	btnViewToggle === null ||
-	btnCountyToggle === null ||
 	btnReset === null ||
 	resetConfirm === null ||
 	btnResetConfirm === null ||
@@ -693,22 +689,72 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		temporalStore.getState().redo();
 	});
 
-	// ── View toggle ───────────────────────────────────────────────────────────
+	// ── Map view filter toolbar (GAME-093) ────────────────────────────────────
+	// Two axes: precinct coloring (districts | lean — mutually exclusive radio) and
+	// independent boundary overlays (county borders — toggle).
+	const filterDistricts = document.getElementById("filter-districts") as HTMLButtonElement | null;
+	const filterLean = document.getElementById("filter-lean") as HTMLButtonElement | null;
+	const filterCounty = document.getElementById("filter-county") as HTMLButtonElement | null;
+
 	let currentViewMode: ViewMode = "districts";
-	btnViewToggle!.addEventListener("click", () => {
-		currentViewMode = currentViewMode === "districts" ? "lean" : "districts";
-		renderer.setViewMode(currentViewMode);
-		btnViewToggle!.textContent =
-			currentViewMode === "districts" ? "Switch to Partisan Lean" : "Switch to Districts";
+	function applyViewMode(mode: ViewMode) {
+		currentViewMode = mode;
+		renderer.setViewMode(mode);
+		filterDistricts?.classList.toggle("active", mode === "districts");
+		filterDistricts?.setAttribute("aria-checked", String(mode === "districts"));
+		filterLean?.classList.toggle("active", mode === "lean");
+		filterLean?.setAttribute("aria-checked", String(mode === "lean"));
+	}
+	filterDistricts?.addEventListener("click", () => applyViewMode("districts"));
+	filterLean?.addEventListener("click", () => applyViewMode("lean"));
+
+	let countyBordersVisible = false;
+	function applyCounty(visible: boolean) {
+		countyBordersVisible = visible;
+		renderer.setCountyBordersVisible(visible);
+		filterCounty?.classList.toggle("active", visible);
+		filterCounty?.setAttribute("aria-pressed", String(visible));
+	}
+	filterCounty?.addEventListener("click", () => applyCounty(!countyBordersVisible));
+
+	// Expand/collapse: labels beside icons by default; collapse to icon-only.
+	const mapFilters = document.getElementById("map-filters");
+	const mapFiltersToggle = document.getElementById("map-filters-toggle");
+	const FILTERS_COLLAPSED_KEY = "redistricting-sim-filters-collapsed";
+	function applyFiltersCollapsed(collapsed: boolean) {
+		mapFilters?.classList.toggle("collapsed", collapsed);
+		mapFilters?.classList.toggle("expanded", !collapsed);
+		mapFiltersToggle?.setAttribute("aria-expanded", String(!collapsed));
+		mapFiltersToggle?.setAttribute("aria-label", collapsed ? "Expand view filters" : "Collapse view filters");
+		mapFiltersToggle?.setAttribute("data-tip", collapsed ? "Expand" : "Collapse");
+		try { localStorage.setItem(FILTERS_COLLAPSED_KEY, collapsed ? "1" : "0"); } catch { /* ignore */ }
+	}
+	let filtersCollapsed = false;
+	try { filtersCollapsed = localStorage.getItem(FILTERS_COLLAPSED_KEY) === "1"; } catch { /* ignore */ }
+	applyFiltersCollapsed(filtersCollapsed);
+	mapFiltersToggle?.addEventListener("click", () => {
+		filtersCollapsed = !filtersCollapsed;
+		applyFiltersCollapsed(filtersCollapsed);
 	});
 
-	// ── County border toggle (GAME-012) ───────────────────────────────────────
-	let countyBordersVisible = false;
-	btnCountyToggle!.addEventListener("click", () => {
-		countyBordersVisible = !countyBordersVisible;
-		renderer.setCountyBordersVisible(countyBordersVisible);
-		btnCountyToggle!.textContent = countyBordersVisible ? "Hide County Borders" : "Show County Borders";
-		btnCountyToggle!.classList.toggle("active", countyBordersVisible);
+	// ── District paint toolbar expand/collapse (GAME-095) ──────────────────────
+	const districtToolbar = document.getElementById("district-toolbar");
+	const districtToolbarToggle = document.getElementById("district-toolbar-toggle");
+	const DISTRICTS_COLLAPSED_KEY = "redistricting-sim-districts-collapsed";
+	function applyDistrictsCollapsed(collapsed: boolean) {
+		districtToolbar?.classList.toggle("collapsed", collapsed);
+		districtToolbar?.classList.toggle("expanded", !collapsed);
+		districtToolbarToggle?.setAttribute("aria-expanded", String(!collapsed));
+		districtToolbarToggle?.setAttribute("aria-label", collapsed ? "Expand district painter" : "Collapse district painter");
+		districtToolbarToggle?.setAttribute("data-tip", collapsed ? "Expand" : "Collapse");
+		try { localStorage.setItem(DISTRICTS_COLLAPSED_KEY, collapsed ? "1" : "0"); } catch { /* ignore */ }
+	}
+	let districtsCollapsed = false;
+	try { districtsCollapsed = localStorage.getItem(DISTRICTS_COLLAPSED_KEY) === "1"; } catch { /* ignore */ }
+	applyDistrictsCollapsed(districtsCollapsed);
+	districtToolbarToggle?.addEventListener("click", () => {
+		districtsCollapsed = !districtsCollapsed;
+		applyDistrictsCollapsed(districtsCollapsed);
 	});
 
 	// ── Reset ─────────────────────────────────────────────────────────────────
