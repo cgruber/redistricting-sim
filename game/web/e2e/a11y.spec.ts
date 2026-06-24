@@ -76,7 +76,7 @@ test.describe("GAME-008 Accessibility", () => {
     expect(resultsLive).toBe("polite");
 
     // All control buttons must have accessible labels
-    for (const id of ["btn-undo", "btn-redo", "btn-view-toggle", "btn-submit"]) {
+    for (const id of ["btn-undo", "btn-redo", "filter-districts", "filter-county", "btn-submit"]) {
       const label = await page.locator(`#${id}`).getAttribute("aria-label");
       expect(label, `#${id} must have a non-empty aria-label`).toBeTruthy();
     }
@@ -92,16 +92,16 @@ test.describe("GAME-008 Accessibility", () => {
     await loadEditor(page);
 
     const focused: string[] = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 30; i++) {
       await page.keyboard.press("Tab");
       const id = await page.evaluate(() => document.activeElement?.id ?? "");
       focused.push(id);
-      if (focused.length > 15 && focused.includes("btn-submit")) break;
     }
 
-    // Only assert always-enabled buttons — disabled buttons (undo, redo, submit)
-    // are correctly excluded from tab order until actions enable them.
-    for (const id of ["btn-view-toggle", "btn-county-toggle", "btn-reset", "map-svg"]) {
+    // Only assert always-enabled controls — disabled buttons (undo, redo, submit)
+    // are correctly excluded from tab order until actions enable them. The map view
+    // filter toolbar buttons sit after the SVG in DOM order.
+    for (const id of ["btn-reset", "map-svg", "filter-districts", "filter-county"]) {
       expect(focused, `#${id} must appear in tab sequence`).toContain(id);
     }
   });

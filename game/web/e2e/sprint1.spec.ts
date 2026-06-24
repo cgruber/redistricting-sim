@@ -132,13 +132,12 @@ test("view toggle: switching to lean mode changes hex fills", async ({ page }) =
 	await loadApp(page);
 
 	const hex0 = page.locator("path.hex[data-precinct-id='0']");
-	const btnViewToggle = page.locator("#btn-view-toggle");
 
 	// Capture the districts-mode fill (HSL-adjusted District 1 blue)
 	const districtsFill = await hex0.getAttribute("fill");
 
-	// Toggle to lean mode
-	await btnViewToggle.click();
+	// Switch to lean coloring via the map filter toolbar (GAME-093).
+	await page.locator("#filter-lean").click();
 
 	// In lean mode fills are RdBu-interpolated from partyShare — different from
 	// the districts palette color

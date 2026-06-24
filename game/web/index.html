@@ -137,12 +137,8 @@
       </div>
       <h1>Redistricting Simulator</h1>
       <div id="controls">
-        <span style="font-size:0.8rem;color:#888;">Draw district:</span>
-        <div id="district-buttons" role="group" aria-label="District Selection"></div>
         <button id="btn-undo" disabled aria-label="Undo last action">↩ Undo</button>
         <button id="btn-redo" disabled aria-label="Redo last action">↪ Redo</button>
-        <button id="btn-view-toggle" aria-label="Toggle between districts and partisan lean view">Switch to Partisan Lean</button>
-        <button id="btn-county-toggle" aria-label="Toggle county borders display">Show County Borders</button>
         <button id="btn-submit" disabled aria-label="Submit map for evaluation">Submit Map</button>
         <button id="btn-debug-win" style="display:none;background:#8b4513;color:#ffa;">⚡ Force Win (debug)</button>
         <button id="btn-debug-coords" style="display:none;background:#1e3a5f;color:#9ef;">⌖ Coords [C]</button>
@@ -158,6 +154,62 @@
     <div id="main" style="display:none">
       <div id="map-container">
         <svg id="map-svg" role="application" tabindex="0" aria-label="District map. Use mouse or keyboard to paint precincts. Arrow keys navigate precincts, number keys 1–5 assign to a district."></svg>
+        <!-- GAME-095: left-side district paint toolbar. Expandable like the view filters:
+             labels ("District 1") shown by default, collapse to the number on its color. -->
+        <div id="district-toolbar" class="expanded" role="group" aria-label="Paint districts">
+          <button id="district-toolbar-toggle" class="map-toolbar-toggle" aria-expanded="true" aria-label="Collapse district painter" data-tip="Collapse">
+            <span class="map-toolbar-chevron" aria-hidden="true">‹</span>
+            <span class="map-toolbar-title">Paint</span>
+          </button>
+          <div id="district-buttons" role="group" aria-label="District Selection"></div>
+        </div>
+        <!-- GAME-093: map view filters. Icons are PLACEHOLDERS (real assets later).
+             Expandable: labels visible by default; collapse to icons via the toggle.
+             Grouped by axis: §1 precinct coloring (radio); §2 boundary overlays (toggles). -->
+        <div id="map-filters" class="expanded" role="toolbar" aria-label="Map view">
+          <button id="map-filters-toggle" class="map-filters-toggle" aria-expanded="true" aria-label="Collapse view filters" data-tip="Collapse">
+            <span class="map-filter-label">View</span>
+            <span class="map-filters-chevron" aria-hidden="true">›</span>
+          </button>
+          <!-- Section 1: precinct coloring — mutually exclusive -->
+          <div class="map-filter-section" role="radiogroup" aria-label="Precinct coloring">
+            <div class="map-filter-section-label">Color</div>
+            <button id="filter-districts" class="map-filter active" role="radio" aria-checked="true" aria-label="Color precincts by district" data-tip="Color by district">
+              <span class="map-filter-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3" y="3" width="8" height="8" rx="1" fill="#4f8a4f"/>
+                  <rect x="13" y="3" width="8" height="8" rx="1" fill="#8a4f4f"/>
+                  <rect x="3" y="13" width="8" height="8" rx="1" fill="#4f6f8a"/>
+                  <rect x="13" y="13" width="8" height="8" rx="1" fill="#8a854f"/>
+                </svg>
+              </span>
+              <span class="map-filter-label">Districts</span>
+            </button>
+            <button id="filter-lean" class="map-filter" role="radio" aria-checked="false" aria-label="Color precincts by partisan lean" data-tip="Color by partisan lean">
+              <span class="map-filter-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="#3a6ea5"/>
+                  <path d="M12 3 A9 9 0 0 1 12 21 Z" fill="#a5413a"/>
+                  <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </span>
+              <span class="map-filter-label">Partisan lean</span>
+            </button>
+          </div>
+          <div class="map-filter-divider" role="separator" aria-orientation="horizontal"></div>
+          <!-- Section 2: boundary overlays — independent toggles -->
+          <div class="map-filter-section" role="group" aria-label="Overlays">
+            <div class="map-filter-section-label">Overlays</div>
+            <button id="filter-county" class="map-filter" aria-pressed="false" aria-label="Toggle county borders" data-tip="Toggle county borders">
+              <span class="map-filter-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3.5" y="3.5" width="17" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 2"/>
+                </svg>
+              </span>
+              <span class="map-filter-label">County borders</span>
+            </button>
+          </div>
+        </div>
       </div>
       <aside id="sidebar">
         <h2>Precinct Info</h2>
