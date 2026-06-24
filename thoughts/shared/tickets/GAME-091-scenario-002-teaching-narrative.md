@@ -14,6 +14,11 @@ vote (~51%) yet Ken can take 3 of 4 seats by packing — the clearest possible
 demonstration of votes ≠ seats. The old intro was also factually stale for the new
 field (it referenced a "southeast corner" Ryu bloc that no longer exists).
 
+**Playtested + accepted (2026-06-24):** owner played scenario-002 through to a win;
+map, intro, and instructions are correct and the difficulty reads fine ("not even
+terribly hard with the instructions"). One follow-up surfaced: the result screen
+overflows the viewport once the epilogue is shown → filed GAME-094.
+
 ## Resolution
 
 - New schema field `narrative.epilogue` (plain text), plumbed through spec-types →
