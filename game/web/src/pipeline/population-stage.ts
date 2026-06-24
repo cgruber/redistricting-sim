@@ -14,9 +14,18 @@
  *     precinct. Anchor types: exact {q,r}, feature-based (lakeside/riverside/
  *     coastal), center, or cardinal directions.
  *
- *   Final formula per precinct:
- *     total_population = round(base × suitability + settlement_bump
- *                              + prng.nextInt(-variance, variance) × suitability)
+ *   Final formula per precinct (GAME-087 core):
+ *     raw = base × suitability × gradient + settlement_bump + jitter × suitability
+ *
+ *   GAME-088 field-shaping layers (all opt-in; unset → legacy additive field):
+ *     gradient   — monocentric multiplier tilting population toward an anchor
+ *     smoothing  — neighbour-averaging passes on the jitter (kills salt-and-pepper)
+ *     contrast   — pow(k) on the normalized field (widens dynamic range)
+ *     target_total — scale the field so Σ total_population hits a target
+ *                    (changes the field's shape without changing its magnitude)
+ *
+ * With no GAME-088 layers set, the formula reduces exactly to GAME-087's
+ *   round(base × suitability + settlement_bump + jitter × suitability).
  *
  * Always overwrites existing total_population; input PartialScenario is not mutated.
  */
@@ -105,6 +114,28 @@ function buildTerrainContexts(partial: PartialScenario): Map<string, TerrainCont
   return result;
 }
 
+/**
+ * Settlement population contribution at a given hex distance from the anchor.
+ *   gaussian — peak × exp(-dist²/2σ²), σ = radius/2 (smooth cone).
+ *   plateau  — flat at peak within the inner half-radius, then linear to 0 at
+ *              `radius` (dense core with a sharp edge).
+ */
+function settlementBump(
+  peak: number,
+  radius: number,
+  dist: number,
+  profile: "gaussian" | "plateau",
+): number {
+  if (profile === "plateau") {
+    const inner = radius / 2;
+    if (dist <= inner) return peak;
+    if (dist >= radius) return 0;
+    return peak * (1 - (dist - inner) / (radius - inner));
+  }
+  const sigma = radius / 2;
+  return peak * Math.exp(-(dist * dist) / (2 * sigma * sigma));
+}
+
 function computeSuitability(ctx: TerrainContext, w: Required<TerrainWeightsSpec>): number {
   let s = 1.0;
   if (ctx.lakeside) s *= w.lakeside;
@@ -187,6 +218,98 @@ function resolveAnchor(
   return best.position as HexPos;
 }
 
+// ─── GAME-088 field-shaping helpers (all opt-in) ────────────────────────────────
+
+/** Build adjacency: precinct id → ids of existing hex-adjacent neighbours. */
+function buildNeighbors(partial: PartialScenario): Map<string, string[]> {
+  const byPos = new Map<string, string>();
+  for (const p of partial.precincts) {
+    const pos = p.position as HexPos;
+    byPos.set(posKey(pos.q, pos.r), p.id);
+  }
+  const result = new Map<string, string[]>();
+  for (const p of partial.precincts) {
+    const pos = p.position as HexPos;
+    const neighbors: string[] = [];
+    for (const [dq, dr] of HEX_DIRS) {
+      const nid = byPos.get(posKey(pos.q + dq, pos.r + dr));
+      if (nid !== undefined) neighbors.push(nid);
+    }
+    result.set(p.id, neighbors);
+  }
+  return result;
+}
+
+/**
+ * Monocentric gradient multiplier per precinct: `1 - strength` at the rim up to
+ * `1 + strength` at the anchor (mean ~1). Tilts population toward the anchor.
+ */
+function computeGradientMultipliers(
+  partial: PartialScenario,
+  anchorPos: HexPos,
+  strength: number,
+): Map<string, number> {
+  let maxDist = 0;
+  for (const p of partial.precincts) {
+    const d = hexDist(p.position as HexPos, anchorPos);
+    if (d > maxDist) maxDist = d;
+  }
+  const result = new Map<string, number>();
+  for (const p of partial.precincts) {
+    const d = hexDist(p.position as HexPos, anchorPos);
+    const closeness = maxDist > 0 ? 1 - d / maxDist : 1; // 1 at anchor, 0 at rim
+    result.set(p.id, 1 - strength + closeness * 2 * strength);
+  }
+  return result;
+}
+
+/**
+ * Average each precinct's noise value with its neighbours, `passes` times.
+ * Replaces salt-and-pepper independent jitter with a spatially-coherent field.
+ * Mutates `noise` in place.
+ */
+function smoothNoise(
+  noise: Map<string, number>,
+  neighbors: Map<string, string[]>,
+  passes: number,
+): void {
+  for (let pass = 0; pass < passes; pass++) {
+    const next = new Map<string, number>();
+    for (const [id, value] of noise) {
+      const nbrs = neighbors.get(id) ?? [];
+      let sum = value;
+      for (const nid of nbrs) sum += noise.get(nid) ?? 0;
+      next.set(id, sum / (nbrs.length + 1));
+    }
+    for (const [id, value] of next) noise.set(id, value);
+  }
+}
+
+/**
+ * pow-contrast on a field, anchored to its [min, max]: interior values are
+ * reshaped by `n^k` while the extremes stay fixed. k>1 lightens the fringe and
+ * relatively sharpens dense areas, widening the dynamic range.
+ */
+function applyContrast(field: Map<string, number>, k: number): Map<string, number> {
+  let min = Infinity;
+  let max = -Infinity;
+  for (const v of field.values()) {
+    if (v < min) min = v;
+    if (v > max) max = v;
+  }
+  const range = max - min;
+  const result = new Map<string, number>();
+  for (const [id, v] of field) {
+    if (range === 0) {
+      result.set(id, v);
+    } else {
+      const n = (v - min) / range;
+      result.set(id, min + Math.pow(n, k) * range);
+    }
+  }
+  return result;
+}
+
 // ─── Public API ───────────────────────────────────────────────────────────────
 
 export function populateScenario(
@@ -219,24 +342,62 @@ export function populateScenario(
       suitabilities,
       terrainContexts,
     );
-    const sigma = settlement.radius / 2;
-    const twoSigmaSq = 2 * sigma * sigma;
+    const profile = settlement.profile ?? "gaussian";
     for (const p of partial.precincts) {
       const dist = hexDist(p.position as HexPos, anchorPos);
-      const bump = settlement.peak * Math.exp(-(dist * dist) / twoSigmaSq);
+      const bump = settlementBump(settlement.peak, settlement.radius, dist, profile);
       settlementBumps.set(p.id, (settlementBumps.get(p.id) ?? 0) + bump);
     }
   }
 
-  const precincts = partial.precincts.map(p => {
-    const suitability = suitabilities.get(p.id)!;
-    const bump = settlementBumps.get(p.id) ?? 0;
-    const jitter = prng.nextInt(-spec.variance, spec.variance);
-    const total_population = Math.round(
-      spec.base * suitability + bump + jitter * suitability,
+  // Gradient multipliers (GAME-088). Default 1.0 everywhere when no gradient spec.
+  let gradientMul: Map<string, number> | null = null;
+  if (spec.gradient && spec.gradient.strength !== 0) {
+    const gradientAnchor = resolveAnchor(
+      spec.gradient.anchor ?? "center",
+      partial,
+      suitabilities,
+      terrainContexts,
     );
-    return { ...p, total_population };
-  });
+    gradientMul = computeGradientMultipliers(partial, gradientAnchor, spec.gradient.strength);
+  }
+
+  // Per-precinct jitter, drawn in precinct order (preserves legacy determinism:
+  // with no field-shaping layers the formula reduces exactly to GAME-087's).
+  const noise = new Map<string, number>();
+  for (const p of partial.precincts) {
+    noise.set(p.id, prng.nextInt(-spec.variance, spec.variance));
+  }
+  if (spec.smoothing !== undefined && spec.smoothing > 0) {
+    smoothNoise(noise, buildNeighbors(partial), spec.smoothing);
+  }
+
+  // Raw field: base × suitability × gradient + settlement bump + jitter × suitability.
+  let field = new Map<string, number>();
+  for (const p of partial.precincts) {
+    const suitability = suitabilities.get(p.id)!;
+    const g = gradientMul?.get(p.id) ?? 1.0;
+    const bump = settlementBumps.get(p.id) ?? 0;
+    field.set(p.id, spec.base * suitability * g + bump + noise.get(p.id)! * suitability);
+  }
+
+  // Contrast: widen dynamic range so density reads as a gradient, not a flat field.
+  if (spec.contrast !== undefined && spec.contrast !== 1) {
+    field = applyContrast(field, spec.contrast);
+  }
+
+  // Normalize to a target total: change the shape of the field, not its magnitude.
+  let scale = 1;
+  if (spec.target_total !== undefined) {
+    let sum = 0;
+    for (const v of field.values()) sum += v;
+    if (sum > 0) scale = spec.target_total / sum;
+  }
+
+  const precincts = partial.precincts.map(p => ({
+    ...p,
+    total_population: Math.round(field.get(p.id)! * scale),
+  }));
 
   return { ...partial, precincts };
 }

@@ -77,6 +77,28 @@ export interface SettlementSpec {
   anchor: SettlementAnchor;
   peak: number;
   radius: number;
+  /**
+   * Falloff shape from the anchor (GAME-088).
+   *   gaussian (default) — smooth bell; classic monocentric cone.
+   *   plateau            — flat at peak within the inner half-radius, then a
+   *                        linear drop to 0 at `radius`. Reads as a dense urban
+   *                        core with a sharp edge rather than a smooth slope.
+   */
+  profile?: "gaussian" | "plateau";
+}
+
+/**
+ * Optional monocentric density gradient (GAME-088).
+ *
+ * Tilts population toward an anchor so the map reads as "dense core → rural
+ * fringe" instead of a flat field with a central spike. Multiplier ranges from
+ * `1 - strength` at the rim to `1 + strength` at the anchor (mean ~1).
+ */
+export interface PopulationGradientSpec {
+  /** Where density peaks. Defaults to "center". */
+  anchor?: SettlementAnchor;
+  /** 0 = flat (off); higher tilts more population toward the anchor. Suggested 0.2–0.6. */
+  strength: number;
 }
 
 export interface PopulationSpec {
@@ -90,6 +112,25 @@ export interface PopulationSpec {
   terrain_weights?: TerrainWeightsSpec;
   /** Optional named settlement zones that add Gaussian population bumps. */
   settlements?: SettlementSpec[];
+  // ── GAME-088 field-shaping layers (all opt-in; unset = legacy additive field) ──
+  /** Monocentric density gradient (urban core → rural fringe). Default: off. */
+  gradient?: PopulationGradientSpec;
+  /**
+   * Neighbour-averaging passes applied to the jitter component to remove
+   * salt-and-pepper noise (so neighbours correlate). Default 0 = independent jitter.
+   */
+  smoothing?: number;
+  /**
+   * Contrast exponent (pow) applied to the normalized field. >1 sharpens dense
+   * areas and lightens the fringe; widens dynamic range. Default 1 = off.
+   */
+  contrast?: number;
+  /**
+   * If set, the final field is scaled so total population equals this. Lets us
+   * change the *shape* of the distribution without changing its magnitude
+   * (keeps district-balance tests stable). Default: unset = no normalization.
+   */
+  target_total?: number;
 }
 
 // ─── Stage 3: Demographics ────────────────────────────────────────────────────
@@ -125,6 +166,44 @@ export interface DemographicsSpec {
   jitter: number;
   zones: ZoneSpec[];
   county_labels?: CountyLabelSpec[];
+}
+
+// ─── Stage 3b: Counties (GAME-089) ────────────────────────────────────────────
+
+/**
+ * County-generation archetype. Named to be intuited on sight (the owner reasons
+ * in real-city examples, not raw knobs). See the county-formation research
+ * §RECOMMENDED_HEURISTIC for the full mapping.
+ *
+ *   seat_and_hinterland — town + rural surround; the densest center is just the
+ *                         biggest county (most US county seats). Default.
+ *   city_county         — the dense core is carved as its own county; the
+ *                         surrounding area is absorbed by separate neighbouring
+ *                         counties (San Francisco / Denver / Portland's Multnomah).
+ *   split_metro         — one large center is split across several counties by
+ *                         placing multiple seeds inside it (a big metro).
+ */
+export type CountyModel = "seat_and_hinterland" | "city_county" | "split_metro";
+
+export interface CountiesSpec {
+  /** Named archetype preset. Default: "seat_and_hinterland". */
+  model?: CountyModel;
+  /** Catchment radius in hexes — the "day's ride" size knob. Default 2. */
+  catchment_radius?: number;
+  /** Target number of counties. Default: round(precinct_count / 14). */
+  target_count?: number;
+  /** Catchment-pop fraction of the total for a center to anchor its own county. Default 0.15. */
+  anchor_threshold?: number;
+  /** Catchment-pop fraction making a center "dominant" (core/ring eligible). Default 0.40. */
+  dominant_threshold?: number;
+  /** Urban-core density cutoff as a fraction of the center's peak (city_county). Default 0.5. */
+  core_density?: number;
+  /** Border cost bias toward population troughs (higher = borders settle in valleys). Default 0.5. */
+  trough_weight?: number;
+  /** Border cost bias toward crossing terrain features / rivers. Default 1.0. */
+  feature_weight?: number;
+  /** Prefix for generated county ids (e.g. "clearwater" → "clearwater_city"). Default: region id. */
+  id_prefix?: string;
 }
 
 // ─── Stage 4: Assembly ───────────────────────────────────────────────────────
@@ -214,5 +293,6 @@ export interface PipelineSpec {
   terrain?: TerrainSpec;
   population?: PopulationSpec;
   demographics?: DemographicsSpec;
+  counties?: CountiesSpec;
   assembly?: AssemblySpec;
 }

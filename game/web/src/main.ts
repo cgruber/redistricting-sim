@@ -566,6 +566,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		const key = partyIdToKey.get(p.id);
 		if (key !== undefined) partyLabels[key as "R" | "D" | "L" | "G" | "I"] = p.name;
 	});
+	renderer.setPartyLabels(partyLabels);
 
 	// ── Update cycle ──────────────────────────────────────────────────────────
 	function updateUI() {

@@ -117,12 +117,16 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-082-terrain-visual-treatment-refinement.md` | game, rendering, UX | Visual-tuning pass over GAME-075 terrain layer: thicker rivers, more prominent coast/lakeside edges, foothill rendering pickup, internal-lake validation |
 | `GAME-083-unassigned-precinct-visual-feedback.md` | game, rendering, UX | Unassigned precincts need a distinct neutral fill (white→dark-grey range); currently indistinguishable from assigned ones |
 | `GAME-084-map-generation-pipeline.md` | game, tooling | Spec-driven staged pipeline (terrain→population→demographics→assembler); single scenario JSON format throughout; requires loader validation split |
+| `GAME-090-settlement-density-realism.md` | game, tooling | Settlement density realism follow-ons: leapfrog/exurban developments, sharper plateau edge, easier non-circular cores. Plateau profile + big urban/rural ratio already landed in GAME-088 |
 ---
 
 ## Resolved
 
 | Summary | Resolution |
 |---|---|
+| GAME-089: population-aware county stage | Replaced geometric `county_labels` with a population-aware flood-fill county stage (`county-stage.ts`); named model presets seat_and_hinterland / city_county / split_metro; counties wrap pop centers, borders bias to troughs/rivers; county display names plumbed to the precinct-info panel; darker/shorter-dash border overlay; county_id stays cosmetic. scenario-002 migrated to `counties:` block (city + west + east). Unit tests + e2e green |
+| GAME-088: coherent population field | Added opt-in field-shaping to the population stage: gradient, neighbour-smoothing, pow-contrast, normalize-to-target, plus a `plateau` settlement profile (flat core + sharp edge vs gaussian). scenario-002 reworked to a 3-cluster, ~12x urban/rural field with a non-circular city core; scenario-002 winnability e2e re-solved (pack dense east-core Ryu → Ken 3-1). Also fixed precinct-info lean showing real party names. Unit + e2e tests pass |
+| BUILD-010: release.main.kts missing clikt import | Added `import com.github.ajalt.clikt.parameters.options.default`; the `Serve` subcommand's `.default()` call broke compilation of the whole script (prepare/deploy/serve all failed). Verified via dev deploy of GAME-088 |
 | GAME-087: terrain-aware population stage | `populateScenario` rewritten with terrain suitability (lakeside 1.4×/riverside 1.3×/coastal 0.9×/mountain 0.5×), Gaussian settlement bumps, and all anchor types (center, cardinal, feature, exact coords); scenario-002 updated with Clearwater City + East Mills settlements; peaks tuned to keep e2e district balance within ±5% of mean; all 10 ACs met; merged PR #265 |
 | GAME-041: split loader.ts | `runtime-types.ts` extracted (requireString etc.); `validateScenarioInvariants()` named function in loader.ts; cartesianProduct at module level; all 8 model tests pass; no behavior change |
 | GAME-086: lake rendering | `lakeside: boolean` derived in adapter from lake-tile adjacency; lake intrusion fill (smooth profile, `#4dd0e1`, depth 5px) rendered in `renderTerrainEdges` with corner caps; river stroke unified with lake colour; tutorial-003 lake tile moved to centre (-1,1); 6 lakeside precincts; e2e + unit tests; merged PR #253 |

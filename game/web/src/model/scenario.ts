@@ -113,6 +113,8 @@ export interface Precinct {
 	/** false = context precinct: read-only, participates in sim, must have initial_district_id */
 	editable: boolean;
 	county_id?: string;
+	/** Human-readable county name for the precinct-info panel (GAME-089). */
+	county_name?: string;
 	/** HexAxialPosition for hex_axial geometry; CartesianPosition for custom */
 	position: HexAxialPosition | CartesianPosition;
 	/** Required for custom geometry only; must be symmetric */
@@ -255,6 +257,7 @@ export interface PartialPrecinct {
 	id: PrecinctId;
 	editable: boolean;
 	county_id?: string;
+	county_name?: string;
 	position: HexAxialPosition | CartesianPosition;
 	neighbors?: PrecinctId[];
 	total_population?: number;

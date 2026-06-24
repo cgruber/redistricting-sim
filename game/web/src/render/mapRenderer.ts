@@ -22,7 +22,7 @@
 
 import * as d3 from "d3";
 import { HEX_DIRECTIONS, HEX_SIZE, hexCorners, mapBounds } from "../model/hex-geometry.js";
-import type { Precinct, TerrainTileRuntime } from "../model/types.js";
+import type { Precinct, TerrainTileRuntime, PartyKey } from "../model/types.js";
 import { DISTRICT_COLORS, PARTY_LABELS } from "../model/types.js";
 import type { GameStore } from "../store/gameStore.js";
 
@@ -48,6 +48,8 @@ export interface MapRenderer {
 	setCountyBordersVisible(visible: boolean): void;
 	/** Toggle hex coordinate labels (debug overlay). */
 	setCoordLabelsVisible(visible: boolean): void;
+	/** Provide scenario party display names for the precinct-info panel. */
+	setPartyLabels(labels: Partial<Record<PartyKey, string>>): void;
 }
 
 // ─── Internal types ───────────────────────────────────────────────────────────
@@ -286,7 +288,7 @@ export class SvgMapRenderer implements MapRenderer {
 	// Terrain boundary sits above hex fills (no hex-fill attenuation); lower opacity
 	// compensates so it appears the same visual weight as district boundaries below hex fills.
 	private static readonly TERRAIN_BOUNDARY_OPACITY = 0.4;
-	private static readonly COUNTY_OPACITY = 0.7;
+	private static readonly COUNTY_OPACITY = 0.9;
 	private static readonly PREVIEW_OPACITY = 0.85;
 	private static readonly LEAN_OPACITY = 0.9;
 	private static readonly ASSIGNED_OPACITY = 0.75;
@@ -300,8 +302,9 @@ export class SvgMapRenderer implements MapRenderer {
 	private static readonly HEX_LIGHTNESS_RANGE = 0.30;
 
 	// Dash patterns (on,off in map units before zoom correction)
-	private static readonly COUNTY_DASH_ON = 6;
-	private static readonly COUNTY_DASH_OFF = 4;
+	// Short dashes + wide gaps so an underlying white district border shows through.
+	private static readonly COUNTY_DASH_ON = 3;
+	private static readonly COUNTY_DASH_OFF = 5;
 	private static readonly PREVIEW_DASH_ON = 5;
 	private static readonly PREVIEW_DASH_OFF = 4;
 
@@ -311,6 +314,7 @@ export class SvgMapRenderer implements MapRenderer {
 	// the district boundary line on these edges (the terrain intrusion fill covers them).
 	private terrainFacingEdges: Set<string> = new Set();
 	private countyBordersVisible = false;
+	private partyLabels: Partial<Record<PartyKey, string>> = {};
 	private coordLabelsVisible = false;
 	private coordLabelsRendered = false;
 	private coordLabelGroup!: GSel;
@@ -412,6 +416,10 @@ export class SvgMapRenderer implements MapRenderer {
 		this.renderCoordLabels();
 	}
 
+	setPartyLabels(labels: Partial<Record<PartyKey, string>>) {
+		this.partyLabels = labels;
+	}
+
 	private renderCoordLabels() {
 		if (!this.coordLabelsRendered) {
 			const { precincts, terrainTiles } = this.getState();
@@ -472,7 +480,7 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("y1", (d) => d.y1)
 			.attr("x2", (d) => d.x2)
 			.attr("y2", (d) => d.y2)
-			.attr("stroke", "#606060")
+			.attr("stroke", "#1c1c1c")
 			.attr("stroke-width", SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK)
 			.attr("stroke-dasharray", `${SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`)
 			.attr("opacity", SvgMapRenderer.COUNTY_OPACITY);
@@ -1118,7 +1126,8 @@ export class SvgMapRenderer implements MapRenderer {
 					const topParty = (["D", "R", "L", "G", "I"] as const).reduce((a, b) =>
 						d.partyShare[a] > d.partyShare[b] ? a : b,
 					);
-					const leanLabel = `${PARTY_LABELS[topParty]} (${(d.partyShare[topParty] * 100).toFixed(1)}%)`;
+					const partyName = this.partyLabels[topParty] ?? PARTY_LABELS[topParty];
+					const leanLabel = `${partyName} (${(d.partyShare[topParty] * 100).toFixed(1)}%)`;
 					let groupsHtml = "";
 					if (d.groupShares && d.groupShares.length > 1) {
 						const lines = d.groupShares.map(
@@ -1126,9 +1135,13 @@ export class SvgMapRenderer implements MapRenderer {
 						);
 						groupsHtml = `<br><span style="color:#8898b0">` + lines.join("<br>") + `</span>`;
 					}
+					const countyHtml = d.county_name
+						? `<span style="color:#8898b0">${d.county_name}</span><br>`
+						: "";
 					infoPanel.innerHTML =
 						`<div class="precinct-name">${precinctLabel}</div>` +
 						`<div class="precinct-detail">` +
+						countyHtml +
 						`${distLabel}<br>` +
 						`Pop: ${d.population.toLocaleString()}<br>` +
 						`Lean: ${leanLabel}` +

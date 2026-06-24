@@ -178,6 +178,9 @@ function parsePrecinct(raw: unknown, idx: number): PartialPrecinct {
   if (r["county_id"] !== undefined) {
     pc.county_id = requireString(r["county_id"], `${label}.county_id`);
   }
+  if (r["county_name"] !== undefined) {
+    pc.county_name = requireString(r["county_name"], `${label}.county_name`);
+  }
   if (r["name"] !== undefined) {
     pc.name = requireString(r["name"], `${label}.name`);
   }

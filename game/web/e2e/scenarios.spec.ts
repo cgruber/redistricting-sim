@@ -119,56 +119,58 @@ test("scenario-002: governor sprite appears in the sc-ken-seats criterion row", 
 
 test("scenario-002 winnability: packing east Ryu bloc into one district passes", async ({ page }) => {
   /**
-   * Hex-of-hexes R=5: 91 precincts, 4 districts of ~23.
-   * Geography: inner-east (q≥1, d≤3) = 25% Ken (Ryu stronghold),
-   *            west (q≤0) = 62% Ken, outer-east = 52% Ken.
+   * Hex-of-hexes R=5: 91 precincts, 4 districts (population-balanced, not count-
+   * balanced — the GAME-088 field has a dense city core, ~12x urban/rural).
    *
-   * Winning strategy: pack the Ryu stronghold into D4, spread Ken across D1-D3.
-   *   D1 (23): west-center blob — Ken territory
-   *   D2 (22): southwest + south — Ken territory
-   *   D3 (23): northeast arc + outer-east — competitive Ken
-   *   D4 (23): inner-east Ryu core + nearby expansion — Ryu sacrifice
-   * Result: 3 Ken / 1 Ryu ✓
+   * Geography (GAME-088/089 field): a dense Clearwater City core; its EAST half
+   * (q≥1, near centre) is the high-density Ryu stronghold, its WEST half leans Ken,
+   * and the rural ring leans Ken. Ryu wins the popular vote, so Ken must gerrymander.
+   *
+   * Winning strategy: pack the dense east-core Ryu precincts into one sink (D1),
+   * then split the Ken-leaning remainder into three balanced majority-Ken districts.
+   *   D1 (7 hexes, ~34k): east-core Ryu sink — Ryu by ~17k
+   *   D2 (west, ~36k):    Ken-leaning west — Ken
+   *   D3 (north, ~39k):   west-core Ken + north rural, absorbs one Ryu spike — Ken
+   *   D4 (south+east, ~35k): Ken rural wrap + the remaining smaller Ryu density — Ken
+   * Result: 3 Ken / 1 Ryu ✓  (verified offline against the sim's pop×partyShare vote model)
    */
   await loadScenario(page, "scenario-002");
 
   // GAME-059: Submit always enabled; initial diagonal-strip assignment fails criteria but can be submitted
   await expect(page.locator("#btn-submit")).toBeEnabled(); // GAME-059: validity gate removed
 
-  // D1: west-center Ken blob (23 hexes)
+  // D1: pack the dense east-of-centre city core (the Ryu stronghold) into one sink.
   await paintHexes(page, [
-    [-3,-2],[-2,-2],[-1,-2], [-4,-1],[-3,-1],[-2,-1],[-1,-1],
-    [-5,0],[-4,0],[-3,0],[-2,0],[-1,0],[0,0],
-    [-5,1],[-4,1],[-3,1],[-2,1],[-1,1],[0,1],
-    [-5,2],[-4,2],[-3,2],[-2,2],
+    [1,-2],[1,-1],[2,-1],[2,-2],[1,0],[3,-1],[3,0],
   ], 1);
 
-  // D2: south + southwest Ken territory (22 hexes)
+  // D2: the Ken-leaning west (rural west + the Ken half of the city core).
   await paintHexes(page, [
-    [-1,2],[0,2],
-    [-5,3],[-4,3],[-3,3],[-2,3],[-1,3],[0,3],[2,3],
-    [-5,4],[-4,4],[-3,4],[-2,4],[-1,4],[0,4],[1,4],
-    [-5,5],[-4,5],[-3,5],[-2,5],[-1,5],[0,5],
+    [-2,-3],[-3,-2],[-2,-2],
+    [-4,-1],[-3,-1],[-2,-1],[-1,-1],
+    [-5,0],[-4,0],[-3,0],[-2,0],[-1,0],
+    [-5,1],[-4,1],[-3,1],[-2,1],[-1,1],
+    [-5,2],[-4,2],[-3,2],[-2,2],[-1,2],
   ], 2);
 
-  // D3: north + outer-east Ken arc (23 hexes)
+  // D3: the north — west-core Ken (0,0)/(0,-1) + north rural, absorbing the (1,-2) Ryu spike.
   await paintHexes(page, [
     [0,-5],[1,-5],[2,-5],[3,-5],[4,-5],[5,-5],
-    [-1,-4],[0,-4],[5,-4],
-    [-2,-3],[-1,-3],[5,-3],
-    [4,-2],[5,-2], [4,-1],[5,-1],
-    [4,0],[5,0], [3,1],[4,1],
-    [2,2],[3,2], [1,3],
+    [-1,-4],[0,-4],[1,-4],[2,-4],[3,-4],[4,-4],[5,-4],
+    [-1,-3],[0,-3],[1,-3],[2,-3],[3,-3],[4,-3],[5,-3],
+    [-1,-2],[0,-2],[3,-2],
+    [0,-1],[0,0],
   ], 3);
 
-  // D4: inner-east Ryu sacrifice — stronghold packed into one district (23 hexes)
+  // D4: a Ken majority wrapping the south and up the east edge + remaining small Ryu density.
   await paintHexes(page, [
-    [1,-4],[2,-4],[3,-4],[4,-4],
-    [0,-3],[1,-3],[2,-3],[3,-3],[4,-3],
-    [0,-2],[1,-2],[2,-2],[3,-2],
-    [0,-1],[1,-1],[2,-1],[3,-1],
-    [1,0],[2,0],[3,0],
-    [1,1],[2,1], [1,2],
+    [4,-2],[5,-2],[4,-1],[5,-1],
+    [2,0],[4,0],[5,0],
+    [0,1],[1,1],[2,1],[3,1],[4,1],
+    [0,2],[1,2],[2,2],[3,2],
+    [-5,3],[-4,3],[-3,3],[-2,3],[-1,3],[0,3],[1,3],[2,3],
+    [-5,4],[-4,4],[-3,4],[-2,4],[-1,4],[0,4],[1,4],
+    [-5,5],[-4,5],[-3,5],[-2,5],[-1,5],[0,5],
   ], 4);
 
   await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });

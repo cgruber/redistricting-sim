@@ -514,4 +514,107 @@ test("resolveAnchor: feature anchor throws when no matching precincts (no sea ti
   assertEqual(threw, true);
 });
 
+// ─── GAME-088: field-shaping layers ─────────────────────────────────────────────
+
+function popStdDev(result: PartialScenario): number {
+  const vals = result.precincts.map(p => p.total_population!);
+  const mean = vals.reduce((s, v) => s + v, 0) / vals.length;
+  const variance = vals.reduce((s, v) => s + (v - mean) ** 2, 0) / vals.length;
+  return Math.sqrt(variance);
+}
+
+test("gradient: unset layers reduce exactly to the legacy additive formula", () => {
+  // Back-compat guard: explicit no-op layers must equal omitting them.
+  const partial = makePartial(3);
+  const legacy = populateScenario(partial, basePopSpec({ base: 1000, variance: 100 }));
+  const noop = populateScenario(
+    partial,
+    basePopSpec({ base: 1000, variance: 100, smoothing: 0, contrast: 1 }),
+  );
+  for (let i = 0; i < legacy.precincts.length; i++) {
+    assertEqual(legacy.precincts[i]!.total_population, noop.precincts[i]!.total_population);
+  }
+});
+
+test("gradient: center precinct outweighs the rim when strength > 0", () => {
+  const partial = makePartial(3);
+  const spec = basePopSpec({ base: 1000, variance: 0, gradient: { strength: 0.5 } });
+  const result = populateScenario(partial, spec);
+  const center = result.precincts.find(p => {
+    const pos = p.position as { q: number; r: number };
+    return pos.q === 0 && pos.r === 0;
+  })!;
+  const maxOther = Math.max(...result.precincts.filter(p => p.id !== center.id).map(p => p.total_population!));
+  assertEqual(center.total_population! > maxOther, true);
+});
+
+test("gradient: strength 0 leaves a flat field flat", () => {
+  const partial = makePartial(3);
+  const spec = basePopSpec({ base: 1000, variance: 0, gradient: { strength: 0 } });
+  const result = populateScenario(partial, spec);
+  for (const p of result.precincts) {
+    assertEqual(p.total_population, 1000);
+  }
+});
+
+test("smoothing: reduces the spread of an i.i.d. jitter field", () => {
+  const partial = makePartial(4);
+  const rough = populateScenario(partial, basePopSpec({ base: 1000, variance: 500, smoothing: 0 }));
+  const smooth = populateScenario(partial, basePopSpec({ base: 1000, variance: 500, smoothing: 3 }));
+  assertEqual(popStdDev(smooth) < popStdDev(rough), true);
+});
+
+test("smoothing: stays deterministic with the same seed", () => {
+  const partial = makePartial(3);
+  const spec = basePopSpec({ base: 1000, variance: 300, smoothing: 2, seed: 11 });
+  const a = populateScenario(partial, spec);
+  const b = populateScenario(partial, spec);
+  for (let i = 0; i < a.precincts.length; i++) {
+    assertEqual(a.precincts[i]!.total_population, b.precincts[i]!.total_population);
+  }
+});
+
+test("target_total: final field sums to the target (within rounding)", () => {
+  const partial = makePartial(5); // 91 precincts
+  const spec = basePopSpec({ base: 1500, variance: 150, target_total: 100000 });
+  const result = populateScenario(partial, spec);
+  const sum = result.precincts.reduce((s, p) => s + p.total_population!, 0);
+  // Per-precinct rounding can drift the sum by at most ~half a unit per precinct.
+  assertEqual(Math.abs(sum - 100000) <= result.precincts.length, true);
+});
+
+test("contrast: widens dynamic range (denser core) at a fixed total", () => {
+  const partial = makePartial(4);
+  const flat = populateScenario(
+    partial,
+    basePopSpec({ base: 1000, variance: 0, gradient: { strength: 0.5 }, target_total: 100000, contrast: 1 }),
+  );
+  const sharp = populateScenario(
+    partial,
+    basePopSpec({ base: 1000, variance: 0, gradient: { strength: 0.5 }, target_total: 100000, contrast: 2 }),
+  );
+  const maxOf = (r: PartialScenario) => Math.max(...r.precincts.map(p => p.total_population!));
+  // Same total, but contrast pushes the peak higher.
+  assertEqual(maxOf(sharp) > maxOf(flat), true);
+});
+
+test("settlement plateau: flat top within inner radius, zero beyond radius", () => {
+  const partial = makePartial(4);
+  const spec = basePopSpec({
+    base: 1000, variance: 0,
+    settlements: [{ anchor: "center", peak: 5000, radius: 2, profile: "plateau" }],
+  });
+  const result = populateScenario(partial, spec);
+  const at = (q: number, r: number) =>
+    result.precincts.find(p => {
+      const pos = p.position as { q: number; r: number };
+      return pos.q === q && pos.r === r;
+    })!;
+  // inner = radius/2 = 1 → dist 0 and dist 1 both sit on the flat top (base + peak).
+  assertEqual(at(0, 0).total_population, at(1, 0).total_population);
+  assertEqual(at(0, 0).total_population, 6000);
+  // dist 4 > radius 2 → no bump, base only.
+  assertEqual(at(4, 0).total_population, 1000);
+});
+
 summarize();
