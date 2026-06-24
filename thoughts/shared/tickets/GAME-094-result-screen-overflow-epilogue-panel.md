@@ -1,8 +1,8 @@
 ---
 id: GAME-094
-title: Result screen overflows on smaller screens — move epilogue to a second "Continue" panel
+title: Result screen overflow — second-panel epilogue + scrollable criteria
 area: game, UX
-status: open
+status: resolved
 created: 2026-06-24
 ---
 
@@ -11,20 +11,22 @@ created: 2026-06-24
 The result screen can run taller than the viewport (verdict + subtitle + stars +
 criteria list + epilogue), with no way to scroll — so the bottom (including the
 teaching debrief) gets cut off. Observed on **desktop**, not just mobile. The GAME-091
-epilogue made the card noticeably longer and surfaced this.
+epilogue surfaced it, but the criteria list alone can overflow with enough criteria.
 
-## Goals / Acceptance Criteria
+## Resolution
 
-- [ ] The result screen stays within the viewport on a reasonably small desktop window
-      (and degrades gracefully toward mobile, though full mobile is a separate pass).
-- [ ] **Preferred fix:** move the epilogue to a **second panel**. After the result
-      reveal, the primary action becomes **"Continue →"** (in place of / before
-      "Next Scenario →"); clicking it swaps the result card for an epilogue/debrief
-      panel, which then offers "Next Scenario →".
-- [ ] If a single panel is kept instead, it must use available width better and/or be
-      scrollable — but the second-panel approach is preferred.
-- [ ] Keyboard + screen-reader friendly (the "Continue" step is focusable; epilogue is
-      announced).
+- **Second-panel epilogue:** the result card now has a `#result-main` (verdict, stars,
+  criteria, actions) and a `#result-debrief` panel (the teaching epilogue). On a win
+  with an epilogue, the action is **"Continue →"** (`#btn-continue`) → swaps to the
+  debrief panel ("What just happened" + epilogue + "Next Scenario →" + "← Back to
+  results"). With no epilogue, "Next Scenario →" shows directly as before; on a loss,
+  neither (keep drawing). `preparePostWin()` drives this from both the reveal and the
+  debug-replay recompute.
+- **Scrollable baseline:** `#result-card` capped at `max-height: 90vh`; the criteria
+  list and the epilogue each `overflow-y: auto` with `min-height: 0`, so neither can
+  push the card off-screen regardless of criterion count.
+- e2e: scenario-002 winnability now clicks "Continue →", asserts the debrief panel +
+  epilogue, and "← Back" returns to the results view.
 
 ## Notes
 
