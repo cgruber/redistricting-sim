@@ -20,19 +20,21 @@ Serve locally: `bazel run //game:serve-local` → http://localhost:58080
   unattended). Mark "Ready for review" + merge once it looks right.
 - Paused all further scenario generation/tuning per your instruction.
 
-## ⚠️ Awaiting your eyeball
+## Status update (2026-06-24, user back)
 
-1. **Filter toolbar (PR #269)** — top-right over the map, vertical stack of 3 icon
-   buttons (district view / partisan lean / county borders), beside the info panel.
-   Icons are THROWAWAY placeholders. Tests confirm the buttons work and stay in sync
-   with the old header buttons, but I couldn't check the look. The old header buttons
-   ("Switch to Partisan Lean" / "Show County Borders") are still present — decide later
-   whether to retire them.
+- ✅ **scenario-002 ACCEPTED** — played through, map/instructions correct; difficulty is
+  fine ("not even terribly hard with the instructions"). GAME-091 confirmed accepted.
+- 🐛 **Result screen overflows** the viewport with no scroll (the epilogue lengthened
+  the card) — affects desktop. Filed **GAME-094** (preferred fix: epilogue on a second
+  "Continue →" panel after the reveal).
+- 🔎 **Filter toolbar (PR #269)** served for visual review.
+
+## ⚠️ Still awaiting your call
+
+1. **Filter toolbar (PR #269)** — vertical icon buttons top-right over the map. Placeholder
+   icons. Decide if placement/look is right → mark "Ready" + merge; real icons later.
 2. **West "suburb ring"** — moving (−2,1)/(−2,2) into West county made West's inner edge
-   read as suburbs-in-a-different-county (you flagged this; NOT acted on). Decide:
-   keep / lean into narratively / reshape.
-3. **scenario-002 full playthrough** — old-3-county start + 5-slide reapportionment
-   intro + river + win debrief were built and e2e-verified but not eyeballed by you.
+   read as suburbs-in-a-different-county. Decide: keep / lean into narratively / reshape.
 
 ## What to playtest (checklist)
 

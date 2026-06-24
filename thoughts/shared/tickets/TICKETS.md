@@ -118,6 +118,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-083-unassigned-precinct-visual-feedback.md` | game, rendering, UX | Unassigned precincts need a distinct neutral fill (white→dark-grey range); currently indistinguishable from assigned ones |
 | `GAME-084-map-generation-pipeline.md` | game, tooling | Spec-driven staged pipeline (terrain→population→demographics→assembler); single scenario JSON format throughout; requires loader validation split |
 | `GAME-092-scenario-map-editor.md` | game, tooling, UX | Visual editor to hand-tweak generated scenarios — click hex edges for rivers, place terrain tiles, export to JSON. Motivated by hand-injecting scenario-002's river via jq. Design-first |
+| `GAME-094-result-screen-overflow-epilogue-panel.md` | game, UX | Result screen overflows the viewport (no scroll) once the epilogue is added — even on desktop. Preferred fix: move epilogue to a second "Continue →" panel after the reveal. Keep usable on smaller screens |
 | `GAME-090-settlement-density-realism.md` | game, tooling | Settlement density realism follow-ons: leapfrog/exurban developments, sharper plateau edge, easier non-circular cores. Plateau profile + big urban/rural ratio already landed in GAME-088 |
 ---
 
