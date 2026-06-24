@@ -270,6 +270,8 @@ export interface NarrativeSpec {
   intro_slides: SlideSpec[];
   objective: string;
   flavor_text?: string;
+  /** Teaching debrief shown on the result screen after a win (GAME-091). */
+  epilogue?: string;
 }
 
 export interface AssemblySpec {

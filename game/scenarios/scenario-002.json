@@ -1,11 +1,11 @@
 {
   "format_version": "1",
   "id": "scenario-002",
-  "title": "Clearwater County: The Governor's Map",
+  "title": "Clearwater Valley: The Governor's Map",
   "election_type": "state_house",
   "region": {
-    "id": "clearwater_county",
-    "name": "Clearwater County"
+    "id": "clearwater_valley",
+    "name": "Clearwater Valley"
   },
   "geometry": {
     "type": "hex_axial"
@@ -64,7 +64,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (0,-5)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d2"
     },
     {
       "id": "p002",
@@ -89,7 +89,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (1,-5)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d2"
     },
     {
       "id": "p003",
@@ -114,7 +114,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (2,-5)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d2"
     },
     {
       "id": "p004",
@@ -189,7 +189,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (5,-5)",
-      "initial_district_id": "d3"
+      "initial_district_id": "d2"
     },
     {
       "id": "p007",
@@ -214,7 +214,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-1,-4)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p008",
@@ -239,7 +239,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (0,-4)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d2"
     },
     {
       "id": "p009",
@@ -264,7 +264,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (1,-4)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d2"
     },
     {
       "id": "p010",
@@ -339,7 +339,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (4,-4)",
-      "initial_district_id": "d3"
+      "initial_district_id": "d2"
     },
     {
       "id": "p013",
@@ -364,7 +364,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (5,-4)",
-      "initial_district_id": "d3"
+      "initial_district_id": "d2"
     },
     {
       "id": "p014",
@@ -389,7 +389,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-2,-3)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p015",
@@ -414,7 +414,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-1,-3)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p016",
@@ -439,7 +439,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (0,-3)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p017",
@@ -514,7 +514,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (3,-3)",
-      "initial_district_id": "d3"
+      "initial_district_id": "d2"
     },
     {
       "id": "p020",
@@ -539,7 +539,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (4,-3)",
-      "initial_district_id": "d3"
+      "initial_district_id": "d2"
     },
     {
       "id": "p021",
@@ -564,7 +564,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (5,-3)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p022",
@@ -589,7 +589,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-3,-2)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p023",
@@ -614,7 +614,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-2,-2)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p024",
@@ -639,7 +639,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-1,-2)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p025",
@@ -664,7 +664,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (0,-2)",
-      "initial_district_id": "d2"
+      "initial_district_id": "d3"
     },
     {
       "id": "p026",
@@ -689,7 +689,7 @@
       "county_id": "clearwater_city",
       "county_name": "Clearwater City",
       "name": "City (1,-2)",
-      "initial_district_id": "d2"
+      "initial_district_id": "d1"
     },
     {
       "id": "p027",
@@ -714,7 +714,7 @@
       "county_id": "clearwater_city",
       "county_name": "Clearwater City",
       "name": "City (2,-2)",
-      "initial_district_id": "d3"
+      "initial_district_id": "d1"
     },
     {
       "id": "p028",
@@ -739,7 +739,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (3,-2)",
-      "initial_district_id": "d3"
+      "initial_district_id": "d2"
     },
     {
       "id": "p029",
@@ -764,7 +764,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (4,-2)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p030",
@@ -789,7 +789,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (5,-2)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p031",
@@ -814,7 +814,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-4,-1)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p032",
@@ -839,7 +839,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-3,-1)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p033",
@@ -864,7 +864,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-2,-1)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p034",
@@ -889,7 +889,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-1,-1)",
-      "initial_district_id": "d2"
+      "initial_district_id": "d3"
     },
     {
       "id": "p035",
@@ -914,7 +914,7 @@
       "county_id": "clearwater_city",
       "county_name": "Clearwater City",
       "name": "City (0,-1)",
-      "initial_district_id": "d2"
+      "initial_district_id": "d1"
     },
     {
       "id": "p036",
@@ -939,7 +939,7 @@
       "county_id": "clearwater_city",
       "county_name": "Clearwater City",
       "name": "City (1,-1)",
-      "initial_district_id": "d3"
+      "initial_district_id": "d1"
     },
     {
       "id": "p037",
@@ -964,7 +964,7 @@
       "county_id": "clearwater_city",
       "county_name": "Clearwater City",
       "name": "City (2,-1)",
-      "initial_district_id": "d3"
+      "initial_district_id": "d1"
     },
     {
       "id": "p038",
@@ -989,7 +989,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (3,-1)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p039",
@@ -1014,7 +1014,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (4,-1)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p040",
@@ -1039,7 +1039,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (5,-1)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p041",
@@ -1064,7 +1064,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-5,0)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p042",
@@ -1089,7 +1089,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-4,0)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p043",
@@ -1114,7 +1114,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-3,0)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p044",
@@ -1139,7 +1139,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-2,0)",
-      "initial_district_id": "d2"
+      "initial_district_id": "d3"
     },
     {
       "id": "p045",
@@ -1164,7 +1164,7 @@
       "county_id": "clearwater_city",
       "county_name": "Clearwater City",
       "name": "City (-1,0)",
-      "initial_district_id": "d2"
+      "initial_district_id": "d1"
     },
     {
       "id": "p046",
@@ -1189,7 +1189,7 @@
       "county_id": "clearwater_city",
       "county_name": "Clearwater City",
       "name": "City (0,0)",
-      "initial_district_id": "d3"
+      "initial_district_id": "d1"
     },
     {
       "id": "p047",
@@ -1214,7 +1214,7 @@
       "county_id": "clearwater_city",
       "county_name": "Clearwater City",
       "name": "City (1,0)",
-      "initial_district_id": "d3"
+      "initial_district_id": "d1"
     },
     {
       "id": "p048",
@@ -1239,7 +1239,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (2,0)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p049",
@@ -1264,7 +1264,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (3,0)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p050",
@@ -1289,7 +1289,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (4,0)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p051",
@@ -1314,7 +1314,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (5,0)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p052",
@@ -1339,7 +1339,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-5,1)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p053",
@@ -1364,7 +1364,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-4,1)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p054",
@@ -1389,7 +1389,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-3,1)",
-      "initial_district_id": "d2"
+      "initial_district_id": "d3"
     },
     {
       "id": "p055",
@@ -1411,10 +1411,10 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_city",
-      "county_name": "Clearwater City",
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "City (-2,1)",
-      "initial_district_id": "d2"
+      "initial_district_id": "d3"
     },
     {
       "id": "p056",
@@ -1439,7 +1439,7 @@
       "county_id": "clearwater_city",
       "county_name": "Clearwater City",
       "name": "City (-1,1)",
-      "initial_district_id": "d3"
+      "initial_district_id": "d1"
     },
     {
       "id": "p057",
@@ -1464,7 +1464,7 @@
       "county_id": "clearwater_city",
       "county_name": "Clearwater City",
       "name": "City (0,1)",
-      "initial_district_id": "d3"
+      "initial_district_id": "d1"
     },
     {
       "id": "p058",
@@ -1489,7 +1489,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (1,1)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p059",
@@ -1514,7 +1514,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (2,1)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p060",
@@ -1539,7 +1539,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (3,1)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p061",
@@ -1564,7 +1564,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (4,1)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p062",
@@ -1589,7 +1589,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-5,2)",
-      "initial_district_id": "d1"
+      "initial_district_id": "d3"
     },
     {
       "id": "p063",
@@ -1614,7 +1614,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-4,2)",
-      "initial_district_id": "d2"
+      "initial_district_id": "d3"
     },
     {
       "id": "p064",
@@ -1639,7 +1639,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-3,2)",
-      "initial_district_id": "d2"
+      "initial_district_id": "d3"
     },
     {
       "id": "p065",
@@ -1661,8 +1661,8 @@
           "name": "All voters"
         }
       ],
-      "county_id": "clearwater_city",
-      "county_name": "Clearwater City",
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
       "name": "City (-2,2)",
       "initial_district_id": "d3"
     },
@@ -1689,7 +1689,7 @@
       "county_id": "clearwater_city",
       "county_name": "Clearwater City",
       "name": "City (-1,2)",
-      "initial_district_id": "d3"
+      "initial_district_id": "d1"
     },
     {
       "id": "p067",
@@ -1714,7 +1714,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (0,2)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p068",
@@ -1739,7 +1739,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (1,2)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p069",
@@ -1764,7 +1764,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (2,2)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p070",
@@ -1789,7 +1789,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (3,2)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p071",
@@ -1814,7 +1814,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-5,3)",
-      "initial_district_id": "d2"
+      "initial_district_id": "d3"
     },
     {
       "id": "p072",
@@ -1839,7 +1839,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-4,3)",
-      "initial_district_id": "d2"
+      "initial_district_id": "d3"
     },
     {
       "id": "p073",
@@ -1914,7 +1914,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-1,3)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d3"
     },
     {
       "id": "p076",
@@ -1939,7 +1939,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (0,3)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p077",
@@ -1964,7 +1964,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (1,3)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p078",
@@ -1989,7 +1989,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (2,3)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p079",
@@ -2014,7 +2014,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-5,4)",
-      "initial_district_id": "d2"
+      "initial_district_id": "d3"
     },
     {
       "id": "p080",
@@ -2089,7 +2089,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-2,4)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d3"
     },
     {
       "id": "p083",
@@ -2114,7 +2114,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-1,4)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d3"
     },
     {
       "id": "p084",
@@ -2139,7 +2139,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (0,4)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p085",
@@ -2164,7 +2164,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (1,4)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     },
     {
       "id": "p086",
@@ -2239,7 +2239,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-3,5)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d3"
     },
     {
       "id": "p089",
@@ -2264,7 +2264,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-2,5)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d3"
     },
     {
       "id": "p090",
@@ -2289,7 +2289,7 @@
       "county_id": "clearwater_west",
       "county_name": "Clearwater West",
       "name": "West (-1,5)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d3"
     },
     {
       "id": "p091",
@@ -2314,7 +2314,7 @@
       "county_id": "clearwater_east",
       "county_name": "Clearwater East",
       "name": "East (0,5)",
-      "initial_district_id": "d4"
+      "initial_district_id": "d2"
     }
   ],
   "events": [],
@@ -2365,24 +2365,33 @@
   "narrative": {
     "character": {
       "name": "You",
-      "role": "Ken Party Campaign Strategist, Clearwater County",
-      "motivation": "The governor wants a reliable majority in Clearwater County. The current map splits the vote evenly — two Ken, two Ryu. That's not good enough. You've been brought in to redraw the lines so Ken wins three of four seats.\n"
+      "role": "Ken Party Campaign Strategist, Clearwater Valley",
+      "motivation": "For a generation the Clearwater Valley voted by county — three counties, three seats, a steady two-to-one edge for the Ryu Party. Then the city outgrew its lines. Now the valley has a fourth seat to fill, and the governor — a Ken partisan — means to turn that two-to-one deficit into a three-to-one win.\n"
     },
     "intro_slides": [
       {
-        "body": "Clearwater County elects four representatives. Right now, the map gives each party two seats. The governor — a Ken partisan — wants three.\nThe population hasn't changed. The voters haven't changed. But the lines can change.\n",
-        "heading": "The Governor's Problem"
+        "body": "The Clearwater Valley has elected its representatives by county for as long as anyone can remember: Clearwater City in the center, the rural West, and the rural East. Three counties, three seats.\nThe counties were drawn roughly equal once. For years two of the three went to the Ryu Party.\n",
+        "heading": "Three Counties, Three Seats"
       },
       {
-        "body": "Every ten years, district boundaries are redrawn. The official reason is to reflect population changes. The real reason, often, is to change who wins.\nYou're looking at a map of precincts — small geographic units with known voting patterns. Your job is to group them into districts that favor the Ken Party.\n",
-        "heading": "How Redistricting Works"
+        "body": "Then a biotech firm planted its headquarters on the city's east bank, and the people followed. Clearwater City swelled while the rural counties held steady — a map once roughly equal is now badly lopsided.\nDistricts are supposed to hold near-equal population, so the valley is granted a fourth seat and the lines must be redrawn. That redraw is your opening.\n",
+        "heading": "A City That Grew"
       },
       {
-        "body": "Look at the map. The southeast corner votes heavily Ryu. The north and southwest lean Ken.\nIf you can contain the Ryu stronghold in one district and spread Ken voters across the other three, the governor gets the majority. The tools are simple — the consequences are not.\n",
-        "heading": "Your First Gerrymander"
+        "body": "Count every voter and Ryu is still ahead — but seats are won district by district, not valley-wide. A party can win a couple of districts in landslides, lose the rest by a hair, and take the most votes yet the fewest seats.\nThe lines decide which party that is — and they don't have to follow the old county borders. The voters haven't moved. The lines can.\n",
+        "heading": "Seats, Not Votes"
+      },
+      {
+        "body": "The countryside leans Ken. The east side of Clearwater City — newer, denser, where the boom landed — leans Ryu. But the city's Old Quarter to the west, its mills, its market, its weathered training halls, was settled generations ago by families who came in off the farms, and it kept their instincts. It leans Ken too.\nSo the politics don't follow the city limits: half the city votes like the farms that fed it, half votes the other way.\n",
+        "heading": "Know the Ground"
+      },
+      {
+        "body": "Pack the booming east-bank Ryu vote into a single district where they win in a landslide — every vote past a majority wasted. Spread Ken's voters — the rural counties and the Old Quarter alike — across the other three.\nThree slim wins beat one landslide. Same voters, same valley, a fourth seat, and lines that ignore the old county borders.\n",
+        "heading": "Your Move — Packing"
       }
     ],
-    "objective": "Redraw the map so the Ken Party wins at least 3 of 4 districts."
+    "objective": "Redraw the valley into four equal districts so the Ken Party wins at least 3 of 4 — turning the old 2–1 Ryu map into a 3–1 Ken one.\n",
+    "epilogue": "The old county map gave Ryu two of three seats. Handed a fourth seat and a free hand to ignore the county borders, you turned it into three of four for Ken — though Ryu still won more votes across the valley.\nBy packing the east-bank Ryu vote into a single district, you let them win it in a landslide while their extra votes piled up uselessly; Ken's voters, spread across the other three, carried each by a smaller but sufficient margin. That's \"packing\" — its mirror, \"cracking,\" splits a bloc so it never wins anywhere.\nPopulation shifts force redistricting; whoever controls the pen decides who benefits. Who draws the lines, and when, can matter as much as how people vote.\n"
   },
   "default_district_id": "d1",
   "instigator_character": "governor",
@@ -2390,5 +2399,95 @@
     "governor": "bm",
     "commissioner": "bf",
     "judge": "lm"
-  }
+  },
+  "river_edges": [
+    [
+      "p007",
+      "p001"
+    ],
+    [
+      "p007",
+      "p008"
+    ],
+    [
+      "p008",
+      "p016"
+    ],
+    [
+      "p015",
+      "p008"
+    ],
+    [
+      "p016",
+      "p009"
+    ],
+    [
+      "p016",
+      "p017"
+    ],
+    [
+      "p025",
+      "p017"
+    ],
+    [
+      "p025",
+      "p026"
+    ],
+    [
+      "p035",
+      "p026"
+    ],
+    [
+      "p035",
+      "p036"
+    ],
+    [
+      "p046",
+      "p036"
+    ],
+    [
+      "p046",
+      "p047"
+    ],
+    [
+      "p057",
+      "p047"
+    ],
+    [
+      "p057",
+      "p058"
+    ],
+    [
+      "p057",
+      "p067"
+    ],
+    [
+      "p066",
+      "p067"
+    ],
+    [
+      "p075",
+      "p067"
+    ],
+    [
+      "p075",
+      "p076"
+    ],
+    [
+      "p083",
+      "p076"
+    ],
+    [
+      "p083",
+      "p084"
+    ],
+    [
+      "p090",
+      "p084"
+    ],
+    [
+      "p090",
+      "p091"
+    ]
+  ]
 }

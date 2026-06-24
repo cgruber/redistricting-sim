@@ -594,6 +594,25 @@ body {
   transition: opacity 0.3s ease;
 }
 
+/* GAME-091: teaching debrief shown after a winning map is revealed. */
+#result-epilogue {
+  margin: 14px auto 4px;
+  max-width: 46ch;
+  padding: 12px 14px;
+  border-left: 3px solid #5a7fb0;
+  background: rgba(90, 127, 176, 0.10);
+  border-radius: 4px;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: #c2cce0;
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+#result-epilogue.hidden {
+  display: none;
+}
+
 #result-stars {
   display: flex;
   justify-content: center;

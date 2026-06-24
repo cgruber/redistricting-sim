@@ -360,22 +360,23 @@ export class SvgMapRenderer implements MapRenderer {
 		//   borderGroup         — committed district boundaries (solid white)
 		//   hexGroup            — precinct fills
 		//   terrainOverlayGroup — coast/foothill intrusion fills + lake blobs (above hex fills)
-		//   countyBorderGroup   — county boundary overlay (dashed gray; off by default)
-		//   riverGroup          — blue river strokes along hex edges (above precincts + county borders)
+		//   riverGroup          — blue river strokes along hex edges (above precincts)
+		//   countyBorderGroup   — county boundary overlay (dashed gray; off by default; over rivers)
 		//   previewBorderGroup  — in-stroke boundary preview (top)
 		// Note on riverGroup placement: DESIGN-008 describes rivers as "above hex fills but
 		// below district outlines". In this renderer borderGroup is *below* hexGroup (district
 		// boundaries shine through semi-transparent hex fills), so the spec's two constraints
 		// are mutually exclusive. We choose "above hex fills" because rivers must be visible
-		// as natural geographic boundaries; they sit above district outlines as a result.
+		// as natural geographic boundaries. County borders sit above rivers so administrative
+		// lines read as drawn over the geography (county lines often follow rivers).
 		this.zoomGroup = this.svg.append("g").attr("class", "zoom-layer");
 		this.terrainGroup = this.zoomGroup.append("g").attr("class", "terrain");
 		this.borderGroup = this.zoomGroup.append("g").attr("class", "borders");
 		this.hexGroup = this.zoomGroup.append("g").attr("class", "hexes");
 		this.terrainOverlayGroup = this.zoomGroup.append("g").attr("class", "terrain-overlay");
 		this.hoverHighlightGroup = this.zoomGroup.append("g").attr("class", "hover-highlight");
-		this.countyBorderGroup = this.zoomGroup.append("g").attr("class", "county-borders");
 		this.riverGroup = this.zoomGroup.append("g").attr("class", "rivers");
+		this.countyBorderGroup = this.zoomGroup.append("g").attr("class", "county-borders");
 		this.previewBorderGroup = this.zoomGroup.append("g").attr("class", "preview-borders");
 		this.coordLabelGroup = this.zoomGroup.append("g").attr("class", "coord-labels").attr("display", "none");
 

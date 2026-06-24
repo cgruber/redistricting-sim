@@ -117,6 +117,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-082-terrain-visual-treatment-refinement.md` | game, rendering, UX | Visual-tuning pass over GAME-075 terrain layer: thicker rivers, more prominent coast/lakeside edges, foothill rendering pickup, internal-lake validation |
 | `GAME-083-unassigned-precinct-visual-feedback.md` | game, rendering, UX | Unassigned precincts need a distinct neutral fill (white→dark-grey range); currently indistinguishable from assigned ones |
 | `GAME-084-map-generation-pipeline.md` | game, tooling | Spec-driven staged pipeline (terrain→population→demographics→assembler); single scenario JSON format throughout; requires loader validation split |
+| `GAME-092-scenario-map-editor.md` | game, tooling, UX | Visual editor to hand-tweak generated scenarios — click hex edges for rivers, place terrain tiles, export to JSON. Motivated by hand-injecting scenario-002's river via jq. Design-first |
 | `GAME-090-settlement-density-realism.md` | game, tooling | Settlement density realism follow-ons: leapfrog/exurban developments, sharper plateau edge, easier non-circular cores. Plateau profile + big urban/rural ratio already landed in GAME-088 |
 ---
 
@@ -124,6 +125,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-091: scenario-002 teaching narrative | Rewrote scenario-002 intro to teach votes≠seats + packing (old text was stale for the new field); added `narrative.epilogue` (schema→assembler→loader→result screen) — a teaching debrief revealed on a win explaining packing/cracking neutrally. e2e asserts the debrief shows |
 | GAME-089: population-aware county stage | Replaced geometric `county_labels` with a population-aware flood-fill county stage (`county-stage.ts`); named model presets seat_and_hinterland / city_county / split_metro; counties wrap pop centers, borders bias to troughs/rivers; county display names plumbed to the precinct-info panel; darker/shorter-dash border overlay; county_id stays cosmetic. scenario-002 migrated to `counties:` block (city + west + east). Unit tests + e2e green |
 | GAME-088: coherent population field | Added opt-in field-shaping to the population stage: gradient, neighbour-smoothing, pow-contrast, normalize-to-target, plus a `plateau` settlement profile (flat core + sharp edge vs gaussian). scenario-002 reworked to a 3-cluster, ~12x urban/rural field with a non-circular city core; scenario-002 winnability e2e re-solved (pack dense east-core Ryu → Ken 3-1). Also fixed precinct-info lean showing real party names. Unit + e2e tests pass |
 | BUILD-010: release.main.kts missing clikt import | Added `import com.github.ajalt.clikt.parameters.options.default`; the `Serve` subcommand's `.default()` call broke compilation of the whole script (prepare/deploy/serve all failed). Verified via dev deploy of GAME-088 |
