@@ -73,18 +73,30 @@
     <!-- ── Result screen (GAME-017) ─────────────────────────────────────── -->
     <div id="result-screen" class="hidden">
       <div id="result-card">
-        <div id="result-verdict" aria-live="polite"></div>
-        <div id="result-subtitle"></div>
-        <div id="result-stars" class="hidden" aria-label="Star rating"></div>
-        <div id="result-criteria-list"></div>
-        <div id="result-epilogue" class="hidden"></div>
-        <div id="result-reveal-controls" style="display:none">
-          <button id="btn-reveal-skip">Skip →</button>
+        <!-- Results view -->
+        <div id="result-main">
+          <div id="result-verdict" aria-live="polite"></div>
+          <div id="result-subtitle"></div>
+          <div id="result-stars" class="hidden" aria-label="Star rating"></div>
+          <div id="result-criteria-list"></div>
+          <div id="result-reveal-controls" style="display:none">
+            <button id="btn-reveal-skip">Skip →</button>
+          </div>
+          <div id="result-actions">
+            <button id="btn-keep-drawing">← Keep Drawing</button>
+            <button id="btn-continue" style="display:none">Continue →</button>
+            <button id="btn-next-scenario" style="display:none">Next Scenario →</button>
+            <button id="btn-mute-audio" aria-pressed="false">Mute</button>
+          </div>
         </div>
-        <div id="result-actions">
-          <button id="btn-keep-drawing">← Keep Drawing</button>
-          <button id="btn-next-scenario" style="display:none">Next Scenario →</button>
-          <button id="btn-mute-audio" aria-pressed="false">Mute</button>
+        <!-- GAME-094: teaching debrief — second panel, reached via "Continue →" on a win. -->
+        <div id="result-debrief" class="hidden">
+          <div id="result-debrief-heading">What just happened</div>
+          <div id="result-epilogue"></div>
+          <div id="result-debrief-actions">
+            <button id="btn-debrief-back">← Back to results</button>
+            <button id="btn-debrief-next">Next Scenario →</button>
+          </div>
         </div>
       </div>
     </div>

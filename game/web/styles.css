@@ -758,9 +758,34 @@ body {
   padding: 32px 36px 28px;
   max-width: 520px;
   width: 90%;
+  max-height: 90vh; /* GAME-094: never exceed the viewport */
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+/* GAME-094: two panels — results, then the teaching debrief via "Continue →". */
+#result-main, #result-debrief {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+#result-main.hidden, #result-debrief.hidden { display: none; }
+
+#result-debrief-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-align: center;
+  color: #dfe7f5;
+  padding-top: 4px;
+}
+
+#result-debrief-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 #result-verdict {
@@ -783,23 +808,28 @@ body {
   transition: opacity 0.3s ease;
 }
 
-/* GAME-091: teaching debrief shown after a winning map is revealed. */
+/* GAME-091/094: teaching debrief text (lives in the #result-debrief second panel). */
 #result-epilogue {
-  margin: 14px auto 4px;
+  margin: 0 auto;
   max-width: 46ch;
   padding: 12px 14px;
   border-left: 3px solid #5a7fb0;
   background: rgba(90, 127, 176, 0.10);
   border-radius: 4px;
-  font-size: 0.86rem;
-  line-height: 1.5;
+  font-size: 0.88rem;
+  line-height: 1.55;
   color: #c2cce0;
-  white-space: pre-wrap;
   text-align: left;
+  overflow-y: auto;
+  min-height: 0;
 }
 
-#result-epilogue.hidden {
-  display: none;
+/* GAME-094: real paragraph spacing for the debrief + intro prose. */
+#result-epilogue p, #intro-slide-body p {
+  margin: 0 0 0.7em;
+}
+#result-epilogue p:last-child, #intro-slide-body p:last-child {
+  margin-bottom: 0;
 }
 
 #result-stars {
@@ -834,6 +864,10 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  /* GAME-094: scroll when many criteria would overflow the card. */
+  overflow-y: auto;
+  min-height: 0;
+  flex: 0 1 auto;
 }
 
 .result-criterion {
@@ -1043,7 +1077,7 @@ body {
   margin-top: 4px;
 }
 
-#btn-keep-drawing {
+#btn-keep-drawing, #btn-continue, #btn-debrief-back {
   padding: 8px 18px;
   background: #0f3460;
   color: #e0e0e0;
@@ -1053,9 +1087,9 @@ body {
   font-size: 0.88rem;
 }
 
-#btn-keep-drawing:hover { background: #1a4a7a; }
+#btn-keep-drawing:hover, #btn-continue:hover, #btn-debrief-back:hover { background: #1a4a7a; }
 
-#btn-next-scenario {
+#btn-next-scenario, #btn-debrief-next {
   padding: 8px 18px;
   background: #1a6040;
   color: #e0e0e0;
@@ -1066,7 +1100,7 @@ body {
   font-weight: 600;
 }
 
-#btn-next-scenario:hover { background: #2a8050; }
+#btn-next-scenario:hover, #btn-debrief-next:hover { background: #2a8050; }
 
 #btn-mute-audio {
   padding: 6px 12px;
@@ -1146,7 +1180,6 @@ body {
   font-size: 0.88rem;
   color: #a0a8b8;
   line-height: 1.65;
-  white-space: pre-line;
   min-height: 6em;
 }
 

@@ -100,12 +100,30 @@ const resultVerdict = document.getElementById("result-verdict") as HTMLElement |
 const resultSubtitle = document.getElementById("result-subtitle") as HTMLElement | null;
 const resultCriteriaList = document.getElementById("result-criteria-list") as HTMLElement | null;
 const resultEpilogue = document.getElementById("result-epilogue") as HTMLElement | null;
+const resultMain = document.getElementById("result-main") as HTMLElement | null;
+const resultDebrief = document.getElementById("result-debrief") as HTMLElement | null;
+const btnContinue = document.getElementById("btn-continue") as HTMLButtonElement | null;
+const btnDebriefBack = document.getElementById("btn-debrief-back") as HTMLButtonElement | null;
+const btnDebriefNext = document.getElementById("btn-debrief-next") as HTMLButtonElement | null;
 const btnKeepDrawing = document.getElementById("btn-keep-drawing") as HTMLButtonElement | null;
 const btnNextScenario = document.getElementById("btn-next-scenario") as HTMLButtonElement | null;
 const resultStars = document.getElementById("result-stars") as HTMLElement | null;
 const resultRevealControls = document.getElementById("result-reveal-controls") as HTMLElement | null;
 const btnRevealSkip = document.getElementById("btn-reveal-skip") as HTMLButtonElement | null;
 const btnMuteAudio = document.getElementById("btn-mute-audio") as HTMLButtonElement | null;
+
+// Render multi-paragraph prose (newline-separated) as <p> elements so paragraphs get
+// real spacing (single "\n" under pre-wrap/pre-line otherwise butts them together).
+function renderProse(el: HTMLElement, text: string): void {
+	el.textContent = "";
+	for (const para of text.split(/\n+/)) {
+		const trimmed = para.trim();
+		if (!trimmed) continue;
+		const p = document.createElement("p");
+		p.textContent = trimmed;
+		el.appendChild(p);
+	}
+}
 
 // Intro screen refs (GAME-016)
 const introScreen = document.getElementById("intro-screen") as HTMLElement | null;
@@ -639,7 +657,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			const slide = slides[index];
 			if (!slide) return;
 			if (introSlideHeading) introSlideHeading.textContent = slide.heading ?? "";
-			if (introSlideBody) introSlideBody.textContent = slide.body;
+			if (introSlideBody) renderProse(introSlideBody, slide.body);
 			if (introProgress) introProgress.textContent = `${index + 1} / ${slides.length}`;
 			if (btnIntroPrev) btnIntroPrev.disabled = index === 0;
 			const isLast = index === slides.length - 1;
@@ -1002,7 +1020,11 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		resultVerdict.style.opacity = "0";
 		resultSubtitle.textContent = "";
 		resultSubtitle.style.opacity = "0";
-		if (resultEpilogue) { resultEpilogue.textContent = ""; resultEpilogue.classList.add("hidden"); }
+		// GAME-094: reset to the results view; clear/hide the debrief second panel.
+		if (resultEpilogue) resultEpilogue.textContent = "";
+		resultMain?.classList.remove("hidden");
+		resultDebrief?.classList.add("hidden");
+		if (btnContinue) btnContinue.style.display = "none";
 		if (resultStars) { resultStars.innerHTML = ""; resultStars.classList.add("hidden"); }
 		// maxStars based on scenario structure (not forced-pass); stars computed from actual results.
 		const maxStars = 1 + evalResult.criterionResults.filter(cr => !cr.required).length;
@@ -1069,6 +1091,18 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			}
 		}
 
+		// GAME-094: on a win, route the teaching debrief (narrative.epilogue) to a
+		// second panel via "Continue →"; with no epilogue, go straight to "Next Scenario →".
+		function preparePostWin(pass: boolean): void {
+			const epilogue = pass ? scenario.narrative?.epilogue : undefined;
+			if (resultEpilogue) {
+				if (epilogue) renderProse(resultEpilogue, epilogue);
+				else resultEpilogue.textContent = "";
+			}
+			if (btnContinue) btnContinue.style.display = pass && epilogue ? "" : "none";
+			btnNextScenario!.style.display = pass && !epilogue ? "" : "none";
+		}
+
 		function revealVerdict(pass: boolean, starCount: number): void {
 			if (verdictShown) return;
 			verdictShown = true;
@@ -1081,19 +1115,11 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 					? "One or more required criteria were not met."
 					: "The map has structural issues that must be fixed.";
 			resultSubtitle!.style.opacity = "1";
-			btnNextScenario!.style.display = pass ? "" : "none";
 			if (pass && resultStars) {
 				renderStars(resultStars, starCount, maxStars);
 				resultStars.classList.remove("hidden");
 			}
-			// GAME-091: reveal the teaching debrief on a win.
-			if (pass && resultEpilogue) {
-				const epilogue = scenario.narrative?.epilogue;
-				if (epilogue) {
-					resultEpilogue.textContent = epilogue;
-					resultEpilogue.classList.remove("hidden");
-				}
-			}
+			preparePostWin(pass);
 			if (pass) {
 				play("tada");
 			} else {
@@ -1163,7 +1189,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				? "All required criteria met."
 				: "One or more required criteria were not met.";
 			resultSubtitle.style.opacity = "1";
-			btnNextScenario!.style.display = nowPass ? "" : "none";
+			preparePostWin(nowPass);
 			if (resultStars) {
 				if (nowPass) {
 					const optionalPassed = rows.filter(r =>
@@ -1511,7 +1537,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	}
 
 	// "Next Scenario" → if all scenarios complete, show wrap-up; else select screen.
-	btnNextScenario!.addEventListener("click", () => {
+	function goToNextScenario() {
 		const allComplete = SCENARIO_MANIFEST.every((e) => isCompleted(progress, e.id));
 		if (allComplete) {
 			resultScreen!.classList.add("hidden");
@@ -1519,6 +1545,18 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		} else {
 			window.location.assign(backUrl);
 		}
+	}
+	btnNextScenario!.addEventListener("click", goToNextScenario);
+	btnDebriefNext?.addEventListener("click", goToNextScenario);
+
+	// GAME-094: "Continue →" swaps the results view for the teaching debrief panel.
+	btnContinue?.addEventListener("click", () => {
+		resultMain?.classList.add("hidden");
+		resultDebrief?.classList.remove("hidden");
+	});
+	btnDebriefBack?.addEventListener("click", () => {
+		resultDebrief?.classList.add("hidden");
+		resultMain?.classList.remove("hidden");
 	});
 
 	// Wrap-up "Play Again" → back to select screen
