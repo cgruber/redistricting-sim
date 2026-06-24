@@ -230,6 +230,11 @@ export interface Narrative {
 	/** Shown on the map screen */
 	objective: string;
 	flavor_text?: string;
+	/**
+	 * Teaching debrief shown on the result screen after a winning map is revealed
+	 * (GAME-091). Plain text; explains the lesson the scenario demonstrates.
+	 */
+	epilogue?: string;
 }
 
 // ─── State context ────────────────────────────────────────────────────────────

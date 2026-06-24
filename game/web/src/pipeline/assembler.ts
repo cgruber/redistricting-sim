@@ -127,6 +127,7 @@ export function assembleScenario(
     intro_slides: spec.narrative.intro_slides,
     objective: spec.narrative.objective,
     ...(spec.narrative.flavor_text !== undefined ? { flavor_text: spec.narrative.flavor_text } : {}),
+    ...(spec.narrative.epilogue !== undefined ? { epilogue: spec.narrative.epilogue } : {}),
   };
 
   return {

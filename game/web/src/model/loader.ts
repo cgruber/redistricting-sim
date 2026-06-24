@@ -414,6 +414,9 @@ function parseNarrative(raw: unknown): Narrative {
   if (r["flavor_text"] !== undefined) {
     narrative.flavor_text = requireString(r["flavor_text"], "narrative.flavor_text");
   }
+  if (r["epilogue"] !== undefined) {
+    narrative.epilogue = requireString(r["epilogue"], "narrative.epilogue");
+  }
   if (r["instigator"] !== undefined) {
     throw new Error("narrative.instigator removed; use instigator_character at the scenario root level instead");
   }

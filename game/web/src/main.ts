@@ -48,7 +48,7 @@ import { preload, play, setMuted, isMuted } from "./audio/audioPlayer.js";
 
 const SCENARIO_MANIFEST = [
 	{ id: "tutorial-002", title: "Millbrook County: Three-District Challenge" },
-	{ id: "scenario-002", title: "Clearwater County: The Governor's Map" },
+	{ id: "scenario-002", title: "Clearwater Valley: The Governor's Map" },
 	{ id: "scenario-003", title: "Riverport: The Packing Problem" },
 	{ id: "scenario-004", title: "Lakeview: Cracking the Opposition" },
 	{ id: "scenario-005", title: "Valle Verde: A Voice for the Valley" },
@@ -101,6 +101,7 @@ let skipClickHandler: (() => void) | null = null;
 const resultVerdict = document.getElementById("result-verdict") as HTMLElement | null;
 const resultSubtitle = document.getElementById("result-subtitle") as HTMLElement | null;
 const resultCriteriaList = document.getElementById("result-criteria-list") as HTMLElement | null;
+const resultEpilogue = document.getElementById("result-epilogue") as HTMLElement | null;
 const btnKeepDrawing = document.getElementById("btn-keep-drawing") as HTMLButtonElement | null;
 const btnNextScenario = document.getElementById("btn-next-scenario") as HTMLButtonElement | null;
 const resultStars = document.getElementById("result-stars") as HTMLElement | null;
@@ -955,6 +956,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		resultVerdict.style.opacity = "0";
 		resultSubtitle.textContent = "";
 		resultSubtitle.style.opacity = "0";
+		if (resultEpilogue) { resultEpilogue.textContent = ""; resultEpilogue.classList.add("hidden"); }
 		if (resultStars) { resultStars.innerHTML = ""; resultStars.classList.add("hidden"); }
 		// maxStars based on scenario structure (not forced-pass); stars computed from actual results.
 		const maxStars = 1 + evalResult.criterionResults.filter(cr => !cr.required).length;
@@ -1037,6 +1039,14 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			if (pass && resultStars) {
 				renderStars(resultStars, starCount, maxStars);
 				resultStars.classList.remove("hidden");
+			}
+			// GAME-091: reveal the teaching debrief on a win.
+			if (pass && resultEpilogue) {
+				const epilogue = scenario.narrative?.epilogue;
+				if (epilogue) {
+					resultEpilogue.textContent = epilogue;
+					resultEpilogue.classList.remove("hidden");
+				}
 			}
 			if (pass) {
 				play("tada");

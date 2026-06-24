@@ -177,6 +177,9 @@ test("scenario-002 winnability: packing east Ryu bloc into one district passes",
   await page.locator("#btn-submit").click();
   await expect(page.locator("#result-screen")).toBeVisible();
   await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+  // GAME-091: the teaching debrief is revealed on a win.
+  await expect(page.locator("#result-epilogue")).toBeVisible();
+  await expect(page.locator("#result-epilogue")).toContainText("packing");
 });
 
 // ─── scenario-003: "The Packing Problem" ─────────────────────────────────────

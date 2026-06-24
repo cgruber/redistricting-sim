@@ -1,4 +1,4 @@
-# Spec file for scenario-002: "Clearwater County: The Governor's Map"
+# Spec file for scenario-002: "Clearwater Valley: The Governor's Map"
 # Source of truth for the map generation pipeline (GAME-084).
 # Generated output: game/scenarios/scenario-002.json
 #
@@ -7,6 +7,12 @@
 #   [x] Stage 2: population     (population-stage.ts)
 #   [x] Stage 3: demographics   (demographics-stage.ts)
 #   [x] Stage 4: assembly       (assembler.ts)
+#
+# MANUAL FINISHING OVERLAY (GAME-091): after generate_scenario, run the overlay to
+# apply hand pedagogical tweaks the generator does not produce — a cosmetic river,
+# the two-precinct county tidy, and the "old map" 3-county initial assignment.
+# Regenerating WITHOUT re-applying the overlay drops these. See:
+#   game/scenarios/scenario-002.overlay.jq  (+ scenario-002.overlay.json)
 
 format_version: "1"
 
@@ -14,11 +20,11 @@ format_version: "1"
 
 scenario:
   id: scenario-002
-  title: "Clearwater County: The Governor's Map"
+  title: "Clearwater Valley: The Governor's Map"
   election_type: state_house
   region:
-    id: clearwater_county
-    name: Clearwater County
+    id: clearwater_valley
+    name: Clearwater Valley
 
 # ── Stage 1a: Map layout ──────────────────────────────────────────────────────
 
@@ -36,7 +42,7 @@ terrain: {}
 
 # ── Stage 2: Population ───────────────────────────────────────────────────────
 #
-# Clearwater County urban/suburban mix — three density clusters so the field is
+# Clearwater Valley urban/rural mix — three density clusters so the field is
 # non-monotonic (not a single cone) and the county stage gets clean seeds:
 #   Clearwater City: the county seat, in the centre (dominant).
 #   East Mills:      a mill town to the east.
@@ -161,37 +167,73 @@ assembly:
   narrative:
     character:
       name: You
-      role: Ken Party Campaign Strategist, Clearwater County
+      role: Ken Party Campaign Strategist, Clearwater Valley
       motivation: >
-        The governor wants a reliable majority in Clearwater County. The current
-        map splits the vote evenly — two Ken, two Ryu. That's not good enough.
-        You've been brought in to redraw the lines so Ken wins three of four seats.
+        For a generation the Clearwater Valley voted by county — three counties,
+        three seats, a steady two-to-one edge for the Ryu Party. Then the city
+        outgrew its lines. Now the valley has a fourth seat to fill, and the
+        governor — a Ken partisan — means to turn that two-to-one deficit into a
+        three-to-one win.
     intro_slides:
-      - heading: The Governor's Problem
+      - heading: Three Counties, Three Seats
         body: >
-          Clearwater County elects four representatives. Right now, the map gives
-          each party two seats. The governor — a Ken partisan — wants three.
+          The Clearwater Valley has elected its representatives by county for as long
+          as anyone can remember: Clearwater City in the center, the rural West, and
+          the rural East. Three counties, three seats.
 
-          The population hasn't changed. The voters haven't changed. But the lines
-          can change.
-      - heading: How Redistricting Works
+          The counties were drawn roughly equal once. For years two of the three went
+          to the Ryu Party.
+      - heading: A City That Grew
         body: >
-          Every ten years, district boundaries are redrawn. The official reason is
-          to reflect population changes. The real reason, often, is to change who
-          wins.
+          Then a biotech firm planted its headquarters on the city's east bank, and
+          the people followed. Clearwater City swelled while the rural counties held
+          steady — a map once roughly equal is now badly lopsided.
 
-          You're looking at a map of precincts — small geographic units with known
-          voting patterns. Your job is to group them into districts that favor the
-          Ken Party.
-      - heading: Your First Gerrymander
+          Districts are supposed to hold near-equal population, so the valley is
+          granted a fourth seat and the lines must be redrawn. That redraw is your
+          opening.
+      - heading: Seats, Not Votes
         body: >
-          Look at the map. The southeast corner votes heavily Ryu. The north and
-          southwest lean Ken.
+          Count every voter and Ryu is still ahead — but seats are won district by
+          district, not valley-wide. A party can win a couple of districts in
+          landslides, lose the rest by a hair, and take the most votes yet the fewest
+          seats.
 
-          If you can contain the Ryu stronghold in one district and spread Ken
-          voters across the other three, the governor gets the majority. The tools
-          are simple — the consequences are not.
-    objective: Redraw the map so the Ken Party wins at least 3 of 4 districts.
+          The lines decide which party that is — and they don't have to follow the
+          old county borders. The voters haven't moved. The lines can.
+      - heading: Know the Ground
+        body: >
+          The countryside leans Ken. The east side of Clearwater City — newer,
+          denser, where the boom landed — leans Ryu. But the city's Old Quarter to
+          the west, its mills, its market, its weathered training halls, was settled
+          generations ago by families who came in off the farms, and it kept their
+          instincts. It leans Ken too.
+
+          So the politics don't follow the city limits: half the city votes like the
+          farms that fed it, half votes the other way.
+      - heading: Your Move — Packing
+        body: >
+          Pack the booming east-bank Ryu vote into a single district where they win
+          in a landslide — every vote past a majority wasted. Spread Ken's voters —
+          the rural counties and the Old Quarter alike — across the other three.
+
+          Three slim wins beat one landslide. Same voters, same valley, a fourth seat,
+          and lines that ignore the old county borders.
+    objective: >
+      Redraw the valley into four equal districts so the Ken Party wins at least 3 of
+      4 — turning the old 2–1 Ryu map into a 3–1 Ken one.
+    epilogue: >
+      The old county map gave Ryu two of three seats. Handed a fourth seat and a free
+      hand to ignore the county borders, you turned it into three of four for Ken —
+      though Ryu still won more votes across the valley.
+
+      By packing the east-bank Ryu vote into a single district, you let them win it in
+      a landslide while their extra votes piled up uselessly; Ken's voters, spread
+      across the other three, carried each by a smaller but sufficient margin. That's
+      "packing" — its mirror, "cracking," splits a bloc so it never wins anywhere.
+
+      Population shifts force redistricting; whoever controls the pen decides who
+      benefits. Who draws the lines, and when, can matter as much as how people vote.
   instigator_character: governor
   character_demographics:
     governor: bm
