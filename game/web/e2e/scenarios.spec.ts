@@ -896,6 +896,94 @@ test("about page: accessible from main menu and shows educational content", asyn
   await expect(page.locator("#about-screen")).not.toBeVisible();
 });
 
+// ─── GAME-097: tutorial-001 "Welcome" (pipeline-generated, paint + submit) ───
+
+test("tutorial-001 smoke: loads and renders 37 hex-circle precincts", async ({ page }) => {
+  // Campaign-only scenario: needs ?campaign=tutorial to bypass the routing guard.
+  await page.goto("/?campaign=tutorial&s=tutorial-001&debug");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
+  expect(await page.locator("path.hex").count()).toBe(37);
+});
+
+test("tutorial-001 strips chrome to paint-only (no prediction, validity, view toolbar, or legend)", async ({ page }) => {
+  // T1 is the paint-only welcome: hide_election_results + no balance criterion +
+  // contiguity:allowed hide the prediction and validity panels; hide_view_toolbar hides
+  // the view toolbar and forces the painter open; the legend is removed game-wide (the
+  // paint toolbar serves as the legend).
+  await page.goto("/?campaign=tutorial&s=tutorial-001&debug");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
+
+  await expect(page.locator("#results-container")).toBeHidden();
+  await expect(page.locator("#results-heading")).toBeHidden();
+  await expect(page.locator("#validity-container")).toBeHidden();
+  await expect(page.locator("#validity-heading")).toBeHidden();
+  await expect(page.locator("#map-filters")).toBeHidden();
+  // The paint toolbar is forced open (it doubles as the legend).
+  await expect(page.locator("#district-toolbar")).toHaveClass(/expanded/);
+  // The legend is removed game-wide.
+  await expect(page.locator("#legend-container")).toHaveCount(0);
+});
+
+test("tutorial-001 winnability: carving a balanced contiguous District 2 passes", async ({ page }) => {
+  /**
+   * Hex circle R=3: 37 precincts, 2 districts. The whole county opens as District 1;
+   * T1 gates ONLY on district_count (both districts used, every precinct assigned) —
+   * balance and contiguity are deliberately not enforced here. So carving any chunk
+   * into District 2 wins.
+   *
+   * We carve a clean southern block (rows r=1,2,3 + the western half of the centre row)
+   * into District 2 — a realistic 18/19 split — and assert the map passes.
+   */
+  await page.goto("/?campaign=tutorial&s=tutorial-001&debug");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
+
+  // Carve the southern block into District 2 (everything else stays District 1).
+  await paintHexes(page, [
+    [-3,1],[-2,1],[-1,1],[0,1],[1,1],[2,1],   // r=1
+    [-3,2],[-2,2],[-1,2],[0,2],[1,2],         // r=2
+    [-3,3],[-2,3],[-1,3],[0,3],               // r=3
+    [-3,0],[-2,0],[-1,0],                      // r=0, western half
+  ], 2);
+
+  await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#result-screen")).toBeVisible();
+  await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+  // On a win the teaching debrief lives on a second panel, reached via "Continue →".
+  await page.locator("#btn-continue").click();
+  await expect(page.locator("#result-debrief")).toBeVisible();
+  await expect(page.locator("#result-epilogue")).toContainText("core loop");
+});
+
+test("tutorial-001: a wildly imbalanced split still passes (balance not enforced)", async ({ page }) => {
+  // Regression guard for the pre-electoral rule "no untaught failure modes": T1 has no
+  // population_balance criterion and contiguity:allowed, so even a 1-vs-36 split must pass.
+  // The player can never fail for an imbalance the welcome never taught.
+  await page.goto("/?campaign=tutorial&s=tutorial-001&debug");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
+
+  // Put a single precinct into District 2; the other 36 stay District 1.
+  await paintHexes(page, [[0, 3]], 2);
+
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#result-screen")).toBeVisible();
+  await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+});
+
 // ─── GAME-048: Campaign-driven scenario select ──────────────────────────────
 
 test("campaign select: ?campaign=tutorial shows tutorial-001, tutorial-002, and tutorial-003", async ({ page }) => {

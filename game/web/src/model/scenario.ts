@@ -304,6 +304,8 @@ export interface PartialScenario {
 	terrain_tiles?: TerrainTile[];
 	river_edges?: [PrecinctId, PrecinctId][];
 	river_blocks_contiguity?: boolean;
+	hide_election_results?: boolean;
+	hide_view_toolbar?: boolean;
 }
 
 // ─── Top-level Scenario ───────────────────────────────────────────────────────
@@ -341,4 +343,10 @@ export interface Scenario {
 	river_edges?: [PrecinctId, PrecinctId][];
 	/** When true, river edges are excluded from contiguity BFS (hard boundaries) */
 	river_blocks_contiguity?: boolean;
+	/** When true, the live "Election Results" prediction panel is hidden (pre-electoral
+	 *  tutorials: the outcome prediction is off-message before electoral mechanics are taught). */
+	hide_election_results?: boolean;
+	/** When true, the right-side map view toolbar (lean/county/city overlays) is hidden —
+	 *  the welcome tutorial has no alternate views worth showing (paint-only UI). */
+	hide_view_toolbar?: boolean;
 }

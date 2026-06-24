@@ -109,7 +109,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-014-nonpartisan-content-framing.md` | design, content | Non-partisan content guidelines: source standards, narrative language, naming conventions, about-page audit; prerequisite for VRA scenario authoring |
 | `DESIGN-015-information-density-redesign.md` | design, UX | Layout redesign for 5+ districts: evaluate map overlays, HUD strip, tabbed sidebar; specify where GAME-080 demographic stat lives; DESIGN-004 fate |
 | `GAME-076-tutorial-001-walkthrough.md` | game, UX, tutorial | Tutorial-001 guided walkthrough: overlay engine + 9-step script (district select → paint → undo/redo → UI tour → submit) |
-| `GAME-077-tutorial-002-guided-mode.md` | game, UX, tutorial | Tutorial-002 guided mode: advanced feature walkthrough (criteria panel, demographic overlay, goal orientation) |
+| `GAME-077-tutorial-002-guided-mode.md` | game, UX, tutorial, content | Tutorial-002 "The Map & the Views": hex-circle r=4 (61 prec, 3 dist) + river/coast terrain; guided reveal of lean/county/city views (reveal-within-tutorial). Game mechanics, not electoral. See plan 2026-06-24-tutorial-redesign |
 | `GAME-078-vra-scenarios-implementation.md` | game, content | Implement VRA scenarios: Scenario A + Scenario B; terrain features; proxy-data mechanic; hides race demographics; result-screen reveal |
 | `GAME-079-scenario-002-playability-tuning.md` | game, content | Tighten scenario-002 — trivially-easy first educational campaign scenario requires genuine engagement |
 | `GAME-080-district-demographic-rollup.md` | game, UX | Live per-district demographic stat derived from criteria (majority_minority → show % of target group); compact line under district button; updates on paint |
@@ -119,6 +119,8 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-084-map-generation-pipeline.md` | game, tooling | Spec-driven staged pipeline (terrain→population→demographics→assembler); single scenario JSON format throughout; requires loader validation split |
 | `GAME-092-scenario-map-editor.md` | game, tooling, UX | Visual editor to hand-tweak generated scenarios — click hex edges for rivers, place terrain tiles, export to JSON. Motivated by hand-injecting scenario-002's river via jq. Design-first |
 | `GAME-090-settlement-density-realism.md` | game, tooling | Settlement density realism follow-ons: leapfrog/exurban developments, sharper plateau edge, easier non-circular cores. Plateau profile + big urban/rural ratio already landed in GAME-088 |
+| `GAME-096-city-limits-overlay.md` | game, rendering, UX | Basic cosmetic city-limits overlay (reuse county border mechanism); third View-toolbar Overlays entry; no gameplay effect. Prerequisite for tutorial-002's lean/county/city view set |
+| `GAME-097-tutorial-pipeline-migration.md` | game, tooling, content | Migrate tutorials onto the pipeline (spec.yaml→JSON)+pedagogical edits; tutorial-001 = hex-circle r=3 (37 prec) paint+submit welcome; retire gen-tutorial-*.main.kts. See plan 2026-06-24-tutorial-redesign |
 ---
 
 ## Resolved

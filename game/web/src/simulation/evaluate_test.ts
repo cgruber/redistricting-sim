@@ -18,9 +18,10 @@
  *     - any-required-fail → overallPass false
  *   isMapSubmittable:
  *     - false when unassigned precincts exist
- *     - false when population out of tolerance
+ *     - false when population out of tolerance AND balance enforced (default)
+ *     - allowed when out of tolerance but balance not enforced (enforceBalance=false)
  *     - false when contiguity required and district is non-contiguous
- *     - true when all constraints met
+ *     - true when all enforced constraints met
  */
 
 import { evaluateCriteria, isMapSubmittable } from "./evaluate.js";
@@ -287,10 +288,18 @@ test("isMapSubmittable: unassigned precinct → false", () => {
   assertFalse(isMapSubmittable(stats, RULES), "unassigned → not submittable");
 });
 
-test("isMapSubmittable: population out of tolerance → false", () => {
+test("isMapSubmittable: out of tolerance → false when balance enforced (default)", () => {
   const assignments = new Map([[0, 1], [1, 1], [2, 1], [3, 2]]);
   const stats = computeValidityStats(FOUR_PRECINCTS, assignments, 2, RULES);
-  assertFalse(isMapSubmittable(stats, RULES), "imbalanced pop → not submittable");
+  assertFalse(isMapSubmittable(stats, RULES), "imbalanced + balance enforced → not submittable");
+});
+
+test("isMapSubmittable: out of tolerance allowed when balance not enforced (opt-out)", () => {
+  // enforceBalance=false (scenario has no population_balance criterion): an imbalance the
+  // player wasn't asked to fix must not block submission. Assigned + contiguous → submittable.
+  const assignments = new Map([[0, 1], [1, 1], [2, 1], [3, 2]]);
+  const stats = computeValidityStats(FOUR_PRECINCTS, assignments, 2, RULES);
+  assertTrue(isMapSubmittable(stats, RULES, false), "imbalanced but balance not enforced → submittable");
 });
 
 test("isMapSubmittable: contiguity required + non-contiguous district → false", () => {

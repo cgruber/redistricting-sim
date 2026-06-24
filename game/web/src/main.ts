@@ -13,7 +13,6 @@ import type { Scenario, CriterionId, CharacterType, Criterion } from "./model/sc
 import { type MapRenderer, type ViewMode, SvgMapRenderer } from "./render/mapRenderer.js";
 import {
 	renderDistrictButtons,
-	renderLegend,
 	renderResults,
 	renderValidityPanel,
 } from "./render/panels.js";
@@ -77,7 +76,6 @@ const MANIFEST_BY_ID = new Map<string, { id: string; title: string }>([
 const svgEl = document.getElementById("map-svg") as SVGSVGElement | null;
 const resultsEl = document.getElementById("results-container") as HTMLElement | null;
 const validityEl = document.getElementById("validity-container") as HTMLElement | null;
-const legendEl = document.getElementById("legend-container") as HTMLElement | null;
 const districtBtnsEl = document.getElementById("district-buttons") as HTMLElement | null;
 const btnUndo = document.getElementById("btn-undo") as HTMLButtonElement | null;
 const btnRedo = document.getElementById("btn-redo") as HTMLButtonElement | null;
@@ -143,7 +141,6 @@ if (
 	svgEl === null ||
 	resultsEl === null ||
 	validityEl === null ||
-	legendEl === null ||
 	districtBtnsEl === null ||
 	btnUndo === null ||
 	btnRedo === null ||
@@ -583,6 +580,26 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	});
 	renderer.setPartyLabels(partyLabels);
 
+	// Panel applicability (GAME-097): only surface UI for things this scenario
+	// actually involves. Pre-electoral tutorials hide the outcome prediction
+	// (scenario.hide_election_results); the validity panel shows a constraint only
+	// when the scenario gates on it — population balance only with a
+	// population_balance criterion, contiguity only when rules.contiguity !==
+	// "allowed". Never show a constraint the player isn't held to.
+	const showResults = scenario.hide_election_results !== true;
+	const hasBalanceCriterion = scenario.success_criteria.some(
+		(c) => c.criterion.type === "population_balance",
+	);
+	const showValidity = hasBalanceCriterion || scenario.rules.contiguity !== "allowed";
+	if (!showResults) {
+		document.getElementById("results-heading")?.style.setProperty("display", "none");
+		resultsEl!.style.display = "none";
+	}
+	if (!showValidity) {
+		document.getElementById("validity-heading")?.style.setProperty("display", "none");
+		validityEl!.style.display = "none";
+	}
+
 	// ── Update cycle ──────────────────────────────────────────────────────────
 	function updateUI() {
 		const state = store.getState();
@@ -590,9 +607,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 		renderer.render();
 
-		renderResults(resultsEl!, state, partyLabels);
-		renderValidityPanel(validityEl!, state, scenario.rules);
-		renderLegend(legendEl!, state.districtCount);
+		if (showResults) renderResults(resultsEl!, state, partyLabels);
+		if (showValidity) renderValidityPanel(validityEl!, state, scenario.rules, hasBalanceCriterion);
 
 		let demoStat: DistrictDemoStat | undefined;
 		if (majorityMinorityCriterion) {
@@ -750,6 +766,9 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	let filtersCollapsed = false;
 	try { filtersCollapsed = localStorage.getItem(FILTERS_COLLAPSED_KEY) === "1"; } catch { /* ignore */ }
 	applyFiltersCollapsed(filtersCollapsed);
+	// Paint-only tutorials (the welcome) have no alternate views worth showing — hide the
+	// whole view toolbar.
+	if (scenario.hide_view_toolbar) mapFilters?.style.setProperty("display", "none");
 	mapFiltersToggle?.addEventListener("click", () => {
 		filtersCollapsed = !filtersCollapsed;
 		applyFiltersCollapsed(filtersCollapsed);
@@ -759,17 +778,20 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	const districtToolbar = document.getElementById("district-toolbar");
 	const districtToolbarToggle = document.getElementById("district-toolbar-toggle");
 	const DISTRICTS_COLLAPSED_KEY = "redistricting-sim-districts-collapsed";
-	function applyDistrictsCollapsed(collapsed: boolean) {
+	function applyDistrictsCollapsed(collapsed: boolean, persist = true) {
 		districtToolbar?.classList.toggle("collapsed", collapsed);
 		districtToolbar?.classList.toggle("expanded", !collapsed);
 		districtToolbarToggle?.setAttribute("aria-expanded", String(!collapsed));
 		districtToolbarToggle?.setAttribute("aria-label", collapsed ? "Expand district painter" : "Collapse district painter");
 		districtToolbarToggle?.setAttribute("data-tip", collapsed ? "Expand" : "Collapse");
-		try { localStorage.setItem(DISTRICTS_COLLAPSED_KEY, collapsed ? "1" : "0"); } catch { /* ignore */ }
+		if (persist) { try { localStorage.setItem(DISTRICTS_COLLAPSED_KEY, collapsed ? "1" : "0"); } catch { /* ignore */ } }
 	}
 	let districtsCollapsed = false;
 	try { districtsCollapsed = localStorage.getItem(DISTRICTS_COLLAPSED_KEY) === "1"; } catch { /* ignore */ }
-	applyDistrictsCollapsed(districtsCollapsed);
+	// Paint-only tutorials keep the painter open (it's the primary chrome and now doubles
+	// as the legend) regardless of, and without clobbering, the saved preference.
+	if (scenario.hide_view_toolbar) { districtsCollapsed = false; applyDistrictsCollapsed(false, false); }
+	else applyDistrictsCollapsed(districtsCollapsed);
 	districtToolbarToggle?.addEventListener("click", () => {
 		districtsCollapsed = !districtsCollapsed;
 		applyDistrictsCollapsed(districtsCollapsed);
@@ -817,18 +839,9 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			});
 		}
 
-		const badPop = validity.districtPop.filter(d => d.status !== "ok");
-		if (badPop.length > 0 && !scenarioCriterionTypes.has("population_balance")) {
-			const worst = badPop[0]!;
-			const sign = worst.deviationPct >= 0 ? "+" : "";
-			rows.push({
-				criterionId: "validity:population-balance" as CriterionId,
-				required: true,
-				description: "District populations must be within tolerance",
-				passed: false,
-				detail: `District ${worst.districtId}: ${sign}${worst.deviationPct.toFixed(1)}% deviation`,
-			});
-		}
+		// Population balance is opt-in via a population_balance criterion (see
+		// isMapSubmittable): when present it appears in evalResult already; when absent
+		// it isn't a constraint. Either way there is no synthetic balance validity row.
 
 		if (validity.contiguity !== null) {
 			for (const [distId, ok] of validity.contiguity) {
@@ -992,7 +1005,9 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		);
 
 		// GAME-059: detect invalid map before running criterion evaluation.
-		let mapIsValid = isMapSubmittable(validity, scenario.rules);
+		// GAME-097: population balance is a hard gate only when the scenario enforces it
+		// (has a population_balance criterion) — paint-only tutorials don't.
+		let mapIsValid = isMapSubmittable(validity, scenario.rules, hasBalanceCriterion);
 
 		const evalResult = evaluateCriteria(
 			scenario.success_criteria,

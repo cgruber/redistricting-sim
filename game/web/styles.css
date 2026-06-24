@@ -435,25 +435,6 @@ body {
   margin-bottom: 4px;
 }
 
-.legend {
-  font-size: 0.8rem;
-  color: #a0a0b0;
-  line-height: 1.6;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.legend-swatch {
-  width: 16px;
-  height: 16px;
-  border-radius: 3px;
-  flex-shrink: 0;
-}
-
 #precinct-info {
   background: #0a1f3a;
   border: 1px solid #1a3a5c;

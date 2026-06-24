@@ -284,6 +284,10 @@ export interface AssemblySpec {
   narrative: NarrativeSpec;
   instigator_character?: string;
   character_demographics?: Record<string, string>;
+  /** Hide the live "Election Results" prediction panel (pre-electoral tutorials). */
+  hide_election_results?: boolean;
+  /** Hide the right-side map view toolbar (lean/county/city) — paint-only tutorials. */
+  hide_view_toolbar?: boolean;
 }
 
 // ─── Pipeline spec (full file) ────────────────────────────────────────────────

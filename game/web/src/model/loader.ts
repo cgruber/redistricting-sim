@@ -1065,6 +1065,16 @@ function parseAllFields(raw: Record<string, unknown>): PartialScenario {
     river_blocks_contiguity = requireBoolean(raw["river_blocks_contiguity"], "river_blocks_contiguity");
   }
 
+  let hide_election_results: boolean | undefined;
+  if (raw["hide_election_results"] !== undefined) {
+    hide_election_results = requireBoolean(raw["hide_election_results"], "hide_election_results");
+  }
+
+  let hide_view_toolbar: boolean | undefined;
+  if (raw["hide_view_toolbar"] !== undefined) {
+    hide_view_toolbar = requireBoolean(raw["hide_view_toolbar"], "hide_view_toolbar");
+  }
+
   const partial: PartialScenario = {
     format_version: "1", id, title, election_type, region, geometry,
     precincts: partialPrecincts,
@@ -1083,6 +1093,8 @@ function parseAllFields(raw: Record<string, unknown>): PartialScenario {
   if (terrain_tiles !== undefined) partial.terrain_tiles = terrain_tiles;
   if (river_edges !== undefined) partial.river_edges = river_edges;
   if (river_blocks_contiguity !== undefined) partial.river_blocks_contiguity = river_blocks_contiguity;
+  if (hide_election_results !== undefined) partial.hide_election_results = hide_election_results;
+  if (hide_view_toolbar !== undefined) partial.hide_view_toolbar = hide_view_toolbar;
 
   return partial;
 }
@@ -1502,6 +1514,8 @@ function assembleScenario(
   if (partial.terrain_tiles !== undefined) scenario.terrain_tiles = partial.terrain_tiles;
   if (partial.river_edges !== undefined) scenario.river_edges = partial.river_edges;
   if (partial.river_blocks_contiguity !== undefined) scenario.river_blocks_contiguity = partial.river_blocks_contiguity;
+  if (partial.hide_election_results !== undefined) scenario.hide_election_results = partial.hide_election_results;
+  if (partial.hide_view_toolbar !== undefined) scenario.hide_view_toolbar = partial.hide_view_toolbar;
 
   return scenario;
 }

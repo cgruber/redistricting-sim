@@ -40,17 +40,6 @@ export function renderResults(
 	container.innerHTML = html;
 }
 
-export function renderLegend(container: HTMLElement, districtCount: number): void {
-	const items = Array.from({ length: districtCount }, (_, i) => {
-		const color = DISTRICT_COLORS[i] ?? "#888";
-		return `<div class="legend-item">
-      <div class="legend-swatch" style="background:${color}"></div>
-      <span>District ${i + 1}</span>
-    </div>`;
-	});
-	container.innerHTML = items.join("");
-}
-
 export function renderDistrictButtons(
 	container: HTMLElement,
 	districtCount: number,
@@ -101,6 +90,7 @@ export function renderValidityPanel(
 	container: HTMLElement,
 	state: GameStore,
 	rules: ScenarioRules,
+	showBalance = true,
 ): void {
 	const { precincts, assignments, districtCount } = state;
 	const stats = computeValidityStats(precincts, assignments, districtCount, rules);
@@ -115,7 +105,10 @@ export function renderValidityPanel(
 	html += `<span>Unassigned</span><span class="validity-badge">${unassignedLabel}</span>`;
 	html += `</div>`;
 
-	// Population balance
+	// Population balance — only when the scenario actually gates on it (a
+	// population_balance success criterion). Pre-electoral tutorials that don't
+	// enforce balance must not show a constraint the player isn't held to.
+	if (showBalance) {
 	html += `<div class="validity-section-label">Population balance</div>`;
 	for (const d of stats.districtPop) {
 		const color = DISTRICT_COLORS[d.districtId - 1] ?? "#888";
@@ -126,6 +119,7 @@ export function renderValidityPanel(
 		html += `<span>D${d.districtId}: ${d.population.toLocaleString()}</span>`;
 		html += `<span class="validity-badge">${sign}${d.deviationPct.toFixed(1)}% ${statusLabel}</span>`;
 		html += `</div>`;
+	}
 	}
 
 	// Contiguity (skipped when "allowed")

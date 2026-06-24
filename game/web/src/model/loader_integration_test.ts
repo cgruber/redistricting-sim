@@ -41,7 +41,7 @@ function loadJson(filename: string): unknown {
 // ─── Scenario metadata table ──────────────────────────────────────────────────
 
 const SCENARIOS: { file: string; id: string; precincts: number; districts: number }[] = [
-  { file: "tutorial-001.json",  id: "tutorial-001",  precincts: 30,  districts: 2 },
+  { file: "tutorial-001.json",  id: "tutorial-001",  precincts: 37,  districts: 2 },
   { file: "tutorial-002.json",  id: "tutorial-002",  precincts: 196, districts: 3 },
   { file: "tutorial-003.json",  id: "tutorial-003",  precincts: 119, districts: 4 },
   { file: "scenario-002.json",  id: "scenario-002",  precincts: 91,  districts: 4 },
