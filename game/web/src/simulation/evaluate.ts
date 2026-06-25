@@ -345,16 +345,23 @@ export function evaluateCriteria(
 // ─── Validity gate: should the Submit button be enabled? ──────────────────────
 
 /**
- * Returns true when the map satisfies all hard constraints required before
- * evaluation: no unassigned precincts, population within tolerance, and
- * contiguity if required by the scenario rules.
+ * Returns true when the map satisfies the hard constraints required before
+ * evaluation: no unassigned precincts, population within tolerance (only when the
+ * scenario enforces balance), and contiguity if the scenario rules require it.
+ *
+ * Population balance is opt-in: `enforceBalance` should be true only when the
+ * scenario has a `population_balance` success criterion (mirroring how contiguity
+ * is opt-in via `rules.contiguity`). A scenario that doesn't enforce balance — e.g.
+ * the paint-only welcome tutorial — must never fail a player for an imbalance they
+ * weren't asked to fix.
  */
 export function isMapSubmittable(
 	validityStats: ValidityStats,
 	rules: ScenarioRules,
+	enforceBalance = true,
 ): boolean {
 	if (validityStats.unassignedCount > 0) return false;
-	if (validityStats.districtPop.some(d => d.status !== "ok")) return false;
+	if (enforceBalance && validityStats.districtPop.some(d => d.status !== "ok")) return false;
 	if (rules.contiguity === "required" && validityStats.contiguity !== null) {
 		for (const ok of validityStats.contiguity.values()) {
 			if (!ok) return false;

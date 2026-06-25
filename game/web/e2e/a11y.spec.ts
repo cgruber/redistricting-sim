@@ -13,8 +13,10 @@ import { test, expect } from "@playwright/test";
  *   6. Keyboard district assignment
  */
 
-// tutorial-001 is campaign-only; must include campaign param to bypass routing guard.
-const SCENARIO_URL = "/?campaign=tutorial&s=tutorial-001&debug=true";
+// The a11y suite exercises the FULL editor chrome (view toolbar, results/validity panels).
+// tutorial-001 is the stripped paint-only welcome (no view toolbar/legend/panels), so the
+// suite runs against scenario-002, which has the complete UI.
+const SCENARIO_URL = "/?s=scenario-002&debug=true";
 
 /** Navigate to the game editor, skip the intro, and wait for the hex grid. */
 async function loadEditor(page: import("@playwright/test").Page): Promise<void> {
@@ -145,14 +147,16 @@ test.describe("GAME-008 Accessibility", () => {
 
 test.describe("GAME-055 Party names", () => {
   /**
-   * Test 1: tutorial-001 results panel shows scenario party names (Ken Party / Ryu Party)
+   * Test 1: scenario-002 results panel shows scenario party names (Ken Party / Ryu Party)
    * not the generic PARTY_LABELS fallbacks ("Party 1" / "Party 2").
    *
-   * tutorial-001 starts with all precincts unassigned, so we must paint them first
-   * via window.__gameStore to trigger a non-empty simulationResult.
+   * Exercises the paint→results path: we repaint a split across districts 1 and 2 via
+   * window.__gameStore and assert renderResults() labels the districts with the scenario's
+   * party names. (tutorial-001 can't be used here — it hides the results panel, being
+   * pre-electoral; that hiding is covered in scenarios.spec.ts.)
    */
-  test("tutorial-001 results panel shows scenario party names not hardcoded labels", async ({ page }) => {
-    await page.goto("/?campaign=tutorial&s=tutorial-001&debug=true");
+  test("scenario-002 results panel shows scenario party names not hardcoded labels", async ({ page }) => {
+    await page.goto("/?s=scenario-002&debug=true");
     const skip = page.locator("#btn-intro-skip");
     await expect(skip).toBeVisible({ timeout: 10_000 });
     await skip.click();

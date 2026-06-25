@@ -1,0 +1,147 @@
+# Spec file for tutorial-001: "Welcome to Redistricting: Millbrook County"
+# Source of truth for the map generation pipeline (GAME-097).
+# Generated output: game/scenarios/tutorial-001.json
+#
+# Regenerate:  bazel run //game/web/src/pipeline:generate_scenario -- \
+#                game/scenarios/tutorial-001.spec.yaml game/scenarios/tutorial-001.json
+#
+# PEDAGOGY (see plan thoughts/shared/plans/2026-06-24-tutorial-redesign-pipeline-migration.md):
+#   Tutorial 1 teaches the CORE LOOP only — select a district, paint precincts,
+#   undo/redo, submit. NOT electoral strategy. So:
+#     - smallest hex-circle map (radius 3 → 37 precincts)
+#     - no terrain features (those arrive in tutorial-002)
+#     - NEUTRAL demographics (50/50, never surfaced): there is no lean view lesson and
+#       no seat_count criterion here, but the model requires every precinct to carry
+#       demographics, so we give it flat, invisible ones. The election-results
+#       prediction panel is hidden (hide_election_results) — an outcome forecast is
+#       off-message before electoral mechanics are taught.
+#     - the whole map starts as District 1 (the loader fills editable precincts with
+#       default_district_id), so the lesson is "carve out District 2".
+#     - ONLY district_count gates the win. Balance + contiguity are deliberately NOT
+#       enforced (no balance criterion; contiguity: allowed) so the player can never
+#       fail for a rule T1 didn't teach — those land in a later "rules" tutorial.
+
+format_version: "1"
+
+# ── Scenario identity ─────────────────────────────────────────────────────────
+
+scenario:
+  id: tutorial-001
+  title: "Welcome to Redistricting: Millbrook County"
+  election_type: state_house
+  region:
+    id: millbrook_county
+    name: Millbrook County
+
+# ── Stage 1a: Map layout ──────────────────────────────────────────────────────
+#
+# Small but a TRUE hex circle (not a rectangle). Precincts in a hex circle:
+#   count = 3·r·(r+1) + 1  →  r=2:19  r=3:37  r=4:61  r=5:91
+# r=3 (37) reads as a proper circular map yet halves cleanly into two balanced,
+# contiguous districts — the right size for a first paint-and-submit lesson.
+
+map:
+  geometry: hex_axial
+  shape: hex_circle
+  radius: 3
+
+# ── Stage 1b: Terrain ─────────────────────────────────────────────────────────
+#
+# No geography in the welcome map — keep the player's attention on the core loop.
+
+terrain: {}
+
+# ── Stage 2: Population ───────────────────────────────────────────────────────
+#
+# Near-uniform on purpose: with no settlements / no gradient, every precinct is
+# roughly the same size, so ANY sensible two-way split balances. The lesson is
+# "paint and submit," not "hunt for the balanced cut."
+
+population:
+  seed: 1
+  base: 5000          # ~5k per precinct; ~37×5k ≈ 185k total
+  variance: 400       # mild ±jitter only — keeps districts easy to balance
+
+# ── Stage 3: Demographics (NEUTRAL — invisible in T1) ─────────────────────────
+#
+# A single flat 50/50 group per precinct. There is no lean view and no party
+# criterion in this tutorial, so this never shows; it exists only to satisfy the
+# "every precinct has demographics" requirement at game start.
+# county_labels: one label covering the whole map → a single uniform county_id
+# (gives tidy precinct names and draws no internal county borders).
+
+demographics:
+  seed: 1
+  parties: [ken, ryu]
+  group:
+    id_suffix: all
+    name: Residents
+  turnout:
+    min: 0.60
+    max: 0.60
+  jitter: 0.0           # exactly 50/50 everywhere — no partisan signal
+  zones:
+    - name: all
+      filter: { default: true }
+      party_base: { ken: 0.5 }
+  county_labels:
+    - id: millbrook
+      filter: { default: true }
+
+# ── Stage 4: Assembly ─────────────────────────────────────────────────────────
+
+assembly:
+  parties:
+    - { id: ken, name: Ken Party, abbreviation: KEN }
+    - { id: ryu, name: Ryu Party, abbreviation: RYU }
+  districts:
+    - { id: d1, name: District 1 }
+    - { id: d2, name: District 2 }
+  default_district_id: d1
+  # No initial_district_rule → the loader fills every editable precinct with
+  # default_district_id (d1), so the map opens as one district and the player carves d2.
+  hide_election_results: true        # pre-electoral: hide the outcome prediction panel
+  hide_view_toolbar: true            # paint-only: no lean/county/city views worth showing
+  rules:
+    population_tolerance: 0.15        # unused here (no balance criterion); a sane default
+    contiguity: allowed              # NOT enforced in T1 — contiguity is taught later
+  success_criteria:
+    # T1 gates ONLY on "you made two districts" — the single mechanic this tutorial
+    # teaches, and one the objective states plainly. Balance / contiguity / compactness
+    # are intentionally absent so nothing can fail the player for an untaught reason.
+    - id: sc-district-count
+      required: true
+      description: Both districts are in use and every precinct is assigned.
+      criterion: { type: district_count }
+  narrative:
+    character:
+      name: You
+      role: Mapmaker, Millbrook County
+      motivation: >
+        You're learning to draw district maps. We'll start small — one little county,
+        two districts — so the controls become second nature before the maps get
+        bigger.
+    intro_slides:
+      - heading: Welcome to Redistricting
+        body: >
+          A district map carves a region into districts, and your job is to draw the
+          lines. This first map is tiny on purpose — just enough to get the feel of the
+          tools.
+      - heading: Paint the Districts
+        body: >
+          Right now the whole county is a single district. Pick District 2 from the
+          painter on the left, then click precincts to move them into it. Changed your
+          mind? Undo and redo are right there.
+      - heading: That's It — Submit
+        body: >
+          That's all this first map needs: two districts. Once you've split the county
+          in two, press Submit. (Balancing districts and keeping them tidy come in the
+          next lessons.)
+    objective: >
+      Divide Millbrook County into two districts — then submit.
+    epilogue: >
+      That's the whole core loop: pick a district, paint precincts, and submit. Every
+      scenario from here builds on exactly that.
+
+      Next, a slightly bigger map — one with a little geography on it, and a few new ways
+      to see what's going on. We'll add balancing and keeping districts connected as we go.

@@ -148,5 +148,11 @@ export function assembleScenario(
     ...(spec.character_demographics !== undefined
       ? { character_demographics: spec.character_demographics as Partial<Record<CharacterType, string>> }
       : {}),
+    ...(spec.hide_election_results !== undefined
+      ? { hide_election_results: spec.hide_election_results }
+      : {}),
+    ...(spec.hide_view_toolbar !== undefined
+      ? { hide_view_toolbar: spec.hide_view_toolbar }
+      : {}),
   };
 }
