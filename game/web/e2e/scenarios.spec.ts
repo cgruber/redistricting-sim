@@ -868,6 +868,28 @@ test("reset: does not start an overlay on a non-guided scenario", async ({ page 
   await expect(page.locator("#tutorial-panel")).toHaveCount(0);
 });
 
+test("reset: restores the initial view — districts colouring + county overlay off", async ({ page }) => {
+  // Reset zeroes the whole scenario including the vantage point: switch to lean + turn county
+  // borders on, then Reset should restore districts colouring + county off (not just the map).
+  await page.goto("/?s=scenario-002&debug");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
+
+  await page.locator("#filter-lean").click();
+  await page.locator("#filter-county").click();
+  await expect(page.locator("#filter-lean")).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator("#filter-county")).toHaveAttribute("aria-pressed", "true");
+
+  await page.locator("#btn-reset").click();
+  await page.locator("#btn-reset-confirm").click();
+
+  await expect(page.locator("#filter-districts")).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator("#filter-lean")).toHaveAttribute("aria-checked", "false");
+  await expect(page.locator("#filter-county")).toHaveAttribute("aria-pressed", "false");
+});
+
 test("lock gate: direct URL to locked scenario redirects to main menu", async ({ page }) => {
   // Ensure no progress — scenario-002 requires tutorial-002 completed
   await page.goto("/");
@@ -1427,11 +1449,12 @@ test("guided overlay: tutorial-003 reveals the result + lean, then county, then 
   await expect(page.locator("#tutorial-panel")).toContainText("geography");
   await page.locator("#tutorial-panel .tutorial-next").click();
 
-  // Step 2 — reveal the Lean view + the election result together.
+  // Step 2 — reveal the Lean button + the election result; advance only when Lean is clicked.
   await expect(page.locator("#tutorial-panel")).toContainText("election result");
   await expect(page.locator("#results-container")).toBeVisible();
   await expect(page.locator("#filter-lean")).toBeVisible();
-  await page.locator("#tutorial-panel .tutorial-next").click();
+  await page.locator("#filter-lean").click(); // the "thing" — Next is not offered on this step
+  await expect(page.locator("#filter-lean")).toHaveAttribute("aria-checked", "true");
 
   // Step 3 — paint and watch the result move; advance once 5 precincts are in District 2.
   await expect(page.locator("#tutorial-panel")).toContainText("watch the result");

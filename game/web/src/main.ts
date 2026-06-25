@@ -818,9 +818,13 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		temporalStore.getState().clear();
 		resetConfirm!.classList.remove("visible");
 		btnReset!.disabled = false;
-		// Reset zeroes the whole scenario, not just the painted map: restart the guided tutorial
-		// from the top (no-op for non-guided scenarios). Guidance is skippable, so bringing it
-		// back on Reset is safe, useful production behavior.
+		// Reset zeroes the WHOLE scenario, not just the painted map: restore the initial view
+		// (districts colouring, overlays off, fitted vantage point) and restart the guided
+		// tutorial from the top (no-op for non-guided scenarios). Guidance is skippable, so
+		// bringing it back on Reset is safe, useful production behavior.
+		applyViewMode("districts");
+		applyCounty(false);
+		renderer.resetView();
 		restartTutorialOverlay(scenario, store);
 	});
 
