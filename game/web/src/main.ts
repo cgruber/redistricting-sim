@@ -1496,6 +1496,21 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		btnDebugCoords.addEventListener("click", toggleCoordLabels);
 	}
 
+	// Debug: restart the scenario from scratch — including the guided tutorial. Reset alone
+	// only restores the map; once a tutorial's overlay is marked complete you can't re-watch it
+	// without this. Clears the saved WIP (so the map resets) and reloads with resetTutorial=1
+	// (so the intro re-shows and the guided overlay reruns).
+	const btnDebugRestart = document.getElementById("btn-debug-restart") as HTMLButtonElement | null;
+	if (btnDebugRestart && IS_DEBUG) {
+		btnDebugRestart.style.display = "";
+		btnDebugRestart.addEventListener("click", () => {
+			clearWip();
+			const url = new URL(window.location.href);
+			url.searchParams.set("resetTutorial", "1");
+			window.location.assign(url.toString());
+		});
+	}
+
 	btnKeepDrawing!.addEventListener("click", () => {
 		// Cancel any in-progress criteria reveal (timeouts + audio) before leaving.
 		if (skipClickHandler) {
