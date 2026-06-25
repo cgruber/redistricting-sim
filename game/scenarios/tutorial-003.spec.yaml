@@ -75,14 +75,24 @@ terrain:
 population:
   seed: 13
   base: 4000
-  variance: 300
-  smoothing: 1
+  variance: 650         # rural noise so the countryside reads as varied, not flat
+  smoothing: 0          # keep the texture — don't average the noise away
   settlements:
     - label: Hawthorn (city)
       anchor: center
-      peak: 4000
+      peak: 3200         # the county seat: dense, but not so stark it flattens everything else
       radius: 2
       profile: plateau
+    - label: East Hollow  # a couple of mild village peaks to break up the rurals
+      anchor: east
+      peak: 1500
+      radius: 2
+      profile: gaussian
+    - label: Westford
+      anchor: west
+      peak: 1500
+      radius: 2
+      profile: gaussian
 
 # ── Stage 3: Demographics (PARTISAN — an east/west split) ─────────────────────
 #
