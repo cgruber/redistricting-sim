@@ -29,6 +29,14 @@ export interface TutorialStep {
   highlight?: string | string[];
   /** Selector(s) to un-hide for this step (start hidden on load). */
   reveal?: string | string[];
+  /**
+   * Read-only step: lock the map and painter too (the default leaves them interactive so the
+   * player can always paint). The player can only read the coach and click Done/Skip. Use it for
+   * a closing "you're on your own now" beat that ends the tutorial *before* any real action
+   * (drawing, panning, submitting) — so nothing is submitted while still inside the overlay, and
+   * when the step finishes everything unlocks at once.
+   */
+  readOnly?: boolean;
   advance: AdvanceTrigger;
 }
 
@@ -146,9 +154,12 @@ const TUTORIAL_003: TutorialStep[] = [
 
 /**
  * tutorial-004 — "Capstone" (DESIGN-012 / GAME-099). A light orientation over a fuller map
- * with every tool visible from the start (nothing hidden, no `reveal`): orient → paint →
- * submit, then step back. The player synthesises T1–T3 — draw connected districts, read the
- * lean + result — as the bridge to the real campaign scenarios.
+ * with every tool visible from the start (nothing hidden, no `reveal`): orient → paint → a
+ * closing read-only "Done" beat that releases the player. Unlike T1–T3, the capstone does NOT
+ * end on Submit inside the overlay — the final step locks the map, and clicking **Done** ends
+ * the tutorial and unlocks everything, so the player pans/inspects/submits on their own (the
+ * bridge to the real campaign). The player synthesises T1–T3 — connected districts, read the
+ * lean + result.
  */
 const TUTORIAL_004: TutorialStep[] = [
   {
@@ -156,14 +167,14 @@ const TUTORIAL_004: TutorialStep[] = [
     advance: { on: "next" },
   },
   {
-    text: "Draw your four districts the way you have all along. Keep each one connected, and glance at the result to see who your lines elect — there's no score to chase here.",
+    text: "Get going — pick **District 2** and paint a full district's worth of precincts into it, keeping it connected. Watch the counter; glance at the result to see who your lines elect.",
     highlight: ["#district-toolbar", "#map-svg"],
-    advance: { on: "paint-count", district: 2, n: 5 },
+    advance: { on: "paint-count", district: 2, n: 32 },
   },
   {
-    text: "When your map's done, hit **Submit**. Then on to the real thing.",
-    highlight: "#btn-submit",
-    advance: { on: "submit" },
+    text: "You've drawn a district — you've got this. Hit **Done** and the map is yours: pan around, watch the **Map Validity** panel, and **Submit** when your four districts are balanced and connected. Then on to the real thing.",
+    readOnly: true,
+    advance: { on: "next" },
   },
 ];
 
@@ -290,6 +301,10 @@ function runOverlay(id: string, script: TutorialStep[], store: StoreLike): void 
   panel.setAttribute("aria-label", "Tutorial");
   const textEl = document.createElement("div");
   textEl.className = "tutorial-text";
+  // Live progress line for paint-count steps ("District 2 — 4 / 32 painted"). Hidden otherwise.
+  const progressEl = document.createElement("div");
+  progressEl.className = "tutorial-progress";
+  progressEl.style.display = "none";
   const controls = document.createElement("div");
   controls.className = "tutorial-controls";
   const nextBtn = document.createElement("button");
@@ -299,7 +314,7 @@ function runOverlay(id: string, script: TutorialStep[], store: StoreLike): void 
   skipBtn.className = "tutorial-skip";
   skipBtn.textContent = "Skip tutorial";
   controls.append(nextBtn, skipBtn);
-  panel.append(textEl, controls);
+  panel.append(textEl, progressEl, controls);
   document.body.appendChild(panel);
 
   nextBtn.addEventListener("click", () => {
@@ -366,15 +381,30 @@ function runOverlay(id: string, script: TutorialStep[], store: StoreLike): void 
     // Input is always locked while the coach is up: only the highlighted target(s), the painter,
     // and the map stay clickable (the player can always paint), plus Next/Skip at body level.
     // Everything else — the view toolbar, undo/redo, reset, etc. — is inert, so the player can't
-    // wander off whatever the guidance is pointing at.
+    // wander off whatever the guidance is pointing at. A `readOnly` step locks the map + painter
+    // too: nothing but the coach is clickable (used for a closing "click Done" beat).
     editorRoots.forEach((r) => r.classList.add("tutorial-paused"));
-    [...targets, ...selectorsToElements(["#map-svg", "#district-toolbar"])].forEach((el) =>
+    const alwaysInteractive = step.readOnly ? [] : selectorsToElements(["#map-svg", "#district-toolbar"]);
+    [...targets, ...alwaysInteractive].forEach((el) =>
       el.classList.add("tutorial-interactive"),
     );
 
+    // On the final step the "Next" button reads "Done" — it finishes the tutorial (and unlocks
+    // the editor) rather than stepping forward.
+    nextBtn.textContent = stepIdx === script.length - 1 ? "Done" : "Next →";
     nextBtn.style.display = step.advance.on === "next" ? "" : "none";
 
-    stepCleanup = setupAdvance(step, targets, advance, store);
+    // Paint-count steps show a live "X / N painted" counter so the player can see the goal and
+    // their progress toward it (the step otherwise looks locked until the unseen threshold trips).
+    const isPaintCount = step.advance.on === "paint-count";
+    progressEl.style.display = isPaintCount ? "" : "none";
+    if (!isPaintCount) progressEl.classList.remove("tutorial-progress-complete");
+    const reportProgress = (text: string, done: boolean) => {
+      progressEl.textContent = text;
+      progressEl.classList.toggle("tutorial-progress-complete", done);
+    };
+
+    stepCleanup = setupAdvance(step, targets, advance, store, reportProgress);
   }
 
   renderStep();
@@ -386,6 +416,7 @@ function setupAdvance(
   targets: HTMLElement[],
   advance: () => void,
   store: StoreLike,
+  reportProgress: (text: string, done: boolean) => void,
 ): () => void {
   switch (step.advance.on) {
     case "next":
@@ -418,14 +449,27 @@ function setupAdvance(
         for (const d of store.getState().assignments.values()) if (d === district) c += 1;
         return c;
       };
-      // Already satisfied? (defensive) — advance on next tick.
-      const unsub = store.subscribe(() => {
-        if (count() >= n) {
+      let advanceTimer = 0;
+      let fired = false;
+      let unsub = () => {};
+      const tick = () => {
+        const c = count();
+        const done = c >= n;
+        reportProgress(`District ${district} — ${Math.min(c, n)} / ${n} painted`, done);
+        if (done && !fired) {
+          fired = true;
           unsub();
-          advance();
+          // A short beat so the player sees the count reach the target before painting freezes
+          // and the coach advances to the closing "Done" step.
+          advanceTimer = window.setTimeout(() => advance(), 450);
         }
-      });
-      return () => unsub();
+      };
+      unsub = store.subscribe(tick);
+      tick(); // initial count + display (also handles an already-satisfied step)
+      return () => {
+        unsub();
+        if (advanceTimer) window.clearTimeout(advanceTimer);
+      };
     }
     case "auto": {
       const t = window.setTimeout(() => advance(), step.advance.ms);
