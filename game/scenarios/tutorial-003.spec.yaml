@@ -10,18 +10,20 @@
 #   Tutorial 3 is the FIRST ELECTORAL LAYER. It unveils the election-result panel TOGETHER
 #   with the Lean view (lean = who each precinct favors; the result = who wins each district —
 #   a causal pair), then the county view. The result is shown to *read* ("repaint and watch it
-#   move"), NOT to exploit — strategy is the capstone + the real scenarios. So the objective
-#   stays MECHANICAL (gates on district_count only): nothing can fail the player for a rule this
-#   tutorial doesn't teach.
+#   move"), NOT to exploit — there is no SEAT goal; strategy is the capstone + the real scenarios.
+#
+#   T3 still draws a LEGAL map: it gates district_count + population_balance + contiguity (the
+#   cumulative skill from T2). That's also what keeps the Map Validity panel visible — panels
+#   accrete once revealed (owner rule, 2026-06-25); the applicable-aware hiding must not re-hide
+#   a panel an earlier tutorial introduced.
 #
 #   New since T2: a little geography (a river — cosmetic scenery, districts may cross it), a
 #   partisan east/west LEAN, and counties. The guided overlay REVEALS the result
 #   panel + Lean view in one step, then the County view.
 #
 #   JUDGMENT CALLS (flagged for review — iterate freely):
-#     - 3 districts; gates district_count only (no balance/contiguity gate — T2 taught those;
-#       T3 is about reading the result). rules.contiguity: allowed to keep winnability simple
-#       and terrain-proof.
+#     - 3 districts; gates district_count + population_balance + contiguity (legal map) but no
+#       seat goal. Winning move = three wedges around the centre (BFS-verified balanced).
 #     - The CITY view step is descoped from this draft: it needs the city-limits overlay
 #       (GAME-096), which isn't built yet. The map already carries an urban core so the city
 #       reveal can be added later without a map change. The overlay reveals lean+result, then
@@ -148,15 +150,21 @@ assembly:
   hide_election_results: false       # ELECTORAL: the result panel exists; the overlay reveals it
   hide_view_toolbar: false           # the view toolbar exists; the overlay reveals lean + county
   rules:
-    population_tolerance: 0.15        # unused (no balance criterion) — a sane default
-    contiguity: allowed              # not gated here — T3 is about reading the vote, not rules
+    population_tolerance: 0.15        # generous — the player evens the districts out
+    contiguity: required             # carry T2's legal-map skill forward; keeps the validity panel up
   success_criteria:
-    # Mechanical objective: three districts in use, every precinct assigned. The result is
-    # shown to read, not to win-by — so nothing here gates on the electoral outcome.
+    # T3 still draws a LEGAL map (balanced + connected — the cumulative skill from T2) AND
+    # reads the vote. Gating balance + contiguity is what keeps the Map Validity panel visible
+    # (panels accrete once revealed). There is still no SEAT goal — the result is shown to read,
+    # not to win-by.
     - id: sc-district-count
       required: true
       description: All three districts are in use and every precinct is assigned.
       criterion: { type: district_count }
+    - id: sc-population-balance
+      required: true
+      description: All three districts have roughly equal population (within 15%).
+      criterion: { type: population_balance }
   narrative:
     character:
       name: You
@@ -178,8 +186,9 @@ assembly:
           you draw. They go together: lean tells you the ground, the result tells you the
           outcome — and the lines you draw decide it.
     objective: >
-      Draw three districts and read the result. There's no target to hit — repaint the lines
-      and watch who wins change, then submit when you've had a look.
+      Draw three balanced, connected districts — a legal map, like before — and read the result.
+      There's no seat to chase; repaint the lines, watch who wins change, and submit when it's
+      legal and you've had a look.
     epilogue: >
       That's the whole picture: precincts lean, and the district lines you draw turn those
       leanings into seats. The same voters can hand one party a majority of seats or the

@@ -143,7 +143,7 @@ const TUTORIAL_003: TutorialStep[] = [
     advance: { on: "click-target" },
   },
   {
-    text: "That's the whole picture. Draw your three districts and hit **Submit**.",
+    text: "That's the whole picture. Draw your three districts — keep them balanced and connected, like before — then hit **Submit**.",
     highlight: ["#district-toolbar", "#btn-submit"],
     advance: { on: "submit" },
   },
