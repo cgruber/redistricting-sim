@@ -133,7 +133,7 @@ const TUTORIAL_003: TutorialStep[] = [
     advance: { on: "paint-count", district: 2, n: 5 },
   },
   {
-    text: "**County** borders show the old administrative lines — another way to read the map.",
+    text: "**County** borders are the old administrative lines. Like the river, they're **cosmetic** — they don't affect your districts at all; they just help you read the map and ground where things are.",
     reveal: "#filter-county",
     highlight: "#filter-county",
     pauseInput: true,
