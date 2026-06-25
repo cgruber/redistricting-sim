@@ -144,5 +144,6 @@ assembly:
       That's the whole core loop: pick a district, paint precincts, and submit. Every
       scenario from here builds on exactly that.
 
-      Next, a slightly bigger map — one with a little geography on it, and a few new ways
-      to see what's going on. We'll add balancing and keeping districts connected as we go.
+      Next, a bigger map — and the first real rules. A legal map keeps its districts roughly
+      equal in population and each one a single connected piece, so we'll add balancing and
+      contiguity, with a Map Validity panel to help you track them.

@@ -958,7 +958,7 @@
       }
     ],
     "objective": "Divide Millbrook County into two districts — then submit.\n",
-    "epilogue": "That's the whole core loop: pick a district, paint precincts, and submit. Every scenario from here builds on exactly that.\nNext, a slightly bigger map — one with a little geography on it, and a few new ways to see what's going on. We'll add balancing and keeping districts connected as we go.\n"
+    "epilogue": "That's the whole core loop: pick a district, paint precincts, and submit. Every scenario from here builds on exactly that.\nNext, a bigger map — and the first real rules. A legal map keeps its districts roughly equal in population and each one a single connected piece, so we'll add balancing and contiguity, with a Map Validity panel to help you track them.\n"
   },
   "default_district_id": "d1",
   "hide_election_results": true,
