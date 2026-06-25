@@ -16,7 +16,7 @@ import {
 	renderResults,
 	renderValidityPanel,
 } from "./render/panels.js";
-import { startTutorialOverlay } from "./tutorial/overlay.js";
+import { restartTutorialOverlay, startTutorialOverlay } from "./tutorial/overlay.js";
 import { createGameStore } from "./store/gameStore.js";
 import {
 	evaluateCriteria,
@@ -818,6 +818,10 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		temporalStore.getState().clear();
 		resetConfirm!.classList.remove("visible");
 		btnReset!.disabled = false;
+		// Reset zeroes the whole scenario, not just the painted map: restart the guided tutorial
+		// from the top (no-op for non-guided scenarios). Guidance is skippable, so bringing it
+		// back on Reset is safe, useful production behavior.
+		restartTutorialOverlay(scenario, store);
 	});
 
 	// ── Submit / Evaluation (GAME-017) ────────────────────────────────────────
@@ -1494,21 +1498,6 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	if (btnDebugCoords && IS_DEBUG) {
 		btnDebugCoords.style.display = "";
 		btnDebugCoords.addEventListener("click", toggleCoordLabels);
-	}
-
-	// Debug: restart the scenario from scratch — including the guided tutorial. Reset alone
-	// only restores the map; once a tutorial's overlay is marked complete you can't re-watch it
-	// without this. Clears the saved WIP (so the map resets) and reloads with resetTutorial=1
-	// (so the intro re-shows and the guided overlay reruns).
-	const btnDebugRestart = document.getElementById("btn-debug-restart") as HTMLButtonElement | null;
-	if (btnDebugRestart && IS_DEBUG) {
-		btnDebugRestart.style.display = "";
-		btnDebugRestart.addEventListener("click", () => {
-			clearWip();
-			const url = new URL(window.location.href);
-			url.searchParams.set("resetTutorial", "1");
-			window.location.assign(url.toString());
-		});
 	}
 
 	btnKeepDrawing!.addEventListener("click", () => {

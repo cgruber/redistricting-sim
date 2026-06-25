@@ -36,6 +36,9 @@ export interface TutorialStep {
 
 const PANEL_ID = "tutorial-panel";
 
+/** Teardown of the currently-running overlay (if any), so Reset can restart it in place. */
+let activeOverlayTeardown: (() => void) | null = null;
+
 // ─── Step scripts (keyed by scenario id) ──────────────────────────────────────
 
 /** tutorial-001 — paint-only welcome (DESIGN-012). Selectors are current as of GAME-097. */
@@ -227,6 +230,25 @@ export function startTutorialOverlay(scenario: Scenario, store: StoreLike): void
   runOverlay(scenario.id, script, store);
 }
 
+/**
+ * Restart the guided overlay from step 1, in place — used by Reset, so resetting a tutorial
+ * zeroes the whole scenario (map *and* guidance), not just the painted map. No-op for
+ * non-guided scenarios or those without a script. Tears down any running overlay first and
+ * clears the per-scenario "complete" flag so the coach reappears.
+ */
+export function restartTutorialOverlay(scenario: Scenario, store: StoreLike): void {
+  if (scenario.guided !== true) return;
+  const script = SCRIPTS[scenario.id];
+  if (!script || script.length === 0) return;
+  activeOverlayTeardown?.();
+  try {
+    localStorage.removeItem(completeKey(scenario.id));
+  } catch {
+    /* ignore */
+  }
+  runOverlay(scenario.id, script, store);
+}
+
 function isComplete(id: string): boolean {
   try {
     return localStorage.getItem(completeKey(id)) === "1";
@@ -305,13 +327,20 @@ function runOverlay(id: string, script: TutorialStep[], store: StoreLike): void 
     editorRoots.forEach((r) => r.classList.remove("tutorial-paused"));
   }
 
-  function finish(): void {
+  // Tear down the overlay DOM/listeners WITHOUT marking it complete (used by restart).
+  function teardown(): void {
     clearStepDecorations();
     overlayAc.abort();
     panel.remove();
     document.querySelectorAll(".tutorial-reveal-hidden").forEach((el) =>
       el.classList.remove("tutorial-reveal-hidden"),
     );
+    if (activeOverlayTeardown === teardown) activeOverlayTeardown = null;
+  }
+  activeOverlayTeardown = teardown;
+
+  function finish(): void {
+    teardown();
     try {
       localStorage.setItem(completeKey(id), "1");
     } catch {
