@@ -51,8 +51,19 @@ export interface TerrainTileSpec extends HexPos {
 
 export interface TerrainSpec {
   tiles?: TerrainTileSpec[];
-  /** Position pairs; each pair names adjacent precincts separated by a river. */
+  /** Explicit river: position pairs, each naming adjacent precincts the river runs between. */
   river_edges?: [HexPos, HexPos][];
+  /**
+   * Generated river (GAME-100): the terrain stage routes a connected river from `from` to `to`,
+   * walking hex edges so it chains vertex-to-vertex and terminates at the rim (off-map) by
+   * construction. Anchors are a cardinal direction, "center", or {q,r}. Takes precedence over
+   * `river_edges` when present.
+   *
+   * `via` threads the river through one or more interior waypoints in order (each snapped to the
+   * nearest routable hex corner) — use it to shape a river with a deliberate bend instead of the
+   * shortest straight run. `from`/`to` still terminate at the rim; only the bends are pinned.
+   */
+  river?: { from: SettlementAnchor; to: SettlementAnchor; via?: SettlementAnchor[] };
 }
 
 // ─── Stage 2: Population ─────────────────────────────────────────────────────

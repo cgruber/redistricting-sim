@@ -1400,7 +1400,8 @@ test("tutorial-003 winnability: three balanced, connected wedges pass (district_
   await loadScenario(page, "tutorial-003");
   // T3 draws a LEGAL map: three districts balanced (±15%) + connected, plus reading the vote.
   // Carve three wedges around the centre — each gets a slice of the dense core + sparse rim, so
-  // all three balance (BFS-verified; a 45° rotation is best: +1 / -3 / +2%).
+  // all three balance (BFS-verified; a 45° rotation is best: -1 / +4 / -3%, comfortably within
+  // ±15% even with the routed river's riverside population ridge — GAME-100).
   await page.evaluate(() => {
     const store = (window as unknown as Record<string, { getState: () => {
       paintStroke: (ids: number[], d: number) => void;

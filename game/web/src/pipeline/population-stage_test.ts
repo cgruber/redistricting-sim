@@ -452,7 +452,9 @@ test("settlement: feature anchors (lakeside, riverside, coastal) resolve without
         { q: 3, r: -1, type: "lake" },
         { q: 3, r: -2, type: "sea" },
       ],
-      river_edges: [[{ q: 0, r: 0 }, { q: 1, r: 0 }]],
+      // A routed rim-to-rim river (GAME-100): explicit mid-land single edges are now per-se
+      // invalid (loose ends). We only need *some* river so the `riverside` anchor resolves.
+      river: { from: "north", to: "south" },
     },
   });
 

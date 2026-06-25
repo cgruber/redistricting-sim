@@ -22,6 +22,7 @@ import type {
 } from "../model/scenario.js";
 
 import type { HexPos, PipelineSpec } from "./spec-types.js";
+import { routeRiver, resolveRiverAnchor, validateRiverEdges } from "./river.js";
 
 // Flat-top axial hex direction vectors
 const HEX_DIRS: [number, number][] = [
@@ -44,7 +45,20 @@ export function generateTerrain(spec: PipelineSpec): PartialScenario {
   const posToId = buildPosIndex(precincts);
 
   const terrainTiles = buildTerrainTiles(terrain?.tiles ?? [], posToId);
-  const riverEdges = buildRiverEdges(terrain?.river_edges ?? [], posToId);
+
+  // River: route from intent (`terrain.river`) when present — a connected chain valid by
+  // construction — else use explicit `river_edges`. Either way, reject mid-land loose ends
+  // (a river must flow off-map / end in water, not stop ringed by precincts). GAME-100.
+  const riverPairs: [HexPos, HexPos][] = terrain?.river
+    ? routeRiver(
+        positions,
+        resolveRiverAnchor(terrain.river.from, positions),
+        resolveRiverAnchor(terrain.river.to, positions),
+        (terrain.river.via ?? []).map((v) => resolveRiverAnchor(v, positions)),
+      )
+    : (terrain?.river_edges ?? []);
+  if (riverPairs.length > 0) validateRiverEdges(positions, riverPairs);
+  const riverEdges = buildRiverEdges(riverPairs, posToId);
 
   const partial: PartialScenario = {
     format_version: "1",

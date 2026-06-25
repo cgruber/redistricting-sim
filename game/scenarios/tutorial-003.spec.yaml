@@ -54,8 +54,11 @@ map:
 
 # ── Stage 1b: Terrain (COSMETIC scenery) ──────────────────────────────────────
 #
-# A short river running down the centre of the Bend. Geography is cosmetic — districts
-# may cross it freely.
+# A river through the Bend with a deliberate bend: it enters at the NE rim, runs diagonally
+# down to the centre-west, then veers south to the bottom edge. Geography is cosmetic —
+# districts may cross it freely. The terrain stage ROUTES the river (GAME-100): it walks
+# precinct edges through the `via` waypoint, chaining vertex-to-vertex and terminating off-map
+# at both rims (no mid-land loose ends). T004 reuses this shape for familiarity.
 #
 # DRAFT NOTE: a coastline was planned too, but sea tiles must sit OUTSIDE the precinct
 # circle (the generator rejects tiles that overlap a precinct), so the coast needs
@@ -63,10 +66,8 @@ map:
 # alone carries "some geography" for now. (Slide copy below matches: river only.)
 
 terrain:
-  river_edges:
-    - [ { q: 0, r: 1 }, { q: 0, r: 2 } ]
-    - [ { q: 0, r: 2 }, { q: 0, r: 3 } ]
-    - [ { q: 0, r: 3 }, { q: 0, r: 4 } ]
+  # from: NE rim → via: centre-west → to: south rim (a diagonal-then-south dogleg).
+  river: { from: { q: 4, r: -5 }, via: [ { q: -2, r: 0 } ], to: { q: 0, r: 5 } }
 
 # ── Stage 2: Population ───────────────────────────────────────────────────────
 #

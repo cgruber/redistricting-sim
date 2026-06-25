@@ -39,6 +39,7 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [
+        ":river_lib",
         ":spec_types_lib",
         "//game/web/src/model:model_lib",
     ],
@@ -62,6 +63,7 @@ ts_project(
     declaration = True,
     deps = [
         ":terrain_generator_lib",
+        ":river_lib",
         ":spec_types_lib",
         "//game/web/src/model:model_lib",
         "//game/web/src/testing:test_runner_lib",
@@ -76,6 +78,55 @@ js_test(
     entry_point = "terrain-generator_test.js",
     data = [
         ":terrain_generator_test_lib",
+        ":terrain_generator_lib",
+        ":river_lib",
+        ":spec_types_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# ── river_lib: GAME-100 river geometry — validation + routing ────────────────
+
+ts_project(
+    name = "river_lib",
+    srcs = ["river.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [":spec_types_lib"],
+    visibility = ["//game/web:__subpackages__"],
+)
+
+build_test(
+    name = "river_typecheck_test",
+    targets = [":river_lib"],
+    visibility = ["//visibility:public"],
+)
+
+ts_project(
+    name = "river_test_lib",
+    srcs = ["river_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":river_lib",
+        ":terrain_generator_lib",
+        ":spec_types_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+js_test(
+    name = "river_test",
+    entry_point = "river_test.js",
+    data = [
+        ":river_test_lib",
+        ":river_lib",
         ":terrain_generator_lib",
         ":spec_types_lib",
         "//game/web/src/model:model_lib",

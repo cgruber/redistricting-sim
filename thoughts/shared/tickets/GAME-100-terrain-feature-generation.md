@@ -36,34 +36,49 @@ edges" from the spec), so feature generation was never scoped — not abandoned,
 
 ## Goals / Acceptance Criteria
 
-### A. River-validity constraint (foundational guardrail — can land first)
+### A. River-validity constraint (foundational guardrail — can land first) ✅ DONE
 
-- [ ] Validate river edges at generation time (`buildRiverEdges` or a `validateScenario` pass):
+- [x] Validate river edges at generation time (`buildRiverEdges` or a `validateScenario` pass):
       a river is a set of shared-edge segments; reject any configuration where a river vertex
       is a **loose end** — i.e. a degree-1 river vertex that is **not** (a) on the map boundary
       (flows off-map), (b) adjacent to a water tile (sea/lake), or (c) shared with another river
       vertex (part of a connected chain). Teeny disconnected segments are per-se invalid.
-- [ ] Clear error naming the offending vertex/edge so spec authoring fails fast.
-- [ ] Unit tests: a connected rim-to-rim chain passes; a single stub fails; a chain ending in a
-      lake passes; a chain with a mid-air loose end fails.
+      → `river.ts` `validateRiverEdges` (degree-1 corner ringed by ≥3 precincts ⇒ throw).
+- [x] Clear error naming the offending vertex/edge so spec authoring fails fast.
+      → error names the offending corner: "River has a loose end at corner <x,y>: …".
+- [x] Unit tests: a connected rim-to-rim chain passes; a single stub fails; a chain ending in a
+      lake passes; a chain with a mid-air loose end fails. → `river_test.ts` (6 tests) +
+      `terrain-generator_test.ts` (routed-river passes; mid-land single edge throws /loose end/).
 
 ### B. Terrain feature generation
 
-- [ ] **River routing:** from high-level intent (e.g. `river: { from: <anchor/feature>, to:
+- [x] **River routing:** from high-level intent (e.g. `river: { from: <anchor/feature>, to:
       <sea|lake|off-map> }`), generate a **connected** river_edge chain that satisfies the
       validity constraint by construction (walks the hex-edge graph; starts at the source —
       which may be anywhere, incl. a mountain corner — and ends in water or off-map).
+      → `river.ts` `routeRiver` (BFS over internal-edge graph, rim-to-rim) + `resolveRiverAnchor`
+      (cardinal / "center" / {q,r}); wired into `terrain-generator.ts`; `TerrainSpec.river`.
 - [ ] **Coastline:** from `coast: <side>` (or a sea region), place sea tiles along the chosen
       rim. Note sea tiles may sit on a **rim hex-edge** (shared edge of the circle), not only
       fully outside it (`buildTerrainTiles` already allows tiles outside the precinct set).
 - [ ] **Mountains / lakes:** place from intent (a range on a side; a lake at/near an anchor),
       producing the foothill/lakeside fringes the renderer already supports.
-- [ ] Generated terrain feeds the population stage's suitability (riverside/coastal/lakeside/
+- [x] Generated terrain feeds the population stage's suitability (riverside/coastal/lakeside/
       mountain-adjacent weights — already consumed) so settlements/density respond to it.
+      → routed river edges flow into `population-stage.ts` riverside (1.3×) suitability; T3/T4
+      regenerated with the river-fed field, both still balanced/winnable (e2e + arithmetic check).
 - [ ] Optionally let terrain inform demographics (e.g. coastal vs inland lean) — spec-driven,
       off by default.
-- [ ] Hand-authored exact `tiles`/`river_edges` still supported (generation is opt-in via the
-      higher-level intent fields).
+- [x] Hand-authored exact `tiles`/`river_edges` still supported (generation is opt-in via the
+      higher-level intent fields). → `terrain.river` takes precedence; `river_edges` still honored
+      (and now also validated for loose ends).
+
+### Progress (2026-06-25)
+
+River half landed: validity gate (A) + river routing (B) + tutorial-003/004 rivers fixed
+(regenerated as routed rim-to-rim chains; the old broken stub rivers are gone). Coastline,
+mountain/lake generation, and the optional terrain→demographics hook remain — ticket stays open
+for those. Coastlines are still deferred to the visual pass in both tutorial specs.
 
 ## Design notes / principles (from owner)
 
