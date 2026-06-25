@@ -57,6 +57,7 @@ const SCENARIO_MANIFEST = [
 	{ id: "scenario-008", title: "Both Sides Unhappy" },
 	{ id: "scenario-009", title: "Cats vs. Dogs" },
 	{ id: "tutorial-003", title: "Hawthorn Bend: Reading the Vote" },
+	{ id: "tutorial-004", title: "Fairhaven: Putting It Together" },
 ] as const;
 
 type ManifestEntry = (typeof SCENARIO_MANIFEST)[number];

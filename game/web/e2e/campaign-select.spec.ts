@@ -27,13 +27,13 @@ test("campaign select: clicking Educational Campaign navigates to ?campaign=educ
   await expect(page).toHaveURL(/campaign=educational/);
 });
 
-test("campaign select: progress shows 0 / 3 for Tutorial with fresh localStorage", async ({ page }) => {
+test("campaign select: progress shows 0 / 4 for Tutorial with fresh localStorage", async ({ page }) => {
   await page.goto("/?view=campaigns");
   await page.evaluate((key) => localStorage.removeItem(key), PROGRESS_KEY);
   await page.reload();
   await expect(page.locator("#campaign-select")).toBeVisible({ timeout: 10_000 });
-  // GAME-082: tutorial-003 (geographic-features tour) is now part of the tutorial campaign.
-  await expect(page.locator(".campaign-card").first()).toContainText("0 / 3 scenarios complete");
+  // The tutorial campaign has four scenarios (T1 core loop → T2 legal map → T3 reading the vote → T4 capstone).
+  await expect(page.locator(".campaign-card").first()).toContainText("0 / 4 scenarios complete");
 });
 
 test("campaign select: Back button is present", async ({ page }) => {

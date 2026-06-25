@@ -146,10 +146,34 @@ const TUTORIAL_003: TutorialStep[] = [
   },
 ];
 
+/**
+ * tutorial-004 — "Capstone" (DESIGN-012 / GAME-099). A light orientation over a fuller map
+ * with every tool visible from the start (nothing hidden, no `reveal`): orient → paint →
+ * submit, then step back. The player synthesises T1–T3 — draw connected districts, read the
+ * lean + result — as the bridge to the real campaign scenarios.
+ */
+const TUTORIAL_004: TutorialStep[] = [
+  {
+    text: "The capstone — everything you've learned, one map. Nothing's hidden: the **Map Validity** panel, the **Lean** view, the **County** borders, and the **election result** are all here from the start.",
+    advance: { on: "next" },
+  },
+  {
+    text: "Draw your four districts the way you have all along. Keep each one connected, and glance at the result to see who your lines elect — there's no score to chase here.",
+    highlight: ["#district-toolbar", "#map-svg"],
+    advance: { on: "paint-count", district: 2, n: 5 },
+  },
+  {
+    text: "When your map's done, hit **Submit**. Then on to the real thing.",
+    highlight: "#btn-submit",
+    advance: { on: "submit" },
+  },
+];
+
 const SCRIPTS: Record<string, TutorialStep[]> = {
   "tutorial-001": TUTORIAL_001,
   "tutorial-002": TUTORIAL_002,
   "tutorial-003": TUTORIAL_003,
+  "tutorial-004": TUTORIAL_004,
 };
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
