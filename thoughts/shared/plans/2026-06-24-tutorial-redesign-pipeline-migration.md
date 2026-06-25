@@ -42,27 +42,31 @@ highlights UI, sequences steps, and can gate ("unlock") views as they're taught.
 - **Interactivity: build the guided-overlay engine** (not narrative-only). Reuse the
   DESIGN-012 step model; reconcile it with the current toolbar.
 - **City view: build a basic city-limits overlay first** (cosmetic, reuse the county
-  flood-fill/border mechanism), so T2 can teach all three views (lean/county/city).
-- **Pedagogy progression** (game mechanics, not electoral):
-  - **T1 "The Welcome" — paint + submit.** Smallest *hex-circle* map. Select a
-    district, paint precincts, undo/redo, submit. Forgiving criteria.
-  - **T2 "The Map & the Views" — features + views.** `hex_circle` r=4 → 61 precincts,
-    3 districts; cosmetic river + coast; partisan lean present (read-only, no `seat_count`);
-    2–3 counties + one urban core. Introduce the View toolbar (lean / county / city),
-    **revealing each in sequence within the tutorial only** — real scenarios keep all
-    views always-available (no cross-scenario gating). Objective stays mechanical (3
-    balanced contiguous districts). *(locked)*
-  - **T3 "Reading the Rules"** — population-balance bars + contiguity warnings: how the
-    game tells you a map is legal and how to fix it. *(refine during T2 build)*
-  - **T4 "Capstone"** — bigger map, more districts, all tools, "draw a legal map" as the
-    bridge to electoral scenarios. *(refine during T2 build)*
+  flood-fill/border mechanism), so the views tutorial can teach all three (lean/county/city).
+- **Pedagogy progression — one new concept per tutorial** (revised 2026-06-24 with the user;
+  each tutorial introduces exactly one idea, and the electoral layer is unveiled deliberately):
+  - **T1 "The Core Loop" — paint + submit.** Smallest *hex-circle* map. Select a district,
+    paint, undo/redo, submit. Pre-electoral; gates on `district_count` only. *(shipped — GAME-097)*
+  - **T2 "A Legal Map" — contiguity + balanced population.** Slightly bigger map; introduce
+    the **validity panel** (balance bars + contiguity warnings) — what makes a map *legal*
+    and how to fix it. Gates on `district_count` + `population_balance` + contiguity. Still
+    **pre-electoral**: `hide_election_results: true`, `hide_view_toolbar: true` (no views yet;
+    the validity panel shows because balance/contiguity are now enforced). *(locked)*
+  - **T3 "Reading the Vote" — lean view + election result (paired) + county/city views.**
+    The **first electoral layer**: unveil the election-result panel **together with** the
+    lean view (lean shows where voters lean; the result shows who wins each district — they
+    belong together). County + city views ride along as map-reading context, plus terrain
+    (river/coast). `hide_election_results: false`, `hide_view_toolbar: false`; the overlay
+    **reveals** lean + result + county + city in sequence. *(locked)*
+  - **T4 "Capstone"** — bigger map, more districts, all tools in hand; the bridge to the
+    real electoral scenarios. *(refine when reached)*
 
 ### T1 spec (locked)
 
 - `map.shape: hex_circle`, `radius: 3` → **37 precincts** (replaces the 30-precinct
   rectangle; now an unmistakable circular hex silhouette, halves cleanly into two
   balanced contiguous districts).
-- `terrain: {}` — no features (features arrive in T2).
+- `terrain: {}` — no features (terrain/views arrive in T3).
 - 2 districts; neutral 50/50 demographics, hidden via `hide_election_results`.
 - **No untaught failure modes:** gates on `district_count` only; balance + contiguity are
   not enforced (no balance criterion; `contiguity: allowed`) — they're taught later. The
@@ -72,27 +76,27 @@ highlights UI, sequences steps, and can gate ("unlock") views as they're taught.
 
 ## Steps (staged; one PR per ticket)
 
-1. **GAME-096 — Basic city-limits overlay.** Add a cosmetic `city` overlay reusing the
-   county border mechanism; wire a third Overlays entry into the View toolbar. No
-   gameplay effect (cosmetic, like county). Tests: overlay renders, toggle persists.
-2. **GAME-097 — Tutorial pipeline migration + T1 content.** Author `tutorial-001.spec.yaml`
-   (the locked T1 spec), regenerate JSON, retire `gen-tutorial-*.main.kts`. Establish the
-   tutorial-spec conventions (flag, no-demographics path). T2–T4 specs follow as their
-   pedagogy is finalized.
-3. **DESIGN-012 (revise) — overlay UX, reconciled.** Update the step model + highlight
-   selectors to the current toolbar (`aria-checked` radios / `aria-pressed` toggles),
-   define view-unlock gating semantics. Sign off before engine build.
-4. **GAME-076 (revise) — overlay engine + T1 script.** Build the engine (step sequencing,
-   highlight/dim, input-pause, skip/persist, `?resetTutorial=1`) and the revised T1 step
-   script against the new 37-precinct map + toolbar.
-5. **GAME-077 — T2 guided mode.** Author `tutorial-002.spec.yaml` (bigger map + terrain),
-   the T2 step script (lean/county/city views, highlight + unlock), reusing the engine.
-6. **T3 / T4** — new tickets opened once their pedagogy is finalized (rules-reading +
-   capstone). Author specs + step scripts.
+1. **GAME-097 — Tutorial pipeline migration + T1 content.** *(done — PR #273.)* T1 on the
+   pipeline; established the tutorial-spec conventions + paint-only chrome flags.
+2. **DESIGN-012 (revised) — guided-overlay UX spec.** Step model, `guided: true` activation,
+   highlight/pause/skip, reveal-target action, and the T1–T4 step scripts. *(revised; sign off.)*
+3. **GAME-076 — overlay engine + T1 paint-only script.** Build the engine (step sequencing,
+   highlight/dim, input-pause, skip/persist, `?resetTutorial=1`, `reveal` action, `guided`
+   flag) and T1's 5-step script. Independent of the T2–T4 content reshuffle.
+4. **GAME-077 (re-scoped) — tutorial-002 "A Legal Map".** Author `tutorial-002.spec.yaml`
+   (contiguity + balanced population; validity panel shown; `hide_election_results` +
+   `hide_view_toolbar`; pre-electoral) + its guided script. Reuses the engine.
+5. **GAME-096 — Basic city-limits overlay.** Cosmetic `city` overlay (reuse county border
+   mechanism); third Overlays toolbar entry. **Now a T3 prerequisite** (the views tutorial).
+6. **GAME-098 (new) — tutorial-003 "Reading the Vote".** Author `tutorial-003.spec.yaml`
+   (terrain; partisan lean; counties + urban core) + its guided script that **reveals the
+   election-result panel together with the lean view**, then county + city. First electoral
+   layer. Needs GAME-096.
+7. **GAME-099 (new) — tutorial-004 "Capstone".** Full map, all tools; bridge to scenarios.
 
-Sequencing rationale: city overlay (1) and pipeline conventions (2) are prerequisites
-for the T2 engine work; T1 (4) proves the engine on the simplest map before T2 (5)
-exercises views + unlock together.
+Sequencing rationale: the engine (3) + T1 prove the overlay on the simplest map; T2 (4) is
+pre-electoral and needs no new infra; the city overlay (5) gates T3 (6), which is the first
+tutorial to exercise the `reveal` action + the electoral panels.
 
 ## Risks / mitigations
 

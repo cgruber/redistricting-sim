@@ -86,7 +86,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `CI-001-github-action-ticket-close-sync.md` | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
 | `DIST-001-steam-deployment-research.md` | distribution, platform | Research Steam free/educational program, achievements API, web-vs-Steam tradeoffs |
 | `AGENT-003-infra-pr-review-bot-comment-handling.md` | agentic workflow, infra | Propose bot comment handling (Copilot, CodeQL) to infra pr-review-cycle workflow |
-| `DESIGN-004-legend-layout.md` | design, UX | Move legend to horizontal strip above map; free sidebar space for data panels |
 | `DESIGN-005-population-dot-density-overlay.md` | design, rendering | Population dot density overlay: dot count per precinct proportional to population; hue-aware dot color; colorblind-safe palette |
 | `DESIGN-006-zoom-adaptive-dot-density.md` | design, rendering | Zoom-adaptive dot density scaling + person glyph threshold (refinement on DESIGN-005, possibly post-v1) |
 | `DESIGN-007-dimensional-dot-map-demographic-overlay.md` | design, rendering | Dimensional dot map: demographic dimension switching (Option B adaptive encoding) + sorted placement toggle |
@@ -104,12 +103,12 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-071-audio-character-assignment.md` | game, audio, content | Per-scenario character/audio inventory; audio clip selection per type; timing calibration; stub resolution |
 | `GAME-072-optional-criterion-neutral-audio.md` | game, audio | Neutral/meh audio clip for optional criteria that fail — party-disapprove is too strong for a missed bonus |
 | `GAME-074-criteria-only-validity-model.md` | game, architecture | Collapse dual validity/criteria system; population_balance gains tolerance field; contiguity becomes opt-in criterion; remove isMapSubmittable/buildValidityRows/mapIsValid |
-| `DESIGN-012-tutorial-overlay-ux.md` | design, UX, tutorial | Tutorial overlay UX spec: step sequencing model, highlight mechanics, input-pause semantics, skip/persist, tutorial-001 step script |
+| `DESIGN-012-tutorial-overlay-ux.md` | design, UX, tutorial | Guided-overlay engine UX spec (revised 2026-06-24): step model, `guided:true` activation, highlight/pause/skip, reveal-target action, + tutorial-001 paint-only and tutorial-002 view-reveal step scripts. Feeds GAME-076/077 |
 | `DESIGN-013-vra-scenario-design.md` | design, content | VRA scenario design: "The 55% Problem" (Bethune-Hill dual-failure zone) and proxy-only redistricting post-Callais |
 | `DESIGN-014-nonpartisan-content-framing.md` | design, content | Non-partisan content guidelines: source standards, narrative language, naming conventions, about-page audit; prerequisite for VRA scenario authoring |
 | `DESIGN-015-information-density-redesign.md` | design, UX | Layout redesign for 5+ districts: evaluate map overlays, HUD strip, tabbed sidebar; specify where GAME-080 demographic stat lives; DESIGN-004 fate |
-| `GAME-076-tutorial-001-walkthrough.md` | game, UX, tutorial | Tutorial-001 guided walkthrough: overlay engine + 9-step script (district select → paint → undo/redo → UI tour → submit) |
-| `GAME-077-tutorial-002-guided-mode.md` | game, UX, tutorial, content | Tutorial-002 "The Map & the Views": hex-circle r=4 (61 prec, 3 dist) + river/coast terrain; guided reveal of lean/county/city views (reveal-within-tutorial). Game mechanics, not electoral. See plan 2026-06-24-tutorial-redesign |
+| `GAME-076-tutorial-001-walkthrough.md` | game, UX, tutorial | Guided-overlay engine (`guided:true` activation, step model, highlight/pause/skip, reveal action) + tutorial-001 paint-only 5-step script (orient → pick D2 → paint → undo → submit). Per revised DESIGN-012 |
+| `GAME-077-tutorial-002-guided-mode.md` | game, UX, tutorial, content | Tutorial-002 "A Legal Map": contiguity + balanced population + the validity panel; gates balance/contiguity; pre-electoral (hide_election_results+hide_view_toolbar). Re-scoped 2026-06-24 (views moved to GAME-098). See plan 2026-06-24-tutorial-redesign |
 | `GAME-078-vra-scenarios-implementation.md` | game, content | Implement VRA scenarios: Scenario A + Scenario B; terrain features; proxy-data mechanic; hides race demographics; result-screen reveal |
 | `GAME-079-scenario-002-playability-tuning.md` | game, content | Tighten scenario-002 — trivially-easy first educational campaign scenario requires genuine engagement |
 | `GAME-080-district-demographic-rollup.md` | game, UX | Live per-district demographic stat derived from criteria (majority_minority → show % of target group); compact line under district button; updates on paint |
@@ -119,14 +118,17 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-084-map-generation-pipeline.md` | game, tooling | Spec-driven staged pipeline (terrain→population→demographics→assembler); single scenario JSON format throughout; requires loader validation split |
 | `GAME-092-scenario-map-editor.md` | game, tooling, UX | Visual editor to hand-tweak generated scenarios — click hex edges for rivers, place terrain tiles, export to JSON. Motivated by hand-injecting scenario-002's river via jq. Design-first |
 | `GAME-090-settlement-density-realism.md` | game, tooling | Settlement density realism follow-ons: leapfrog/exurban developments, sharper plateau edge, easier non-circular cores. Plateau profile + big urban/rural ratio already landed in GAME-088 |
-| `GAME-096-city-limits-overlay.md` | game, rendering, UX | Basic cosmetic city-limits overlay (reuse county border mechanism); third View-toolbar Overlays entry; no gameplay effect. Prerequisite for tutorial-002's lean/county/city view set |
-| `GAME-097-tutorial-pipeline-migration.md` | game, tooling, content | Migrate tutorials onto the pipeline (spec.yaml→JSON)+pedagogical edits; tutorial-001 = hex-circle r=3 (37 prec) paint+submit welcome; retire gen-tutorial-*.main.kts. See plan 2026-06-24-tutorial-redesign |
+| `GAME-096-city-limits-overlay.md` | game, rendering, UX | Basic cosmetic city-limits overlay (reuse county border mechanism); third View-toolbar Overlays entry; no gameplay effect. Prerequisite for tutorial-003's (GAME-098) lean/county/city view set |
+| `GAME-098-tutorial-003-reading-the-vote.md` | game, UX, tutorial, content | Tutorial-003 "Reading the Vote": first electoral layer — reveal the election-result panel together with the lean view, then county/city; terrain + partisan lean + counties/urban core. Reuses overlay engine + reveal action; needs GAME-096. See plan 2026-06-24-tutorial-redesign |
+| `GAME-099-tutorial-004-capstone.md` | game, UX, tutorial, content | Tutorial-004 "Capstone": full map, all tools visible (nothing hidden); orient-then-free-play; bridge to real electoral scenarios. Pedagogy refined when reached. See plan 2026-06-24-tutorial-redesign |
 ---
 
 ## Resolved
 
 | Summary | Resolution |
 |---|---|
+| DESIGN-004: legend layout | Obsolete — won't do. Legend removed game-wide in GAME-097 (#273); the paint toolbar is the legend, so there's nothing to relocate |
+| GAME-097: tutorial pipeline migration + tutorial-001 | tutorial-001 now pipeline-generated (`tutorial-001.spec.yaml`→json): 37-precinct hex circle, paint-and-submit welcome. Pre-electoral/paint-only conventions: `hide_election_results`+`hide_view_toolbar` flags, applicable-aware validity panel, balance opt-in via `isMapSubmittable`, legend removed game-wide (paint toolbar=legend). Gates on `district_count` only (no untaught failure modes). Overlay-activation convention deferred to GAME-076. PR #273 |
 | GAME-091: scenario-002 teaching narrative | Rewrote scenario-002 intro to teach votes≠seats + packing (old text was stale for the new field); added `narrative.epilogue` (schema→assembler→loader→result screen) — a teaching debrief revealed on a win explaining packing/cracking neutrally. e2e asserts the debrief shows |
 | GAME-095: district paint toolbar | Moved district-selection buttons from the header into a left-side expandable toolbar over the map (#district-toolbar), mirroring GAME-093: "Paint Districts" toggle, full "District N" labels expanded / number on its color collapsed, theme tooltip, rounded buttons. Header "Draw district:" + buttons removed. Shipped in the GAME-093 PR (#269) |
 | GAME-094: result-screen overflow | Result card capped at 90vh; criteria list + epilogue scroll (overflow-y) so they can't push it off-screen. Teaching epilogue moved to a second #result-debrief panel reached via "Continue →" on a win (with "← Back"/"Next Scenario →"); no-epilogue wins still go straight to "Next Scenario →". e2e updated |

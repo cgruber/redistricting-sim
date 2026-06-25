@@ -1,6 +1,6 @@
 ---
 id: DESIGN-012
-title: Tutorial overlay UX — step-by-step guided walkthrough design
+title: Tutorial overlay UX — guided walkthrough engine (step model, activation, scripts)
 area: design, UX, tutorial
 status: open
 created: 2026-05-18
@@ -8,110 +8,172 @@ created: 2026-05-18
 
 ## Summary
 
-Design the step-by-step tutorial overlay system that guides new players through the game UI
-during tutorial-001 and tutorial-002. The overlay displays contextual instructions in the
-upper-right of the map (over the map layer, not in the sidebar), highlights relevant UI
-elements, optionally pauses input, and advances through a scripted sequence. This design doc
-must answer: sequencing model, highlight mechanics, input-pause semantics, skip/dismiss rules,
-skip-tutorial persistence, and the content format for tutorial steps — before GAME-076
-implementation begins.
+Design the guided-overlay engine that walks a new player through the game UI during the
+tutorials. The overlay shows a contextual instruction panel over the map, highlights the
+relevant UI element, optionally pauses input, can **reveal** a control that started hidden,
+and advances through a scripted sequence. This doc fixes the step model, the activation
+convention, highlight/pause/skip semantics, and the **step scripts for the full 4-tutorial
+arc** (T1 Core Loop · T2 A Legal Map · T3 Reading the Vote · T4 Capstone) — the contract
+GAME-076 (engine + T1), GAME-077 (T2), GAME-098 (T3), and GAME-099 (T4) implement against.
 
-## Design questions to resolve
+**This is a full revision (2026-06-24).** The original spec predated the toolbar refactor
+and the tutorial redesign: it targeted removed header buttons (`#btn-view-toggle`,
+`#btn-county-borders`) and walked the player through the validity panel / lean / county
+views. Those no longer apply — tutorial-001 is now **paint-only** (no view toolbar, no
+validity/results panels; see GAME-097), and the view lesson moved to tutorial-002.
 
-1. Advance triggers: click-target only, or also any-click / auto-advance-after-N-seconds?
-2. Highlight mechanism: CSS ring/glow on target + dim surroundings, or pointer arrow, or both?
-3. Can a highlight target be a hex region (the map itself) or only named elements?
-4. Panel repositioning: does the panel move if it would obscure the highlighted element?
-5. Input pause granularity: block all input, or only non-target input?
+See plan: `thoughts/shared/plans/2026-06-24-tutorial-redesign-pipeline-migration.md`.
 
-## Positioning and layout spec
+## Activation — `guided: true` scenario flag
 
-- Overlay panel: upper-right corner of the map SVG, over the map layer
-- Semi-transparent dark background (`rgba(0,0,0,0.75)` or similar)
-- Panel width ~220–260px; readable without obscuring map center
-- If highlighted element is in upper-right, panel may shift left or downward (anti-obstruction)
+- A scenario opts into the walkthrough with **`guided: true`** in its spec (plumbed
+  spec → assembler → scenario → loader, like `hide_view_toolbar`). The engine runs the
+  overlay only for guided scenarios that have a registered step script.
+- Non-guided scenarios show no overlay and pay no cost.
+- Skip/persist: a "Skip tutorial" control is always visible while the overlay runs.
+  Completing or skipping sets `localStorage["tutorial-<scenarioId>-complete"]`; the overlay
+  is not re-shown after that (courtesy skip on replay). `?resetTutorial=1` clears the flags.
 
 ## Step data model
 
-Each tutorial step is an object:
-
 ```typescript
 interface TutorialStep {
-  text: string;                    // instruction text shown in panel
-  highlight?: string;              // CSS selector for element to highlight
-  pauseInput: boolean;             // block all non-target interactions
-  advanceTrigger:
-    | { type: "click-target" }     // advance when highlighted element is clicked
-    | { type: "any-map-click" }    // advance on any precinct click
-    | { type: "auto"; delayMs: number }  // advance after N ms
-    | { type: "condition"; event: string }  // advance on named game event
-  ;
+  text: string;                      // instruction copy shown in the panel
+  highlight?: string;                // CSS selector to ring + focus attention on
+  reveal?: string;                   // CSS selector to UN-HIDE before highlighting (see below)
+  pauseInput?: boolean;              // block all input except the advance target (default false)
+  advance:
+    | { on: "click-target" }         // advance when the highlighted element is clicked
+    | { on: "any-map-click" }        // advance on any precinct click
+    | { on: "paint-count"; n: number }   // advance once ≥ n precincts have been (re)painted
+    | { on: "submit" }               // advance when the map is submitted (terminal)
+    | { on: "auto"; ms: number }     // advance after a delay
+    | { on: "next" };                // advance on an explicit "Next" button in the panel
 }
+// A script is an ordered TutorialStep[] registered by scenario id.
 ```
 
-Tutorial is a named array of steps keyed by scenario ID or campaign type.
+## Reveal-target action (drives tutorial-002's "unlock the views")
 
-## Highlight mechanics
+- The engine collects every `reveal` selector across a script and **hides those controls on
+  load** (non-destructive: a `tutorial-hidden` class / `display:none`). Each control is
+  un-hidden when its step fires. So a script that reveals `#filter-lean`, `#filter-county`,
+  `#filter-city` makes the view toolbar open showing **only Districts**, then surfaces each
+  view as it's taught.
+- Reveal is **tutorial-local**: in non-guided scenarios nothing is hidden — all views are
+  always available (the locked "reveal within the tutorial only" decision). No cross-scenario
+  gating.
+- Note this is distinct from `hide_view_toolbar` (GAME-097), which hides the *whole* toolbar
+  for paint-only T1. T2 sets `hide_view_toolbar: false` and uses `reveal` per control.
 
-- Target element receives a CSS class (e.g. `tutorial-highlight`) that adds a glowing ring
-- All other interactive elements receive a `tutorial-dimmed` class (reduced opacity, pointer-events: none)
-- Highlight must work for: buttons, sidebar panels, the map hex area
-- Highlighting a specific precinct: use precinct ID to locate the SVG path and apply ring
-- Highlight is non-destructive: CSS overlay only, does not affect element functionality
+## Highlight & input-pause mechanics
 
-## Input pause semantics
+- **Highlight:** target gets a `tutorial-highlight` class (glowing ring); the rest get
+  `tutorial-dimmed` (reduced opacity). Works for: a button id, the `#map-svg` hex area, a
+  specific `.district-btn`. Purely additive CSS — never alters behavior.
+- **Stable hooks:** the district paint buttons are dynamic `.district-btn` with no per-id;
+  GAME-076 must add a stable hook (e.g. `data-district="2"`) so steps can target "District 2".
+- **Input pause:** when `pauseInput`, all map painting and buttons are inert except the
+  advance target (`pointer-events:none` + `not-allowed` cursor; blocked clicks silently
+  ignored). **Escape and Skip stay active regardless.**
+- **Panel:** instruction panel sits over the map (upper area), semi-transparent dark
+  background, ~240px wide; shifts to avoid covering the highlighted element.
 
-- When `pauseInput: true`: all map painting and button interactions blocked except the
-  designated advance target
-- Escape key and "Skip tutorial" button remain active during any pause
-- Visual affordance: blocked elements show `not-allowed` cursor
-- Blocked click attempts are silently ignored (no error, no visual feedback)
+## tutorial-001 step script — paint-only welcome (the core loop)
 
-## Skip / disable
+T1 is hide_view_toolbar + hide_election_results + district_count-only. The script teaches
+*only* select → paint → submit. (Selectors: `[data-district="2"]` = District 2 paint button,
+`#map-svg` = map, `#btn-undo`, `#btn-submit`.)
 
-- "Skip tutorial" button always visible in tutorial overlay panel
-- Skipping marks tutorial as completed in localStorage key `tutorial-<scenarioId>-complete`
-- Tutorial not re-shown after completion on replay (courtesy skip)
-- Tutorial campaign remains accessible; skip does not remove it
-- Reset: `?resetTutorial=1` URL param clears localStorage flag (for testing / fresh replays)
-- Full settings-panel reset hookup deferred to GAME-070 / settings sprint
+| # | Text (gist) | highlight | pause | advance |
+|---|-------------|-----------|-------|---------|
+| 1 | "Welcome. This whole county is District 1 — your job is to split it into two." | — | no | next |
+| 2 | "Pick **District 2** from the painter on the left." | `[data-district="2"]` | yes | click-target |
+| 3 | "Now click precincts to paint them into District 2." | `#map-svg` | yes | paint-count n≈5 |
+| 4 | "Changed your mind? **Undo** steps back." | `#btn-undo` | no | next |
+| 5 | "When the county is split into two districts, **Submit**." | `#btn-submit` | no | submit (ends) |
 
-## Tutorial-001 step script (proposed — finalize during GAME-076 implementation)
+No view/lean/county/validity steps — none exist in T1.
 
-| Step | Text | Highlight | Pause | Advance |
-|------|------|-----------|-------|---------|
-| 1 | "Welcome! Click **District 2** to start painting." | `#btn-district-2` | yes | click-target |
-| 2 | "Now click precincts on the map to paint them as District 2." | map hex area | yes | condition: 5-precincts-painted |
-| 3 | "Made a mistake? Click **Undo** to go back." | `#btn-undo` | yes | click-target |
-| 4 | "**Redo** restores changes you undid." | `#btn-redo` | yes | click-target |
-| 5 | "This panel shows map validity — all districts must be contiguous and balanced." | validity panel | no | auto 4000ms |
-| 6 | "Hover any precinct to see its population and lean data." | sidebar precinct panel | no | auto 4000ms |
-| 7 | "Toggle between **District view** and **Lean view** here." | `#btn-view-toggle` | yes | click-target |
-| 8 | "**County borders** shows county boundaries as an overlay." | `#btn-county-borders` | no | auto 3000ms |
-| 9 | "When you're happy with your map, click **Submit**." | `#btn-submit` | no | auto 2000ms (tutorial ends) |
+## tutorial-002 step script — "A Legal Map" (contiguity + balanced population)
 
-## Tutorial-002 step script (sketched — finalize in GAME-077)
+T2 introduces the structural rules and the **validity panel**. `guided: true`,
+`hide_election_results: true`, `hide_view_toolbar: true` — still **pre-electoral**, no views;
+the validity panel shows because T2 *enforces* balance + contiguity. Gates on `district_count`
++ `population_balance` + contiguity. Slightly bigger map than T1.
 
-Tutorial-002 is a 196-precinct map with 4 districts. Proposed themes:
-- Criteria panel: what each criterion means, how to read pass/fail
-- Demographic overlay: switching between party lean and demographic views
-- Goal orientation: the scenario has an explicit majority_minority criterion; walk the player
-  toward understanding what "the minority community needs an effective district" means in
-  map terms
+| # | Text (gist) | highlight | pause | advance |
+|---|-------------|-----------|-------|---------|
+| 1 | "Bigger map — and now there are rules. A *legal* map needs two things: districts roughly equal in population, and each one a single connected piece." | — | no | next |
+| 2 | "Paint your districts like before." | painter + `#map-svg` | no | paint-count |
+| 3 | "Watch the **Map Validity** panel — it flags a district that's too big, too small, or split in two." | `#validity-container` | no | next |
+| 4 | "Even out the populations and keep each district connected until the panel's all green." | `#validity-container` | no | next |
+| 5 | "Legal map? **Submit**." | `#btn-submit` | no | submit (ends) |
+
+The validity panel (`#validity-container`) is the star: T2 is where balance + contiguity
+become taught, gated constraints (in T1 they were absent — no untaught failure modes).
+
+## tutorial-003 step script — "Reading the Vote" (lean + election result, paired) + views
+
+T3 is the **first electoral layer**. `guided: true`, `hide_election_results: false`,
+`hide_view_toolbar: false`. Terrain (river/coast), partisan lean (an east/west split),
+counties + an urban core. The **reveal targets** are the election-result panel
+(`#results-heading`, `#results-container`) and the view controls `#filter-lean`,
+`#filter-county`, `#filter-city` — all start hidden; **lean + the result are revealed
+together** (the causal pair).
+
+| # | Text (gist) | reveal | highlight | pause | advance |
+|---|-------------|--------|-----------|-------|---------|
+| 1 | "New map with some geography — a river, a coastline. Scenery; districts can cross them." | — | river/coast | no | next |
+| 2 | "Until now every voter was the same. They're not. **Lean** colors each precinct by who it favors — and this is what that produces: the **election result**, district by district." | `#filter-lean` + `#results-heading` + `#results-container` | `#filter-lean` + `#results-container` | no | next |
+| 3 | "Repaint a district and watch the result move. The lines decide who wins." | — | `#results-container` | no | paint-count |
+| 4 | "**County** borders show the old administrative lines." | `#filter-county` | `#filter-county` | yes | click-target |
+| 5 | "**City limits** show where the city is." | `#filter-city` | `#filter-city` | yes | click-target |
+| 6 | "That's the whole picture. Draw your districts and submit." | — | painter + `#btn-submit` | no | submit (ends) |
+
+Lean + the election result surface in the **same step** (2). County/city follow as
+map-reading context. Objective stays mechanical (gates on `district_count`): the result is
+shown to *read*, not yet to exploit — strategy is the capstone and the real scenarios.
+
+## tutorial-004 — "Capstone" (script TBD, GAME-099)
+
+Full map, every tool available from the start (nothing hidden, no `reveal`). A light script
+orients ("everything you've learned, one map"), then leaves the player to it — the bridge to
+the real electoral scenarios. Detailed script authored when reached.
+
+## Extensibility — introducing future views
+
+The `reveal` + highlight step is the **standard hook for introducing any view/overlay** to
+the player. Several views are planned but unbuilt (population dot-density — DESIGN-005/006;
+demographic dot-map — DESIGN-007; and others). Convention: **when a new view ships as a
+View-toolbar entry, its implementation ticket includes an AC to add a `reveal`/highlight step
+introducing it** — to tutorial-003 ("Reading the Vote") if it's a map-reading view, or the
+capstone, as fits. This keeps the guided tutorial in sync with the toolbar as it grows; a new
+view that never gets a tutorial step is an incomplete view.
+
+## Open design questions (resolve in this ticket, before GAME-076)
+
+- [ ] Panel exact placement + anti-obstruction rule (which corner; how it shifts).
+- [ ] `paint-count` threshold for T1 step 3 (≈5? or "any precinct in D2"?).
+- [ ] Does step 1 auto-advance or require a "Next" click? (script uses explicit `next`).
+- [ ] Skip affordance copy + placement; confirm `tutorial-<id>-complete` key + reset param.
 
 ## Goals / Acceptance Criteria
 
-- [ ] Step data model finalized and documented
-- [ ] Highlight mechanics spec finalized (CSS approach; targets; dimming)
-- [ ] Input pause semantics fully specified
-- [ ] Skip / disable behavior specified (localStorage key, reset mechanism)
-- [ ] Tutorial-001 step script reviewed and signed off (9 steps above, or revised)
-- [ ] Tutorial-002 themes outlined (details finalized in GAME-077)
-- [ ] Panel positioning and anti-obstruction rule specified
+- [ ] Step data model finalized (above) incl. `reveal` + `advance` variants.
+- [ ] `guided: true` activation convention specified (flag, plumbing, skip/persist).
+- [ ] Highlight / dim / input-pause semantics specified against the current UI.
+- [ ] Reveal-target action specified (tutorial-local; collect-and-hide-on-load).
+- [ ] tutorial-001 "Core Loop" paint script signed off (5 steps).
+- [ ] tutorial-002 "A Legal Map" script signed off (5 steps; validity panel is the star).
+- [ ] tutorial-003 "Reading the Vote" reveal script signed off (lean + result paired in one step).
+- [ ] tutorial-004 "Capstone" outline (full script authored in GAME-099).
+- [ ] Stable selector hook for district buttons noted for GAME-076.
 
 ## References
 
-- GAME-076 — tutorial-001 implementation (trails this)
-- GAME-077 — tutorial-002 (trails GAME-076)
-- `game/web/index.html` — element IDs for highlight selectors
-- `game/web/styles.css` — overlay/panel styling conventions
+- GAME-076 — engine + tutorial-001 script (implements this).
+- GAME-077 — tutorial-002 reveal script (reuses the engine).
+- GAME-097 (resolved) — paint-only T1 chrome + flags (`hide_view_toolbar`, etc.) this builds on.
+- `game/web/index.html` (control ids), `game/web/src/render/panels.ts` (`.district-btn`),
+  `game/web/src/main.ts` (toolbar/hide wiring), `game/web/styles.css`.

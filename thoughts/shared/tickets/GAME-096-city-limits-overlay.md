@@ -11,8 +11,8 @@ created: 2026-06-24
 Add a cosmetic **city-limits** overlay to the map, exposed as a third entry in the
 right-side View toolbar's Overlays group (alongside county borders). It draws a
 boundary around the dense urban core(s) of a scenario — "where the city is" — with no
-effect on gameplay, contiguity, or scoring. This is the prerequisite for tutorial-002,
-which teaches the lean / county / **city** view set.
+effect on gameplay, contiguity, or scoring. This is the prerequisite for **tutorial-003**
+("Reading the Vote", GAME-098), which teaches the lean / county / **city** view set.
 
 ## Current State
 
@@ -50,5 +50,5 @@ which teaches the lean / county / **city** view set.
 - `game/web/src/pipeline/county-stage.ts` — flood-fill + carveCore contour to mirror.
 - `game/web/index.html` (`#map-filters` Overlays group), `game/web/src/main.ts`
   (`applyCounty` toggle wiring), `game/web/styles.css` (toolbar/overlay CSS).
-- Prerequisite for: GAME-077 (tutorial-002 teaches the city view).
+- Prerequisite for: GAME-098 (tutorial-003 "Reading the Vote" teaches the city view).
 - Relates to: project memory "geography is cosmetic by default."

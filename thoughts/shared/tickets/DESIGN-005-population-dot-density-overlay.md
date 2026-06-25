@@ -24,6 +24,8 @@ population representation exists on the map canvas.
 
 ## Goals / Acceptance Criteria
 
+- [ ] **Tutorial:** when this ships as a View-toolbar entry, add a `reveal`/highlight step
+      introducing it to the views tutorial (tutorial-003), per DESIGN-012 extensibility.
 - [ ] Each precinct hex displays N dots proportional to its population (0 dots at
   minimum population precinct, up to ~6 dots at maximum population precinct)
 - [ ] Dot count uses a linear scale across the scenario's precinct population range

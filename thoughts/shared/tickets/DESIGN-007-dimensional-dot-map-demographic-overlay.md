@@ -25,6 +25,9 @@ Dot placement is random/deterministic per precinct but not sorted.
 
 ## Goals / Acceptance Criteria
 
+- [ ] **Tutorial:** when this ships as a View-toolbar entry, add a `reveal`/highlight step
+      introducing it to the views tutorial (tutorial-003), per DESIGN-012 extensibility.
+
 ### Dimension type taxonomy
 
 - [ ] Scenario JSON supports a `dimension_type` field (`"categorical"`, `"scalar"`, or
