@@ -1,0 +1,169 @@
+# Spec file for tutorial-002: "A Legal Map: Millbrook County"
+# Source of truth for the map generation pipeline (GAME-077).
+# Generated output: game/scenarios/tutorial-002.json
+#
+# Regenerate:  bazel run //game/web/src/pipeline:generate_scenario -- \
+#                game/scenarios/tutorial-002.spec.yaml game/scenarios/tutorial-002.json
+#
+# PEDAGOGY (see plan thoughts/shared/plans/2026-06-24-tutorial-redesign-pipeline-migration.md
+# and DESIGN-012 / GAME-077):
+#   Tutorial 2 teaches the STRUCTURAL RULES — balanced population + contiguity — and the
+#   Map Validity panel that reports them. It is the first tutorial where balance and
+#   contiguity are ENFORCED (T1 gated on district_count alone). Still PRE-ELECTORAL: no
+#   lean/county views, no election-result prediction. One new concept layered on T1's core
+#   loop: "a legal map." So:
+#     - slightly bigger than T1 (hex_circle radius 4 → 61 precincts), three districts.
+#     - population deliberately UNEVEN (a north-tilted density gradient) so an equal-AREA
+#       split is unbalanced — balancing is a real, but gentle, task. Generous tolerance.
+#     - NEUTRAL demographics (50/50, never surfaced): no lean view, no party criterion.
+#       The election-results panel is hidden (hide_election_results) — pre-electoral.
+#     - the whole map starts as District 1 (the loader fills editable precincts with
+#       default_district_id), so the lesson is "carve out three balanced, connected pieces."
+#     - gates on district_count + population_balance, with contiguity REQUIRED. The Map
+#       Validity panel shows (applicable-aware) because these are now enforced. No untaught
+#       failure modes: every constraint the player can fail is one this tutorial teaches.
+
+format_version: "1"
+
+# ── Scenario identity ─────────────────────────────────────────────────────────
+
+scenario:
+  id: tutorial-002
+  title: "A Legal Map: Millbrook County"
+  election_type: state_house
+  region:
+    id: millbrook_county
+    name: Millbrook County
+
+# ── Stage 1a: Map layout ──────────────────────────────────────────────────────
+#
+# A step up from T1's radius-3 (37) map. Precincts in a hex circle:
+#   count = 3·r·(r+1) + 1  →  r=2:19  r=3:37  r=4:61  r=5:91
+# radius 4 (61) gives enough room for three districts where balancing actually
+# requires thought, without becoming a sprawling map.
+
+map:
+  geometry: hex_axial
+  shape: hex_circle
+  radius: 4
+
+# ── Stage 1b: Terrain ─────────────────────────────────────────────────────────
+#
+# No geography yet — geography (rivers, coast) and the views that read it arrive in
+# tutorial-003 ("Reading the Vote"). T2 keeps attention on the two structural rules.
+
+terrain: {}
+
+# ── Stage 2: Population (deliberately UNEVEN) ──────────────────────────────────
+#
+# One densely-settled town in the north on an otherwise flat rural base. This is the
+# whole point of the lesson: the open rural south splits into two equal-AREA districts
+# that are also equal in people (uniform base → equal area = equal population), while
+# the crowded north needs only a small, compact district to hold its share. Three
+# districts of equal AREA would put far too many people in the north — so the player
+# learns to give the dense town a geographically smaller district. Gentle jitter,
+# smoothed, so the town reads as a clean bump rather than salt-and-pepper noise.
+
+population:
+  seed: 7
+  base: 3000           # flat rural floor across the whole county
+  variance: 150        # mild jitter only — the town carries the imbalance, not noise
+  smoothing: 1         # neighbour-average the jitter for a clean field
+  settlements:
+    - label: Millbrook (town)
+      anchor: north      # the county town sits at the north end
+      peak: 4200         # a clear urban bump over the rural base
+      radius: 2
+      profile: plateau
+
+# ── Stage 3: Demographics (NEUTRAL — invisible in T2) ─────────────────────────
+#
+# A single flat 50/50 group per precinct. No lean view and no party criterion in this
+# pre-electoral tutorial, so this never shows; it exists only to satisfy the "every
+# precinct has demographics" requirement. county_labels: one label covering the whole
+# map → a single uniform county_id (tidy names, no internal county borders).
+
+demographics:
+  seed: 7
+  parties: [ken, ryu]
+  group:
+    id_suffix: all
+    name: Residents
+  turnout:
+    min: 0.60
+    max: 0.60
+  jitter: 0.0           # exactly 50/50 everywhere — no partisan signal
+  zones:
+    - name: all
+      filter: { default: true }
+      party_base: { ken: 0.5 }
+  county_labels:
+    - id: millbrook
+      filter: { default: true }
+
+# ── Stage 4: Assembly ─────────────────────────────────────────────────────────
+
+assembly:
+  parties:
+    - { id: ken, name: Ken Party, abbreviation: KEN }
+    - { id: ryu, name: Ryu Party, abbreviation: RYU }
+  districts:
+    - { id: d1, name: District 1 }
+    - { id: d2, name: District 2 }
+    - { id: d3, name: District 3 }
+  default_district_id: d1
+  # No initial_district_rule → the loader fills every editable precinct with
+  # default_district_id (d1), so the map opens as one district and the player carves
+  # three balanced, connected pieces.
+  guided: true                       # runs the guided overlay (GAME-076 / DESIGN-012, T2 script)
+  hide_election_results: true        # pre-electoral: hide the outcome prediction panel
+  hide_view_toolbar: true            # pre-electoral: no lean/county/city views yet
+  rules:
+    population_tolerance: 0.12        # generous — balancing should be achievable, not finicky
+    contiguity: required             # ENFORCED in T2 — each district must be one connected piece
+  success_criteria:
+    # T2 gates on the two structural rules it teaches: three districts in use, and all
+    # three within tolerance of equal population. Contiguity is enforced as a hard rule
+    # (rules.contiguity: required) — a disconnected district can't be submitted. Nothing
+    # here can fail the player for a rule T2 didn't teach.
+    - id: sc-district-count
+      required: true
+      description: All three districts are in use and every precinct is assigned.
+      criterion: { type: district_count }
+    - id: sc-population-balance
+      required: true
+      description: All three districts have roughly equal population (within 12%).
+      criterion: { type: population_balance }
+  narrative:
+    character:
+      name: You
+      role: Mapmaker, Millbrook County
+      motivation: >
+        You've got the controls down. Now the maps start to have rules. The first one
+        every real map must follow: districts have to be about equal in population, and
+        each one has to be a single connected piece. Let's draw a map that's actually legal.
+    intro_slides:
+      - heading: Back to Millbrook — Now With Rules
+        body: >
+          A bigger slice of the county this time, and three districts to draw. The
+          controls are the same as before — pick a district, paint precincts — but now
+          a map has to be *legal*, and that means following two rules.
+      - heading: Equal, and Connected
+        body: >
+          First, the three districts must hold roughly equal population — and the north
+          of the county is far more crowded than the south, so equal-sized districts on
+          the map won't be equal in people. Second, each district must be one connected
+          piece, not scattered fragments. The Map Validity panel on the right tracks both
+          — even things out and keep each district whole until it's all green, then submit.
+    objective: >
+      Carve Millbrook into three districts that are roughly equal in population and each
+      a single connected piece. Watch the Map Validity panel, and submit when it's green.
+    epilogue: >
+      That's a legal map: three districts, each holding about the same number of people,
+      each a single connected piece. Because the north is denser, equal population meant
+      unequal area — the dense north got a smaller district, the sparse south a larger one.
+      The Map Validity panel was your guide the whole way.
+
+      Equal population and contiguity are the ground rules under every map from here. Next,
+      we add the part that makes redistricting matter: how the lines you draw decide who
+      wins — reading the vote.

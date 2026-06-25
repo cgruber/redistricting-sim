@@ -89,13 +89,16 @@ async function paintHexes(
   }, { hexes, district });
 }
 
-// GAME-076: tutorial-001 now runs a guided overlay (scenario.guided). Suppress it by
-// default so the existing tutorial-001 tests aren't intercepted by the coach panel /
-// input-pause. The overlay-specific tests below force it with `?resetTutorial=1`, which
-// clears this flag on load. (Harmless for non-guided scenarios — the flag is ignored.)
+// GAME-076/077: tutorial-001 and tutorial-002 run a guided overlay (scenario.guided).
+// Suppress it by default so the existing tutorial tests aren't intercepted by the coach
+// panel / input-pause. The overlay-specific tests below force it with `?resetTutorial=1`,
+// which clears these flags on load. (Harmless for non-guided scenarios — the flags are ignored.)
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
-    try { localStorage.setItem("tutorial-tutorial-001-complete", "1"); } catch { /* ignore */ }
+    try {
+      localStorage.setItem("tutorial-tutorial-001-complete", "1");
+      localStorage.setItem("tutorial-tutorial-002-complete", "1");
+    } catch { /* ignore */ }
   });
 });
 
@@ -815,7 +818,9 @@ test("debug force-win button: visible with ?debug param, marks scenario complete
   await debugBtn.click();
   // Force-win now opens the result screen with all criteria forced to pass.
   await expect(page.locator("#result-screen")).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator("#btn-next-scenario")).toBeVisible();
+  // tutorial-002 ("A Legal Map") has a teaching epilogue (GAME-094), so the pass screen
+  // routes through "Continue →" rather than showing "Next Scenario" directly.
+  await expect(page.locator("#btn-continue")).toBeVisible();
   // Scenario should be marked complete synchronously when result screen opens.
   const completed = await page.evaluate(() => {
     const raw = localStorage.getItem("redistricting-sim-progress");
@@ -1050,6 +1055,40 @@ test("guided overlay: not shown on a non-guided scenario", async ({ page }) => {
   await expect(page.locator("#tutorial-panel")).toHaveCount(0);
 });
 
+// ─── GAME-077: guided overlay (tutorial-002 "A Legal Map") ───────────────────
+
+test("guided overlay: tutorial-002 runs the legal-map script (orient → paint → validity → submit)", async ({ page }) => {
+  // resetTutorial=1 clears the suppression flag the beforeEach set, so the overlay runs.
+  await page.goto("/?campaign=tutorial&s=tutorial-002&debug&resetTutorial=1");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("#tutorial-panel")).toBeVisible({ timeout: 10_000 });
+
+  // Step 1 — orient to the two rules.
+  await expect(page.locator("#tutorial-panel")).toContainText("rules");
+  await page.locator("#tutorial-panel .tutorial-next").click();
+
+  // Step 2 — paint: advance once 5 precincts are in District 2 (via the store, like other tests).
+  await expect(page.locator("#tutorial-panel")).toContainText("Paint");
+  await paintHexes(page, [[-3, 3], [-2, 3], [-1, 3], [0, 3], [-3, 2]], 2);
+
+  // Step 3 — the Map Validity panel (the star of T2) is ringed.
+  await expect(page.locator("#tutorial-panel")).toContainText("Map Validity");
+  await expect(page.locator("#validity-container")).toHaveClass(/tutorial-highlight/);
+  await page.locator("#tutorial-panel .tutorial-next").click();
+
+  // Step 4 — even out + keep connected.
+  await expect(page.locator("#tutorial-panel")).toContainText("green");
+  await page.locator("#tutorial-panel .tutorial-next").click();
+
+  // Step 5 — submit (terminal): clicking Submit ends the overlay and shows results.
+  await expect(page.locator("#tutorial-panel")).toContainText("Submit");
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#tutorial-panel")).toHaveCount(0);
+  await expect(page.locator("#result-screen")).toBeVisible();
+});
+
 // ─── GAME-048: Campaign-driven scenario select ──────────────────────────────
 
 test("campaign select: ?campaign=tutorial shows tutorial-001, tutorial-002, and tutorial-003", async ({ page }) => {
@@ -1059,7 +1098,7 @@ test("campaign select: ?campaign=tutorial shows tutorial-001, tutorial-002, and 
   // GAME-082: tutorial-003 (geographic-features tour) is the third tutorial scenario.
   await expect(cards).toHaveCount(3);
   await expect(cards.nth(0)).toContainText("Welcome to Redistricting");
-  await expect(cards.nth(1)).toContainText("Three-District Challenge");
+  await expect(cards.nth(1)).toContainText("A Legal Map");
   await expect(cards.nth(2)).toContainText("Hawthorn Bend");
 });
 

@@ -47,7 +47,7 @@ import { preload, play, setMuted, isMuted } from "./audio/audioPlayer.js";
 // Add an entry here + drop the JSON in /scenarios/ to wire a new scenario.
 
 const SCENARIO_MANIFEST = [
-	{ id: "tutorial-002", title: "Millbrook County: Three-District Challenge" },
+	{ id: "tutorial-002", title: "A Legal Map: Millbrook County" },
 	{ id: "scenario-002", title: "Clearwater Valley: The Governor's Map" },
 	{ id: "scenario-003", title: "Riverport: The Packing Problem" },
 	{ id: "scenario-004", title: "Lakeview: Cracking the Opposition" },
