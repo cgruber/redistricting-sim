@@ -2,7 +2,7 @@
 id: GAME-077
 title: Tutorial-002 "A Legal Map" — contiguity + balanced population (guided)
 area: game, UX, tutorial, content
-status: open
+status: resolved
 created: 2026-05-18
 ---
 
@@ -33,13 +33,26 @@ now the "make a legal map" lesson. See the revised step script in DESIGN-012 and
 
 ## Goals / Acceptance Criteria
 
-- [ ] `tutorial-002.spec.yaml` authored; `tutorial-002.json` generated via the pipeline.
-- [ ] Enforces balance + contiguity (criterion + `contiguity: required`); validity panel shows.
-- [ ] `guided: true` + `hide_election_results: true` + `hide_view_toolbar: true`.
-- [ ] Guided script per DESIGN-012; reuses GAME-076 engine (no fork).
-- [ ] Skip / persist consistent with T1 (`tutorial-tutorial-002-complete`).
-- [ ] e2e: winnable by drawing balanced + contiguous districts; an unbalanced/disconnected
+- [x] `tutorial-002.spec.yaml` authored; `tutorial-002.json` generated via the pipeline.
+- [x] Enforces balance + contiguity (criterion + `contiguity: required`); validity panel shows.
+- [x] `guided: true` + `hide_election_results: true` + `hide_view_toolbar: true`.
+- [x] Guided script per DESIGN-012; reuses GAME-076 engine (no fork).
+- [x] Skip / persist consistent with T1 (`tutorial-tutorial-002-complete`).
+- [x] e2e: winnable by drawing balanced + contiguous districts; an unbalanced/disconnected
       attempt fails and the validity panel flags it; views/result panels absent.
+
+## Resolution (2026-06-24)
+
+Shipped. `tutorial-002.spec.yaml` → `tutorial-002.json`: a radius-4 hex-circle (61 precincts),
+three districts, a densely-settled town in the north on a flat rural base (`settlements`, no
+gradient). Gates on `district_count` + `population_balance` (tolerance 0.12) with
+`rules.contiguity: required`; the validity panel shows (applicable-aware). Flags `guided: true`
++ `hide_election_results: true` + `hide_view_toolbar: true`. The 5-step DESIGN-012 script is
+registered in `overlay.ts` (`TUTORIAL_002`), reusing the GAME-076 engine. Winning move (verified
+balanced + contiguous via BFS): compact northern cap as D1 (~70.5k), rural south split west/east
+into D2 (~68.8k) / D3 (~59.9k); a naive equal-area split over-fills the middle. e2e: winnability,
+negative (lopsided → panel flags + fails), chrome (panel shows; views/result hidden), and an
+overlay walkthrough.
 
 ## References
 

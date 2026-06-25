@@ -68,8 +68,43 @@ const TUTORIAL_001: TutorialStep[] = [
   },
 ];
 
+/**
+ * tutorial-002 — "A Legal Map" (DESIGN-012). Introduces the structural rules
+ * (balanced population + contiguity) and the Map Validity panel that reports them.
+ * Still pre-electoral: no views, no election result. The validity panel is the star.
+ * Selectors: `#district-toolbar` = left paint toolbar, `#map-svg` = map,
+ * `#validity-container` = the Map Validity panel, `#btn-submit` = submit.
+ */
+const TUTORIAL_002: TutorialStep[] = [
+  {
+    text: "Bigger map — and now there are **rules**. A **legal** map needs two things: districts roughly equal in population, and each one a single connected piece.",
+    advance: { on: "next" },
+  },
+  {
+    text: "Paint your three districts like before — pick a district, then click precincts.",
+    highlight: ["#district-toolbar", "#map-svg"],
+    advance: { on: "paint-count", district: 2, n: 5 },
+  },
+  {
+    text: "Watch the **Map Validity** panel — it flags a district that's too big, too small, or split in two.",
+    highlight: "#validity-container",
+    advance: { on: "next" },
+  },
+  {
+    text: "Even out the populations and keep each district connected until the panel's all green.",
+    highlight: "#validity-container",
+    advance: { on: "next" },
+  },
+  {
+    text: "Legal map? Hit **Submit**.",
+    highlight: "#btn-submit",
+    advance: { on: "submit" },
+  },
+];
+
 const SCRIPTS: Record<string, TutorialStep[]> = {
   "tutorial-001": TUTORIAL_001,
+  "tutorial-002": TUTORIAL_002,
 };
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────

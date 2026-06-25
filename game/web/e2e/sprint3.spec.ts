@@ -5,9 +5,12 @@ import { test, expect } from "@playwright/test";
  *   GAME-014 (scenario scale), GAME-016 (intro), GAME-017 (evaluation), GAME-018 (progression).
  *
  * NOTE: Generic editor/submit/wip mechanics run against scenario-002 (the shared, play-
- * relevant fixture). The intro-narrative, winnability, and scale tests still use tutorial-002
- * because they assert its specific content; they're updated/replaced when tutorial-002 becomes
- * "A Legal Map" (GAME-077). Progress/select tests reference tutorial-002 by id (no editor load).
+ * relevant fixture). The intro-narrative, winnability, and scale tests use tutorial-002 — now
+ * the guided "A Legal Map" (GAME-077): a 61-precinct hex-circle, three districts, a dense
+ * northern town, gated on district_count + population_balance + contiguity. Progress/select
+ * tests reference tutorial-002 by id (no editor load). The guided overlay is suppressed for the
+ * whole file via the beforeEach below (tutorial-<id>-complete) so the editor tests stay
+ * deterministic; the overlay itself is covered in scenarios.spec.ts.
  *
  * GAME-016: Intro slide flow:
  *   1. Intro screen is visible on initial load (before map editor) — new player
@@ -31,8 +34,21 @@ import { test, expect } from "@playwright/test";
  *   15. New player (no localStorage) sees intro, not scenario select
  *
  * GAME-014: Scenario scale:
- *   16. tutorial-002 loads and renders 196 precincts (path.hex count)
+ *   16. tutorial-002 loads and renders 61 precincts (path.hex count)
  */
+
+// tutorial-001 and tutorial-002 are guided (GAME-076/077): the overlay coaches the player
+// and (for some steps) pauses input. Suppress it for the whole file via the per-scenario
+// "complete" flag so the editor/winnability tests are deterministic. The overlay itself is
+// exercised in scenarios.spec.ts via ?resetTutorial=1.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    try {
+      localStorage.setItem("tutorial-tutorial-001-complete", "1");
+      localStorage.setItem("tutorial-tutorial-002-complete", "1");
+    } catch { /* ignore */ }
+  });
+});
 
 /** Navigate, dismiss intro, wait for hex grid. */
 async function loadEditor(page: import("@playwright/test").Page): Promise<void> {
@@ -40,7 +56,6 @@ async function loadEditor(page: import("@playwright/test").Page): Promise<void> 
   // (The intro-narrative + winnability/scale tests below stay on tutorial-002 — they assert
   // its specific content — and are updated/replaced when tutorial-002 becomes "A Legal Map".)
   await page.goto("/?s=scenario-002&debug");
-  await page.emulateMedia({ reducedMotion: "reduce" });
   // playwright.config reducedMotion:'reduce' is ignored in the Bazel-sandboxed Chromium;
   // explicit emulation ensures the instant result path runs so verdict is visible immediately.
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -72,15 +87,15 @@ test("intro: screen is visible on initial load before editor", async ({ page }) 
 test("intro: character name and role are shown from scenario narrative", async ({ page }) => {
   await page.goto("/?s=tutorial-002");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
-  // tutorial-002.json character: name="You", role="Redistricting Commissioner, Millbrook County"
+  // tutorial-002.json character: name="You", role="Mapmaker, Millbrook County"
   await expect(page.locator("#char-name")).toHaveText("You");
-  await expect(page.locator("#char-role")).toContainText("Redistricting Commissioner");
+  await expect(page.locator("#char-role")).toContainText("Mapmaker");
 });
 
 test("intro: first slide heading is shown and Previous is disabled", async ({ page }) => {
   await page.goto("/?s=tutorial-002");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator("#intro-slide-heading")).toHaveText("Welcome to Millbrook County");
+  await expect(page.locator("#intro-slide-heading")).toHaveText("Back to Millbrook — Now With Rules");
   await expect(page.locator("#btn-intro-prev")).toBeDisabled();
 });
 
@@ -90,12 +105,12 @@ test("intro: Next advances to second slide; Previous returns to first", async ({
 
   // Advance to slide 2
   await page.locator("#btn-intro-next").click();
-  await expect(page.locator("#intro-slide-heading")).toHaveText("The Tools");
+  await expect(page.locator("#intro-slide-heading")).toHaveText("Equal, and Connected");
   await expect(page.locator("#btn-intro-prev")).toBeEnabled();
 
   // Return to slide 1
   await page.locator("#btn-intro-prev").click();
-  await expect(page.locator("#intro-slide-heading")).toHaveText("Welcome to Millbrook County");
+  await expect(page.locator("#intro-slide-heading")).toHaveText("Back to Millbrook — Now With Rules");
 });
 
 test("intro: Start Drawing button appears on last slide and reveals editor", async ({ page }) => {
@@ -130,7 +145,7 @@ test("intro: Skip intro immediately reveals editor without navigating slides", a
 test("intro: objective text is shown from scenario narrative", async ({ page }) => {
   await page.goto("/?s=tutorial-002");
   await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator("#objective-text")).toContainText("Balance the three districts");
+  await expect(page.locator("#objective-text")).toContainText("roughly equal in population");
 });
 
 // ─── GAME-017: Evaluation phase ───────────────────────────────────────────────
@@ -368,25 +383,24 @@ test("wip: WIP is cleared from localStorage after scenario completion", async ({
   await skip.click();
   await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
 
-  // Paint 7 boundary precincts at r=-2, q=-6..0 from d2 (central) → d1 (north).
-  // Same winning move as the winnability test. After this the map is balanced.
+  // Same winning move as the winnability test: leave the northern cap (r ≤ -2, with the
+  // town) as District 1; carve the rural south-west into District 2 and south-east into
+  // District 3. All three land within ±12% of the mean and stay contiguous.
   await page.evaluate(() => {
     const store = (window as unknown as Record<string, unknown>)["__gameStore"] as
-      | { getState: () => { paintStroke: (ids: number[], d: number) => void; setActiveDistrict: (d: number) => void; precincts: { coord: { q: number; r: number } }[] } }
+      | { getState: () => { paintStroke: (ids: number[], d: number) => void; precincts: { coord: { q: number; r: number } }[] } }
       | undefined;
     if (!store) throw new Error("__gameStore not exposed");
     const state = store.getState();
-    state.setActiveDistrict(1);
-    const coordToIdx = new Map<string, number>();
+    const southWest: number[] = [];
+    const southEast: number[] = [];
     state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
-      coordToIdx.set(`${p.coord.q},${p.coord.r}`, i);
+      if (p.coord.r < -1) return;           // r ≤ -2 stays District 1 (the northern cap + town)
+      if (p.coord.q < 0) southWest.push(i); // rural south-west → District 2
+      else southEast.push(i);               // rural south-east → District 3
     });
-    const ids: number[] = [];
-    for (let q = -6; q <= 0; q++) {
-      const idx = coordToIdx.get(`${q},-2`);
-      if (idx !== undefined) ids.push(idx);
-    }
-    state.paintStroke(ids, 1);
+    state.paintStroke(southWest, 2);
+    state.paintStroke(southEast, 3);
   });
 
   await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
@@ -399,22 +413,24 @@ test("wip: WIP is cleared from localStorage after scenario completion", async ({
   expect(wipAfter).toBeNull();
 });
 
-// ─── GAME-019: Tutorial-002 winnability ───────────────────────────────────────
+// ─── GAME-077: Tutorial-002 "A Legal Map" winnability ─────────────────────────
 
-test("winnability: painting boundary precincts enables submit and produces a passing map", async ({ page }) => {
+test("winnability: drawing balanced, contiguous districts produces a passing map", async ({ page }) => {
   /**
-   * tutorial-002 initial state: county-aligned (north→d1, central→d2, south→d3).
-   * Hex-of-hexes R=8 trimmed to 196. Counties split at r=-2/r=2.
-   *   d1 (north, r<-2): ~57 hexes, underpopulated (~-14%)
-   *   d2 (central, |r|≤2): ~74 hexes, overpopulated (~+13%)
-   *   d3 (south, r>2): ~65 hexes, about right (~+0.4%)
-   * GAME-059: Submit is always enabled; initial state fails population balance but can be submitted.
+   * tutorial-002 "A Legal Map": a 61-precinct hex-circle (radius 4), three districts, a
+   * densely-settled town in the north on a flat rural base. The map opens as a single
+   * District 1; the player carves three balanced, contiguous pieces. Gates on
+   * district_count + population_balance (±12% of mean) with contiguity required.
    *
-   * Winning move: paint 7 hexes at r=-2, q=-6..0 from d2 → d1.
-   * This transfers ~21k population, bringing all three districts within ±3%.
+   * Winning move (verified against the generated populations; ideal/district ≈ 66,380):
+   *   - District 1: the compact northern cap (rows r ≤ -2, 18 precincts) — it holds the
+   *     dense town, so it needs the least land. Left as the default; ~70.5k (+6.2%).
+   *   - District 2: the rural south-WEST (r ≥ -1 and q < 0, 23 precincts) — ~68.8k (+3.6%).
+   *   - District 3: the rural south-EAST (r ≥ -1 and q ≥ 0, 20 precincts) — ~59.9k (-9.7%).
+   * The dense north gets a smaller district; the open south splits into two equal halves.
+   * A naive equal-AREA split (three horizontal thirds) over-fills the middle and starves
+   * the south — that's the imbalance this map teaches the player to read off the panel.
    */
-  // Asserts old tutorial-002's specific 3-county 196-precinct balance map; stays on
-  // tutorial-002 and is replaced when tutorial-002 becomes "A Legal Map" (GAME-077).
   await page.goto("/?s=tutorial-002");
   // Force the instant result-screen path (the sandbox ignores config reducedMotion);
   // without this the animated criteria reveal leaves #result-verdict empty past the timeout.
@@ -424,15 +440,13 @@ test("winnability: painting boundary precincts enables submit and produces a pas
   await skip.click();
   await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
 
-  // GAME-059: Submit is always enabled; initial state is unbalanced but submittable.
+  // GAME-059: Submit is always enabled; the default single-district map is submittable
+  // (it just fails district_count + balance).
   await expect(page.locator("#btn-submit")).toBeEnabled();
 
-  // Activate district 1 (the default, but be explicit)
-  await page.locator("button.district-btn").first().click();
-
-  // Paint 7 boundary precincts (r=-2, q=-6..0) from central (d2) into north (d1).
-  // These hexes are at the boundary between the north and central counties.
-  // Uses paintHexes helper for hex-coordinate-based painting.
+  // Carve the two rural southern districts out of the default District 1, leaving the
+  // northern cap (r ≤ -2, with the town) as District 1. Paint by hex coordinate so the
+  // strategy is legible: south-west → District 2, south-east → District 3.
   await page.evaluate(() => {
     const store = (window as unknown as Record<string, { getState: () => {
       paintStroke: (ids: number[], district: number) => void;
@@ -440,20 +454,18 @@ test("winnability: painting boundary precincts enables submit and produces a pas
     } }>)["__gameStore"];
     if (!store) throw new Error("__gameStore not found on window");
     const state = store.getState();
-    const coordToIdx = new Map<string, number>();
+    const southWest: number[] = [];
+    const southEast: number[] = [];
     state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
-      coordToIdx.set(`${p.coord.q},${p.coord.r}`, i);
+      if (p.coord.r < -1) return;           // r ≤ -2 stays District 1 (the northern cap + town)
+      if (p.coord.q < 0) southWest.push(i); // rural south-west → District 2
+      else southEast.push(i);               // rural south-east → District 3
     });
-    // Move 7 hexes at r=-2, q=-6 through q=0 from d2 (central) into d1 (north)
-    const ids: number[] = [];
-    for (let q = -6; q <= 0; q++) {
-      const idx = coordToIdx.get(`${q},-2`);
-      if (idx !== undefined) ids.push(idx);
-    }
-    state.paintStroke(ids, 1);  // district 1 (north)
+    state.paintStroke(southWest, 2);
+    state.paintStroke(southEast, 3);
   });
 
-  // Submit should now be enabled (all districts within tolerance, contiguous)
+  // Submit should be enabled (all three districts within tolerance, each contiguous).
   await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
 
   // Submit and assert pass
@@ -469,10 +481,67 @@ test("winnability: painting boundary precincts enables submit and produces a pas
   }
 });
 
+test("legal-map chrome: validity panel shows; view toolbar + election prediction stay hidden", async ({ page }) => {
+  // The Map Validity panel is the star of "A Legal Map" — it shows because the scenario
+  // gates on population balance + contiguity. The lean/county views and the election-result
+  // prediction stay hidden (still pre-electoral).
+  await page.goto("/?s=tutorial-002");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+  // Validity panel visible, populated, and reporting both gated constraints.
+  await expect(page.locator("#validity-container")).toBeVisible();
+  await expect(page.locator("#validity-container")).not.toBeEmpty();
+  await expect(page.locator("#validity-container")).toContainText("Population balance");
+  await expect(page.locator("#validity-container")).toContainText("Contiguity");
+
+  // Pre-electoral: view toolbar + election-result prediction hidden.
+  await expect(page.locator("#map-filters")).toBeHidden();
+  await expect(page.locator("#results-container")).toBeHidden();
+});
+
+test("winnability (negative): a lopsided three-district map is flagged by the panel and fails", async ({ page }) => {
+  // The AC's other half: an unbalanced attempt must fail and the validity panel must flag it.
+  await page.goto("/?s=tutorial-002");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
+
+  // Give Districts 2 and 3 a single southern precinct each, leaving District 1 with the
+  // other 59 — three districts in use, but wildly out of balance.
+  await page.evaluate(() => {
+    const store = (window as unknown as Record<string, { getState: () => {
+      paintStroke: (ids: number[], district: number) => void;
+      precincts: { coord: { q: number; r: number } }[];
+    } }>)["__gameStore"];
+    if (!store) throw new Error("__gameStore not found on window");
+    const state = store.getState();
+    const south = state.precincts
+      .map((p: { coord: { q: number; r: number } }, i: number) => ({ p, i }))
+      .filter(({ p }: { p: { coord: { q: number; r: number } } }) => p.coord.r >= 2)
+      .slice(0, 2)
+      .map(({ i }: { i: number }) => i);
+    state.paintStroke([south[0]!], 2);
+    state.paintStroke([south[1]!], 3);
+  });
+
+  // The validity panel flags at least one out-of-balance district (validity-error row).
+  await expect(page.locator("#validity-container .validity-row.validity-error").first()).toBeVisible();
+
+  // And the submitted map fails.
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#result-screen")).toBeVisible();
+  await expect(page.locator("#result-verdict")).toHaveText("Map Failed");
+});
+
 // ─── GAME-014: Scenario scale ─────────────────────────────────────────────────
 
-test("scale: tutorial-002 loads and renders 196 precincts (path.hex count)", async ({ page }) => {
-  // tutorial-002 is the 196-precinct three-county map
+test("scale: tutorial-002 loads and renders 61 precincts (path.hex count)", async ({ page }) => {
+  // tutorial-002 "A Legal Map" is a radius-4 hex-circle: 3·4·5 + 1 = 61 precincts
   await page.goto("/?s=tutorial-002");
 
   // Skip intro to reveal editor
@@ -483,7 +552,7 @@ test("scale: tutorial-002 loads and renders 196 precincts (path.hex count)", asy
   // Wait for at least one hex to render
   await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
 
-  // Count all rendered hex paths — should match precinct count (196)
+  // Count all rendered hex paths — should match precinct count (61)
   const hexCount = await page.locator("path.hex").count();
-  expect(hexCount).toBe(196);
+  expect(hexCount).toBe(61);
 });
