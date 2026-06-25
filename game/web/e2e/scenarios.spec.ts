@@ -842,6 +842,36 @@ test("debug force-win button: hidden without ?debug param", async ({ page }) => 
   await expect(debugBtn).not.toBeVisible();
 });
 
+test("debug restart: re-runs the guided tutorial from scratch (clears the seen flag)", async ({ page }) => {
+  // The beforeEach marks tutorials complete, so the overlay is normally suppressed.
+  await page.goto("/?campaign=tutorial&s=tutorial-002&debug");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("#tutorial-panel")).toHaveCount(0); // suppressed
+
+  // Restart (debug) reloads with resetTutorial=1, which clears the "seen" flag.
+  const restart = page.locator("#btn-debug-restart");
+  await expect(restart).toBeVisible();
+  await restart.click();
+  await expect(page).toHaveURL(/resetTutorial=1/);
+
+  // After dismissing the (re-shown) intro, the guided overlay runs again.
+  const skip2 = page.locator("#btn-intro-skip");
+  await expect(skip2).toBeVisible({ timeout: 15_000 });
+  await skip2.click();
+  await expect(page.locator("#tutorial-panel")).toBeVisible({ timeout: 10_000 });
+});
+
+test("debug restart: hidden without ?debug param", async ({ page }) => {
+  await page.goto("/?s=tutorial-002");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator("#btn-debug-restart")).not.toBeVisible();
+});
+
 test("lock gate: direct URL to locked scenario redirects to main menu", async ({ page }) => {
   // Ensure no progress — scenario-002 requires tutorial-002 completed
   await page.goto("/");
