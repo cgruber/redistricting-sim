@@ -89,16 +89,17 @@ async function paintHexes(
   }, { hexes, district });
 }
 
-// GAME-076/077/098: tutorial-001, -002, and -003 run a guided overlay (scenario.guided).
-// Suppress it by default so the existing tutorial tests aren't intercepted by the coach
-// panel / input-pause. The overlay-specific tests below force it with `?resetTutorial=1`,
-// which clears these flags on load. (Harmless for non-guided scenarios — the flags are ignored.)
+// GAME-076/077/098/099: tutorial-001..004 run a guided overlay (scenario.guided). Suppress it
+// by default so the existing tutorial tests aren't intercepted by the coach panel / input-pause.
+// The overlay-specific tests below force it with `?resetTutorial=1`, which clears these flags on
+// load. (Harmless for non-guided scenarios — the flags are ignored.)
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     try {
       localStorage.setItem("tutorial-tutorial-001-complete", "1");
       localStorage.setItem("tutorial-tutorial-002-complete", "1");
       localStorage.setItem("tutorial-tutorial-003-complete", "1");
+      localStorage.setItem("tutorial-tutorial-004-complete", "1");
     } catch { /* ignore */ }
   });
 });
@@ -874,18 +875,18 @@ test("routing: unknown ?s= without campaign redirects to main menu", async ({ pa
 // ─── GAME-020: Wrap-up screen after final scenario ──────────────────────────
 
 test("wrap-up screen: completing last scenario shows wrap-up on Next Scenario", async ({ page }) => {
-  // Seed all but tutorial-003 (the new last scenario in SCENARIO_MANIFEST) as complete
+  // Seed all but tutorial-004 (the new last scenario in SCENARIO_MANIFEST) as complete
   await page.goto("/");
   const allButLast = [
-    "tutorial-002", "scenario-002", "scenario-003", "scenario-004",
+    "tutorial-002", "tutorial-003", "scenario-002", "scenario-003", "scenario-004",
     "scenario-005", "scenario-006", "scenario-007", "scenario-008", "scenario-009",
   ];
   await page.evaluate((ids) => {
     localStorage.setItem("redistricting-sim-progress", JSON.stringify({ completed: ids }));
   }, allButLast);
-  // tutorial-003 ("Reading the Vote") opens as one district; carve three (by q-band) so the
-  // district_count objective passes — it gates on nothing else.
-  await loadScenario(page, "tutorial-003");
+  // tutorial-004 ("Capstone") opens as one district; carve four contiguous diagonal strips
+  // (by k = q+r) so the district_count objective passes — contiguity holds and nothing else gates.
+  await loadScenario(page, "tutorial-004");
   await page.evaluate(() => {
     const store = (window as unknown as Record<string, { getState: () => {
       paintStroke: (ids: number[], d: number) => void;
@@ -895,18 +896,22 @@ test("wrap-up screen: completing last scenario shows wrap-up on Next Scenario", 
     const state = store.getState();
     const d2: number[] = [];
     const d3: number[] = [];
+    const d4: number[] = [];
     state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
-      if (p.coord.q >= 2) d3.push(i);          // east → District 3
-      else if (p.coord.q >= -1) d2.push(i);    // centre → District 2
-      // q <= -2 (west) stays District 1
+      const k = p.coord.q + p.coord.r;
+      if (k > 1) d4.push(i);
+      else if (k > -1) d3.push(i);
+      else if (k > -3) d2.push(i);
+      // k <= -3 stays District 1
     });
     state.paintStroke(d2, 2);
     state.paintStroke(d3, 3);
+    state.paintStroke(d4, 4);
   });
   await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
   await page.locator("#btn-submit").click();
   await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
-  // tutorial-003 has a teaching epilogue → the pass screen routes through "Continue →" to the
+  // tutorial-004 has a teaching epilogue → the pass screen routes through "Continue →" to the
   // debrief panel; its advance button (last scenario) leads to the wrap-up screen.
   await page.locator("#btn-continue").click();
   await page.locator("#btn-debrief-next").click();
@@ -1111,15 +1116,15 @@ test("guided overlay: tutorial-002 runs the legal-map script (orient → paint �
 
 // ─── GAME-048: Campaign-driven scenario select ──────────────────────────────
 
-test("campaign select: ?campaign=tutorial shows tutorial-001, tutorial-002, and tutorial-003", async ({ page }) => {
+test("campaign select: ?campaign=tutorial shows the four tutorials in order", async ({ page }) => {
   await page.goto("/?campaign=tutorial");
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
   const cards = page.locator(".scenario-card");
-  // tutorial-003 ("Reading the Vote") is the third tutorial scenario; "Hawthorn Bend" is its region.
-  await expect(cards).toHaveCount(3);
+  await expect(cards).toHaveCount(4);
   await expect(cards.nth(0)).toContainText("Welcome to Redistricting");
   await expect(cards.nth(1)).toContainText("A Legal Map");
-  await expect(cards.nth(2)).toContainText("Hawthorn Bend");
+  await expect(cards.nth(2)).toContainText("Hawthorn Bend");          // "Reading the Vote"
+  await expect(cards.nth(3)).toContainText("Fairhaven");              // "Putting It Together" (Capstone)
 });
 
 test("campaign select: ?campaign=tutorial Back button is visible", async ({ page }) => {
@@ -1398,6 +1403,83 @@ test("guided overlay: tutorial-003 reveals the result + lean, then county, then 
   await page.locator("#filter-county").click();
 
   // Step 5 — submit (terminal): ends the overlay and shows results.
+  await expect(page.locator("#tutorial-panel")).toContainText("Submit");
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#tutorial-panel")).toHaveCount(0);
+  await expect(page.locator("#result-screen")).toBeVisible();
+});
+
+// ─── tutorial-004: "Fairhaven: Putting It Together" (GAME-099 — capstone) ───
+// A fuller map (127 precincts, 4 districts) with every tool visible from the start (nothing
+// hidden, no reveal). Light guided orientation; gates district_count + contiguity only.
+
+test("tutorial-004 smoke: loads and renders 127 precincts", async ({ page }) => {
+  await loadScenario(page, "tutorial-004");
+  await expect(page.locator("path.hex")).toHaveCount(127);
+});
+
+test("tutorial-004 capstone chrome: validity panel, view toolbar, and result are all visible", async ({ page }) => {
+  // The capstone hides nothing (hide_election_results: false, hide_view_toolbar: false, no
+  // reveal). With the overlay suppressed (beforeEach), every tool is present from load.
+  await loadScenario(page, "tutorial-004");
+  await expect(page.locator("#validity-container")).toBeVisible();
+  await expect(page.locator("#map-filters")).toBeVisible();
+  await expect(page.locator("#results-container")).toBeVisible();
+});
+
+test("tutorial-004 winnability: carving four connected districts passes (district_count + contiguity)", async ({ page }) => {
+  await loadScenario(page, "tutorial-004");
+  // Carve four contiguous diagonal strips (by k = q+r). Contiguity holds by construction and
+  // nothing else gates, so the map passes.
+  await page.evaluate(() => {
+    const store = (window as unknown as Record<string, { getState: () => {
+      paintStroke: (ids: number[], d: number) => void;
+      precincts: { coord: { q: number; r: number } }[];
+    } }>)["__gameStore"];
+    if (!store) throw new Error("__gameStore not found");
+    const state = store.getState();
+    const d2: number[] = [];
+    const d3: number[] = [];
+    const d4: number[] = [];
+    state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
+      const k = p.coord.q + p.coord.r;
+      if (k > 1) d4.push(i);
+      else if (k > -1) d3.push(i);
+      else if (k > -3) d2.push(i);
+      // k <= -3 stays District 1
+    });
+    state.paintStroke(d2, 2);
+    state.paintStroke(d3, 3);
+    state.paintStroke(d4, 4);
+  });
+  await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#result-screen")).toBeVisible();
+  await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+});
+
+// ─── GAME-099: guided overlay (tutorial-004) — light orient (nothing hidden) ───
+
+test("guided overlay: tutorial-004 gives a light orient then steps back to submit", async ({ page }) => {
+  await page.goto("/?campaign=tutorial&s=tutorial-004&debug&resetTutorial=1");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("#tutorial-panel")).toBeVisible({ timeout: 10_000 });
+
+  // Nothing is hidden — the capstone reveals no controls.
+  await expect(page.locator("#results-container")).toBeVisible();
+  await expect(page.locator("#map-filters")).toBeVisible();
+
+  // Step 1 — orient.
+  await expect(page.locator("#tutorial-panel")).toContainText("capstone");
+  await page.locator("#tutorial-panel .tutorial-next").click();
+
+  // Step 2 — paint; advance once 5 precincts are in District 2.
+  await expect(page.locator("#tutorial-panel")).toContainText("four districts");
+  await paintHexes(page, [[-3, 0], [-2, 0], [-1, 0], [0, 0], [1, 0]], 2);
+
+  // Step 3 — submit (terminal).
   await expect(page.locator("#tutorial-panel")).toContainText("Submit");
   await page.locator("#btn-submit").click();
   await expect(page.locator("#tutorial-panel")).toHaveCount(0);

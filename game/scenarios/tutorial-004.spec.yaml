@@ -1,0 +1,172 @@
+# Spec file for tutorial-004: "Fairhaven: Putting It Together"
+# Source of truth for the map generation pipeline (GAME-099).
+# Generated output: game/scenarios/tutorial-004.json
+#
+# Regenerate:  bazel run //game/web/src/pipeline:generate_scenario -- \
+#                game/scenarios/tutorial-004.spec.yaml game/scenarios/tutorial-004.json
+#
+# PEDAGOGY (see plan thoughts/shared/plans/2026-06-24-tutorial-redesign-pipeline-migration.md
+# and DESIGN-012 / GAME-099):
+#   Tutorial 4 is the CAPSTONE: a fuller map with every tool visible from the start (nothing
+#   hidden, no reveal). The player puts together everything from T1-T3 — draw a legal map
+#   (balanced + connected), and read the lean + the result — as the bridge into the real
+#   electoral scenarios. A light guided script orients ("everything you've learned, one map")
+#   then steps back.
+#
+#   JUDGMENT CALLS (flagged for review — iterate freely):
+#     - Objective kept MECHANICAL: gates district_count + contiguity. The election result is
+#       VISIBLE to read, but there is no seat goal — winning by seats was never taught here;
+#       that's what the real campaign scenarios are for. The result is the bridge, not the test.
+#     - Balance is NOT gated (it was strictly gated in T2). A hex circle with 4 districts has no
+#       clean balanced band/strip partition (the centre diagonal alone is ~11% of population), so
+#       gating balance would make the map either unwinnable-by-a-simple-move or require a
+#       hand-crafted partition the initial-assignment rule can't express. Instead the Map
+#       Validity panel stays VISIBLE so the player practises + sees balance — but the capstone
+#       gate is light (connected districts), keeping it low-pressure and winnable. Revisit if a
+#       balanced 4-partition becomes expressible (or drop to 3 districts).
+#     - radius 6 (127 precincts), 4 districts — bigger and more districts than T3.
+#     - City view: the City overlay (GAME-096) still isn't built, so there's no #filter-city;
+#       the map carries an urban core for when it ships. Lean + County + result are all visible.
+#     - Coastline deferred (sea tiles must sit outside the precinct circle — visual pass).
+
+format_version: "1"
+
+# ── Scenario identity ─────────────────────────────────────────────────────────
+
+scenario:
+  id: tutorial-004
+  title: "Fairhaven: Putting It Together"
+  election_type: state_house
+  region:
+    id: fairhaven
+    name: Fairhaven
+
+# ── Stage 1a: Map layout ──────────────────────────────────────────────────────
+#
+# radius 6 = 127 precincts — the largest tutorial map, four districts to draw.
+
+map:
+  geometry: hex_axial
+  shape: hex_circle
+  radius: 6
+
+# ── Stage 1b: Terrain (COSMETIC) ──────────────────────────────────────────────
+#
+# A river running through Fairhaven. Cosmetic — districts may cross it. (A coastline is
+# deferred to the visual pass; see note above.)
+
+terrain:
+  river_edges:
+    - [ { q: 0, r: -1 }, { q: 0, r: 0 } ]
+    - [ { q: 0, r: 0 },  { q: 0, r: 1 } ]
+    - [ { q: 0, r: 1 },  { q: 0, r: 2 } ]
+    - [ { q: 0, r: 2 },  { q: 0, r: 3 } ]
+
+# ── Stage 2: Population ───────────────────────────────────────────────────────
+#
+# A modest central city on a rural base. Gentle on purpose — gives the county stage a seat
+# (and an urban core for the future City view) while keeping balance achievable with a
+# roughly-equal-area split. Balance is a skill to apply here, not an obstacle to fight.
+
+population:
+  seed: 21
+  base: 4000
+  variance: 250
+  smoothing: 1
+  settlements:
+    - label: Fairhaven (city)
+      anchor: center
+      peak: 2600
+      radius: 2
+      profile: plateau
+
+# ── Stage 3: Demographics (PARTISAN — an east/west split) ─────────────────────
+#
+# Same east/west lean idea as T3, so the visible Lean view and result are meaningful: the
+# west leans Ken, the east leans Ryu, the centre is a tossup.
+
+demographics:
+  seed: 21
+  parties: [ken, ryu]
+  group:
+    id_suffix: all
+    name: All voters
+  turnout:
+    min: 0.55
+    max: 0.70
+  jitter: 0.04
+  zones:
+    - name: west
+      filter: { q_lte: -1 }
+      party_base: { ken: 0.60 }
+    - name: east
+      filter: { q_gte: 1 }
+      party_base: { ken: 0.40 }
+    - name: center
+      filter: { default: true }
+      party_base: { ken: 0.50 }
+
+# ── Stage 3b: Counties ────────────────────────────────────────────────────────
+
+counties:
+  model: seat_and_hinterland
+  target_count: 3
+  id_prefix: fairhaven
+
+# ── Stage 4: Assembly ─────────────────────────────────────────────────────────
+
+assembly:
+  parties:
+    - { id: ken, name: Ken Party, abbreviation: KEN }
+    - { id: ryu, name: Ryu Party, abbreviation: RYU }
+  districts:
+    - { id: d1, name: District 1 }
+    - { id: d2, name: District 2 }
+    - { id: d3, name: District 3 }
+    - { id: d4, name: District 4 }
+  default_district_id: d1
+  # No initial_district_rule → opens as one district; the player carves four.
+  guided: true                       # light guided orientation (GAME-076 / DESIGN-012, T4 script)
+  hide_election_results: false       # capstone: everything is visible from the start...
+  hide_view_toolbar: false           # ...nothing hidden, no reveal — all the tools at once
+  rules:
+    population_tolerance: 0.15        # unused (no balance criterion) — the panel still shows it
+    contiguity: required             # the capstone gate: every district one connected piece
+  success_criteria:
+    # Light capstone gate: four districts, all assigned, each connected. Balance is shown in the
+    # (visible) Map Validity panel but not gated; no seat goal — the result is shown to read, not
+    # to hit. See the judgment note in the header for why balance isn't gated here.
+    - id: sc-district-count
+      required: true
+      description: All four districts are in use and every precinct is assigned.
+      criterion: { type: district_count }
+  narrative:
+    character:
+      name: You
+      role: Mapmaker, Fairhaven
+      motivation: >
+        One last practice map — bigger, four districts, and every tool on the table at once.
+        Draw a legal map, read the result, and you're ready for the real thing.
+    intro_slides:
+      - heading: Everything You've Learned
+        body: >
+          This is the whole kit. Fairhaven is bigger — four districts — and nothing is hidden:
+          the Map Validity panel, the Lean view, the County borders, and the election result
+          are all here from the start. Draw a legal map and watch what it produces.
+      - heading: Then the Real Thing
+        body: >
+          Draw four districts, each one connected. Keep them roughly even if you like — the Map
+          Validity panel shows you how balanced they are — but there's no score to chase here.
+          Read the result, get a feel for how the lines move it, and submit. The campaign
+          scenarios are where it counts.
+    objective: >
+      Draw four connected districts — a complete map — and read the result your lines produce,
+      then submit. (Keep them roughly even if you can; there's no target to hit. This is your
+      last warm-up before the campaign.)
+    epilogue: >
+      That's everything: pick a district and paint it, keep the populations even and each
+      district whole, and read the lean and the result to see who your lines elect. You've got
+      the whole loop now.
+
+      From here the maps come with a reason to draw them one way or another — a party to favor,
+      a community to protect or split, a rule to satisfy. Same tools, real stakes. Good luck.
