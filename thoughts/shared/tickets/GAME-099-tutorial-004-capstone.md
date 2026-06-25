@@ -26,14 +26,14 @@ Detailed pedagogy refined when reached. See the arc in
 
 ## Goals / Acceptance Criteria
 
-- [x] Pedagogy + objective finalized — **mechanical** (gates district_count + contiguity; result
-      visible to read, no seat goal). See Resolution for the balance-gate judgment.
+- [x] Pedagogy + objective finalized — the full legal-map skill (gates district_count +
+      **population_balance** + contiguity); result visible to read, no seat goal.
 - [x] `tutorial-004.spec.yaml` authored; `tutorial-004.json` generated (127 precincts, 4 districts).
 - [x] Light guided script (orient → paint → submit); reuses GAME-076 engine (no fork).
 - [x] Campaign wiring: tutorial-004 added to the tutorial campaign + SCENARIO_MANIFEST, in order.
-- [x] e2e: loads (127), all chrome visible, winnable (4 contiguous diagonal strips), + overlay.
+- [x] e2e: loads (127), all chrome visible, winnable (4 balanced wedges, BFS-verified), + overlay.
 
-## Resolution (2026-06-25) — DRAFT shipped
+## Resolution (2026-06-25) — shipped
 
 Shipped: "Fairhaven: Putting It Together" — a radius-6 (127-precinct) 4-district map with a
 river, east/west lean (west 60% / east 40% Ken), and three counties. `guided: true`, **nothing
@@ -42,17 +42,19 @@ visible from load. Light 3-step `TUTORIAL_004` script (orient → paint → subm
 tutorial campaign (now 4 scenarios) + SCENARIO_MANIFEST; wrap-up + campaign-select + campaigns
 tests updated.
 
-**Judgment calls (flagged for review):**
-- **Balance is NOT gated** (district_count + contiguity only). A hex circle with 4 districts has
-  no clean balanced band/strip partition (the centre diagonal alone is ~11% of population), and
-  the initial-assignment rule can only express diagonal strips — so gating balance would make the
-  map unwinnable-by-a-simple-move. The Map Validity panel stays **visible** (the player practises
-  + sees balance), but the gate is light to keep the capstone low-pressure + winnable. Revisit if
-  a balanced 4-partition becomes expressible, or drop to 3 districts.
+Initial draft (#280) gated district_count + contiguity only; the owner asked to keep **balance**
+gated, noting the player fixes the districts (no simple stripe needed). Follow-up: re-added the
+`population_balance` criterion (±15%). The winning move is **four wedges around the centre** —
+each district gets an equal slice of the dense core + sparse rim, landing all four within ±15%
+(BFS-verified balanced + contiguous; a 45° rotation gives the best margin). e2e winnability +
+wrap-up carve those wedges.
+
+**Remaining judgment calls / deferrals:**
 - **Objective kept mechanical** (no seat goal) — winning by seats was never taught; that's the
   campaign scenarios. The result is the bridge, shown to read.
-- **City view + coastline deferred** (same as T3): City needs GAME-096; the coast needs
-  outer-ring sea tiles (visual pass). The map carries an urban core for the City view later.
+- **City view** deferred — needs GAME-096; the map carries an urban core for when it ships.
+- **Coastline** deferred to the owner's precinct picks (a sea tile can sit on a rim hex-edge, not
+  only fully outside the circle).
 
 ## References
 

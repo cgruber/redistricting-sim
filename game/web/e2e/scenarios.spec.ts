@@ -884,8 +884,8 @@ test("wrap-up screen: completing last scenario shows wrap-up on Next Scenario", 
   await page.evaluate((ids) => {
     localStorage.setItem("redistricting-sim-progress", JSON.stringify({ completed: ids }));
   }, allButLast);
-  // tutorial-004 ("Capstone") opens as one district; carve four contiguous diagonal strips
-  // (by k = q+r) so the district_count objective passes — contiguity holds and nothing else gates.
+  // tutorial-004 ("Capstone") opens as one district; carve four wedges around the centre so the
+  // map is balanced (±15%) + contiguous and passes (same winning move as the winnability test).
   await loadScenario(page, "tutorial-004");
   await page.evaluate(() => {
     const store = (window as unknown as Record<string, { getState: () => {
@@ -897,12 +897,17 @@ test("wrap-up screen: completing last scenario shows wrap-up on Next Scenario", 
     const d2: number[] = [];
     const d3: number[] = [];
     const d4: number[] = [];
+    const off = Math.PI / 4;
     state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
-      const k = p.coord.q + p.coord.r;
-      if (k > 1) d4.push(i);
-      else if (k > -1) d3.push(i);
-      else if (k > -3) d2.push(i);
-      // k <= -3 stays District 1
+      const x = Math.sqrt(3) * (p.coord.q + p.coord.r / 2);
+      const y = 1.5 * p.coord.r;
+      let a = Math.atan2(y, x);
+      if (a < 0) a += 2 * Math.PI;
+      const wedge = Math.min(3, Math.floor(((a - off + 2 * Math.PI) % (2 * Math.PI)) / (Math.PI / 2)));
+      if (wedge === 1) d2.push(i);
+      else if (wedge === 2) d3.push(i);
+      else if (wedge === 3) d4.push(i);
+      // wedge 0 stays District 1
     });
     state.paintStroke(d2, 2);
     state.paintStroke(d3, 3);
@@ -1411,7 +1416,8 @@ test("guided overlay: tutorial-003 reveals the result + lean, then county, then 
 
 // ─── tutorial-004: "Fairhaven: Putting It Together" (GAME-099 — capstone) ───
 // A fuller map (127 precincts, 4 districts) with every tool visible from the start (nothing
-// hidden, no reveal). Light guided orientation; gates district_count + contiguity only.
+// hidden, no reveal). Light guided orientation; gates the full legal-map skill —
+// district_count + population_balance (±15%) + contiguity.
 
 test("tutorial-004 smoke: loads and renders 127 precincts", async ({ page }) => {
   await loadScenario(page, "tutorial-004");
@@ -1427,10 +1433,12 @@ test("tutorial-004 capstone chrome: validity panel, view toolbar, and result are
   await expect(page.locator("#results-container")).toBeVisible();
 });
 
-test("tutorial-004 winnability: carving four connected districts passes (district_count + contiguity)", async ({ page }) => {
+test("tutorial-004 winnability: four balanced, connected districts pass (district_count + balance + contiguity)", async ({ page }) => {
   await loadScenario(page, "tutorial-004");
-  // Carve four contiguous diagonal strips (by k = q+r). Contiguity holds by construction and
-  // nothing else gates, so the map passes.
+  // Carve four wedges around the centre — each district gets an equal slice of the dense core
+  // and the sparse rim, so all four land within ±15% (BFS-verified balanced + contiguous;
+  // a 45° rotation is the best-balanced). This is the "give the dense centre to everyone" move
+  // a player arrives at by evening out the panel.
   await page.evaluate(() => {
     const store = (window as unknown as Record<string, { getState: () => {
       paintStroke: (ids: number[], d: number) => void;
@@ -1441,12 +1449,17 @@ test("tutorial-004 winnability: carving four connected districts passes (distric
     const d2: number[] = [];
     const d3: number[] = [];
     const d4: number[] = [];
+    const off = Math.PI / 4; // 45° rotation — best-balanced wedge orientation
     state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
-      const k = p.coord.q + p.coord.r;
-      if (k > 1) d4.push(i);
-      else if (k > -1) d3.push(i);
-      else if (k > -3) d2.push(i);
-      // k <= -3 stays District 1
+      const x = Math.sqrt(3) * (p.coord.q + p.coord.r / 2);
+      const y = 1.5 * p.coord.r;
+      let a = Math.atan2(y, x);
+      if (a < 0) a += 2 * Math.PI;
+      const wedge = Math.min(3, Math.floor(((a - off + 2 * Math.PI) % (2 * Math.PI)) / (Math.PI / 2)));
+      if (wedge === 1) d2.push(i);
+      else if (wedge === 2) d3.push(i);
+      else if (wedge === 3) d4.push(i);
+      // wedge 0 stays District 1
     });
     state.paintStroke(d2, 2);
     state.paintStroke(d3, 3);

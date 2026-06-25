@@ -14,20 +14,18 @@
 #   then steps back.
 #
 #   JUDGMENT CALLS (flagged for review — iterate freely):
-#     - Objective kept MECHANICAL: gates district_count + contiguity. The election result is
-#       VISIBLE to read, but there is no seat goal — winning by seats was never taught here;
-#       that's what the real campaign scenarios are for. The result is the bridge, not the test.
-#     - Balance is NOT gated (it was strictly gated in T2). A hex circle with 4 districts has no
-#       clean balanced band/strip partition (the centre diagonal alone is ~11% of population), so
-#       gating balance would make the map either unwinnable-by-a-simple-move or require a
-#       hand-crafted partition the initial-assignment rule can't express. Instead the Map
-#       Validity panel stays VISIBLE so the player practises + sees balance — but the capstone
-#       gate is light (connected districts), keeping it low-pressure and winnable. Revisit if a
-#       balanced 4-partition becomes expressible (or drop to 3 districts).
+#     - The full LEGAL-MAP skill is gated: district_count + population_balance + contiguity (the
+#       cumulative T1-T2 skills). No seat goal — winning by seats was never taught here; that's
+#       the real campaign scenarios. The result is VISIBLE to read, the bridge, not the test.
+#     - Balance does NOT need a simple stripe: a hex circle has no clean balanced band split, but
+#       FOUR WEDGES around the centre balance within ±15% (each district gets an equal slice of
+#       the dense core + the sparse rim — verified contiguous). The player draws and evens the
+#       districts out using the Map Validity panel, exactly as in T2.
 #     - radius 6 (127 precincts), 4 districts — bigger and more districts than T3.
 #     - City view: the City overlay (GAME-096) still isn't built, so there's no #filter-city;
 #       the map carries an urban core for when it ships. Lean + County + result are all visible.
-#     - Coastline deferred (sea tiles must sit outside the precinct circle — visual pass).
+#     - Coastline: deferred to the owner's precinct picks — a sea tile can sit on a rim hex-edge
+#       (shared edge of the circle), it does not have to be fully outside the precinct set.
 
 format_version: "1"
 
@@ -130,16 +128,20 @@ assembly:
   hide_election_results: false       # capstone: everything is visible from the start...
   hide_view_toolbar: false           # ...nothing hidden, no reveal — all the tools at once
   rules:
-    population_tolerance: 0.15        # unused (no balance criterion) — the panel still shows it
-    contiguity: required             # the capstone gate: every district one connected piece
+    population_tolerance: 0.15        # generous — the player evens the districts out to pass
+    contiguity: required             # a legal map: every district one connected piece
   success_criteria:
-    # Light capstone gate: four districts, all assigned, each connected. Balance is shown in the
-    # (visible) Map Validity panel but not gated; no seat goal — the result is shown to read, not
-    # to hit. See the judgment note in the header for why balance isn't gated here.
+    # The full legal-map skill: four districts, all assigned, balanced, each connected. No seat
+    # goal — the result is shown to read, not to hit. Balanceable: four wedges around the centre
+    # land all four districts within ±15% (verified), and the player evens them out with the panel.
     - id: sc-district-count
       required: true
       description: All four districts are in use and every precinct is assigned.
       criterion: { type: district_count }
+    - id: sc-population-balance
+      required: true
+      description: All four districts have roughly equal population (within 15%).
+      criterion: { type: population_balance }
   narrative:
     character:
       name: You
@@ -155,14 +157,13 @@ assembly:
           are all here from the start. Draw a legal map and watch what it produces.
       - heading: Then the Real Thing
         body: >
-          Draw four districts, each one connected. Keep them roughly even if you like — the Map
-          Validity panel shows you how balanced they are — but there's no score to chase here.
-          Read the result, get a feel for how the lines move it, and submit. The campaign
-          scenarios are where it counts.
+          A legal map is the same as ever: four districts, roughly equal in population, each one
+          connected. The Map Validity panel tracks both — even the districts out and keep each
+          whole until it's green. There's no seat target; read the result to see who your lines
+          elect, then submit. The campaign scenarios are where that starts to count.
     objective: >
-      Draw four connected districts — a complete map — and read the result your lines produce,
-      then submit. (Keep them roughly even if you can; there's no target to hit. This is your
-      last warm-up before the campaign.)
+      Draw four balanced, connected districts — a complete legal map — and read the result your
+      lines produce, then submit. (No seat target; this is your last warm-up before the campaign.)
     epilogue: >
       That's everything: pick a district and paint it, keep the populations even and each
       district whole, and read the lean and the result to see who your lines elect. You've got

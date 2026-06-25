@@ -3230,6 +3230,14 @@
       "criterion": {
         "type": "district_count"
       }
+    },
+    {
+      "id": "sc-population-balance",
+      "required": true,
+      "description": "All four districts have roughly equal population (within 15%).",
+      "criterion": {
+        "type": "population_balance"
+      }
     }
   ],
   "narrative": {
@@ -3244,11 +3252,11 @@
         "heading": "Everything You've Learned"
       },
       {
-        "body": "Draw four districts, each one connected. Keep them roughly even if you like — the Map Validity panel shows you how balanced they are — but there's no score to chase here. Read the result, get a feel for how the lines move it, and submit. The campaign scenarios are where it counts.\n",
+        "body": "A legal map is the same as ever: four districts, roughly equal in population, each one connected. The Map Validity panel tracks both — even the districts out and keep each whole until it's green. There's no seat target; read the result to see who your lines elect, then submit. The campaign scenarios are where that starts to count.\n",
         "heading": "Then the Real Thing"
       }
     ],
-    "objective": "Draw four connected districts — a complete map — and read the result your lines produce, then submit. (Keep them roughly even if you can; there's no target to hit. This is your last warm-up before the campaign.)\n",
+    "objective": "Draw four balanced, connected districts — a complete legal map — and read the result your lines produce, then submit. (No seat target; this is your last warm-up before the campaign.)\n",
     "epilogue": "That's everything: pick a district and paint it, keep the populations even and each district whole, and read the lean and the result to see who your lines elect. You've got the whole loop now.\nFrom here the maps come with a reason to draw them one way or another — a party to favor, a community to protect or split, a rule to satisfy. Same tools, real stakes. Good luck.\n"
   },
   "default_district_id": "d1",
