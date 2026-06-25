@@ -50,15 +50,16 @@ map:
 
 # ── Stage 1b: Terrain (COSMETIC) ──────────────────────────────────────────────
 #
-# A river running through Fairhaven. Cosmetic — districts may cross it. (A coastline is
-# deferred to the visual pass; see note above.)
+# A river through Fairhaven with the SAME dogleg shape as T003 (familiarity as we add terrain):
+# it enters at the NE rim, runs diagonally to the centre-west, then veers south to the bottom
+# edge. Cosmetic — districts may cross it. The terrain stage ROUTES the river (GAME-100) through
+# the `via` waypoint, chaining vertex-to-vertex and terminating off-map at both rims. (A coastline
+# is deferred to the visual pass; see note above.)
 
 terrain:
-  river_edges:
-    - [ { q: 0, r: -1 }, { q: 0, r: 0 } ]
-    - [ { q: 0, r: 0 },  { q: 0, r: 1 } ]
-    - [ { q: 0, r: 1 },  { q: 0, r: 2 } ]
-    - [ { q: 0, r: 2 },  { q: 0, r: 3 } ]
+  # from: NE rim → via: centre-west (one hex further south than T003, to wrap a bit more around
+  # the larger centre) → to: south rim. Same dogleg family as T003, scaled to radius 6.
+  river: { from: { q: 4, r: -6 }, via: [ { q: -2, r: 2 } ], to: { q: 0, r: 6 } }
 
 # ── Stage 2: Population ───────────────────────────────────────────────────────
 #

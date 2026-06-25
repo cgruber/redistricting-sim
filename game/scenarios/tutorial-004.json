@@ -61,9 +61,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (0,-6)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,-6)",
       "initial_district_id": "d1"
     },
     {
@@ -148,7 +148,7 @@
         "q": 4,
         "r": -6
       },
-      "total_population": 4020,
+      "total_population": 5227,
       "demographic_groups": [
         {
           "id": "p005-all",
@@ -173,7 +173,7 @@
         "q": 5,
         "r": -6
       },
-      "total_population": 4069,
+      "total_population": 5290,
       "demographic_groups": [
         {
           "id": "p006-all",
@@ -211,9 +211,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_central",
-      "county_name": "Fairhaven Central",
-      "name": "Central (6,-6)",
+      "county_id": "fairhaven_north",
+      "county_name": "Fairhaven North",
+      "name": "North (6,-6)",
       "initial_district_id": "d1"
     },
     {
@@ -236,9 +236,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (-1,-5)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,-5)",
       "initial_district_id": "d1"
     },
     {
@@ -261,9 +261,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (0,-5)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,-5)",
       "initial_district_id": "d1"
     },
     {
@@ -286,9 +286,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (1,-5)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (1,-5)",
       "initial_district_id": "d1"
     },
     {
@@ -323,7 +323,7 @@
         "q": 3,
         "r": -5
       },
-      "total_population": 3931,
+      "total_population": 5111,
       "demographic_groups": [
         {
           "id": "p012-all",
@@ -348,7 +348,7 @@
         "q": 4,
         "r": -5
       },
-      "total_population": 3991,
+      "total_population": 5189,
       "demographic_groups": [
         {
           "id": "p013-all",
@@ -386,9 +386,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_central",
-      "county_name": "Fairhaven Central",
-      "name": "Central (5,-5)",
+      "county_id": "fairhaven_north",
+      "county_name": "Fairhaven North",
+      "name": "North (5,-5)",
       "initial_district_id": "d1"
     },
     {
@@ -411,9 +411,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_central",
-      "county_name": "Fairhaven Central",
-      "name": "Central (6,-5)",
+      "county_id": "fairhaven_north",
+      "county_name": "Fairhaven North",
+      "name": "North (6,-5)",
       "initial_district_id": "d1"
     },
     {
@@ -436,9 +436,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (-2,-4)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-2,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -461,9 +461,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (-1,-4)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -486,9 +486,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (0,-4)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -511,9 +511,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (1,-4)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (1,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -523,7 +523,7 @@
         "q": 2,
         "r": -4
       },
-      "total_population": 3974,
+      "total_population": 5166,
       "demographic_groups": [
         {
           "id": "p020-all",
@@ -536,9 +536,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (2,-4)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (2,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -548,7 +548,7 @@
         "q": 3,
         "r": -4
       },
-      "total_population": 3928,
+      "total_population": 5107,
       "demographic_groups": [
         {
           "id": "p021-all",
@@ -586,9 +586,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_central",
-      "county_name": "Fairhaven Central",
-      "name": "Central (4,-4)",
+      "county_id": "fairhaven_north",
+      "county_name": "Fairhaven North",
+      "name": "North (4,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -611,9 +611,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_central",
-      "county_name": "Fairhaven Central",
-      "name": "Central (5,-4)",
+      "county_id": "fairhaven_north",
+      "county_name": "Fairhaven North",
+      "name": "North (5,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -636,9 +636,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_central",
-      "county_name": "Fairhaven Central",
-      "name": "Central (6,-4)",
+      "county_id": "fairhaven_north",
+      "county_name": "Fairhaven North",
+      "name": "North (6,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -661,9 +661,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (-3,-3)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-3,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -686,9 +686,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (-2,-3)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-2,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -711,9 +711,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (-1,-3)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -736,9 +736,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (0,-3)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -748,7 +748,7 @@
         "q": 1,
         "r": -3
       },
-      "total_population": 4061,
+      "total_population": 5279,
       "demographic_groups": [
         {
           "id": "p029-all",
@@ -761,9 +761,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (1,-3)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (1,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -773,7 +773,7 @@
         "q": 2,
         "r": -3
       },
-      "total_population": 3966,
+      "total_population": 5156,
       "demographic_groups": [
         {
           "id": "p030-all",
@@ -786,9 +786,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (2,-3)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (2,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -836,9 +836,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_central",
-      "county_name": "Fairhaven Central",
-      "name": "Central (4,-3)",
+      "county_id": "fairhaven_north",
+      "county_name": "Fairhaven North",
+      "name": "North (4,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -861,9 +861,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_central",
-      "county_name": "Fairhaven Central",
-      "name": "Central (5,-3)",
+      "county_id": "fairhaven_north",
+      "county_name": "Fairhaven North",
+      "name": "North (5,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -886,9 +886,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_central",
-      "county_name": "Fairhaven Central",
-      "name": "Central (6,-3)",
+      "county_id": "fairhaven_north",
+      "county_name": "Fairhaven North",
+      "name": "North (6,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -911,9 +911,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (-4,-2)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-4,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -936,9 +936,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (-3,-2)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-3,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -961,9 +961,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (-2,-2)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-2,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -986,9 +986,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (-1,-2)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -998,7 +998,7 @@
         "q": 0,
         "r": -2
       },
-      "total_population": 4102,
+      "total_population": 5333,
       "demographic_groups": [
         {
           "id": "p039-all",
@@ -1023,7 +1023,7 @@
         "q": 1,
         "r": -2
       },
-      "total_population": 4041,
+      "total_population": 5253,
       "demographic_groups": [
         {
           "id": "p040-all",
@@ -1136,9 +1136,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_central",
-      "county_name": "Fairhaven Central",
-      "name": "Central (5,-2)",
+      "county_id": "fairhaven_north",
+      "county_name": "Fairhaven North",
+      "name": "North (5,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -1161,9 +1161,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_central",
-      "county_name": "Fairhaven Central",
-      "name": "Central (6,-2)",
+      "county_id": "fairhaven_north",
+      "county_name": "Fairhaven North",
+      "name": "North (6,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -1186,9 +1186,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (-5,-1)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-5,-1)",
       "initial_district_id": "d1"
     },
     {
@@ -1211,9 +1211,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (-4,-1)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-4,-1)",
       "initial_district_id": "d1"
     },
     {
@@ -1236,9 +1236,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (-3,-1)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-3,-1)",
       "initial_district_id": "d1"
     },
     {
@@ -1261,9 +1261,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_north",
-      "county_name": "Fairhaven North",
-      "name": "North (-2,-1)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-2,-1)",
       "initial_district_id": "d1"
     },
     {
@@ -1273,7 +1273,7 @@
         "q": -1,
         "r": -1
       },
-      "total_population": 4018,
+      "total_population": 5223,
       "demographic_groups": [
         {
           "id": "p050-all",
@@ -1573,7 +1573,7 @@
         "q": -2,
         "r": 0
       },
-      "total_population": 4006,
+      "total_population": 5208,
       "demographic_groups": [
         {
           "id": "p062-all",
@@ -1598,7 +1598,7 @@
         "q": -1,
         "r": 0
       },
-      "total_population": 6624,
+      "total_population": 7831,
       "demographic_groups": [
         {
           "id": "p063-all",
@@ -1623,7 +1623,7 @@
         "q": 0,
         "r": 0
       },
-      "total_population": 7770,
+      "total_population": 6577,
       "demographic_groups": [
         {
           "id": "p064-all",
@@ -1711,9 +1711,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_south",
-      "county_name": "Fairhaven South",
-      "name": "South (3,0)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (3,0)",
       "initial_district_id": "d1"
     },
     {
@@ -1736,9 +1736,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_south",
-      "county_name": "Fairhaven South",
-      "name": "South (4,0)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (4,0)",
       "initial_district_id": "d1"
     },
     {
@@ -1898,7 +1898,7 @@
         "q": -2,
         "r": 1
       },
-      "total_population": 4031,
+      "total_population": 5241,
       "demographic_groups": [
         {
           "id": "p075-all",
@@ -1923,7 +1923,7 @@
         "q": -1,
         "r": 1
       },
-      "total_population": 6597,
+      "total_population": 7797,
       "demographic_groups": [
         {
           "id": "p076-all",
@@ -1973,7 +1973,7 @@
         "q": 1,
         "r": 1
       },
-      "total_population": 4018,
+      "total_population": 5223,
       "demographic_groups": [
         {
           "id": "p078-all",
@@ -1986,9 +1986,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_south",
-      "county_name": "Fairhaven South",
-      "name": "South (1,1)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (1,1)",
       "initial_district_id": "d1"
     },
     {
@@ -2011,9 +2011,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_south",
-      "county_name": "Fairhaven South",
-      "name": "South (2,1)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (2,1)",
       "initial_district_id": "d1"
     },
     {
@@ -2198,7 +2198,7 @@
         "q": -2,
         "r": 2
       },
-      "total_population": 3969,
+      "total_population": 5160,
       "demographic_groups": [
         {
           "id": "p087-all",
@@ -2223,7 +2223,7 @@
         "q": -1,
         "r": 2
       },
-      "total_population": 3961,
+      "total_population": 5150,
       "demographic_groups": [
         {
           "id": "p088-all",
@@ -2236,9 +2236,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_south",
-      "county_name": "Fairhaven South",
-      "name": "South (-1,2)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,2)",
       "initial_district_id": "d1"
     },
     {
@@ -2261,9 +2261,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_south",
-      "county_name": "Fairhaven South",
-      "name": "South (0,2)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,2)",
       "initial_district_id": "d1"
     },
     {
@@ -2273,7 +2273,7 @@
         "q": 1,
         "r": 2
       },
-      "total_population": 3995,
+      "total_population": 5193,
       "demographic_groups": [
         {
           "id": "p090-all",
@@ -2461,9 +2461,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_south",
-      "county_name": "Fairhaven South",
-      "name": "South (-3,3)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-3,3)",
       "initial_district_id": "d1"
     },
     {
@@ -2486,9 +2486,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_south",
-      "county_name": "Fairhaven South",
-      "name": "South (-2,3)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-2,3)",
       "initial_district_id": "d1"
     },
     {
@@ -2511,9 +2511,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_south",
-      "county_name": "Fairhaven South",
-      "name": "South (-1,3)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,3)",
       "initial_district_id": "d1"
     },
     {
@@ -2548,7 +2548,7 @@
         "q": 1,
         "r": 3
       },
-      "total_population": 3942,
+      "total_population": 5125,
       "demographic_groups": [
         {
           "id": "p101-all",
@@ -2686,9 +2686,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_south",
-      "county_name": "Fairhaven South",
-      "name": "South (-4,4)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-4,4)",
       "initial_district_id": "d1"
     },
     {
@@ -2711,9 +2711,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_south",
-      "county_name": "Fairhaven South",
-      "name": "South (-3,4)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-3,4)",
       "initial_district_id": "d1"
     },
     {
@@ -2773,7 +2773,7 @@
         "q": 0,
         "r": 4
       },
-      "total_population": 4007,
+      "total_population": 5209,
       "demographic_groups": [
         {
           "id": "p110-all",
@@ -2798,7 +2798,7 @@
         "q": 1,
         "r": 4
       },
-      "total_population": 4010,
+      "total_population": 5212,
       "demographic_groups": [
         {
           "id": "p111-all",
@@ -2886,9 +2886,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_south",
-      "county_name": "Fairhaven South",
-      "name": "South (-5,5)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-5,5)",
       "initial_district_id": "d1"
     },
     {
@@ -2998,7 +2998,7 @@
         "q": 0,
         "r": 5
       },
-      "total_population": 3976,
+      "total_population": 5168,
       "demographic_groups": [
         {
           "id": "p119-all",
@@ -3023,7 +3023,7 @@
         "q": 1,
         "r": 5
       },
-      "total_population": 4018,
+      "total_population": 5223,
       "demographic_groups": [
         {
           "id": "p120-all",
@@ -3061,9 +3061,9 @@
           "name": "All voters"
         }
       ],
-      "county_id": "fairhaven_south",
-      "county_name": "Fairhaven South",
-      "name": "South (-6,6)",
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-6,6)",
       "initial_district_id": "d1"
     },
     {
@@ -3198,7 +3198,7 @@
         "q": 0,
         "r": 6
       },
-      "total_population": 3955,
+      "total_population": 5142,
       "demographic_groups": [
         {
           "id": "p127-all",
@@ -3262,20 +3262,116 @@
   "default_district_id": "d1",
   "river_edges": [
     [
-      "p051",
-      "p064"
+      "p005",
+      "p006"
     ],
     [
-      "p064",
-      "p077"
+      "p005",
+      "p013"
+    ],
+    [
+      "p012",
+      "p013"
+    ],
+    [
+      "p012",
+      "p021"
+    ],
+    [
+      "p020",
+      "p021"
+    ],
+    [
+      "p020",
+      "p030"
+    ],
+    [
+      "p029",
+      "p030"
+    ],
+    [
+      "p029",
+      "p040"
+    ],
+    [
+      "p039",
+      "p040"
+    ],
+    [
+      "p039",
+      "p051"
+    ],
+    [
+      "p050",
+      "p051"
+    ],
+    [
+      "p050",
+      "p063"
+    ],
+    [
+      "p062",
+      "p063"
+    ],
+    [
+      "p063",
+      "p075"
+    ],
+    [
+      "p075",
+      "p076"
+    ],
+    [
+      "p076",
+      "p087"
+    ],
+    [
+      "p076",
+      "p088"
+    ],
+    [
+      "p077",
+      "p088"
     ],
     [
       "p077",
       "p089"
     ],
     [
+      "p078",
+      "p089"
+    ],
+    [
       "p089",
+      "p090"
+    ],
+    [
+      "p090",
       "p100"
+    ],
+    [
+      "p100",
+      "p101"
+    ],
+    [
+      "p101",
+      "p110"
+    ],
+    [
+      "p110",
+      "p111"
+    ],
+    [
+      "p111",
+      "p119"
+    ],
+    [
+      "p119",
+      "p120"
+    ],
+    [
+      "p120",
+      "p127"
     ]
   ],
   "hide_election_results": false,

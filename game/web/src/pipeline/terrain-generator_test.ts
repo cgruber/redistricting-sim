@@ -178,22 +178,28 @@ test("generateTerrain: terrain tile overlapping precinct throws", () => {
 
 // ─── generateTerrain: river edges ────────────────────────────────────────────
 
-test("generateTerrain: river edges translated to precinct ID pairs", () => {
-  // R=1 hex; (0,0) and (1,0) are adjacent precincts
-  // Sorted layout (r asc, q asc): r=-1: (0,-1),(1,-1); r=0: (-1,0),(0,0),(1,0); r=1: (-1,1),(0,1)
-  // (0,0) is idx 3 (0-indexed) → p004; (1,0) is idx 4 → p005
-  const spec = minimalSpec(1, {
+test("generateTerrain: routes a river from intent (north→south) and translates it to precinct IDs", () => {
+  // GAME-100: `terrain.river` intent → a routed, connected, off-map-terminating river.
+  const spec = minimalSpec(3, {
+    terrain: { river: { from: "north", to: "south" } },
+  });
+  const s = generateTerrain(spec);
+  assertEqual((s.river_edges?.length ?? 0) > 0, true);
+  for (const [a, b] of s.river_edges!) {
+    assertEqual(typeof a, "string");
+    assertEqual(typeof b, "string");
+    assertEqual(a !== b, true);
+  }
+});
+
+test("generateTerrain: an explicit river with a mid-land loose end throws", () => {
+  // A single interior segment (both corners ringed by 3 precincts) is per-se invalid.
+  const spec = minimalSpec(2, {
     terrain: {
       river_edges: [[{ q: 0, r: 0 }, { q: 1, r: 0 }]],
     },
   });
-  const s = generateTerrain(spec);
-  assertEqual(s.river_edges?.length, 1);
-  // Both IDs must be valid p0NN identifiers
-  const [a, b] = s.river_edges![0]!;
-  assertEqual(typeof a, "string");
-  assertEqual(typeof b, "string");
-  assertEqual(a !== b, true);
+  assertThrows(() => generateTerrain(spec), /loose end/i);
 });
 
 test("generateTerrain: river edge at non-precinct position throws", () => {
@@ -216,27 +222,32 @@ test("generateTerrain: river edge between non-adjacent positions throws", () => 
   assertThrows(() => generateTerrain(spec), /non-adjacent/i);
 });
 
-test("generateTerrain: river edge IDs correspond to correct positions", () => {
-  // Verify the ID assigned to a known position
-  const spec = minimalSpec(5);
+test("generateTerrain: river edge IDs round-trip to adjacent precinct positions", () => {
+  // Every routed river edge must translate to two real, adjacent precinct IDs.
+  const spec = minimalSpec(5, {
+    terrain: { river: { from: "west", to: "east" } },
+  });
   const s = generateTerrain(spec);
-  // Build position→id map from output
-  const posToId = new Map(
+  // id → position, built from the output precincts
+  const idToPos = new Map(
     s.precincts.map(p => {
       const pos = p.position as { q: number; r: number };
-      return [`${pos.q},${pos.r}`, p.id];
+      return [p.id, pos];
     }),
   );
-  // Now add a river between two known adjacent precincts
-  const specWithRiver = minimalSpec(5, {
-    terrain: {
-      river_edges: [[{ q: 0, r: 0 }, { q: 1, r: 0 }]],
-    },
-  });
-  const sWithRiver = generateTerrain(specWithRiver);
-  const [aId, bId] = sWithRiver.river_edges![0]!;
-  assertEqual(aId, posToId.get("0,0"));
-  assertEqual(bId, posToId.get("1,0"));
+  const dirs: [number, number][] = [
+    [1, 0], [0, 1], [-1, 1], [-1, 0], [0, -1], [1, -1],
+  ];
+  const adjacent = (a: { q: number; r: number }, b: { q: number; r: number }) =>
+    dirs.some(([dq, dr]) => a.q + dq === b.q && a.r + dr === b.r);
+  assertEqual((s.river_edges?.length ?? 0) > 0, true);
+  for (const [aId, bId] of s.river_edges!) {
+    const a = idToPos.get(aId);
+    const b = idToPos.get(bId);
+    assertEqual(a !== undefined, true);
+    assertEqual(b !== undefined, true);
+    assertEqual(adjacent(a!, b!), true);
+  }
 });
 
 summarize();
