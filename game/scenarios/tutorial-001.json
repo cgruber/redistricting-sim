@@ -962,5 +962,6 @@
   },
   "default_district_id": "d1",
   "hide_election_results": true,
-  "hide_view_toolbar": true
+  "hide_view_toolbar": true,
+  "guided": true
 }

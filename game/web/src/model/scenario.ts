@@ -306,6 +306,7 @@ export interface PartialScenario {
 	river_blocks_contiguity?: boolean;
 	hide_election_results?: boolean;
 	hide_view_toolbar?: boolean;
+	guided?: boolean;
 }
 
 // ─── Top-level Scenario ───────────────────────────────────────────────────────
@@ -349,4 +350,7 @@ export interface Scenario {
 	/** When true, the right-side map view toolbar (lean/county/city overlays) is hidden —
 	 *  the welcome tutorial has no alternate views worth showing (paint-only UI). */
 	hide_view_toolbar?: boolean;
+	/** When true, this scenario runs a guided walkthrough overlay (a registered step script
+	 *  keyed by scenario id drives the in-editor coaching). See DESIGN-012 / tutorial/overlay.ts. */
+	guided?: boolean;
 }
