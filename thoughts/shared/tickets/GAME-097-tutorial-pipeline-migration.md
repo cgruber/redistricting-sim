@@ -2,9 +2,22 @@
 id: GAME-097
 title: Tutorial pipeline migration + tutorial-001 content (hex-circle welcome)
 area: game, tooling, content
-status: open
+status: resolved
 created: 2026-06-24
 ---
+
+## Resolution
+
+Shipped in **PR #273** (squash-merged to main). tutorial-001 is now pipeline-generated
+(`tutorial-001.spec.yaml` → `tutorial-001.json`): a 37-precinct hex circle, paint-and-submit
+welcome. Established the pre-electoral / paint-only conventions: `hide_election_results` +
+`hide_view_toolbar` flags, applicable-aware validity panel, balance opt-in via
+`isMapSubmittable`, and the legend removed game-wide (the paint toolbar serves as the
+legend). Gates on `district_count` only — no untaught failure modes.
+
+The **guided-tutorial activation convention** (how the overlay engine detects/keys on a
+tutorial) is deferred to **GAME-076** (the overlay engine owns its own activation). The
+chrome flags above are the scenario-level conventions this ticket established.
 
 ## Summary
 

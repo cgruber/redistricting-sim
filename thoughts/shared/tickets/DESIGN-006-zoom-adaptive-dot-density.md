@@ -23,6 +23,8 @@ regardless of zoom level.
 
 ## Goals / Acceptance Criteria
 
+- [ ] **Tutorial:** when this ships as a View-toolbar entry, add a `reveal`/highlight step
+      introducing it to the views tutorial (tutorial-003), per DESIGN-012 extensibility.
 - [ ] Dot count per precinct scales continuously with d3 zoom transform scale (k)
 - [ ] At minimum zoom (full map view): 0–2 dots per precinct (sparse, readable at small size)
 - [ ] At maximum zoom (single precinct fills most of viewport): 10–20 dots per precinct

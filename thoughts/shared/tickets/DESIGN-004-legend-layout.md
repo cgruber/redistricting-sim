@@ -2,9 +2,16 @@
 id: DESIGN-004
 title: Move legend to floating bar at bottom of map
 area: design, UX
-status: open
+status: resolved
 created: 2026-04-26
 ---
+
+## Resolution
+
+**Obsolete — won't do.** The legend was *removed game-wide* in GAME-097 (PR #273): the
+left-side paint toolbar (colored, labelled district buttons) now serves as the legend, so
+there is no separate legend to relocate. `#legend-container` + `renderLegend` + the `.legend`
+CSS are gone. The sidebar-space concern this ticket addressed is resolved by removal.
 
 ## Summary
 

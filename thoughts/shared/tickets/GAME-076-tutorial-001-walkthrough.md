@@ -1,6 +1,6 @@
 ---
 id: GAME-076
-title: Tutorial-001 guided walkthrough — overlay engine + step script
+title: Guided-overlay engine + tutorial-001 paint-only walkthrough
 area: game, UX, tutorial
 status: open
 created: 2026-05-18
@@ -8,62 +8,59 @@ created: 2026-05-18
 
 ## Summary
 
-Implement the tutorial overlay system (designed in DESIGN-012) for tutorial-001. Build the
-overlay engine — step sequencing, UI element highlighting, input pause, skip/persist — and
-deliver the full tutorial-001 step script guiding a new player from opening the map editor
-through submitting their first attempt.
+Build the guided-overlay engine designed in DESIGN-012 and deliver the **tutorial-001**
+walkthrough: a paint-only welcome that coaches the player through select → paint → submit.
+The engine (step sequencing, highlight/dim, input-pause, skip/persist, `reveal` action) is
+built here and reused by GAME-077 for tutorial-002.
+
+Supersedes the original 9-step script — that targeted removed header buttons and walked the
+validity panel / lean / county views, none of which exist in the redesigned paint-only T1
+(GAME-097). See the revised script in DESIGN-012.
 
 ## Current State
 
-tutorial-001 has narrative intro slides (GAME-016) but no in-game guidance once the player
-enters the map editor. Players are dropped into the editor with no instructions.
+tutorial-001 ships (GAME-097) as a 37-precinct hex circle, paint-and-submit, with the view
+toolbar / legend / results / validity panels hidden. It has narrative intro slides but no
+in-editor coaching once the player enters the map.
 
 ## Goals / Acceptance Criteria
 
-### Overlay engine
+### Engine (per DESIGN-012)
 
-- [ ] Tutorial overlay panel: upper-right of map SVG, over map layer, `rgba(0,0,0,0.75)` background
-- [ ] Step data model implemented per DESIGN-012 spec: text, highlight selector, pauseInput, advanceTrigger
-- [ ] Highlight mechanism: CSS `tutorial-highlight` ring/glow on target; `tutorial-dimmed` on rest
-- [ ] Highlight works for: named button IDs, sidebar panel divs, the map hex SVG area
-- [ ] `pauseInput: true` blocks map painting + all buttons except designated advance target
-- [ ] Blocked click attempts silently ignored; cursor shows `not-allowed`
-- [ ] Escape key and "Skip tutorial" always active regardless of pause state
-- [ ] Advance triggers implemented: `click-target`, `any-map-click`, `auto` (setTimeout), `condition`
-- [ ] `condition: "5-precincts-painted"` trigger implemented for step 2
-- [ ] Skip button marks `tutorial-tutorial-001-complete` in localStorage; overlay dismissed
-- [ ] Tutorial not re-shown after localStorage flag set
-- [ ] `?resetTutorial=1` URL param clears tutorial localStorage flags
+- [ ] `guided: true` scenario flag plumbed (spec → assembler → scenario → loader); overlay
+      runs only for guided scenarios with a registered step script. No overlay otherwise.
+- [ ] Step model implemented: `text`, `highlight?`, `reveal?`, `pauseInput?`, `advance`
+      (`click-target` | `any-map-click` | `paint-count` | `submit` | `auto` | `next`).
+- [ ] Instruction panel over the map (upper area, semi-transparent), anti-obstruction shift.
+- [ ] Highlight (`tutorial-highlight` ring) + dim (`tutorial-dimmed`); works for button ids,
+      `#map-svg`, and a specific `.district-btn`.
+- [ ] Stable hook added to district paint buttons (e.g. `data-district="N"`) for targeting.
+- [ ] `pauseInput` blocks all input except the advance target; Escape + Skip always active.
+- [ ] `reveal` action: collect reveal selectors across the script, hide them on load
+      (tutorial-local), un-hide each on its step. (Exercised by GAME-077; built here.)
+- [ ] Skip control always visible; sets `localStorage["tutorial-<id>-complete"]`; not
+      re-shown after; `?resetTutorial=1` clears flags.
 
-### Tutorial-001 step script (9 steps per DESIGN-012)
+### tutorial-001 script (5 steps, per DESIGN-012)
 
-- [ ] Step 1: "Welcome! Click District 2 to start painting." — highlight district-2 button, pause, click-target
-- [ ] Step 2: "Click precincts to paint them as District 2." — highlight map, pause, 5-precincts condition
-- [ ] Step 3: "Made a mistake? Click Undo." — highlight undo, pause, click-target
-- [ ] Step 4: "Redo restores undone changes." — highlight redo, pause, click-target
-- [ ] Step 5: "This panel shows map validity — contiguity and balance." — highlight validity panel, auto 4s
-- [ ] Step 6: "Hover any precinct to see its data." — highlight sidebar, auto 4s
-- [ ] Step 7: "Toggle between District view and Lean view." — highlight view toggle, pause, click-target
-- [ ] Step 8: "County borders shows county boundaries." — highlight county button, auto 3s
-- [ ] Step 9: "When ready, click Submit." — highlight submit, auto 2s, tutorial ends
-
-### Scenario activation
-
-- [ ] Tutorial overlay activates only when `?s=tutorial-001` (or scenario has `tutorial: true` flag)
-- [ ] No overlay shown for non-tutorial scenarios
+- [ ] 1 Orient: "This whole county is District 1 — split it into two." (next)
+- [ ] 2 Highlight District 2 button → "Pick District 2." (pause, click-target)
+- [ ] 3 Highlight map → "Click precincts to paint them into District 2." (pause, paint-count)
+- [ ] 4 Highlight Undo → "Undo steps back." (next)
+- [ ] 5 Highlight Submit → "Submit when the county is split in two." (submit; ends)
 
 ## Test Coverage
 
-- [ ] e2e: tutorial overlay visible on tutorial-001 load (panel text matches step 1)
-- [ ] e2e: step advances to step 2 on district-2 button click
-- [ ] e2e: skip button dismisses overlay
-- [ ] e2e: overlay not re-shown after skip (localStorage flag set)
-- [ ] e2e: input blocked during paused step — painting attempt has no effect
-- [ ] e2e: `?resetTutorial=1` clears flag and overlay re-appears on next load
+- [ ] e2e: overlay shows on guided tutorial-001 load (panel matches step 1); no overlay on a
+      non-guided scenario.
+- [ ] e2e: step advances on District 2 click; paint-count advances after painting.
+- [ ] e2e: Skip dismisses overlay; not re-shown after (localStorage); `?resetTutorial=1` re-shows.
+- [ ] e2e: during a paused step, painting elsewhere has no effect.
 
 ## References
 
-- DESIGN-012 — overlay UX spec (approve before implementation)
-- `game/web/index.html` — element IDs for highlight selectors
-- `game/web/src/main.ts` — editor entry point, district buttons, undo/redo
-- GAME-077 — tutorial-002 (trails this; reuses overlay engine)
+- DESIGN-012 — overlay UX spec (step model, activation, T1 script). Sign off first.
+- GAME-097 (resolved) — paint-only T1 + flags this builds on.
+- `game/web/src/main.ts` (editor entry, district buttons, undo/submit), `game/web/index.html`,
+  `game/web/styles.css`.
+- GAME-077 — tutorial-002 reveal script (reuses this engine).
