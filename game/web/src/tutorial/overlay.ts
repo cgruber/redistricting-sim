@@ -29,8 +29,6 @@ export interface TutorialStep {
   highlight?: string | string[];
   /** Selector(s) to un-hide for this step (start hidden on load). */
   reveal?: string | string[];
-  /** Block all input except the highlight target(s) while this step is shown. */
-  pauseInput?: boolean;
   advance: AdvanceTrigger;
 }
 
@@ -50,13 +48,11 @@ const TUTORIAL_001: TutorialStep[] = [
   {
     text: "Pick **District 2** from the painter on the left.",
     highlight: '[data-district="2"]',
-    pauseInput: true,
     advance: { on: "click-target" },
   },
   {
     text: "Now click precincts on the map to paint them into District 2.",
     highlight: "#map-svg",
-    pauseInput: true,
     advance: { on: "paint-count", district: 2, n: 5 },
   },
   {
@@ -125,10 +121,10 @@ const TUTORIAL_003: TutorialStep[] = [
     advance: { on: "next" },
   },
   {
-    text: "Until now every voter was the same. They're not. **Lean** colors each precinct by who its voters favor — and this is what that produces: the **election result**, district by district.",
+    text: "Until now every voter was the same. They're not. Click **Lean** to colour each precinct by who its voters favour — and the **election result** panel (just appeared) shows what that produces, district by district.",
     reveal: ["#filter-lean", "#results-heading", "#results-container"],
-    highlight: ["#filter-lean", "#results-container"],
-    advance: { on: "next" },
+    highlight: "#filter-lean",
+    advance: { on: "click-target" },
   },
   {
     text: "Repaint a district and watch the result move. The lines you draw decide who wins.",
@@ -139,7 +135,6 @@ const TUTORIAL_003: TutorialStep[] = [
     text: "**County** borders are the old administrative lines. Like the river, they're **cosmetic** — they don't affect your districts at all; they just help you read the map and ground where things are.",
     reveal: "#filter-county",
     highlight: "#filter-county",
-    pauseInput: true,
     advance: { on: "click-target" },
   },
   {
@@ -368,10 +363,14 @@ function runOverlay(id: string, script: TutorialStep[], store: StoreLike): void 
     const targets = selectorsToElements(step.highlight);
     targets.forEach((el) => el.classList.add("tutorial-highlight"));
 
-    if (step.pauseInput) {
-      editorRoots.forEach((r) => r.classList.add("tutorial-paused"));
-      targets.forEach((el) => el.classList.add("tutorial-interactive"));
-    }
+    // Input is always locked while the coach is up: only the highlighted target(s), the painter,
+    // and the map stay clickable (the player can always paint), plus Next/Skip at body level.
+    // Everything else — the view toolbar, undo/redo, reset, etc. — is inert, so the player can't
+    // wander off whatever the guidance is pointing at.
+    editorRoots.forEach((r) => r.classList.add("tutorial-paused"));
+    [...targets, ...selectorsToElements(["#map-svg", "#district-toolbar"])].forEach((el) =>
+      el.classList.add("tutorial-interactive"),
+    );
 
     nextBtn.style.display = step.advance.on === "next" ? "" : "none";
 

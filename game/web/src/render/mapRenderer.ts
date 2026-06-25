@@ -50,6 +50,8 @@ export interface MapRenderer {
 	setCoordLabelsVisible(visible: boolean): void;
 	/** Provide scenario party display names for the precinct-info panel. */
 	setPartyLabels(labels: Partial<Record<PartyKey, string>>): void;
+	/** Reset the zoom/pan to the initial fitted vantage point (used by Reset). */
+	resetView(): void;
 }
 
 // ─── Internal types ───────────────────────────────────────────────────────────
@@ -401,6 +403,14 @@ export class SvgMapRenderer implements MapRenderer {
 	setViewMode(mode: ViewMode) {
 		this.viewMode = mode;
 		this.render();
+	}
+
+	resetView() {
+		// Snap the zoom/pan back to the initial fitted vantage point (same as the "0" shortcut).
+		this.svg
+			.transition()
+			.duration(SvgMapRenderer.ZOOM_DURATION_RESET)
+			.call(this.zoomBehavior.transform, this.initialTransform);
 	}
 
 	setCountyBordersVisible(visible: boolean) {
