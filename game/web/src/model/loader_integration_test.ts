@@ -43,7 +43,7 @@ function loadJson(filename: string): unknown {
 const SCENARIOS: { file: string; id: string; precincts: number; districts: number }[] = [
   { file: "tutorial-001.json",  id: "tutorial-001",  precincts: 37,  districts: 2 },
   { file: "tutorial-002.json",  id: "tutorial-002",  precincts: 61,  districts: 3 },
-  { file: "tutorial-003.json",  id: "tutorial-003",  precincts: 119, districts: 4 },
+  { file: "tutorial-003.json",  id: "tutorial-003",  precincts: 91,  districts: 3 },
   { file: "scenario-002.json",  id: "scenario-002",  precincts: 91,  districts: 4 },
   { file: "scenario-003.json",  id: "scenario-003",  precincts: 127, districts: 5 },
   { file: "scenario-004.json",  id: "scenario-004",  precincts: 127, districts: 5 },

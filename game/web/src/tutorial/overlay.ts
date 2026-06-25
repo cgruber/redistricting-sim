@@ -102,9 +102,54 @@ const TUTORIAL_002: TutorialStep[] = [
   },
 ];
 
+/**
+ * tutorial-003 — "Reading the Vote" (DESIGN-012 / GAME-098). The first electoral layer:
+ * the engine's `reveal` action is used for the first time here. The election-result panel
+ * and the Lean view are revealed **together** (lean = who voters favor; the result = who
+ * wins — a causal pair), then the County view. The result is shown to *read* (repaint and
+ * watch it move), not to exploit — the objective stays mechanical (district_count).
+ *
+ * Reveal targets (start hidden on load, surfaced as their step fires): `#filter-lean`,
+ * `#results-heading` + `#results-container`, `#filter-county`.
+ *
+ * NOTE: the City view step (DESIGN-012 step 5) is descoped until the city-limits overlay
+ * (GAME-096) ships — there is no `#filter-city` yet. The map already carries an urban core,
+ * so that step can be added later without a map change.
+ */
+const TUTORIAL_003: TutorialStep[] = [
+  {
+    text: "A new map, with some geography — a river runs through the Bend. It's just scenery; your districts can cross it freely.",
+    advance: { on: "next" },
+  },
+  {
+    text: "Until now every voter was the same. They're not. **Lean** colors each precinct by who its voters favor — and this is what that produces: the **election result**, district by district.",
+    reveal: ["#filter-lean", "#results-heading", "#results-container"],
+    highlight: ["#filter-lean", "#results-container"],
+    advance: { on: "next" },
+  },
+  {
+    text: "Repaint a district and watch the result move. The lines you draw decide who wins.",
+    highlight: "#results-container",
+    advance: { on: "paint-count", district: 2, n: 5 },
+  },
+  {
+    text: "**County** borders show the old administrative lines — another way to read the map.",
+    reveal: "#filter-county",
+    highlight: "#filter-county",
+    pauseInput: true,
+    advance: { on: "click-target" },
+  },
+  {
+    text: "That's the whole picture. Draw your three districts and hit **Submit**.",
+    highlight: ["#district-toolbar", "#btn-submit"],
+    advance: { on: "submit" },
+  },
+];
+
 const SCRIPTS: Record<string, TutorialStep[]> = {
   "tutorial-001": TUTORIAL_001,
   "tutorial-002": TUTORIAL_002,
+  "tutorial-003": TUTORIAL_003,
 };
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────

@@ -1,0 +1,179 @@
+# Spec file for tutorial-003: "Hawthorn Bend: Reading the Vote"
+# Source of truth for the map generation pipeline (GAME-098).
+# Generated output: game/scenarios/tutorial-003.json
+#
+# Regenerate:  bazel run //game/web/src/pipeline:generate_scenario -- \
+#                game/scenarios/tutorial-003.spec.yaml game/scenarios/tutorial-003.json
+#
+# PEDAGOGY (see plan thoughts/shared/plans/2026-06-24-tutorial-redesign-pipeline-migration.md
+# and DESIGN-012 / GAME-098):
+#   Tutorial 3 is the FIRST ELECTORAL LAYER. It unveils the election-result panel TOGETHER
+#   with the Lean view (lean = who each precinct favors; the result = who wins each district —
+#   a causal pair), then the county view. The result is shown to *read* ("repaint and watch it
+#   move"), NOT to exploit — strategy is the capstone + the real scenarios. So the objective
+#   stays MECHANICAL (gates on district_count only): nothing can fail the player for a rule this
+#   tutorial doesn't teach.
+#
+#   New since T2: a little geography (a river — cosmetic scenery, districts may cross it), a
+#   partisan east/west LEAN, and counties. The guided overlay REVEALS the result
+#   panel + Lean view in one step, then the County view.
+#
+#   JUDGMENT CALLS (flagged for review — iterate freely):
+#     - 3 districts; gates district_count only (no balance/contiguity gate — T2 taught those;
+#       T3 is about reading the result). rules.contiguity: allowed to keep winnability simple
+#       and terrain-proof.
+#     - The CITY view step is descoped from this draft: it needs the city-limits overlay
+#       (GAME-096), which isn't built yet. The map already carries an urban core so the city
+#       reveal can be added later without a map change. The overlay reveals lean+result, then
+#       county; the city step lands with GAME-096.
+#     - Terrain (coast + river) is a cosmetic draft for your visual pass.
+
+format_version: "1"
+
+# ── Scenario identity ─────────────────────────────────────────────────────────
+
+scenario:
+  id: tutorial-003
+  title: "Hawthorn Bend: Reading the Vote"
+  election_type: state_house
+  region:
+    id: hawthorn_bend
+    name: Hawthorn Bend
+
+# ── Stage 1a: Map layout ──────────────────────────────────────────────────────
+#
+# A step up again from T2's radius-4 (61). radius 5 = 91 precincts (no tiles carved out;
+# the planned coastline is deferred — see the terrain draft note below).
+
+map:
+  geometry: hex_axial
+  shape: hex_circle
+  radius: 5
+
+# ── Stage 1b: Terrain (COSMETIC scenery) ──────────────────────────────────────
+#
+# A short river running down the centre of the Bend. Geography is cosmetic — districts
+# may cross it freely.
+#
+# DRAFT NOTE: a coastline was planned too, but sea tiles must sit OUTSIDE the precinct
+# circle (the generator rejects tiles that overlap a precinct), so the coast needs
+# hand-placed outer-ring tiles best done during the visual pass. Deferred; the river
+# alone carries "some geography" for now. (Slide copy below matches: river only.)
+
+terrain:
+  river_edges:
+    - [ { q: 0, r: 1 }, { q: 0, r: 2 } ]
+    - [ { q: 0, r: 2 }, { q: 0, r: 3 } ]
+    - [ { q: 0, r: 3 }, { q: 0, r: 4 } ]
+
+# ── Stage 2: Population ───────────────────────────────────────────────────────
+#
+# A central city (Hawthorn) on a rural base — gives the county stage a dense seat to
+# form a county around (and an urban core for the future City view), without making
+# balance a factor (T3 doesn't gate on balance).
+
+population:
+  seed: 13
+  base: 4000
+  variance: 300
+  smoothing: 1
+  settlements:
+    - label: Hawthorn (city)
+      anchor: center
+      peak: 4000
+      radius: 2
+      profile: plateau
+
+# ── Stage 3: Demographics (PARTISAN — an east/west split) ─────────────────────
+#
+# The whole point of T3: voters are not uniform. The west of the Bend leans Ken, the
+# east leans Ryu, the centre is a tossup. This is what the Lean view colours and what
+# the election result reads — and it's why where you draw the lines changes who wins.
+
+demographics:
+  seed: 13
+  parties: [ken, ryu]
+  group:
+    id_suffix: all
+    name: All voters
+  turnout:
+    min: 0.55
+    max: 0.70
+  jitter: 0.04
+  zones:
+    - name: west
+      filter: { q_lte: -1 }
+      party_base: { ken: 0.62 }
+    - name: east
+      filter: { q_gte: 1 }
+      party_base: { ken: 0.38 }
+    - name: center
+      filter: { default: true }
+      party_base: { ken: 0.50 }
+
+# ── Stage 3b: Counties ────────────────────────────────────────────────────────
+#
+# A county seat (the city) plus its rural hinterland — gives the County view real
+# administrative lines to show. Cosmetic only (county_id drives the dashed border).
+
+counties:
+  model: seat_and_hinterland
+  target_count: 2
+  id_prefix: hawthorn
+
+# ── Stage 4: Assembly ─────────────────────────────────────────────────────────
+
+assembly:
+  parties:
+    - { id: ken, name: Ken Party, abbreviation: KEN }
+    - { id: ryu, name: Ryu Party, abbreviation: RYU }
+  districts:
+    - { id: d1, name: District 1 }
+    - { id: d2, name: District 2 }
+    - { id: d3, name: District 3 }
+  default_district_id: d1
+  # No initial_district_rule → opens as one district; the player carves three and watches
+  # the result update as the lines move.
+  guided: true                       # runs the guided overlay (GAME-076 / DESIGN-012, T3 script)
+  hide_election_results: false       # ELECTORAL: the result panel exists; the overlay reveals it
+  hide_view_toolbar: false           # the view toolbar exists; the overlay reveals lean + county
+  rules:
+    population_tolerance: 0.15        # unused (no balance criterion) — a sane default
+    contiguity: allowed              # not gated here — T3 is about reading the vote, not rules
+  success_criteria:
+    # Mechanical objective: three districts in use, every precinct assigned. The result is
+    # shown to read, not to win-by — so nothing here gates on the electoral outcome.
+    - id: sc-district-count
+      required: true
+      description: All three districts are in use and every precinct is assigned.
+      criterion: { type: district_count }
+  narrative:
+    character:
+      name: You
+      role: Mapmaker, Hawthorn Bend
+      motivation: >
+        You can draw a legal map. Now for the part that makes redistricting matter: the
+        voters aren't all the same, and where you draw the lines decides who wins. Let's
+        learn to read the vote.
+    intro_slides:
+      - heading: A New Kind of Map
+        body: >
+          Hawthorn Bend has a river running through it — scenery only; your districts can
+          cross it freely. What's new is underneath: the people. The west of the Bend leans
+          one way, the east the other, and the centre is a tossup.
+      - heading: Lean, and the Result
+        body: >
+          Two new things will appear as we go. The **Lean** view colours each precinct by
+          who its voters favour. And the **election result** shows who wins each district
+          you draw. They go together: lean tells you the ground, the result tells you the
+          outcome — and the lines you draw decide it.
+    objective: >
+      Draw three districts and read the result. There's no target to hit — repaint the lines
+      and watch who wins change, then submit when you've had a look.
+    epilogue: >
+      That's the whole picture: precincts lean, and the district lines you draw turn those
+      leanings into seats. The same voters can hand one party a majority of seats or the
+      other — nothing changed but the lines.
+
+      You've drawn a legal map and learned to read the vote. From here the campaign scenarios
+      put it to work: real maps, real goals, and a reason to draw the lines the way you do.
