@@ -63,21 +63,46 @@ terrain:
 
 # ── Stage 2: Population ───────────────────────────────────────────────────────
 #
-# A modest central city on a rural base. Gentle on purpose — gives the county stage a seat
-# (and an urban core for the future City view) while keeping balance achievable with a
-# roughly-equal-area split. Balance is a skill to apply here, not an obstacle to fight.
+# A central city on a textured rural base. Like T003: rural noise (variance) is left un-smoothed
+# so the countryside reads as varied, and a few village peaks break up the fringe (giving the
+# county stage extra seats and the map some life). The villages are placed in opposite pairs so
+# the field stays balanced for a roughly-equal-area four-way split — balance is a skill to apply
+# here, not an obstacle to fight.
 
 population:
   seed: 21
   base: 4000
-  variance: 250
-  smoothing: 1
+  variance: 650         # rural noise so the countryside reads as varied, not flat (matches T3)
+  smoothing: 0          # keep the texture — don't average the noise away
   settlements:
     - label: Fairhaven (city)
       anchor: center
       peak: 2600
       radius: 2
       profile: plateau
+    # Satellite towns ringing the city at the cardinals (N/E/S/W), in opposite pairs so they
+    # cancel for population balance. Cardinal (not intercardinal) placement keeps each town at the
+    # centre of a wedge in the natural four-way split rather than astride a district boundary.
+    - label: Millbrook
+      anchor: north
+      peak: 1200
+      radius: 2
+      profile: gaussian
+    - label: Stonebridge
+      anchor: south
+      peak: 1200
+      radius: 2
+      profile: gaussian
+    - label: Oakhollow
+      anchor: east
+      peak: 1300
+      radius: 2
+      profile: gaussian
+    - label: Pinecrest
+      anchor: west
+      peak: 1300
+      radius: 2
+      profile: gaussian
 
 # ── Stage 3: Demographics (PARTISAN — an east/west split) ─────────────────────
 #
