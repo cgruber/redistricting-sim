@@ -1352,3 +1352,63 @@ body {
   z-index: 9999;
   user-select: none;
 }
+
+/* ── Tutorial guided overlay (GAME-076) ───────────────────────────────────── */
+#tutorial-panel {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 48px);
+  max-width: 440px;
+  box-sizing: border-box;
+  background: rgba(10, 20, 40, 0.97);
+  border: 1px solid #2a4a6c;
+  border-radius: 10px;
+  padding: 16px 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  z-index: 9500;
+  color: #e8eef6;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+#tutorial-panel .tutorial-text { margin-bottom: 12px; }
+#tutorial-panel .tutorial-text strong { color: #fff; }
+#tutorial-panel .tutorial-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+#tutorial-panel button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  border: 1px solid transparent;
+}
+#tutorial-panel .tutorial-next { background: #2f6fd0; color: #fff; }
+#tutorial-panel .tutorial-skip { background: transparent; color: #8aa0b8; border-color: #2a4a6c; }
+
+/* Highlight ring on the active control. */
+.tutorial-highlight {
+  outline: 3px solid #ffd24a !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px rgba(255, 210, 74, 0.22) !important;
+  border-radius: 6px;
+  animation: tutorial-pulse 1.4s ease-in-out infinite;
+}
+@keyframes tutorial-pulse {
+  0%, 100% { box-shadow: 0 0 0 6px rgba(255, 210, 74, 0.18); }
+  50% { box-shadow: 0 0 0 10px rgba(255, 210, 74, 0.34); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tutorial-highlight { animation: none; }
+}
+
+/* Input pause: editor roots inert; the highlighted target stays interactive
+   (a descendant with pointer-events:auto receives events under a none ancestor). */
+.tutorial-paused { pointer-events: none; }
+.tutorial-interactive { pointer-events: auto !important; }
+
+/* Reveal targets start hidden until their step fires. */
+.tutorial-reveal-hidden { display: none !important; }

@@ -154,5 +154,8 @@ export function assembleScenario(
     ...(spec.hide_view_toolbar !== undefined
       ? { hide_view_toolbar: spec.hide_view_toolbar }
       : {}),
+    ...(spec.guided !== undefined
+      ? { guided: spec.guided }
+      : {}),
   };
 }

@@ -60,6 +60,7 @@ export function renderDistrictButtons(
 		btn.style.color = "#fff";
 		btn.setAttribute("aria-label", `Paint District ${i}`);
 		btn.setAttribute("data-tip", `District ${i}`);
+		btn.setAttribute("data-district", String(i)); // stable hook for the tutorial overlay (GAME-076)
 		// Number shows when the toolbar is collapsed; full label when expanded.
 		const num = document.createElement("span");
 		num.className = "district-num";

@@ -16,6 +16,7 @@ import {
 	renderResults,
 	renderValidityPanel,
 } from "./render/panels.js";
+import { startTutorialOverlay } from "./tutorial/overlay.js";
 import { createGameStore } from "./store/gameStore.js";
 import {
 	evaluateCriteria,
@@ -647,6 +648,9 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		document.getElementById("main-menu")?.classList.add("hidden");
 		appHeader!.style.display = "";
 		mainEl!.style.display = "";
+		// GAME-076: kick off the guided walkthrough (no-op unless scenario.guided + a script).
+		// rAF so the just-shown editor has laid out before the overlay highlights anything.
+		requestAnimationFrame(() => startTutorialOverlay(scenario, store));
 	}
 
 	function startScenarioIntro() {

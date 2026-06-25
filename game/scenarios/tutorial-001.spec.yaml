@@ -100,6 +100,7 @@ assembly:
   default_district_id: d1
   # No initial_district_rule → the loader fills every editable precinct with
   # default_district_id (d1), so the map opens as one district and the player carves d2.
+  guided: true                       # runs the paint-only guided overlay (GAME-076 / DESIGN-012)
   hide_election_results: true        # pre-electoral: hide the outcome prediction panel
   hide_view_toolbar: true            # paint-only: no lean/county/city views worth showing
   rules:

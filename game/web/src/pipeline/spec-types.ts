@@ -288,6 +288,8 @@ export interface AssemblySpec {
   hide_election_results?: boolean;
   /** Hide the right-side map view toolbar (lean/county/city) — paint-only tutorials. */
   hide_view_toolbar?: boolean;
+  /** Run the guided walkthrough overlay (a step script keyed by scenario id). */
+  guided?: boolean;
 }
 
 // ─── Pipeline spec (full file) ────────────────────────────────────────────────

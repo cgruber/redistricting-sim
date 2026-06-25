@@ -89,6 +89,16 @@ async function paintHexes(
   }, { hexes, district });
 }
 
+// GAME-076: tutorial-001 now runs a guided overlay (scenario.guided). Suppress it by
+// default so the existing tutorial-001 tests aren't intercepted by the coach panel /
+// input-pause. The overlay-specific tests below force it with `?resetTutorial=1`, which
+// clears this flag on load. (Harmless for non-guided scenarios — the flag is ignored.)
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    try { localStorage.setItem("tutorial-tutorial-001-complete", "1"); } catch { /* ignore */ }
+  });
+});
+
 // ─── scenario-002: "Give the Governor a Win" ─────────────────────────────────
 
 test("scenario-002 smoke: loads and renders 91 precincts", async ({ page }) => {
@@ -982,6 +992,62 @@ test("tutorial-001: a wildly imbalanced split still passes (balance not enforced
   await page.locator("#btn-submit").click();
   await expect(page.locator("#result-screen")).toBeVisible();
   await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+});
+
+// ─── GAME-076: guided overlay (tutorial-001 paint-only walkthrough) ──────────
+
+/** Force the guided overlay on tutorial-001, skip the intro, wait for the panel. */
+async function loadGuidedT1(page: import("@playwright/test").Page): Promise<void> {
+  // resetTutorial=1 clears the suppression flag the beforeEach set, so the overlay runs.
+  await page.goto("/?campaign=tutorial&s=tutorial-001&debug&resetTutorial=1");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("#tutorial-panel")).toBeVisible({ timeout: 10_000 });
+}
+
+test("guided overlay: walks the player from orient → pick D2 → paint → undo → submit", async ({ page }) => {
+  await loadGuidedT1(page);
+
+  // Step 1 — orient.
+  await expect(page.locator("#tutorial-panel")).toContainText("District 1");
+  await page.locator("#tutorial-panel .tutorial-next").click();
+
+  // Step 2 — pick District 2: the button is ringed, input is paused.
+  await expect(page.locator("#tutorial-panel")).toContainText("District 2");
+  await expect(page.locator('[data-district="2"]')).toHaveClass(/tutorial-highlight/);
+  await expect(page.locator("#main")).toHaveClass(/tutorial-paused/);
+  await page.locator('[data-district="2"]').click();
+
+  // Step 3 — paint: advance once 5 precincts are in District 2 (via the store, like other tests).
+  await expect(page.locator("#tutorial-panel")).toContainText("paint");
+  await expect(page.locator("#map-svg")).toHaveClass(/tutorial-highlight/);
+  await paintHexes(page, [[-3, 3], [-2, 3], [-1, 3], [0, 3], [-3, 2]], 2);
+
+  // Step 4 — undo.
+  await expect(page.locator("#tutorial-panel")).toContainText("Undo");
+  await page.locator("#tutorial-panel .tutorial-next").click();
+
+  // Step 5 — submit (terminal): clicking Submit ends the overlay and shows results.
+  await expect(page.locator("#tutorial-panel")).toContainText("Submit");
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#tutorial-panel")).toHaveCount(0);
+  await expect(page.locator("#result-screen")).toBeVisible();
+});
+
+test("guided overlay: Skip dismisses it", async ({ page }) => {
+  await loadGuidedT1(page);
+  await page.locator("#tutorial-panel .tutorial-skip").click();
+  await expect(page.locator("#tutorial-panel")).toHaveCount(0);
+});
+
+test("guided overlay: not shown on a non-guided scenario", async ({ page }) => {
+  await page.goto("/?s=scenario-002&debug");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator("#tutorial-panel")).toHaveCount(0);
 });
 
 // ─── GAME-048: Campaign-driven scenario select ──────────────────────────────
