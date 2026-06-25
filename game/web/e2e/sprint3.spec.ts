@@ -4,8 +4,10 @@ import { test, expect } from "@playwright/test";
  * Sprint 3 behavioral tests:
  *   GAME-014 (scenario scale), GAME-016 (intro), GAME-017 (evaluation), GAME-018 (progression).
  *
- * NOTE: The app loads tutorial-002.json (196-precinct three-county map) as the primary scenario.
- * tutorial-001.json is retained for loader unit tests only.
+ * NOTE: Generic editor/submit/wip mechanics run against scenario-002 (the shared, play-
+ * relevant fixture). The intro-narrative, winnability, and scale tests still use tutorial-002
+ * because they assert its specific content; they're updated/replaced when tutorial-002 becomes
+ * "A Legal Map" (GAME-077). Progress/select tests reference tutorial-002 by id (no editor load).
  *
  * GAME-016: Intro slide flow:
  *   1. Intro screen is visible on initial load (before map editor) — new player
@@ -34,7 +36,11 @@ import { test, expect } from "@playwright/test";
 
 /** Navigate, dismiss intro, wait for hex grid. */
 async function loadEditor(page: import("@playwright/test").Page): Promise<void> {
-  await page.goto("/?s=tutorial-002");
+  // Fixture: scenario-002 (educational opener) for the generic submit/editor-mechanics tests.
+  // (The intro-narrative + winnability/scale tests below stay on tutorial-002 — they assert
+  // its specific content — and are updated/replaced when tutorial-002 becomes "A Legal Map".)
+  await page.goto("/?s=scenario-002&debug");
+  await page.emulateMedia({ reducedMotion: "reduce" });
   // playwright.config reducedMotion:'reduce' is ignored in the Bazel-sandboxed Chromium;
   // explicit emulation ensures the instant result path runs so verdict is visible immediately.
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -297,11 +303,11 @@ test("wip: saved assignment map is restored on scenario load", async ({ page }) 
   // Pre-paint precinct 0 → district 2, precinct 1 → district 3 in the WIP
   // Then load tutorial-002 and verify via window.__gameStore that assignments match
   const wipAssignments: Record<string, number> = {};
-  // tutorial-002 has 196 precincts; build a complete assignment with index 0 → 2 (district 2)
-  for (let i = 0; i < 196; i++) wipAssignments[String(i)] = i === 0 ? 2 : 1;
+  // scenario-002 has 91 precincts; build a complete assignment with index 0 → 2 (district 2)
+  for (let i = 0; i < 91; i++) wipAssignments[String(i)] = i === 0 ? 2 : 1;
 
-  await seedWip(page, "tutorial-002", wipAssignments, 2);
-  await page.goto("/?s=tutorial-002");
+  await seedWip(page, "scenario-002", wipAssignments, 2);
+  await page.goto("/?s=scenario-002&debug");
 
   // Wait for editor to be ready (intro appears because it's a fresh load without completed state)
   const skip = page.locator("#btn-intro-skip");
@@ -320,9 +326,9 @@ test("wip: saved assignment map is restored on scenario load", async ({ page }) 
 });
 
 test("wip: painting precincts triggers a debounced WIP save to localStorage", async ({ page }) => {
-  // Load tutorial-002, skip intro, paint precinct 0 → district 2 via store shortcut,
+  // Load scenario-002, skip intro, paint precinct 0 → district 2 via store shortcut,
   // then wait > 800ms and confirm the WIP key was written with the expected assignment.
-  await page.goto("/?s=tutorial-002");
+  await page.goto("/?s=scenario-002&debug");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 10_000 });
   await skip.click();
@@ -347,7 +353,7 @@ test("wip: painting precincts triggers a debounced WIP save to localStorage", as
 
   // Precinct 0 must be stored as district 2.
   const wip = JSON.parse(wipRaw!) as { scenarioId: string; assignments: Record<string, number>; activeDistrict: number };
-  expect(wip.scenarioId).toBe("tutorial-002");
+  expect(wip.scenarioId).toBe("scenario-002");
   expect(wip.assignments["0"]).toBe(2);
   expect(wip.activeDistrict).toBe(2);
 });
@@ -407,7 +413,16 @@ test("winnability: painting boundary precincts enables submit and produces a pas
    * Winning move: paint 7 hexes at r=-2, q=-6..0 from d2 → d1.
    * This transfers ~21k population, bringing all three districts within ±3%.
    */
-  await loadEditor(page);
+  // Asserts old tutorial-002's specific 3-county 196-precinct balance map; stays on
+  // tutorial-002 and is replaced when tutorial-002 becomes "A Legal Map" (GAME-077).
+  await page.goto("/?s=tutorial-002");
+  // Force the instant result-screen path (the sandbox ignores config reducedMotion);
+  // without this the animated criteria reveal leaves #result-verdict empty past the timeout.
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 10_000 });
+  await skip.click();
+  await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 10_000 });
 
   // GAME-059: Submit is always enabled; initial state is unbalanced but submittable.
   await expect(page.locator("#btn-submit")).toBeEnabled();

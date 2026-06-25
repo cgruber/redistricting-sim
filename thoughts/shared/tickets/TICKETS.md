@@ -107,7 +107,6 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `DESIGN-013-vra-scenario-design.md` | design, content | VRA scenario design: "The 55% Problem" (Bethune-Hill dual-failure zone) and proxy-only redistricting post-Callais |
 | `DESIGN-014-nonpartisan-content-framing.md` | design, content | Non-partisan content guidelines: source standards, narrative language, naming conventions, about-page audit; prerequisite for VRA scenario authoring |
 | `DESIGN-015-information-density-redesign.md` | design, UX | Layout redesign for 5+ districts: evaluate map overlays, HUD strip, tabbed sidebar; specify where GAME-080 demographic stat lives; DESIGN-004 fate |
-| `GAME-076-tutorial-001-walkthrough.md` | game, UX, tutorial | Guided-overlay engine (`guided:true` activation, step model, highlight/pause/skip, reveal action) + tutorial-001 paint-only 5-step script (orient → pick D2 → paint → undo → submit). Per revised DESIGN-012 |
 | `GAME-077-tutorial-002-guided-mode.md` | game, UX, tutorial, content | Tutorial-002 "A Legal Map": contiguity + balanced population + the validity panel; gates balance/contiguity; pre-electoral (hide_election_results+hide_view_toolbar). Re-scoped 2026-06-24 (views moved to GAME-098). See plan 2026-06-24-tutorial-redesign |
 | `GAME-078-vra-scenarios-implementation.md` | game, content | Implement VRA scenarios: Scenario A + Scenario B; terrain features; proxy-data mechanic; hides race demographics; result-screen reveal |
 | `GAME-079-scenario-002-playability-tuning.md` | game, content | Tighten scenario-002 — trivially-easy first educational campaign scenario requires genuine engagement |
@@ -127,6 +126,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 
 | Summary | Resolution |
 |---|---|
+| GAME-076: guided-overlay engine + tutorial-001 | Built the guided walkthrough engine (`src/tutorial/overlay.ts`): step model, `guided:true` activation, highlight/pause (pointer-events cascade)/skip/persist, reveal action (for T2/T3), `?resetTutorial=1`. tutorial-001 5-step paint script (orient→D2→paint→undo→submit). e2e + suppression beforeEach. PR #275 |
 | DESIGN-004: legend layout | Obsolete — won't do. Legend removed game-wide in GAME-097 (#273); the paint toolbar is the legend, so there's nothing to relocate |
 | GAME-097: tutorial pipeline migration + tutorial-001 | tutorial-001 now pipeline-generated (`tutorial-001.spec.yaml`→json): 37-precinct hex circle, paint-and-submit welcome. Pre-electoral/paint-only conventions: `hide_election_results`+`hide_view_toolbar` flags, applicable-aware validity panel, balance opt-in via `isMapSubmittable`, legend removed game-wide (paint toolbar=legend). Gates on `district_count` only (no untaught failure modes). Overlay-activation convention deferred to GAME-076. PR #273 |
 | GAME-091: scenario-002 teaching narrative | Rewrote scenario-002 intro to teach votes≠seats + packing (old text was stale for the new field); added `narrative.epilogue` (schema→assembler→loader→result screen) — a teaching debrief revealed on a win explaining packing/cracking neutrally. e2e asserts the debrief shows |
