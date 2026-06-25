@@ -2316,7 +2316,7 @@
   "events": [],
   "rules": {
     "population_tolerance": 0.15,
-    "contiguity": "allowed"
+    "contiguity": "required"
   },
   "success_criteria": [
     {
@@ -2325,6 +2325,14 @@
       "description": "All three districts are in use and every precinct is assigned.",
       "criterion": {
         "type": "district_count"
+      }
+    },
+    {
+      "id": "sc-population-balance",
+      "required": true,
+      "description": "All three districts have roughly equal population (within 15%).",
+      "criterion": {
+        "type": "population_balance"
       }
     }
   ],
@@ -2344,7 +2352,7 @@
         "heading": "Lean, and the Result"
       }
     ],
-    "objective": "Draw three districts and read the result. There's no target to hit — repaint the lines and watch who wins change, then submit when you've had a look.\n",
+    "objective": "Draw three balanced, connected districts — a legal map, like before — and read the result. There's no seat to chase; repaint the lines, watch who wins change, and submit when it's legal and you've had a look.\n",
     "epilogue": "That's the whole picture: precincts lean, and the district lines you draw turn those leanings into seats. The same voters can hand one party a majority of seats or the other — nothing changed but the lines.\nYou've drawn a legal map and learned to read the vote. From here the campaign scenarios put it to work: real maps, real goals, and a reason to draw the lines the way you do.\n"
   },
   "default_district_id": "d1",

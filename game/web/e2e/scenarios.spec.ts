@@ -1348,11 +1348,13 @@ test("tutorial-003 terrain: the cosmetic river is rendered", async ({ page }) =>
   await expect(page.locator("path.river-chain").first()).toBeAttached();
 });
 
-test("tutorial-003 electoral: the election-result panel is present (pre-electoral hiding is off)", async ({ page }) => {
-  // tutorial-003 sets hide_election_results: false — the first tutorial to surface the vote.
-  // With the guided overlay suppressed (beforeEach), the result panel shows normally.
+test("tutorial-003 chrome: the result panel AND the Map Validity panel are both visible", async ({ page }) => {
+  // hide_election_results: false → the result panel shows (first electoral tutorial). And T3
+  // gates balance + contiguity, so the Map Validity panel stays visible — panels accrete once
+  // revealed (it was introduced in T2; the applicable-aware hiding must not re-hide it here).
   await loadScenario(page, "tutorial-003");
   await expect(page.locator("#results-container")).toBeVisible();
+  await expect(page.locator("#validity-container")).toBeVisible();
 });
 
 test("tutorial-003 lean view: switching to Lean recolors the map by partisanship", async ({ page }) => {
@@ -1372,10 +1374,11 @@ test("tutorial-003 county view: the county overlay toggles on", async ({ page })
   await expect(page.locator("svg g.county-borders")).toBeAttached();
 });
 
-test("tutorial-003 winnability: carving three districts passes (gates on district_count only)", async ({ page }) => {
+test("tutorial-003 winnability: three balanced, connected wedges pass (district_count + balance + contiguity)", async ({ page }) => {
   await loadScenario(page, "tutorial-003");
-  // Mechanical objective: three districts in use, every precinct assigned. Carve three simple
-  // west / centre / east bands — no balance or contiguity gate to satisfy.
+  // T3 draws a LEGAL map: three districts balanced (±15%) + connected, plus reading the vote.
+  // Carve three wedges around the centre — each gets a slice of the dense core + sparse rim, so
+  // all three balance (BFS-verified; a 45° rotation is best: +1 / -3 / +2%).
   await page.evaluate(() => {
     const store = (window as unknown as Record<string, { getState: () => {
       paintStroke: (ids: number[], d: number) => void;
@@ -1385,10 +1388,16 @@ test("tutorial-003 winnability: carving three districts passes (gates on distric
     const state = store.getState();
     const d2: number[] = [];
     const d3: number[] = [];
+    const off = Math.PI / 4; // 45° rotation — best-balanced wedge orientation
     state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
-      if (p.coord.q >= 2) d3.push(i);          // east → District 3
-      else if (p.coord.q >= -1) d2.push(i);    // centre → District 2
-      // q <= -2 (west) stays District 1
+      const x = Math.sqrt(3) * (p.coord.q + p.coord.r / 2);
+      const y = 1.5 * p.coord.r;
+      let a = Math.atan2(y, x);
+      if (a < 0) a += 2 * Math.PI;
+      const wedge = Math.min(2, Math.floor(((a - off + 2 * Math.PI) % (2 * Math.PI)) / (2 * Math.PI / 3)));
+      if (wedge === 1) d2.push(i);
+      else if (wedge === 2) d3.push(i);
+      // wedge 0 stays District 1
     });
     state.paintStroke(d2, 2);
     state.paintStroke(d3, 3);
