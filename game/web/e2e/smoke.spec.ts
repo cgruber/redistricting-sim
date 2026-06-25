@@ -22,7 +22,10 @@ test("app loads and renders hex map", async ({ page }) => {
     consoleErrors.push(`[pageerror] ${err.message}`);
   });
 
-  await page.goto("/?s=tutorial-002");
+  // &debug: scenario-002 is a campaign scenario (not the first), so it is locked
+  // until the prior one is completed; debug mode bypasses the unlock gate and loads
+  // it directly (otherwise the app redirects to the select screen).
+  await page.goto("/?s=scenario-002&debug");
 
   // Dismiss intro screen (GAME-016): skip button appears after scenario loads.
   const skipBtn = page.locator("#btn-intro-skip");

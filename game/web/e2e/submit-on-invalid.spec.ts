@@ -12,9 +12,13 @@ import { test, expect } from "@playwright/test";
  *   6. Validity sidebar panel updates live during drawing (regression guard)
  */
 
-/** Navigate, dismiss intro, wait for hex grid. */
+/**
+ * Navigate, dismiss intro, wait for hex grid. Fixture: scenario-002 (educational opener),
+ * the shared play-relevant editor fixture; `&debug` exposes the force-win button used to
+ * exercise the pass-result UI.
+ */
 async function loadEditor(page: import("@playwright/test").Page): Promise<void> {
-  await page.goto("/?s=tutorial-002");
+  await page.goto("/?s=scenario-002&debug");
   // playwright.config reducedMotion:'reduce' is ignored in the Bazel-sandboxed Chromium;
   // explicit emulation ensures the instant result path runs so verdict is visible immediately.
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -33,29 +37,7 @@ async function paintAllIntoDistrictOne(page: import("@playwright/test").Page): P
     if (!store) throw new Error("__gameStore not exposed");
     const state = store.getState();
     const allIds = Array.from(state.assignments.keys());
-    state.paintStroke(allIds, 1); // All precincts → district 1; districts 2 and 3 empty
-  });
-}
-
-/** Paint the winning move: move boundary precincts at r=-2, q=-6..0 from d2 to d1. */
-async function paintWinningMove(page: import("@playwright/test").Page): Promise<void> {
-  await page.evaluate(() => {
-    const store = (window as unknown as Record<string, unknown>)["__gameStore"] as
-      | { getState: () => { paintStroke: (ids: number[], d: number) => void; precincts: { coord: { q: number; r: number } }[] } }
-      | undefined;
-    if (!store) throw new Error("__gameStore not exposed");
-    const state = store.getState();
-    const coordToIdx = new Map<string, number>();
-    state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
-      coordToIdx.set(`${p.coord.q},${p.coord.r}`, i);
-    });
-    // Move 7 hexes at r=-2, q=-6..0 from central (d2) → north (d1)
-    const ids: number[] = [];
-    for (let q = -6; q <= 0; q++) {
-      const idx = coordToIdx.get(`${q},-2`);
-      if (idx !== undefined) ids.push(idx);
-    }
-    state.paintStroke(ids, 1);
+    state.paintStroke(allIds, 1); // All precincts → district 1; the other districts left empty (invalid)
   });
 }
 
@@ -129,8 +111,8 @@ test("submit-on-invalid: Fix It button returns to editor from invalid map result
 // ─── Any non-passing result ───────────────────────────────────────────────────
 
 test("submit-on-invalid: any non-passing result hides Next Scenario and shows the back button", async ({ page }) => {
-  // The initial state of tutorial-002 has population imbalance (invalid map).
-  // Submitting it produces a non-passing result — the result screen shows a
+  // scenario-002's default (diagonal-strip) map doesn't meet the criteria (district d4 is
+  // unused). Submitting it produces a non-passing result — the result screen shows a
   // failure verdict, the back button (Keep Drawing / Fix It), and hides Next Scenario.
   // Note: the "Fix It" vs "Keep Drawing" label distinction is covered separately:
   //   - "Fix It" for invalid maps: see "invalid map shows Fix It button, not Next Scenario"
@@ -146,25 +128,29 @@ test("submit-on-invalid: any non-passing result hides Next Scenario and shows th
 
 // ─── Winning (passing) map result screen ─────────────────────────────────────
 
-test("submit-on-invalid: passing map shows pass screen with Next Scenario", async ({ page }) => {
+test("submit-on-invalid: passing map shows pass screen routing to the next scenario", async ({ page }) => {
   await loadEditor(page);
-  // Paint the winning move to satisfy all required criteria
-  await paintWinningMove(page);
-
-  await page.locator("#btn-submit").click();
+  // Force-win to exercise the pass-result UI without replicating scenario-002's full
+  // winning move (its real winnability is covered in scenarios.spec.ts).
+  await page.locator("#btn-debug-win").click();
 
   await expect(page.locator("#result-screen")).toBeVisible();
   await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
-  // Both buttons shown on pass
+  // scenario-002 has a teaching epilogue (narrative.epilogue), so the pass screen routes
+  // through "Continue →" to a debrief panel rather than showing "Next Scenario" directly
+  // (GAME-094). Keep Drawing + Continue are shown; Next Scenario is deferred to the debrief.
   await expect(page.locator("#btn-keep-drawing")).toBeVisible();
-  await expect(page.locator("#btn-next-scenario")).toBeVisible();
+  await expect(page.locator("#btn-continue")).toBeVisible();
+  await expect(page.locator("#btn-next-scenario")).not.toBeVisible();
+
+  // Continue → debrief panel, which carries the advance-to-next-scenario button.
+  await page.locator("#btn-continue").click();
+  await expect(page.locator("#btn-debrief-next")).toBeVisible();
 });
 
 test("submit-on-invalid: passing map shows Keep Drawing (not Fix It) label", async ({ page }) => {
   await loadEditor(page);
-  await paintWinningMove(page);
-
-  await page.locator("#btn-submit").click();
+  await page.locator("#btn-debug-win").click();
 
   await expect(page.locator("#result-screen")).toBeVisible();
   // Label must be "Keep Drawing" on a passing map, not "Fix It"

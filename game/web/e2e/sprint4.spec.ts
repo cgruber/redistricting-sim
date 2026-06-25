@@ -11,9 +11,9 @@ import { test, expect } from "@playwright/test";
  *   4. Final visible state matches expected criteria count (regression)
  */
 
-/** Navigate, dismiss intro, wait for hex grid. */
+/** Navigate, dismiss intro, wait for hex grid. Fixture: scenario-002 (educational opener). */
 async function loadEditor(page: import("@playwright/test").Page): Promise<void> {
-  await page.goto("/?s=tutorial-002");
+  await page.goto("/?s=scenario-002&debug");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 10_000 });
   await skip.click();
@@ -89,7 +89,7 @@ test("GAME-069: every criterion row has a character slot (.rc-char)", async ({ p
 });
 
 // GAME-062: commissioner rows use real sprite sheets (not placeholder SVG) after wiring.
-// scenario-002 (tutorial-002) has commissioner criteria with demo "bf".
+// scenario-002 has commissioner criteria with demo "bf".
 test("GAME-062: commissioner criterion rows render a character sprite", async ({ page }) => {
   await loadEditor(page);
   await openResultScreen(page);
@@ -163,14 +163,14 @@ test("GAME-052: final state has correct criteria count after skip (regression)",
 test("GAME-073: failure banner shown immediately in reduced-motion mode", async ({ page }) => {
   await loadEditor(page);
   await openResultScreen(page); // already emulates reducedMotion:'reduce'
-  // Unsolved tutorial-002 has required-failing criteria.
+  // scenario-002 default map has required-failing criteria.
   await expect(page.locator("#result-verdict")).toHaveText("Map Failed");
   await expect(page.locator("#result-stars")).toBeHidden();
 });
 
 // Reduced-motion path: success banner + stars shown immediately on a force-win.
 test("GAME-073: success banner and stars shown immediately in reduced-motion mode (force-win)", async ({ page }) => {
-  await page.goto("/?s=tutorial-002&debug");
+  await page.goto("/?s=scenario-002&debug");
   await page.emulateMedia({ reducedMotion: "reduce" });
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 10_000 });
@@ -182,14 +182,14 @@ test("GAME-073: success banner and stars shown immediately in reduced-motion mod
 
   await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
   await expect(page.locator("#result-stars")).toBeVisible();
-  // tutorial-002: 2 required + 1 optional → max 2 stars; force-win passes all → 2 stars
+  // scenario-002: 3 required + 1 optional → max 2 stars; force-win passes all → 2 stars
   const starCount = await page.locator("#result-stars .result-star").count();
   expect(starCount).toBe(2);
 });
 
 // Animated path: verdict starts empty, skip button reveals it with stars.
 test("GAME-073: skip reveals verdict and stars (animated mode, force-win)", async ({ page }) => {
-  await page.goto("/?s=tutorial-002&debug");
+  await page.goto("/?s=scenario-002&debug");
   // Do NOT emulate reduced-motion — use animated path.
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 10_000 });

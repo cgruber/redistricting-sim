@@ -13,9 +13,14 @@ import { test, expect } from "@playwright/test";
  * (same approach as sprint1.spec.ts) to avoid coordinate-mapping issues.
  */
 
-/** Navigate, dismiss the intro screen, and wait for the hex grid to be ready. */
+/**
+ * Navigate, dismiss the intro screen, and wait for the hex grid to be ready.
+ * Fixture: scenario-002 (educational opener) — the shared, play-relevant editor fixture
+ * with the full view toolbar (the tutorials are now guided / paint-only).
+ */
 async function loadApp(page: import("@playwright/test").Page): Promise<void> {
-  await page.goto("/?s=tutorial-002");
+  await page.goto("/?s=scenario-002&debug");
+  await page.emulateMedia({ reducedMotion: "reduce" });
   // Dismiss intro screen (GAME-016)
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 10_000 });
@@ -70,8 +75,8 @@ test("validity panel: updates after painting a precinct to a new district", asyn
   // Capture initial validity panel HTML
   const before = await page.locator("#validity-container").innerHTML();
 
-  // Switch to District 2 and paint precinct 0
-  await page.locator("button.district-btn").nth(1).click();
+  // Switch to District 4 (unused initially) and paint precinct 0 (starts in District 2)
+  await page.locator("button.district-btn").nth(3).click();
   await paintHex(page, "path.hex[data-precinct-id='0']");
   await expect(page.locator("#btn-undo")).toBeEnabled();
 
@@ -206,8 +211,8 @@ test("reset: Cancel hides confirm row and preserves undo state", async ({ page }
   await loadApp(page);
   const btnUndo = page.locator("#btn-undo");
 
-  // Paint first so undo is enabled
-  await page.locator("button.district-btn").nth(1).click();
+  // Paint first so undo is enabled (District 4 is unused initially; precinct 0 starts in D2)
+  await page.locator("button.district-btn").nth(3).click();
   await paintHex(page, "path.hex[data-precinct-id='0']");
   await expect(btnUndo).toBeEnabled();
 
@@ -230,8 +235,8 @@ test("reset: full flow — paint, confirm reset, fills restored, undo disabled",
 
   const initialFill = await hex0.getAttribute("fill");
 
-  // Paint precinct 0 to District 2
-  await page.locator("button.district-btn").nth(1).click();
+  // Paint precinct 0 (starts in District 2) to District 4 (unused initially)
+  await page.locator("button.district-btn").nth(3).click();
   await paintHex(page, "path.hex[data-precinct-id='0']");
   await expect(btnUndo).toBeEnabled();
   expect(await hex0.getAttribute("fill")).not.toBe(initialFill);

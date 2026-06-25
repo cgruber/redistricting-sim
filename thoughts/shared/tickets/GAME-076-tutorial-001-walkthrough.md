@@ -2,9 +2,21 @@
 id: GAME-076
 title: Guided-overlay engine + tutorial-001 paint-only walkthrough
 area: game, UX, tutorial
-status: open
+status: resolved
 created: 2026-05-18
 ---
+
+## Resolution
+
+Shipped in **PR #275** (squash-merged to main). `game/web/src/tutorial/overlay.ts` implements
+the guided-overlay engine per DESIGN-012 (step model; `next`/`click-target`/`any-map-click`/
+`paint-count`/`submit`/`auto` advance; input-pause via the pointer-events cascade; `reveal`
+action built but unexercised until T3; Skip/Escape + per-scenario `localStorage` complete flag;
+`?resetTutorial=1`). `guided: true` plumbed (spec → assembler → scenario → loader) and set on
+tutorial-001; `startTutorialOverlay()` runs from `showEditor()`; `data-district="N"` hook on
+paint buttons; coach-panel + ring + pause CSS. e2e covers the walkthrough + suppression; a
+file-level `beforeEach` keeps the overlay out of the other tutorial-001 tests. Owner playtested
+and approved.
 
 ## Summary
 
