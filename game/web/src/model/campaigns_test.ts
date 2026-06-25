@@ -67,7 +67,7 @@ test("tutorial campaign scenarioIds are tutorial-001, tutorial-002, tutorial-003
 	assertNotNull(tutorial, "tutorial exists");
 	assertEqual(tutorial!.scenarioIds[0], "tutorial-001", "first scenario");
 	assertEqual(tutorial!.scenarioIds[1], "tutorial-002", "second scenario");
-	assertEqual(tutorial!.scenarioIds[2], "tutorial-003", "third scenario (geographic-features tour)");
+	assertEqual(tutorial!.scenarioIds[2], "tutorial-003", "third scenario (Reading the Vote)");
 });
 
 test("educational campaign has exactly 8 scenario IDs", () => {

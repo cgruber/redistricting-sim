@@ -89,7 +89,7 @@ async function paintHexes(
   }, { hexes, district });
 }
 
-// GAME-076/077: tutorial-001 and tutorial-002 run a guided overlay (scenario.guided).
+// GAME-076/077/098: tutorial-001, -002, and -003 run a guided overlay (scenario.guided).
 // Suppress it by default so the existing tutorial tests aren't intercepted by the coach
 // panel / input-pause. The overlay-specific tests below force it with `?resetTutorial=1`,
 // which clears these flags on load. (Harmless for non-guided scenarios — the flags are ignored.)
@@ -98,6 +98,7 @@ test.beforeEach(async ({ page }) => {
     try {
       localStorage.setItem("tutorial-tutorial-001-complete", "1");
       localStorage.setItem("tutorial-tutorial-002-complete", "1");
+      localStorage.setItem("tutorial-tutorial-003-complete", "1");
     } catch { /* ignore */ }
   });
 });
@@ -882,14 +883,33 @@ test("wrap-up screen: completing last scenario shows wrap-up on Next Scenario", 
   await page.evaluate((ids) => {
     localStorage.setItem("redistricting-sim-progress", JSON.stringify({ completed: ids }));
   }, allButLast);
-  // Load tutorial-003. Its initial 4-quadrant assignment is already contiguous + balanced,
-  // so no paintStroke is needed — submit passes on the starting map.
+  // tutorial-003 ("Reading the Vote") opens as one district; carve three (by q-band) so the
+  // district_count objective passes — it gates on nothing else.
   await loadScenario(page, "tutorial-003");
+  await page.evaluate(() => {
+    const store = (window as unknown as Record<string, { getState: () => {
+      paintStroke: (ids: number[], d: number) => void;
+      precincts: { coord: { q: number; r: number } }[];
+    } }>)["__gameStore"];
+    if (!store) throw new Error("__gameStore not found");
+    const state = store.getState();
+    const d2: number[] = [];
+    const d3: number[] = [];
+    state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
+      if (p.coord.q >= 2) d3.push(i);          // east → District 3
+      else if (p.coord.q >= -1) d2.push(i);    // centre → District 2
+      // q <= -2 (west) stays District 1
+    });
+    state.paintStroke(d2, 2);
+    state.paintStroke(d3, 3);
+  });
   await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
   await page.locator("#btn-submit").click();
   await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
-  // Click "Next Scenario" — should show wrap-up, not select screen
-  await page.locator("#btn-next-scenario").click();
+  // tutorial-003 has a teaching epilogue → the pass screen routes through "Continue →" to the
+  // debrief panel; its advance button (last scenario) leads to the wrap-up screen.
+  await page.locator("#btn-continue").click();
+  await page.locator("#btn-debrief-next").click();
   await expect(page.locator("#wrap-up-screen")).toBeVisible({ timeout: 5_000 });
   await expect(page.locator("#wrap-up-screen")).toContainText("Congratulations");
   // Select screen should NOT be visible
@@ -1095,7 +1115,7 @@ test("campaign select: ?campaign=tutorial shows tutorial-001, tutorial-002, and 
   await page.goto("/?campaign=tutorial");
   await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
   const cards = page.locator(".scenario-card");
-  // GAME-082: tutorial-003 (geographic-features tour) is the third tutorial scenario.
+  // tutorial-003 ("Reading the Vote") is the third tutorial scenario; "Hawthorn Bend" is its region.
   await expect(cards).toHaveCount(3);
   await expect(cards.nth(0)).toContainText("Welcome to Redistricting");
   await expect(cards.nth(1)).toContainText("A Legal Map");
@@ -1275,85 +1295,111 @@ test.describe("GAME-068: animated reveal path (no reduced-motion)", () => {
   });
 });
 
-// ─── tutorial-003: "Hawthorn Bend — A Tour of the Map" (GAME-082 geo features tour) ───
+// ─── tutorial-003: "Hawthorn Bend: Reading the Vote" (GAME-098 — first electoral layer) ───
+// Redesigned from the old terrain tour: a 91-precinct map with an east/west partisan lean,
+// a cosmetic river, and counties. Guided overlay reveals the election result + Lean view
+// together, then the County view. Gates on district_count only (the result is shown to read).
 
-test("tutorial-003 smoke: loads and renders 119 precincts", async ({ page }) => {
-  await page.goto("/?s=tutorial-003&debug");
-  // 127 R=6 circle hexes minus 3 mountain tiles minus 4 sea tiles (now at r=6) minus 1 lake tile = 119.
-  await expect(page.locator("path.hex")).toHaveCount(119);
-});
-
-test("tutorial-003 terrain: 8 terrain tiles rendered (3 mountain + 4 sea + 1 lake)", async ({ page }) => {
-  await page.goto("/?s=tutorial-003&debug");
-  // Mountain tiles now at (-3,-3), (-2,-4), (-1,-5) — hexDist=6 boundary positions.
-  await expect(page.locator("g.terrain-tile")).toHaveCount(8);
-  await expect(page.locator("g.terrain-tile[data-terrain-type='mountain']")).toHaveCount(3);
-  await expect(page.locator("g.terrain-tile[data-terrain-type='sea']")).toHaveCount(4);
-  await expect(page.locator("g.terrain-tile[data-terrain-type='lake']")).toHaveCount(1);
-});
-
-test("tutorial-003 terrain: river rendered as two smoothed chains (split at lake tile)", async ({ page }) => {
-  await page.goto("/?s=tutorial-003&debug");
-  // 16 river edges split into two chains by the lake tile at (-1,1):
-  //   chain 1: NW foothill (-1,-4) → (-2,1)  [9 edges]
-  //   chain 2: (-2,2) → (-1,5) [7 edges] — downstream reach to coast area
-  // Smoothing uses d3.curveCardinal.tension(0.4).
-  await expect(page.locator("path.river-chain")).toHaveCount(2);
-  const d = await page.locator("path.river-chain").first().getAttribute("d");
-  expect(d).toBeTruthy();
-  expect(d!.startsWith("M")).toBe(true);
-  // curveCardinal on 3+ points emits cubic bezier (C).
-  expect(d!.includes("C")).toBe(true);
-});
-
-test("tutorial-003 terrain: terrain tiles are non-interactive (pointer-events: none)", async ({ page }) => {
-  await page.goto("/?s=tutorial-003&debug");
-  const pointerEvents = await page.locator("g.terrain-tile").first().evaluate(
-    (el) => getComputedStyle(el).pointerEvents,
-  );
-  expect(pointerEvents).toBe("none");
-});
-
-test("tutorial-003 terrain: coast edge strokes on precincts adjacent to sea", async ({ page }) => {
-  await page.goto("/?s=tutorial-003&debug");
-  // Sea tiles moved to r=6: (-3,6), (-2,6), (-1,6), (0,6). Coast precincts at r=5 / edge of map:
-  //   (-3,6): 3 precinct-facing edges → (-4,6), (-3,5), (-2,5)
-  //   (-2,6): 2 precinct-facing edges → (-2,5), (-1,5)
-  //   (-1,6): 2 precinct-facing edges → (-1,5), (0,5)
-  //   (0,6):  2 precinct-facing edges → (0,5), (1,5)
-  // Total: 3+2+2+2 = 9 sea-facing edges, each rendered as a curved <path> (GAME-082).
-  await expect(page.locator("path.terrain-edge-sea")).toHaveCount(9);
-});
-
-test("tutorial-003 terrain: lake edge strokes on precincts adjacent to lake tile", async ({ page }) => {
-  await page.goto("/?s=tutorial-003&debug");
-  // Lake tile at (-1,1). All 6 neighbours are valid precincts, each with 1 lake-facing edge:
-  //   (0,1), (-1,2), (-2,2), (-2,1), (-1,0), (0,0)
-  // Total: 6 lake-facing edges, each rendered as a curved <path>.
-  await expect(page.locator("path.terrain-edge-lake")).toHaveCount(6);
-});
-
-test("tutorial-003 terrain: foothill edge strokes on precincts adjacent to mountains", async ({ page }) => {
-  await page.goto("/?s=tutorial-003&debug");
-  // Mountain tiles at (-3,-3), (-2,-4), (-1,-5) are NOT precincts (terrain-position exclusion).
-  // Only positions with hexDist ≤ 6 are valid precincts. Foothill precincts are:
-  //   (-2,-3): 2 edges facing (-3,-3) and (-2,-4) [hexDist=5]
-  //   (-3,-2): 1 edge facing (-3,-3)              [hexDist=3]
-  //   (-4,-2): 1 edge facing (-3,-3)              [hexDist=4]
-  //   (-1,-4): 2 edges facing (-2,-4) and (-1,-5) [hexDist=5]
-  //   (0,-5):  1 edge facing (-1,-5)              [hexDist=5]
-  //   (0,-6):  1 edge facing (-1,-5)              [hexDist=6]
-  // Positions (-4,-3), (-3,-4), (-2,-5), (-1,-6) are hexDist=7 — outside the grid.
-  // Total: 2+1+1+2+1+1 = 8 mountain-facing edges, rendered as curved <path> (GAME-082).
-  await expect(page.locator("path.terrain-edge-mountain")).toHaveCount(8);
-});
-
-test("tutorial-003 contiguity: river is cosmetic, initial quadrant districts are contiguous", async ({ page }) => {
+test("tutorial-003 smoke: loads and renders 91 precincts", async ({ page }) => {
   await loadScenario(page, "tutorial-003");
-  // GAME-082: rivers are visual only — `river_blocks_contiguity: false`. The initial 4-quadrant
-  // assignment (3×3 blocks of precincts) is contiguous and population-balanced; no repainting needed.
-  await expect(page.locator("#validity-container")).toBeVisible();
-  const validityText = await page.locator("#validity-container").innerText();
-  expect(validityText).toMatch(/Connected/);
-  expect(validityText).not.toMatch(/Non-contiguous/);
+  await expect(page.locator("path.hex")).toHaveCount(91);
+});
+
+test("tutorial-003 terrain: the cosmetic river is rendered", async ({ page }) => {
+  await loadScenario(page, "tutorial-003");
+  // The river renders as an SVG <path class="river-chain">. It's a thin stroked line, so
+  // toBeVisible() (bounding-box based) is unreliable for SVG — assert it's attached instead.
+  await expect(page.locator("path.river-chain").first()).toBeAttached();
+});
+
+test("tutorial-003 electoral: the election-result panel is present (pre-electoral hiding is off)", async ({ page }) => {
+  // tutorial-003 sets hide_election_results: false — the first tutorial to surface the vote.
+  // With the guided overlay suppressed (beforeEach), the result panel shows normally.
+  await loadScenario(page, "tutorial-003");
+  await expect(page.locator("#results-container")).toBeVisible();
+});
+
+test("tutorial-003 lean view: switching to Lean recolors the map by partisanship", async ({ page }) => {
+  await loadScenario(page, "tutorial-003");
+  const hex0 = page.locator("path.hex").first();
+  const districtFill = await hex0.getAttribute("fill");
+  await page.locator("#filter-lean").click();
+  await expect(page.locator("#filter-lean")).toHaveAttribute("aria-checked", "true");
+  await expect(hex0).not.toHaveAttribute("fill", districtFill!);
+});
+
+test("tutorial-003 county view: the county overlay toggles on", async ({ page }) => {
+  await loadScenario(page, "tutorial-003");
+  const county = page.locator("#filter-county");
+  await county.click();
+  await expect(county).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("svg g.county-borders")).toBeAttached();
+});
+
+test("tutorial-003 winnability: carving three districts passes (gates on district_count only)", async ({ page }) => {
+  await loadScenario(page, "tutorial-003");
+  // Mechanical objective: three districts in use, every precinct assigned. Carve three simple
+  // west / centre / east bands — no balance or contiguity gate to satisfy.
+  await page.evaluate(() => {
+    const store = (window as unknown as Record<string, { getState: () => {
+      paintStroke: (ids: number[], d: number) => void;
+      precincts: { coord: { q: number; r: number } }[];
+    } }>)["__gameStore"];
+    if (!store) throw new Error("__gameStore not found");
+    const state = store.getState();
+    const d2: number[] = [];
+    const d3: number[] = [];
+    state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
+      if (p.coord.q >= 2) d3.push(i);          // east → District 3
+      else if (p.coord.q >= -1) d2.push(i);    // centre → District 2
+      // q <= -2 (west) stays District 1
+    });
+    state.paintStroke(d2, 2);
+    state.paintStroke(d3, 3);
+  });
+  await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#result-screen")).toBeVisible();
+  await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+});
+
+// ─── GAME-098: guided overlay (tutorial-003) — first use of the `reveal` action ───
+
+test("guided overlay: tutorial-003 reveals the result + lean, then county, then submits", async ({ page }) => {
+  // resetTutorial=1 clears the suppression flag the beforeEach set, so the overlay runs.
+  await page.goto("/?campaign=tutorial&s=tutorial-003&debug&resetTutorial=1");
+  const skip = page.locator("#btn-intro-skip");
+  await expect(skip).toBeVisible({ timeout: 15_000 });
+  await skip.click();
+  await expect(page.locator("#tutorial-panel")).toBeVisible({ timeout: 10_000 });
+
+  // The reveal targets start hidden — the overlay hides them on load.
+  await expect(page.locator("#results-container")).toBeHidden();
+  await expect(page.locator("#filter-lean")).toBeHidden();
+  await expect(page.locator("#filter-county")).toBeHidden();
+
+  // Step 1 — orient.
+  await expect(page.locator("#tutorial-panel")).toContainText("geography");
+  await page.locator("#tutorial-panel .tutorial-next").click();
+
+  // Step 2 — reveal the Lean view + the election result together.
+  await expect(page.locator("#tutorial-panel")).toContainText("election result");
+  await expect(page.locator("#results-container")).toBeVisible();
+  await expect(page.locator("#filter-lean")).toBeVisible();
+  await page.locator("#tutorial-panel .tutorial-next").click();
+
+  // Step 3 — paint and watch the result move; advance once 5 precincts are in District 2.
+  await expect(page.locator("#tutorial-panel")).toContainText("watch the result");
+  await paintHexes(page, [[-3, 0], [-2, 0], [-1, 0], [0, 0], [1, 0]], 2);
+
+  // Step 4 — reveal the County view (paused; advance on clicking the county toggle).
+  await expect(page.locator("#tutorial-panel")).toContainText("County");
+  await expect(page.locator("#filter-county")).toBeVisible();
+  await page.locator("#filter-county").click();
+
+  // Step 5 — submit (terminal): ends the overlay and shows results.
+  await expect(page.locator("#tutorial-panel")).toContainText("Submit");
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#tutorial-panel")).toHaveCount(0);
+  await expect(page.locator("#result-screen")).toBeVisible();
 });

@@ -1,2117 +1,2368 @@
 {
   "format_version": "1",
   "id": "tutorial-003",
-  "title": "Hawthorn Bend — A Tour of the Map",
+  "title": "Hawthorn Bend: Reading the Vote",
   "election_type": "state_house",
   "region": {
     "id": "hawthorn_bend",
     "name": "Hawthorn Bend"
   },
-  "geometry": { "type": "hex_axial" },
+  "geometry": {
+    "type": "hex_axial"
+  },
   "parties": [
-    { "id": "ash", "name": "Ash Party", "abbreviation": "ASH" },
-    { "id": "birch", "name": "Birch Party", "abbreviation": "BIR" }
-  ],
-  "districts": [
-    { "id": "d1", "name": "District 1" },
-    { "id": "d2", "name": "District 2" },
-    { "id": "d3", "name": "District 3" },
-    { "id": "d4", "name": "District 4" }
-  ],
-  "default_district_id": "d1",
-  "precincts": [
     {
-      "id": "p_0_n6",
-      "editable": true,
-      "position": { "q": 0, "r": -6 },
-      "total_population": 1082,
-      "initial_district_id": "d4",
-      "name": "(0,-6)",
-      "demographic_groups": [
-        {
-          "id": "p_0_n6-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.70,
-          "vote_shares": { "ash": 0.4886, "birch": 0.5114 }
-        }
-      ]
+      "id": "ken",
+      "name": "Ken Party",
+      "abbreviation": "KEN"
     },
     {
-      "id": "p_1_n6",
-      "editable": true,
-      "position": { "q": 1, "r": -6 },
-      "total_population": 906,
-      "initial_district_id": "d4",
-      "name": "(1,-6)",
-      "demographic_groups": [
-        {
-          "id": "p_1_n6-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
-          "vote_shares": { "ash": 0.5565, "birch": 0.4435 }
-        }
-      ]
-    },
-    {
-      "id": "p_2_n6",
-      "editable": true,
-      "position": { "q": 2, "r": -6 },
-      "total_population": 991,
-      "initial_district_id": "d4",
-      "name": "(2,-6)",
-      "demographic_groups": [
-        {
-          "id": "p_2_n6-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
-          "vote_shares": { "ash": 0.5207, "birch": 0.4793 }
-        }
-      ]
-    },
-    {
-      "id": "p_3_n6",
-      "editable": true,
-      "position": { "q": 3, "r": -6 },
-      "total_population": 1066,
-      "initial_district_id": "d4",
-      "name": "(3,-6)",
-      "demographic_groups": [
-        {
-          "id": "p_3_n6-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
-          "vote_shares": { "ash": 0.5112, "birch": 0.4888 }
-        }
-      ]
-    },
-    {
-      "id": "p_4_n6",
-      "editable": true,
-      "position": { "q": 4, "r": -6 },
-      "total_population": 1086,
-      "initial_district_id": "d4",
-      "name": "(4,-6)",
-      "demographic_groups": [
-        {
-          "id": "p_4_n6-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
-          "vote_shares": { "ash": 0.4977, "birch": 0.5023 }
-        }
-      ]
-    },
-    {
-      "id": "p_5_n6",
-      "editable": true,
-      "position": { "q": 5, "r": -6 },
-      "total_population": 1036,
-      "initial_district_id": "d4",
-      "name": "(5,-6)",
-      "demographic_groups": [
-        {
-          "id": "p_5_n6-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.60,
-          "vote_shares": { "ash": 0.4781, "birch": 0.5219 }
-        }
-      ]
-    },
-    {
-      "id": "p_6_n6",
-      "editable": true,
-      "position": { "q": 6, "r": -6 },
-      "total_population": 927,
-      "initial_district_id": "d4",
-      "name": "(6,-6)",
-      "demographic_groups": [
-        {
-          "id": "p_6_n6-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
-          "vote_shares": { "ash": 0.4946, "birch": 0.5054 }
-        }
-      ]
-    },
-    {
-      "id": "p_0_n5",
-      "editable": true,
-      "position": { "q": 0, "r": -5 },
-      "total_population": 930,
-      "initial_district_id": "d4",
-      "name": "(0,-5)",
-      "demographic_groups": [
-        {
-          "id": "p_0_n5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
-          "vote_shares": { "ash": 0.4665, "birch": 0.5335 }
-        }
-      ]
-    },
-    {
-      "id": "p_1_n5",
-      "editable": true,
-      "position": { "q": 1, "r": -5 },
-      "total_population": 978,
-      "initial_district_id": "d4",
-      "name": "(1,-5)",
-      "demographic_groups": [
-        {
-          "id": "p_1_n5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
-          "vote_shares": { "ash": 0.5334, "birch": 0.4666 }
-        }
-      ]
-    },
-    {
-      "id": "p_2_n5",
-      "editable": true,
-      "position": { "q": 2, "r": -5 },
-      "total_population": 976,
-      "initial_district_id": "d4",
-      "name": "(2,-5)",
-      "demographic_groups": [
-        {
-          "id": "p_2_n5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
-          "vote_shares": { "ash": 0.5114, "birch": 0.4886 }
-        }
-      ]
-    },
-    {
-      "id": "p_3_n5",
-      "editable": true,
-      "position": { "q": 3, "r": -5 },
-      "total_population": 1010,
-      "initial_district_id": "d4",
-      "name": "(3,-5)",
-      "demographic_groups": [
-        {
-          "id": "p_3_n5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
-          "vote_shares": { "ash": 0.5581, "birch": 0.4419 }
-        }
-      ]
-    },
-    {
-      "id": "p_4_n5",
-      "editable": true,
-      "position": { "q": 4, "r": -5 },
-      "total_population": 961,
-      "initial_district_id": "d4",
-      "name": "(4,-5)",
-      "demographic_groups": [
-        {
-          "id": "p_4_n5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
-          "vote_shares": { "ash": 0.4867, "birch": 0.5133 }
-        }
-      ]
-    },
-    {
-      "id": "p_5_n5",
-      "editable": true,
-      "position": { "q": 5, "r": -5 },
-      "total_population": 916,
-      "initial_district_id": "d4",
-      "name": "(5,-5)",
-      "demographic_groups": [
-        {
-          "id": "p_5_n5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
-          "vote_shares": { "ash": 0.4881, "birch": 0.5119 }
-        }
-      ]
-    },
-    {
-      "id": "p_6_n5",
-      "editable": true,
-      "position": { "q": 6, "r": -5 },
-      "total_population": 1053,
-      "initial_district_id": "d4",
-      "name": "(6,-5)",
-      "demographic_groups": [
-        {
-          "id": "p_6_n5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
-          "vote_shares": { "ash": 0.5049, "birch": 0.4951 }
-        }
-      ]
-    },
-    {
-      "id": "p_n1_n4",
-      "editable": true,
-      "position": { "q": -1, "r": -4 },
-      "total_population": 1080,
-      "initial_district_id": "d4",
-      "name": "(-1,-4)",
-      "demographic_groups": [
-        {
-          "id": "p_n1_n4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
-          "vote_shares": { "ash": 0.4661, "birch": 0.5339 }
-        }
-      ]
-    },
-    {
-      "id": "p_0_n4",
-      "editable": true,
-      "position": { "q": 0, "r": -4 },
-      "total_population": 985,
-      "initial_district_id": "d4",
-      "name": "(0,-4)",
-      "demographic_groups": [
-        {
-          "id": "p_0_n4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
-          "vote_shares": { "ash": 0.4884, "birch": 0.5116 }
-        }
-      ]
-    },
-    {
-      "id": "p_1_n4",
-      "editable": true,
-      "position": { "q": 1, "r": -4 },
-      "total_population": 917,
-      "initial_district_id": "d4",
-      "name": "(1,-4)",
-      "demographic_groups": [
-        {
-          "id": "p_1_n4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
-          "vote_shares": { "ash": 0.5405, "birch": 0.4595 }
-        }
-      ]
-    },
-    {
-      "id": "p_2_n4",
-      "editable": true,
-      "position": { "q": 2, "r": -4 },
-      "total_population": 1002,
-      "initial_district_id": "d4",
-      "name": "(2,-4)",
-      "demographic_groups": [
-        {
-          "id": "p_2_n4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
-          "vote_shares": { "ash": 0.4951, "birch": 0.5049 }
-        }
-      ]
-    },
-    {
-      "id": "p_3_n4",
-      "editable": true,
-      "position": { "q": 3, "r": -4 },
-      "total_population": 1052,
-      "initial_district_id": "d4",
-      "name": "(3,-4)",
-      "demographic_groups": [
-        {
-          "id": "p_3_n4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
-          "vote_shares": { "ash": 0.5185, "birch": 0.4815 }
-        }
-      ]
-    },
-    {
-      "id": "p_4_n4",
-      "editable": true,
-      "position": { "q": 4, "r": -4 },
-      "total_population": 1096,
-      "initial_district_id": "d4",
-      "name": "(4,-4)",
-      "demographic_groups": [
-        {
-          "id": "p_4_n4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
-          "vote_shares": { "ash": 0.5162, "birch": 0.4838 }
-        }
-      ]
-    },
-    {
-      "id": "p_5_n4",
-      "editable": true,
-      "position": { "q": 5, "r": -4 },
-      "total_population": 1093,
-      "initial_district_id": "d4",
-      "name": "(5,-4)",
-      "demographic_groups": [
-        {
-          "id": "p_5_n4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
-          "vote_shares": { "ash": 0.5136, "birch": 0.4864 }
-        }
-      ]
-    },
-    {
-      "id": "p_6_n4",
-      "editable": true,
-      "position": { "q": 6, "r": -4 },
-      "total_population": 1065,
-      "initial_district_id": "d1",
-      "name": "(6,-4)",
-      "demographic_groups": [
-        {
-          "id": "p_6_n4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
-          "vote_shares": { "ash": 0.4749, "birch": 0.5251 }
-        }
-      ]
-    },
-    {
-      "id": "p_n2_n3",
-      "editable": true,
-      "position": { "q": -2, "r": -3 },
-      "total_population": 965,
-      "initial_district_id": "d3",
-      "name": "(-2,-3)",
-      "demographic_groups": [
-        {
-          "id": "p_n2_n3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
-          "vote_shares": { "ash": 0.5004, "birch": 0.4996 }
-        }
-      ]
-    },
-    {
-      "id": "p_n1_n3",
-      "editable": true,
-      "position": { "q": -1, "r": -3 },
-      "total_population": 942,
-      "initial_district_id": "d4",
-      "name": "(-1,-3)",
-      "demographic_groups": [
-        {
-          "id": "p_n1_n3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
-          "vote_shares": { "ash": 0.4447, "birch": 0.5553 }
-        }
-      ]
-    },
-    {
-      "id": "p_0_n3",
-      "editable": true,
-      "position": { "q": 0, "r": -3 },
-      "total_population": 1014,
-      "initial_district_id": "d4",
-      "name": "(0,-3)",
-      "demographic_groups": [
-        {
-          "id": "p_0_n3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
-          "vote_shares": { "ash": 0.5565, "birch": 0.4435 }
-        }
-      ]
-    },
-    {
-      "id": "p_1_n3",
-      "editable": true,
-      "position": { "q": 1, "r": -3 },
-      "total_population": 1089,
-      "initial_district_id": "d4",
-      "name": "(1,-3)",
-      "demographic_groups": [
-        {
-          "id": "p_1_n3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
-          "vote_shares": { "ash": 0.4698, "birch": 0.5302 }
-        }
-      ]
-    },
-    {
-      "id": "p_2_n3",
-      "editable": true,
-      "position": { "q": 2, "r": -3 },
-      "total_population": 958,
-      "initial_district_id": "d4",
-      "name": "(2,-3)",
-      "demographic_groups": [
-        {
-          "id": "p_2_n3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.60,
-          "vote_shares": { "ash": 0.4957, "birch": 0.5043 }
-        }
-      ]
-    },
-    {
-      "id": "p_3_n3",
-      "editable": true,
-      "position": { "q": 3, "r": -3 },
-      "total_population": 1050,
-      "initial_district_id": "d4",
-      "name": "(3,-3)",
-      "demographic_groups": [
-        {
-          "id": "p_3_n3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
-          "vote_shares": { "ash": 0.4947, "birch": 0.5053 }
-        }
-      ]
-    },
-    {
-      "id": "p_4_n3",
-      "editable": true,
-      "position": { "q": 4, "r": -3 },
-      "total_population": 1048,
-      "initial_district_id": "d4",
-      "name": "(4,-3)",
-      "demographic_groups": [
-        {
-          "id": "p_4_n3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
-          "vote_shares": { "ash": 0.4496, "birch": 0.5504 }
-        }
-      ]
-    },
-    {
-      "id": "p_5_n3",
-      "editable": true,
-      "position": { "q": 5, "r": -3 },
-      "total_population": 1025,
-      "initial_district_id": "d1",
-      "name": "(5,-3)",
-      "demographic_groups": [
-        {
-          "id": "p_5_n3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
-          "vote_shares": { "ash": 0.4643, "birch": 0.5357 }
-        }
-      ]
-    },
-    {
-      "id": "p_6_n3",
-      "editable": true,
-      "position": { "q": 6, "r": -3 },
-      "total_population": 1042,
-      "initial_district_id": "d1",
-      "name": "(6,-3)",
-      "demographic_groups": [
-        {
-          "id": "p_6_n3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
-          "vote_shares": { "ash": 0.4597, "birch": 0.5403 }
-        }
-      ]
-    },
-    {
-      "id": "p_n4_n2",
-      "editable": true,
-      "position": { "q": -4, "r": -2 },
-      "total_population": 984,
-      "initial_district_id": "d3",
-      "name": "(-4,-2)",
-      "demographic_groups": [
-        {
-          "id": "p_n4_n2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
-          "vote_shares": { "ash": 0.4865, "birch": 0.5135 }
-        }
-      ]
-    },
-    {
-      "id": "p_n3_n2",
-      "editable": true,
-      "position": { "q": -3, "r": -2 },
-      "total_population": 1085,
-      "initial_district_id": "d3",
-      "name": "(-3,-2)",
-      "demographic_groups": [
-        {
-          "id": "p_n3_n2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
-          "vote_shares": { "ash": 0.5103, "birch": 0.4897 }
-        }
-      ]
-    },
-    {
-      "id": "p_n2_n2",
-      "editable": true,
-      "position": { "q": -2, "r": -2 },
-      "total_population": 1004,
-      "initial_district_id": "d3",
-      "name": "(-2,-2)",
-      "demographic_groups": [
-        {
-          "id": "p_n2_n2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.70,
-          "vote_shares": { "ash": 0.5594, "birch": 0.4406 }
-        }
-      ]
-    },
-    {
-      "id": "p_n1_n2",
-      "editable": true,
-      "position": { "q": -1, "r": -2 },
-      "total_population": 901,
-      "initial_district_id": "d3",
-      "name": "(-1,-2)",
-      "demographic_groups": [
-        {
-          "id": "p_n1_n2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
-          "vote_shares": { "ash": 0.4699, "birch": 0.5301 }
-        }
-      ]
-    },
-    {
-      "id": "p_0_n2",
-      "editable": true,
-      "position": { "q": 0, "r": -2 },
-      "total_population": 1087,
-      "initial_district_id": "d4",
-      "name": "(0,-2)",
-      "demographic_groups": [
-        {
-          "id": "p_0_n2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
-          "vote_shares": { "ash": 0.4853, "birch": 0.5147 }
-        }
-      ]
-    },
-    {
-      "id": "p_1_n2",
-      "editable": true,
-      "position": { "q": 1, "r": -2 },
-      "total_population": 1022,
-      "initial_district_id": "d4",
-      "name": "(1,-2)",
-      "demographic_groups": [
-        {
-          "id": "p_1_n2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.70,
-          "vote_shares": { "ash": 0.4719, "birch": 0.5281 }
-        }
-      ]
-    },
-    {
-      "id": "p_2_n2",
-      "editable": true,
-      "position": { "q": 2, "r": -2 },
-      "total_population": 940,
-      "initial_district_id": "d4",
-      "name": "(2,-2)",
-      "demographic_groups": [
-        {
-          "id": "p_2_n2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
-          "vote_shares": { "ash": 0.5294, "birch": 0.4706 }
-        }
-      ]
-    },
-    {
-      "id": "p_3_n2",
-      "editable": true,
-      "position": { "q": 3, "r": -2 },
-      "total_population": 911,
-      "initial_district_id": "d1",
-      "name": "(3,-2)",
-      "demographic_groups": [
-        {
-          "id": "p_3_n2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
-          "vote_shares": { "ash": 0.5275, "birch": 0.4725 }
-        }
-      ]
-    },
-    {
-      "id": "p_4_n2",
-      "editable": true,
-      "position": { "q": 4, "r": -2 },
-      "total_population": 1034,
-      "initial_district_id": "d1",
-      "name": "(4,-2)",
-      "demographic_groups": [
-        {
-          "id": "p_4_n2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
-          "vote_shares": { "ash": 0.4513, "birch": 0.5487 }
-        }
-      ]
-    },
-    {
-      "id": "p_5_n2",
-      "editable": true,
-      "position": { "q": 5, "r": -2 },
-      "total_population": 965,
-      "initial_district_id": "d1",
-      "name": "(5,-2)",
-      "demographic_groups": [
-        {
-          "id": "p_5_n2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
-          "vote_shares": { "ash": 0.5429, "birch": 0.4571 }
-        }
-      ]
-    },
-    {
-      "id": "p_6_n2",
-      "editable": true,
-      "position": { "q": 6, "r": -2 },
-      "total_population": 998,
-      "initial_district_id": "d1",
-      "name": "(6,-2)",
-      "demographic_groups": [
-        {
-          "id": "p_6_n2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
-          "vote_shares": { "ash": 0.5276, "birch": 0.4724 }
-        }
-      ]
-    },
-    {
-      "id": "p_n5_n1",
-      "editable": true,
-      "position": { "q": -5, "r": -1 },
-      "total_population": 912,
-      "initial_district_id": "d3",
-      "name": "(-5,-1)",
-      "demographic_groups": [
-        {
-          "id": "p_n5_n1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
-          "vote_shares": { "ash": 0.4934, "birch": 0.5066 }
-        }
-      ]
-    },
-    {
-      "id": "p_n4_n1",
-      "editable": true,
-      "position": { "q": -4, "r": -1 },
-      "total_population": 969,
-      "initial_district_id": "d3",
-      "name": "(-4,-1)",
-      "demographic_groups": [
-        {
-          "id": "p_n4_n1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
-          "vote_shares": { "ash": 0.4442, "birch": 0.5558 }
-        }
-      ]
-    },
-    {
-      "id": "p_n3_n1",
-      "editable": true,
-      "position": { "q": -3, "r": -1 },
-      "total_population": 904,
-      "initial_district_id": "d3",
-      "name": "(-3,-1)",
-      "demographic_groups": [
-        {
-          "id": "p_n3_n1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
-          "vote_shares": { "ash": 0.4830, "birch": 0.5170 }
-        }
-      ]
-    },
-    {
-      "id": "p_n2_n1",
-      "editable": true,
-      "position": { "q": -2, "r": -1 },
-      "total_population": 917,
-      "initial_district_id": "d3",
-      "name": "(-2,-1)",
-      "demographic_groups": [
-        {
-          "id": "p_n2_n1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
-          "vote_shares": { "ash": 0.5059, "birch": 0.4941 }
-        }
-      ]
-    },
-    {
-      "id": "p_n1_n1",
-      "editable": true,
-      "position": { "q": -1, "r": -1 },
-      "total_population": 974,
-      "initial_district_id": "d3",
-      "name": "(-1,-1)",
-      "demographic_groups": [
-        {
-          "id": "p_n1_n1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.60,
-          "vote_shares": { "ash": 0.4923, "birch": 0.5077 }
-        }
-      ]
-    },
-    {
-      "id": "p_0_n1",
-      "editable": true,
-      "position": { "q": 0, "r": -1 },
-      "total_population": 1051,
-      "initial_district_id": "d4",
-      "name": "(0,-1)",
-      "demographic_groups": [
-        {
-          "id": "p_0_n1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
-          "vote_shares": { "ash": 0.4714, "birch": 0.5286 }
-        }
-      ]
-    },
-    {
-      "id": "p_1_n1",
-      "editable": true,
-      "position": { "q": 1, "r": -1 },
-      "total_population": 951,
-      "initial_district_id": "d4",
-      "name": "(1,-1)",
-      "demographic_groups": [
-        {
-          "id": "p_1_n1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
-          "vote_shares": { "ash": 0.4780, "birch": 0.5220 }
-        }
-      ]
-    },
-    {
-      "id": "p_2_n1",
-      "editable": true,
-      "position": { "q": 2, "r": -1 },
-      "total_population": 1076,
-      "initial_district_id": "d1",
-      "name": "(2,-1)",
-      "demographic_groups": [
-        {
-          "id": "p_2_n1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
-          "vote_shares": { "ash": 0.5390, "birch": 0.4610 }
-        }
-      ]
-    },
-    {
-      "id": "p_3_n1",
-      "editable": true,
-      "position": { "q": 3, "r": -1 },
-      "total_population": 1037,
-      "initial_district_id": "d1",
-      "name": "(3,-1)",
-      "demographic_groups": [
-        {
-          "id": "p_3_n1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.60,
-          "vote_shares": { "ash": 0.5106, "birch": 0.4894 }
-        }
-      ]
-    },
-    {
-      "id": "p_4_n1",
-      "editable": true,
-      "position": { "q": 4, "r": -1 },
-      "total_population": 1043,
-      "initial_district_id": "d1",
-      "name": "(4,-1)",
-      "demographic_groups": [
-        {
-          "id": "p_4_n1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
-          "vote_shares": { "ash": 0.5029, "birch": 0.4971 }
-        }
-      ]
-    },
-    {
-      "id": "p_5_n1",
-      "editable": true,
-      "position": { "q": 5, "r": -1 },
-      "total_population": 969,
-      "initial_district_id": "d1",
-      "name": "(5,-1)",
-      "demographic_groups": [
-        {
-          "id": "p_5_n1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
-          "vote_shares": { "ash": 0.4816, "birch": 0.5184 }
-        }
-      ]
-    },
-    {
-      "id": "p_6_n1",
-      "editable": true,
-      "position": { "q": 6, "r": -1 },
-      "total_population": 1096,
-      "initial_district_id": "d1",
-      "name": "(6,-1)",
-      "demographic_groups": [
-        {
-          "id": "p_6_n1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.60,
-          "vote_shares": { "ash": 0.5096, "birch": 0.4904 }
-        }
-      ]
-    },
-    {
-      "id": "p_n6_0",
-      "editable": true,
-      "position": { "q": -6, "r": 0 },
-      "total_population": 1096,
-      "initial_district_id": "d3",
-      "name": "(-6,0)",
-      "demographic_groups": [
-        {
-          "id": "p_n6_0-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
-          "vote_shares": { "ash": 0.5432, "birch": 0.4568 }
-        }
-      ]
-    },
-    {
-      "id": "p_n5_0",
-      "editable": true,
-      "position": { "q": -5, "r": 0 },
-      "total_population": 943,
-      "initial_district_id": "d3",
-      "name": "(-5,0)",
-      "demographic_groups": [
-        {
-          "id": "p_n5_0-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
-          "vote_shares": { "ash": 0.4607, "birch": 0.5393 }
-        }
-      ]
-    },
-    {
-      "id": "p_n4_0",
-      "editable": true,
-      "position": { "q": -4, "r": 0 },
-      "total_population": 1032,
-      "initial_district_id": "d3",
-      "name": "(-4,0)",
-      "demographic_groups": [
-        {
-          "id": "p_n4_0-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
-          "vote_shares": { "ash": 0.5433, "birch": 0.4567 }
-        }
-      ]
-    },
-    {
-      "id": "p_n3_0",
-      "editable": true,
-      "position": { "q": -3, "r": 0 },
-      "total_population": 987,
-      "initial_district_id": "d3",
-      "name": "(-3,0)",
-      "demographic_groups": [
-        {
-          "id": "p_n3_0-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
-          "vote_shares": { "ash": 0.5094, "birch": 0.4906 }
-        }
-      ]
-    },
-    {
-      "id": "p_n2_0",
-      "editable": true,
-      "position": { "q": -2, "r": 0 },
-      "total_population": 1031,
-      "initial_district_id": "d3",
-      "name": "(-2,0)",
-      "demographic_groups": [
-        {
-          "id": "p_n2_0-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
-          "vote_shares": { "ash": 0.5479, "birch": 0.4521 }
-        }
-      ]
-    },
-    {
-      "id": "p_n1_0",
-      "editable": true,
-      "position": { "q": -1, "r": 0 },
-      "total_population": 903,
-      "initial_district_id": "d3",
-      "name": "(-1,0)",
-      "demographic_groups": [
-        {
-          "id": "p_n1_0-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
-          "vote_shares": { "ash": 0.5151, "birch": 0.4849 }
-        }
-      ]
-    },
-    {
-      "id": "p_0_0",
-      "editable": true,
-      "position": { "q": 0, "r": 0 },
-      "total_population": 1044,
-      "initial_district_id": "d1",
-      "name": "(0,0)",
-      "demographic_groups": [
-        {
-          "id": "p_0_0-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
-          "vote_shares": { "ash": 0.4563, "birch": 0.5437 }
-        }
-      ]
-    },
-    {
-      "id": "p_1_0",
-      "editable": true,
-      "position": { "q": 1, "r": 0 },
-      "total_population": 1076,
-      "initial_district_id": "d1",
-      "name": "(1,0)",
-      "demographic_groups": [
-        {
-          "id": "p_1_0-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.60,
-          "vote_shares": { "ash": 0.5025, "birch": 0.4975 }
-        }
-      ]
-    },
-    {
-      "id": "p_2_0",
-      "editable": true,
-      "position": { "q": 2, "r": 0 },
-      "total_population": 980,
-      "initial_district_id": "d1",
-      "name": "(2,0)",
-      "demographic_groups": [
-        {
-          "id": "p_2_0-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
-          "vote_shares": { "ash": 0.5371, "birch": 0.4629 }
-        }
-      ]
-    },
-    {
-      "id": "p_3_0",
-      "editable": true,
-      "position": { "q": 3, "r": 0 },
-      "total_population": 1006,
-      "initial_district_id": "d1",
-      "name": "(3,0)",
-      "demographic_groups": [
-        {
-          "id": "p_3_0-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
-          "vote_shares": { "ash": 0.5361, "birch": 0.4639 }
-        }
-      ]
-    },
-    {
-      "id": "p_4_0",
-      "editable": true,
-      "position": { "q": 4, "r": 0 },
-      "total_population": 989,
-      "initial_district_id": "d1",
-      "name": "(4,0)",
-      "demographic_groups": [
-        {
-          "id": "p_4_0-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
-          "vote_shares": { "ash": 0.4436, "birch": 0.5564 }
-        }
-      ]
-    },
-    {
-      "id": "p_5_0",
-      "editable": true,
-      "position": { "q": 5, "r": 0 },
-      "total_population": 980,
-      "initial_district_id": "d1",
-      "name": "(5,0)",
-      "demographic_groups": [
-        {
-          "id": "p_5_0-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
-          "vote_shares": { "ash": 0.4860, "birch": 0.5140 }
-        }
-      ]
-    },
-    {
-      "id": "p_6_0",
-      "editable": true,
-      "position": { "q": 6, "r": 0 },
-      "total_population": 1092,
-      "initial_district_id": "d1",
-      "name": "(6,0)",
-      "demographic_groups": [
-        {
-          "id": "p_6_0-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
-          "vote_shares": { "ash": 0.5088, "birch": 0.4912 }
-        }
-      ]
-    },
-    {
-      "id": "p_n6_1",
-      "editable": true,
-      "position": { "q": -6, "r": 1 },
-      "total_population": 989,
-      "initial_district_id": "d3",
-      "name": "(-6,1)",
-      "demographic_groups": [
-        {
-          "id": "p_n6_1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
-          "vote_shares": { "ash": 0.5439, "birch": 0.4561 }
-        }
-      ]
-    },
-    {
-      "id": "p_n5_1",
-      "editable": true,
-      "position": { "q": -5, "r": 1 },
-      "total_population": 1068,
-      "initial_district_id": "d3",
-      "name": "(-5,1)",
-      "demographic_groups": [
-        {
-          "id": "p_n5_1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
-          "vote_shares": { "ash": 0.5447, "birch": 0.4553 }
-        }
-      ]
-    },
-    {
-      "id": "p_n4_1",
-      "editable": true,
-      "position": { "q": -4, "r": 1 },
-      "total_population": 1021,
-      "initial_district_id": "d3",
-      "name": "(-4,1)",
-      "demographic_groups": [
-        {
-          "id": "p_n4_1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
-          "vote_shares": { "ash": 0.5423, "birch": 0.4577 }
-        }
-      ]
-    },
-    {
-      "id": "p_n3_1",
-      "editable": true,
-      "position": { "q": -3, "r": 1 },
-      "total_population": 945,
-      "initial_district_id": "d3",
-      "name": "(-3,1)",
-      "demographic_groups": [
-        {
-          "id": "p_n3_1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
-          "vote_shares": { "ash": 0.5420, "birch": 0.4580 }
-        }
-      ]
-    },
-    {
-      "id": "p_n2_1",
-      "editable": true,
-      "position": { "q": -2, "r": 1 },
-      "total_population": 928,
-      "initial_district_id": "d3",
-      "name": "(-2,1)",
-      "demographic_groups": [
-        {
-          "id": "p_n2_1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
-          "vote_shares": { "ash": 0.4737, "birch": 0.5263 }
-        }
-      ]
-    },
-    {
-      "id": "p_0_1",
-      "editable": true,
-      "position": { "q": 0, "r": 1 },
-      "total_population": 958,
-      "initial_district_id": "d2",
-      "name": "(0,1)",
-      "demographic_groups": [
-        {
-          "id": "p_0_1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
-          "vote_shares": { "ash": 0.4734, "birch": 0.5266 }
-        }
-      ]
-    },
-    {
-      "id": "p_1_1",
-      "editable": true,
-      "position": { "q": 1, "r": 1 },
-      "total_population": 923,
-      "initial_district_id": "d1",
-      "name": "(1,1)",
-      "demographic_groups": [
-        {
-          "id": "p_1_1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
-          "vote_shares": { "ash": 0.5292, "birch": 0.4708 }
-        }
-      ]
-    },
-    {
-      "id": "p_2_1",
-      "editable": true,
-      "position": { "q": 2, "r": 1 },
-      "total_population": 904,
-      "initial_district_id": "d1",
-      "name": "(2,1)",
-      "demographic_groups": [
-        {
-          "id": "p_2_1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
-          "vote_shares": { "ash": 0.5340, "birch": 0.4660 }
-        }
-      ]
-    },
-    {
-      "id": "p_3_1",
-      "editable": true,
-      "position": { "q": 3, "r": 1 },
-      "total_population": 977,
-      "initial_district_id": "d1",
-      "name": "(3,1)",
-      "demographic_groups": [
-        {
-          "id": "p_3_1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
-          "vote_shares": { "ash": 0.5390, "birch": 0.4610 }
-        }
-      ]
-    },
-    {
-      "id": "p_4_1",
-      "editable": true,
-      "position": { "q": 4, "r": 1 },
-      "total_population": 1055,
-      "initial_district_id": "d1",
-      "name": "(4,1)",
-      "demographic_groups": [
-        {
-          "id": "p_4_1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
-          "vote_shares": { "ash": 0.5415, "birch": 0.4585 }
-        }
-      ]
-    },
-    {
-      "id": "p_5_1",
-      "editable": true,
-      "position": { "q": 5, "r": 1 },
-      "total_population": 1052,
-      "initial_district_id": "d1",
-      "name": "(5,1)",
-      "demographic_groups": [
-        {
-          "id": "p_5_1-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
-          "vote_shares": { "ash": 0.4446, "birch": 0.5554 }
-        }
-      ]
-    },
-    {
-      "id": "p_n6_2",
-      "editable": true,
-      "position": { "q": -6, "r": 2 },
-      "total_population": 940,
-      "initial_district_id": "d3",
-      "name": "(-6,2)",
-      "demographic_groups": [
-        {
-          "id": "p_n6_2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
-          "vote_shares": { "ash": 0.5499, "birch": 0.4501 }
-        }
-      ]
-    },
-    {
-      "id": "p_n5_2",
-      "editable": true,
-      "position": { "q": -5, "r": 2 },
-      "total_population": 958,
-      "initial_district_id": "d3",
-      "name": "(-5,2)",
-      "demographic_groups": [
-        {
-          "id": "p_n5_2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
-          "vote_shares": { "ash": 0.5293, "birch": 0.4707 }
-        }
-      ]
-    },
-    {
-      "id": "p_n4_2",
-      "editable": true,
-      "position": { "q": -4, "r": 2 },
-      "total_population": 906,
-      "initial_district_id": "d3",
-      "name": "(-4,2)",
-      "demographic_groups": [
-        {
-          "id": "p_n4_2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
-          "vote_shares": { "ash": 0.4501, "birch": 0.5499 }
-        }
-      ]
-    },
-    {
-      "id": "p_n3_2",
-      "editable": true,
-      "position": { "q": -3, "r": 2 },
-      "total_population": 1042,
-      "initial_district_id": "d3",
-      "name": "(-3,2)",
-      "demographic_groups": [
-        {
-          "id": "p_n3_2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
-          "vote_shares": { "ash": 0.4760, "birch": 0.5240 }
-        }
-      ]
-    },
-    {
-      "id": "p_n2_2",
-      "editable": true,
-      "position": { "q": -2, "r": 2 },
-      "total_population": 939,
-      "initial_district_id": "d2",
-      "name": "(-2,2)",
-      "demographic_groups": [
-        {
-          "id": "p_n2_2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
-          "vote_shares": { "ash": 0.4952, "birch": 0.5048 }
-        }
-      ]
-    },
-    {
-      "id": "p_n1_2",
-      "editable": true,
-      "position": { "q": -1, "r": 2 },
-      "total_population": 1054,
-      "initial_district_id": "d2",
-      "name": "(-1,2)",
-      "demographic_groups": [
-        {
-          "id": "p_n1_2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
-          "vote_shares": { "ash": 0.5259, "birch": 0.4741 }
-        }
-      ]
-    },
-    {
-      "id": "p_0_2",
-      "editable": true,
-      "position": { "q": 0, "r": 2 },
-      "total_population": 1084,
-      "initial_district_id": "d2",
-      "name": "(0,2)",
-      "demographic_groups": [
-        {
-          "id": "p_0_2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
-          "vote_shares": { "ash": 0.4769, "birch": 0.5231 }
-        }
-      ]
-    },
-    {
-      "id": "p_1_2",
-      "editable": true,
-      "position": { "q": 1, "r": 2 },
-      "total_population": 1012,
-      "initial_district_id": "d1",
-      "name": "(1,2)",
-      "demographic_groups": [
-        {
-          "id": "p_1_2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
-          "vote_shares": { "ash": 0.4573, "birch": 0.5427 }
-        }
-      ]
-    },
-    {
-      "id": "p_2_2",
-      "editable": true,
-      "position": { "q": 2, "r": 2 },
-      "total_population": 1018,
-      "initial_district_id": "d1",
-      "name": "(2,2)",
-      "demographic_groups": [
-        {
-          "id": "p_2_2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
-          "vote_shares": { "ash": 0.4955, "birch": 0.5045 }
-        }
-      ]
-    },
-    {
-      "id": "p_3_2",
-      "editable": true,
-      "position": { "q": 3, "r": 2 },
-      "total_population": 1046,
-      "initial_district_id": "d1",
-      "name": "(3,2)",
-      "demographic_groups": [
-        {
-          "id": "p_3_2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
-          "vote_shares": { "ash": 0.5236, "birch": 0.4764 }
-        }
-      ]
-    },
-    {
-      "id": "p_4_2",
-      "editable": true,
-      "position": { "q": 4, "r": 2 },
-      "total_population": 1069,
-      "initial_district_id": "d1",
-      "name": "(4,2)",
-      "demographic_groups": [
-        {
-          "id": "p_4_2-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
-          "vote_shares": { "ash": 0.5402, "birch": 0.4598 }
-        }
-      ]
-    },
-    {
-      "id": "p_n6_3",
-      "editable": true,
-      "position": { "q": -6, "r": 3 },
-      "total_population": 926,
-      "initial_district_id": "d3",
-      "name": "(-6,3)",
-      "demographic_groups": [
-        {
-          "id": "p_n6_3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
-          "vote_shares": { "ash": 0.5157, "birch": 0.4843 }
-        }
-      ]
-    },
-    {
-      "id": "p_n5_3",
-      "editable": true,
-      "position": { "q": -5, "r": 3 },
-      "total_population": 1092,
-      "initial_district_id": "d3",
-      "name": "(-5,3)",
-      "demographic_groups": [
-        {
-          "id": "p_n5_3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
-          "vote_shares": { "ash": 0.5185, "birch": 0.4815 }
-        }
-      ]
-    },
-    {
-      "id": "p_n4_3",
-      "editable": true,
-      "position": { "q": -4, "r": 3 },
-      "total_population": 911,
-      "initial_district_id": "d2",
-      "name": "(-4,3)",
-      "demographic_groups": [
-        {
-          "id": "p_n4_3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
-          "vote_shares": { "ash": 0.5244, "birch": 0.4756 }
-        }
-      ]
-    },
-    {
-      "id": "p_n3_3",
-      "editable": true,
-      "position": { "q": -3, "r": 3 },
-      "total_population": 957,
-      "initial_district_id": "d2",
-      "name": "(-3,3)",
-      "demographic_groups": [
-        {
-          "id": "p_n3_3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
-          "vote_shares": { "ash": 0.5398, "birch": 0.4602 }
-        }
-      ]
-    },
-    {
-      "id": "p_n2_3",
-      "editable": true,
-      "position": { "q": -2, "r": 3 },
-      "total_population": 1004,
-      "initial_district_id": "d2",
-      "name": "(-2,3)",
-      "demographic_groups": [
-        {
-          "id": "p_n2_3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
-          "vote_shares": { "ash": 0.5089, "birch": 0.4911 }
-        }
-      ]
-    },
-    {
-      "id": "p_n1_3",
-      "editable": true,
-      "position": { "q": -1, "r": 3 },
-      "total_population": 975,
-      "initial_district_id": "d2",
-      "name": "(-1,3)",
-      "demographic_groups": [
-        {
-          "id": "p_n1_3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
-          "vote_shares": { "ash": 0.5557, "birch": 0.4443 }
-        }
-      ]
-    },
-    {
-      "id": "p_0_3",
-      "editable": true,
-      "position": { "q": 0, "r": 3 },
-      "total_population": 1083,
-      "initial_district_id": "d2",
-      "name": "(0,3)",
-      "demographic_groups": [
-        {
-          "id": "p_0_3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.60,
-          "vote_shares": { "ash": 0.5430, "birch": 0.4570 }
-        }
-      ]
-    },
-    {
-      "id": "p_1_3",
-      "editable": true,
-      "position": { "q": 1, "r": 3 },
-      "total_population": 908,
-      "initial_district_id": "d2",
-      "name": "(1,3)",
-      "demographic_groups": [
-        {
-          "id": "p_1_3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
-          "vote_shares": { "ash": 0.4707, "birch": 0.5293 }
-        }
-      ]
-    },
-    {
-      "id": "p_2_3",
-      "editable": true,
-      "position": { "q": 2, "r": 3 },
-      "total_population": 1020,
-      "initial_district_id": "d1",
-      "name": "(2,3)",
-      "demographic_groups": [
-        {
-          "id": "p_2_3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.70,
-          "vote_shares": { "ash": 0.4717, "birch": 0.5283 }
-        }
-      ]
-    },
-    {
-      "id": "p_3_3",
-      "editable": true,
-      "position": { "q": 3, "r": 3 },
-      "total_population": 1054,
-      "initial_district_id": "d1",
-      "name": "(3,3)",
-      "demographic_groups": [
-        {
-          "id": "p_3_3-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
-          "vote_shares": { "ash": 0.5417, "birch": 0.4583 }
-        }
-      ]
-    },
-    {
-      "id": "p_n6_4",
-      "editable": true,
-      "position": { "q": -6, "r": 4 },
-      "total_population": 925,
-      "initial_district_id": "d3",
-      "name": "(-6,4)",
-      "demographic_groups": [
-        {
-          "id": "p_n6_4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
-          "vote_shares": { "ash": 0.5151, "birch": 0.4849 }
-        }
-      ]
-    },
-    {
-      "id": "p_n5_4",
-      "editable": true,
-      "position": { "q": -5, "r": 4 },
-      "total_population": 981,
-      "initial_district_id": "d2",
-      "name": "(-5,4)",
-      "demographic_groups": [
-        {
-          "id": "p_n5_4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
-          "vote_shares": { "ash": 0.5025, "birch": 0.4975 }
-        }
-      ]
-    },
-    {
-      "id": "p_n4_4",
-      "editable": true,
-      "position": { "q": -4, "r": 4 },
-      "total_population": 967,
-      "initial_district_id": "d2",
-      "name": "(-4,4)",
-      "demographic_groups": [
-        {
-          "id": "p_n4_4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
-          "vote_shares": { "ash": 0.4422, "birch": 0.5578 }
-        }
-      ]
-    },
-    {
-      "id": "p_n3_4",
-      "editable": true,
-      "position": { "q": -3, "r": 4 },
-      "total_population": 956,
-      "initial_district_id": "d2",
-      "name": "(-3,4)",
-      "demographic_groups": [
-        {
-          "id": "p_n3_4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
-          "vote_shares": { "ash": 0.5303, "birch": 0.4697 }
-        }
-      ]
-    },
-    {
-      "id": "p_n2_4",
-      "editable": true,
-      "position": { "q": -2, "r": 4 },
-      "total_population": 1048,
-      "initial_district_id": "d2",
-      "name": "(-2,4)",
-      "demographic_groups": [
-        {
-          "id": "p_n2_4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.60,
-          "vote_shares": { "ash": 0.4572, "birch": 0.5428 }
-        }
-      ]
-    },
-    {
-      "id": "p_n1_4",
-      "editable": true,
-      "position": { "q": -1, "r": 4 },
-      "total_population": 1088,
-      "initial_district_id": "d2",
-      "name": "(-1,4)",
-      "demographic_groups": [
-        {
-          "id": "p_n1_4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
-          "vote_shares": { "ash": 0.4519, "birch": 0.5481 }
-        }
-      ]
-    },
-    {
-      "id": "p_0_4",
-      "editable": true,
-      "position": { "q": 0, "r": 4 },
-      "total_population": 979,
-      "initial_district_id": "d2",
-      "name": "(0,4)",
-      "demographic_groups": [
-        {
-          "id": "p_0_4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
-          "vote_shares": { "ash": 0.5203, "birch": 0.4797 }
-        }
-      ]
-    },
-    {
-      "id": "p_1_4",
-      "editable": true,
-      "position": { "q": 1, "r": 4 },
-      "total_population": 958,
-      "initial_district_id": "d2",
-      "name": "(1,4)",
-      "demographic_groups": [
-        {
-          "id": "p_1_4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
-          "vote_shares": { "ash": 0.5237, "birch": 0.4763 }
-        }
-      ]
-    },
-    {
-      "id": "p_2_4",
-      "editable": true,
-      "position": { "q": 2, "r": 4 },
-      "total_population": 1056,
-      "initial_district_id": "d1",
-      "name": "(2,4)",
-      "demographic_groups": [
-        {
-          "id": "p_2_4-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
-          "vote_shares": { "ash": 0.5426, "birch": 0.4574 }
-        }
-      ]
-    },
-    {
-      "id": "p_n6_5",
-      "editable": true,
-      "position": { "q": -6, "r": 5 },
-      "total_population": 912,
-      "initial_district_id": "d2",
-      "name": "(-6,5)",
-      "demographic_groups": [
-        {
-          "id": "p_n6_5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
-          "vote_shares": { "ash": 0.4952, "birch": 0.5048 }
-        }
-      ]
-    },
-    {
-      "id": "p_n5_5",
-      "editable": true,
-      "position": { "q": -5, "r": 5 },
-      "total_population": 951,
-      "initial_district_id": "d2",
-      "name": "(-5,5)",
-      "demographic_groups": [
-        {
-          "id": "p_n5_5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
-          "vote_shares": { "ash": 0.5047, "birch": 0.4953 }
-        }
-      ]
-    },
-    {
-      "id": "p_n4_5",
-      "editable": true,
-      "position": { "q": -4, "r": 5 },
-      "total_population": 1004,
-      "initial_district_id": "d2",
-      "name": "(-4,5)",
-      "demographic_groups": [
-        {
-          "id": "p_n4_5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
-          "vote_shares": { "ash": 0.5420, "birch": 0.4580 }
-        }
-      ]
-    },
-    {
-      "id": "p_n3_5",
-      "editable": true,
-      "position": { "q": -3, "r": 5 },
-      "total_population": 919,
-      "initial_district_id": "d2",
-      "name": "(-3,5)",
-      "demographic_groups": [
-        {
-          "id": "p_n3_5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
-          "vote_shares": { "ash": 0.5374, "birch": 0.4626 }
-        }
-      ]
-    },
-    {
-      "id": "p_n2_5",
-      "editable": true,
-      "position": { "q": -2, "r": 5 },
-      "total_population": 927,
-      "initial_district_id": "d2",
-      "name": "(-2,5)",
-      "demographic_groups": [
-        {
-          "id": "p_n2_5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.70,
-          "vote_shares": { "ash": 0.5491, "birch": 0.4509 }
-        }
-      ]
-    },
-    {
-      "id": "p_n1_5",
-      "editable": true,
-      "position": { "q": -1, "r": 5 },
-      "total_population": 998,
-      "initial_district_id": "d2",
-      "name": "(-1,5)",
-      "demographic_groups": [
-        {
-          "id": "p_n1_5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
-          "vote_shares": { "ash": 0.4507, "birch": 0.5493 }
-        }
-      ]
-    },
-    {
-      "id": "p_0_5",
-      "editable": true,
-      "position": { "q": 0, "r": 5 },
-      "total_population": 995,
-      "initial_district_id": "d2",
-      "name": "(0,5)",
-      "demographic_groups": [
-        {
-          "id": "p_0_5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
-          "vote_shares": { "ash": 0.5377, "birch": 0.4623 }
-        }
-      ]
-    },
-    {
-      "id": "p_1_5",
-      "editable": true,
-      "position": { "q": 1, "r": 5 },
-      "total_population": 1054,
-      "initial_district_id": "d2",
-      "name": "(1,5)",
-      "demographic_groups": [
-        {
-          "id": "p_1_5-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
-          "vote_shares": { "ash": 0.4991, "birch": 0.5009 }
-        }
-      ]
-    },
-    {
-      "id": "p_n6_6",
-      "editable": true,
-      "position": { "q": -6, "r": 6 },
-      "total_population": 921,
-      "initial_district_id": "d2",
-      "name": "(-6,6)",
-      "demographic_groups": [
-        {
-          "id": "p_n6_6-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
-          "vote_shares": { "ash": 0.5355, "birch": 0.4645 }
-        }
-      ]
-    },
-    {
-      "id": "p_n5_6",
-      "editable": true,
-      "position": { "q": -5, "r": 6 },
-      "total_population": 1086,
-      "initial_district_id": "d2",
-      "name": "(-5,6)",
-      "demographic_groups": [
-        {
-          "id": "p_n5_6-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
-          "vote_shares": { "ash": 0.5440, "birch": 0.4560 }
-        }
-      ]
-    },
-    {
-      "id": "p_n4_6",
-      "editable": true,
-      "position": { "q": -4, "r": 6 },
-      "total_population": 943,
-      "initial_district_id": "d2",
-      "name": "(-4,6)",
-      "demographic_groups": [
-        {
-          "id": "p_n4_6-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
-          "vote_shares": { "ash": 0.4578, "birch": 0.5422 }
-        }
-      ]
+      "id": "ryu",
+      "name": "Ryu Party",
+      "abbreviation": "RYU"
     }
   ],
-  "terrain_tiles": [
-    { "position": { "q": -3, "r": -3 }, "type": "mountain" },
-    { "position": { "q": -2, "r": -4 }, "type": "mountain" },
-    { "position": { "q": -1, "r": -5 }, "type": "mountain" },
-    { "position": { "q": -3, "r": 6 }, "type": "sea" },
-    { "position": { "q": -2, "r": 6 }, "type": "sea" },
-    { "position": { "q": -1, "r": 6 }, "type": "sea" },
-    { "position": { "q": 0, "r": 6 }, "type": "sea" },
-    { "position": { "q": -1, "r": 1 }, "type": "lake" }
+  "districts": [
+    {
+      "id": "d1",
+      "name": "District 1"
+    },
+    {
+      "id": "d2",
+      "name": "District 2"
+    },
+    {
+      "id": "d3",
+      "name": "District 3"
+    }
   ],
-  "river_edges": [
-    ["p_n1_n4", "p_n2_n3"],
-    ["p_n2_n3", "p_n1_n3"],
-    ["p_n1_n3", "p_n2_n2"],
-    ["p_n2_n2", "p_n1_n2"],
-    ["p_n1_n2", "p_n2_n1"],
-    ["p_n2_n1", "p_n1_n1"],
-    ["p_n1_n1", "p_n2_0"],
-    ["p_n2_0", "p_n1_0"],
-    ["p_n1_0", "p_n2_1"],
-    ["p_n2_2", "p_n1_2"],
-    ["p_n1_2", "p_n2_3"],
-    ["p_n2_3", "p_n1_3"],
-    ["p_n1_3", "p_n2_4"],
-    ["p_n2_4", "p_n1_4"],
-    ["p_n1_4", "p_n2_5"],
-    ["p_n2_5", "p_n1_5"]
+  "precincts": [
+    {
+      "id": "p001",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -5
+      },
+      "total_population": 3906,
+      "demographic_groups": [
+        {
+          "id": "p001-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5053058119490743,
+            "ryu": 0.4946941880509257
+          },
+          "turnout_rate": 0.6040175742469728,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (0,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p002",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -5
+      },
+      "total_population": 3929,
+      "demographic_groups": [
+        {
+          "id": "p002-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.34564726762473585,
+            "ryu": 0.6543527323752641
+          },
+          "turnout_rate": 0.5572250277968124,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (1,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p003",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -5
+      },
+      "total_population": 3929,
+      "demographic_groups": [
+        {
+          "id": "p003-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3429416694492102,
+            "ryu": 0.6570583305507898
+          },
+          "turnout_rate": 0.5510160588426516,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (2,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p004",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -5
+      },
+      "total_population": 3902,
+      "demographic_groups": [
+        {
+          "id": "p004-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3472965960763395,
+            "ryu": 0.6527034039236606
+          },
+          "turnout_rate": 0.6031260804389603,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (3,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p005",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -5
+      },
+      "total_population": 3881,
+      "demographic_groups": [
+        {
+          "id": "p005-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3846620431356132,
+            "ryu": 0.6153379568643869
+          },
+          "turnout_rate": 0.680589723365847,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (4,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p006",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -5
+      },
+      "total_population": 3864,
+      "demographic_groups": [
+        {
+          "id": "p006-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3924453490972519,
+            "ryu": 0.6075546509027481
+          },
+          "turnout_rate": 0.663901763537433,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (5,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p007",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -4
+      },
+      "total_population": 3908,
+      "demographic_groups": [
+        {
+          "id": "p007-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6033014810644091,
+            "ryu": 0.39669851893559094
+          },
+          "turnout_rate": 0.5749593634624034,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p008",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -4
+      },
+      "total_population": 3945,
+      "demographic_groups": [
+        {
+          "id": "p008-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5048573973588646,
+            "ryu": 0.4951426026411354
+          },
+          "turnout_rate": 0.6047889422508888,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (0,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p009",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -4
+      },
+      "total_population": 3970,
+      "demographic_groups": [
+        {
+          "id": "p009-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3861849446594715,
+            "ryu": 0.6138150553405285
+          },
+          "turnout_rate": 0.6423248105798848,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (1,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p010",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -4
+      },
+      "total_population": 3991,
+      "demographic_groups": [
+        {
+          "id": "p010-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3498137126863003,
+            "ryu": 0.6501862873136997
+          },
+          "turnout_rate": 0.6469714056001976,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (2,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p011",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -4
+      },
+      "total_population": 3966,
+      "demographic_groups": [
+        {
+          "id": "p011-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3747549327276647,
+            "ryu": 0.6252450672723353
+          },
+          "turnout_rate": 0.6483721209457144,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (3,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p012",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -4
+      },
+      "total_population": 3916,
+      "demographic_groups": [
+        {
+          "id": "p012-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.36713062427937987,
+            "ryu": 0.6328693757206201
+          },
+          "turnout_rate": 0.5654929414857179,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (4,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p013",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -4
+      },
+      "total_population": 3957,
+      "demographic_groups": [
+        {
+          "id": "p013-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39966733710840346,
+            "ryu": 0.6003326628915966
+          },
+          "turnout_rate": 0.6105151803931221,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (5,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p014",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -3
+      },
+      "total_population": 3917,
+      "demographic_groups": [
+        {
+          "id": "p014-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5871632305160165,
+            "ryu": 0.4128367694839835
+          },
+          "turnout_rate": 0.5972204012214206,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p015",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -3
+      },
+      "total_population": 3869,
+      "demographic_groups": [
+        {
+          "id": "p015-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5832236292399466,
+            "ryu": 0.41677637076005336
+          },
+          "turnout_rate": 0.5592073300504126,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p016",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -3
+      },
+      "total_population": 3980,
+      "demographic_groups": [
+        {
+          "id": "p016-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.48316059581935406,
+            "ryu": 0.5168394041806459
+          },
+          "turnout_rate": 0.6871966380858794,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (0,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p017",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -3
+      },
+      "total_population": 4055,
+      "demographic_groups": [
+        {
+          "id": "p017-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3692182816937566,
+            "ryu": 0.6307817183062434
+          },
+          "turnout_rate": 0.6587316486402415,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (1,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p018",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -3
+      },
+      "total_population": 3986,
+      "demographic_groups": [
+        {
+          "id": "p018-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.35763386089354754,
+            "ryu": 0.6423661391064525
+          },
+          "turnout_rate": 0.6047984126838856,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (2,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p019",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -3
+      },
+      "total_population": 3974,
+      "demographic_groups": [
+        {
+          "id": "p019-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3635302943922579,
+            "ryu": 0.6364697056077421
+          },
+          "turnout_rate": 0.655289015523158,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (3,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p020",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -3
+      },
+      "total_population": 3924,
+      "demographic_groups": [
+        {
+          "id": "p020-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3414927239902318,
+            "ryu": 0.6585072760097682
+          },
+          "turnout_rate": 0.6294742984347976,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (4,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p021",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -3
+      },
+      "total_population": 3877,
+      "demographic_groups": [
+        {
+          "id": "p021-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.34660360815003516,
+            "ryu": 0.6533963918499648
+          },
+          "turnout_rate": 0.5785146059468389,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (5,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p022",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": -2
+      },
+      "total_population": 3984,
+      "demographic_groups": [
+        {
+          "id": "p022-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6131439528986812,
+            "ryu": 0.3868560471013188
+          },
+          "turnout_rate": 0.5677370664547198,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p023",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -2
+      },
+      "total_population": 3966,
+      "demographic_groups": [
+        {
+          "id": "p023-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5937408154271543,
+            "ryu": 0.4062591845728457
+          },
+          "turnout_rate": 0.5893320111674257,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p024",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -2
+      },
+      "total_population": 3975,
+      "demographic_groups": [
+        {
+          "id": "p024-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6538933295756578,
+            "ryu": 0.3461066704243422
+          },
+          "turnout_rate": 0.567436545714736,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p025",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -2
+      },
+      "total_population": 3969,
+      "demographic_groups": [
+        {
+          "id": "p025-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.47355576261878013,
+            "ryu": 0.5264442373812199
+          },
+          "turnout_rate": 0.6638549737283028,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (0,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p026",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -2
+      },
+      "total_population": 3958,
+      "demographic_groups": [
+        {
+          "id": "p026-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.35280013643205166,
+            "ryu": 0.6471998635679483
+          },
+          "turnout_rate": 0.5659126444370486,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (1,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p027",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -2
+      },
+      "total_population": 3889,
+      "demographic_groups": [
+        {
+          "id": "p027-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3610617722198367,
+            "ryu": 0.6389382277801633
+          },
+          "turnout_rate": 0.6850401484989561,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (2,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p028",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -2
+      },
+      "total_population": 3889,
+      "demographic_groups": [
+        {
+          "id": "p028-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4196551660820842,
+            "ryu": 0.5803448339179158
+          },
+          "turnout_rate": 0.6649249858339317,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (3,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p029",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -2
+      },
+      "total_population": 3890,
+      "demographic_groups": [
+        {
+          "id": "p029-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.35032881528139115,
+            "ryu": 0.6496711847186089
+          },
+          "turnout_rate": 0.6065305817988701,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (4,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p030",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -2
+      },
+      "total_population": 3830,
+      "demographic_groups": [
+        {
+          "id": "p030-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.34373225264251234,
+            "ryu": 0.6562677473574876
+          },
+          "turnout_rate": 0.6667913675890303,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (5,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p031",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": -1
+      },
+      "total_population": 3956,
+      "demographic_groups": [
+        {
+          "id": "p031-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5919478052668273,
+            "ryu": 0.40805219473317267
+          },
+          "turnout_rate": 0.5864907047245652,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-4,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p032",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": -1
+      },
+      "total_population": 3971,
+      "demographic_groups": [
+        {
+          "id": "p032-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5911093566194177,
+            "ryu": 0.40889064338058234
+          },
+          "turnout_rate": 0.6544001593952998,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p033",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -1
+      },
+      "total_population": 3955,
+      "demographic_groups": [
+        {
+          "id": "p033-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6465382524579764,
+            "ryu": 0.35346174754202364
+          },
+          "turnout_rate": 0.695134210458491,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p034",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -1
+      },
+      "total_population": 3910,
+      "demographic_groups": [
+        {
+          "id": "p034-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.609579965993762,
+            "ryu": 0.39042003400623804
+          },
+          "turnout_rate": 0.6106117340852506,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p035",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -1
+      },
+      "total_population": 7948,
+      "demographic_groups": [
+        {
+          "id": "p035-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5157901692017913,
+            "ryu": 0.4842098307982087
+          },
+          "turnout_rate": 0.6856598873157054,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (0,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p036",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -1
+      },
+      "total_population": 7919,
+      "demographic_groups": [
+        {
+          "id": "p036-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39141374381259086,
+            "ryu": 0.6085862561874091
+          },
+          "turnout_rate": 0.655257795273792,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (1,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p037",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -1
+      },
+      "total_population": 3940,
+      "demographic_groups": [
+        {
+          "id": "p037-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39735424760729077,
+            "ryu": 0.6026457523927092
+          },
+          "turnout_rate": 0.6884932839660904,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (2,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p038",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -1
+      },
+      "total_population": 3842,
+      "demographic_groups": [
+        {
+          "id": "p038-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3829515208862722,
+            "ryu": 0.6170484791137278
+          },
+          "turnout_rate": 0.6663616319186986,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (3,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p039",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -1
+      },
+      "total_population": 3895,
+      "demographic_groups": [
+        {
+          "id": "p039-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3826728771068156,
+            "ryu": 0.6173271228931845
+          },
+          "turnout_rate": 0.6770163409761153,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (4,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p040",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -1
+      },
+      "total_population": 3883,
+      "demographic_groups": [
+        {
+          "id": "p040-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3616636220924556,
+            "ryu": 0.6383363779075444
+          },
+          "turnout_rate": 0.6470001933164895,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (5,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p041",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 0
+      },
+      "total_population": 3800,
+      "demographic_groups": [
+        {
+          "id": "p041-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5966621379368007,
+            "ryu": 0.4033378620631993
+          },
+          "turnout_rate": 0.5962858368991875,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-5,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p042",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 0
+      },
+      "total_population": 3893,
+      "demographic_groups": [
+        {
+          "id": "p042-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6300391770154238,
+            "ryu": 0.3699608229845762
+          },
+          "turnout_rate": 0.6105476806638762,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-4,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p043",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 0
+      },
+      "total_population": 3971,
+      "demographic_groups": [
+        {
+          "id": "p043-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.588989099599421,
+            "ryu": 0.41101090040057897
+          },
+          "turnout_rate": 0.5608681831741706,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p044",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 0
+      },
+      "total_population": 4016,
+      "demographic_groups": [
+        {
+          "id": "p044-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6419899162836373,
+            "ryu": 0.35801008371636267
+          },
+          "turnout_rate": 0.5677682623965666,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p045",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 0
+      },
+      "total_population": 7979,
+      "demographic_groups": [
+        {
+          "id": "p045-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6541187385097146,
+            "ryu": 0.3458812614902854
+          },
+          "turnout_rate": 0.668286394921597,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p046",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 0
+      },
+      "total_population": 7943,
+      "demographic_groups": [
+        {
+          "id": "p046-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4887368250451982,
+            "ryu": 0.5112631749548018
+          },
+          "turnout_rate": 0.6866344809881411,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (0,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p047",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 0
+      },
+      "total_population": 7911,
+      "demographic_groups": [
+        {
+          "id": "p047-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.41224357556551694,
+            "ryu": 0.5877564244344831
+          },
+          "turnout_rate": 0.5720664052525536,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (1,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p048",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 0
+      },
+      "total_population": 3925,
+      "demographic_groups": [
+        {
+          "id": "p048-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3678169579803944,
+            "ryu": 0.6321830420196056
+          },
+          "turnout_rate": 0.5703441788209602,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (2,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p049",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 0
+      },
+      "total_population": 3922,
+      "demographic_groups": [
+        {
+          "id": "p049-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3795511104166508,
+            "ryu": 0.6204488895833492
+          },
+          "turnout_rate": 0.599921706551686,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (3,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p050",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": 0
+      },
+      "total_population": 3920,
+      "demographic_groups": [
+        {
+          "id": "p050-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.36999663660302756,
+            "ryu": 0.6300033633969724
+          },
+          "turnout_rate": 0.576135411427822,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (4,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p051",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": 0
+      },
+      "total_population": 3940,
+      "demographic_groups": [
+        {
+          "id": "p051-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39009894978255033,
+            "ryu": 0.6099010502174497
+          },
+          "turnout_rate": 0.6634701381321065,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (5,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p052",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 1
+      },
+      "total_population": 3806,
+      "demographic_groups": [
+        {
+          "id": "p052-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6058279548771679,
+            "ryu": 0.3941720451228321
+          },
+          "turnout_rate": 0.6764405668829567,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-5,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p053",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 1
+      },
+      "total_population": 3893,
+      "demographic_groups": [
+        {
+          "id": "p053-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6567664765007794,
+            "ryu": 0.34323352349922065
+          },
+          "turnout_rate": 0.6361133496160619,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-4,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p054",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 1
+      },
+      "total_population": 4002,
+      "demographic_groups": [
+        {
+          "id": "p054-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5831201609224081,
+            "ryu": 0.41687983907759185
+          },
+          "turnout_rate": 0.5640367951476947,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p055",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 1
+      },
+      "total_population": 4084,
+      "demographic_groups": [
+        {
+          "id": "p055-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.620507898926735,
+            "ryu": 0.37949210107326503
+          },
+          "turnout_rate": 0.5803345354739576,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p056",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 1
+      },
+      "total_population": 8054,
+      "demographic_groups": [
+        {
+          "id": "p056-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6473834357596934,
+            "ryu": 0.35261656424030663
+          },
+          "turnout_rate": 0.6370124400476925,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p057",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 1
+      },
+      "total_population": 9233,
+      "demographic_groups": [
+        {
+          "id": "p057-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5292632918059826,
+            "ryu": 0.47073670819401736
+          },
+          "turnout_rate": 0.6629315311438404,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (0,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p058",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 1
+      },
+      "total_population": 3903,
+      "demographic_groups": [
+        {
+          "id": "p058-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.41040687944740056,
+            "ryu": 0.5895931205525995
+          },
+          "turnout_rate": 0.681887343188282,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (1,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p059",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 1
+      },
+      "total_population": 3922,
+      "demographic_groups": [
+        {
+          "id": "p059-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.34263891391456125,
+            "ryu": 0.6573610860854388
+          },
+          "turnout_rate": 0.6813205494312569,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (2,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p060",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 1
+      },
+      "total_population": 4000,
+      "demographic_groups": [
+        {
+          "id": "p060-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39963071499019864,
+            "ryu": 0.6003692850098014
+          },
+          "turnout_rate": 0.5596533415257,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (3,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p061",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": 1
+      },
+      "total_population": 4030,
+      "demographic_groups": [
+        {
+          "id": "p061-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3493368224240839,
+            "ryu": 0.6506631775759161
+          },
+          "turnout_rate": 0.5542654703021981,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (4,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p062",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 2
+      },
+      "total_population": 3867,
+      "demographic_groups": [
+        {
+          "id": "p062-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6447375842370093,
+            "ryu": 0.35526241576299067
+          },
+          "turnout_rate": 0.5725578236626462,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-5,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p063",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 2
+      },
+      "total_population": 4008,
+      "demographic_groups": [
+        {
+          "id": "p063-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6071773752011359,
+            "ryu": 0.3928226247988641
+          },
+          "turnout_rate": 0.5724428012152203,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-4,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p064",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 2
+      },
+      "total_population": 4127,
+      "demographic_groups": [
+        {
+          "id": "p064-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6103541999310255,
+            "ryu": 0.38964580006897453
+          },
+          "turnout_rate": 0.564119803684298,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p065",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 2
+      },
+      "total_population": 4206,
+      "demographic_groups": [
+        {
+          "id": "p065-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6207892028056086,
+            "ryu": 0.37921079719439144
+          },
+          "turnout_rate": 0.6981394277769141,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p066",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 2
+      },
+      "total_population": 4088,
+      "demographic_groups": [
+        {
+          "id": "p066-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.65795061647892,
+            "ryu": 0.34204938352108005
+          },
+          "turnout_rate": 0.6894861912936903,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p067",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 2
+      },
+      "total_population": 5207,
+      "demographic_groups": [
+        {
+          "id": "p067-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5081325291655958,
+            "ryu": 0.4918674708344042
+          },
+          "turnout_rate": 0.674560887098778,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (0,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p068",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 2
+      },
+      "total_population": 3975,
+      "demographic_groups": [
+        {
+          "id": "p068-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3408830546401441,
+            "ryu": 0.6591169453598559
+          },
+          "turnout_rate": 0.583707288315054,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (1,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p069",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 2
+      },
+      "total_population": 4061,
+      "demographic_groups": [
+        {
+          "id": "p069-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39443809710443023,
+            "ryu": 0.6055619028955698
+          },
+          "turnout_rate": 0.6672221300425007,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (2,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p070",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 2
+      },
+      "total_population": 4105,
+      "demographic_groups": [
+        {
+          "id": "p070-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3502964898571372,
+            "ryu": 0.6497035101428628
+          },
+          "turnout_rate": 0.6283688672352582,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (3,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p071",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 3
+      },
+      "total_population": 3940,
+      "demographic_groups": [
+        {
+          "id": "p071-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6299490517191588,
+            "ryu": 0.3700509482808412
+          },
+          "turnout_rate": 0.6639209776883944,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-5,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p072",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 3
+      },
+      "total_population": 4027,
+      "demographic_groups": [
+        {
+          "id": "p072-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5933459560573101,
+            "ryu": 0.4066540439426899
+          },
+          "turnout_rate": 0.6732579563977197,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-4,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p073",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 3
+      },
+      "total_population": 4105,
+      "demographic_groups": [
+        {
+          "id": "p073-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6401964820362628,
+            "ryu": 0.3598035179637372
+          },
+          "turnout_rate": 0.613562690874096,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p074",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 3
+      },
+      "total_population": 4085,
+      "demographic_groups": [
+        {
+          "id": "p074-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6588964271731674,
+            "ryu": 0.34110357282683257
+          },
+          "turnout_rate": 0.6288765277131461,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p075",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 3
+      },
+      "total_population": 4086,
+      "demographic_groups": [
+        {
+          "id": "p075-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5910792603716254,
+            "ryu": 0.4089207396283746
+          },
+          "turnout_rate": 0.6500821900554001,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (-1,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p076",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 3
+      },
+      "total_population": 5217,
+      "demographic_groups": [
+        {
+          "id": "p076-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5218706489168108,
+            "ryu": 0.4781293510831892
+          },
+          "turnout_rate": 0.5953937924001366,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (0,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p077",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 3
+      },
+      "total_population": 4023,
+      "demographic_groups": [
+        {
+          "id": "p077-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.40648061826825144,
+            "ryu": 0.5935193817317486
+          },
+          "turnout_rate": 0.6023427072796039,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (1,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p078",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 3
+      },
+      "total_population": 4071,
+      "demographic_groups": [
+        {
+          "id": "p078-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3858691895380616,
+            "ryu": 0.6141308104619384
+          },
+          "turnout_rate": 0.5934965519001708,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (2,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p079",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 4
+      },
+      "total_population": 3980,
+      "demographic_groups": [
+        {
+          "id": "p079-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6392676852457225,
+            "ryu": 0.36073231475427747
+          },
+          "turnout_rate": 0.6934287487063556,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-5,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p080",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 4
+      },
+      "total_population": 3991,
+      "demographic_groups": [
+        {
+          "id": "p080-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5945819167792797,
+            "ryu": 0.40541808322072026
+          },
+          "turnout_rate": 0.6639942443580367,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-4,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p081",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 4
+      },
+      "total_population": 4017,
+      "demographic_groups": [
+        {
+          "id": "p081-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6378003415837884,
+            "ryu": 0.3621996584162116
+          },
+          "turnout_rate": 0.6736637991736643,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p082",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 4
+      },
+      "total_population": 4013,
+      "demographic_groups": [
+        {
+          "id": "p082-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6293722384050489,
+            "ryu": 0.37062776159495114
+          },
+          "turnout_rate": 0.5678121372242458,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (-2,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p083",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 4
+      },
+      "total_population": 4074,
+      "demographic_groups": [
+        {
+          "id": "p083-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5907081260718405,
+            "ryu": 0.40929187392815947
+          },
+          "turnout_rate": 0.6527216300251893,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (-1,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p084",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 4
+      },
+      "total_population": 5211,
+      "demographic_groups": [
+        {
+          "id": "p084-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5122939895279706,
+            "ryu": 0.48770601047202944
+          },
+          "turnout_rate": 0.5690018963767216,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (0,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p085",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 4
+      },
+      "total_population": 3970,
+      "demographic_groups": [
+        {
+          "id": "p085-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39785484347492456,
+            "ryu": 0.6021451565250755
+          },
+          "turnout_rate": 0.5545408094651066,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (1,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p086",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 5
+      },
+      "total_population": 3965,
+      "demographic_groups": [
+        {
+          "id": "p086-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6493291041627526,
+            "ryu": 0.3506708958372474
+          },
+          "turnout_rate": 0.6804829530417918,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-5,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p087",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 5
+      },
+      "total_population": 3918,
+      "demographic_groups": [
+        {
+          "id": "p087-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6256893667764962,
+            "ryu": 0.3743106332235038
+          },
+          "turnout_rate": 0.5953932692296803,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-4,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p088",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 5
+      },
+      "total_population": 3980,
+      "demographic_groups": [
+        {
+          "id": "p088-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5920063030533492,
+            "ryu": 0.4079936969466508
+          },
+          "turnout_rate": 0.666910684958566,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (-3,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p089",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 5
+      },
+      "total_population": 4032,
+      "demographic_groups": [
+        {
+          "id": "p089-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6519125463813543,
+            "ryu": 0.3480874536186457
+          },
+          "turnout_rate": 0.6914643195341341,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (-2,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p090",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 5
+      },
+      "total_population": 4072,
+      "demographic_groups": [
+        {
+          "id": "p090-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6279194189421833,
+            "ryu": 0.3720805810578167
+          },
+          "turnout_rate": 0.5874609076417983,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (-1,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p091",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 5
+      },
+      "total_population": 3949,
+      "demographic_groups": [
+        {
+          "id": "p091-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5002344448678195,
+            "ryu": 0.49976555513218046
+          },
+          "turnout_rate": 0.5741614397382364,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_south",
+      "county_name": "Hawthorn South",
+      "name": "South (0,5)",
+      "initial_district_id": "d1"
+    }
   ],
-  "river_blocks_contiguity": false,
   "events": [],
   "rules": {
-    "population_tolerance": 0.10,
-    "contiguity": "required"
+    "population_tolerance": 0.15,
+    "contiguity": "allowed"
   },
   "success_criteria": [
     {
       "id": "sc-district-count",
       "required": true,
-      "description": "All four districts are in use and every precinct is assigned.",
-      "criterion": { "type": "district_count" }
-    },
-    {
-      "id": "sc-population-balance",
-      "required": true,
-      "description": "All four districts have roughly equal population (within 10%).",
-      "criterion": { "type": "population_balance" }
+      "description": "All three districts are in use and every precinct is assigned.",
+      "criterion": {
+        "type": "district_count"
+      }
     }
   ],
   "narrative": {
     "character": {
-      "name": "Tutorial Guide",
-      "role": "Tour Guide",
-      "motivation": "Welcome to Hawthorn Bend. This map shows every kind of terrain feature that you will see in the game."
+      "name": "You",
+      "role": "Mapmaker, Hawthorn Bend",
+      "motivation": "You can draw a legal map. Now for the part that makes redistricting matter: the voters aren't all the same, and where you draw the lines decides who wins. Let's learn to read the vote.\n"
     },
     "intro_slides": [
       {
-        "heading": "Reading the Map",
-        "body": "Maps can include geographic features alongside the precincts you draw districts from.\n\n- **Mountains** (grey tiles, northwest) — not assignable. Adjacent precincts are foothills with a soft grey fringe.\n- **Sea** (dark blue tiles, south) — not assignable. Adjacent precincts are coast with a blue shoreline.\n- **Lake** (aqua tile, centre) — not assignable. Adjacent precincts show a teal lakeside fringe.\n- **River** (teal line) — flows from the mountain area, through the lake, and down to the sea."
+        "body": "Hawthorn Bend has a river running through it — scenery only; your districts can cross it freely. What's new is underneath: the people. The west of the Bend leans one way, the east the other, and the centre is a tossup.\n",
+        "heading": "A New Kind of Map"
       },
       {
-        "heading": "Geography is Cosmetic",
-        "body": "These features are visual: they show what the region looks like, but **they do not constrain district-drawing**.\n\nReal redistricting often uses rivers and mountains as district boundaries — but that is because of political choices (state lines, county lines, historical municipal limits) that happen to follow geography, not because geography is a physical barrier. A district can cross a river or lake if the people on both sides share a community.\n\nThe initial map divides the region into four sectors. It is already a valid plan."
-      },
-      {
-        "heading": "Try It Out",
-        "body": "Click **Submit Map** to evaluate the starting districts. You can also repaint districts to experiment — drag across hexes to assign them, click district buttons to switch which district you are drawing.\n\nWhen you are done exploring, move on to the educational campaign."
+        "body": "Two new things will appear as we go. The **Lean** view colours each precinct by who its voters favour. And the **election result** shows who wins each district you draw. They go together: lean tells you the ground, the result tells you the outcome — and the lines you draw decide it.\n",
+        "heading": "Lean, and the Result"
       }
     ],
-    "objective": "Look around the map at the terrain features. Submit the initial four-district map, or repaint to experiment."
-  }
+    "objective": "Draw three districts and read the result. There's no target to hit — repaint the lines and watch who wins change, then submit when you've had a look.\n",
+    "epilogue": "That's the whole picture: precincts lean, and the district lines you draw turn those leanings into seats. The same voters can hand one party a majority of seats or the other — nothing changed but the lines.\nYou've drawn a legal map and learned to read the vote. From here the campaign scenarios put it to work: real maps, real goals, and a reason to draw the lines the way you do.\n"
+  },
+  "default_district_id": "d1",
+  "river_edges": [
+    [
+      "p057",
+      "p067"
+    ],
+    [
+      "p067",
+      "p076"
+    ],
+    [
+      "p076",
+      "p084"
+    ]
+  ],
+  "hide_election_results": false,
+  "hide_view_toolbar": false,
+  "guided": true
 }

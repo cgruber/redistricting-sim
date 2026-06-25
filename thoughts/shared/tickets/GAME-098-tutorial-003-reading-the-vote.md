@@ -33,14 +33,33 @@ Arc + script: see DESIGN-012 (tutorial-003 step script) and
 
 ## Goals / Acceptance Criteria
 
-- [ ] `tutorial-003.spec.yaml` authored (terrain, lean split, counties + urban core);
-      `tutorial-003.json` generated.
-- [ ] `guided: true`; result panel + lean/county/city are `reveal` targets (hidden on load).
-- [ ] Guided script per DESIGN-012: lean + election result revealed in the same step, then
-      county, then city; the result updates live as districts are repainted.
-- [ ] Reuses GAME-076 engine + `reveal` action (no fork).
-- [ ] e2e: result panel + views hidden on load; each revealed as its step fires; result
-      reflects the painted map; winnable by drawing the required districts.
+- [x] `tutorial-003.spec.yaml` authored (river, lean split, counties + urban core);
+      `tutorial-003.json` generated. *(Coast deferred — see Progress.)*
+- [x] `guided: true`; result panel + lean/county are `reveal` targets (hidden on load).
+      *(City: pending GAME-096 — no `#filter-city` exists yet.)*
+- [x] Guided script per DESIGN-012: lean + election result revealed in the same step, then
+      county; the result updates live as districts are repainted. *(City step deferred.)*
+- [x] Reuses GAME-076 engine + `reveal` action (no fork) — first use of `reveal`.
+- [x] e2e: result panel + views hidden on load; each revealed as its step fires; result
+      reflects the painted map; winnable by drawing three districts.
+
+## Progress (2026-06-24) — DRAFT shipped, two deferrals
+
+Shipped as a complete draft: a 91-precinct radius-5 map with an east/west partisan lean
+(west 62% / centre 50% / east 37% Ken), a cosmetic river, two counties, and an urban core.
+`guided: true`, `hide_election_results: false`, `hide_view_toolbar: false`. The `TUTORIAL_003`
+overlay script (first use of `reveal`) hides the result panel + Lean + County on load and
+surfaces them in sequence: orient → reveal Lean + result together → paint & watch → reveal
+County → submit. Gates `district_count` only (result shown to read, not exploit); e2e covers
+load/reveal/lean/county/winnability + the overlay walkthrough.
+
+**Two deferrals (judgment calls, flagged for review):**
+1. **City-view step** — needs the city-limits overlay (GAME-096), which isn't built. The map
+   carries an urban core so the step slots in later without a map change. The overlay reveals
+   Lean+result then County; City follows with GAME-096. **This ticket stays open for that step.**
+2. **Coastline** — sea tiles must sit outside the precinct circle (the generator rejects
+   overlaps), so the coast needs hand-placed outer-ring tiles best done in the visual pass.
+   The river alone carries "some geography" for the draft.
 
 ## References
 
