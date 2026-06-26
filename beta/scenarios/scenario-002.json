@@ -1,0 +1,2493 @@
+{
+  "format_version": "1",
+  "id": "scenario-002",
+  "title": "Clearwater Valley: The Governor's Map",
+  "election_type": "state_house",
+  "region": {
+    "id": "clearwater_valley",
+    "name": "Clearwater Valley"
+  },
+  "geometry": {
+    "type": "hex_axial"
+  },
+  "parties": [
+    {
+      "id": "ken",
+      "name": "Ken Party",
+      "abbreviation": "KEN"
+    },
+    {
+      "id": "ryu",
+      "name": "Ryu Party",
+      "abbreviation": "RYU"
+    }
+  ],
+  "districts": [
+    {
+      "id": "d1",
+      "name": "District 1"
+    },
+    {
+      "id": "d2",
+      "name": "District 2"
+    },
+    {
+      "id": "d3",
+      "name": "District 3"
+    },
+    {
+      "id": "d4",
+      "name": "District 4"
+    }
+  ],
+  "precincts": [
+    {
+      "id": "p001",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -5
+      },
+      "total_population": 667,
+      "demographic_groups": [
+        {
+          "id": "p001-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.628088300153613,
+            "ryu": 0.37191169984638695
+          },
+          "turnout_rate": 0.6172435838496313,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (0,-5)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p002",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -5
+      },
+      "total_population": 675,
+      "demographic_groups": [
+        {
+          "id": "p002-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5481972634792328,
+            "ryu": 0.4518027365207672
+          },
+          "turnout_rate": 0.6504601062159054,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (1,-5)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p003",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -5
+      },
+      "total_population": 677,
+      "demographic_groups": [
+        {
+          "id": "p003-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.493985111899674,
+            "ryu": 0.506014888100326
+          },
+          "turnout_rate": 0.6289888813276775,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (2,-5)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p004",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -5
+      },
+      "total_population": 669,
+      "demographic_groups": [
+        {
+          "id": "p004-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5018582395464182,
+            "ryu": 0.49814176045358183
+          },
+          "turnout_rate": 0.6437116980901919,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (3,-5)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p005",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -5
+      },
+      "total_population": 2270,
+      "demographic_groups": [
+        {
+          "id": "p005-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5492379718646407,
+            "ryu": 0.45076202813535926
+          },
+          "turnout_rate": 0.6208475582650863,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (4,-5)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p006",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -5
+      },
+      "total_population": 2284,
+      "demographic_groups": [
+        {
+          "id": "p006-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4999938987381756,
+            "ryu": 0.5000061012618244
+          },
+          "turnout_rate": 0.682308825023938,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (5,-5)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p007",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -4
+      },
+      "total_population": 656,
+      "demographic_groups": [
+        {
+          "id": "p007-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6396590051986277,
+            "ryu": 0.36034099480137227
+          },
+          "turnout_rate": 0.596050227014348,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-1,-4)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p008",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -4
+      },
+      "total_population": 672,
+      "demographic_groups": [
+        {
+          "id": "p008-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5957803070358932,
+            "ryu": 0.40421969296410676
+          },
+          "turnout_rate": 0.6251094231614843,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (0,-4)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p009",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -4
+      },
+      "total_population": 680,
+      "demographic_groups": [
+        {
+          "id": "p009-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5349289614334702,
+            "ryu": 0.46507103856652976
+          },
+          "turnout_rate": 0.6415931347641163,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (1,-4)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p010",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -4
+      },
+      "total_population": 674,
+      "demographic_groups": [
+        {
+          "id": "p010-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.480307436157018,
+            "ryu": 0.519692563842982
+          },
+          "turnout_rate": 0.6206172885606065,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (2,-4)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p011",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -4
+      },
+      "total_population": 668,
+      "demographic_groups": [
+        {
+          "id": "p011-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5469869940727949,
+            "ryu": 0.45301300592720506
+          },
+          "turnout_rate": 0.5576813899446279,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (3,-4)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p012",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -4
+      },
+      "total_population": 2293,
+      "demographic_groups": [
+        {
+          "id": "p012-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5273859192430973,
+            "ryu": 0.4726140807569027
+          },
+          "turnout_rate": 0.5547306933440268,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (4,-4)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p013",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -4
+      },
+      "total_population": 2287,
+      "demographic_groups": [
+        {
+          "id": "p013-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5013564789481462,
+            "ryu": 0.49864352105185383
+          },
+          "turnout_rate": 0.5592672088649124,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (5,-4)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p014",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -3
+      },
+      "total_population": 652,
+      "demographic_groups": [
+        {
+          "id": "p014-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5948551205731928,
+            "ryu": 0.4051448794268072
+          },
+          "turnout_rate": 0.667532093974296,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-2,-3)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p015",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -3
+      },
+      "total_population": 661,
+      "demographic_groups": [
+        {
+          "id": "p015-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6224268485046923,
+            "ryu": 0.3775731514953077
+          },
+          "turnout_rate": 0.5540685413987376,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-1,-3)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p016",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -3
+      },
+      "total_population": 675,
+      "demographic_groups": [
+        {
+          "id": "p016-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5938404187560081,
+            "ryu": 0.4061595812439919
+          },
+          "turnout_rate": 0.6764032187988049,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (0,-3)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p017",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -3
+      },
+      "total_population": 676,
+      "demographic_groups": [
+        {
+          "id": "p017-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.2490191933885217,
+            "ryu": 0.7509808066114783
+          },
+          "turnout_rate": 0.6713534475653432,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (1,-3)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p018",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -3
+      },
+      "total_population": 671,
+      "demographic_groups": [
+        {
+          "id": "p018-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.23555693965405225,
+            "ryu": 0.7644430603459478
+          },
+          "turnout_rate": 0.6174843592918478,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (2,-3)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p019",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -3
+      },
+      "total_population": 669,
+      "demographic_groups": [
+        {
+          "id": "p019-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.21299513708800077,
+            "ryu": 0.7870048629119992
+          },
+          "turnout_rate": 0.5577089101774618,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (3,-3)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p020",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -3
+      },
+      "total_population": 671,
+      "demographic_groups": [
+        {
+          "id": "p020-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5245279823429883,
+            "ryu": 0.47547201765701175
+          },
+          "turnout_rate": 0.6395094269188121,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (4,-3)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p021",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -3
+      },
+      "total_population": 671,
+      "demographic_groups": [
+        {
+          "id": "p021-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4996139738894999,
+            "ryu": 0.5003860261105001
+          },
+          "turnout_rate": 0.6468541606911458,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (5,-3)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p022",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": -2
+      },
+      "total_population": 653,
+      "demographic_groups": [
+        {
+          "id": "p022-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5967608390934765,
+            "ryu": 0.40323916090652345
+          },
+          "turnout_rate": 0.595544445165433,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-3,-2)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p023",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -2
+      },
+      "total_population": 660,
+      "demographic_groups": [
+        {
+          "id": "p023-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6390897098183632,
+            "ryu": 0.3609102901816368
+          },
+          "turnout_rate": 0.6788066378911025,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-2,-2)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p024",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -2
+      },
+      "total_population": 669,
+      "demographic_groups": [
+        {
+          "id": "p024-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.620639703143388,
+            "ryu": 0.379360296856612
+          },
+          "turnout_rate": 0.5806285146973096,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-1,-2)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p025",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -2
+      },
+      "total_population": 2834,
+      "demographic_groups": [
+        {
+          "id": "p025-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6027365586161614,
+            "ryu": 0.3972634413838386
+          },
+          "turnout_rate": 0.5939487455529161,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (0,-2)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p026",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -2
+      },
+      "total_population": 5988,
+      "demographic_groups": [
+        {
+          "id": "p026-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.2159755703806877,
+            "ryu": 0.7840244296193123
+          },
+          "turnout_rate": 0.6489789690240286,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (1,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p027",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -2
+      },
+      "total_population": 5977,
+      "demographic_groups": [
+        {
+          "id": "p027-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.2644615145772696,
+            "ryu": 0.7355384854227305
+          },
+          "turnout_rate": 0.6539632174884901,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (2,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p028",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -2
+      },
+      "total_population": 668,
+      "demographic_groups": [
+        {
+          "id": "p028-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.284227192029357,
+            "ryu": 0.715772807970643
+          },
+          "turnout_rate": 0.5631952038384043,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (3,-2)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p029",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -2
+      },
+      "total_population": 666,
+      "demographic_groups": [
+        {
+          "id": "p029-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5554988197423518,
+            "ryu": 0.4445011802576482
+          },
+          "turnout_rate": 0.6146706245606766,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (4,-2)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p030",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -2
+      },
+      "total_population": 658,
+      "demographic_groups": [
+        {
+          "id": "p030-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5553835640661419,
+            "ryu": 0.44461643593385813
+          },
+          "turnout_rate": 0.5705947611597367,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (5,-2)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p031",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": -1
+      },
+      "total_population": 1594,
+      "demographic_groups": [
+        {
+          "id": "p031-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.58887545324862,
+            "ryu": 0.41112454675138
+          },
+          "turnout_rate": 0.552376435790211,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-4,-1)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p032",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": -1
+      },
+      "total_population": 666,
+      "demographic_groups": [
+        {
+          "id": "p032-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.608835654873401,
+            "ryu": 0.39116434512659903
+          },
+          "turnout_rate": 0.6222583776456304,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-3,-1)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p033",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -1
+      },
+      "total_population": 675,
+      "demographic_groups": [
+        {
+          "id": "p033-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6289537615329027,
+            "ryu": 0.3710462384670973
+          },
+          "turnout_rate": 0.6849336959887296,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-2,-1)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p034",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -1
+      },
+      "total_population": 2844,
+      "demographic_groups": [
+        {
+          "id": "p034-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.586206592451781,
+            "ryu": 0.413793407548219
+          },
+          "turnout_rate": 0.6579397022607736,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-1,-1)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p035",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -1
+      },
+      "total_population": 7532,
+      "demographic_groups": [
+        {
+          "id": "p035-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6547894185595214,
+            "ryu": 0.34521058144047856
+          },
+          "turnout_rate": 0.5917377207544633,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (0,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p036",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -1
+      },
+      "total_population": 7521,
+      "demographic_groups": [
+        {
+          "id": "p036-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.266526831574738,
+            "ryu": 0.733473168425262
+          },
+          "turnout_rate": 0.5769434078596533,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (1,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p037",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -1
+      },
+      "total_population": 5979,
+      "demographic_groups": [
+        {
+          "id": "p037-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.25162530831992624,
+            "ryu": 0.7483746916800738
+          },
+          "turnout_rate": 0.6732837637187913,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (2,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p038",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -1
+      },
+      "total_population": 663,
+      "demographic_groups": [
+        {
+          "id": "p038-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.2196474058739841,
+            "ryu": 0.7803525941260159
+          },
+          "turnout_rate": 0.699345795251429,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (3,-1)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p039",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -1
+      },
+      "total_population": 659,
+      "demographic_groups": [
+        {
+          "id": "p039-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5250240171700716,
+            "ryu": 0.47497598282992837
+          },
+          "turnout_rate": 0.6874180247192271,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (4,-1)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p040",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -1
+      },
+      "total_population": 651,
+      "demographic_groups": [
+        {
+          "id": "p040-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5147192295826972,
+            "ryu": 0.4852807704173028
+          },
+          "turnout_rate": 0.6367679536226205,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (5,-1)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p041",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 0
+      },
+      "total_population": 1597,
+      "demographic_groups": [
+        {
+          "id": "p041-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6069569665752351,
+            "ryu": 0.3930430334247649
+          },
+          "turnout_rate": 0.6394358655554242,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-5,0)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p042",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 0
+      },
+      "total_population": 1613,
+      "demographic_groups": [
+        {
+          "id": "p042-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.605836623609066,
+            "ryu": 0.394163376390934
+          },
+          "turnout_rate": 0.6594120986294001,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-4,0)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p043",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 0
+      },
+      "total_population": 679,
+      "demographic_groups": [
+        {
+          "id": "p043-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6036166942678391,
+            "ryu": 0.39638330573216085
+          },
+          "turnout_rate": 0.6174644104670733,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-3,0)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p044",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 0
+      },
+      "total_population": 2854,
+      "demographic_groups": [
+        {
+          "id": "p044-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6474500614590942,
+            "ryu": 0.35254993854090577
+          },
+          "turnout_rate": 0.6542597808176651,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-2,0)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p045",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 0
+      },
+      "total_population": 4208,
+      "demographic_groups": [
+        {
+          "id": "p045-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6595209190249443,
+            "ryu": 0.34047908097505575
+          },
+          "turnout_rate": 0.6835297195590101,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (-1,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p046",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 0
+      },
+      "total_population": 7571,
+      "demographic_groups": [
+        {
+          "id": "p046-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6145513175986708,
+            "ryu": 0.38544868240132923
+          },
+          "turnout_rate": 0.6317819698946551,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (0,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p047",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 0
+      },
+      "total_population": 7532,
+      "demographic_groups": [
+        {
+          "id": "p047-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.2336743612214923,
+            "ryu": 0.7663256387785077
+          },
+          "turnout_rate": 0.5651316159404814,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (1,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p048",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 0
+      },
+      "total_population": 2831,
+      "demographic_groups": [
+        {
+          "id": "p048-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.26573772098869086,
+            "ryu": 0.7342622790113091
+          },
+          "turnout_rate": 0.5969958405359649,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (2,0)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p049",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 0
+      },
+      "total_population": 666,
+      "demographic_groups": [
+        {
+          "id": "p049-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.27287540651857856,
+            "ryu": 0.7271245934814214
+          },
+          "turnout_rate": 0.6857163236825726,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (3,0)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p050",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": 0
+      },
+      "total_population": 653,
+      "demographic_groups": [
+        {
+          "id": "p050-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.48749130776152017,
+            "ryu": 0.5125086922384798
+          },
+          "turnout_rate": 0.6213087697979063,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (4,0)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p051",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": 0
+      },
+      "total_population": 645,
+      "demographic_groups": [
+        {
+          "id": "p051-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5457560645975172,
+            "ryu": 0.45424393540248276
+          },
+          "turnout_rate": 0.5694968922878616,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (5,0)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p052",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 1
+      },
+      "total_population": 1601,
+      "demographic_groups": [
+        {
+          "id": "p052-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6578197133168578,
+            "ryu": 0.34218028668314215
+          },
+          "turnout_rate": 0.5767592268530279,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-5,1)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p053",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 1
+      },
+      "total_population": 671,
+      "demographic_groups": [
+        {
+          "id": "p053-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6367543722316623,
+            "ryu": 0.3632456277683377
+          },
+          "turnout_rate": 0.6549536844599061,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-4,1)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p054",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 1
+      },
+      "total_population": 682,
+      "demographic_groups": [
+        {
+          "id": "p054-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5978545704111456,
+            "ryu": 0.40214542958885435
+          },
+          "turnout_rate": 0.6119292883784511,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-3,1)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p055",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 1
+      },
+      "total_population": 2868,
+      "demographic_groups": [
+        {
+          "id": "p055-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5930749972723425,
+            "ryu": 0.4069250027276575
+          },
+          "turnout_rate": 0.6481999584008008,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "City (-2,1)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p056",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 1
+      },
+      "total_population": 4213,
+      "demographic_groups": [
+        {
+          "id": "p056-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6068744924105703,
+            "ryu": 0.39312550758942966
+          },
+          "turnout_rate": 0.5810431184479967,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (-1,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p057",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 1
+      },
+      "total_population": 4209,
+      "demographic_groups": [
+        {
+          "id": "p057-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6303122711367906,
+            "ryu": 0.36968772886320944
+          },
+          "turnout_rate": 0.6830318299354985,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (0,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p058",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 1
+      },
+      "total_population": 2855,
+      "demographic_groups": [
+        {
+          "id": "p058-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.23611023711040616,
+            "ryu": 0.7638897628895939
+          },
+          "turnout_rate": 0.6688640961889177,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (1,1)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p059",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 1
+      },
+      "total_population": 679,
+      "demographic_groups": [
+        {
+          "id": "p059-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.24143566297367214,
+            "ryu": 0.7585643370263279
+          },
+          "turnout_rate": 0.5697089203516953,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (2,1)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p060",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 1
+      },
+      "total_population": 663,
+      "demographic_groups": [
+        {
+          "id": "p060-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5490961751528084,
+            "ryu": 0.4509038248471916
+          },
+          "turnout_rate": 0.6054565583588556,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (3,1)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p061",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": 1
+      },
+      "total_population": 649,
+      "demographic_groups": [
+        {
+          "id": "p061-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.48076211094856264,
+            "ryu": 0.5192378890514373
+          },
+          "turnout_rate": 0.6606133626424707,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (4,1)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p062",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 2
+      },
+      "total_population": 659,
+      "demographic_groups": [
+        {
+          "id": "p062-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6308211055025459,
+            "ryu": 0.3691788944974541
+          },
+          "turnout_rate": 0.6813885033712722,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-5,2)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p063",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 2
+      },
+      "total_population": 668,
+      "demographic_groups": [
+        {
+          "id": "p063-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6526531583443284,
+            "ryu": 0.34734684165567165
+          },
+          "turnout_rate": 0.5813483171630651,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-4,2)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p064",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 2
+      },
+      "total_population": 681,
+      "demographic_groups": [
+        {
+          "id": "p064-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6283146039396524,
+            "ryu": 0.37168539606034756
+          },
+          "turnout_rate": 0.6233863667817786,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-3,2)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p065",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 2
+      },
+      "total_population": 2864,
+      "demographic_groups": [
+        {
+          "id": "p065-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5947218755818904,
+            "ryu": 0.4052781244181096
+          },
+          "turnout_rate": 0.5571211096597836,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "City (-2,2)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p066",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 2
+      },
+      "total_population": 2867,
+      "demographic_groups": [
+        {
+          "id": "p066-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6364441431313753,
+            "ryu": 0.3635558568686247
+          },
+          "turnout_rate": 0.6562554944655857,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_city",
+      "county_name": "Clearwater City",
+      "name": "City (-1,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p067",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 2
+      },
+      "total_population": 2861,
+      "demographic_groups": [
+        {
+          "id": "p067-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6033193692937493,
+            "ryu": 0.3966806307062507
+          },
+          "turnout_rate": 0.5913227026234381,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (0,2)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p068",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 2
+      },
+      "total_population": 690,
+      "demographic_groups": [
+        {
+          "id": "p068-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.2369279900752008,
+            "ryu": 0.7630720099247992
+          },
+          "turnout_rate": 0.5543660195427947,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (1,2)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p069",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 2
+      },
+      "total_population": 680,
+      "demographic_groups": [
+        {
+          "id": "p069-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.49767163395881653,
+            "ryu": 0.5023283660411835
+          },
+          "turnout_rate": 0.699028034962248,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (2,2)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p070",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 2
+      },
+      "total_population": 661,
+      "demographic_groups": [
+        {
+          "id": "p070-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5257881332188845,
+            "ryu": 0.4742118667811155
+          },
+          "turnout_rate": 0.6982846403028815,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (3,2)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p071",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 3
+      },
+      "total_population": 659,
+      "demographic_groups": [
+        {
+          "id": "p071-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5931092929840088,
+            "ryu": 0.40689070701599117
+          },
+          "turnout_rate": 0.5756251097773202,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-5,3)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p072",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 3
+      },
+      "total_population": 668,
+      "demographic_groups": [
+        {
+          "id": "p072-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6248771320097148,
+            "ryu": 0.37512286799028516
+          },
+          "turnout_rate": 0.5938755561364815,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-4,3)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p073",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 3
+      },
+      "total_population": 684,
+      "demographic_groups": [
+        {
+          "id": "p073-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.611572506595403,
+            "ryu": 0.38842749340459704
+          },
+          "turnout_rate": 0.6151616284158081,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-3,3)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p074",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 3
+      },
+      "total_population": 686,
+      "demographic_groups": [
+        {
+          "id": "p074-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6134684441052377,
+            "ryu": 0.3865315558947623
+          },
+          "turnout_rate": 0.6529205185477622,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-2,3)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p075",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 3
+      },
+      "total_population": 686,
+      "demographic_groups": [
+        {
+          "id": "p075-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6118810867704451,
+            "ryu": 0.38811891322955494
+          },
+          "turnout_rate": 0.6004181199823506,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-1,3)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p076",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 3
+      },
+      "total_population": 692,
+      "demographic_groups": [
+        {
+          "id": "p076-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6516513119824231,
+            "ryu": 0.3483486880175769
+          },
+          "turnout_rate": 0.5990975123713724,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (0,3)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p077",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 3
+      },
+      "total_population": 685,
+      "demographic_groups": [
+        {
+          "id": "p077-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5196210038661957,
+            "ryu": 0.4803789961338043
+          },
+          "turnout_rate": 0.6416304747457616,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (1,3)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p078",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 3
+      },
+      "total_population": 676,
+      "demographic_groups": [
+        {
+          "id": "p078-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5237089659832418,
+            "ryu": 0.4762910340167582
+          },
+          "turnout_rate": 0.6383946915972046,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (2,3)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p079",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 4
+      },
+      "total_population": 662,
+      "demographic_groups": [
+        {
+          "id": "p079-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.598832560684532,
+            "ryu": 0.40116743931546806
+          },
+          "turnout_rate": 0.5988048412837088,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-5,4)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p080",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 4
+      },
+      "total_population": 675,
+      "demographic_groups": [
+        {
+          "id": "p080-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6039024185016751,
+            "ryu": 0.39609758149832486
+          },
+          "turnout_rate": 0.5980848475708627,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-4,4)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p081",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 4
+      },
+      "total_population": 679,
+      "demographic_groups": [
+        {
+          "id": "p081-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.633543655294925,
+            "ryu": 0.36645634470507504
+          },
+          "turnout_rate": 0.5831336918752641,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-3,4)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p082",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 4
+      },
+      "total_population": 685,
+      "demographic_groups": [
+        {
+          "id": "p082-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5935443674959242,
+            "ryu": 0.4064556325040758
+          },
+          "turnout_rate": 0.6542479294352234,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-2,4)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p083",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 4
+      },
+      "total_population": 683,
+      "demographic_groups": [
+        {
+          "id": "p083-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6051379548758268,
+            "ryu": 0.3948620451241732
+          },
+          "turnout_rate": 0.5687368247658015,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-1,4)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p084",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 4
+      },
+      "total_population": 685,
+      "demographic_groups": [
+        {
+          "id": "p084-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6051035847514867,
+            "ryu": 0.39489641524851327
+          },
+          "turnout_rate": 0.5563622665940784,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (0,4)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p085",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 4
+      },
+      "total_population": 678,
+      "demographic_groups": [
+        {
+          "id": "p085-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5262028672732413,
+            "ryu": 0.4737971327267587
+          },
+          "turnout_rate": 0.5811531604384073,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (1,4)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p086",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 5
+      },
+      "total_population": 668,
+      "demographic_groups": [
+        {
+          "id": "p086-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6185227278620005,
+            "ryu": 0.38147727213799953
+          },
+          "turnout_rate": 0.6069895116030238,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-5,5)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p087",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 5
+      },
+      "total_population": 674,
+      "demographic_groups": [
+        {
+          "id": "p087-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6369639877043665,
+            "ryu": 0.36303601229563354
+          },
+          "turnout_rate": 0.6868941925116814,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-4,5)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p088",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 5
+      },
+      "total_population": 679,
+      "demographic_groups": [
+        {
+          "id": "p088-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6449359630234539,
+            "ryu": 0.3550640369765461
+          },
+          "turnout_rate": 0.615904348785989,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-3,5)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p089",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 5
+      },
+      "total_population": 682,
+      "demographic_groups": [
+        {
+          "id": "p089-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5923313979618251,
+            "ryu": 0.4076686020381749
+          },
+          "turnout_rate": 0.6801445528399199,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-2,5)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p090",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 5
+      },
+      "total_population": 680,
+      "demographic_groups": [
+        {
+          "id": "p090-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6220540176331997,
+            "ryu": 0.3779459823668003
+          },
+          "turnout_rate": 0.6760563050280325,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_west",
+      "county_name": "Clearwater West",
+      "name": "West (-1,5)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p091",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 5
+      },
+      "total_population": 677,
+      "demographic_groups": [
+        {
+          "id": "p091-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6515604812093079,
+            "ryu": 0.3484395187906921
+          },
+          "turnout_rate": 0.6175154192373157,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "clearwater_east",
+      "county_name": "Clearwater East",
+      "name": "East (0,5)",
+      "initial_district_id": "d2"
+    }
+  ],
+  "events": [],
+  "rules": {
+    "population_tolerance": 0.1,
+    "contiguity": "required"
+  },
+  "success_criteria": [
+    {
+      "id": "sc-district-count",
+      "required": true,
+      "description": "All four districts are in use and every precinct is assigned.",
+      "criterion": {
+        "type": "district_count"
+      }
+    },
+    {
+      "id": "sc-population-balance",
+      "required": true,
+      "description": "All four districts have roughly equal population (within 10%).",
+      "criterion": {
+        "type": "population_balance"
+      }
+    },
+    {
+      "id": "sc-ken-seats",
+      "required": true,
+      "description": "The governor's Ken Party wins at least 3 of the 4 districts.",
+      "criterion": {
+        "type": "seat_count",
+        "party": "ken",
+        "operator": "gte",
+        "count": 3
+      },
+      "character": "instigator"
+    },
+    {
+      "id": "sc-compactness",
+      "required": false,
+      "description": "All districts are reasonably compact (≥ 40%).",
+      "criterion": {
+        "type": "compactness",
+        "operator": "gte",
+        "threshold": 0.4
+      }
+    }
+  ],
+  "narrative": {
+    "character": {
+      "name": "You",
+      "role": "Ken Party Campaign Strategist, Clearwater Valley",
+      "motivation": "For a generation the Clearwater Valley voted by county — three counties, three seats, a steady two-to-one edge for the Ryu Party. Then the city outgrew its lines. Now the valley has a fourth seat to fill, and the governor — a Ken partisan — means to turn that two-to-one deficit into a three-to-one win.\n"
+    },
+    "intro_slides": [
+      {
+        "body": "The Clearwater Valley has elected its representatives by county for as long as anyone can remember: Clearwater City in the center, the rural West, and the rural East. Three counties, three seats.\nThe counties were drawn roughly equal once. For years two of the three went to the Ryu Party.\n",
+        "heading": "Three Counties, Three Seats"
+      },
+      {
+        "body": "Then a biotech firm planted its headquarters on the city's east bank, and the people followed. Clearwater City swelled while the rural counties held steady — a map once roughly equal is now badly lopsided.\nDistricts are supposed to hold near-equal population, so the valley is granted a fourth seat and the lines must be redrawn. That redraw is your opening.\n",
+        "heading": "A City That Grew"
+      },
+      {
+        "body": "Count every voter and Ryu is still ahead — but seats are won district by district, not valley-wide. A party can win a couple of districts in landslides, lose the rest by a hair, and take the most votes yet the fewest seats.\nThe lines decide which party that is — and they don't have to follow the old county borders. The voters haven't moved. The lines can.\n",
+        "heading": "Seats, Not Votes"
+      },
+      {
+        "body": "The countryside leans Ken. The east side of Clearwater City — newer, denser, where the boom landed — leans Ryu. But the city's Old Quarter to the west, its mills, its market, its weathered training halls, was settled generations ago by families who came in off the farms, and it kept their instincts. It leans Ken too.\nSo the politics don't follow the city limits: half the city votes like the farms that fed it, half votes the other way.\n",
+        "heading": "Know the Ground"
+      },
+      {
+        "body": "Pack the booming east-bank Ryu vote into a single district where they win in a landslide — every vote past a majority wasted. Spread Ken's voters — the rural counties and the Old Quarter alike — across the other three.\nThree slim wins beat one landslide. Same voters, same valley, a fourth seat, and lines that ignore the old county borders.\n",
+        "heading": "Your Move — Packing"
+      }
+    ],
+    "objective": "Redraw the valley into four equal districts so the Ken Party wins at least 3 of 4 — turning the old 2–1 Ryu map into a 3–1 Ken one.\n",
+    "epilogue": "The old county map gave Ryu two of three seats. Handed a fourth seat and a free hand to ignore the county borders, you turned it into three of four for Ken — though Ryu still won more votes across the valley.\nBy packing the east-bank Ryu vote into a single district, you let them win it in a landslide while their extra votes piled up uselessly; Ken's voters, spread across the other three, carried each by a smaller but sufficient margin. That's \"packing\" — its mirror, \"cracking,\" splits a bloc so it never wins anywhere.\nPopulation shifts force redistricting; whoever controls the pen decides who benefits. Who draws the lines, and when, can matter as much as how people vote.\n"
+  },
+  "default_district_id": "d1",
+  "instigator_character": "governor",
+  "character_demographics": {
+    "governor": "bm",
+    "commissioner": "bf",
+    "judge": "lm"
+  },
+  "river_edges": [
+    [
+      "p007",
+      "p001"
+    ],
+    [
+      "p007",
+      "p008"
+    ],
+    [
+      "p008",
+      "p016"
+    ],
+    [
+      "p015",
+      "p008"
+    ],
+    [
+      "p016",
+      "p009"
+    ],
+    [
+      "p016",
+      "p017"
+    ],
+    [
+      "p025",
+      "p017"
+    ],
+    [
+      "p025",
+      "p026"
+    ],
+    [
+      "p035",
+      "p026"
+    ],
+    [
+      "p035",
+      "p036"
+    ],
+    [
+      "p046",
+      "p036"
+    ],
+    [
+      "p046",
+      "p047"
+    ],
+    [
+      "p057",
+      "p047"
+    ],
+    [
+      "p057",
+      "p058"
+    ],
+    [
+      "p057",
+      "p067"
+    ],
+    [
+      "p066",
+      "p067"
+    ],
+    [
+      "p075",
+      "p067"
+    ],
+    [
+      "p075",
+      "p076"
+    ],
+    [
+      "p083",
+      "p076"
+    ],
+    [
+      "p083",
+      "p084"
+    ],
+    [
+      "p090",
+      "p084"
+    ],
+    [
+      "p090",
+      "p091"
+    ]
+  ]
+}

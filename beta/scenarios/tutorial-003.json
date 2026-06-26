@@ -1,0 +1,2460 @@
+{
+  "format_version": "1",
+  "id": "tutorial-003",
+  "title": "Hawthorn Bend: Reading the Vote",
+  "election_type": "state_house",
+  "region": {
+    "id": "hawthorn_bend",
+    "name": "Hawthorn Bend"
+  },
+  "geometry": {
+    "type": "hex_axial"
+  },
+  "parties": [
+    {
+      "id": "ken",
+      "name": "Ken Party",
+      "abbreviation": "KEN"
+    },
+    {
+      "id": "ryu",
+      "name": "Ryu Party",
+      "abbreviation": "RYU"
+    }
+  ],
+  "districts": [
+    {
+      "id": "d1",
+      "name": "District 1"
+    },
+    {
+      "id": "d2",
+      "name": "District 2"
+    },
+    {
+      "id": "d3",
+      "name": "District 3"
+    }
+  ],
+  "precincts": [
+    {
+      "id": "p001",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -5
+      },
+      "total_population": 4086,
+      "demographic_groups": [
+        {
+          "id": "p001-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5053058119490743,
+            "ryu": 0.4946941880509257
+          },
+          "turnout_rate": 0.6040175742469728,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (0,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p002",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -5
+      },
+      "total_population": 3819,
+      "demographic_groups": [
+        {
+          "id": "p002-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.34564726762473585,
+            "ryu": 0.6543527323752641
+          },
+          "turnout_rate": 0.5572250277968124,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (1,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p003",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -5
+      },
+      "total_population": 3458,
+      "demographic_groups": [
+        {
+          "id": "p003-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3429416694492102,
+            "ryu": 0.6570583305507898
+          },
+          "turnout_rate": 0.5510160588426516,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (2,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p004",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -5
+      },
+      "total_population": 4639,
+      "demographic_groups": [
+        {
+          "id": "p004-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3472965960763395,
+            "ryu": 0.6527034039236606
+          },
+          "turnout_rate": 0.6031260804389603,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (3,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p005",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -5
+      },
+      "total_population": 5326,
+      "demographic_groups": [
+        {
+          "id": "p005-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3846620431356132,
+            "ryu": 0.6153379568643869
+          },
+          "turnout_rate": 0.680589723365847,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (4,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p006",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -5
+      },
+      "total_population": 4858,
+      "demographic_groups": [
+        {
+          "id": "p006-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3924453490972519,
+            "ryu": 0.6075546509027481
+          },
+          "turnout_rate": 0.663901763537433,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (5,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p007",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -4
+      },
+      "total_population": 3469,
+      "demographic_groups": [
+        {
+          "id": "p007-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6033014810644091,
+            "ryu": 0.39669851893559094
+          },
+          "turnout_rate": 0.5749593634624034,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p008",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -4
+      },
+      "total_population": 3810,
+      "demographic_groups": [
+        {
+          "id": "p008-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5048573973588646,
+            "ryu": 0.4951426026411354
+          },
+          "turnout_rate": 0.6047889422508888,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (0,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p009",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -4
+      },
+      "total_population": 4077,
+      "demographic_groups": [
+        {
+          "id": "p009-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3861849446594715,
+            "ryu": 0.6138150553405285
+          },
+          "turnout_rate": 0.6423248105798848,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (1,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p010",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -4
+      },
+      "total_population": 5843,
+      "demographic_groups": [
+        {
+          "id": "p010-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3498137126863003,
+            "ryu": 0.6501862873136997
+          },
+          "turnout_rate": 0.6469714056001976,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (2,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p011",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -4
+      },
+      "total_population": 5666,
+      "demographic_groups": [
+        {
+          "id": "p011-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3747549327276647,
+            "ryu": 0.6252450672723353
+          },
+          "turnout_rate": 0.6483721209457144,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (3,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p012",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -4
+      },
+      "total_population": 5247,
+      "demographic_groups": [
+        {
+          "id": "p012-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.36713062427937987,
+            "ryu": 0.6328693757206201
+          },
+          "turnout_rate": 0.5654929414857179,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (4,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p013",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -4
+      },
+      "total_population": 4638,
+      "demographic_groups": [
+        {
+          "id": "p013-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39966733710840346,
+            "ryu": 0.6003326628915966
+          },
+          "turnout_rate": 0.6105151803931221,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (5,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p014",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -3
+      },
+      "total_population": 3583,
+      "demographic_groups": [
+        {
+          "id": "p014-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5871632305160165,
+            "ryu": 0.4128367694839835
+          },
+          "turnout_rate": 0.5972204012214206,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p015",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -3
+      },
+      "total_population": 4080,
+      "demographic_groups": [
+        {
+          "id": "p015-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5832236292399466,
+            "ryu": 0.41677637076005336
+          },
+          "turnout_rate": 0.5592073300504126,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p016",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -3
+      },
+      "total_population": 3825,
+      "demographic_groups": [
+        {
+          "id": "p016-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.48316059581935406,
+            "ryu": 0.5168394041806459
+          },
+          "turnout_rate": 0.6871966380858794,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (0,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p017",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -3
+      },
+      "total_population": 5332,
+      "demographic_groups": [
+        {
+          "id": "p017-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3692182816937566,
+            "ryu": 0.6307817183062434
+          },
+          "turnout_rate": 0.6587316486402415,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (1,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p018",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -3
+      },
+      "total_population": 5412,
+      "demographic_groups": [
+        {
+          "id": "p018-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.35763386089354754,
+            "ryu": 0.6423661391064525
+          },
+          "turnout_rate": 0.6047984126838856,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (2,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p019",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -3
+      },
+      "total_population": 3712,
+      "demographic_groups": [
+        {
+          "id": "p019-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3635302943922579,
+            "ryu": 0.6364697056077421
+          },
+          "turnout_rate": 0.655289015523158,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (3,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p020",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -3
+      },
+      "total_population": 4394,
+      "demographic_groups": [
+        {
+          "id": "p020-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3414927239902318,
+            "ryu": 0.6585072760097682
+          },
+          "turnout_rate": 0.6294742984347976,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (4,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p021",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -3
+      },
+      "total_population": 4118,
+      "demographic_groups": [
+        {
+          "id": "p021-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.34660360815003516,
+            "ryu": 0.6533963918499648
+          },
+          "turnout_rate": 0.5785146059468389,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (5,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p022",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": -2
+      },
+      "total_population": 4406,
+      "demographic_groups": [
+        {
+          "id": "p022-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6131439528986812,
+            "ryu": 0.3868560471013188
+          },
+          "turnout_rate": 0.5677370664547198,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p023",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -2
+      },
+      "total_population": 3808,
+      "demographic_groups": [
+        {
+          "id": "p023-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5937408154271543,
+            "ryu": 0.4062591845728457
+          },
+          "turnout_rate": 0.5893320111674257,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p024",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -2
+      },
+      "total_population": 3485,
+      "demographic_groups": [
+        {
+          "id": "p024-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6538933295756578,
+            "ryu": 0.3461066704243422
+          },
+          "turnout_rate": 0.567436545714736,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p025",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -2
+      },
+      "total_population": 5616,
+      "demographic_groups": [
+        {
+          "id": "p025-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.47355576261878013,
+            "ryu": 0.5264442373812199
+          },
+          "turnout_rate": 0.6638549737283028,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (0,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p026",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -2
+      },
+      "total_population": 5037,
+      "demographic_groups": [
+        {
+          "id": "p026-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.35280013643205166,
+            "ryu": 0.6471998635679483
+          },
+          "turnout_rate": 0.5659126444370486,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (1,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p027",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -2
+      },
+      "total_population": 3483,
+      "demographic_groups": [
+        {
+          "id": "p027-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3610617722198367,
+            "ryu": 0.6389382277801633
+          },
+          "turnout_rate": 0.6850401484989561,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (2,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p028",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -2
+      },
+      "total_population": 3776,
+      "demographic_groups": [
+        {
+          "id": "p028-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4196551660820842,
+            "ryu": 0.5803448339179158
+          },
+          "turnout_rate": 0.6649249858339317,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (3,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p029",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -2
+      },
+      "total_population": 3419,
+      "demographic_groups": [
+        {
+          "id": "p029-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.35032881528139115,
+            "ryu": 0.6496711847186089
+          },
+          "turnout_rate": 0.6065305817988701,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (4,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p030",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -2
+      },
+      "total_population": 3446,
+      "demographic_groups": [
+        {
+          "id": "p030-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.34373225264251234,
+            "ryu": 0.6562677473574876
+          },
+          "turnout_rate": 0.6667913675890303,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (5,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p031",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": -1
+      },
+      "total_population": 4636,
+      "demographic_groups": [
+        {
+          "id": "p031-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5919478052668273,
+            "ryu": 0.40805219473317267
+          },
+          "turnout_rate": 0.5864907047245652,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-4,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p032",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": -1
+      },
+      "total_population": 4742,
+      "demographic_groups": [
+        {
+          "id": "p032-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5911093566194177,
+            "ryu": 0.40889064338058234
+          },
+          "turnout_rate": 0.6544001593952998,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p033",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -1
+      },
+      "total_population": 3842,
+      "demographic_groups": [
+        {
+          "id": "p033-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6465382524579764,
+            "ryu": 0.35346174754202364
+          },
+          "turnout_rate": 0.695134210458491,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p034",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -1
+      },
+      "total_population": 5581,
+      "demographic_groups": [
+        {
+          "id": "p034-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.609579965993762,
+            "ryu": 0.39042003400623804
+          },
+          "turnout_rate": 0.6106117340852506,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p035",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -1
+      },
+      "total_population": 7927,
+      "demographic_groups": [
+        {
+          "id": "p035-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5157901692017913,
+            "ryu": 0.4842098307982087
+          },
+          "turnout_rate": 0.6856598873157054,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (0,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p036",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -1
+      },
+      "total_population": 7026,
+      "demographic_groups": [
+        {
+          "id": "p036-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39141374381259086,
+            "ryu": 0.6085862561874091
+          },
+          "turnout_rate": 0.655257795273792,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (1,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p037",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -1
+      },
+      "total_population": 3733,
+      "demographic_groups": [
+        {
+          "id": "p037-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39735424760729077,
+            "ryu": 0.6026457523927092
+          },
+          "turnout_rate": 0.6884932839660904,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (2,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p038",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -1
+      },
+      "total_population": 4264,
+      "demographic_groups": [
+        {
+          "id": "p038-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3829515208862722,
+            "ryu": 0.6170484791137278
+          },
+          "turnout_rate": 0.6663616319186986,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (3,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p039",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -1
+      },
+      "total_population": 3375,
+      "demographic_groups": [
+        {
+          "id": "p039-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3826728771068156,
+            "ryu": 0.6173271228931845
+          },
+          "turnout_rate": 0.6770163409761153,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (4,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p040",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -1
+      },
+      "total_population": 4040,
+      "demographic_groups": [
+        {
+          "id": "p040-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3616636220924556,
+            "ryu": 0.6383363779075444
+          },
+          "turnout_rate": 0.6470001933164895,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (5,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p041",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 0
+      },
+      "total_population": 4957,
+      "demographic_groups": [
+        {
+          "id": "p041-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5966621379368007,
+            "ryu": 0.4033378620631993
+          },
+          "turnout_rate": 0.5962858368991875,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-5,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p042",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 0
+      },
+      "total_population": 4507,
+      "demographic_groups": [
+        {
+          "id": "p042-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6300391770154238,
+            "ryu": 0.3699608229845762
+          },
+          "turnout_rate": 0.6105476806638762,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-4,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p043",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 0
+      },
+      "total_population": 4092,
+      "demographic_groups": [
+        {
+          "id": "p043-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.588989099599421,
+            "ryu": 0.41101090040057897
+          },
+          "turnout_rate": 0.5608681831741706,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p044",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 0
+      },
+      "total_population": 4571,
+      "demographic_groups": [
+        {
+          "id": "p044-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6419899162836373,
+            "ryu": 0.35801008371636267
+          },
+          "turnout_rate": 0.5677682623965666,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p045",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 0
+      },
+      "total_population": 7845,
+      "demographic_groups": [
+        {
+          "id": "p045-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6541187385097146,
+            "ryu": 0.3458812614902854
+          },
+          "turnout_rate": 0.668286394921597,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p046",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 0
+      },
+      "total_population": 7998,
+      "demographic_groups": [
+        {
+          "id": "p046-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4887368250451982,
+            "ryu": 0.5112631749548018
+          },
+          "turnout_rate": 0.6866344809881411,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (0,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p047",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 0
+      },
+      "total_population": 9116,
+      "demographic_groups": [
+        {
+          "id": "p047-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.41224357556551694,
+            "ryu": 0.5877564244344831
+          },
+          "turnout_rate": 0.5720664052525536,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (1,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p048",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 0
+      },
+      "total_population": 3501,
+      "demographic_groups": [
+        {
+          "id": "p048-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3678169579803944,
+            "ryu": 0.6321830420196056
+          },
+          "turnout_rate": 0.5703441788209602,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (2,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p049",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 0
+      },
+      "total_population": 3570,
+      "demographic_groups": [
+        {
+          "id": "p049-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3795511104166508,
+            "ryu": 0.6204488895833492
+          },
+          "turnout_rate": 0.599921706551686,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (3,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p050",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": 0
+      },
+      "total_population": 4337,
+      "demographic_groups": [
+        {
+          "id": "p050-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.36999663660302756,
+            "ryu": 0.6300033633969724
+          },
+          "turnout_rate": 0.576135411427822,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (4,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p051",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": 0
+      },
+      "total_population": 3558,
+      "demographic_groups": [
+        {
+          "id": "p051-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39009894978255033,
+            "ryu": 0.6099010502174497
+          },
+          "turnout_rate": 0.6634701381321065,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (5,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p052",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 1
+      },
+      "total_population": 4398,
+      "demographic_groups": [
+        {
+          "id": "p052-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6058279548771679,
+            "ryu": 0.3941720451228321
+          },
+          "turnout_rate": 0.6764405668829567,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-5,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p053",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 1
+      },
+      "total_population": 3895,
+      "demographic_groups": [
+        {
+          "id": "p053-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6567664765007794,
+            "ryu": 0.34323352349922065
+          },
+          "turnout_rate": 0.6361133496160619,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-4,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p054",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 1
+      },
+      "total_population": 4538,
+      "demographic_groups": [
+        {
+          "id": "p054-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5831201609224081,
+            "ryu": 0.41687983907759185
+          },
+          "turnout_rate": 0.5640367951476947,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p055",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 1
+      },
+      "total_population": 6039,
+      "demographic_groups": [
+        {
+          "id": "p055-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.620507898926735,
+            "ryu": 0.37949210107326503
+          },
+          "turnout_rate": 0.5803345354739576,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p056",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 1
+      },
+      "total_population": 8850,
+      "demographic_groups": [
+        {
+          "id": "p056-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6473834357596934,
+            "ryu": 0.35261656424030663
+          },
+          "turnout_rate": 0.6370124400476925,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p057",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 1
+      },
+      "total_population": 7772,
+      "demographic_groups": [
+        {
+          "id": "p057-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5292632918059826,
+            "ryu": 0.47073670819401736
+          },
+          "turnout_rate": 0.6629315311438404,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (0,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p058",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 1
+      },
+      "total_population": 4992,
+      "demographic_groups": [
+        {
+          "id": "p058-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.41040687944740056,
+            "ryu": 0.5895931205525995
+          },
+          "turnout_rate": 0.681887343188282,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (1,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p059",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 1
+      },
+      "total_population": 3410,
+      "demographic_groups": [
+        {
+          "id": "p059-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.34263891391456125,
+            "ryu": 0.6573610860854388
+          },
+          "turnout_rate": 0.6813205494312569,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (2,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p060",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 1
+      },
+      "total_population": 4362,
+      "demographic_groups": [
+        {
+          "id": "p060-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39963071499019864,
+            "ryu": 0.6003692850098014
+          },
+          "turnout_rate": 0.5596533415257,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (3,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p061",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": 1
+      },
+      "total_population": 3544,
+      "demographic_groups": [
+        {
+          "id": "p061-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3493368224240839,
+            "ryu": 0.6506631775759161
+          },
+          "turnout_rate": 0.5542654703021981,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (4,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p062",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 2
+      },
+      "total_population": 3869,
+      "demographic_groups": [
+        {
+          "id": "p062-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6447375842370093,
+            "ryu": 0.35526241576299067
+          },
+          "turnout_rate": 0.5725578236626462,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-5,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p063",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 2
+      },
+      "total_population": 3547,
+      "demographic_groups": [
+        {
+          "id": "p063-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6071773752011359,
+            "ryu": 0.3928226247988641
+          },
+          "turnout_rate": 0.5724428012152203,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-4,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p064",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 2
+      },
+      "total_population": 4256,
+      "demographic_groups": [
+        {
+          "id": "p064-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6103541999310255,
+            "ryu": 0.38964580006897453
+          },
+          "turnout_rate": 0.564119803684298,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p065",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 2
+      },
+      "total_population": 4432,
+      "demographic_groups": [
+        {
+          "id": "p065-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6207892028056086,
+            "ryu": 0.37921079719439144
+          },
+          "turnout_rate": 0.6981394277769141,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p066",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 2
+      },
+      "total_population": 4608,
+      "demographic_groups": [
+        {
+          "id": "p066-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.65795061647892,
+            "ryu": 0.34204938352108005
+          },
+          "turnout_rate": 0.6894861912936903,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p067",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 2
+      },
+      "total_population": 4980,
+      "demographic_groups": [
+        {
+          "id": "p067-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5081325291655958,
+            "ryu": 0.4918674708344042
+          },
+          "turnout_rate": 0.674560887098778,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (0,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p068",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 2
+      },
+      "total_population": 5038,
+      "demographic_groups": [
+        {
+          "id": "p068-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3408830546401441,
+            "ryu": 0.6591169453598559
+          },
+          "turnout_rate": 0.583707288315054,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (1,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p069",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 2
+      },
+      "total_population": 4257,
+      "demographic_groups": [
+        {
+          "id": "p069-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39443809710443023,
+            "ryu": 0.6055619028955698
+          },
+          "turnout_rate": 0.6672221300425007,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (2,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p070",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 2
+      },
+      "total_population": 4526,
+      "demographic_groups": [
+        {
+          "id": "p070-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3502964898571372,
+            "ryu": 0.6497035101428628
+          },
+          "turnout_rate": 0.6283688672352582,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (3,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p071",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 3
+      },
+      "total_population": 4203,
+      "demographic_groups": [
+        {
+          "id": "p071-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6299490517191588,
+            "ryu": 0.3700509482808412
+          },
+          "turnout_rate": 0.6639209776883944,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-5,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p072",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 3
+      },
+      "total_population": 4263,
+      "demographic_groups": [
+        {
+          "id": "p072-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5933459560573101,
+            "ryu": 0.4066540439426899
+          },
+          "turnout_rate": 0.6732579563977197,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-4,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p073",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 3
+      },
+      "total_population": 4282,
+      "demographic_groups": [
+        {
+          "id": "p073-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6401964820362628,
+            "ryu": 0.3598035179637372
+          },
+          "turnout_rate": 0.613562690874096,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p074",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 3
+      },
+      "total_population": 4551,
+      "demographic_groups": [
+        {
+          "id": "p074-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6588964271731674,
+            "ryu": 0.34110357282683257
+          },
+          "turnout_rate": 0.6288765277131461,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p075",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 3
+      },
+      "total_population": 4048,
+      "demographic_groups": [
+        {
+          "id": "p075-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5910792603716254,
+            "ryu": 0.4089207396283746
+          },
+          "turnout_rate": 0.6500821900554001,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p076",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 3
+      },
+      "total_population": 5667,
+      "demographic_groups": [
+        {
+          "id": "p076-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5218706489168108,
+            "ryu": 0.4781293510831892
+          },
+          "turnout_rate": 0.5953937924001366,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (0,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p077",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 3
+      },
+      "total_population": 5256,
+      "demographic_groups": [
+        {
+          "id": "p077-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.40648061826825144,
+            "ryu": 0.5935193817317486
+          },
+          "turnout_rate": 0.6023427072796039,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (1,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p078",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 3
+      },
+      "total_population": 4451,
+      "demographic_groups": [
+        {
+          "id": "p078-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3858691895380616,
+            "ryu": 0.6141308104619384
+          },
+          "turnout_rate": 0.5934965519001708,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (2,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p079",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 4
+      },
+      "total_population": 3703,
+      "demographic_groups": [
+        {
+          "id": "p079-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6392676852457225,
+            "ryu": 0.36073231475427747
+          },
+          "turnout_rate": 0.6934287487063556,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-5,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p080",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 4
+      },
+      "total_population": 4191,
+      "demographic_groups": [
+        {
+          "id": "p080-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5945819167792797,
+            "ryu": 0.40541808322072026
+          },
+          "turnout_rate": 0.6639942443580367,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-4,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p081",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 4
+      },
+      "total_population": 3620,
+      "demographic_groups": [
+        {
+          "id": "p081-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6378003415837884,
+            "ryu": 0.3621996584162116
+          },
+          "turnout_rate": 0.6736637991736643,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p082",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 4
+      },
+      "total_population": 3751,
+      "demographic_groups": [
+        {
+          "id": "p082-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6293722384050489,
+            "ryu": 0.37062776159495114
+          },
+          "turnout_rate": 0.5678121372242458,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p083",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 4
+      },
+      "total_population": 4163,
+      "demographic_groups": [
+        {
+          "id": "p083-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5907081260718405,
+            "ryu": 0.40929187392815947
+          },
+          "turnout_rate": 0.6527216300251893,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p084",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 4
+      },
+      "total_population": 5038,
+      "demographic_groups": [
+        {
+          "id": "p084-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5122939895279706,
+            "ryu": 0.48770601047202944
+          },
+          "turnout_rate": 0.5690018963767216,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (0,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p085",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 4
+      },
+      "total_population": 4545,
+      "demographic_groups": [
+        {
+          "id": "p085-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39785484347492456,
+            "ryu": 0.6021451565250755
+          },
+          "turnout_rate": 0.5545408094651066,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central2",
+      "county_name": "Hawthorn Central 2",
+      "name": "Central2 (1,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p086",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 5
+      },
+      "total_population": 3444,
+      "demographic_groups": [
+        {
+          "id": "p086-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6493291041627526,
+            "ryu": 0.3506708958372474
+          },
+          "turnout_rate": 0.6804829530417918,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-5,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p087",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 5
+      },
+      "total_population": 4358,
+      "demographic_groups": [
+        {
+          "id": "p087-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6256893667764962,
+            "ryu": 0.3743106332235038
+          },
+          "turnout_rate": 0.5953932692296803,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-4,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p088",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 5
+      },
+      "total_population": 3504,
+      "demographic_groups": [
+        {
+          "id": "p088-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5920063030533492,
+            "ryu": 0.4079936969466508
+          },
+          "turnout_rate": 0.666910684958566,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-3,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p089",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 5
+      },
+      "total_population": 4555,
+      "demographic_groups": [
+        {
+          "id": "p089-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6519125463813543,
+            "ryu": 0.3480874536186457
+          },
+          "turnout_rate": 0.6914643195341341,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-2,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p090",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 5
+      },
+      "total_population": 4375,
+      "demographic_groups": [
+        {
+          "id": "p090-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6279194189421833,
+            "ryu": 0.3720805810578167
+          },
+          "turnout_rate": 0.5874609076417983,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (-1,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p091",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 5
+      },
+      "total_population": 4962,
+      "demographic_groups": [
+        {
+          "id": "p091-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5002344448678195,
+            "ryu": 0.49976555513218046
+          },
+          "turnout_rate": 0.5741614397382364,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "hawthorn_central",
+      "county_name": "Hawthorn Central",
+      "name": "Central (0,5)",
+      "initial_district_id": "d1"
+    }
+  ],
+  "events": [],
+  "rules": {
+    "population_tolerance": 0.15,
+    "contiguity": "required"
+  },
+  "success_criteria": [
+    {
+      "id": "sc-district-count",
+      "required": true,
+      "description": "All three districts are in use and every precinct is assigned.",
+      "criterion": {
+        "type": "district_count"
+      }
+    },
+    {
+      "id": "sc-population-balance",
+      "required": true,
+      "description": "All three districts have roughly equal population (within 15%).",
+      "criterion": {
+        "type": "population_balance"
+      }
+    }
+  ],
+  "narrative": {
+    "character": {
+      "name": "You",
+      "role": "Mapmaker, Hawthorn Bend",
+      "motivation": "You can draw a legal map. Now for the part that makes redistricting matter: the voters aren't all the same, and where you draw the lines decides who wins. Let's learn to read the vote.\n"
+    },
+    "intro_slides": [
+      {
+        "body": "Hawthorn Bend has a river running through it — scenery only; your districts can cross it freely. What's new is underneath: the people. The west of the Bend leans one way, the east the other, and the centre is a tossup.\n",
+        "heading": "A New Kind of Map"
+      },
+      {
+        "body": "Two new things will appear as we go. The **Lean** view colours each precinct by who its voters favour. And the **election result** shows who wins each district you draw. They go together: lean tells you the ground, the result tells you the outcome — and the lines you draw decide it.\n",
+        "heading": "Lean, and the Result"
+      }
+    ],
+    "objective": "Draw three balanced, connected districts — a legal map, like before — and read the result. There's no seat to chase; repaint the lines, watch who wins change, and submit when it's legal and you've had a look.\n",
+    "epilogue": "That's the whole picture: precincts lean, and the district lines you draw turn those leanings into seats. The same voters can hand one party a majority of seats or the other — nothing changed but the lines.\nYou've drawn a legal map and learned to read the vote. From here the campaign scenarios put it to work: real maps, real goals, and a reason to draw the lines the way you do.\n"
+  },
+  "default_district_id": "d1",
+  "river_edges": [
+    [
+      "p004",
+      "p005"
+    ],
+    [
+      "p004",
+      "p011"
+    ],
+    [
+      "p010",
+      "p011"
+    ],
+    [
+      "p010",
+      "p018"
+    ],
+    [
+      "p017",
+      "p018"
+    ],
+    [
+      "p017",
+      "p026"
+    ],
+    [
+      "p025",
+      "p026"
+    ],
+    [
+      "p025",
+      "p035"
+    ],
+    [
+      "p034",
+      "p035"
+    ],
+    [
+      "p034",
+      "p045"
+    ],
+    [
+      "p044",
+      "p045"
+    ],
+    [
+      "p045",
+      "p055"
+    ],
+    [
+      "p045",
+      "p056"
+    ],
+    [
+      "p046",
+      "p056"
+    ],
+    [
+      "p046",
+      "p057"
+    ],
+    [
+      "p047",
+      "p057"
+    ],
+    [
+      "p057",
+      "p058"
+    ],
+    [
+      "p058",
+      "p067"
+    ],
+    [
+      "p067",
+      "p068"
+    ],
+    [
+      "p068",
+      "p076"
+    ],
+    [
+      "p076",
+      "p077"
+    ],
+    [
+      "p077",
+      "p084"
+    ],
+    [
+      "p084",
+      "p085"
+    ],
+    [
+      "p085",
+      "p091"
+    ]
+  ],
+  "hide_election_results": false,
+  "hide_view_toolbar": false,
+  "guided": true
+}

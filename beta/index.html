@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="app-version" content="v0.0.12">
+    <meta name="app-environment" content="beta">
+    <title>Past the Post</title>
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' data:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self';">
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <!-- ── Main menu / title screen (GAME-050) ─────────────────────────── -->
+    <div id="main-menu" class="hidden" role="main" aria-label="Main Menu">
+      <h1 id="main-menu-title">Past the Post</h1>
+      <nav id="main-menu-nav" aria-label="Main navigation">
+        <button id="btn-main-continue" disabled>Continue</button>
+        <button id="btn-main-new-campaign">New Campaign</button>
+        <button id="btn-main-about">About</button>
+        <button id="btn-main-load" disabled>Load <span class="coming-soon">(coming soon)</span></button>
+        <button id="btn-main-settings" disabled>Settings <span class="coming-soon">(coming soon)</span></button>
+      </nav>
+    </div>
+
+    <!-- ── Campaign select screen (GAME-049) ───────────────────────────── -->
+    <div id="campaign-select" class="hidden" role="main" aria-label="Campaign Selection">
+      <button id="btn-campaign-back">← Main Menu</button>
+      <h1 id="campaign-select-title">Choose a Campaign</h1>
+      <div id="campaign-cards"></div>
+    </div>
+
+    <!-- ── Scenario select screen (GAME-018) ────────────────────────────── -->
+    <div id="scenario-select" class="hidden" role="region" aria-label="Scenario Selection">
+      <button id="btn-back-to-campaign" hidden aria-label="Back to campaign select" style="background:none;border:1px solid #2a5a8c;color:#8898b0;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.8rem;margin-bottom:8px;">← Back</button>
+      <h1>Past the Post</h1>
+      <div id="scenario-cards" role="list"></div>
+      <div style="display:flex;gap:16px;margin-top:16px;align-items:center;">
+        <button id="btn-reset-campaign" style="background:none;border:1px solid #555;color:#888;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:0.75rem;">Reset Campaign</button>
+      </div>
+    </div>
+
+    <!-- ── About page (GAME-029) ──────────────────────────────────────────── -->
+    <div id="about-screen" class="hidden">
+      <div id="about-card">
+        <h1>Past the Post</h1>
+        <p>An educational redistricting simulator. Draw district boundaries, simulate elections, and discover how the same voters can produce wildly different outcomes depending on where the lines are drawn.</p>
+        <p>This game is not advocacy for or against any political party, position, or reform proposal. It presents multiple perspectives — partisan operatives, reform commissioners, bipartisan dealmakers — so that players leave with better questions, not predetermined answers.</p>
+        <p style="color:#8898b0;font-size:0.82rem;font-style:italic;">The scenarios in this campaign use fictional data. They do not model real elections, real voters, or real communities. Redistricting in practice is governed by federal and state law.</p>
+        <h2>Learn More</h2>
+        <ul id="about-links">
+          <li><a href="https://redistricting.lls.edu/" target="_blank" rel="noopener">Loyola Law School — All About Redistricting</a></li>
+          <li><a href="https://gerrymander.princeton.edu/" target="_blank" rel="noopener">Princeton Gerrymandering Project</a></li>
+          <li><a href="https://redistrictingdatahub.org/" target="_blank" rel="noopener">Redistricting Data Hub</a></li>
+        </ul>
+        <p style="color:#606878;font-size:0.8rem;margin-top:16px;">Designed, architected, and co-developed by Christian Edward Jackson-Gruber and Claude.</p>
+        <button id="btn-about-close" style="margin-top:16px;">← Back</button>
+      </div>
+    </div>
+
+    <!-- ── WIP discard warning modal ──────────────────────────────────── -->
+    <div id="wip-warning-modal" class="hidden">
+      <div id="wip-warning-card">
+        <p id="wip-warning-text"></p>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:16px;">
+          <button id="wip-warning-confirm">Switch Scenario</button>
+          <button id="wip-warning-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Result screen (GAME-017) ─────────────────────────────────────── -->
+    <div id="result-screen" class="hidden">
+      <div id="result-card">
+        <!-- Results view -->
+        <div id="result-main">
+          <div id="result-verdict" aria-live="polite"></div>
+          <div id="result-subtitle"></div>
+          <div id="result-stars" class="hidden" aria-label="Star rating"></div>
+          <div id="result-criteria-list"></div>
+          <div id="result-reveal-controls" style="display:none">
+            <button id="btn-reveal-skip">Skip →</button>
+          </div>
+          <div id="result-actions">
+            <button id="btn-keep-drawing">← Keep Drawing</button>
+            <button id="btn-continue" style="display:none">Continue →</button>
+            <button id="btn-next-scenario" style="display:none">Next Scenario →</button>
+            <button id="btn-mute-audio" aria-pressed="false">Mute</button>
+          </div>
+        </div>
+        <!-- GAME-094: teaching debrief — second panel, reached via "Continue →" on a win. -->
+        <div id="result-debrief" class="hidden">
+          <div id="result-debrief-heading">What just happened</div>
+          <div id="result-epilogue"></div>
+          <div id="result-debrief-actions">
+            <button id="btn-debrief-back">← Back to results</button>
+            <button id="btn-debrief-next">Next Scenario →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Wrap-up screen (GAME-020) ─────────────────────────────────────── -->
+    <div id="wrap-up-screen" class="hidden">
+      <div id="wrap-up-card">
+        <h1>Congratulations</h1>
+        <p id="wrap-up-text">You've completed every scenario. You've drawn maps that packed voters, cracked communities, protected incumbents, satisfied reformers, and proven that no set of rules can make redistricting apolitical.</p>
+        <p style="color:#8898b0;margin-top:12px;">The lines always matter. Now you know why.</p>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+          <button id="btn-wrap-up-replay">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Intro screen (GAME-016) ──────────────────────────────────────── -->
+    <div id="intro-screen" class="hidden">
+      <button id="btn-intro-skip">Skip intro</button>
+      <div id="intro-card">
+        <div id="intro-character">
+          <div class="char-name" id="char-name"></div>
+          <div class="char-role" id="char-role"></div>
+          <div class="char-motivation" id="char-motivation"></div>
+        </div>
+        <div id="intro-slide-heading"></div>
+        <div id="intro-slide-body"></div>
+        <div id="intro-objective">
+          <div class="obj-label">Your objective</div>
+          <div id="objective-text"></div>
+        </div>
+        <div id="intro-nav">
+          <span id="intro-progress"></span>
+          <div class="nav-btns">
+            <button id="btn-intro-prev" disabled>← Previous</button>
+            <button id="btn-intro-next">Next →</button>
+            <button id="btn-intro-start">Start Drawing</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <header id="app-header" style="display:none">
+      <div id="nav-back" class="nav-back-container">
+        <button id="btn-nav-back-trigger" class="nav-back-btn" aria-haspopup="menu" aria-expanded="false">← Back ▾</button>
+        <div id="nav-back-menu" class="nav-back-menu" role="menu" hidden>
+          <button id="btn-back-to-scenarios" role="menuitem">Return to Scenarios</button>
+          <button id="btn-back-to-main-menu" role="menuitem">Return to Main Menu</button>
+        </div>
+      </div>
+      <h1>Redistricting Simulator</h1>
+      <div id="controls">
+        <button id="btn-undo" disabled aria-label="Undo last action">↩ Undo</button>
+        <button id="btn-redo" disabled aria-label="Redo last action">↪ Redo</button>
+        <button id="btn-submit" disabled aria-label="Submit map for evaluation">Submit Map</button>
+        <button id="btn-debug-win" style="display:none;background:#8b4513;color:#ffa;">⚡ Force Win (debug)</button>
+        <button id="btn-debug-coords" style="display:none;background:#1e3a5f;color:#9ef;">⌖ Coords [C]</button>
+        <button id="btn-reset" aria-label="Reset map to initial state">Reset</button>
+        <span id="reset-confirm">
+          Reset to start?
+          <button id="btn-reset-confirm">Yes</button>
+          <button id="btn-reset-cancel">No</button>
+        </span>
+      </div>
+    </header>
+
+    <div id="main" style="display:none">
+      <div id="map-container">
+        <svg id="map-svg" role="application" tabindex="0" aria-label="District map. Use mouse or keyboard to paint precincts. Arrow keys navigate precincts, number keys 1–5 assign to a district."></svg>
+        <!-- GAME-095: left-side district paint toolbar. Expandable like the view filters:
+             labels ("District 1") shown by default, collapse to the number on its color. -->
+        <div id="district-toolbar" class="expanded" role="group" aria-label="Paint districts">
+          <button id="district-toolbar-toggle" class="map-toolbar-toggle" aria-expanded="true" aria-label="Collapse district painter" data-tip="Collapse">
+            <span class="map-toolbar-chevron" aria-hidden="true">‹</span>
+            <span class="map-toolbar-title">Paint</span>
+          </button>
+          <div id="district-buttons" role="group" aria-label="District Selection"></div>
+        </div>
+        <!-- GAME-093: map view filters. Icons are PLACEHOLDERS (real assets later).
+             Expandable: labels visible by default; collapse to icons via the toggle.
+             Grouped by axis: §1 precinct coloring (radio); §2 boundary overlays (toggles). -->
+        <div id="map-filters" class="expanded" role="toolbar" aria-label="Map view">
+          <button id="map-filters-toggle" class="map-filters-toggle" aria-expanded="true" aria-label="Collapse view filters" data-tip="Collapse">
+            <span class="map-filter-label">View</span>
+            <span class="map-filters-chevron" aria-hidden="true">›</span>
+          </button>
+          <!-- Section 1: precinct coloring — mutually exclusive -->
+          <div class="map-filter-section" role="radiogroup" aria-label="Precinct coloring">
+            <div class="map-filter-section-label">Color</div>
+            <button id="filter-districts" class="map-filter active" role="radio" aria-checked="true" aria-label="Color precincts by district" data-tip="Color by district">
+              <span class="map-filter-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3" y="3" width="8" height="8" rx="1" fill="#4f8a4f"/>
+                  <rect x="13" y="3" width="8" height="8" rx="1" fill="#8a4f4f"/>
+                  <rect x="3" y="13" width="8" height="8" rx="1" fill="#4f6f8a"/>
+                  <rect x="13" y="13" width="8" height="8" rx="1" fill="#8a854f"/>
+                </svg>
+              </span>
+              <span class="map-filter-label">Districts</span>
+            </button>
+            <button id="filter-lean" class="map-filter" role="radio" aria-checked="false" aria-label="Color precincts by partisan lean" data-tip="Color by partisan lean">
+              <span class="map-filter-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="#3a6ea5"/>
+                  <path d="M12 3 A9 9 0 0 1 12 21 Z" fill="#a5413a"/>
+                  <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </span>
+              <span class="map-filter-label">Partisan lean</span>
+            </button>
+          </div>
+          <div class="map-filter-divider" role="separator" aria-orientation="horizontal"></div>
+          <!-- Section 2: boundary overlays — independent toggles -->
+          <div class="map-filter-section" role="group" aria-label="Overlays">
+            <div class="map-filter-section-label">Overlays</div>
+            <button id="filter-county" class="map-filter" aria-pressed="false" aria-label="Toggle county borders" data-tip="Toggle county borders">
+              <span class="map-filter-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3.5" y="3.5" width="17" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 2"/>
+                </svg>
+              </span>
+              <span class="map-filter-label">County borders</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <aside id="sidebar">
+        <h2>Precinct Info</h2>
+        <div id="precinct-info">
+          <div class="precinct-placeholder">Hover over a precinct to see details.<br>Click and drag to paint districts.</div>
+        </div>
+        <h2 id="results-heading">Election Results</h2>
+        <div id="results-container" aria-live="polite" aria-label="Election results">
+          <div style="color:#606080;font-size:0.85rem;">Draw districts to see results</div>
+        </div>
+        <h2 id="validity-heading">Map Validity</h2>
+        <div id="validity-container"></div>
+      </aside>
+    </div>
+
+    <!--
+      WASM loading sequence (no-modules target):
+      1. Load the wasm-bindgen glue — registers global wasm_bindgen.
+      2. Init the WASM binary asynchronously.
+      3. After WASM is ready, load the bundled game (ES module).
+    -->
+    <!--
+      Import map: zundo pulls in zustand/esm/react.mjs which has a bare `import "react"`.
+      Nothing in this app calls React APIs — shim it to an empty module so the browser
+      doesn't fail resolving the bare specifier.
+    -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "data:text/javascript,export default {};",
+        "react-dom": "data:text/javascript,export default {};"
+      }
+    }
+    </script>
+    <script src="wasm_calc_bindgen.js"></script>
+    <script>
+      wasm_bindgen("./wasm_calc_bindgen_bg.wasm").then(function () {
+        var s = document.createElement("script");
+        s.type = "module";
+        s.src = "bundle.js?v=v0.0.12";
+        document.body.appendChild(s);
+      });
+    </script>
+  </body>
+</html>
