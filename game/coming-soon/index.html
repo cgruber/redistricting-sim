@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Past the Post — Coming Soon</title>
+  <meta name="description" content="Past the Post — an educational redistricting simulator. Coming soon." />
+  <style>
+    :root {
+      --bg-0: #060c18;
+      --bg-1: #0c1730;
+      --panel: rgba(12, 22, 44, 0.92);
+      --border: #2a4a6c;
+      --text: #e8eef6;
+      --muted: #8898b0;
+      --faint: #606878;
+      --accent: #56B4E9;
+      --accent-2: #2f6fd0;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 50% -10%, #16294e 0%, rgba(22, 41, 78, 0) 60%),
+        linear-gradient(160deg, var(--bg-1) 0%, var(--bg-0) 100%);
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      width: 100%;
+      max-width: 600px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+      padding: 40px 36px 32px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--border);
+      background: rgba(47, 111, 208, 0.12);
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 22px;
+    }
+    h1 {
+      font-size: 2.6rem;
+      line-height: 1.05;
+      margin: 0 0 6px;
+      letter-spacing: -0.01em;
+    }
+    .tagline {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 1.02rem;
+      margin: 0 0 24px;
+    }
+    .governor {
+      width: 200px;
+      height: auto;
+      margin: 4px auto 26px;
+      display: block;
+      filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.5));
+    }
+    p {
+      font-size: 1.02rem;
+      line-height: 1.6;
+      color: var(--text);
+      margin: 0 auto 18px;
+      max-width: 46ch;
+    }
+    p.note {
+      font-size: 0.85rem;
+      line-height: 1.55;
+      color: var(--muted);
+      font-style: italic;
+      max-width: 50ch;
+    }
+    p.sneak {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 22px;
+    }
+    p.sneak a {
+      color: var(--accent);
+      border-bottom: 1px solid rgba(86, 180, 233, 0.4);
+    }
+    p.sneak a:hover { border-bottom-color: var(--accent); text-decoration: none; }
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 28px auto 22px;
+      max-width: 280px;
+    }
+    .credit {
+      font-size: 0.8rem;
+      color: var(--faint);
+      margin: 0;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    @media (max-width: 480px) {
+      .card { padding: 30px 22px 26px; }
+      h1 { font-size: 2.1rem; }
+      .governor { width: 164px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <span class="badge">Coming Soon</span>
+    <h1>Past the Post</h1>
+    <p class="tagline">An educational redistricting simulator.</p>
+    <img class="governor" src="governor.png" alt="A cartoon governor giving a thumbs-up" />
+    <p>
+      Draw district boundaries, simulate elections, and discover how the same voters
+      can produce wildly different outcomes depending on where the lines are drawn.
+    </p>
+    <p class="note">
+      Not advocacy for or against any party, position, or reform. It presents multiple
+      perspectives — partisan operatives, reform commissioners, bipartisan dealmakers — so
+      players leave with better questions, not predetermined answers.
+    </p>
+    <p class="sneak">
+      Want a sneak-peek? Check out <a href="https://beta.pastthepost.gg">beta.pastthepost.gg</a>.
+    </p>
+    <div class="divider"></div>
+    <p class="credit">
+      Designed, architected, and co-developed&nbsp;by Christian&nbsp;Edward&nbsp;Jackson-Gruber and Claude.
+    </p>
+  </main>
+</body>
+</html>

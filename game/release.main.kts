@@ -13,18 +13,19 @@
  *       Passing an explicit semver when not on main is an error.
  *       Emits the version string to stdout for capture by callers.
  *
- *   deploy  --env <dev|staging|production>  [--version <v>]
+ *   deploy  --env <dev|beta|staging|production>  [--version <v>]
  *       Read staged artifact from .deploy_pkg/<version>/ and deploy to the
  *       target environment. If --version is omitted, uses the sole prepared
  *       version or errors if zero or multiple exist.
  *       Does NOT delete .deploy_pkg/<version>/ — artifact is kept so you can
  *       deploy the same build to multiple environments.
  *
- *       vTEST-* builds may ONLY be deployed to dev; staging and production
+ *       vTEST-* builds may ONLY be deployed to dev; beta, staging, and production
  *       require a semver release built from main.
  *
  *   Environments:
  *     dev        → /dev/ folder in web_deploy branch → dev.pastthepost.gg
+ *     beta       → /beta/ folder in web_deploy branch → beta.pastthepost.gg
  *     staging    → /staging/ folder in web_deploy branch → staging.pastthepost.gg
  *     production → root of web_deploy branch → pastthepost.gg
  *
@@ -285,14 +286,14 @@ class Prepare : CliktCommand(
 
 class Deploy : CliktCommand(
     name = "deploy",
-    help = "Deploy a staged artifact from .deploy_pkg/<version>/ to dev, staging, or production."
+    help = "Deploy a staged artifact from .deploy_pkg/<version>/ to dev, beta, staging, or production."
 ) {
-    val env by option("--env", help = "Target environment: dev, staging, or production").required()
+    val env by option("--env", help = "Target environment: dev, beta, staging, or production").required()
     val versionOpt by option("--version", help = "Version to deploy (default: sole staged version)")
 
     override fun run() {
-        if (env != "dev" && env != "staging" && env != "production")
-            err("--env must be 'dev', 'staging', or 'production', got: $env")
+        if (env != "dev" && env != "beta" && env != "staging" && env != "production")
+            err("--env must be 'dev', 'beta', 'staging', or 'production', got: $env")
 
         val version = resolveVersion(versionOpt)
         val pkgDir = File(deployPkgDir, version)
@@ -318,6 +319,7 @@ class Deploy : CliktCommand(
         val workspaceDir = File(gameDir, workspaceName)
         val verifyUrl = when (env) {
             "dev"     -> "https://dev.pastthepost.gg/deployment-metadata.json"
+            "beta"    -> "https://beta.pastthepost.gg/deployment-metadata.json"
             "staging" -> "https://staging.pastthepost.gg/deployment-metadata.json"
             else      -> "https://pastthepost.gg/deployment-metadata.json"
         }
@@ -352,16 +354,16 @@ class Deploy : CliktCommand(
 
             System.err.println("Step 3: Extracting artifact ...")
             val deployRoot = when (env) {
-                "dev", "staging" -> {
+                "dev", "beta", "staging" -> {
                     val sub = File(workspaceDir, env)
                     sub.deleteRecursively()
                     sub.mkdirs()
                     sub
                 }
                 else -> {
-                    // Production: clear root but preserve the dev/ and staging/ subdirectories.
+                    // Production: clear root but preserve the dev/, beta/, and staging/ subdirectories.
                     workspaceDir.listFiles()
-                        ?.filter { it.name != ".jj" && it.name != "staging" && it.name != "dev" }
+                        ?.filter { it.name != ".jj" && it.name != "staging" && it.name != "beta" && it.name != "dev" }
                         ?.forEach { it.deleteRecursively() }
                     workspaceDir
                 }
@@ -452,6 +454,7 @@ class Deploy : CliktCommand(
             if (verified) {
                 val url = when (env) {
                     "dev"     -> "https://dev.pastthepost.gg"
+                    "beta"    -> "https://beta.pastthepost.gg"
                     "staging" -> "https://staging.pastthepost.gg"
                     else      -> "https://pastthepost.gg"
                 }
