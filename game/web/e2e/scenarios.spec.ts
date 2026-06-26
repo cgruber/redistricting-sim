@@ -1532,7 +1532,7 @@ test("tutorial-004 winnability: four balanced, connected districts pass (distric
 
 // ─── GAME-099: guided overlay (tutorial-004) — light orient (nothing hidden) ───
 
-test("guided overlay: tutorial-004 gives a light orient then steps back to submit", async ({ page }) => {
+test("guided overlay: tutorial-004 gives a light orient then a read-only Done beat that unlocks without submitting", async ({ page }) => {
   await page.goto("/?campaign=tutorial&s=tutorial-004&debug&resetTutorial=1");
   const skip = page.locator("#btn-intro-skip");
   await expect(skip).toBeVisible({ timeout: 15_000 });
@@ -1547,13 +1547,31 @@ test("guided overlay: tutorial-004 gives a light orient then steps back to submi
   await expect(page.locator("#tutorial-panel")).toContainText("capstone");
   await page.locator("#tutorial-panel .tutorial-next").click();
 
-  // Step 2 — paint; advance once 5 precincts are in District 2.
-  await expect(page.locator("#tutorial-panel")).toContainText("four districts");
-  await paintHexes(page, [[-3, 0], [-2, 0], [-1, 0], [0, 0], [1, 0]], 2);
+  // Step 2 — paint a full district's worth (32). The live counter shows the target and progress.
+  await expect(page.locator("#tutorial-panel")).toContainText("full district's worth");
+  await expect(page.locator("#tutorial-panel .tutorial-progress")).toBeVisible();
+  await expect(page.locator("#tutorial-panel .tutorial-progress")).toContainText("/ 32 painted");
+  // Paint 32 precincts into District 2 via the store (the overlay counts assignments live).
+  await page.evaluate(() => {
+    const store = (window as unknown as Record<string, { getState: () => {
+      paintStroke: (ids: number[], d: number) => void;
+    } }>)["__gameStore"];
+    if (!store) throw new Error("__gameStore not found");
+    store.getState().paintStroke([...Array(32).keys()], 2);
+  });
 
-  // Step 3 — submit (terminal).
-  await expect(page.locator("#tutorial-panel")).toContainText("Submit");
-  await page.locator("#btn-submit").click();
+  // Step 3 — read-only "Done" beat: the map + painter are locked (no tutorial-interactive), so the
+  // only action is reading the coach and clicking Done. The button reads "Done", not "Next →".
+  await expect(page.locator("#tutorial-panel")).toContainText("the map is yours", { timeout: 10_000 });
+  await expect(page.locator("#map-svg")).not.toHaveClass(/tutorial-interactive/);
+  await expect(page.locator("#district-toolbar")).not.toHaveClass(/tutorial-interactive/);
+  const doneBtn = page.locator("#tutorial-panel .tutorial-next");
+  await expect(doneBtn).toHaveText("Done");
+  await doneBtn.click();
+
+  // Done ends the tutorial WITHOUT submitting: the overlay is gone, no result screen appeared,
+  // and the editor is unlocked (the player finishes — pan, inspect, submit — on their own).
   await expect(page.locator("#tutorial-panel")).toHaveCount(0);
-  await expect(page.locator("#result-screen")).toBeVisible();
+  await expect(page.locator("#result-screen")).toBeHidden();
+  await expect(page.locator("#main")).not.toHaveClass(/tutorial-paused/);
 });
