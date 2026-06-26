@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<!--
+  pixel-picker.html — click an image to read pixel coordinates + RGBA.
+
+  A small standalone dev tool for the image suite (flood-fill / find-white / make-transparent / …).
+  Use it to pick exact seed coordinates for `flood-fill.main.kts --seed x,y`, or to sample colors
+  anywhere on a sprite/asset. Coordinates are reported in the image's natural pixel space.
+
+  Load an image two ways:
+    1. the "Load image…" file picker
+    2. drag-and-drop a file onto the image area
+  Works over file:// too (open it directly and use the picker / drag-drop).
+
+  Hover → live coords + RGBA + an 8× magnifier loupe. Click → logs the point (and drops a marker);
+  "Copy" yields space-separated "x,y" pairs ready to paste as flood-fill seeds. A checkerboard
+  backdrop shows existing transparency vs. opaque white.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixel Picker</title>
+  <style>
+    body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: #0c1730; color: #e8eef6; padding: 16px; }
+    h1 { font-size: 1rem; margin: 0 0 4px; }
+    p { font-size: 0.82rem; color: #8898b0; margin: 0 0 12px; max-width: 74ch; }
+    code { color: #9fc0e8; }
+    .toolbar { margin-bottom: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .wrap { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+    .stage {
+      position: relative;
+      background-image:
+        linear-gradient(45deg, #4a4a4a 25%, transparent 25%), linear-gradient(-45deg, #4a4a4a 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #4a4a4a 75%), linear-gradient(-45deg, transparent 75%, #4a4a4a 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+      background-color: #808080;
+      line-height: 0;
+      cursor: crosshair;
+      min-width: 200px; min-height: 120px;
+      border: 1px dashed #2a4a6c;
+    }
+    .stage.empty { display: flex; align-items: center; justify-content: center; padding: 40px; }
+    .stage.empty::after { content: "drop an image here, or use “Load image…”"; color: #8898b0; font-size: 0.85rem; font-family: -apple-system, system-ui, sans-serif; line-height: 1.4; }
+    .stage.dragover { border-color: #56B4E9; background-color: #2a3a5a; }
+    #img { display: block; }
+    #marks { position: absolute; left: 0; top: 0; pointer-events: none; }
+    .panel { min-width: 280px; }
+    .readout { font-family: monospace; font-size: 0.95rem; background: #060c18; border: 1px solid #2a4a6c; border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; }
+    #loupe { border: 1px solid #2a4a6c; border-radius: 6px; image-rendering: pixelated; background: #060c18; display:block; }
+    #log { font-family: monospace; font-size: 0.82rem; white-space: pre; background: #060c18; border: 1px solid #2a4a6c; border-radius: 6px; padding: 10px 12px; max-height: 260px; overflow: auto; margin-top: 8px; }
+    button, label.btn { padding: 6px 12px; border-radius: 6px; border: 1px solid #2a4a6c; background: #2f6fd0; color: #fff; cursor: pointer; font-size: 0.82rem; }
+    button.secondary { background: transparent; color: #8aa0b8; }
+    .sw { display:inline-block; width: 14px; height: 14px; border:1px solid #2a4a6c; vertical-align: middle; margin-left: 8px; }
+    input[type=file] { display: none; }
+  </style>
+</head>
+<body>
+  <h1>Pixel Picker</h1>
+  <p>Hover for live coords + RGBA (the swatch shows the actual color/alpha); an 8× loupe helps with
+     precision. Click to log a point. Coordinates are <b>natural image pixels</b>. Tip: paste the
+     copied <code>x,y</code> pairs straight into <code>flood-fill.main.kts --seed x,y</code>.</p>
+  <div class="toolbar">
+    <label class="btn">Load image… <input type="file" id="file" accept="image/*" /></label>
+    <span id="dims" style="color:#8898b0;font-size:0.82rem;"></span>
+  </div>
+  <div class="wrap">
+    <div class="stage empty" id="stage">
+      <img id="img" alt="" style="display:none" />
+      <canvas id="marks"></canvas>
+    </div>
+    <div class="panel">
+      <div class="readout"><span id="readout">load an image to begin…</span><span class="sw" id="swatch" style="display:none"></span></div>
+      <canvas id="loupe" width="180" height="180"></canvas>
+      <div style="margin-top:8px;">
+        <button id="copy">Copy points</button>
+        <button id="clear" class="secondary">Clear</button>
+      </div>
+      <div id="log">(no points yet)</div>
+    </div>
+  </div>
+  <script>
+    const img = document.getElementById('img');
+    const stage = document.getElementById('stage');
+    const marks = document.getElementById('marks');
+    const readout = document.getElementById('readout');
+    const swatch = document.getElementById('swatch');
+    const dims = document.getElementById('dims');
+    const loupe = document.getElementById('loupe');
+    const lctx = loupe.getContext('2d');
+    const logEl = document.getElementById('log');
+    const fileInput = document.getElementById('file');
+    const points = [];
+    let sampler = null;
+
+    function loadSrc(src) { img.src = src; }
+
+    function onLoaded() {
+      const w = img.naturalWidth, h = img.naturalHeight;
+      if (!w) return;
+      stage.classList.remove('empty');
+      img.style.display = 'block';
+      marks.width = w; marks.height = h;
+      marks.style.width = w + 'px'; marks.style.height = h + 'px';
+      sampler = document.createElement('canvas');
+      sampler.width = w; sampler.height = h;
+      sampler.getContext('2d').drawImage(img, 0, 0);
+      dims.textContent = `${w} × ${h}`;
+      readout.textContent = 'move over the image…';
+      clearPoints();
+    }
+    img.addEventListener('load', onLoaded);
+    img.addEventListener('error', () => { readout.textContent = 'failed to load image'; });
+
+    function at(e) {
+      const r = img.getBoundingClientRect();
+      return {
+        x: Math.round((e.clientX - r.left) * (img.naturalWidth / r.width)),
+        y: Math.round((e.clientY - r.top) * (img.naturalHeight / r.height))
+      };
+    }
+    function colorAt(x, y) {
+      const d = sampler.getContext('2d').getImageData(x, y, 1, 1).data;
+      return { r: d[0], g: d[1], b: d[2], a: d[3] };
+    }
+
+    stage.addEventListener('mousemove', (e) => {
+      if (!sampler) return;
+      const { x, y } = at(e);
+      if (x < 0 || y < 0 || x >= img.naturalWidth || y >= img.naturalHeight) return;
+      const c = colorAt(x, y);
+      readout.textContent = `x: ${x}, y: ${y}   rgba(${c.r}, ${c.g}, ${c.b}, ${c.a})`;
+      swatch.style.display = 'inline-block';
+      swatch.style.background = `rgba(${c.r},${c.g},${c.b},${(c.a/255).toFixed(2)})`;
+      const z = 9, win = loupe.width / z;
+      lctx.imageSmoothingEnabled = false;
+      lctx.clearRect(0, 0, loupe.width, loupe.height);
+      lctx.drawImage(sampler, x - win/2, y - win/2, win, win, 0, 0, loupe.width, loupe.height);
+      lctx.strokeStyle = '#ff4a4a';
+      lctx.strokeRect(loupe.width/2 - z/2, loupe.height/2 - z/2, z, z);
+    });
+
+    stage.addEventListener('click', (e) => {
+      if (!sampler) return;
+      const { x, y } = at(e);
+      const c = colorAt(x, y);
+      points.push({ x, y, c });
+      const m = marks.getContext('2d');
+      m.strokeStyle = '#ff3b3b'; m.lineWidth = 2;
+      m.beginPath(); m.arc(x, y, 6, 0, Math.PI*2); m.stroke();
+      m.beginPath(); m.moveTo(x-10,y); m.lineTo(x+10,y); m.moveTo(x,y-10); m.lineTo(x,y+10); m.stroke();
+      renderLog();
+    });
+    function renderLog() {
+      logEl.textContent = points.length
+        ? points.map((p,i) => `${i+1}. (${p.x}, ${p.y})  rgba(${p.c.r},${p.c.g},${p.c.b},${p.c.a})`).join('\n')
+        : '(no points yet)';
+    }
+    function clearPoints() {
+      points.length = 0;
+      if (marks.width) marks.getContext('2d').clearRect(0, 0, marks.width, marks.height);
+      renderLog();
+    }
+    document.getElementById('copy').onclick = () => {
+      navigator.clipboard?.writeText(points.map(p => `${p.x},${p.y}`).join(' '));
+      const b = document.getElementById('copy'); b.textContent = 'Copied!';
+      setTimeout(() => b.textContent = 'Copy points', 1200);
+    };
+    document.getElementById('clear').onclick = clearPoints;
+
+    // ── Image sources ──────────────────────────────────────────────────────────
+    fileInput.addEventListener('change', (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (f) loadSrc(URL.createObjectURL(f));
+    });
+    ['dragenter','dragover'].forEach(ev => stage.addEventListener(ev, (e) => {
+      e.preventDefault(); stage.classList.add('dragover');
+    }));
+    ['dragleave','drop'].forEach(ev => stage.addEventListener(ev, (e) => {
+      e.preventDefault(); stage.classList.remove('dragover');
+    }));
+    stage.addEventListener('drop', (e) => {
+      const f = e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) loadSrc(URL.createObjectURL(f));
+    });
+  </script>
+</body>
+</html>
