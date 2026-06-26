@@ -3,13 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="app-version" content="v0.0.12">
+    <meta name="app-version" content="v0.0.13">
     <meta name="app-environment" content="beta">
     <title>Past the Post</title>
     <meta http-equiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' data:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self';">
+          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' data: https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.googletagmanager.com https://*.analytics.google.com; base-uri 'self'; form-action 'self';">
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="styles.css">
+    <!-- Google tag (gtag.js) — per-environment property by host; staging/dev/localhost/CI load nothing -->
+    <script>
+      (function () {
+        var IDS = {
+          'pastthepost.gg':      'G-LXG71YDCH2',  // production (game, once it launches here)
+          'www.pastthepost.gg':  'G-LXG71YDCH2',
+          'beta.pastthepost.gg': 'G-TC1LWJKXND'   // beta
+          // staging.pastthepost.gg / dev.pastthepost.gg: intentionally no analytics
+        };
+        var id = IDS[window.location.hostname];
+        if (!id) return;
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', id);
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+        document.head.appendChild(s);
+      })();
+    </script>
   </head>
   <body>
     <!-- ── Main menu / title screen (GAME-050) ─────────────────────────── -->
@@ -261,7 +283,7 @@
       wasm_bindgen("./wasm_calc_bindgen_bg.wasm").then(function () {
         var s = document.createElement("script");
         s.type = "module";
-        s.src = "bundle.js?v=v0.0.12";
+        s.src = "bundle.js?v=v0.0.13";
         document.body.appendChild(s);
       });
     </script>
