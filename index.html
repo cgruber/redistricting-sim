@@ -1,173 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Past the Post</title>
-    <meta http-equiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' data:; style-src 'self' 'unsafe-inline'; img-src data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self';">
-    <link rel="icon" href="data:," />
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <!-- ── Scenario select screen (GAME-018) ────────────────────────────── -->
-    <div id="scenario-select" class="hidden" role="region" aria-label="Scenario Selection">
-      <h1>Past the Post</h1>
-      <div id="scenario-cards" role="list"></div>
-      <div style="display:flex;gap:16px;margin-top:16px;align-items:center;">
-        <button id="btn-about" style="background:none;border:1px solid #2a5a8c;color:#8898b0;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:0.75rem;">About</button>
-        <button id="btn-reset-campaign" style="background:none;border:1px solid #555;color:#888;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:0.75rem;">Reset Campaign</button>
-      </div>
-    </div>
-
-    <!-- ── About page (GAME-029) ──────────────────────────────────────────── -->
-    <div id="about-screen" class="hidden">
-      <div id="about-card">
-        <h1>Past the Post</h1>
-        <p>An educational redistricting simulator. Draw district boundaries, simulate elections, and discover how the same voters can produce wildly different outcomes depending on where the lines are drawn.</p>
-        <p>This game is not advocacy for or against any political party, position, or reform proposal. It presents multiple perspectives — partisan operatives, reform commissioners, bipartisan dealmakers — so that players leave with better questions, not predetermined answers.</p>
-        <p style="color:#8898b0;font-size:0.82rem;font-style:italic;">The scenarios in this campaign use fictional data. They do not model real elections, real voters, or real communities. Redistricting in practice is governed by federal and state law.</p>
-        <h2>Learn More</h2>
-        <ul id="about-links">
-          <li><a href="https://www.brennancenter.org/issues/gerrymandering-fair-representation" target="_blank" rel="noopener">Brennan Center — Gerrymandering &amp; Fair Representation</a></li>
-          <li><a href="https://redistricting.lls.edu/" target="_blank" rel="noopener">Loyola Law School — All About Redistricting</a></li>
-          <li><a href="https://www.fairvote.org/redistricting" target="_blank" rel="noopener">FairVote — Redistricting</a></li>
-        </ul>
-        <p style="color:#606878;font-size:0.8rem;margin-top:16px;">Designed, architected, and co-developed by Christian Edward Jackson-Gruber and Claude.</p>
-        <button id="btn-about-close" style="margin-top:16px;">← Back</button>
-      </div>
-    </div>
-
-    <!-- ── WIP discard warning modal ──────────────────────────────────── -->
-    <div id="wip-warning-modal" class="hidden">
-      <div id="wip-warning-card">
-        <p id="wip-warning-text"></p>
-        <div style="display:flex;gap:12px;justify-content:center;margin-top:16px;">
-          <button id="wip-warning-confirm">Switch Scenario</button>
-          <button id="wip-warning-cancel">Cancel</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Result screen (GAME-017) ─────────────────────────────────────── -->
-    <div id="result-screen" class="hidden">
-      <div id="result-card">
-        <div id="result-verdict"></div>
-        <div id="result-subtitle"></div>
-        <div id="result-criteria-list"></div>
-        <div id="result-actions">
-          <button id="btn-keep-drawing">← Keep Drawing</button>
-          <button id="btn-next-scenario" style="display:none">Next Scenario →</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Wrap-up screen (GAME-020) ─────────────────────────────────────── -->
-    <div id="wrap-up-screen" class="hidden">
-      <div id="wrap-up-card">
-        <h1>Congratulations</h1>
-        <p id="wrap-up-text">You've completed every scenario. You've drawn maps that packed voters, cracked communities, protected incumbents, satisfied reformers, and proven that no set of rules can make redistricting apolitical.</p>
-        <p style="color:#8898b0;margin-top:12px;">The lines always matter. Now you know why.</p>
-        <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
-          <button id="btn-wrap-up-replay">Play Again</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Intro screen (GAME-016) ──────────────────────────────────────── -->
-    <div id="intro-screen" class="hidden">
-      <button id="btn-intro-skip">Skip intro</button>
-      <div id="intro-card">
-        <div id="intro-character">
-          <div class="char-name" id="char-name"></div>
-          <div class="char-role" id="char-role"></div>
-          <div class="char-motivation" id="char-motivation"></div>
-        </div>
-        <div id="intro-slide-heading"></div>
-        <div id="intro-slide-body"></div>
-        <div id="intro-objective">
-          <div class="obj-label">Your objective</div>
-          <div id="objective-text"></div>
-        </div>
-        <div id="intro-nav">
-          <span id="intro-progress"></span>
-          <div class="nav-btns">
-            <button id="btn-intro-prev" disabled>← Previous</button>
-            <button id="btn-intro-next">Next →</button>
-            <button id="btn-intro-start">Start Drawing</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <header id="app-header" style="display:none">
-      <button id="btn-back-to-scenarios" style="background:none;border:1px solid #2a5a8c;color:#8898b0;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.8rem;">← Scenarios</button>
-      <h1>Redistricting Simulator</h1>
-      <div id="controls">
-        <span style="font-size:0.8rem;color:#888;">Draw district:</span>
-        <div id="district-buttons" role="group" aria-label="District Selection"></div>
-        <button id="btn-undo" disabled aria-label="Undo last action">↩ Undo</button>
-        <button id="btn-redo" disabled aria-label="Redo last action">↪ Redo</button>
-        <button id="btn-view-toggle" aria-label="Toggle between districts and partisan lean view">Switch to Partisan Lean</button>
-        <button id="btn-county-toggle" aria-label="Toggle county borders display">Show County Borders</button>
-        <button id="btn-submit" disabled aria-label="Submit map for evaluation">Submit Map</button>
-        <button id="btn-debug-win" style="display:none;background:#8b4513;color:#ffa;">⚡ Force Win (debug)</button>
-        <button id="btn-reset" aria-label="Reset map to initial state">Reset</button>
-        <span id="reset-confirm">
-          Reset to start?
-          <button id="btn-reset-confirm">Yes</button>
-          <button id="btn-reset-cancel">No</button>
-        </span>
-      </div>
-    </header>
-
-    <div id="main" style="display:none">
-      <div id="map-container">
-        <svg id="map-svg" role="image" aria-label="District map. Use mouse to paint precincts into districts. Current assignments shown as colored hexagons."></svg>
-      </div>
-      <aside id="sidebar">
-        <h2>Precinct Info</h2>
-        <div id="precinct-info">
-          <div class="precinct-placeholder">Hover over a precinct to see details.<br>Click and drag to paint districts.</div>
-        </div>
-        <h2>Election Results</h2>
-        <div id="results-container" aria-live="polite" aria-label="Election results">
-          <div style="color:#606080;font-size:0.85rem;">Draw districts to see results</div>
-        </div>
-        <h2>Map Validity</h2>
-        <div id="validity-container"></div>
-        <h2>Legend</h2>
-        <div id="legend-container" class="legend"></div>
-      </aside>
-    </div>
-
-    <!--
-      WASM loading sequence (no-modules target):
-      1. Load the wasm-bindgen glue — registers global wasm_bindgen.
-      2. Init the WASM binary asynchronously.
-      3. After WASM is ready, load the bundled game (ES module).
-    -->
-    <!--
-      Import map: zundo pulls in zustand/esm/react.mjs which has a bare `import "react"`.
-      Nothing in this app calls React APIs — shim it to an empty module so the browser
-      doesn't fail resolving the bare specifier.
-    -->
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "data:text/javascript,export default {};",
-        "react-dom": "data:text/javascript,export default {};"
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Past the Post — Coming Soon</title>
+  <meta name="description" content="Past the Post — an educational redistricting simulator. Coming soon." />
+  <style>
+    :root {
+      --bg-0: #060c18;
+      --bg-1: #0c1730;
+      --panel: rgba(12, 22, 44, 0.92);
+      --border: #2a4a6c;
+      --text: #e8eef6;
+      --muted: #8898b0;
+      --faint: #606878;
+      --accent: #56B4E9;
+      --accent-2: #2f6fd0;
     }
-    </script>
-    <script src="wasm_calc_bindgen.js"></script>
-    <script>
-      wasm_bindgen("./wasm_calc_bindgen_bg.wasm").then(function () {
-        var s = document.createElement("script");
-        s.type = "module";
-        s.src = "bundle.js";
-        document.body.appendChild(s);
-      });
-    </script>
-  </body>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 50% -10%, #16294e 0%, rgba(22, 41, 78, 0) 60%),
+        linear-gradient(160deg, var(--bg-1) 0%, var(--bg-0) 100%);
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      width: 100%;
+      max-width: 600px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+      padding: 40px 36px 32px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--border);
+      background: rgba(47, 111, 208, 0.12);
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 22px;
+    }
+    h1 {
+      font-size: 2.6rem;
+      line-height: 1.05;
+      margin: 0 0 6px;
+      letter-spacing: -0.01em;
+    }
+    .tagline {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 1.02rem;
+      margin: 0 0 24px;
+    }
+    .governor {
+      width: 200px;
+      height: auto;
+      margin: 4px auto 26px;
+      display: block;
+      filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.5));
+    }
+    p {
+      font-size: 1.02rem;
+      line-height: 1.6;
+      color: var(--text);
+      margin: 0 auto 18px;
+      max-width: 46ch;
+    }
+    p.note {
+      font-size: 0.85rem;
+      line-height: 1.55;
+      color: var(--muted);
+      font-style: italic;
+      max-width: 50ch;
+    }
+    p.sneak {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 22px;
+    }
+    p.sneak a {
+      color: var(--accent);
+      border-bottom: 1px solid rgba(86, 180, 233, 0.4);
+    }
+    p.sneak a:hover { border-bottom-color: var(--accent); text-decoration: none; }
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 28px auto 22px;
+      max-width: 280px;
+    }
+    .credit {
+      font-size: 0.8rem;
+      color: var(--faint);
+      margin: 0;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    @media (max-width: 480px) {
+      .card { padding: 30px 22px 26px; }
+      h1 { font-size: 2.1rem; }
+      .governor { width: 164px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <span class="badge">Coming Soon</span>
+    <h1>Past the Post</h1>
+    <p class="tagline">An educational redistricting simulator.</p>
+    <img class="governor" src="governor.png" alt="A cartoon governor giving a thumbs-up" />
+    <p>
+      Draw district boundaries, simulate elections, and discover how the same voters
+      can produce wildly different outcomes depending on where the lines are drawn.
+    </p>
+    <p class="note">
+      Not advocacy for or against any party, position, or reform. It presents multiple
+      perspectives — partisan operatives, reform commissioners, bipartisan dealmakers — so
+      players leave with better questions, not predetermined answers.
+    </p>
+    <p class="sneak">
+      Want a sneak-peek? Check out <a href="https://beta.pastthepost.gg">beta.pastthepost.gg</a>.
+    </p>
+    <div class="divider"></div>
+    <p class="credit">
+      Designed, architected, and co-developed&nbsp;by Christian&nbsp;Edward&nbsp;Jackson-Gruber and Claude.
+    </p>
+  </main>
+</body>
 </html>
