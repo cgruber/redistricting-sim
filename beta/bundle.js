@@ -15150,8 +15150,9 @@ function runOverlay(id2, script, store) {
     const targets = selectorsToElements(step.highlight);
     targets.forEach((el) => el.classList.add("tutorial-highlight"));
     editorRoots.forEach((r) => r.classList.add("tutorial-paused"));
-    const alwaysInteractive = step.readOnly ? [] : selectorsToElements(["#map-svg", "#district-toolbar"]);
-    [...targets, ...alwaysInteractive].forEach(
+    const paints = step.advance.on === "paint-count" || step.advance.on === "any-map-click";
+    const paintTargets = paints ? selectorsToElements(["#map-svg", "#district-toolbar"]) : [];
+    [...targets, ...paintTargets].forEach(
       (el) => el.classList.add("tutorial-interactive")
     );
     nextBtn.textContent = stepIdx === script.length - 1 ? "Done" : "Next \u2192";
@@ -15274,19 +15275,13 @@ var init_overlay = __esm({
         advance: { on: "paint-count", district: 2, n: 5 }
       },
       {
-        text: "Watch the **Map Validity** panel \u2014 it flags a district that's too big, too small, or split in two.",
+        text: "Watch the **Map Validity** panel \u2014 it flags a district that's too big, too small, or split in two, and turns all green when the map is **legal**.",
         highlight: "#validity-container",
         advance: { on: "next" }
       },
       {
-        text: "Even out the populations and keep each district connected until the panel's all green.",
-        highlight: "#validity-container",
+        text: "That's the goal. Hit **Done**, then the map's yours: even the districts out until the **Map Validity** panel is all green, and **Submit** once it's a legal map.",
         advance: { on: "next" }
-      },
-      {
-        text: "Legal map? Hit **Submit**.",
-        highlight: "#btn-submit",
-        advance: { on: "submit" }
       }
     ];
     TUTORIAL_003 = [
@@ -15312,9 +15307,8 @@ var init_overlay = __esm({
         advance: { on: "click-target" }
       },
       {
-        text: "That's the whole picture. Draw your three districts \u2014 keep them balanced and connected, like before \u2014 then hit **Submit**.",
-        highlight: ["#district-toolbar", "#btn-submit"],
-        advance: { on: "submit" }
+        text: "That's the whole picture. Hit **Done**, then draw your three districts \u2014 balanced and connected \u2014 and **Submit** once the **Map Validity** panel is all green.",
+        advance: { on: "next" }
       }
     ];
     TUTORIAL_004 = [
@@ -15329,7 +15323,6 @@ var init_overlay = __esm({
       },
       {
         text: "You've drawn a district \u2014 you've got this. Hit **Done** and the map is yours: pan around, watch the **Map Validity** panel, and **Submit** when your four districts are balanced and connected. Then on to the real thing.",
-        readOnly: true,
         advance: { on: "next" }
       }
     ];
@@ -16404,6 +16397,8 @@ var require_main = __commonJS({
     var btnDebriefNext = document.getElementById("btn-debrief-next");
     var btnKeepDrawing = document.getElementById("btn-keep-drawing");
     var btnNextScenario = document.getElementById("btn-next-scenario");
+    var btnBackToMenu = document.getElementById("btn-back-to-menu");
+    var btnDebriefMenu = document.getElementById("btn-debrief-menu");
     var resultStars = document.getElementById("result-stars");
     var resultRevealControls = document.getElementById("result-reveal-controls");
     var btnRevealSkip = document.getElementById("btn-reveal-skip");
@@ -17246,6 +17241,8 @@ var require_main = __commonJS({
           if (btnContinue)
             btnContinue.style.display = pass && epilogue ? "" : "none";
           btnNextScenario.style.display = pass && !epilogue ? "" : "none";
+          if (btnBackToMenu)
+            btnBackToMenu.style.display = pass && !epilogue ? "" : "none";
         }
         function revealVerdict(pass, starCount) {
           if (verdictShown)
@@ -17452,6 +17449,8 @@ var require_main = __commonJS({
         btnKeepDrawing.textContent = mapIsValid ? "\u2190 Keep Drawing" : "\u2190 Fix It";
         btnKeepDrawing.style.display = "";
         btnNextScenario.style.display = "none";
+        if (btnBackToMenu)
+          btnBackToMenu.style.display = "none";
         if (reducedMotion) {
           for (const cr of allRows) {
             resultCriteriaList.appendChild(buildRowElement(
@@ -17622,16 +17621,23 @@ var require_main = __commonJS({
       }
       function goToNextScenario() {
         var _a2;
-        const allComplete = SCENARIO_MANIFEST.every((e) => isCompleted(progress, e.id));
-        if (allComplete) {
+        const curIdx = activeList.findIndex((e) => e.id === entryToLoad.id);
+        const next = curIdx >= 0 ? activeList[curIdx + 1] : void 0;
+        if (next) {
+          const dest = campaignParam !== "" ? `./?s=${next.id}&campaign=${campaignParam}` : `./?s=${next.id}`;
+          window.location.assign(dest);
+        } else {
           resultScreen.classList.add("hidden");
           (_a2 = document.getElementById("wrap-up-screen")) == null ? void 0 : _a2.classList.remove("hidden");
-        } else {
-          window.location.assign(backUrl);
         }
+      }
+      function goToMenu() {
+        window.location.assign(backUrl);
       }
       btnNextScenario.addEventListener("click", goToNextScenario);
       btnDebriefNext == null ? void 0 : btnDebriefNext.addEventListener("click", goToNextScenario);
+      btnBackToMenu == null ? void 0 : btnBackToMenu.addEventListener("click", goToMenu);
+      btnDebriefMenu == null ? void 0 : btnDebriefMenu.addEventListener("click", goToMenu);
       btnContinue == null ? void 0 : btnContinue.addEventListener("click", () => {
         resultMain == null ? void 0 : resultMain.classList.add("hidden");
         resultDebrief == null ? void 0 : resultDebrief.classList.remove("hidden");

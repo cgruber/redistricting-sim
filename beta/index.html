@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="app-version" content="v0.0.13">
+    <meta name="app-version" content="v0.0.14">
     <meta name="app-environment" content="beta">
     <title>Past the Post</title>
     <meta http-equiv="Content-Security-Policy"
@@ -107,6 +107,7 @@
           <div id="result-actions">
             <button id="btn-keep-drawing">← Keep Drawing</button>
             <button id="btn-continue" style="display:none">Continue →</button>
+            <button id="btn-back-to-menu" style="display:none">Back to Menu</button>
             <button id="btn-next-scenario" style="display:none">Next Scenario →</button>
             <button id="btn-mute-audio" aria-pressed="false">Mute</button>
           </div>
@@ -117,6 +118,7 @@
           <div id="result-epilogue"></div>
           <div id="result-debrief-actions">
             <button id="btn-debrief-back">← Back to results</button>
+            <button id="btn-debrief-menu">Back to Menu</button>
             <button id="btn-debrief-next">Next Scenario →</button>
           </div>
         </div>
@@ -283,7 +285,7 @@
       wasm_bindgen("./wasm_calc_bindgen_bg.wasm").then(function () {
         var s = document.createElement("script");
         s.type = "module";
-        s.src = "bundle.js?v=v0.0.13";
+        s.src = "bundle.js?v=v0.0.14";
         document.body.appendChild(s);
       });
     </script>
