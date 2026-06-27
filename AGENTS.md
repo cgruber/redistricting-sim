@@ -200,46 +200,51 @@ These are **mandatory reads** — especially after context compaction, where pro
 
 ## Deploying the Game
 
-The deploy tool is `game/release.main.kts` (a Kotlin script). It replaces the old `prepare-release.sh` and `deploy.sh` shell scripts. Run it from `game/` or the repo root.
+The deploy tool is `game/release.main.kts` (a Kotlin script).
+
+**Always invoke it exactly as `game/release.main.kts -- <cmd>` from the repo root.** Do **not** `cd` into `game/`, and do **not** use `./release.main.kts` — a single consistent form is what the permission allowlist matches, so routine deploys don't re-prompt. (The `--` separates the Kotlin runner's args from the script's.) Omit any trailing pipe when you can; if you capture output, redirect to a file (`… > /tmp/out`) rather than `… | tail`.
 
 ### Subcommands
 
 **`prepare [--version v0.x.y]`**
 
-Builds `//web:deployable` via Bazel and stages the artifact in `game/.deploy_pkg/<version>/`. The staged directory contains `artifact.zip` and `prepare-metadata.json`. It is gitignored and persists across deploys so the same build can go to multiple environments.
+Builds `//game/web:deployable` via Bazel and stages the artifact in `game/.deploy_pkg/<version>/` (contains `artifact.zip` + `prepare-metadata.json`; gitignored; persists across deploys so one build can ship to multiple envs).
 
-- **On main** (or an empty commit directly atop main): produces a semver version. Auto-bumps the patch number from the latest tag unless `--version` is passed explicitly. Creates and pushes a jj tag.
-- **On any other branch**: produces `vTEST-<commitid>`. No tag is created. Safe for branch/PR testing.
-- Passing an explicit semver when not on main is an error.
-- Emits the version string to **stdout** so callers can capture it: `VERSION=$(./release.main.kts -- prepare)`
+- **On main** (or an empty commit directly atop main): semver, auto-bumped from the latest tag unless `--version` is passed; creates + pushes a jj tag.
+- **On any other branch**: `vTEST-<commitid>`, no tag. Branch/PR testing only.
+- Passing an explicit semver off-main is an error.
 
-**`deploy --env <staging|production> [--version <v>]`**
+**`deploy --env <dev|beta|staging|production> [--version <v>]`**
 
-Reads the staged artifact from `game/.deploy_pkg/<version>/` and deploys it. If `--version` is omitted, uses the sole prepared version (errors if zero or multiple exist). The `.deploy_pkg/<version>/` directory is **not** deleted after deploy — keep it to deploy the same build to production after validating on staging.
+Reads the staged artifact and deploys it. **Omit `--version`** — it auto-detects the sole staged version (only pass `--version vX.Y.Z` if several are staged). The `.deploy_pkg/<version>/` directory is **not** deleted after deploy, so the same build can go to multiple envs.
 
-Internally: creates a jj workspace → `jj new web_deploy` → extracts zip → writes `deployment-metadata.json` → commits → sets `web_deploy` bookmark → pushes → polls verify URL → cleans up workspace.
+Internally: creates a jj workspace → `jj new web_deploy` → extracts zip → writes `deployment-metadata.json` → commits → sets `web_deploy` bookmark → pushes → polls the verify URL → cleans up the workspace.
+
+- **vTEST-* builds may ONLY deploy to `dev`.** `beta`, `staging`, and `production` require a semver release built from main.
+- **production: NEVER deploy without explicit user sign-off — every time.**
 
 ### Typical workflows
 
 ```bash
-# Branch test deploy:
-VERSION=$(./release.main.kts -- prepare)                              # vTEST-<commitid>
-./release.main.kts -- deploy --env staging --version "$VERSION"
-# test at https://staging.pastthepost.gg
-# merge PR, then do the real release from main
+# Branch (vTEST) build → dev:
+game/release.main.kts -- prepare                  # vTEST-<commitid>, no tag
+game/release.main.kts -- deploy --env dev
 
 # Release from main:
-./release.main.kts -- prepare                                         # auto-bumps semver
-./release.main.kts -- deploy --env staging                            # validates
-./release.main.kts -- deploy --env production                         # promotes same build
+game/release.main.kts -- prepare                  # auto-bumps semver + pushes tag
+game/release.main.kts -- deploy --env beta        # or --env staging
+# production only AFTER explicit user approval:
+game/release.main.kts -- deploy --env production
 ```
 
 ### Environments
 
-| Env | URL | Verify endpoint |
+| Env | URL | Notes |
 |---|---|---|
-| staging | https://staging.pastthepost.gg | `/deployment-metadata.json` |
-| production | https://pastthepost.gg | `/deployment-metadata.json` |
+| dev | https://dev.pastthepost.gg | vTEST builds OK |
+| beta | https://beta.pastthepost.gg | public sneak-peek; semver only |
+| staging | https://staging.pastthepost.gg | internal pre-prod; semver only |
+| production | https://pastthepost.gg | semver only; explicit sign-off each time. **Currently serves the Coming Soon splash — the game runs on `beta` until launch.** |
 
 ---
 

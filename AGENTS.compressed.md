@@ -106,21 +106,22 @@ research docs: $ts/research/ | YYYY-MM-DD-<description>.md + .compressed.md comp
 frontmatter: date researcher git_commit branch repository topic tags status last_updated last_updated_by
 
 §DEPLOY
-tool: game/release.main.kts — run from game/ or repo root
+tool: ALWAYS invoke `game/release.main.kts -- <cmd>` from REPO ROOT (never `./release.main.kts`, never cd game/ — one form so the permission allowlist matches; the `--` separates kotlin args from script args). Avoid trailing `| tail`; capture via `> /tmp/out` if needed.
 
-environments: dev=dev.pastthepost.gg staging=staging.pastthepost.gg production=pastthepost.gg
-vTEST-* builds: ONLY allowed to dev; staging+production require semver (main)
-production: NEVER deploy without explicit user sign-off
+environments: dev=dev.pastthepost.gg beta=beta.pastthepost.gg staging=staging.pastthepost.gg production=pastthepost.gg
+vTEST-* builds: ONLY to dev; beta/staging/production require a semver release (main)
+production: NEVER deploy without explicit user sign-off (every time). NOTE prod currently serves the Coming Soon splash; the game runs on beta until launch
+deploy auto-detects the sole staged version — OMIT --version (pass it only if several are staged)
 
-branch deploy (dev only — vTEST builds):
-  VERSION=$(./release.main.kts -- prepare)           # vTEST-<commitid>; no tag
-  ./release.main.kts -- deploy --env dev --version "$VERSION"
+dev (vTEST) build — on a branch:
+  game/release.main.kts -- prepare                   # vTEST-<commitid>; no tag
+  game/release.main.kts -- deploy --env dev
 
 release deploy (on main):
-  ./release.main.kts -- prepare                      # auto-bumps semver; creates+pushes tag
-  ./release.main.kts -- deploy --env staging         # auto-detects staged version
-  # stop here; wait for explicit user approval before prod
-  ./release.main.kts -- deploy --env production      # only with user sign-off
+  game/release.main.kts -- prepare                   # auto-bumps semver; creates+pushes tag
+  game/release.main.kts -- deploy --env beta         # or --env staging
+  # production only AFTER explicit user approval:
+  game/release.main.kts -- deploy --env production
 
 §CHAIN Bootstrap — execute exactly one branch (stop after match):
 when {
