@@ -1058,7 +1058,7 @@ body {
   margin-top: 4px;
 }
 
-#btn-keep-drawing, #btn-continue, #btn-debrief-back {
+#btn-keep-drawing, #btn-continue, #btn-debrief-back, #btn-back-to-menu, #btn-debrief-menu {
   padding: 8px 18px;
   background: #0f3460;
   color: #e0e0e0;
@@ -1068,7 +1068,7 @@ body {
   font-size: 0.88rem;
 }
 
-#btn-keep-drawing:hover, #btn-continue:hover, #btn-debrief-back:hover { background: #1a4a7a; }
+#btn-keep-drawing:hover, #btn-continue:hover, #btn-debrief-back:hover, #btn-back-to-menu:hover, #btn-debrief-menu:hover { background: #1a4a7a; }
 
 #btn-next-scenario, #btn-debrief-next {
   padding: 8px 18px;
