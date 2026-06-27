@@ -13,6 +13,22 @@
 let _count = 0;
 let _failed = 0;
 
+// Backstop: fail loud even if a test file forgets the trailing summarize() call.
+// `test()` swallows assertion failures (so all tests run), and without this hook the
+// process would exit 0 on a forgotten summarize() despite "not ok" lines — making real
+// failures invisible to bazel. Typed via globalThis to avoid needing @types/node under
+// the DOM-only lib; harmless in a browser (no `process`).
+const _proc = (
+  globalThis as {
+    process?: { on(event: string, cb: () => void): void; exitCode?: number };
+  }
+).process;
+if (_proc !== undefined) {
+  _proc.on("exit", () => {
+    if (_failed > 0) _proc.exitCode = 1;
+  });
+}
+
 export function test(name: string, fn: () => void): void {
   _count++;
   try {

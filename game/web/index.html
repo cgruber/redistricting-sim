@@ -290,12 +290,22 @@
     </script>
     <script src="wasm_calc_bindgen.js"></script>
     <script>
-      wasm_bindgen("./wasm_calc_bindgen_bg.wasm").then(function () {
+      function startApp() {
         var s = document.createElement("script");
         s.type = "module";
         s.src = "bundle.js";
         document.body.appendChild(s);
-      });
+      }
+      // The WASM kernel is optional today (nothing in the bundle calls it). A failed
+      // .wasm load/compile must NEVER block startup — without this .catch the whole app
+      // would render a permanently blank page on a bad deploy / cache miss / CSP issue.
+      // Start the bundle regardless; surface (don't swallow) the error.
+      wasm_bindgen("./wasm_calc_bindgen_bg.wasm")
+        .then(startApp)
+        .catch(function (e) {
+          console.error("WASM init failed; starting app without it.", e);
+          startApp();
+        });
     </script>
   </body>
 </html>

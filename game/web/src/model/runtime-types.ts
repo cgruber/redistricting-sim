@@ -27,6 +27,12 @@ export function requireString(v: unknown, label: string): string {
 
 export function requireNumber(v: unknown, label: string): number {
   if (!isNumber(v)) throw new Error(`${label}: expected number, got ${typeof v}`);
+  // Reject NaN/Infinity: typeof admits them, but a non-finite value silently defeats
+  // downstream invariants (e.g. a NaN share makes `Math.abs(sum - 1) > EPSILON` false,
+  // so the malformed-demographics check passes) and corrupts election math. Negatives
+  // are still allowed here — axial hex coordinates (q, r) are legitimately negative;
+  // non-negativity is enforced per-field where the semantics require it.
+  if (!Number.isFinite(v)) throw new Error(`${label}: expected finite number, got ${v}`);
   return v;
 }
 
