@@ -36,14 +36,22 @@
   <body>
     <!-- ── Main menu / title screen (GAME-050) ─────────────────────────── -->
     <div id="main-menu" class="hidden" role="main" aria-label="Main Menu">
-      <h1 id="main-menu-title">Past the Post</h1>
-      <nav id="main-menu-nav" aria-label="Main navigation">
-        <button id="btn-main-continue" disabled>Continue</button>
-        <button id="btn-main-new-campaign">New Campaign</button>
-        <button id="btn-main-about">About</button>
-        <button id="btn-main-load" disabled>Load <span class="coming-soon">(coming soon)</span></button>
-        <button id="btn-main-settings" disabled>Settings <span class="coming-soon">(coming soon)</span></button>
-      </nav>
+      <div id="main-menu-inner">
+        <h1 id="main-menu-title">Past the Post</h1>
+        <p id="main-menu-subtitle">An educational redistricting simulator — draw the district lines that decide who wins.</p>
+        <div id="main-menu-body">
+          <nav id="main-menu-nav" aria-label="Main navigation">
+            <button id="btn-main-continue" disabled>Continue</button>
+            <button id="btn-main-new-campaign">New Campaign</button>
+            <button id="btn-main-about">About</button>
+            <button id="btn-main-load" disabled>Load <span class="coming-soon">(coming soon)</span></button>
+            <button id="btn-main-settings" disabled>Settings <span class="coming-soon">(coming soon)</span></button>
+          </nav>
+          <div id="main-menu-art">
+            <img id="main-menu-governor" src="assets/governor-hero.png" alt="A cartoon governor giving a thumbs-up" />
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ── Campaign select screen (GAME-049) ───────────────────────────── -->
