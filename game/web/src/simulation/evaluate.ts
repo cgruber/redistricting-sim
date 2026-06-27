@@ -323,6 +323,16 @@ export function evaluateCriteria(
 				detail = `${qualifying} of ${districtCount} district(s) have target group ≥${(c.min_eligible_share * 100).toFixed(0)}% (required ${c.min_districts})`;
 				break;
 			}
+
+			default: {
+				// Exhaustiveness guard: this assigns the narrowed `c` to `never`, so adding a
+				// Criterion variant without a case above is a COMPILE error here (the
+				// assignment-style switch means noImplicitReturns/noFallthrough can't catch it).
+				const _exhaustive: never = c;
+				throw new Error(
+					`evaluateCriteria: unhandled criterion type: ${(_exhaustive as { type: string }).type}`,
+				);
+			}
 		}
 
 		const entry: CriterionResult = {

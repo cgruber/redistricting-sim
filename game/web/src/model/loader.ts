@@ -168,7 +168,11 @@ function parsePrecinct(raw: unknown, idx: number): PartialPrecinct {
 
   // total_population and demographic_groups are optional at parse time (pipeline stages)
   if (r["total_population"] !== undefined) {
-    pc.total_population = requireNumber(r["total_population"], `${label}.total_population`);
+    const totalPopulation = requireNumber(r["total_population"], `${label}.total_population`);
+    if (totalPopulation < 0) {
+      throw new Error(`${label}.total_population: expected non-negative, got ${totalPopulation}`);
+    }
+    pc.total_population = totalPopulation;
   }
   if (r["demographic_groups"] !== undefined) {
     const groupsRaw = requireArray(r["demographic_groups"], `${label}.demographic_groups`);

@@ -120,6 +120,58 @@ test("parseScenario: full JSON parses correctly", () => {
   assertEqual(s.precincts[0]!.demographic_groups?.length, 1);
 });
 
+// ─── parseScenario: rejects non-finite / out-of-range numbers (GAME-101) ──────
+// These inputs are in-memory JS objects (the realistic pipeline-bug vector before
+// serialization), so NaN/Infinity are representable. Without the requireNumber
+// finiteness guard, a NaN share would silently pass `Math.abs(sum - 1) > EPSILON`.
+
+test("parseScenario: rejects NaN total_population", () => {
+  assertThrows(
+    () => parseScenario(fullScenario({
+      precincts: [{ id: "p1", editable: true, position: { q: 0, r: 0 }, total_population: NaN }],
+    })),
+    /finite/,
+  );
+});
+
+test("parseScenario: rejects Infinity total_population", () => {
+  assertThrows(
+    () => parseScenario(fullScenario({
+      precincts: [{ id: "p1", editable: true, position: { q: 0, r: 0 }, total_population: Infinity }],
+    })),
+    /finite/,
+  );
+});
+
+test("parseScenario: rejects negative total_population", () => {
+  assertThrows(
+    () => parseScenario(fullScenario({
+      precincts: [{ id: "p1", editable: true, position: { q: 0, r: 0 }, total_population: -100 }],
+    })),
+    /non-negative/,
+  );
+});
+
+test("parseScenario: rejects non-finite vote_share", () => {
+  assertThrows(
+    () => parseScenario(fullScenario({
+      precincts: [{
+        id: "p1",
+        editable: true,
+        position: { q: 0, r: 0 },
+        total_population: 1000,
+        demographic_groups: [{
+          id: "g1",
+          population_share: 1.0,
+          vote_shares: { blue: Infinity, red: 0.4 },
+          turnout_rate: 0.7,
+        }],
+      }],
+    })),
+    /finite/,
+  );
+});
+
 // ─── parseScenario: structural errors caught at parse time ────────────────────
 
 test("parseScenario: rejects unknown format_version", () => {
