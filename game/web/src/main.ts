@@ -107,6 +107,8 @@ const btnDebriefBack = document.getElementById("btn-debrief-back") as HTMLButton
 const btnDebriefNext = document.getElementById("btn-debrief-next") as HTMLButtonElement | null;
 const btnKeepDrawing = document.getElementById("btn-keep-drawing") as HTMLButtonElement | null;
 const btnNextScenario = document.getElementById("btn-next-scenario") as HTMLButtonElement | null;
+const btnBackToMenu = document.getElementById("btn-back-to-menu") as HTMLButtonElement | null;
+const btnDebriefMenu = document.getElementById("btn-debrief-menu") as HTMLButtonElement | null;
 const resultStars = document.getElementById("result-stars") as HTMLElement | null;
 const resultRevealControls = document.getElementById("result-reveal-controls") as HTMLElement | null;
 const btnRevealSkip = document.getElementById("btn-reveal-skip") as HTMLButtonElement | null;
@@ -1129,6 +1131,9 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			}
 			if (btnContinue) btnContinue.style.display = pass && epilogue ? "" : "none";
 			btnNextScenario!.style.display = pass && !epilogue ? "" : "none";
+			// "Back to Menu" sits beside "Next Scenario" on a direct win; on a win with an epilogue
+			// it lives in the debrief panel (btn-debrief-menu) instead.
+			if (btnBackToMenu) btnBackToMenu.style.display = pass && !epilogue ? "" : "none";
 		}
 
 		function revealVerdict(pass: boolean, starCount: number): void {
@@ -1373,6 +1378,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		btnKeepDrawing!.textContent = mapIsValid ? "← Keep Drawing" : "← Fix It";
 		btnKeepDrawing!.style.display = "";
 		btnNextScenario!.style.display = "none";
+		if (btnBackToMenu) btnBackToMenu.style.display = "none";
 
 		if (reducedMotion) {
 			// Instant path: all rows in final state with verdict character poses immediately.
@@ -1564,18 +1570,28 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		});
 	}
 
-	// "Next Scenario" → if all scenarios complete, show wrap-up; else select screen.
+	// "Next Scenario" → load the next scenario in the active list; if this is the last one,
+	// show the wrap-up. "Back to Menu" → the scenario-select / menu screen.
 	function goToNextScenario() {
-		const allComplete = SCENARIO_MANIFEST.every((e) => isCompleted(progress, e.id));
-		if (allComplete) {
+		const curIdx = activeList.findIndex((e) => e.id === entryToLoad.id);
+		const next = curIdx >= 0 ? activeList[curIdx + 1] : undefined;
+		if (next) {
+			const dest = campaignParam !== ""
+				? `./?s=${next.id}&campaign=${campaignParam}`
+				: `./?s=${next.id}`;
+			window.location.assign(dest);
+		} else {
 			resultScreen!.classList.add("hidden");
 			document.getElementById("wrap-up-screen")?.classList.remove("hidden");
-		} else {
-			window.location.assign(backUrl);
 		}
+	}
+	function goToMenu() {
+		window.location.assign(backUrl);
 	}
 	btnNextScenario!.addEventListener("click", goToNextScenario);
 	btnDebriefNext?.addEventListener("click", goToNextScenario);
+	btnBackToMenu?.addEventListener("click", goToMenu);
+	btnDebriefMenu?.addEventListener("click", goToMenu);
 
 	// GAME-094: "Continue →" swaps the results view for the teaching debrief panel.
 	btnContinue?.addEventListener("click", () => {
