@@ -1135,7 +1135,7 @@ test("guided overlay: not shown on a non-guided scenario", async ({ page }) => {
 
 // ─── GAME-077: guided overlay (tutorial-002 "A Legal Map") ───────────────────
 
-test("guided overlay: tutorial-002 runs the legal-map script (orient → paint → validity → submit)", async ({ page }) => {
+test("guided overlay: tutorial-002 runs the legal-map script (orient → paint → validity → Done)", async ({ page }) => {
   // resetTutorial=1 clears the suppression flag the beforeEach set, so the overlay runs.
   await page.goto("/?campaign=tutorial&s=tutorial-002&debug&resetTutorial=1");
   const skip = page.locator("#btn-intro-skip");
@@ -1156,15 +1156,16 @@ test("guided overlay: tutorial-002 runs the legal-map script (orient → paint �
   await expect(page.locator("#validity-container")).toHaveClass(/tutorial-highlight/);
   await page.locator("#tutorial-panel .tutorial-next").click();
 
-  // Step 4 — even out + keep connected.
-  await expect(page.locator("#tutorial-panel")).toContainText("green");
-  await page.locator("#tutorial-panel .tutorial-next").click();
-
-  // Step 5 — submit (terminal): clicking Submit ends the overlay and shows results.
-  await expect(page.locator("#tutorial-panel")).toContainText("Submit");
-  await page.locator("#btn-submit").click();
+  // Step 4 — read-only "Done" beat: no in-overlay submit. The map is frozen (no tutorial-interactive);
+  // clicking Done ends the tutorial and unlocks the editor so the player evens out + submits on their own.
+  await expect(page.locator("#tutorial-panel")).toContainText("the map's yours");
+  await expect(page.locator("#map-svg")).not.toHaveClass(/tutorial-interactive/);
+  const doneBtn = page.locator("#tutorial-panel .tutorial-next");
+  await expect(doneBtn).toHaveText("Done");
+  await doneBtn.click();
   await expect(page.locator("#tutorial-panel")).toHaveCount(0);
-  await expect(page.locator("#result-screen")).toBeVisible();
+  await expect(page.locator("#result-screen")).toBeHidden();
+  await expect(page.locator("#main")).not.toHaveClass(/tutorial-paused/);
 });
 
 // ─── GAME-048: Campaign-driven scenario select ──────────────────────────────
@@ -1433,7 +1434,7 @@ test("tutorial-003 winnability: three balanced, connected wedges pass (district_
 
 // ─── GAME-098: guided overlay (tutorial-003) — first use of the `reveal` action ───
 
-test("guided overlay: tutorial-003 reveals the result + lean, then county, then submits", async ({ page }) => {
+test("guided overlay: tutorial-003 reveals the result + lean, then county, then a Done beat", async ({ page }) => {
   // resetTutorial=1 clears the suppression flag the beforeEach set, so the overlay runs.
   await page.goto("/?campaign=tutorial&s=tutorial-003&debug&resetTutorial=1");
   const skip = page.locator("#btn-intro-skip");
@@ -1466,11 +1467,16 @@ test("guided overlay: tutorial-003 reveals the result + lean, then county, then 
   await expect(page.locator("#filter-county")).toBeVisible();
   await page.locator("#filter-county").click();
 
-  // Step 5 — submit (terminal): ends the overlay and shows results.
-  await expect(page.locator("#tutorial-panel")).toContainText("Submit");
-  await page.locator("#btn-submit").click();
+  // Step 5 — read-only "Done" beat: no in-overlay submit. The map is frozen; clicking Done ends
+  // the tutorial and unlocks the editor so the player draws + submits on their own.
+  await expect(page.locator("#tutorial-panel")).toContainText("whole picture");
+  await expect(page.locator("#map-svg")).not.toHaveClass(/tutorial-interactive/);
+  const doneBtn = page.locator("#tutorial-panel .tutorial-next");
+  await expect(doneBtn).toHaveText("Done");
+  await doneBtn.click();
   await expect(page.locator("#tutorial-panel")).toHaveCount(0);
-  await expect(page.locator("#result-screen")).toBeVisible();
+  await expect(page.locator("#result-screen")).toBeHidden();
+  await expect(page.locator("#main")).not.toHaveClass(/tutorial-paused/);
 });
 
 // ─── tutorial-004: "Fairhaven: Putting It Together" (GAME-099 — capstone) ───

@@ -25,18 +25,10 @@ export type AdvanceTrigger =
 
 export interface TutorialStep {
   text: string;
-  /** Selector(s) to ring + (when paused) keep interactive. */
+  /** Selector(s) to ring + keep interactive this step. */
   highlight?: string | string[];
   /** Selector(s) to un-hide for this step (start hidden on load). */
   reveal?: string | string[];
-  /**
-   * Read-only step: lock the map and painter too (the default leaves them interactive so the
-   * player can always paint). The player can only read the coach and click Done/Skip. Use it for
-   * a closing "you're on your own now" beat that ends the tutorial *before* any real action
-   * (drawing, panning, submitting) — so nothing is submitted while still inside the overlay, and
-   * when the step finishes everything unlocks at once.
-   */
-  readOnly?: boolean;
   advance: AdvanceTrigger;
 }
 
@@ -93,19 +85,13 @@ const TUTORIAL_002: TutorialStep[] = [
     advance: { on: "paint-count", district: 2, n: 5 },
   },
   {
-    text: "Watch the **Map Validity** panel — it flags a district that's too big, too small, or split in two.",
+    text: "Watch the **Map Validity** panel — it flags a district that's too big, too small, or split in two, and turns all green when the map is **legal**.",
     highlight: "#validity-container",
     advance: { on: "next" },
   },
   {
-    text: "Even out the populations and keep each district connected until the panel's all green.",
-    highlight: "#validity-container",
+    text: "That's the goal. Hit **Done**, then the map's yours: even the districts out until the **Map Validity** panel is all green, and **Submit** once it's a legal map.",
     advance: { on: "next" },
-  },
-  {
-    text: "Legal map? Hit **Submit**.",
-    highlight: "#btn-submit",
-    advance: { on: "submit" },
   },
 ];
 
@@ -146,20 +132,18 @@ const TUTORIAL_003: TutorialStep[] = [
     advance: { on: "click-target" },
   },
   {
-    text: "That's the whole picture. Draw your three districts — keep them balanced and connected, like before — then hit **Submit**.",
-    highlight: ["#district-toolbar", "#btn-submit"],
-    advance: { on: "submit" },
+    text: "That's the whole picture. Hit **Done**, then draw your three districts — balanced and connected — and **Submit** once the **Map Validity** panel is all green.",
+    advance: { on: "next" },
   },
 ];
 
 /**
  * tutorial-004 — "Capstone" (DESIGN-012 / GAME-099). A light orientation over a fuller map
  * with every tool visible from the start (nothing hidden, no `reveal`): orient → paint → a
- * closing read-only "Done" beat that releases the player. Unlike T1–T3, the capstone does NOT
- * end on Submit inside the overlay — the final step locks the map, and clicking **Done** ends
- * the tutorial and unlocks everything, so the player pans/inspects/submits on their own (the
- * bridge to the real campaign). The player synthesises T1–T3 — connected districts, read the
- * lean + result.
+ * closing "Done" beat that releases the player. Like T2/T3, it ends on **Done**, not an
+ * in-overlay Submit — the final step is frozen (no highlight), so clicking Done ends the
+ * tutorial and unlocks everything, and the player pans/inspects/submits on their own (the bridge
+ * to the real campaign). The player synthesises T1–T3 — connected districts, read the lean + result.
  */
 const TUTORIAL_004: TutorialStep[] = [
   {
@@ -173,7 +157,6 @@ const TUTORIAL_004: TutorialStep[] = [
   },
   {
     text: "You've drawn a district — you've got this. Hit **Done** and the map is yours: pan around, watch the **Map Validity** panel, and **Submit** when your four districts are balanced and connected. Then on to the real thing.",
-    readOnly: true,
     advance: { on: "next" },
   },
 ];
@@ -378,14 +361,15 @@ function runOverlay(id: string, script: TutorialStep[], store: StoreLike): void 
     const targets = selectorsToElements(step.highlight);
     targets.forEach((el) => el.classList.add("tutorial-highlight"));
 
-    // Input is always locked while the coach is up: only the highlighted target(s), the painter,
-    // and the map stay clickable (the player can always paint), plus Next/Skip at body level.
-    // Everything else — the view toolbar, undo/redo, reset, etc. — is inert, so the player can't
-    // wander off whatever the guidance is pointing at. A `readOnly` step locks the map + painter
-    // too: nothing but the coach is clickable (used for a closing "click Done" beat).
+    // Input is locked while the coach is up: only the highlighted target(s) stay clickable, plus
+    // Next/Skip at body level. The map + painter unlock ONLY on steps that ask the player to paint
+    // (paint-count / any-map-click). So an intro or "watch the panel" step freezes everything but
+    // Next/Skip — the player can't wander off and knock a control into an unexpected state — and a
+    // closing "Done" beat (next-advance, no highlight) is frozen too, releasing the editor on Done.
     editorRoots.forEach((r) => r.classList.add("tutorial-paused"));
-    const alwaysInteractive = step.readOnly ? [] : selectorsToElements(["#map-svg", "#district-toolbar"]);
-    [...targets, ...alwaysInteractive].forEach((el) =>
+    const paints = step.advance.on === "paint-count" || step.advance.on === "any-map-click";
+    const paintTargets = paints ? selectorsToElements(["#map-svg", "#district-toolbar"]) : [];
+    [...targets, ...paintTargets].forEach((el) =>
       el.classList.add("tutorial-interactive"),
     );
 
