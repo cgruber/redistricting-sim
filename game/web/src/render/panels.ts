@@ -1,3 +1,4 @@
+import { escapeHtml } from "../model/escape-html.js";
 import type { ScenarioRules } from "../model/scenario.js";
 import { PARTY_COLORS, PARTY_LABELS, districtColor, type PartyKey } from "../model/types.js";
 import type { DistrictDemoStat } from "../simulation/evaluate.js";
@@ -21,7 +22,11 @@ export function renderResults(
 		.map((r) => {
 			const color = districtColor(r.districtId);
 			const winnerColor = PARTY_COLORS[r.winner];
-			const winnerLabel = labels[r.winner];
+			// Party labels derive from scenario.parties[].name — escape before
+			// interpolating into innerHTML markup (GAME-103).
+			const winnerLabel = escapeHtml(labels[r.winner]);
+			const dLabel = escapeHtml(labels.D);
+			const rLabel = escapeHtml(labels.R);
 			const dPct = (r.voteTotals.D * 100).toFixed(1);
 			const rPct = (r.voteTotals.R * 100).toFixed(1);
 			const marginPct = (r.margin * 100).toFixed(1);
@@ -31,7 +36,7 @@ export function renderResults(
         <div class="winner-badge" style="background:${winnerColor};color:#fff">${winnerLabel} +${marginPct}%</div>
         <div class="vote-bar" style="--d-pct:${dPct}%"></div>
         <div class="vote-details">
-          ${labels.D} ${dPct}% · ${labels.R} ${rPct}% · ${r.precinctCount} precincts · pop ${r.population.toLocaleString()}
+          ${dLabel} ${dPct}% · ${rLabel} ${rPct}% · ${r.precinctCount} precincts · pop ${r.population.toLocaleString()}
         </div>
       </div>`;
 		})

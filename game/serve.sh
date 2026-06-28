@@ -23,9 +23,10 @@ cp "${BAZEL_BIN}/game/rust/wasm_calc_bindgen/wasm_calc_bindgen_bg.wasm" "${DIST}
 # esbuild bundle (TypeScript + npm deps bundled into a single file)
 cp "${BAZEL_BIN}/game/web/bundle.js" "${DIST}/"
 
-# HTML entry point + CSS (served from source)
+# HTML entry point + CSS + react importmap stub (served from source)
 cp "${BUILD_WORKSPACE_DIRECTORY}/game/web/index.html" "${DIST}/"
 cp "${BUILD_WORKSPACE_DIRECTORY}/game/web/styles.css" "${DIST}/"
+cp "${BUILD_WORKSPACE_DIRECTORY}/game/web/react-stub.js" "${DIST}/"
 
 # Scenario JSON files (fetched at runtime; not bundled by esbuild)
 mkdir -p "${DIST}/scenarios"

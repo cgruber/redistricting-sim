@@ -129,6 +129,46 @@ js_test(
     visibility = ["//visibility:public"],
 )
 
+# ── escape_html_lib: pure HTML-entity escaping for innerHTML sinks (GAME-103) ─
+
+ts_project(
+    name = "escape_html_lib",
+    srcs = ["escape-html.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    visibility = ["//game/web:__subpackages__"],
+)
+
+# ── escape_html_test_lib: compile the escape-html tests ───────────────────────
+
+ts_project(
+    name = "escape_html_test_lib",
+    srcs = ["escape-html_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":escape_html_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+# ── escape_html_test: run escape-html tests with Node ─────────────────────────
+
+js_test(
+    name = "escape_html_test",
+    entry_point = "escape-html_test.js",
+    data = [
+        ":escape_html_test_lib",
+        ":escape_html_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 # ── adapter_lib: Scenario → spike internal types (GAME-005) ──────────────────
 
 ts_project(

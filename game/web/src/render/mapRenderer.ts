@@ -21,6 +21,7 @@
  */
 
 import * as d3 from "d3";
+import { escapeHtml } from "../model/escape-html.js";
 import { HEX_DIRECTIONS, HEX_SIZE, hexCorners, mapBounds } from "../model/hex-geometry.js";
 import type { Precinct, TerrainTileRuntime, PartyKey } from "../model/types.js";
 import { PARTY_LABELS, districtColor, winnerOf } from "../model/types.js";
@@ -1132,20 +1133,23 @@ export class SvgMapRenderer implements MapRenderer {
 				const dId = assignments.get(d.id);
 				const infoPanel = document.getElementById("precinct-info");
 				if (infoPanel !== null) {
-					const precinctLabel = d.name ?? `Precinct ${d.id}`;
+					// Precinct / county / group / party names are scenario-derived
+					// strings reaching innerHTML — escape them (GAME-103). Numeric
+					// and `District N` / `Precinct N` fallbacks stay as markup.
+					const precinctLabel = d.name != null ? escapeHtml(d.name) : `Precinct ${d.id}`;
 					const distLabel = dId != null ? `District ${dId}` : "Unassigned";
 					const topParty = winnerOf(d.partyShare);
-					const partyName = this.partyLabels[topParty] ?? PARTY_LABELS[topParty];
+					const partyName = escapeHtml(this.partyLabels[topParty] ?? PARTY_LABELS[topParty]);
 					const leanLabel = `${partyName} (${(d.partyShare[topParty] * 100).toFixed(1)}%)`;
 					let groupsHtml = "";
 					if (d.groupShares && d.groupShares.length > 1) {
 						const lines = d.groupShares.map(
-							(g) => `${g.name}: ${(g.share * 100).toFixed(0)}%`,
+							(g) => `${escapeHtml(g.name)}: ${(g.share * 100).toFixed(0)}%`,
 						);
 						groupsHtml = `<br><span style="color:#8898b0">` + lines.join("<br>") + `</span>`;
 					}
 					const countyHtml = d.county_name
-						? `<span style="color:#8898b0">${d.county_name}</span><br>`
+						? `<span style="color:#8898b0">${escapeHtml(d.county_name)}</span><br>`
 						: "";
 					infoPanel.innerHTML =
 						`<div class="precinct-name">${precinctLabel}</div>` +

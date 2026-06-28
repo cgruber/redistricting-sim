@@ -7,7 +7,7 @@
     <meta name="app-environment" content="">
     <title>Past the Post</title>
     <meta http-equiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' data: https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.googletagmanager.com https://*.analytics.google.com; base-uri 'self'; form-action 'self';">
+          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.googletagmanager.com https://*.analytics.google.com; base-uri 'self'; form-action 'self';">
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="styles.css">
     <!-- Google tag (gtag.js) — per-environment property by host; staging/dev/localhost/CI load nothing -->
@@ -277,14 +277,15 @@
     -->
     <!--
       Import map: zundo pulls in zustand/esm/react.mjs which has a bare `import "react"`.
-      Nothing in this app calls React APIs — shim it to an empty module so the browser
-      doesn't fail resolving the bare specifier.
+      Nothing in this app calls React APIs — shim it to a same-origin empty module so
+      the browser doesn't fail resolving the bare specifier. A served stub (instead of
+      a data: URL) lets the CSP script-src drop `data:` (GAME-103).
     -->
     <script type="importmap">
     {
       "imports": {
-        "react": "data:text/javascript,export default {};",
-        "react-dom": "data:text/javascript,export default {};"
+        "react": "./react-stub.js",
+        "react-dom": "./react-stub.js"
       }
     }
     </script>

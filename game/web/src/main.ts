@@ -8,6 +8,7 @@
  * before this bundle executes.
  */
 
+import { escapeHtml } from "./model/escape-html.js";
 import { loadScenario } from "./model/loader.js";
 import type { Scenario, CriterionId, CharacterType, Criterion } from "./model/scenario.js";
 import { type MapRenderer, type ViewMode, SvgMapRenderer } from "./render/mapRenderer.js";
@@ -451,16 +452,39 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 	// ── Fetch + validate scenario JSON ────────────────────────────────────────
 
+	// `bodyHtml` is intentionally static markup authored here (it contains a
+	// `<strong>` wrapping the already-escaped scenario id). `errorMsg` is
+	// untrusted — it embeds scenario strings via loader exceptions — so it is
+	// injected as textContent, never as markup. The back button is wired with
+	// addEventListener (no inline onclick referencing backUrl). GAME-103.
 	function showLoadError(bodyHtml: string, errorMsg: string): void {
-		document.body.insertAdjacentHTML(
-			"afterbegin",
-			`<div style="position:fixed;inset:0;background:#0d1b2e;color:#c0d0e8;padding:2em;font-family:system-ui;z-index:999;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;">
-				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
-				<p style="max-width:600px;text-align:center;">${bodyHtml}</p>
-				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${errorMsg}</pre>
-				<button onclick="window.location.assign('${backUrl}')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">${backLabel}</button>
-			</div>`,
-		);
+		const overlay = document.createElement("div");
+		overlay.style.cssText =
+			"position:fixed;inset:0;background:#0d1b2e;color:#c0d0e8;padding:2em;font-family:system-ui;z-index:999;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;";
+
+		const heading = document.createElement("h1");
+		heading.style.cssText = "color:#e94560;font-size:1.4rem;";
+		heading.textContent = "Scenario Failed to Load";
+
+		const body = document.createElement("p");
+		body.style.cssText = "max-width:600px;text-align:center;";
+		body.innerHTML = bodyHtml;
+
+		const pre = document.createElement("pre");
+		pre.style.cssText =
+			"background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;";
+		pre.textContent = errorMsg;
+
+		const button = document.createElement("button");
+		button.style.cssText =
+			"padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;";
+		button.textContent = backLabel;
+		button.addEventListener("click", () => {
+			window.location.assign(backUrl);
+		});
+
+		overlay.append(heading, body, pre, button);
+		document.body.insertAdjacentElement("afterbegin", overlay);
 	}
 
 	saveLastPlayedScenario(entryToLoad.id);
@@ -473,7 +497,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	} catch (e) {
 		const msg = e instanceof Error ? e.message : String(e);
 		console.error(`[GAME-032] Failed to fetch scenario "${entryToLoad.id}":`, e);
-		showLoadError(`Could not fetch scenario <strong>${entryToLoad.id}</strong>.`, msg);
+		showLoadError(`Could not fetch scenario <strong>${escapeHtml(entryToLoad.id)}</strong>.`, msg);
 		return;
 	}
 
@@ -483,7 +507,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	} catch (e) {
 		const msg = e instanceof Error ? e.message : String(e);
 		console.error(`[GAME-032] Scenario "${entryToLoad.id}" validation failed:`, e);
-		showLoadError(`Scenario <strong>${entryToLoad.id}</strong> could not be loaded due to a validation error.`, msg);
+		showLoadError(`Scenario <strong>${escapeHtml(entryToLoad.id)}</strong> could not be loaded due to a validation error.`, msg);
 		return;
 	}
 
