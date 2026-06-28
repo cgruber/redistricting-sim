@@ -68,6 +68,56 @@ export function clearWip(): void {
 	}
 }
 
+// ─── Pure WIP reconciliation (GAME-106) ──────────────────────────────────────
+
+/**
+ * Reconcile a saved WIP assignment record against the freshly-seeded scenario
+ * assignment map.
+ *
+ * WIP is keyed only by scenarioId, and scenarios are regenerated under the same
+ * id, so a stale WIP can reference precinct ids / districts that no longer exist.
+ * `flushWipSave` also drops null (unassigned) precincts — so a restore built from
+ * the saved record alone is MISSING those keys, which makes
+ * `computeValidityStats` undercount unassigned precincts (it counts `=== null`
+ * over present keys; a missing key is never counted) and silently bypass the
+ * "all precincts assigned" win-gate.
+ *
+ * This function fixes both: it starts from `base` (the full, freshly-seeded
+ * scenario map — every precinct present, usually null) and overlays a saved
+ * entry ONLY when the precinct id exists in `base` (drops stale precincts) AND
+ * the district is an integer in `1..districtCount` (drops stale/out-of-range
+ * districts). Every base precinct id is therefore present in the result, so
+ * nulls are preserved and the unassigned count stays correct.
+ *
+ * @param base freshly-seeded scenario map (precinct id → district id | null)
+ * @param saved serialized WIP record (string precinct id → district number)
+ * @param districtCount number of districts in the loaded scenario
+ */
+export function reconcileWipAssignments(
+	base: ReadonlyMap<number, number | null>,
+	saved: Record<string, number>,
+	districtCount: number,
+): Map<number, number | null> {
+	const result = new Map(base);
+	for (const [key, value] of Object.entries(saved)) {
+		const precinctId = Number(key);
+		if (!result.has(precinctId)) continue; // stale precinct — not in this scenario
+		if (!Number.isInteger(value) || value < 1 || value > districtCount) continue; // stale/out-of-range district
+		result.set(precinctId, value);
+	}
+	return result;
+}
+
+/**
+ * Clamp a saved active-district selection into the loaded scenario's range.
+ * Returns `saved` when it is an integer in `1..districtCount`, else falls back
+ * to district 1.
+ */
+export function clampActiveDistrict(saved: number, districtCount: number): number {
+	if (Number.isInteger(saved) && saved >= 1 && saved <= districtCount) return saved;
+	return 1;
+}
+
 // ─── Completion tracking ──────────────────────────────────────────────────────
 
 export interface Progress {

@@ -36,6 +36,8 @@ import {
 	loadWip,
 	saveWip,
 	clearWip,
+	reconcileWipAssignments,
+	clampActiveDistrict,
 	type WipState,
 } from "./model/progress.js";
 import { CAMPAIGN_REGISTRY, getCampaign, loadLastPlayedScenario, saveLastPlayedScenario } from "./model/campaigns.js";
@@ -534,10 +536,19 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	const savedWip = loadWip();
 	if (savedWip !== null && savedWip.scenarioId === scenario.id) {
 		isRestoringWip = true;
-		const restoredMap = new Map<number, number | null>(
-			Object.entries(savedWip.assignments).map(([k, v]) => [Number(k), v]),
+		// Re-seed from the store's full precinct map (the adapter seeds an entry for
+		// EVERY precinct, value possibly null) and overlay only valid saved entries.
+		// This preserves null precincts (dropped by flushWipSave) and drops stale
+		// precinct ids / out-of-range districts from a regenerated scenario (GAME-106).
+		const districtCount = store.getState().districtCount;
+		const restoredMap = reconcileWipAssignments(
+			store.getState().assignments,
+			savedWip.assignments,
+			districtCount,
 		);
-		store.getState().restoreAssignments(restoredMap, savedWip.activeDistrict);
+		store
+			.getState()
+			.restoreAssignments(restoredMap, clampActiveDistrict(savedWip.activeDistrict, districtCount));
 		// Wipe undo history so the player doesn't undo back before the restored state.
 		temporalStore.getState().clear();
 		isRestoringWip = false;

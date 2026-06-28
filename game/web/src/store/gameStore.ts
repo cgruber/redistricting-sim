@@ -2,7 +2,12 @@
  * Zustand store with zundo undo/redo middleware.
  *
  * State mutations only inside set() callbacks — never mutate state objects directly.
- * Undo/redo tracks assignment diffs (not full state snapshots) via zundo's temporal store.
+ * Undo/redo (zundo temporal store) snapshots only the assignments map (plus the
+ * simulationResult consistent with it), via `partialize`. A new history entry is
+ * recorded only when assignments actually change (the `equality` gate), and the
+ * undo stack is capped at `limit` entries. Because snapshots exclude
+ * `activeDistrict`, undo/redo restores assignments without disturbing the
+ * player's current brush selection.
  *
  * GAME-005: Store is no longer created at module load. Call createGameStore(scenario)
  * after loading and validating the scenario JSON.
@@ -118,8 +123,27 @@ export function createGameStore(scenario: Scenario) {
 				},
 			}),
 			{
-				// zundo: equality check — prevents storing a new history entry if assignments unchanged
-				equality: (a: GameStore, b: GameStore) => {
+				// Snapshot only assignments (+ the consistent simulationResult) so undo/redo
+				// never reverts the active district / brush selection. zustand merge-set
+				// preserves the rest of state (activeDistrict, precincts, …).
+				// INVARIANT (load-bearing): simulationResult is written in the SAME set() as
+					// assignments — paint, restoreAssignments, and reset all recompute it via
+					// runElection on the assignments path — so each snapshot's result matches its
+					// board and undo restores a consistent pair. A future independent
+					// simulationResult write would desync undo; keep it on the assignments path
+					// or drop it from partialize.
+					partialize: (state) => ({
+					assignments: state.assignments,
+					simulationResult: state.simulationResult,
+				}),
+				// Cap history so long sessions don't grow the undo stack unboundedly.
+				limit: 100,
+				// zundo: equality check — prevents storing a new history entry if assignments unchanged.
+				// With partialize present, the args are the partialized shape.
+				equality: (
+					a: { assignments: AssignmentMap },
+					b: { assignments: AssignmentMap },
+				) => {
 					if (a.assignments === b.assignments) return true;
 					if (a.assignments.size !== b.assignments.size) return false;
 					for (const [k, v] of a.assignments) {
