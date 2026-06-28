@@ -4,17 +4,26 @@ Bazel targets for the scenario model:
   model_lib  — scenario.ts (GAME-001 types; DistrictId, PartyId, Scenario, etc.)
   loader_lib — loader.ts (GAME-002 loadScenario function)
   types_lib  — types.ts (spike/legacy types for the hex-grid spike renderer)
-  generator_lib — generator.ts (spike/legacy procedural precinct generator)
 
 Creating this BUILD.bazel makes src/model/ a separate Bazel package, so the
 parent's glob(["src/**/*.ts"]) no longer covers this directory.  game/web/BUILD.bazel
-lists all four model targets (model_lib, loader_lib, types_lib, generator_lib) as
-explicit deps so the parent typecheck and bundle remain intact.
+lists the model targets (model_lib, loader_lib, types_lib, …) as explicit deps so
+the parent typecheck and bundle remain intact.
 """
 
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
 load("@aspect_rules_js//js:defs.bzl", "js_test")
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
+
+# GAME-109: expose this package's colocated test sources + BUILD file to the
+# meta-test //game/web:unwired_tests_test, which verifies each *_test.ts is wired
+# to a js_test. glob does not cross package boundaries, so each subpackage must
+# surface its own files.
+filegroup(
+    name = "test_sources_for_meta",
+    srcs = glob(["*_test.ts"]) + ["BUILD.bazel"],
+    visibility = ["//game/web:__pkg__"],
+)
 
 # Standalone ts_config for this package (game/web/src/model/tsconfig.json has no
 # extends field — it is a self-contained config, not derived from //web:tsconfig).
@@ -44,17 +53,6 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [":types_lib"],
-    visibility = ["//game/web:__subpackages__"],
-)
-
-# ── generator_lib: generator.ts (spike/legacy procedural precinct generator) ──
-
-ts_project(
-    name = "generator_lib",
-    srcs = ["generator.ts"],
-    tsconfig = ":tsconfig",
-    declaration = True,
-    deps = [":types_lib", ":hex_geometry_lib"],
     visibility = ["//game/web:__subpackages__"],
 )
 
@@ -215,7 +213,6 @@ js_test(
         ":adapter_lib",
         ":model_lib",
         ":types_lib",
-        ":generator_lib",
         "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
