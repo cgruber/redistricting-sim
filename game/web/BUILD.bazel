@@ -29,6 +29,7 @@ ts_project(
         "//game/web/src/model:adapter_lib",
         "//game/web/src/model:progress_lib",
         "//game/web/src/model:campaigns_lib",
+        "//game/web/src/model:escape_html_lib",
         "//game/web/src/simulation:election_lib",
         "//game/web/src/simulation:validity_lib",
         "//game/web/src/simulation:evaluate_lib",
@@ -64,6 +65,7 @@ esbuild(
         "//game/web/src/model:adapter_lib",
         "//game/web/src/model:progress_lib",
         "//game/web/src/model:campaigns_lib",
+        "//game/web/src/model:escape_html_lib",
         "//game/web/src/simulation:election_lib",
         "//game/web/src/simulation:validity_lib",
         "//game/web/src/simulation:evaluate_lib",
@@ -82,7 +84,7 @@ esbuild(
 
 filegroup(
     name = "html",
-    srcs = ["index.html", "styles.css"],
+    srcs = ["index.html", "styles.css", "react-stub.js"],
     visibility = ["//visibility:public"],
 )
 
@@ -176,6 +178,7 @@ genrule(
             case "$$fname" in
                 index.html) cp "$$f" "$$STAGING/" ;;
                 styles.css) cp "$$f" "$$STAGING/" ;;
+                react-stub.js) cp "$$f" "$$STAGING/" ;;
                 bundle.js) cp "$$f" "$$STAGING/" ;;
                 *.wasm) cp "$$f" "$$STAGING/" ;;
                 wasm_calc_bindgen.js) cp "$$f" "$$STAGING/" ;;

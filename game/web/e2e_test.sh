@@ -43,6 +43,7 @@ fi
 WEB_BUNDLE="${RUNFILES_MOD}/game/web/bundle.js"
 WEB_HTML="${RUNFILES_MOD}/game/web/index.html"
 WEB_CSS="${RUNFILES_MOD}/game/web/styles.css"
+WEB_STUB="${RUNFILES_MOD}/game/web/react-stub.js"
 WASM_JS="${RUNFILES_MOD}/game/rust/wasm_calc_bindgen/wasm_calc_bindgen.js"
 WASM_BG="${RUNFILES_MOD}/game/rust/wasm_calc_bindgen/wasm_calc_bindgen_bg.wasm"
 SCENARIOS_DIR="${RUNFILES_MOD}/game/scenarios"
@@ -71,6 +72,7 @@ trap cleanup EXIT
 
 cp "${WEB_HTML}"   "${SERVE_DIR}/index.html"
 cp "${WEB_CSS}"    "${SERVE_DIR}/styles.css"
+cp "${WEB_STUB}"   "${SERVE_DIR}/react-stub.js"
 cp "${WEB_BUNDLE}" "${SERVE_DIR}/bundle.js"
 cp "${WASM_JS}"    "${SERVE_DIR}/wasm_calc_bindgen.js"
 cp "${WASM_BG}"    "${SERVE_DIR}/wasm_calc_bindgen_bg.wasm"
