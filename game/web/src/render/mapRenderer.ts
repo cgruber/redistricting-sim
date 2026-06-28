@@ -969,6 +969,10 @@ export class SvgMapRenderer implements MapRenderer {
 		document.addEventListener("keydown", (e: KeyboardEvent) => {
 			const target = e.target as Element;
 			if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
+			// GAME-105: this zoom shortcut is bound to `document`, so it would otherwise fire
+			// while a modal (result dialog) is open over the map, or during a frozen tutorial
+			// step — both mark the map (or an editor ancestor) `inert`. Honour that.
+			if (svgNode.closest("[inert]")) return;
 			if (e.key === "=" || e.key === "+") {
 				e.preventDefault();
 				this.svg.transition().duration(SvgMapRenderer.ZOOM_DURATION_SHORT).call(this.zoomBehavior.scaleBy, SvgMapRenderer.ZOOM_STEP);
@@ -1302,6 +1306,11 @@ export class SvgMapRenderer implements MapRenderer {
 		const svgNode = this.svg.node()!;
 
 		svgNode.addEventListener("keydown", (e: KeyboardEvent) => {
+			// GAME-105: keyboard-safe tutorial lock. The map is marked `inert` during frozen
+			// (non-paint) tutorial steps. `inert` on an SVG root isn't reliably enforced for
+			// keydown by every browser, so bail explicitly — a keyboard user must not paint
+			// while the coach has the map locked.
+			if (svgNode.hasAttribute("inert")) return;
 			const { precincts, activeDistrict, districtCount } = this.getState();
 			if (precincts.length === 0) return;
 
@@ -1381,13 +1390,13 @@ export class SvgMapRenderer implements MapRenderer {
 		// Update SVG aria-label with current precinct context
 		const p = precincts.find(pr => pr.id === precinctId);
 		if (p !== undefined) {
-			const { assignments } = this.getState();
+			const { assignments, districtCount } = this.getState();
 			const dId = assignments.get(p.id);
 			const distLabel = dId != null ? `district ${dId}` : "unassigned";
 			const label = p.name ?? `Precinct ${p.id}`;
 			this.svg.attr("aria-label",
 				`District map — focused: ${label}, ${distLabel}. ` +
-				`Arrow keys navigate. Number keys 1–5 assign district. Space assigns active district.`
+				`Arrow keys navigate. Number keys 1–${districtCount} assign district. Space assigns active district.`
 			);
 		}
 	}
@@ -1407,9 +1416,10 @@ export class SvgMapRenderer implements MapRenderer {
 					.attr("opacity", this.hexOpacity(d, assignments));
 			}
 			// Restore default aria-label
+			const { districtCount } = this.getState();
 			this.svg.attr("aria-label",
 				"District map. Use mouse or keyboard to paint precincts. " +
-				"Arrow keys navigate precincts, number keys 1–5 assign to a district."
+				`Arrow keys navigate precincts, number keys 1–${districtCount} assign to a district.`
 			);
 		}
 	}

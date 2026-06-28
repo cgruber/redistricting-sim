@@ -132,6 +132,53 @@ function renderProse(el: HTMLElement, text: string): void {
 	}
 }
 
+// ─── Accessibility helpers (GAME-105) ─────────────────────────────────────────
+// Focus management on screen/modal transitions: every screen change is a
+// classList.remove("hidden"); without moving focus, a keyboard user is stranded on
+// the now-hidden control and a screen reader announces nothing (WCAG 2.4.3).
+
+/** Move focus to the element with the given id, if present and focusable. */
+function focusEl(id: string): void {
+	const el = document.getElementById(id);
+	// rAF so the element has finished un-hiding/laying out before .focus() runs;
+	// focusing a still-display:none element silently fails.
+	if (el) requestAnimationFrame(() => el.focus());
+}
+
+/** Focus the first enabled, visible focusable control inside a container. */
+function focusFirst(containerId: string): void {
+	const container = document.getElementById(containerId);
+	if (!container) return;
+	requestAnimationFrame(() => {
+		const candidates = Array.from(container.querySelectorAll<HTMLElement>(
+			'button:not([disabled]):not([hidden]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+		));
+		for (const c of candidates) {
+			// Skip controls hidden via display:none (offsetParent === null when hidden).
+			if (c.offsetParent !== null || c === document.activeElement) {
+				c.focus();
+				return;
+			}
+		}
+		// Fallback: focus the container itself if nothing focusable was found.
+		container.focus();
+	});
+}
+
+/**
+ * Mark the live editor (#app-header + #main) inert (or not) while an overlay is open
+ * above it. `inert` removes the subtree from the tab order, pointer events, AND the
+ * accessibility tree in one shot — so a keyboard user can't Tab into the live map or
+ * re-submit behind a modal. MUST be cleared on every in-page close path or the user
+ * is trapped. (Paths that window.location.assign() reload the page, clearing it.)
+ */
+function setEditorInert(on: boolean): void {
+	for (const id of ["app-header", "main"]) {
+		const el = document.getElementById(id);
+		if (el) el.inert = on;
+	}
+}
+
 // Intro screen refs (GAME-016)
 const introScreen = document.getElementById("intro-screen") as HTMLElement | null;
 const charNameEl = document.getElementById("char-name") as HTMLElement | null;
@@ -227,6 +274,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 			const card = document.createElement("div");
 			card.className = `scenario-card${locked ? " locked" : ""}`;
+			card.setAttribute("role", "listitem"); // GAME-105: #scenario-cards has role="list"
 
 			const titleEl = document.createElement("div");
 			titleEl.className = "sc-title";
@@ -273,6 +321,12 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		const wipTitle = SCENARIO_MANIFEST.find((e) => e.id === wipScenarioId)?.title ?? wipScenarioId;
 		text.textContent = `You have unsaved progress in "${wipTitle}". Switching scenarios will discard it.`;
 		modal.classList.remove("hidden");
+		// GAME-105: the WIP modal sits over the scenario-select screen — make it inert so a
+		// keyboard user can't Tab into the cards behind the dialog. Cancel clears it (Confirm
+		// reloads). Move focus into the dialog.
+		const underlay = document.getElementById("scenario-select");
+		if (underlay) underlay.inert = true;
+		focusEl("wip-warning-text");
 		const onConfirm = () => {
 			cleanup();
 			clearWip();
@@ -284,6 +338,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		const onCancel = () => {
 			cleanup();
 			modal.classList.add("hidden");
+			if (underlay) underlay.inert = false; // GAME-105: restore the scenario-select screen
 		};
 		function cleanup() {
 			confirmBtn!.removeEventListener("click", onConfirm);
@@ -341,6 +396,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		});
 
 		el.classList.remove("hidden");
+		focusEl("btn-campaign-back"); // GAME-105: move focus into the revealed screen
 	}
 
 	function showMainMenu() {
@@ -367,19 +423,26 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		document.getElementById("btn-main-about")?.addEventListener("click", () => {
 			mainMenuEl.classList.add("hidden");
 			document.getElementById("about-screen")?.classList.remove("hidden");
+			focusEl("btn-about-close"); // GAME-105: focus the about dialog's close button
 		});
 
 		document.getElementById("btn-about-close")?.addEventListener("click", () => {
 			document.getElementById("about-screen")?.classList.add("hidden");
 			mainMenuEl.classList.remove("hidden");
+			focusEl("btn-main-about"); // GAME-105: return focus to the trigger
 		});
 
 		mainMenuEl.classList.remove("hidden");
+		// GAME-105: focus the first enabled nav button (Continue is disabled with no WIP).
+		focusFirst("main-menu-nav");
 	}
 
 	function showScenarioSelect() {
 		renderScenarioCards();
 		scenarioSelectEl?.classList.remove("hidden");
+		// GAME-105: move focus into the revealed screen. The back button is hidden when no
+		// campaign is active, so focus the heading (a -1 target) as the stable landing spot.
+		focusEl("scenario-select-heading");
 
 		// Back button — visible only when a campaign is active (GAME-048)
 		const backBtn = document.getElementById("btn-back-to-campaign") as HTMLButtonElement | null;
@@ -693,6 +756,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		document.getElementById("main-menu")?.classList.add("hidden");
 		appHeader!.style.display = "";
 		mainEl!.style.display = "";
+		// GAME-105: move focus into the newly-revealed editor (the map is the primary region).
+		focusEl("map-svg");
 		// GAME-076: kick off the guided walkthrough (no-op unless scenario.guided + a script).
 		// rAF so the just-shown editor has laid out before the overlay highlights anything.
 		requestAnimationFrame(() => startTutorialOverlay(scenario, store));
@@ -1470,6 +1535,12 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 		syncMuteButton();
 		resultScreen.classList.remove("hidden");
+		// GAME-105: the result screen sits OVER the live editor — make the editor roots
+		// inert so a keyboard user can't Tab into the map / re-submit behind the modal.
+		// Cleared by Keep Drawing (the only in-page exit); every other exit reloads.
+		setEditorInert(true);
+		// Move focus into the dialog (verdict is a -1 target; fall back to Keep Drawing).
+		focusEl("btn-keep-drawing");
 	}
 
 	function syncMuteButton(): void {
@@ -1518,6 +1589,10 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			skipClickHandler();
 		}
 		resultScreen!.classList.add("hidden");
+		// GAME-105: restore the editor — clear inert so the map/buttons work again,
+		// and return focus to the map (the user is back in the editor).
+		setEditorInert(false);
+		focusEl("map-svg");
 	});
 
 	// Nav-back submenu (GAME-051)
@@ -1544,6 +1619,11 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			navBackTrigger?.setAttribute("aria-expanded", "false");
 		}
 
+		// GAME-105: visible (non-hidden) menuitems, for focus-on-open + arrow roving.
+		const menuItems = (): HTMLButtonElement[] =>
+			Array.from(navBackMenu?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]') ?? [])
+				.filter((b) => !b.hidden);
+
 		navBackTrigger?.addEventListener("click", (e) => {
 			e.stopPropagation();
 			const isOpen = !navBackMenu?.hasAttribute("hidden");
@@ -1552,12 +1632,30 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			} else {
 				navBackMenu?.removeAttribute("hidden");
 				navBackTrigger.setAttribute("aria-expanded", "true");
+				// GAME-105: move focus to the first menuitem when the menu opens.
+				requestAnimationFrame(() => menuItems()[0]?.focus());
 			}
+		});
+
+		// GAME-105: ArrowUp/ArrowDown roving between menuitems while the menu is open.
+		navBackMenu?.addEventListener("keydown", (e: KeyboardEvent) => {
+			if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+			const items = menuItems();
+			if (items.length === 0) return;
+			e.preventDefault();
+			const cur = items.indexOf(document.activeElement as HTMLButtonElement);
+			const delta = e.key === "ArrowDown" ? 1 : -1;
+			const next = (cur + delta + items.length) % items.length;
+			items[next]?.focus();
 		});
 
 		document.addEventListener("click", closeNavMenu);
 		document.addEventListener("keydown", (e: KeyboardEvent) => {
-			if (e.key === "Escape") closeNavMenu();
+			if (e.key === "Escape") {
+				const wasOpen = !navBackMenu?.hasAttribute("hidden");
+				closeNavMenu();
+				if (wasOpen) navBackTrigger?.focus(); // GAME-105: return focus to the trigger
+			}
 		});
 
 		btnBackToScenarios?.addEventListener("click", () => {
@@ -1584,6 +1682,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		} else {
 			resultScreen!.classList.add("hidden");
 			document.getElementById("wrap-up-screen")?.classList.remove("hidden");
+			// GAME-105: editor stays inert behind the wrap-up dialog (Play Again reloads).
+			focusEl("wrap-up-heading");
 		}
 	}
 	function goToMenu() {
@@ -1598,10 +1698,12 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	btnContinue?.addEventListener("click", () => {
 		resultMain?.classList.add("hidden");
 		resultDebrief?.classList.remove("hidden");
+		focusEl("result-debrief-heading"); // GAME-105: move focus into the revealed panel
 	});
 	btnDebriefBack?.addEventListener("click", () => {
 		resultDebrief?.classList.add("hidden");
 		resultMain?.classList.remove("hidden");
+		focusEl("btn-keep-drawing"); // GAME-105: back to the results view
 	});
 
 	// Wrap-up "Play Again" → back to select screen

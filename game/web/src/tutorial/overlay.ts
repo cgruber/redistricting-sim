@@ -192,6 +192,30 @@ function completeKey(id: string): string {
   return `tutorial-${id}-complete`;
 }
 
+/**
+ * Keyboard-safe map lock (GAME-105). `inert` on #map-svg removes it from the tab order and
+ * blocks pointer + a11y — so a keyboard user can't focus the SVG and trip its number-key
+ * paint handler during a frozen tutorial step. Restored (with tabindex="0") on paint steps
+ * and on teardown.
+ *
+ * NOTE: `inert` is an IDL property of HTMLElement only, NOT SVGElement — `svg.inert = true`
+ * would write a no-op JS expando. We must use the content attribute, which is namespace-
+ * agnostic and applies to the SVG. We also blur() explicitly: neither the attribute nor
+ * tabindex drops focus the SVG already holds (e.g. carried over from a prior paint step).
+ */
+function setMapKeyboardLock(locked: boolean): void {
+  const svg = document.getElementById("map-svg");
+  if (!svg) return;
+  if (locked) {
+    svg.setAttribute("inert", "");
+    svg.setAttribute("tabindex", "-1");
+    svg.blur(); // drop focus retained from a prior paint step
+  } else {
+    svg.removeAttribute("inert");
+    svg.setAttribute("tabindex", "0"); // restore the editor's default focusability
+  }
+}
+
 // ─── Engine ──────────────────────────────────────────────────────────────────
 
 interface StoreLike {
@@ -318,6 +342,8 @@ function runOverlay(id: string, script: TutorialStep[], store: StoreLike): void 
       el.classList.remove("tutorial-interactive"),
     );
     editorRoots.forEach((r) => r.classList.remove("tutorial-paused"));
+    // GAME-105: lift the keyboard lock on the map (the overlay is done with this step).
+    setMapKeyboardLock(false);
   }
 
   // Tear down the overlay DOM/listeners WITHOUT marking it complete (used by restart).
@@ -372,6 +398,13 @@ function runOverlay(id: string, script: TutorialStep[], store: StoreLike): void 
     [...targets, ...paintTargets].forEach((el) =>
       el.classList.add("tutorial-interactive"),
     );
+    // GAME-105: keyboard-safe lock. `.tutorial-paused` (pointer-events:none) only blocks the
+    // mouse; the map's keydown handler stays live whenever #map-svg holds focus, so a keyboard
+    // user could paint during a frozen step. On non-paint steps make #map-svg `inert` (auto-
+    // blurs it, drops it from tab order, blocks pointer); on paint steps the map stays live.
+    // The district toolbar is left to `.tutorial-interactive` (its buttons only change the
+    // active district, not assignments) so click-target steps like "pick District 2" still work.
+    setMapKeyboardLock(!paints);
 
     // On the final step the "Next" button reads "Done" — it finishes the tutorial (and unlocks
     // the editor) rather than stepping forward.
