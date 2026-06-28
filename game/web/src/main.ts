@@ -27,6 +27,7 @@ import {
 	type DistrictDemoStat,
 } from "./simulation/evaluate.js";
 import { computeValidityStats } from "./simulation/validity.js";
+import { computeStarCount, computeMaxStars, buildValidityRows } from "./simulation/verdict.js";
 import {
 	loadProgress,
 	saveProgress,
@@ -832,55 +833,6 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 	// ── Submit / Evaluation (GAME-017) ────────────────────────────────────────
 
-	/**
-	 * Build synthetic CriterionResult rows for hard validity constraints that the
-	 * map violates (GAME-059).  These are prepended to the result criteria list so
-	 * players can see exactly which structural issues need fixing.
-	 */
-	function buildValidityRows(validity: ReturnType<typeof computeValidityStats>): CriterionResult[] {
-		const rows: CriterionResult[] = [];
-		// Skip a validity row if the scenario already has a success criterion of the
-		// equivalent type — that criterion will appear in evalResult and already shows
-		// the failure, so the validity row would be a duplicate.
-		const scenarioCriterionTypes = new Set(scenario.success_criteria.map(sc => sc.criterion.type));
-
-		if (validity.unassignedCount > 0 && !scenarioCriterionTypes.has("district_count")) {
-			rows.push({
-				criterionId: "validity:all-assigned" as CriterionId,
-				required: true,
-				description: "All precincts must be assigned to a district",
-				passed: false,
-				detail: `${validity.unassignedCount} precinct(s) unassigned`,
-			});
-		}
-
-		// Population balance is opt-in via a population_balance criterion (see
-		// isMapSubmittable): when present it appears in evalResult already; when absent
-		// it isn't a constraint. Either way there is no synthetic balance validity row.
-
-		if (validity.contiguity !== null) {
-			for (const [distId, ok] of validity.contiguity) {
-				if (!ok) {
-					rows.push({
-						criterionId: `validity:contiguity-${distId}` as CriterionId,
-						required: true,
-						description: `District ${distId} must be contiguous`,
-						passed: false,
-						detail: `District ${distId} is split into disconnected pieces`,
-					});
-				}
-			}
-		}
-
-		return rows;
-	}
-
-	function computeStarCount(criterionResults: CriterionResult[], mapIsValid: boolean): number {
-		const allRequiredPass = criterionResults.every(cr => !cr.required || cr.passed);
-		if (!mapIsValid || !allRequiredPass) return 0;
-		return 1 + criterionResults.filter(cr => !cr.required && cr.passed).length;
-	}
-
 	// GAME-069/GAME-062: Sprite sheet layout constants.
 	// Governor sheet: 1376×752px (unique dimensions).
 	// Pose columns: neutral 0–400, approve 400–880, disapprove 880–1376.
@@ -1057,7 +1009,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		if (btnContinue) btnContinue.style.display = "none";
 		if (resultStars) { resultStars.innerHTML = ""; resultStars.classList.add("hidden"); }
 		// maxStars based on scenario structure (not forced-pass); stars computed from actual results.
-		const maxStars = 1 + evalResult.criterionResults.filter(cr => !cr.required).length;
+		const maxStars = computeMaxStars(evalResult.criterionResults);
 		const stars = debugForcePass ? maxStars : computeStarCount(evalResult.criterionResults, mapIsValid);
 
 		// Build criterion-type lookup (criterionId → Criterion["type"]) for icon dispatch.
@@ -1085,7 +1037,13 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		}
 
 		// GAME-059: for invalid maps, prepend validity failure rows before scenario criteria.
-		const validityRows = mapIsValid ? [] : buildValidityRows(validity);
+		// Skip a validity row if the scenario already has a success criterion of the
+		// equivalent type — that criterion appears in evalResult and already shows the
+		// failure, so the validity row would be a duplicate.
+		const scenarioCriterionTypes: ReadonlySet<string> = new Set(
+			scenario.success_criteria.map(sc => sc.criterion.type),
+		);
+		const validityRows = mapIsValid ? [] : buildValidityRows(validity, scenarioCriterionTypes);
 		const criterionRows = debugForcePass
 			? evalResult.criterionResults.map(cr => ({ ...cr, passed: true }))
 			: evalResult.criterionResults;
@@ -1136,23 +1094,37 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			if (btnBackToMenu) btnBackToMenu.style.display = pass && !epilogue ? "" : "none";
 		}
 
-		function revealVerdict(pass: boolean, starCount: number): void {
-			if (verdictShown) return;
-			verdictShown = true;
+		// GAME-110: single source of truth for the verdict banner — verdict
+		// text/class/opacity, subtitle, stars, and post-win button wiring. Both the
+		// normal reveal path (revealVerdict) and the debug-replay path
+		// (syncOverallVerdict) call this so they can't diverge. Callers own their
+		// own guards/audio and compute the subtitle string (pass it via opts).
+		function applyVerdictUI(pass: boolean, starCount: number, subtitle: string): void {
 			resultVerdict!.textContent = pass ? "Map Passed!" : "Map Failed";
 			resultVerdict!.className = pass ? "pass" : "fail";
 			resultVerdict!.style.opacity = "1";
-			resultSubtitle!.textContent = pass
+			resultSubtitle!.textContent = subtitle;
+			resultSubtitle!.style.opacity = "1";
+			if (resultStars) {
+				if (pass) {
+					renderStars(resultStars, starCount, maxStars);
+					resultStars.classList.remove("hidden");
+				} else {
+					resultStars.classList.add("hidden");
+				}
+			}
+			preparePostWin(pass);
+		}
+
+		function revealVerdict(pass: boolean, starCount: number): void {
+			if (verdictShown) return;
+			verdictShown = true;
+			const subtitle = pass
 				? "All required criteria met."
 				: mapIsValid
 					? "One or more required criteria were not met."
 					: "The map has structural issues that must be fixed.";
-			resultSubtitle!.style.opacity = "1";
-			if (pass && resultStars) {
-				renderStars(resultStars, starCount, maxStars);
-				resultStars.classList.remove("hidden");
-			}
-			preparePostWin(pass);
+			applyVerdictUI(pass, starCount, subtitle);
 			if (pass) {
 				play("tada");
 			} else {
@@ -1215,25 +1187,13 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			const anyRequiredFailed = rows.some(r => r.classList.contains("failed-required"));
 			const nowPass = !anyRequiredFailed;
 			verdictShown = true;
-			resultVerdict.textContent = nowPass ? "Map Passed!" : "Map Failed";
-			resultVerdict.className = nowPass ? "pass" : "fail";
-			resultVerdict.style.opacity = "1";
-			resultSubtitle.textContent = nowPass
+			const optionalPassed = rows.filter(r =>
+				r.dataset["required"] === "false" && r.dataset["passed"] === "true"
+			).length;
+			const subtitle = nowPass
 				? "All required criteria met."
 				: "One or more required criteria were not met.";
-			resultSubtitle.style.opacity = "1";
-			preparePostWin(nowPass);
-			if (resultStars) {
-				if (nowPass) {
-					const optionalPassed = rows.filter(r =>
-						r.dataset["required"] === "false" && r.dataset["passed"] === "true"
-					).length;
-					renderStars(resultStars, 1 + optionalPassed, maxStars);
-					resultStars.classList.remove("hidden");
-				} else {
-					resultStars.classList.add("hidden");
-				}
-			}
+			applyVerdictUI(nowPass, 1 + optionalPassed, subtitle);
 		}
 
 		// Debug: reset a single row to pending and re-run its reveal with a forced result.

@@ -121,6 +121,65 @@ js_test(
     visibility = ["//visibility:public"],
 )
 
+# ── verdict_lib: computeStarCount + computeMaxStars + buildValidityRows ────────
+
+ts_project(
+    name = "verdict_lib",
+    srcs = ["verdict.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":evaluate_lib",
+        ":validity_lib",
+        "//game/web/src/model:model_lib",
+    ],
+    visibility = ["//game/web:__pkg__", "//game/web/src/simulation:__pkg__"],
+)
+
+# ── verdict_typecheck_test ────────────────────────────────────────────────────
+
+build_test(
+    name = "verdict_typecheck_test",
+    targets = [":verdict_lib"],
+    visibility = ["//visibility:public"],
+)
+
+# ── verdict_test_lib ──────────────────────────────────────────────────────────
+
+ts_project(
+    name = "verdict_test_lib",
+    srcs = ["verdict_test.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [
+        ":verdict_lib",
+        ":evaluate_lib",
+        ":validity_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+# ── verdict_test: run tests with Node ─────────────────────────────────────────
+
+js_test(
+    name = "verdict_test",
+    entry_point = "verdict_test.js",
+    data = [
+        ":verdict_test_lib",
+        ":verdict_lib",
+        ":evaluate_lib",
+        ":validity_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 # ── evaluate_lib: evaluateCriteria + isMapSubmittable ─────────────────────────
 
 ts_project(

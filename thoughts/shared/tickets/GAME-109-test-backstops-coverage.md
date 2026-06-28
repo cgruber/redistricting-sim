@@ -36,6 +36,7 @@ backstops so gaps fail CI, plus the missing unit tests. From the 2026-06-27 qual
 - [ ] Add `evaluate_test.ts` cases for `safe_seats` (margin just above / exactly `==` / just below threshold; `safeCount < min_count`) and a `competitive_seats` boundary case.
 - [ ] Add `criterion-icons_test.ts` (+ target): correct icon per `Criterion['type']`, prefix resolution for `validity:*`, and an exhaustiveness check that every type in `scenario.ts` has an `ICONS` entry.
 - [ ] Drop `:generator_lib` from the `adapter_test` data list; either delete `generator.ts`/`generator_lib` or mark it `@deprecated` dead code.
+- [ ] Result-screen verdict DOM coverage (raised in PR #300 / GAME-110 review): add an e2e assertion for the on-screen star count, the verdict subtitle text, and stars-hidden-on-fail — the `verdict_test` unit tests cover the pure star/validity logic but nothing currently asserts the rendered result-screen reflects it.
 
 ## Test Coverage
 
