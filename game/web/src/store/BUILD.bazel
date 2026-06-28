@@ -12,6 +12,13 @@ and the esbuild bundle.
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
 load("@aspect_rules_js//js:defs.bzl", "js_test")
 
+# GAME-109: expose colocated test sources + BUILD to //game/web:unwired_tests_test.
+filegroup(
+    name = "test_sources_for_meta",
+    srcs = glob(["*_test.ts"]) + ["BUILD.bazel"],
+    visibility = ["//game/web:__pkg__"],
+)
+
 ts_config(
     name = "tsconfig",
     src = "tsconfig.json",

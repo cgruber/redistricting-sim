@@ -1,4 +1,5 @@
 load("@aspect_rules_esbuild//esbuild:defs.bzl", "esbuild")
+load("@aspect_rules_js//js:defs.bzl", "js_test")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
@@ -9,12 +10,31 @@ ts_config(
     src = "tsconfig.json",
 )
 
+# tsconfig variant that emits declarations — needed for the standalone
+# criterion_icons_lib so its colocated unit test can resolve "./criterion-icons.js"
+# types (the root tsconfig used by the app glob does not emit .d.ts files).
+ts_config(
+    name = "tsconfig_lib",
+    src = "tsconfig.lib.json",
+    deps = [":tsconfig"],
+)
+
 # Type-check target: verifies TypeScript types without producing runtime output.
 # Note: src/model/ is a separate Bazel package (owns BUILD.bazel); glob does not
 # cross package boundaries, so model targets are listed explicitly as deps.
+# criterion-icons.ts lives in the root game/web package (src/ root). It owns a
+# dedicated ts_project/js_test pair (:criterion_icons_lib / :criterion_icons_test)
+# for unit coverage (GAME-109), so it is excluded from the broad src glob here and
+# in the esbuild app below to avoid two targets producing criterion-icons.js.
 ts_project(
     name = "app_typecheck_lib",
-    srcs = glob(["src/**/*.ts"]),
+    srcs = glob(
+        ["src/**/*.ts"],
+        exclude = [
+            "src/criterion-icons.ts",
+            "src/criterion-icons_test.ts",
+        ],
+    ),
     tsconfig = ":tsconfig",
     deps = [
         "//game:node_modules/d3",
@@ -25,7 +45,6 @@ ts_project(
         "//game/web/src/model:model_lib",
         "//game/web/src/model:types_lib",
         "//game/web/src/model:hex_geometry_lib",
-        "//game/web/src/model:generator_lib",
         "//game/web/src/model:adapter_lib",
         "//game/web/src/model:progress_lib",
         "//game/web/src/model:campaigns_lib",
@@ -36,6 +55,7 @@ ts_project(
         "//game/web/src/simulation:verdict_lib",
         "//game/web/src/store:gameStore_lib",
         "//game/web/src/audio:audioplayer_lib",
+        ":criterion_icons_lib",
     ],
 )
 
@@ -51,7 +71,13 @@ build_test(
 # deps on //web/src/model targets.
 esbuild(
     name = "app",
-    srcs = glob(["src/**/*.ts"]),
+    srcs = glob(
+        ["src/**/*.ts"],
+        exclude = [
+            "src/criterion-icons.ts",
+            "src/criterion-icons_test.ts",
+        ],
+    ),
     entry_point = "src/main.ts",
     deps = [
         "//game:node_modules/d3",
@@ -61,7 +87,6 @@ esbuild(
         "//game/web/src/model:model_lib",
         "//game/web/src/model:types_lib",
         "//game/web/src/model:hex_geometry_lib",
-        "//game/web/src/model:generator_lib",
         "//game/web/src/model:adapter_lib",
         "//game/web/src/model:progress_lib",
         "//game/web/src/model:campaigns_lib",
@@ -72,6 +97,7 @@ esbuild(
         "//game/web/src/simulation:verdict_lib",
         "//game/web/src/store:gameStore_lib",
         "//game/web/src/audio:audioplayer_lib",
+        ":criterion_icons_lib",
     ],
     output = "bundle.js",
     format = "esm",
@@ -85,6 +111,52 @@ esbuild(
 filegroup(
     name = "html",
     srcs = ["index.html", "styles.css", "react-stub.js"],
+    visibility = ["//visibility:public"],
+)
+
+# ── criterion_icons_lib: per-criterion result-screen SVG icons (GAME-066) ─────
+#
+# criterion-icons.ts lives at the src/ root of this package. It is excluded from
+# the broad app glob (above) and given a dedicated ts_project so it can be
+# unit-tested (GAME-109) without a second target producing criterion-icons.js.
+ts_project(
+    name = "criterion_icons_lib",
+    srcs = ["src/criterion-icons.ts"],
+    tsconfig = ":tsconfig_lib",
+    declaration = True,
+    deps = ["//game/web/src/model:model_lib"],
+    visibility = ["//game/web:__subpackages__"],
+)
+
+# ── criterion_icons_test_lib: compile the icon tests ──────────────────────────
+
+ts_project(
+    name = "criterion_icons_test_lib",
+    srcs = ["src/criterion-icons_test.ts"],
+    tsconfig = ":tsconfig_lib",
+    declaration = True,
+    deps = [
+        ":criterion_icons_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+# ── criterion_icons_test: run the icon tests with Node ────────────────────────
+
+js_test(
+    name = "criterion_icons_test",
+    entry_point = "src/criterion-icons_test.js",
+    data = [
+        ":criterion_icons_test_lib",
+        ":criterion_icons_lib",
+        "//game/web/src/model:model_lib",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
     visibility = ["//visibility:public"],
 )
 
@@ -144,6 +216,29 @@ sh_test(
         "no-sandbox",
         "e2e",
     ],
+    visibility = ["//visibility:public"],
+)
+
+# Meta-test (GAME-109): fail when a colocated `src/**/*_test.ts` has no
+# corresponding js_test target. A backstop for the explicit per-target
+# convention — a new test file the author forgets to wire would otherwise
+# compile into nothing and never run while `bazel test //...` stays green.
+#
+# `data` must reach every test source AND every BUILD.bazel: glob does not cross
+# package boundaries, so each subpackage surfaces its files via a
+# :test_sources_for_meta filegroup. The root package's own test sources (e.g.
+# criterion-icons_test.ts) and this BUILD.bazel are added directly.
+sh_test(
+    name = "unwired_tests_test",
+    srcs = ["unwired_tests_test.sh"],
+    data = [
+        "BUILD.bazel",
+        "//game/web/src/model:test_sources_for_meta",
+        "//game/web/src/simulation:test_sources_for_meta",
+        "//game/web/src/store:test_sources_for_meta",
+        "//game/web/src/audio:test_sources_for_meta",
+        "//game/web/src/pipeline:test_sources_for_meta",
+    ] + glob(["src/*_test.ts"]),
     visibility = ["//visibility:public"],
 )
 

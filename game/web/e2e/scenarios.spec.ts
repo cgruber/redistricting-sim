@@ -1581,3 +1581,78 @@ test("guided overlay: tutorial-004 gives a light orient then a read-only Done be
   await expect(page.locator("#result-screen")).toBeHidden();
   await expect(page.locator("#main")).not.toHaveClass(/tutorial-paused/);
 });
+
+// ─── GAME-109: result-screen verdict DOM reflects the pure verdict logic ──────
+//
+// computeStarCount/computeMaxStars (verdict.ts) are unit-tested, but nothing
+// asserted the rendered result screen mirrors them. These two tests close that
+// gap: a winning submission shows filled stars + the pass verdict/subtitle; a
+// failing submission hides the star row entirely.
+
+test("scenario-002 verdict DOM: a winning submission shows filled stars and the pass verdict", async ({ page }) => {
+  // Reuse the documented winning paint from the scenario-002 winnability test:
+  // pack the dense east-of-centre Ryu core into D1, split the Ken remainder into
+  // three majority-Ken districts → 3 Ken / 1 Ryu, all required criteria met.
+  await loadScenario(page, "scenario-002");
+
+  await paintHexes(page, [
+    [1,-2],[1,-1],[2,-1],[2,-2],[1,0],[3,-1],[3,0],
+  ], 1);
+  await paintHexes(page, [
+    [-2,-3],[-3,-2],[-2,-2],
+    [-4,-1],[-3,-1],[-2,-1],[-1,-1],
+    [-5,0],[-4,0],[-3,0],[-2,0],[-1,0],
+    [-5,1],[-4,1],[-3,1],[-2,1],[-1,1],
+    [-5,2],[-4,2],[-3,2],[-2,2],[-1,2],
+  ], 2);
+  await paintHexes(page, [
+    [0,-5],[1,-5],[2,-5],[3,-5],[4,-5],[5,-5],
+    [-1,-4],[0,-4],[1,-4],[2,-4],[3,-4],[4,-4],[5,-4],
+    [-1,-3],[0,-3],[1,-3],[2,-3],[3,-3],[4,-3],[5,-3],
+    [-1,-2],[0,-2],[3,-2],
+    [0,-1],[0,0],
+  ], 3);
+  await paintHexes(page, [
+    [4,-2],[5,-2],[4,-1],[5,-1],
+    [2,0],[4,0],[5,0],
+    [0,1],[1,1],[2,1],[3,1],[4,1],
+    [0,2],[1,2],[2,2],[3,2],
+    [-5,3],[-4,3],[-3,3],[-2,3],[-1,3],[0,3],[1,3],[2,3],
+    [-5,4],[-4,4],[-3,4],[-2,4],[-1,4],[0,4],[1,4],
+    [-5,5],[-4,5],[-3,5],[-2,5],[-1,5],[0,5],
+  ], 4);
+
+  await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#result-screen")).toBeVisible();
+
+  // Verdict banner: pass text + pass subtitle (deferred reveal, so wait on the text).
+  await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+  await expect(page.locator("#result-verdict")).toHaveClass(/pass/);
+  await expect(page.locator("#result-subtitle")).toHaveText("All required criteria met.");
+
+  // Star row: visible, with a deterministic structure for scenario-002 —
+  // 3 required + 1 optional (compactness) → maxStars = 2 (1 base + 1 optional).
+  // A win earns the base star (≥ 1 filled); the optional may or may not be earned.
+  const stars = page.locator("#result-stars");
+  await expect(stars).not.toHaveClass(/hidden/);
+  await expect(stars.locator(".result-star")).toHaveCount(2);
+  const filled = await stars.locator(".result-star.filled").count();
+  expect(filled).toBeGreaterThanOrEqual(1);
+  expect(filled).toBeLessThanOrEqual(2);
+});
+
+test("scenario-002 verdict DOM: a failing submission hides the star row", async ({ page }) => {
+  // Submit the initial (diagonal-strip) assignment, which fails the required
+  // criteria. The verdict is deferred (GAME-073) — wait for "Map Failed" before
+  // asserting the stars are hidden.
+  await loadScenario(page, "scenario-002");
+
+  await expect(page.locator("#btn-submit")).toBeEnabled();
+  await page.locator("#btn-submit").click();
+  await expect(page.locator("#result-screen")).toBeVisible();
+
+  await expect(page.locator("#result-verdict")).toHaveText("Map Failed");
+  await expect(page.locator("#result-verdict")).toHaveClass(/fail/);
+  await expect(page.locator("#result-stars")).toHaveClass(/hidden/);
+});

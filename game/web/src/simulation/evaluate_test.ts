@@ -534,4 +534,148 @@ test("majority_minority: no scenario precincts provided → fail with message", 
   assertFalse(result.criterionResults[0]!.passed, "missing scenario precincts → fail");
 });
 
+// ─── safe_seats tests ─────────────────────────────────────────────────────────
+//
+// margin = round((winnerShare − runnerUpShare) * 1000) / 1000. With only R/D
+// populated (minor parties 0) and one precinct per district, a precinct's
+// partyShare IS the district share, so margins are exact:
+//   R 0.62 / D 0.38 → margin 0.24   (above a 0.20 threshold)
+//   R 0.60 / D 0.40 → margin 0.20   (exactly == threshold; >= must count it)
+//   R 0.55 / D 0.45 → margin 0.10   (below threshold; must NOT count)
+
+function makeSafeSeatsCriterion(
+  party: string,
+  margin: number,
+  minCount: number,
+  required = true,
+): SuccessCriterion {
+  return {
+    id: "sc-safe" as import("../model/scenario.js").CriterionId,
+    required,
+    description: `Party ${party} holds ${minCount} safe seat(s) (margin ≥ ${margin})`,
+    criterion: {
+      type: "safe_seats",
+      party: party as import("../model/scenario.js").PartyId,
+      margin,
+      min_count: minCount,
+    },
+  };
+}
+
+// Three R-won districts at three different margins (above / exactly == / below 0.20).
+const SAFE_PRECINCTS = [
+  makePrecinct(0, 1000, 0.62, 0.38, [null, null, null, null, null, null]), // margin 0.24
+  makePrecinct(1, 1000, 0.60, 0.40, [null, null, null, null, null, null]), // margin 0.20
+  makePrecinct(2, 1000, 0.55, 0.45, [null, null, null, null, null, null]), // margin 0.10
+];
+const SAFE_ASSIGNMENTS = new Map([[0, 1], [1, 2], [2, 3]]);
+
+test("safe_seats: a district won by margin ABOVE threshold counts", () => {
+  // threshold 0.20, min_count 1 → the 0.24-margin district alone satisfies it.
+  const result = runEval(
+    [makeSafeSeatsCriterion("ken", 0.20, 1)],
+    SAFE_PRECINCTS,
+    SAFE_ASSIGNMENTS,
+    3,
+    RULES_LENIENT,
+  );
+  assertTrue(result.criterionResults[0]!.passed, "1 safe seat (margin 0.24 ≥ 0.20) → pass");
+});
+
+test("safe_seats: margin EXACTLY == threshold counts (>= boundary)", () => {
+  // threshold 0.20, min_count 2 → needs both the 0.24 AND the exactly-0.20 district.
+  // Only passes if the boundary margin (0.20) is counted by the `>=` comparison.
+  const result = runEval(
+    [makeSafeSeatsCriterion("ken", 0.20, 2)],
+    SAFE_PRECINCTS,
+    SAFE_ASSIGNMENTS,
+    3,
+    RULES_LENIENT,
+  );
+  assertTrue(
+    result.criterionResults[0]!.passed,
+    "2 safe seats incl. the exactly-0.20 district (>= boundary) → pass",
+  );
+});
+
+test("safe_seats: margin just BELOW threshold does not count", () => {
+  // threshold 0.20, min_count 3 → would need the 0.10-margin district too, but it
+  // must NOT count, so only 2 qualify and the criterion fails.
+  const result = runEval(
+    [makeSafeSeatsCriterion("ken", 0.20, 3)],
+    SAFE_PRECINCTS,
+    SAFE_ASSIGNMENTS,
+    3,
+    RULES_LENIENT,
+  );
+  assertFalse(
+    result.criterionResults[0]!.passed,
+    "only 2 of 3 districts ≥ 0.20 margin (the 0.10 one excluded) → 3rd seat missing → fail",
+  );
+});
+
+test("safe_seats: safeCount < min_count fails", () => {
+  // threshold 0.20, min_count 2 but only ONE district provided (margin 0.24).
+  const result = runEval(
+    [makeSafeSeatsCriterion("ken", 0.20, 2)],
+    [SAFE_PRECINCTS[0]!],
+    new Map([[0, 1]]),
+    1,
+    RULES_LENIENT,
+  );
+  assertFalse(result.criterionResults[0]!.passed, "1 safe seat < min_count 2 → fail");
+  assertFalse(result.overallPass, "overall fail");
+});
+
+// ─── competitive_seats tests ──────────────────────────────────────────────────
+//
+// competitive = districts with margin <= c.margin. Reuses SAFE_PRECINCTS:
+//   margins are 0.24, 0.20, 0.10. A threshold of 0.20 counts the 0.20 (boundary)
+//   and 0.10 districts → 2 competitive; the 0.24 district is excluded.
+
+function makeCompetitiveSeatsCriterion(
+  margin: number,
+  minCount: number,
+  required = true,
+): SuccessCriterion {
+  return {
+    id: "sc-comp" as import("../model/scenario.js").CriterionId,
+    required,
+    description: `At least ${minCount} competitive seat(s) (margin ≤ ${margin})`,
+    criterion: { type: "competitive_seats", margin, min_count: minCount },
+  };
+}
+
+test("competitive_seats: boundary margin (== threshold) counts as competitive", () => {
+  // threshold 0.20 → districts with margin ≤ 0.20 are the 0.20 and 0.10 ones (2);
+  // requiring 2 passes only if the boundary 0.20 district is counted (margin <= threshold).
+  const result = runEval(
+    [makeCompetitiveSeatsCriterion(0.20, 2)],
+    SAFE_PRECINCTS,
+    SAFE_ASSIGNMENTS,
+    3,
+    RULES_LENIENT,
+  );
+  assertTrue(
+    result.criterionResults[0]!.passed,
+    "2 competitive seats incl. the exactly-0.20 boundary district → pass",
+  );
+});
+
+test("competitive_seats: a district above the margin threshold is not competitive", () => {
+  // Requiring 3 competitive at threshold 0.20 fails because the 0.24-margin
+  // district is excluded (only 2 qualify).
+  const result = runEval(
+    [makeCompetitiveSeatsCriterion(0.20, 3)],
+    SAFE_PRECINCTS,
+    SAFE_ASSIGNMENTS,
+    3,
+    RULES_LENIENT,
+  );
+  assertFalse(
+    result.criterionResults[0]!.passed,
+    "only 2 of 3 districts ≤ 0.20 margin → fail",
+  );
+});
+
 summarize();
