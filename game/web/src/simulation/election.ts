@@ -13,23 +13,11 @@ import type {
 	Precinct,
 	SimulationResult,
 } from "../model/types.js";
-
-const ALL_PARTIES: PartyKey[] = ["R", "D", "L", "G", "I"];
+import { ALL_PARTIES, winnerOf } from "../model/types.js";
 
 /** Zero-initialised PartyShare */
 function zeroShare(): PartyShare {
 	return { R: 0, D: 0, L: 0, G: 0, I: 0 };
-}
-
-/** Plurality winner of a PartyShare */
-function pluralityWinner(share: PartyShare): PartyKey {
-	let best: PartyKey = "R";
-	for (const p of ALL_PARTIES) {
-		if (share[p] > share[best]) {
-			best = p;
-		}
-	}
-	return best;
 }
 
 /** Compute DistrictResult for one district */
@@ -57,7 +45,7 @@ export function simulateDistrict(
 		}
 	}
 
-	const winner = pluralityWinner(voteTotals);
+	const winner = winnerOf(voteTotals);
 
 	// Find second-place for margin
 	const sorted = ALL_PARTIES.slice().sort((a, b) => voteTotals[b] - voteTotals[a]);

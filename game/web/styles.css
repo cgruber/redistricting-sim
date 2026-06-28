@@ -417,7 +417,13 @@ body {
 .result-district .vote-bar {
   height: 8px;
   border-radius: 4px;
-  background: linear-gradient(to right, #7b35a8 var(--d-pct), #c96d00 var(--d-pct));
+  /* --party-d / --party-r are set from PARTY_COLORS at app init (GAME-104).
+     Fallbacks mirror the TS palette so the bar renders before init runs. */
+  background: linear-gradient(
+    to right,
+    var(--party-d, #7b35a8) var(--d-pct),
+    var(--party-r, #c96d00) var(--d-pct)
+  );
   margin-bottom: 4px;
 }
 

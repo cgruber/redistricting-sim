@@ -23,7 +23,7 @@
 import * as d3 from "d3";
 import { HEX_DIRECTIONS, HEX_SIZE, hexCorners, mapBounds } from "../model/hex-geometry.js";
 import type { Precinct, TerrainTileRuntime, PartyKey } from "../model/types.js";
-import { DISTRICT_COLORS, PARTY_LABELS } from "../model/types.js";
+import { PARTY_LABELS, districtColor, winnerOf } from "../model/types.js";
 import type { GameStore } from "../store/gameStore.js";
 
 // ─── Public interface ─────────────────────────────────────────────────────────
@@ -1134,9 +1134,7 @@ export class SvgMapRenderer implements MapRenderer {
 				if (infoPanel !== null) {
 					const precinctLabel = d.name ?? `Precinct ${d.id}`;
 					const distLabel = dId != null ? `District ${dId}` : "Unassigned";
-					const topParty = (["D", "R", "L", "G", "I"] as const).reduce((a, b) =>
-						d.partyShare[a] > d.partyShare[b] ? a : b,
-					);
+					const topParty = winnerOf(d.partyShare);
 					const partyName = this.partyLabels[topParty] ?? PARTY_LABELS[topParty];
 					const leanLabel = `${partyName} (${(d.partyShare[topParty] * 100).toFixed(1)}%)`;
 					let groupsHtml = "";
@@ -1256,7 +1254,7 @@ export class SvgMapRenderer implements MapRenderer {
 	private applyPaintVisual(path: SVGPathElement, districtId: number) {
 		if (this.viewMode === "lean") return;
 		const d = d3.select<SVGPathElement, Precinct>(path).datum();
-		const base = DISTRICT_COLORS[districtId - 1] ?? "#2a2a3e";
+		const base = districtColor(districtId);
 		const c = d3.hsl(base);
 		if (d !== undefined && this.popMax > this.popMin) {
 			const normPop = (d.population - this.popMin) / (this.popMax - this.popMin);
@@ -1278,7 +1276,7 @@ export class SvgMapRenderer implements MapRenderer {
 		}
 		const dId = assignments.get(d.id);
 		if (dId == null) return "#2a2a3e";
-		const base = DISTRICT_COLORS[dId - 1] ?? "#2a2a3e";
+		const base = districtColor(dId);
 		const normPop =
 			this.popMax > this.popMin
 				? (d.population - this.popMin) / (this.popMax - this.popMin)

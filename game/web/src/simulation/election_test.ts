@@ -18,7 +18,8 @@
  */
 
 import { simulateDistrict, runElection } from "./election.js";
-import type { Precinct, AssignmentMap, GameState } from "../model/types.js";
+import type { Precinct, AssignmentMap, GameState, PartyShare } from "../model/types.js";
+import { winnerOf } from "../model/types.js";
 
 import { test, assertEqual, assertClose, assertTrue, summarize } from "../testing/test_runner.js";
 
@@ -49,6 +50,35 @@ function makeState(precincts: Precinct[], assignments: AssignmentMap): GameState
 		simulationResult: null,
 	};
 }
+
+// ─── winnerOf tests (canonical tie-break, GAME-104) ─────────────────────────────
+
+function share(p: Partial<PartyShare>): PartyShare {
+	return { R: 0, D: 0, L: 0, G: 0, I: 0, ...p };
+}
+
+test("winnerOf: highest share wins", () => {
+	assertEqual(winnerOf(share({ R: 0.3, D: 0.7 })), "D", "D highest");
+	assertEqual(winnerOf(share({ R: 0.6, D: 0.4 })), "R", "R highest");
+	assertEqual(winnerOf(share({ R: 0.1, D: 0.2, L: 0.7 })), "L", "L highest");
+});
+
+test("winnerOf: exact R/D tie → R (first in ALL_PARTIES order)", () => {
+	// The canonical rule: an equal share never displaces an earlier-listed party.
+	// This is the SAME rule the adapter's displayed winner uses (GAME-104).
+	assertEqual(winnerOf(share({ R: 0.5, D: 0.5 })), "R", "R before D on a tie");
+});
+
+test("winnerOf: tie order is deterministic for L/G/I too (R>D>L>G>I)", () => {
+	// All five equal → R (ALL_PARTIES[0]).
+	assertEqual(winnerOf(share({ R: 0.2, D: 0.2, L: 0.2, G: 0.2, I: 0.2 })), "R", "5-way tie → R");
+	// D/L tie (R lower) → D, since D precedes L.
+	assertEqual(winnerOf(share({ R: 0.1, D: 0.45, L: 0.45 })), "D", "D before L");
+	// L/G tie (others lower) → L, since L precedes G.
+	assertEqual(winnerOf(share({ R: 0.1, D: 0.1, L: 0.4, G: 0.4 })), "L", "L before G");
+	// G/I tie (others lower) → G, since G precedes I.
+	assertEqual(winnerOf(share({ R: 0.1, D: 0.1, L: 0.1, G: 0.35, I: 0.35 })), "G", "G before I");
+});
 
 // ─── simulateDistrict tests ───────────────────────────────────────────────────
 

@@ -58,6 +58,8 @@ import {
   requireObject,
 } from "./runtime-types.js";
 
+import { MAX_DISTRICTS } from "./types.js";
+
 // Flat-top axial hex direction vectors (mirrors HEX_DIRECTIONS in hex-geometry.ts)
 const HEX_DIRS: [number, number][] = [
   [1, 0], [0, 1], [-1, 1], [-1, 0], [0, -1], [1, -1],
@@ -548,6 +550,24 @@ function cartesianProduct(dimNames: string[], dims: Record<string, string[]>): R
 function checkPrecinctCount(precinctCount: number): void {
   if (precinctCount < 1) {
     throw new Error("Invariant 12: precincts must have at least 1 element");
+  }
+}
+
+/**
+ * Invariant 10: 2 ≤ districts.length ≤ MAX_DISTRICTS.
+ * The lower bound (≥ 2) preserves the original error string verbatim. The upper
+ * bound rejects scenarios with more districts than the color palette supports
+ * (GAME-104) — failing loud beats districts sharing a color or reading as
+ * unassigned on the map.
+ */
+function checkDistrictCount(districtCount: number): void {
+  if (districtCount < 2) {
+    throw new Error("Invariant 10: districts must have at least 2 elements");
+  }
+  if (districtCount > MAX_DISTRICTS) {
+    throw new Error(
+      `Invariant 10: districts must have at most ${MAX_DISTRICTS} elements (palette limit), got ${districtCount}`,
+    );
   }
 }
 
@@ -1060,10 +1080,8 @@ function validateScenarioInvariants(fields: {
   // ── Invariant 12: precincts.length ≥ 1 ──────────────────────────────────────
   checkPrecinctCount(rawPrecincts.length);
 
-  // ── Invariant 10: districts.length ≥ 2 (complete-only) ───────────────────────
-  if (districts.length < 2) {
-    throw new Error("Invariant 10: districts must have at least 2 elements");
-  }
+  // ── Invariant 10: 2 ≤ districts.length ≤ MAX_DISTRICTS (complete-only) ───────
+  checkDistrictCount(districts.length);
 
   // ── Invariant 11: All IDs unique within scenario ─────────────────────────────
   checkUniqueIds({ parties, districts, precincts: rawPrecincts, events, success_criteria });
@@ -1437,9 +1455,10 @@ export function validateScenarioComplete(partial: PartialScenario): Scenario {
   if (partial.parties === undefined || partial.parties.length === 0) {
     throw new Error("completeness: parties is required for gameplay and must not be empty");
   }
-  if (partial.districts === undefined || partial.districts.length < 2) {
+  if (partial.districts === undefined) {
     throw new Error("Invariant 10: districts must have at least 2 elements");
   }
+  checkDistrictCount(partial.districts.length);
   if (partial.events === undefined) {
     throw new Error("completeness: events is required for gameplay (use [] for none)");
   }

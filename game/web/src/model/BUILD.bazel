@@ -85,7 +85,7 @@ ts_project(
     srcs = ["loader.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    deps = [":model_lib", ":runtime_types_lib"],
+    deps = [":model_lib", ":runtime_types_lib", ":types_lib"],
     visibility = ["//game/web:__subpackages__"],
 )
 
@@ -318,6 +318,7 @@ js_test(
         ":loader_lib",
         ":runtime_types_lib",
         ":model_lib",
+        ":types_lib",
         "//game/scenarios:scenario_json",
         "//game/web/src/testing:test_runner_lib",
     ],
@@ -352,6 +353,7 @@ js_test(
         ":loader_lib",
         ":runtime_types_lib",
         ":model_lib",
+        ":types_lib",
         "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
@@ -393,6 +395,7 @@ js_test(
         ":loader_lib",
         ":runtime_types_lib",
         ":model_lib",
+        ":types_lib",
         "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [

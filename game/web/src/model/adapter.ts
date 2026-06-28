@@ -15,6 +15,7 @@
 
 import type { Scenario } from "./scenario.js";
 import type { AssignmentMap, DistrictId, Precinct, TerrainAnnotation, TerrainTileRuntime } from "./types.js";
+import { winnerOf } from "./types.js";
 import { HEX_DIRECTIONS, hexToPixel } from "./hex-geometry.js";
 
 // vote_shares is Record<PartyId, number> with branded keys; cast to plain string map at runtime
@@ -123,7 +124,13 @@ export function scenarioToSpike(scenario: Scenario): {
 			I: 0,
 		};
 
-		const winner: "D" | "R" = partyShare.D >= partyShare.R ? "D" : "R";
+		// Canonical tie-break (GAME-104): winnerOf scans ALL_PARTIES with strict >,
+		// so an exact R/D tie resolves to R — matching the election simulation.
+		const winner = winnerOf(partyShare);
+		// This adapter is the 2-party spike path: L/G/I are hardcoded to 0 above and
+		// only the first two scenario parties are mapped, so |D − R| is the exact
+		// winner-vs-runner-up margin here. A future 3+-party adapter must compute the
+		// margin against actual second place instead.
 		const margin = Math.round(Math.abs(partyShare.D - partyShare.R) * 100) / 100;
 
 		const spikePrecinct: import("./types.js").Precinct = {

@@ -3,8 +3,42 @@
  * All types are pure data — no DOM, no D3, no side effects.
  */
 
-/** Party keys used throughout the sim */
-export type PartyKey = "R" | "D" | "L" | "G" | "I";
+/**
+ * Canonical party set and iteration order — the single source of truth for every
+ * winner/margin computation, party-color/label lookup, and party→key mapping.
+ *
+ * `PartyKey` is DERIVED from this array (`typeof ALL_PARTIES[number]`), so the
+ * array is authoritative: adding or removing a party here updates the type, and
+ * any record keyed by `PartyKey` (PARTY_COLORS, PARTY_LABELS, PartyShare-shaped
+ * data) must then account for it — a party can't be silently dropped from one
+ * place while another still expects it. Iterating this (not an inline literal)
+ * also keeps tie-breaks deterministic everywhere.
+ */
+export const ALL_PARTIES = ["R", "D", "L", "G", "I"] as const;
+
+/** Party keys used throughout the sim (derived from {@link ALL_PARTIES}). */
+export type PartyKey = (typeof ALL_PARTIES)[number];
+
+/**
+ * Plurality winner of a PartyShare.
+ *
+ * CANONICAL TIE-BREAK RULE (GAME-104): ties resolve to the party that comes
+ * FIRST in `ALL_PARTIES` order. Implementation: seed best = ALL_PARTIES[0] (R)
+ * and replace only on a strict `>`, so an equal share never displaces an
+ * earlier-listed party. This is deterministic for every tie, including L/G/I:
+ * order of preference is R > D > L > G > I. This matches the authoritative
+ * election simulation (election.ts), so the displayed winner always follows the
+ * computed result — there is exactly one tie-break direction in the codebase.
+ */
+export function winnerOf(share: PartyShare): PartyKey {
+	let best: PartyKey = ALL_PARTIES[0]!;
+	for (const p of ALL_PARTIES) {
+		if (share[p] > share[best]) {
+			best = p;
+		}
+	}
+	return best;
+}
 
 /** Partisan vote share: floats 0.0–1.0 summing to 1.0 */
 export interface PartyShare {
@@ -167,6 +201,25 @@ export const DISTRICT_COLORS: readonly string[] = [
 	"#CC79A7", // mauve
 	"#D55E00", // vermilion
 ] as const;
+
+/** Maximum number of districts a scenario may define — bounded by the palette
+ *  so every district has a distinct color. The loader rejects scenarios that
+ *  exceed this rather than letting districts share a color or read as unassigned.
+ */
+export const MAX_DISTRICTS = DISTRICT_COLORS.length;
+
+/**
+ * District fill color for a 1-based district id. Single source of truth for the
+ * district palette lookup (used by the map renderer and side panels).
+ *
+ * Fallback `#888` is the one agreed out-of-range color. It deliberately differs
+ * from the map's unassigned-precinct fill (#2a2a3e) so an out-of-range district
+ * never masquerades as "unassigned". In practice MAX_DISTRICTS keeps ids in
+ * range, so the fallback should never render for a validly-loaded scenario.
+ */
+export function districtColor(id: number): string {
+	return DISTRICT_COLORS[id - 1] ?? "#888";
+}
 
 /** Party display colors — aligned with PuOr lean-view palette so party badges
  *  and the lean map use a consistent color language.

@@ -151,7 +151,12 @@ test("scenarioToSpike: R wins → winner R, correct margin", () => {
 	assertClose(precincts[0]!.previousResult.margin, 0.4, 0.01, "margin");
 });
 
-test("scenarioToSpike: D wins when D >= R", () => {
+test("scenarioToSpike: R wins on exact R/D tie (canonical tie-break)", () => {
+	// GAME-104: the adapter's displayed winner now uses the SAME winnerOf() helper
+	// as the election simulation, so the displayed winner always follows the
+	// computed result. Canonical rule: ties resolve to the party first in
+	// ALL_PARTIES order (R before D), replacing the old display-only `D >= R ? D`
+	// rule that contradicted the simulation.
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const scenario = makeScenario({
 		parties: [PARTY_R, PARTY_D],
@@ -159,7 +164,7 @@ test("scenarioToSpike: D wins when D >= R", () => {
 		precincts: [makePrecinct(0, 0, [g], "d1")],
 	});
 	const { precincts } = scenarioToSpike(scenario);
-	assertEqual(precincts[0]!.previousResult.winner, "D", "D wins on exact tie (D >= R)");
+	assertEqual(precincts[0]!.previousResult.winner, "R", "R wins on exact tie (winnerOf, R before D)");
 });
 
 // ─── Neighbor lists ───────────────────────────────────────────────────────────

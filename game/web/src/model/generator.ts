@@ -10,6 +10,7 @@
  */
 
 import type { Demographics, HexCoord, PartyShare, Precinct, PreviousResult } from "./types.js";
+import { ALL_PARTIES, winnerOf } from "./types.js";
 import { HEX_DIRECTIONS, hexCorners, hexToPixel, mapBounds } from "./hex-geometry.js";
 
 export { HEX_DIRECTIONS, hexCorners, hexToPixel, mapBounds };
@@ -152,10 +153,11 @@ export function generatePrecincts(seed = 42): Precinct[] {
 		partyShare.I =
 			Math.round((1 - partyShare.D - partyShare.R - partyShare.L - partyShare.G) * 1000) / 1000;
 
-		// Prior result: winner is plurality party + small margin noise
-		const parties: Array<keyof PartyShare> = ["D", "R", "L", "G", "I"];
-		const winner = parties.reduce((a, b) => (partyShare[a] > partyShare[b] ? a : b));
-		const second = parties
+		// Prior result: winner is plurality party + small margin noise.
+		// Uses the canonical winnerOf / ALL_PARTIES (GAME-104) so the tie-break and
+		// party set match the rest of the codebase.
+		const winner = winnerOf(partyShare);
+		const second = ALL_PARTIES
 			.filter((p) => p !== winner)
 			.reduce((a, b) => (partyShare[a] > partyShare[b] ? a : b));
 		const margin = Math.round((partyShare[winner] - partyShare[second]) * 100) / 100;
