@@ -200,4 +200,25 @@ test("undo: reverts a paintPrecinct to previous assignment", () => {
 	assertEqual(store.getState().assignments.get(0), 1, "precinct 0 restored → district 1 (post-undo)");
 });
 
+test("undo: reverts assignments but leaves the live active district untouched (GAME-106)", () => {
+	const { store } = createGameStore(makeScenario());
+
+	// Paint a precinct while district 2 is active → records a history snapshot.
+	store.getState().setActiveDistrict(2);
+	store.getState().paintPrecinct(0); // precinct 0: d1 → d2
+	assertEqual(store.getState().assignments.get(0), 2, "precinct 0 → district 2 (post-paint)");
+
+	// Change the brush selection AFTER the last assignment-changing snapshot.
+	// (No new snapshot: assignments are unchanged, so the equality gate skips it.)
+	store.getState().setActiveDistrict(1);
+
+	const temporal = (store as unknown as { temporal: { getState: () => { undo: () => void } } }).temporal;
+	temporal.getState().undo();
+
+	// Assignments revert to the pre-paint state...
+	assertEqual(store.getState().assignments.get(0), 1, "precinct 0 reverted → district 1 (post-undo)");
+	// ...but the active district stays the live value (1), not the snapshot value (2).
+	assertEqual(store.getState().activeDistrict, 1, "activeDistrict unchanged by undo (stays 1)");
+});
+
 summarize();

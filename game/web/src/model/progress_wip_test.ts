@@ -46,8 +46,15 @@ const localStorageShim = {
 
 // ─── Imports (after shim is installed) ───────────────────────────────────────
 
-import { saveWip, loadWip, clearWip, type WipState } from "./progress.js";
-import { test, assertEqual, assertNull, assertNotNull, summarize } from "../testing/test_runner.js";
+import {
+	saveWip,
+	loadWip,
+	clearWip,
+	reconcileWipAssignments,
+	clampActiveDistrict,
+	type WipState,
+} from "./progress.js";
+import { test, assertEqual, assertNull, assertNotNull, assertTrue, summarize } from "../testing/test_runner.js";
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
 
@@ -157,6 +164,83 @@ test("clearWip: clearing nothing stored does not throw", () => {
 	resetStorage();
 	clearWip(); // should not throw
 	assertNull(loadWip(), "still null after clear-with-nothing");
+});
+
+// ─── reconcileWipAssignments (GAME-106) ──────────────────────────────────────
+
+test("reconcileWipAssignments: preserves null precincts not overlaid by saved", () => {
+	// base = freshly-seeded scenario: 4 precincts, all unassigned (null)
+	const base = new Map<number, number | null>([
+		[0, null],
+		[1, null],
+		[2, null],
+		[3, null],
+	]);
+	// saved overlays only precincts 0 and 2
+	const saved: Record<string, number> = { "0": 1, "2": 2 };
+	const result = reconcileWipAssignments(base, saved, 2);
+
+	assertEqual(result.size, 4, "every base key present");
+	assertEqual(result.get(0), 1, "precinct 0 overlaid → 1");
+	assertEqual(result.get(2), 2, "precinct 2 overlaid → 2");
+	assertEqual(result.get(1), null, "precinct 1 stays null");
+	assertEqual(result.get(3), null, "precinct 3 stays null");
+	const nullCount = [...result.values()].filter((v) => v === null).length;
+	assertTrue(nullCount > 0, "nulls preserved (unassignedCount stays correct)");
+	assertEqual(nullCount, 2, "exactly two nulls remain");
+});
+
+test("reconcileWipAssignments: drops saved precinct id not in base", () => {
+	const base = new Map<number, number | null>([
+		[0, null],
+		[1, null],
+	]);
+	// precinct 5 does not exist in this (regenerated) scenario
+	const saved: Record<string, number> = { "0": 1, "5": 2 };
+	const result = reconcileWipAssignments(base, saved, 2);
+
+	assertEqual(result.size, 2, "no stale precinct added");
+	assertTrue(!result.has(5), "stale precinct 5 dropped");
+	assertEqual(result.get(0), 1, "valid precinct 0 still applied");
+});
+
+test("reconcileWipAssignments: drops out-of-range district (too large and zero)", () => {
+	const districtCount = 3;
+	const base = new Map<number, number | null>([
+		[0, null],
+		[1, null],
+		[2, null],
+	]);
+	// precinct 0 → districtCount+1 (4, too large); precinct 1 → 0 (invalid); precinct 2 → 3 (valid)
+	const saved: Record<string, number> = { "0": districtCount + 1, "1": 0, "2": 3 };
+	const result = reconcileWipAssignments(base, saved, districtCount);
+
+	assertEqual(result.get(0), null, "precinct 0 keeps base value (district too large dropped)");
+	assertEqual(result.get(1), null, "precinct 1 keeps base value (district 0 dropped)");
+	assertEqual(result.get(2), 3, "precinct 2 valid in-range district applied");
+});
+
+test("reconcileWipAssignments: does not mutate the base map", () => {
+	const base = new Map<number, number | null>([[0, null]]);
+	reconcileWipAssignments(base, { "0": 1 }, 2);
+	assertEqual(base.get(0), null, "base map left untouched");
+});
+
+// ─── clampActiveDistrict (GAME-106) ──────────────────────────────────────────
+
+test("clampActiveDistrict: in-range value passes through", () => {
+	assertEqual(clampActiveDistrict(2, 3), 2, "in-range → unchanged");
+	assertEqual(clampActiveDistrict(1, 3), 1, "lower bound → unchanged");
+	assertEqual(clampActiveDistrict(3, 3), 3, "upper bound → unchanged");
+});
+
+test("clampActiveDistrict: too-large value falls back to 1", () => {
+	assertEqual(clampActiveDistrict(4, 3), 1, "above range → 1");
+});
+
+test("clampActiveDistrict: zero / negative falls back to 1", () => {
+	assertEqual(clampActiveDistrict(0, 3), 1, "zero → 1");
+	assertEqual(clampActiveDistrict(-2, 3), 1, "negative → 1");
 });
 
 summarize();
