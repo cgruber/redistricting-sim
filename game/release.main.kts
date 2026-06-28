@@ -324,11 +324,33 @@ class Deploy : CliktCommand(
             else      -> "https://pastthepost.gg/deployment-metadata.json"
         }
 
-        // Skip already-deployed guard for test builds
+        // Skip already-deployed guard for test builds.
+        //
+        // We read the per-env deployment-metadata.json committed on web_deploy (each deploy
+        // writes one into its env's subdir — dev/beta/staging/<file>, production at root; see
+        // Step 3 below), NOT the tip commit description. Scraping the tip's "$env: $version"
+        // line was wrong: each deploy commits only its own env line, so staging→beta→staging
+        // found no staging match on the tip and re-deployed. The committed metadata file is the
+        // durable per-env record and is unaffected by other envs deploying in between.
+        //
+        // Assumes `jj file show` (modern jj; was `jj cat`) — this repo is modern jj. A nonzero
+        // exit / blank / unparseable result is treated as "not yet deployed → proceed" so the
+        // FIRST deploy to an env (no file yet) is never blocked.
         if (!isTestBuild) {
-            val (log) = trysh("jj", "log", "-r", "web_deploy", "--no-graph", "-T", "description")
-            val deployed = Regex("$env: ([^ ]+)").find(log)?.groupValues?.get(1) ?: ""
-            if (deployed == version) {
+            val metaPath = if (env == "production") "deployment-metadata.json" else "$env/deployment-metadata.json"
+            // Run from repoRoot, not the default gameDir: `jj file show` resolves the fileset
+            // path relative to cwd, and the metadata files live at the web_deploy tree ROOT
+            // (e.g. <root>/beta/deployment-metadata.json). From game/ the path never resolves
+            // (exit 1), which would fail-open and silently re-deploy every time.
+            val (body, exit) = trysh("jj", "file", "show", "-r", "web_deploy", metaPath, dir = repoRoot)
+            val deployedVersion = if (exit == 0 && body.isNotBlank()) {
+                try {
+                    mapper.readValue<DeployMetadata>(body).version
+                } catch (_: Exception) {
+                    ""
+                }
+            } else ""
+            if (deployedVersion == version) {
                 System.err.println("⚠ $version already deployed to $env. Skipping.")
                 return
             }
@@ -376,41 +398,63 @@ class Deploy : CliktCommand(
             //     synchronously without an extra network fetch (avoids 404 console errors
             //     in environments that don't have deployment-metadata.json).
             // (BUILD-009 tracks the proper content-hash solution.)
+            // A missing index.html is itself a "silently ship broken" failure mode —
+            // the artifact is unusable without it. Fail loud rather than deploy nothing.
             val indexHtml = File(deployRoot, "index.html")
-            if (indexHtml.exists()) {
+            if (!indexHtml.exists())
+                err("index.html missing from extracted artifact at $indexHtml — cannot deploy.")
+
+            run {
                 var html = indexHtml.readText()
 
+                // Each patch is by EXACT string replacement against an anchor in index.html.
+                // A failed match means the anchor moved/changed (e.g. an index.html reformat,
+                // see GAME-107) — the deploy would otherwise ship a stale bundle (no ?v=) or
+                // empty version/environment meta. Treat any failed match as a HARD error so we
+                // never silently ship a broken index.html. (game/web/release_patch_anchors_test.sh
+                // guards these anchors in CI; keep that test and these literals in sync.)
                 val bundlePatched = html.replace(
                     """s.src = "bundle.js";""",
                     """s.src = "bundle.js?v=$version";"""
                 )
-                if (bundlePatched == html) {
-                    System.err.println("⚠ WARNING: bundle cache-bust patch had no effect — 's.src = \"bundle.js\";' not found in index.html")
-                    System.err.println("  Browsers may serve a stale bundle. Check index.html and update release.main.kts.")
-                }
+                if (bundlePatched == html)
+                    err("bundle cache-bust patch had no effect — 's.src = \"bundle.js\";' not found in index.html. " +
+                        "An index.html reformat likely broke the anchor; fix index.html or update release.main.kts.")
                 html = bundlePatched
 
-                val versionMetaOriginal = html
-                html = html.replace(
+                val versionMetaPatched = html.replace(
                     """<meta name="app-version" content="">""",
                     """<meta name="app-version" content="$version">"""
                 )
-                if (html == versionMetaOriginal) {
-                    System.err.println("⚠ WARNING: app-version meta patch had no effect — '<meta name=\"app-version\" content=\"\">' not found in index.html")
-                    System.err.println("  The JS version badge and asset URLs may show stale or missing data. Check index.html and update release.main.kts.")
-                }
+                if (versionMetaPatched == html)
+                    err("app-version meta patch had no effect — '<meta name=\"app-version\" content=\"\">' not found in index.html. " +
+                        "An index.html reformat likely broke the anchor; fix index.html or update release.main.kts.")
+                html = versionMetaPatched
 
-                val envMetaOriginal = html
-                html = html.replace(
+                val envMetaPatched = html.replace(
                     """<meta name="app-environment" content="">""",
                     """<meta name="app-environment" content="$env">"""
                 )
-                if (html == envMetaOriginal) {
-                    System.err.println("⚠ WARNING: app-environment meta patch had no effect — '<meta name=\"app-environment\" content=\"\">' not found in index.html")
-                    System.err.println("  The JS version badge may show the wrong environment. Check index.html and update release.main.kts.")
-                }
+                if (envMetaPatched == html)
+                    err("app-environment meta patch had no effect — '<meta name=\"app-environment\" content=\"\">' not found in index.html. " +
+                        "An index.html reformat likely broke the anchor; fix index.html or update release.main.kts.")
+                html = envMetaPatched
 
                 indexHtml.writeText(html)
+
+                // Post-write assertion: read the file back from disk and confirm every patched
+                // string is present. Belt-and-suspenders against a future patch-logic change that
+                // silently drops a substitution. Asserts the PATCHED values, not the anchors.
+                val written = indexHtml.readText()
+                val expected = listOf(
+                    """s.src = "bundle.js?v=$version";""",
+                    """<meta name="app-version" content="$version">""",
+                    """<meta name="app-environment" content="$env">""",
+                )
+                val missing = expected.filterNot { written.contains(it) }
+                if (missing.isNotEmpty())
+                    err("post-write verification of index.html failed — expected patched string(s) absent:\n" +
+                        missing.joinToString("\n") { "  $it" })
             }
 
             val deployMeta = DeployMetadata(

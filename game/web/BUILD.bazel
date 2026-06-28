@@ -242,6 +242,18 @@ sh_test(
     visibility = ["//visibility:public"],
 )
 
+# GAME-108 CI guard: the deploy (game/release.main.kts) patches index.html by exact-string
+# replacement against fixed anchors. release.main.kts is NOT exercised by `bazel test`, so a
+# reformat that breaks an anchor would only surface at deploy time. This test fails CI if any
+# anchor is gone from index.html. See release_patch_anchors_test.sh for the literals (kept in
+# sync with the .replace(...) anchors in release.main.kts).
+sh_test(
+    name = "release_patch_anchors_test",
+    srcs = ["release_patch_anchors_test.sh"],
+    data = ["index.html"],
+    visibility = ["//visibility:public"],
+)
+
 # Deployable package: bundles all game assets (HTML, CSS, JS, WASM, scenarios)
 # into a single zip file ready for static hosting.
 #
@@ -269,18 +281,26 @@ genrule(
         # Assets are handled separately below via cp -r to preserve tree structure.
         ASSETS_SRC=""
         for f in $(SRCS); do
-            fname="$$(basename "$$f")"
-            case "$$fname" in
-                index.html) cp "$$f" "$$STAGING/" ;;
-                styles.css) cp "$$f" "$$STAGING/" ;;
-                react-stub.js) cp "$$f" "$$STAGING/" ;;
-                bundle.js) cp "$$f" "$$STAGING/" ;;
-                *.wasm) cp "$$f" "$$STAGING/" ;;
-                wasm_calc_bindgen.js) cp "$$f" "$$STAGING/" ;;
-                *.json) mkdir -p "$$STAGING/scenarios" && cp "$$f" "$$STAGING/scenarios/" ;;
-            esac
+            # Skip files under the assets tree here — the dedicated `cp -r` below copies
+            # the whole assets tree, preserving structure. Without this guard a future
+            # assets/*.json (sprite atlas, config) would be misfiled into scenarios/, and
+            # an assets/*.wasm into the root, by the basename case. (GAME-108)
             case "$$f" in
-                */assets/*) ASSETS_SRC="$${f%/assets/*}/assets" ;;
+                */assets/*)
+                    ASSETS_SRC="$${f%/assets/*}/assets"
+                    ;;
+                *)
+                    fname="$$(basename "$$f")"
+                    case "$$fname" in
+                        index.html) cp "$$f" "$$STAGING/" ;;
+                        styles.css) cp "$$f" "$$STAGING/" ;;
+                        react-stub.js) cp "$$f" "$$STAGING/" ;;
+                        bundle.js) cp "$$f" "$$STAGING/" ;;
+                        *.wasm) cp "$$f" "$$STAGING/" ;;
+                        wasm_calc_bindgen.js) cp "$$f" "$$STAGING/" ;;
+                        *.json) mkdir -p "$$STAGING/scenarios" && cp "$$f" "$$STAGING/scenarios/" ;;
+                    esac
+                    ;;
             esac
         done
 
