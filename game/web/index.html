@@ -64,7 +64,7 @@
     <!-- ── Scenario select screen (GAME-018) ────────────────────────────── -->
     <div id="scenario-select" class="hidden" role="region" aria-label="Scenario Selection">
       <button id="btn-back-to-campaign" hidden aria-label="Back to campaign select" style="background:none;border:1px solid #2a5a8c;color:#8898b0;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.8rem;margin-bottom:8px;">← Back</button>
-      <h1>Past the Post</h1>
+      <h1 id="scenario-select-heading" tabindex="-1">Past the Post</h1>
       <div id="scenario-cards" role="list"></div>
       <div style="display:flex;gap:16px;margin-top:16px;align-items:center;">
         <button id="btn-reset-campaign" style="background:none;border:1px solid #555;color:#888;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:0.75rem;">Reset Campaign</button>
@@ -72,9 +72,9 @@
     </div>
 
     <!-- ── About page (GAME-029) ──────────────────────────────────────────── -->
-    <div id="about-screen" class="hidden">
+    <div id="about-screen" class="hidden" role="dialog" aria-modal="true" aria-labelledby="about-heading">
       <div id="about-card">
-        <h1>Past the Post</h1>
+        <h1 id="about-heading">Past the Post</h1>
         <p>An educational redistricting simulator. Draw district boundaries, simulate elections, and discover how the same voters can produce wildly different outcomes depending on where the lines are drawn.</p>
         <p>This game is not advocacy for or against any political party, position, or reform proposal. It presents multiple perspectives — partisan operatives, reform commissioners, bipartisan dealmakers — so that players leave with better questions, not predetermined answers.</p>
         <p style="color:#8898b0;font-size:0.82rem;font-style:italic;">The scenarios in this campaign use fictional data. They do not model real elections, real voters, or real communities. Redistricting in practice is governed by federal and state law.</p>
@@ -90,9 +90,9 @@
     </div>
 
     <!-- ── WIP discard warning modal ──────────────────────────────────── -->
-    <div id="wip-warning-modal" class="hidden">
+    <div id="wip-warning-modal" class="hidden" role="dialog" aria-modal="true" aria-label="Discard in-progress work?">
       <div id="wip-warning-card">
-        <p id="wip-warning-text"></p>
+        <p id="wip-warning-text" tabindex="-1"></p>
         <div style="display:flex;gap:12px;justify-content:center;margin-top:16px;">
           <button id="wip-warning-confirm">Switch Scenario</button>
           <button id="wip-warning-cancel">Cancel</button>
@@ -101,11 +101,11 @@
     </div>
 
     <!-- ── Result screen (GAME-017) ─────────────────────────────────────── -->
-    <div id="result-screen" class="hidden">
+    <div id="result-screen" class="hidden" role="dialog" aria-modal="true" aria-label="Map evaluation result">
       <div id="result-card">
         <!-- Results view -->
         <div id="result-main">
-          <div id="result-verdict" aria-live="polite"></div>
+          <div id="result-verdict" tabindex="-1" aria-live="polite"></div>
           <div id="result-subtitle"></div>
           <div id="result-stars" class="hidden" aria-label="Star rating"></div>
           <div id="result-criteria-list"></div>
@@ -122,7 +122,7 @@
         </div>
         <!-- GAME-094: teaching debrief — second panel, reached via "Continue →" on a win. -->
         <div id="result-debrief" class="hidden">
-          <div id="result-debrief-heading">What just happened</div>
+          <div id="result-debrief-heading" tabindex="-1">What just happened</div>
           <div id="result-epilogue"></div>
           <div id="result-debrief-actions">
             <button id="btn-debrief-back">← Back to results</button>
@@ -134,9 +134,9 @@
     </div>
 
     <!-- ── Wrap-up screen (GAME-020) ─────────────────────────────────────── -->
-    <div id="wrap-up-screen" class="hidden">
+    <div id="wrap-up-screen" class="hidden" role="dialog" aria-modal="true" aria-labelledby="wrap-up-heading">
       <div id="wrap-up-card">
-        <h1>Congratulations</h1>
+        <h1 id="wrap-up-heading" tabindex="-1">Congratulations</h1>
         <p id="wrap-up-text">You've completed every scenario. You've drawn maps that packed voters, cracked communities, protected incumbents, satisfied reformers, and proven that no set of rules can make redistricting apolitical.</p>
         <p style="color:#8898b0;margin-top:12px;">The lines always matter. Now you know why.</p>
         <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
@@ -197,7 +197,7 @@
 
     <div id="main" style="display:none">
       <div id="map-container">
-        <svg id="map-svg" role="application" tabindex="0" aria-label="District map. Use mouse or keyboard to paint precincts. Arrow keys navigate precincts, number keys 1–5 assign to a district."></svg>
+        <svg id="map-svg" role="application" tabindex="0" aria-label="District map. Use mouse or keyboard to paint precincts. Arrow keys navigate precincts, number keys assign to a district."></svg>
         <!-- GAME-095: left-side district paint toolbar. Expandable like the view filters:
              labels ("District 1") shown by default, collapse to the number on its color. -->
         <div id="district-toolbar" class="expanded" role="group" aria-label="Paint districts">
