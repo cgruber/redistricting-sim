@@ -40,6 +40,7 @@ import {
 } from "./model/progress.js";
 import { CAMPAIGN_REGISTRY, getCampaign, loadLastPlayedScenario, saveLastPlayedScenario } from "./model/campaigns.js";
 import { initAssets, assetUrl } from "./assets.js";
+import { ALL_PARTIES, PARTY_COLORS } from "./model/types.js";
 import { getCriterionIcon } from "./criterion-icons.js";
 import { preload, play, setMuted, isMuted } from "./audio/audioPlayer.js";
 
@@ -176,6 +177,12 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 (async () => {
 	initAssets();
+
+	// Drive party colors in CSS from the TS palette (single source of truth,
+	// GAME-104). The .result-district .vote-bar gradient reads these vars; the
+	// var() fallbacks keep it visible if this never runs.
+	document.documentElement.style.setProperty("--party-d", PARTY_COLORS.D);
+	document.documentElement.style.setProperty("--party-r", PARTY_COLORS.R);
 
 	let progress = loadProgress();
 
@@ -570,10 +577,9 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 	// ── Party ID → spike PartyKey mapping (for criteria evaluation) ──────────
 	// First scenario party → "R", second → "D", rest → "L"/"G"/"I"
-	const SPIKE_PARTY_KEYS = ["R", "D", "L", "G", "I"] as const;
 	const partyIdToKey = new Map<string, string>();
 	scenario.parties.forEach((p, i) => {
-		partyIdToKey.set(p.id, SPIKE_PARTY_KEYS[i] ?? "I");
+		partyIdToKey.set(p.id, ALL_PARTIES[i] ?? "I");
 	});
 
 	// ── Party labels derived from scenario data (GAME-055) ───────────────────

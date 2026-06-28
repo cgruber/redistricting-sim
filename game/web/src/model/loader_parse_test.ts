@@ -297,6 +297,37 @@ test("validateScenarioComplete: rejects partial with 1 district (invariant 10)",
   assertThrows(() => validateScenarioComplete(partial), /[Ii]nvariant 10/);
 });
 
+test("validateScenarioComplete: rejects > MAX_DISTRICTS districts (invariant 10 upper bound, GAME-104)", () => {
+  // DISTRICT_COLORS has 5 entries → MAX_DISTRICTS = 5. Six districts exceeds the
+  // palette and must fail loud rather than letting two districts share a color.
+  const partial = parseScenario(fullScenario({
+    districts: [
+      { id: "d1", name: "District 1" },
+      { id: "d2", name: "District 2" },
+      { id: "d3", name: "District 3" },
+      { id: "d4", name: "District 4" },
+      { id: "d5", name: "District 5" },
+      { id: "d6", name: "District 6" },
+    ],
+  }));
+  assertThrows(() => validateScenarioComplete(partial), /[Ii]nvariant 10/);
+  assertThrows(() => validateScenarioComplete(partial), /at most/);
+});
+
+test("validateScenarioComplete: accepts exactly MAX_DISTRICTS districts (boundary, GAME-104)", () => {
+  // 5 districts == MAX_DISTRICTS must still load (the bound is inclusive).
+  const partial = parseScenario(fullScenario({
+    districts: [
+      { id: "d1", name: "District 1" },
+      { id: "d2", name: "District 2" },
+      { id: "d3", name: "District 3" },
+      { id: "d4", name: "District 4" },
+      { id: "d5", name: "District 5" },
+    ],
+  }));
+  assertDoesNotThrow(() => validateScenarioComplete(partial));
+});
+
 test("validateScenarioComplete: rejects partial with missing total_population", () => {
   const partial = parseScenario({
     ...fullScenario() as object,

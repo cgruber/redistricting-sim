@@ -207,7 +207,9 @@ test("compactness: threshold of 0 → always pass", () => {
 
 test("seat_count: R wins 1 seat, criterion R gte 1 → pass", () => {
   // P0 and P1 in D1: P0 is R-lean (0.6/0.4), P1 is D-lean (0.4/0.6)
-  // Aggregate for D1: R=0.5, D=0.5 → tie → R wins (plurality winner picks first tie)
+  // Aggregate for D1: R=0.5, D=0.5 → tie → R wins (winnerOf: ties go to the
+  // party first in ALL_PARTIES order, R before D — the one canonical rule shared
+  // with the adapter's displayed winner, GAME-104)
   // D2: P2(R 0.6), P3(D 0.6) → R=0.5, D=0.5 → R wins
   // Actually let's use clearer setup: D1=P0+P1 R-overall, D2=P2+P3 D-overall
   // With equal pop, D1 avg: (0.6+0.4)/2=0.5R, (0.4+0.6)/2=0.5D → R wins by initial sort

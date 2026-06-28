@@ -1,5 +1,5 @@
 import type { ScenarioRules } from "../model/scenario.js";
-import { DISTRICT_COLORS, PARTY_COLORS, PARTY_LABELS, type PartyKey } from "../model/types.js";
+import { PARTY_COLORS, PARTY_LABELS, districtColor, type PartyKey } from "../model/types.js";
 import type { DistrictDemoStat } from "../simulation/evaluate.js";
 import { computeValidityStats } from "../simulation/validity.js";
 import type { GameStore } from "../store/gameStore.js";
@@ -19,7 +19,7 @@ export function renderResults(
 	const { districtResults } = state.simulationResult;
 	const html = districtResults
 		.map((r) => {
-			const color = DISTRICT_COLORS[r.districtId - 1] ?? "#888";
+			const color = districtColor(r.districtId);
 			const winnerColor = PARTY_COLORS[r.winner];
 			const winnerLabel = labels[r.winner];
 			const dPct = (r.voteTotals.D * 100).toFixed(1);
@@ -49,7 +49,7 @@ export function renderDistrictButtons(
 ): void {
 	container.innerHTML = "";
 	for (let i = 1; i <= districtCount; i++) {
-		const color = DISTRICT_COLORS[i - 1] ?? "#888";
+		const color = districtColor(i);
 
 		const wrapper = document.createElement("div");
 		wrapper.className = "district-btn-wrap";
@@ -112,7 +112,7 @@ export function renderValidityPanel(
 	if (showBalance) {
 	html += `<div class="validity-section-label">Population balance</div>`;
 	for (const d of stats.districtPop) {
-		const color = DISTRICT_COLORS[d.districtId - 1] ?? "#888";
+		const color = districtColor(d.districtId);
 		const sign = d.deviationPct >= 0 ? "+" : "";
 		const cls = d.status === "ok" ? "validity-ok" : "validity-error";
 		const statusLabel = d.status === "ok" ? "ok" : d.status;
@@ -127,7 +127,7 @@ export function renderValidityPanel(
 	if (stats.contiguity !== null) {
 		html += `<div class="validity-section-label">Contiguity</div>`;
 		for (const [did, ok] of stats.contiguity) {
-			const color = DISTRICT_COLORS[did - 1] ?? "#888";
+			const color = districtColor(did);
 			const cls = ok
 				? "validity-ok"
 				: rules.contiguity === "required"
