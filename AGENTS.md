@@ -13,7 +13,7 @@ This file is for AI agents and future context windows. It captures working norms
 
 `redistricting-sim` is an **educational simulator** for exploring the dynamics of gerrymandering and electoral outcomes. Players draw district boundaries over a synthetic region with a defined population distribution, then simulate elections to observe outcomes. The goal is to make the relationship between boundary choices and electoral results visible and tangible.
 
-The stack is being determined via parallel spikes (see `thoughts/shared/tickets/`). The current working direction is a TypeScript browser game with SVG/D3 map rendering and client-side election simulation. See `thoughts/shared/vision/game-vision.compressed.md` for full scope.
+The stack is a TypeScript browser game with SVG/D3 map rendering and client-side election simulation, built with Bazel (it was validated via early proof-of-concept spikes, since removed — see `game/`). See `thoughts/shared/vision/game-vision.compressed.md` for full scope.
 
 ---
 
@@ -59,51 +59,21 @@ thoughts/shared/research/   # Research documents (read before implementing)
 thoughts/shared/tickets/    # Ticket files + TICKETS.md index (check before starting new work)
 thoughts/shared/plans/      # Implementation plans
 thoughts/shared/handoffs/   # Session handoff documents
-spike/001-game-poc/         # SPIKE-001: game tech stack proof-of-concept (TypeScript/npm) — independent source root
-spike/002-build-poc/        # SPIKE-002: harmonized Bazel build proof-of-concept — independent source root
+game/web/                   # The game: TypeScript app (src/), e2e tests, Bazel build
+game/                       # rust/ (wasm), scenarios/, release.main.kts + deploy tooling
 ```
 
 Before starting any non-trivial implementation work: check `thoughts/shared/vision/game-vision.compressed.md` first, then `thoughts/shared/tickets/TICKETS.md`, then relevant `thoughts/shared/research/` docs.
 
-**Spike directories are completely independent source roots.** Each has its own build toolchain, dependencies, and cannot import from or depend on anything outside its own directory. Agents working on a spike must only create or modify files under their designated `spike/NNN-*/` subdirectory — no changes to other repo files, no cross-spike imports.
+**Spikes are complete and have been removed.** The early proof-of-concept spikes (SPIKE-001
+TypeScript/npm game stack; SPIKE-002 harmonized Bazel build) validated the stack and build;
+the real implementation now lives under `game/`, so the dead spike code was deleted (it
+remains in git history). Their completion reports are preserved in
+`thoughts/shared/research/spike-001-game-poc-report.md` and `spike-002-build-poc-report.md`.
 
-**Spike commands** — use commands by name (e.g. `npm`, `bazel`, `node`), never by
-absolute path (e.g. `/usr/local/bin/node`). All spike tooling must be on PATH. This
-keeps the spike portable and avoids permission guardrails on path-specific rules.
-
-**Spike commit workflow** — spikes use a lightweight commit discipline; full PR rigor applies only at completion:
-
-- *During the spike:* commit locally after each logical chunk; run the spike's build and tests (`npm test`, `bazel test //...`, etc.) before each commit; squash small fixes into the relevant commit freely; no PR during active execution.
-- *At completion:* when all acceptance criteria are met and `SPIKE-REPORT.md` is written, open one PR for the full spike result. Run the standard PR review cycle (critique → response → merge) at that point.
-
-**Spike checkpointing — `PROGRESS.md`** — each spike maintains a `PROGRESS.md` in its
-spike directory. Update and commit it with every logical chunk of work. A session resuming
-after failure reads ticket → `PROGRESS.md` → `jj log` and has everything needed to
-continue without re-doing work.
-
-Format:
-
-```markdown
-## Working Directory
-`<absolute path to spike dir within the repo, e.g. /Users/cgruber/Projects/github/cgruber/redistricting-sim/spike/001-game-poc/>`
-
-## Status: In Progress | Blocked: <reason> | Complete
-
-## Acceptance Criteria
-- [x] Completed item
-- [ ] **Next up** — specific next action in one line
-- [ ] Future item
-
-## Decisions
-- <non-obvious choice>: <why; what alternatives were rejected>
-
-## Blockers / Open Questions
-- <anything needing user input or an unresolved external answer>
-```
-
-Rules: `Decisions` captures only non-obvious choices — skip anything evident from reading
-the ticket or the code. `Next up` is the single most valuable field; keep it to one
-concrete action. The whole file should rarely exceed 30 lines.
+If a future spike is ever needed: isolate it under its own `spike/NNN-*/` independent source
+root (no imports to/from the rest of the repo), use on-PATH commands by name, commit
+lightweightly during execution, and open one PR running the full review cycle at completion.
 
 ---
 

@@ -35,7 +35,7 @@
  *
  * Example:
  *   tools/gh-dependabot-alerts.main.kts --dismiss 2 --dismiss 3 --reason not_used \
- *     --comment "spike/001-game-poc is a frozen POC illustration, not deployed"
+ *     --comment "dev-only dependency, not in the shipped bundle"
  */
 
 import com.github.ajalt.clikt.core.CliktCommand
