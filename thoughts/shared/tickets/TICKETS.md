@@ -119,6 +119,7 @@ tests should be written alongside or before implementation, not as a backfill. W
 | `GAME-096-city-limits-overlay.md` | game, rendering, UX | Basic cosmetic city-limits overlay (reuse county border mechanism); third View-toolbar Overlays entry; no gameplay effect. Prerequisite for tutorial-003's (GAME-098) lean/county/city view set |
 | `GAME-098-tutorial-003-reading-the-vote.md` | game, UX, tutorial, content | Tutorial-003 "Reading the Vote": first electoral layer — reveal the election-result panel together with the lean view, then county/city; terrain + partisan lean + counties/urban core. Reuses overlay engine + reveal action; needs GAME-096. See plan 2026-06-24-tutorial-redesign |
 | `GAME-100-terrain-feature-generation.md` | game, tooling | Make the terrain stage GENERATE features (route rivers, place coasts/mountains/lakes from intent) instead of passthrough of hand-authored coordinates; feeds population suitability + optional demographics. Incl. river-validity constraint (loose-ended segments invalid). Fixes the broken tutorial-003/004 rivers. Do after T2/T3 playtest fixes, before T4 capstone revisit |
+| `GAME-111-lint-coverage-meta-test.md` | game, ci, code-quality | Meta-test that every `game/web/src` subpackage with `*.ts` is wired into the GAME-107 lint gate (`:lint_sources` in `lint_test` data) — a future subpackage could otherwise escape lint cache-invalidation. Mirrors GAME-109's unwired-tests backstop. From the PR #308 review |
 ---
 
 ## Resolved
