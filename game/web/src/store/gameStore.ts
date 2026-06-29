@@ -49,7 +49,8 @@ function cloneAssignments(m: AssignmentMap): AssignmentMap {
  * Called once in main.ts after fetching + validating the scenario JSON.
  */
 export function createGameStore(scenario: Scenario) {
-	const { precincts, assignments, districtCount, terrainTiles, riverEdges } = scenarioToSpike(scenario);
+	const { precincts, assignments, districtCount, terrainTiles, riverEdges } =
+		scenarioToSpike(scenario);
 
 	// Snapshot of initial assignments — used by resetToInitial() to restore scenario start state
 	const initialAssignments: AssignmentMap = new Map(assignments);
@@ -127,12 +128,12 @@ export function createGameStore(scenario: Scenario) {
 				// never reverts the active district / brush selection. zustand merge-set
 				// preserves the rest of state (activeDistrict, precincts, …).
 				// INVARIANT (load-bearing): simulationResult is written in the SAME set() as
-					// assignments — paint, restoreAssignments, and reset all recompute it via
-					// runElection on the assignments path — so each snapshot's result matches its
-					// board and undo restores a consistent pair. A future independent
-					// simulationResult write would desync undo; keep it on the assignments path
-					// or drop it from partialize.
-					partialize: (state) => ({
+				// assignments — paint, restoreAssignments, and reset all recompute it via
+				// runElection on the assignments path — so each snapshot's result matches its
+				// board and undo restores a consistent pair. A future independent
+				// simulationResult write would desync undo; keep it on the assignments path
+				// or drop it from partialize.
+				partialize: (state) => ({
 					assignments: state.assignments,
 					simulationResult: state.simulationResult,
 				}),
@@ -140,10 +141,7 @@ export function createGameStore(scenario: Scenario) {
 				limit: 100,
 				// zundo: equality check — prevents storing a new history entry if assignments unchanged.
 				// With partialize present, the args are the partialized shape.
-				equality: (
-					a: { assignments: AssignmentMap },
-					b: { assignments: AssignmentMap },
-				) => {
+				equality: (a: { assignments: AssignmentMap }, b: { assignments: AssignmentMap }) => {
 					if (a.assignments === b.assignments) return true;
 					if (a.assignments.size !== b.assignments.size) return false;
 					for (const [k, v] of a.assignments) {

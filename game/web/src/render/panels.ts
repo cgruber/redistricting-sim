@@ -115,17 +115,17 @@ export function renderValidityPanel(
 	// population_balance success criterion). Pre-electoral tutorials that don't
 	// enforce balance must not show a constraint the player isn't held to.
 	if (showBalance) {
-	html += `<div class="validity-section-label">Population balance</div>`;
-	for (const d of stats.districtPop) {
-		const color = districtColor(d.districtId);
-		const sign = d.deviationPct >= 0 ? "+" : "";
-		const cls = d.status === "ok" ? "validity-ok" : "validity-error";
-		const statusLabel = d.status === "ok" ? "ok" : d.status;
-		html += `<div class="validity-row ${cls}" style="border-left-color:${color}">`;
-		html += `<span>D${d.districtId}: ${d.population.toLocaleString()}</span>`;
-		html += `<span class="validity-badge">${sign}${d.deviationPct.toFixed(1)}% ${statusLabel}</span>`;
-		html += `</div>`;
-	}
+		html += `<div class="validity-section-label">Population balance</div>`;
+		for (const d of stats.districtPop) {
+			const color = districtColor(d.districtId);
+			const sign = d.deviationPct >= 0 ? "+" : "";
+			const cls = d.status === "ok" ? "validity-ok" : "validity-error";
+			const statusLabel = d.status === "ok" ? "ok" : d.status;
+			html += `<div class="validity-row ${cls}" style="border-left-color:${color}">`;
+			html += `<span>D${d.districtId}: ${d.population.toLocaleString()}</span>`;
+			html += `<span class="validity-badge">${sign}${d.deviationPct.toFixed(1)}% ${statusLabel}</span>`;
+			html += `</div>`;
+		}
 	}
 
 	// Contiguity (skipped when "allowed")

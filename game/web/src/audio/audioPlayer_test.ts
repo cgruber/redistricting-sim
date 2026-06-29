@@ -28,18 +28,18 @@
 const _store: Map<string, string> = new Map();
 
 const localStorageShim = {
-  getItem(key: string): string | null {
-    return _store.get(key) ?? null;
-  },
-  setItem(key: string, value: string): void {
-    _store.set(key, value);
-  },
-  removeItem(key: string): void {
-    _store.delete(key);
-  },
-  clear(): void {
-    _store.clear();
-  },
+	getItem(key: string): string | null {
+		return _store.get(key) ?? null;
+	},
+	setItem(key: string, value: string): void {
+		_store.set(key, value);
+	},
+	removeItem(key: string): void {
+		_store.delete(key);
+	},
+	clear(): void {
+		_store.clear();
+	},
 };
 
 (globalThis as unknown as Record<string, unknown>)["localStorage"] = localStorageShim;
@@ -58,23 +58,23 @@ let _audioPlayCalled = false;
 let _nextPlayResult: "resolve" | "reject" | "throw" = "resolve";
 
 class AudioShim {
-  src: string;
-  preload: string = "auto";
+	src: string;
+	preload = "auto";
 
-  constructor(src: string) {
-    this.src = src;
-  }
+	constructor(src: string) {
+		this.src = src;
+	}
 
-  play(): Promise<void> {
-    _audioPlayCalled = true;
-    if (_nextPlayResult === "throw") {
-      throw new DOMException("NotAllowedError", "NotAllowedError");
-    }
-    if (_nextPlayResult === "reject") {
-      return Promise.reject(new DOMException("NotAllowedError", "NotAllowedError"));
-    }
-    return Promise.resolve();
-  }
+	play(): Promise<void> {
+		_audioPlayCalled = true;
+		if (_nextPlayResult === "throw") {
+			throw new DOMException("NotAllowedError", "NotAllowedError");
+		}
+		if (_nextPlayResult === "reject") {
+			return Promise.reject(new DOMException("NotAllowedError", "NotAllowedError"));
+		}
+		return Promise.resolve();
+	}
 }
 
 (globalThis as unknown as Record<string, unknown>)["Audio"] = AudioShim;
@@ -82,132 +82,142 @@ class AudioShim {
 // ─── Imports (after shims are installed) ─────────────────────────────────────
 
 import { preload, play, setMuted, isMuted, _resetForTesting } from "./audioPlayer.js";
-import { test, assertEqual, assertTrue, assertFalse, assertDoesNotThrow, summarize } from "../testing/test_runner.js";
+import {
+	test,
+	assertEqual,
+	assertTrue,
+	assertFalse,
+	assertDoesNotThrow,
+	summarize,
+} from "../testing/test_runner.js";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function resetAll(): void {
-  _store.clear();
-  _audioPlayCalled = false;
-  _nextPlayResult = "resolve";
-  // _resetForTesting() clears the clip registry and nulls the in-memory mute
-  // cache so each test begins from a clean slate without carrying over clips
-  // or stale cache values from prior tests.
-  _resetForTesting();
+	_store.clear();
+	_audioPlayCalled = false;
+	_nextPlayResult = "resolve";
+	// _resetForTesting() clears the clip registry and nulls the in-memory mute
+	// cache so each test begins from a clean slate without carrying over clips
+	// or stale cache values from prior tests.
+	_resetForTesting();
 }
 
 // ─── isMuted() defaults ───────────────────────────────────────────────────────
 
 test("isMuted: defaults to false when key absent from localStorage", () => {
-  resetAll();
-  assertFalse(isMuted(), "should be false by default");
+	resetAll();
+	assertFalse(isMuted(), "should be false by default");
 });
 
 // ─── setMuted / isMuted round-trip ───────────────────────────────────────────
 
 test("setMuted(true) → isMuted() === true", () => {
-  resetAll();
-  setMuted(true);
-  assertTrue(isMuted(), "isMuted should be true after setMuted(true)");
+	resetAll();
+	setMuted(true);
+	assertTrue(isMuted(), "isMuted should be true after setMuted(true)");
 });
 
 test("setMuted(false) → isMuted() === false", () => {
-  resetAll();
-  setMuted(true);
-  setMuted(false);
-  assertFalse(isMuted(), "isMuted should be false after setMuted(false)");
+	resetAll();
+	setMuted(true);
+	setMuted(false);
+	assertFalse(isMuted(), "isMuted should be false after setMuted(false)");
 });
 
 test("mute state is persisted to localStorage key", () => {
-  resetAll();
-  setMuted(true);
-  const raw = _store.get("redistricting-sim-audio-muted");
-  assertEqual(raw, "true", "localStorage should hold 'true'");
+	resetAll();
+	setMuted(true);
+	const raw = _store.get("redistricting-sim-audio-muted");
+	assertEqual(raw, "true", "localStorage should hold 'true'");
 });
 
 test("unmute state is persisted to localStorage key", () => {
-  resetAll();
-  setMuted(true);
-  setMuted(false);
-  const raw = _store.get("redistricting-sim-audio-muted");
-  assertEqual(raw, "false", "localStorage should hold 'false'");
+	resetAll();
+	setMuted(true);
+	setMuted(false);
+	const raw = _store.get("redistricting-sim-audio-muted");
+	assertEqual(raw, "false", "localStorage should hold 'false'");
 });
 
 // ─── play() when muted ───────────────────────────────────────────────────────
 
 test("play() no-ops when muted — no error thrown", () => {
-  resetAll();
-  preload({ beep: "stub://beep.mp3" });
-  setMuted(true);
-  assertDoesNotThrow(() => play("beep"), "play() should not throw when muted");
+	resetAll();
+	preload({ beep: "stub://beep.mp3" });
+	setMuted(true);
+	assertDoesNotThrow(() => play("beep"), "play() should not throw when muted");
 });
 
 test("play() does not start audio when muted", () => {
-  resetAll();
-  preload({ beep: "stub://beep.mp3" });
-  setMuted(true);
-  _audioPlayCalled = false;
-  play("beep");
-  assertFalse(_audioPlayCalled, "Audio.play() must not be called when muted");
+	resetAll();
+	preload({ beep: "stub://beep.mp3" });
+	setMuted(true);
+	_audioPlayCalled = false;
+	play("beep");
+	assertFalse(_audioPlayCalled, "Audio.play() must not be called when muted");
 });
 
 // ─── play() with unknown name ─────────────────────────────────────────────────
 
 test("play() of unknown clip name — no error thrown", () => {
-  resetAll();
-  setMuted(false);
-  assertDoesNotThrow(() => play("nonexistent"), "play() should not throw for unknown name");
+	resetAll();
+	setMuted(false);
+	assertDoesNotThrow(() => play("nonexistent"), "play() should not throw for unknown name");
 });
 
 test("play() of unknown clip name — no audio started", () => {
-  resetAll();
-  setMuted(false);
-  _audioPlayCalled = false;
-  play("nonexistent");
-  assertFalse(_audioPlayCalled, "Audio.play() must not be called for unknown name");
+	resetAll();
+	setMuted(false);
+	_audioPlayCalled = false;
+	play("nonexistent");
+	assertFalse(_audioPlayCalled, "Audio.play() must not be called for unknown name");
 });
 
 // ─── preload() + play() ───────────────────────────────────────────────────────
 
 test("preload() registers clips; play() of registered name attempts playback", () => {
-  resetAll();
-  preload({ chime: "stub://chime.mp3" });
-  setMuted(false);
-  _audioPlayCalled = false;
-  play("chime");
-  assertTrue(_audioPlayCalled, "Audio.play() should be called for a registered, unmuted clip");
+	resetAll();
+	preload({ chime: "stub://chime.mp3" });
+	setMuted(false);
+	_audioPlayCalled = false;
+	play("chime");
+	assertTrue(_audioPlayCalled, "Audio.play() should be called for a registered, unmuted clip");
 });
 
 test("preload() multiple clips; each registered independently", () => {
-  resetAll();
-  preload({ a: "stub://a.mp3", b: "stub://b.mp3" });
-  setMuted(false);
-  _audioPlayCalled = false;
-  play("a");
-  assertTrue(_audioPlayCalled, "clip 'a' should be playable");
-  _audioPlayCalled = false;
-  play("b");
-  assertTrue(_audioPlayCalled, "clip 'b' should be playable");
+	resetAll();
+	preload({ a: "stub://a.mp3", b: "stub://b.mp3" });
+	setMuted(false);
+	_audioPlayCalled = false;
+	play("a");
+	assertTrue(_audioPlayCalled, "clip 'a' should be playable");
+	_audioPlayCalled = false;
+	play("b");
+	assertTrue(_audioPlayCalled, "clip 'b' should be playable");
 });
 
 // ─── play() autoplay-rejection handling ──────────────────────────────────────
 
 test("play() silently no-ops when browser rejects play() Promise (autoplay policy)", () => {
-  resetAll();
-  preload({ blocked: "stub://blocked.mp3" });
-  setMuted(false);
-  _nextPlayResult = "reject";
-  // play() attaches a .catch() to the rejected Promise, so it must not throw
-  // synchronously and must not surface an unhandled rejection.
-  assertDoesNotThrow(() => play("blocked"), "play() must not throw on Promise rejection");
+	resetAll();
+	preload({ blocked: "stub://blocked.mp3" });
+	setMuted(false);
+	_nextPlayResult = "reject";
+	// play() attaches a .catch() to the rejected Promise, so it must not throw
+	// synchronously and must not surface an unhandled rejection.
+	assertDoesNotThrow(() => play("blocked"), "play() must not throw on Promise rejection");
 });
 
 test("play() silently no-ops when play() throws synchronously (older browser)", () => {
-  resetAll();
-  preload({ blocked: "stub://blocked.mp3" });
-  setMuted(false);
-  _nextPlayResult = "throw";
-  assertDoesNotThrow(() => play("blocked"), "play() must not throw when Audio.play() throws synchronously");
+	resetAll();
+	preload({ blocked: "stub://blocked.mp3" });
+	setMuted(false);
+	_nextPlayResult = "throw";
+	assertDoesNotThrow(
+		() => play("blocked"),
+		"play() must not throw when Audio.play() throws synchronously",
+	);
 });
 
 summarize();

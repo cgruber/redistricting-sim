@@ -123,7 +123,10 @@ test("simulateDistrict: two precincts aggregate correctly", () => {
 	// Total: 80 R / 120 D, pop 200 → R=0.4, D=0.6 → D wins by 0.2
 	const p0 = makePrecinct(0, 60, 40, 100);
 	const p1 = makePrecinct(1, 20, 80, 100);
-	const assignments: AssignmentMap = new Map([[0, 1], [1, 1]]);
+	const assignments: AssignmentMap = new Map([
+		[0, 1],
+		[1, 1],
+	]);
 	const result = simulateDistrict(1, [p0, p1], assignments);
 
 	assertEqual(result.winner, "D", "winner");
@@ -136,7 +139,10 @@ test("simulateDistrict: precinct in different district excluded", () => {
 	// P0 in district 1, P1 in district 2 — only P0 should count
 	const p0 = makePrecinct(0, 70, 30, 100);
 	const p1 = makePrecinct(1, 10, 90, 100);
-	const assignments: AssignmentMap = new Map([[0, 1], [1, 2]]);
+	const assignments: AssignmentMap = new Map([
+		[0, 1],
+		[1, 2],
+	]);
 	const result = simulateDistrict(1, [p0, p1], assignments);
 
 	assertEqual(result.winner, "R", "winner should be R (only P0 counted)");
@@ -148,7 +154,10 @@ test("simulateDistrict: precinct in different district excluded", () => {
 
 test("runElection: all precincts in one district — one result, correct seats", () => {
 	const precincts = [makePrecinct(0, 70, 30, 100), makePrecinct(1, 60, 40, 100)];
-	const assignments: AssignmentMap = new Map([[0, 1], [1, 1]]);
+	const assignments: AssignmentMap = new Map([
+		[0, 1],
+		[1, 1],
+	]);
 	const state = makeState(precincts, assignments);
 	const result = runElection(state);
 
@@ -162,7 +171,11 @@ test("runElection: three districts, mixed majorities — correct seat counts", (
 	const p0 = makePrecinct(0, 70, 30, 100); // → D1: R
 	const p1 = makePrecinct(1, 20, 80, 100); // → D2: D
 	const p2 = makePrecinct(2, 25, 75, 100); // → D3: D
-	const assignments: AssignmentMap = new Map([[0, 1], [1, 2], [2, 3]]);
+	const assignments: AssignmentMap = new Map([
+		[0, 1],
+		[1, 2],
+		[2, 3],
+	]);
 	const state = makeState([p0, p1, p2], assignments);
 	const result = runElection(state);
 
@@ -170,9 +183,9 @@ test("runElection: three districts, mixed majorities — correct seat counts", (
 	assertEqual(result.seatsByParty["R"], 1, "R has 1 seat");
 	assertEqual(result.seatsByParty["D"], 2, "D has 2 seats");
 
-	const d1 = result.districtResults.find(r => r.districtId === 1)!;
-	const d2 = result.districtResults.find(r => r.districtId === 2)!;
-	const d3 = result.districtResults.find(r => r.districtId === 3)!;
+	const d1 = result.districtResults.find((r) => r.districtId === 1)!;
+	const d2 = result.districtResults.find((r) => r.districtId === 2)!;
+	const d3 = result.districtResults.find((r) => r.districtId === 3)!;
 	assertEqual(d1.winner, "R", "district 1 winner");
 	assertEqual(d2.winner, "D", "district 2 winner");
 	assertEqual(d3.winner, "D", "district 3 winner");
@@ -181,7 +194,10 @@ test("runElection: three districts, mixed majorities — correct seat counts", (
 test("runElection: some precincts unassigned (null) — only assigned districts in results", () => {
 	const p0 = makePrecinct(0, 70, 30, 100);
 	const p1 = makePrecinct(1, 20, 80, 100);
-	const assignments: AssignmentMap = new Map([[0, 1], [1, null]]);
+	const assignments: AssignmentMap = new Map([
+		[0, 1],
+		[1, null],
+	]);
 	const state = makeState([p0, p1], assignments);
 	const result = runElection(state);
 
@@ -203,7 +219,10 @@ test("runElection: district results sorted by districtId", () => {
 	// Insert precincts in reverse district order to verify sorting
 	const p0 = makePrecinct(0, 70, 30, 100);
 	const p1 = makePrecinct(1, 20, 80, 100);
-	const assignments: AssignmentMap = new Map([[0, 3], [1, 1]]);
+	const assignments: AssignmentMap = new Map([
+		[0, 3],
+		[1, 1],
+	]);
 	const state = makeState([p0, p1], assignments);
 	const result = runElection(state);
 

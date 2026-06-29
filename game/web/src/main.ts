@@ -12,11 +12,7 @@ import { escapeHtml } from "./model/escape-html.js";
 import { loadScenario } from "./model/loader.js";
 import type { Scenario, CriterionId, CharacterType, Criterion } from "./model/scenario.js";
 import { type MapRenderer, type ViewMode, SvgMapRenderer } from "./render/mapRenderer.js";
-import {
-	renderDistrictButtons,
-	renderResults,
-	renderValidityPanel,
-} from "./render/panels.js";
+import { renderDistrictButtons, renderResults, renderValidityPanel } from "./render/panels.js";
 import { restartTutorialOverlay, startTutorialOverlay } from "./tutorial/overlay.js";
 import { createGameStore } from "./store/gameStore.js";
 import {
@@ -41,7 +37,12 @@ import {
 	clampActiveDistrict,
 	type WipState,
 } from "./model/progress.js";
-import { CAMPAIGN_REGISTRY, getCampaign, loadLastPlayedScenario, saveLastPlayedScenario } from "./model/campaigns.js";
+import {
+	CAMPAIGN_REGISTRY,
+	getCampaign,
+	loadLastPlayedScenario,
+	saveLastPlayedScenario,
+} from "./model/campaigns.js";
 import { initAssets, assetUrl } from "./assets.js";
 import { ALL_PARTIES, PARTY_COLORS } from "./model/types.js";
 import { getCriterionIcon } from "./criterion-icons.js";
@@ -115,7 +116,9 @@ const btnNextScenario = document.getElementById("btn-next-scenario") as HTMLButt
 const btnBackToMenu = document.getElementById("btn-back-to-menu") as HTMLButtonElement | null;
 const btnDebriefMenu = document.getElementById("btn-debrief-menu") as HTMLButtonElement | null;
 const resultStars = document.getElementById("result-stars") as HTMLElement | null;
-const resultRevealControls = document.getElementById("result-reveal-controls") as HTMLElement | null;
+const resultRevealControls = document.getElementById(
+	"result-reveal-controls",
+) as HTMLElement | null;
 const btnRevealSkip = document.getElementById("btn-reveal-skip") as HTMLButtonElement | null;
 const btnMuteAudio = document.getElementById("btn-mute-audio") as HTMLButtonElement | null;
 
@@ -150,9 +153,11 @@ function focusFirst(containerId: string): void {
 	const container = document.getElementById(containerId);
 	if (!container) return;
 	requestAnimationFrame(() => {
-		const candidates = Array.from(container.querySelectorAll<HTMLElement>(
-			'button:not([disabled]):not([hidden]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
-		));
+		const candidates = Array.from(
+			container.querySelectorAll<HTMLElement>(
+				'button:not([disabled]):not([hidden]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+			),
+		);
 		for (const c of candidates) {
 			// Skip controls hidden via display:none (offsetParent === null when hidden).
 			if (c.offsetParent !== null || c === document.activeElement) {
@@ -216,12 +221,20 @@ if (
 const DEBUG_KEY = "redistricting-sim-debug";
 const debugParam = new URLSearchParams(window.location.search).get("debug");
 if (debugParam === "off") {
-	try { sessionStorage.removeItem(DEBUG_KEY); } catch { /* ignore */ }
+	try {
+		sessionStorage.removeItem(DEBUG_KEY);
+	} catch {
+		/* ignore */
+	}
 } else if (debugParam !== null) {
-	try { sessionStorage.setItem(DEBUG_KEY, "1"); } catch { /* ignore */ }
+	try {
+		sessionStorage.setItem(DEBUG_KEY, "1");
+	} catch {
+		/* ignore */
+	}
 }
-const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
-	sessionStorage.getItem(DEBUG_KEY) === "1";
+const IS_DEBUG =
+	(debugParam !== null && debugParam !== "off") || sessionStorage.getItem(DEBUG_KEY) === "1";
 
 // ─── Async init ───────────────────────────────────────────────────────────────
 
@@ -248,9 +261,9 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	}
 	// When a campaign is active, show only that campaign's scenarios in manifest order.
 	const activeList: ReadonlyArray<{ id: string; title: string }> = activeCampaign
-		? (activeCampaign.scenarioIds
+		? activeCampaign.scenarioIds
 				.map((id) => MANIFEST_BY_ID.get(id))
-				.filter((e): e is { id: string; title: string } => e !== undefined))
+				.filter((e): e is { id: string; title: string } => e !== undefined)
 		: (SCENARIO_MANIFEST as ReadonlyArray<{ id: string; title: string }>);
 
 	// URL and label for returning from a scenario — preserves campaign context if present.
@@ -281,14 +294,32 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			titleEl.textContent = entry.title;
 
 			const statusEl = document.createElement("div");
-			const statusLabel = inProgress ? "In Progress" : completed ? "Completed" : unlocked ? "Ready" : "Locked";
-			const statusClass = inProgress ? "in-progress" : completed ? "completed" : unlocked ? "unlocked" : "locked";
+			const statusLabel = inProgress
+				? "In Progress"
+				: completed
+					? "Completed"
+					: unlocked
+						? "Ready"
+						: "Locked";
+			const statusClass = inProgress
+				? "in-progress"
+				: completed
+					? "completed"
+					: unlocked
+						? "unlocked"
+						: "locked";
 			statusEl.className = `sc-status ${statusClass}`;
 			statusEl.textContent = statusLabel;
 
 			const playBtn = document.createElement("button");
 			playBtn.className = `sc-play-btn ${inProgress ? "continue" : completed ? "replay" : unlocked ? "play" : "locked-btn"}`;
-			playBtn.textContent = inProgress ? "Continue" : completed ? "Play Again" : unlocked ? "Play" : "Locked";
+			playBtn.textContent = inProgress
+				? "Continue"
+				: completed
+					? "Play Again"
+					: unlocked
+						? "Play"
+						: "Locked";
 			playBtn.disabled = locked;
 			if (!locked) {
 				playBtn.addEventListener("click", () => {
@@ -385,7 +416,10 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				const navigate = () => window.location.assign(`./?campaign=${campaign.id}`);
 				card.addEventListener("click", navigate);
 				card.addEventListener("keydown", (e: KeyboardEvent) => {
-					if (e.key === "Enter" || e.key === " ") { e.preventDefault(); navigate(); }
+					if (e.key === "Enter" || e.key === " ") {
+						e.preventDefault();
+						navigate();
+					}
 				});
 				cardsEl.appendChild(card);
 			}
@@ -457,13 +491,15 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 		// Reset campaign button — clears all progress and WIP
 		document.getElementById("btn-reset-campaign")?.addEventListener("click", () => {
-			if (!confirm("Reset all progress? This will erase completion status and any in-progress work.")) return;
+			if (
+				!confirm("Reset all progress? This will erase completion status and any in-progress work.")
+			)
+				return;
 			progress = { completed: [] };
 			saveProgress(progress);
 			clearWip();
 			renderScenarioCards();
 		});
-
 	}
 
 	// ── Startup routing (GAME-021 / GAME-048) ────────────────────────────────
@@ -570,7 +606,10 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	} catch (e) {
 		const msg = e instanceof Error ? e.message : String(e);
 		console.error(`[GAME-032] Scenario "${entryToLoad.id}" validation failed:`, e);
-		showLoadError(`Scenario <strong>${escapeHtml(entryToLoad.id)}</strong> could not be loaded due to a validation error.`, msg);
+		showLoadError(
+			`Scenario <strong>${escapeHtml(entryToLoad.id)}</strong> could not be loaded due to a validation error.`,
+			msg,
+		);
 		return;
 	}
 
@@ -733,9 +772,15 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			};
 		}
 
-		renderDistrictButtons(districtBtnsEl!, state.districtCount, state.activeDistrict, (id) => {
-			store.getState().setActiveDistrict(id);
-		}, demoStat);
+		renderDistrictButtons(
+			districtBtnsEl!,
+			state.districtCount,
+			state.activeDistrict,
+			(id) => {
+				store.getState().setActiveDistrict(id);
+			},
+			demoStat,
+		);
 
 		btnUndo!.disabled = pastStates.length === 0;
 		btnRedo!.disabled = futureStates.length === 0;
@@ -798,18 +843,30 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		renderSlide(0);
 		introScreen.classList.remove("hidden");
 
-		btnIntroPrev?.addEventListener("click", () => {
-			if (currentSlide > 0) renderSlide(--currentSlide);
-		}, { signal });
-		btnIntroNext?.addEventListener("click", () => {
-			if (currentSlide < slides.length - 1) renderSlide(++currentSlide);
-		}, { signal });
+		btnIntroPrev?.addEventListener(
+			"click",
+			() => {
+				if (currentSlide > 0) renderSlide(--currentSlide);
+			},
+			{ signal },
+		);
+		btnIntroNext?.addEventListener(
+			"click",
+			() => {
+				if (currentSlide < slides.length - 1) renderSlide(++currentSlide);
+			},
+			{ signal },
+		);
 		const startHandler = () => showEditor();
 		btnIntroStart?.addEventListener("click", startHandler, { signal });
 		btnIntroSkip?.addEventListener("click", startHandler, { signal });
-		document.addEventListener("keydown", (e: KeyboardEvent) => {
-			if (e.key === "Escape") showEditor();
-		}, { signal });
+		document.addEventListener(
+			"keydown",
+			(e: KeyboardEvent) => {
+				if (e.key === "Escape") showEditor();
+			},
+			{ signal },
+		);
 	}
 
 	// ── Keyboard shortcuts for undo/redo (GAME-008 accessibility) ──────────────
@@ -873,12 +930,23 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		mapFilters?.classList.toggle("collapsed", collapsed);
 		mapFilters?.classList.toggle("expanded", !collapsed);
 		mapFiltersToggle?.setAttribute("aria-expanded", String(!collapsed));
-		mapFiltersToggle?.setAttribute("aria-label", collapsed ? "Expand view filters" : "Collapse view filters");
+		mapFiltersToggle?.setAttribute(
+			"aria-label",
+			collapsed ? "Expand view filters" : "Collapse view filters",
+		);
 		mapFiltersToggle?.setAttribute("data-tip", collapsed ? "Expand" : "Collapse");
-		try { localStorage.setItem(FILTERS_COLLAPSED_KEY, collapsed ? "1" : "0"); } catch { /* ignore */ }
+		try {
+			localStorage.setItem(FILTERS_COLLAPSED_KEY, collapsed ? "1" : "0");
+		} catch {
+			/* ignore */
+		}
 	}
 	let filtersCollapsed = false;
-	try { filtersCollapsed = localStorage.getItem(FILTERS_COLLAPSED_KEY) === "1"; } catch { /* ignore */ }
+	try {
+		filtersCollapsed = localStorage.getItem(FILTERS_COLLAPSED_KEY) === "1";
+	} catch {
+		/* ignore */
+	}
 	applyFiltersCollapsed(filtersCollapsed);
 	// Paint-only tutorials (the welcome) have no alternate views worth showing — hide the
 	// whole view toolbar.
@@ -896,16 +964,31 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		districtToolbar?.classList.toggle("collapsed", collapsed);
 		districtToolbar?.classList.toggle("expanded", !collapsed);
 		districtToolbarToggle?.setAttribute("aria-expanded", String(!collapsed));
-		districtToolbarToggle?.setAttribute("aria-label", collapsed ? "Expand district painter" : "Collapse district painter");
+		districtToolbarToggle?.setAttribute(
+			"aria-label",
+			collapsed ? "Expand district painter" : "Collapse district painter",
+		);
 		districtToolbarToggle?.setAttribute("data-tip", collapsed ? "Expand" : "Collapse");
-		if (persist) { try { localStorage.setItem(DISTRICTS_COLLAPSED_KEY, collapsed ? "1" : "0"); } catch { /* ignore */ } }
+		if (persist) {
+			try {
+				localStorage.setItem(DISTRICTS_COLLAPSED_KEY, collapsed ? "1" : "0");
+			} catch {
+				/* ignore */
+			}
+		}
 	}
 	let districtsCollapsed = false;
-	try { districtsCollapsed = localStorage.getItem(DISTRICTS_COLLAPSED_KEY) === "1"; } catch { /* ignore */ }
+	try {
+		districtsCollapsed = localStorage.getItem(DISTRICTS_COLLAPSED_KEY) === "1";
+	} catch {
+		/* ignore */
+	}
 	// Paint-only tutorials keep the painter open (it's the primary chrome and now doubles
 	// as the legend) regardless of, and without clobbering, the saved preference.
-	if (scenario.hide_view_toolbar) { districtsCollapsed = false; applyDistrictsCollapsed(false, false); }
-	else applyDistrictsCollapsed(districtsCollapsed);
+	if (scenario.hide_view_toolbar) {
+		districtsCollapsed = false;
+		applyDistrictsCollapsed(false, false);
+	} else applyDistrictsCollapsed(districtsCollapsed);
 	districtToolbarToggle?.addEventListener("click", () => {
 		districtsCollapsed = !districtsCollapsed;
 		applyDistrictsCollapsed(districtsCollapsed);
@@ -943,22 +1026,70 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	// Governor sheet: 1376×752px (unique dimensions).
 	// Pose columns: neutral 0–400, approve 400–880, disapprove 880–1376.
 	const GOV_ROW_SCALE = 84 / 752;
-	const GOV_SHEET = { neutral: { x: 0, w: 400 }, approve: { x: 400, w: 480 }, disapprove: { x: 880, w: 496 } };
+	const GOV_SHEET = {
+		neutral: { x: 0, w: 400 },
+		approve: { x: 400, w: 480 },
+		disapprove: { x: 880, w: 496 },
+	};
 
 	// All other character sheets: 1408×768px. Pose boundaries measured via mid-gap split on each variant.
 	const CHAR_ROW_SCALE = 84 / 768;
-	type PoseCols = { neutral: { x: number; w: number }; approve: { x: number; w: number }; disapprove: { x: number; w: number } };
+	type PoseCols = {
+		neutral: { x: number; w: number };
+		approve: { x: number; w: number };
+		disapprove: { x: number; w: number };
+	};
 	const CHAR_POSES: Record<string, PoseCols> = {
-		"commissioner-wm": { neutral: { x: 0, w: 458 }, approve: { x: 458, w: 482 }, disapprove: { x: 940, w: 468 } },
-		"commissioner-wf": { neutral: { x: 0, w: 451 }, approve: { x: 451, w: 481 }, disapprove: { x: 932, w: 476 } },
-		"commissioner-bf": { neutral: { x: 0, w: 462 }, approve: { x: 462, w: 492 }, disapprove: { x: 954, w: 454 } },
-		"judge":           { neutral: { x: 0, w: 463 }, approve: { x: 463, w: 480 }, disapprove: { x: 943, w: 465 } },
-		"judge-lm":        { neutral: { x: 0, w: 469 }, approve: { x: 469, w: 467 }, disapprove: { x: 936, w: 472 } },
-		"judge-naf":       { neutral: { x: 0, w: 464 }, approve: { x: 464, w: 473 }, disapprove: { x: 937, w: 471 } },
-		"legislator-wm":   { neutral: { x: 0, w: 435 }, approve: { x: 435, w: 499 }, disapprove: { x: 934, w: 474 } },
-		"legislator-wf":   { neutral: { x: 0, w: 419 }, approve: { x: 419, w: 479 }, disapprove: { x: 898, w: 510 } },
-		"legislator-bm":   { neutral: { x: 0, w: 420 }, approve: { x: 420, w: 522 }, disapprove: { x: 942, w: 466 } },
-		"party":           { neutral: { x: 0, w: 467 }, approve: { x: 467, w: 473 }, disapprove: { x: 940, w: 468 } },
+		"commissioner-wm": {
+			neutral: { x: 0, w: 458 },
+			approve: { x: 458, w: 482 },
+			disapprove: { x: 940, w: 468 },
+		},
+		"commissioner-wf": {
+			neutral: { x: 0, w: 451 },
+			approve: { x: 451, w: 481 },
+			disapprove: { x: 932, w: 476 },
+		},
+		"commissioner-bf": {
+			neutral: { x: 0, w: 462 },
+			approve: { x: 462, w: 492 },
+			disapprove: { x: 954, w: 454 },
+		},
+		judge: {
+			neutral: { x: 0, w: 463 },
+			approve: { x: 463, w: 480 },
+			disapprove: { x: 943, w: 465 },
+		},
+		"judge-lm": {
+			neutral: { x: 0, w: 469 },
+			approve: { x: 469, w: 467 },
+			disapprove: { x: 936, w: 472 },
+		},
+		"judge-naf": {
+			neutral: { x: 0, w: 464 },
+			approve: { x: 464, w: 473 },
+			disapprove: { x: 937, w: 471 },
+		},
+		"legislator-wm": {
+			neutral: { x: 0, w: 435 },
+			approve: { x: 435, w: 499 },
+			disapprove: { x: 934, w: 474 },
+		},
+		"legislator-wf": {
+			neutral: { x: 0, w: 419 },
+			approve: { x: 419, w: 479 },
+			disapprove: { x: 898, w: 510 },
+		},
+		"legislator-bm": {
+			neutral: { x: 0, w: 420 },
+			approve: { x: 420, w: 522 },
+			disapprove: { x: 942, w: 466 },
+		},
+		party: {
+			neutral: { x: 0, w: 467 },
+			approve: { x: 467, w: 473 },
+			disapprove: { x: 940, w: 468 },
+		},
 	};
 
 	// Placeholder SVG for non-governor character types.
@@ -1018,18 +1149,26 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		} else {
 			// Non-governor: resolve asset directory and pose data per type + demographic.
 			const dir =
-				charType === "party" ? "party" :
-				charType === "commissioner" ? `commissioner-${demo || "wm"}` :
-				charType === "judge" ? (demo ? `judge-${demo}` : "judge") :
-				charType === "legislator" ? `legislator-${demo || "wm"}` :
-				null;
+				charType === "party"
+					? "party"
+					: charType === "commissioner"
+						? `commissioner-${demo || "wm"}`
+						: charType === "judge"
+							? demo
+								? `judge-${demo}`
+								: "judge"
+							: charType === "legislator"
+								? `legislator-${demo || "wm"}`
+								: null;
 			const poses = dir ? CHAR_POSES[dir] : null;
 			if (poses) {
 				const n = poses.neutral;
 				const v = passed ? poses.approve : poses.disapprove;
 				const img = assetUrl(`assets/characters/${dir}/sheet.png`);
 				// Fixed viewport width = max pose width (scaled) so neutral→verdict doesn't shift position.
-				const vw = Math.round(Math.max(poses.neutral.w, poses.approve.w, poses.disapprove.w) * CHAR_ROW_SCALE);
+				const vw = Math.round(
+					Math.max(poses.neutral.w, poses.approve.w, poses.disapprove.w) * CHAR_ROW_SCALE,
+				);
 				const makeCharSprite = (col: { x: number; w: number }, label: string): HTMLElement => {
 					const s = document.createElement("div");
 					s.className = "character-sprite character-sprite--row";
@@ -1065,7 +1204,10 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 	function showResultScreen(debugForcePass = false) {
 		if (!resultScreen || !resultVerdict || !resultSubtitle || !resultCriteriaList) return;
-		if (skipClickHandler) { btnRevealSkip?.removeEventListener("click", skipClickHandler); skipClickHandler = null; }
+		if (skipClickHandler) {
+			btnRevealSkip?.removeEventListener("click", skipClickHandler);
+			skipClickHandler = null;
+		}
 
 		const state = store.getState();
 		if (state.simulationResult === null) return;
@@ -1113,10 +1255,15 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		resultMain?.classList.remove("hidden");
 		resultDebrief?.classList.add("hidden");
 		if (btnContinue) btnContinue.style.display = "none";
-		if (resultStars) { resultStars.innerHTML = ""; resultStars.classList.add("hidden"); }
+		if (resultStars) {
+			resultStars.innerHTML = "";
+			resultStars.classList.add("hidden");
+		}
 		// maxStars based on scenario structure (not forced-pass); stars computed from actual results.
 		const maxStars = computeMaxStars(evalResult.criterionResults);
-		const stars = debugForcePass ? maxStars : computeStarCount(evalResult.criterionResults, mapIsValid);
+		const stars = debugForcePass
+			? maxStars
+			: computeStarCount(evalResult.criterionResults, mapIsValid);
 
 		// Build criterion-type lookup (criterionId → Criterion["type"]) for icon dispatch.
 		const criterionTypeMap = new Map<string, string>();
@@ -1147,11 +1294,11 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		// equivalent type — that criterion appears in evalResult and already shows the
 		// failure, so the validity row would be a duplicate.
 		const scenarioCriterionTypes: ReadonlySet<string> = new Set(
-			scenario.success_criteria.map(sc => sc.criterion.type),
+			scenario.success_criteria.map((sc) => sc.criterion.type),
 		);
 		const validityRows = mapIsValid ? [] : buildValidityRows(validity, scenarioCriterionTypes);
 		const criterionRows = debugForcePass
-			? evalResult.criterionResults.map(cr => ({ ...cr, passed: true }))
+			? evalResult.criterionResults.map((cr) => ({ ...cr, passed: true }))
 			: evalResult.criterionResults;
 		const allRows: CriterionResult[] = [...validityRows, ...criterionRows];
 
@@ -1272,9 +1419,10 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 				let clipName: string;
 				if (type === "governor" || type === "commissioner" || type === "legislator") {
 					const gender = democode.length >= 2 ? democode.slice(-1) : "";
-					clipName = (gender === "m" || gender === "f")
-						? `${type}-${audioState}-${gender}`
-						: `${type}-${audioState}`;
+					clipName =
+						gender === "m" || gender === "f"
+							? `${type}-${audioState}-${gender}`
+							: `${type}-${audioState}`;
 				} else if (type === "judge") {
 					clipName = `judge-${audioState}`;
 				} else {
@@ -1289,12 +1437,14 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		// Called after a debug replay changes a single criterion's result.
 		function syncOverallVerdict(): void {
 			if (!resultVerdict || !resultSubtitle || !resultCriteriaList) return;
-			const rows = Array.from(resultCriteriaList.querySelectorAll<HTMLElement>(".result-criterion"));
-			const anyRequiredFailed = rows.some(r => r.classList.contains("failed-required"));
+			const rows = Array.from(
+				resultCriteriaList.querySelectorAll<HTMLElement>(".result-criterion"),
+			);
+			const anyRequiredFailed = rows.some((r) => r.classList.contains("failed-required"));
 			const nowPass = !anyRequiredFailed;
 			verdictShown = true;
-			const optionalPassed = rows.filter(r =>
-				r.dataset["required"] === "false" && r.dataset["passed"] === "true"
+			const optionalPassed = rows.filter(
+				(r) => r.dataset["required"] === "false" && r.dataset["passed"] === "true",
 			).length;
 			const subtitle = nowPass
 				? "All required criteria met."
@@ -1360,11 +1510,7 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		// final=true → already in pass/fail state (reduced-motion or skip path).
 		// final=false → starts in rc-pending/CHECKING state; JS reveals it later.
 		function buildRowElement(cr: CriterionResult, final: boolean): HTMLElement {
-			const verdictCls = cr.passed
-				? "passed"
-				: cr.required
-					? "failed-required"
-					: "failed-optional";
+			const verdictCls = cr.passed ? "passed" : cr.required ? "failed-required" : "failed-optional";
 
 			const row = document.createElement("div");
 			row.className = final ? `result-criterion ${verdictCls}` : "result-criterion rc-pending";
@@ -1386,7 +1532,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 			const iconEl = document.createElement("span");
 			iconEl.className = "rc-icon";
-			const criterionType = criterionTypeMap.get(cr.criterionId as string) ?? (cr.criterionId as string);
+			const criterionType =
+				criterionTypeMap.get(cr.criterionId as string) ?? (cr.criterionId as string);
 			iconEl.innerHTML = getCriterionIcon(cr.criterionId as string, criterionType);
 
 			const body = document.createElement("div");
@@ -1412,7 +1559,11 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 			const badge = document.createElement("span");
 			badge.className = final ? "rc-badge" : "rc-badge rc-checking";
 			badge.textContent = final
-				? (cr.passed ? "PASS" : cr.required ? "FAIL" : "OPTIONAL")
+				? cr.passed
+					? "PASS"
+					: cr.required
+						? "FAIL"
+						: "OPTIONAL"
 				: "CHECKING…";
 
 			row.appendChild(iconEl);
@@ -1491,7 +1642,9 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 						if (!passed) {
 							const badge = row.querySelector<HTMLSpanElement>(".rc-badge")!;
 							badge.classList.add("rc-pop");
-							badge.addEventListener("animationend", () => badge.classList.remove("rc-pop"), { once: true });
+							badge.addEventListener("animationend", () => badge.classList.remove("rc-pop"), {
+								once: true,
+							});
 						}
 
 						if (i === rowElements.length - 1) {
@@ -1575,7 +1728,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	const toggleCoordLabels = () => {
 		coordLabelsOn = !coordLabelsOn;
 		renderer.setCoordLabelsVisible(coordLabelsOn);
-		if (btnDebugCoords) btnDebugCoords.textContent = coordLabelsOn ? "⌖ Coords ON [C]" : "⌖ Coords [C]";
+		if (btnDebugCoords)
+			btnDebugCoords.textContent = coordLabelsOn ? "⌖ Coords ON [C]" : "⌖ Coords [C]";
 	};
 	if (btnDebugCoords && IS_DEBUG) {
 		btnDebugCoords.style.display = "";
@@ -1596,10 +1750,16 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 	});
 
 	// Nav-back submenu (GAME-051)
-	const navBackTrigger = document.getElementById("btn-nav-back-trigger") as HTMLButtonElement | null;
+	const navBackTrigger = document.getElementById(
+		"btn-nav-back-trigger",
+	) as HTMLButtonElement | null;
 	const navBackMenu = document.getElementById("nav-back-menu") as HTMLElement | null;
-	const btnBackToScenarios = document.getElementById("btn-back-to-scenarios") as HTMLButtonElement | null;
-	const btnBackToMainMenu = document.getElementById("btn-back-to-main-menu") as HTMLButtonElement | null;
+	const btnBackToScenarios = document.getElementById(
+		"btn-back-to-scenarios",
+	) as HTMLButtonElement | null;
+	const btnBackToMainMenu = document.getElementById(
+		"btn-back-to-main-menu",
+	) as HTMLButtonElement | null;
 
 	// Hide "Return to Scenarios" when no campaign context is active.
 	if (!activeCampaign && btnBackToScenarios) btnBackToScenarios.hidden = true;
@@ -1621,8 +1781,9 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 
 		// GAME-105: visible (non-hidden) menuitems, for focus-on-open + arrow roving.
 		const menuItems = (): HTMLButtonElement[] =>
-			Array.from(navBackMenu?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]') ?? [])
-				.filter((b) => !b.hidden);
+			Array.from(
+				navBackMenu?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]') ?? [],
+			).filter((b) => !b.hidden);
 
 		navBackTrigger?.addEventListener("click", (e) => {
 			e.stopPropagation();
@@ -1675,9 +1836,8 @@ const IS_DEBUG = (debugParam !== null && debugParam !== "off") ||
 		const curIdx = activeList.findIndex((e) => e.id === entryToLoad.id);
 		const next = curIdx >= 0 ? activeList[curIdx + 1] : undefined;
 		if (next) {
-			const dest = campaignParam !== ""
-				? `./?s=${next.id}&campaign=${campaignParam}`
-				: `./?s=${next.id}`;
+			const dest =
+				campaignParam !== "" ? `./?s=${next.id}&campaign=${campaignParam}` : `./?s=${next.id}`;
 			window.location.assign(dest);
 		} else {
 			resultScreen!.classList.add("hidden");

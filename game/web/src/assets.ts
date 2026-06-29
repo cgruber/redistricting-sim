@@ -23,18 +23,18 @@ let _environment: string | null = null;
  * non-production hosts. Synchronous and infallible — call once at startup.
  */
 export function initAssets(): void {
-  const versionMeta = document.querySelector<HTMLMetaElement>('meta[name="app-version"]');
-  const envMeta = document.querySelector<HTMLMetaElement>('meta[name="app-environment"]');
+	const versionMeta = document.querySelector<HTMLMetaElement>('meta[name="app-version"]');
+	const envMeta = document.querySelector<HTMLMetaElement>('meta[name="app-environment"]');
 
-  const version = versionMeta?.content ?? "";
-  const env = envMeta?.content ?? "";
+	const version = versionMeta?.content ?? "";
+	const env = envMeta?.content ?? "";
 
-  _version = version !== "" ? version : null;
-  _environment = env !== "" ? env : null;
+	_version = version !== "" ? version : null;
+	_environment = env !== "" ? env : null;
 
-  if (!isProduction()) {
-    showVersionBadge();
-  }
+	if (!isProduction()) {
+		showVersionBadge();
+	}
 }
 
 /**
@@ -43,24 +43,24 @@ export function initAssets(): void {
  * fresh content after a deploy.
  */
 export function assetUrl(path: string): string {
-  return _version !== null ? `${path}?v=${_version}` : path;
+	return _version !== null ? `${path}?v=${_version}` : path;
 }
 
 // ─── Internal helpers ─────────────────────────────────────────────────────────
 
 function isProduction(): boolean {
-  const h = window.location.hostname;
-  return h === "pastthepost.gg" || h === "www.pastthepost.gg";
+	const h = window.location.hostname;
+	return h === "pastthepost.gg" || h === "www.pastthepost.gg";
 }
 
 function showVersionBadge(): void {
-  const existing = document.getElementById("version-badge");
-  if (existing) return;
+	const existing = document.getElementById("version-badge");
+	if (existing) return;
 
-  const badge = document.createElement("div");
-  badge.id = "version-badge";
-  const env = _environment ?? (window.location.hostname === "localhost" ? "local" : "?");
-  const ver = _version ?? "no metadata";
-  badge.textContent = `${env}  ${ver}`;
-  document.body.appendChild(badge);
+	const badge = document.createElement("div");
+	badge.id = "version-badge";
+	const env = _environment ?? (window.location.hostname === "localhost" ? "local" : "?");
+	const ver = _version ?? "no metadata";
+	badge.textContent = `${env}  ${ver}`;
+	document.body.appendChild(badge);
 }

@@ -54,7 +54,14 @@ import {
 	clampActiveDistrict,
 	type WipState,
 } from "./progress.js";
-import { test, assertEqual, assertNull, assertNotNull, assertTrue, summarize } from "../testing/test_runner.js";
+import {
+	test,
+	assertEqual,
+	assertNull,
+	assertNotNull,
+	assertTrue,
+	summarize,
+} from "../testing/test_runner.js";
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
 
@@ -140,13 +147,19 @@ test("loadWip: object missing activeDistrict — returns null", () => {
 
 test("loadWip: scenarioId is number not string — returns null", () => {
 	resetStorage();
-	_store.set("redistricting-sim-wip", JSON.stringify({ scenarioId: 42, assignments: {}, activeDistrict: 1 }));
+	_store.set(
+		"redistricting-sim-wip",
+		JSON.stringify({ scenarioId: 42, assignments: {}, activeDistrict: 1 }),
+	);
 	assertNull(loadWip(), "null when scenarioId is wrong type");
 });
 
 test("loadWip: activeDistrict is string not number — returns null", () => {
 	resetStorage();
-	_store.set("redistricting-sim-wip", JSON.stringify({ scenarioId: "x", assignments: {}, activeDistrict: "2" }));
+	_store.set(
+		"redistricting-sim-wip",
+		JSON.stringify({ scenarioId: "x", assignments: {}, activeDistrict: "2" }),
+	);
 	assertNull(loadWip(), "null when activeDistrict is wrong type");
 });
 

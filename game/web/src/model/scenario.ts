@@ -56,9 +56,7 @@ export interface CartesianPosition {
 	y: number;
 }
 
-export type GeometrySpec =
-	| { type: "hex_axial" }
-	| { type: "custom" };
+export type GeometrySpec = { type: "hex_axial" } | { type: "custom" };
 
 // ─── Region ───────────────────────────────────────────────────────────────────
 
@@ -129,9 +127,7 @@ export interface Precinct {
 
 // ─── Events ───────────────────────────────────────────────────────────────────
 
-export type GroupFilter =
-	| { group_ids: GroupId[] }
-	| { dimension: string; value: string };
+export type GroupFilter = { group_ids: GroupId[] } | { dimension: string; value: string };
 
 export type PrecinctFilter =
 	| { precinct_ids: PrecinctId[] }
@@ -184,7 +180,12 @@ export type CompareOp = "lt" | "lte" | "eq" | "gte" | "gt";
 
 export type Criterion =
 	| { type: "seat_count"; party: PartyId; operator: CompareOp; count: number }
-	| { type: "majority_minority"; group_filter: GroupFilter; min_eligible_share: number; min_districts: number }
+	| {
+			type: "majority_minority";
+			group_filter: GroupFilter;
+			min_eligible_share: number;
+			min_districts: number;
+	  }
 	| { type: "efficiency_gap"; operator: CompareOp; threshold: number }
 	| { type: "mean_median"; party: PartyId; operator: CompareOp; threshold: number }
 	| { type: "compactness"; operator: CompareOp; threshold: number }
@@ -193,12 +194,7 @@ export type Criterion =
 	| { type: "population_balance" }
 	| { type: "district_count" };
 
-export type CharacterType =
-	| "governor"
-	| "commissioner"
-	| "party"
-	| "judge"
-	| "legislator";
+export type CharacterType = "governor" | "commissioner" | "party" | "judge" | "legislator";
 
 export interface SuccessCriterion {
 	id: CriterionId;

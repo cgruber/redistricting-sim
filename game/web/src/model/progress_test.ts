@@ -10,7 +10,14 @@ import {
 	isCompleted,
 	type Progress,
 } from "./progress.js";
-import { test, assertEqual, assertDeepEqual, assertTrue, assertFalse, summarize } from "../testing/test_runner.js";
+import {
+	test,
+	assertEqual,
+	assertDeepEqual,
+	assertTrue,
+	assertFalse,
+	summarize,
+} from "../testing/test_runner.js";
 
 // ─── serializeProgress ────────────────────────────────────────────────────────
 

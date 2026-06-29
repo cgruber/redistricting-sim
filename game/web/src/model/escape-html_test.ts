@@ -10,10 +10,7 @@ test("escapeHtml: neutralizes an injected element", () => {
 	const input = "</span><img src=x onerror=alert(1)>";
 	const escaped = escapeHtml(input);
 	// The angle brackets must be escaped so the browser never builds an element.
-	assertEqual(
-		escaped,
-		"&lt;/span&gt;&lt;img src=x onerror=alert(1)&gt;",
-	);
+	assertEqual(escaped, "&lt;/span&gt;&lt;img src=x onerror=alert(1)&gt;");
 });
 
 test("escapeHtml: leaves normal text unchanged", () => {

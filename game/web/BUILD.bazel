@@ -219,6 +219,61 @@ sh_test(
     visibility = ["//visibility:public"],
 )
 
+# Biome lint + format gate — GAME-107.
+#
+# Runs `biome ci .` (no-write CI mode: format + enabled lint rules) over the
+# game/web source tree and fails on any violation. The formatter config matches
+# the existing house style (tab indent, double quotes, semicolons, trailing
+# commas, lineWidth 100) so the gate enforces format + a baseline lint set; the
+# noisy intentional-pattern rules (noNonNullAssertion, useLiteralKeys, …) are
+# deferred in biome.jsonc with TODO GAME-107 notes.
+#
+# Mirrors e2e_test: local = True + no-sandbox, and invokes the PHYSICAL
+# node_modules/.bin/biome binary (installed by ./setup.sh via npm ci) the same
+# way e2e_test runs node_modules/.bin/playwright. There is no
+# //game:node_modules/@biomejs/biome Bazel target because the Bazel npm repo is
+# translated from pnpm-lock.yaml (which lags package-lock.json — see setup.sh),
+# so we cannot declare biome as a //game:node_modules dep like playwright. The
+# binary is resolved at runtime from the workspace node_modules.
+#
+# data: ALL linted files must be declared so editing in a violation invalidates
+# the cache and re-runs the gate. glob does not cross package boundaries, so each
+# subpackage surfaces its sources via a :lint_sources filegroup.
+#
+# One-time setup outside Bazel:
+#   cd game && ./setup.sh
+sh_test(
+    name = "lint_test",
+    srcs = ["lint_test.sh"],
+    data = [
+        "biome.jsonc",
+        "tsconfig.json",
+        "tsconfig.lib.json",
+        "playwright.config.ts",
+        "//game/web/src/model:lint_sources",
+        "//game/web/src/simulation:lint_sources",
+        "//game/web/src/pipeline:lint_sources",
+        "//game/web/src/store:lint_sources",
+        "//game/web/src/audio:lint_sources",
+        "//game/web/src/testing:lint_sources",
+    ] + glob([
+        # Root-package sources biome lints (render/ and tutorial/ are NOT separate
+        # Bazel packages, so this glob reaches them). Subpackage sources come via
+        # the :lint_sources filegroups above (glob stops at package boundaries).
+        "src/**/*.ts",
+        # e2e specs are also linted by `biome ci .` and have no BUILD.bazel, so this
+        # glob reaches them directly — they must be data deps or a violation there
+        # would not invalidate the gate's cache (silent stale PASS).
+        "e2e/**/*.ts",
+    ]),
+    local = True,
+    tags = [
+        "no-sandbox",
+        "lint",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 # Meta-test (GAME-109): fail when a colocated `src/**/*_test.ts` has no
 # corresponding js_test target. A backstop for the explicit per-target
 # convention — a new test file the author forgets to wire would otherwise

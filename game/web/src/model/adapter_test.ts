@@ -18,18 +18,33 @@
 import { scenarioToSpike } from "./adapter.js";
 import type { Scenario, Party, District } from "./scenario.js";
 import type { PartyId, DistrictId, PrecinctId } from "./scenario.js";
-import { test, assertEqual, assertNull, assertNotNull, assertClose, summarize } from "../testing/test_runner.js";
+import {
+	test,
+	assertEqual,
+	assertNull,
+	assertNotNull,
+	assertClose,
+	summarize,
+} from "../testing/test_runner.js";
 
 // ─── Fixture helpers ──────────────────────────────────────────────────────────
 
-function pid(s: string): PartyId { return s as unknown as PartyId; }
-function did(s: string): DistrictId { return s as unknown as DistrictId; }
-function pcid(s: string): PrecinctId { return s as unknown as PrecinctId; }
+function pid(s: string): PartyId {
+	return s as unknown as PartyId;
+}
+function did(s: string): DistrictId {
+	return s as unknown as DistrictId;
+}
+function pcid(s: string): PrecinctId {
+	return s as unknown as PrecinctId;
+}
 
 const PARTY_R: Party = { id: pid("r_party"), name: "Red", abbreviation: "R" };
 const PARTY_D: Party = { id: pid("d_party"), name: "Blue", abbreviation: "D" };
 
-function makeScenario(overrides: Partial<Scenario> & Pick<Scenario, "parties" | "districts" | "precincts">): Scenario {
+function makeScenario(
+	overrides: Partial<Scenario> & Pick<Scenario, "parties" | "districts" | "precincts">,
+): Scenario {
 	return {
 		format_version: "1",
 		id: "test-001" as unknown as Scenario["id"],
@@ -164,7 +179,11 @@ test("scenarioToSpike: R wins on exact R/D tie (canonical tie-break)", () => {
 		precincts: [makePrecinct(0, 0, [g], "d1")],
 	});
 	const { precincts } = scenarioToSpike(scenario);
-	assertEqual(precincts[0]!.previousResult.winner, "R", "R wins on exact tie (winnerOf, R before D)");
+	assertEqual(
+		precincts[0]!.previousResult.winner,
+		"R",
+		"R wins on exact tie (winnerOf, R before D)",
+	);
 });
 
 // ─── Neighbor lists ───────────────────────────────────────────────────────────
@@ -205,7 +224,7 @@ test("scenarioToSpike: isolated precinct has all-null neighbor array", () => {
 	const { precincts } = scenarioToSpike(scenario);
 	const p = precincts[0]!;
 	assertEqual(p.neighbors.length, 6, "6 neighbors");
-	assertEqual(p.neighbors.filter(n => n === null).length, 6, "all null");
+	assertEqual(p.neighbors.filter((n) => n === null).length, 6, "all null");
 });
 
 // ─── District assignments ─────────────────────────────────────────────────────
@@ -322,7 +341,11 @@ test("scenarioToSpike: foothill annotation derived from mountain adjacency", () 
 		terrain_tiles: [{ position: { q: 1, r: 0 }, type: "mountain" }],
 	});
 	const { precincts } = scenarioToSpike(scenario);
-	assertEqual(precincts[0]!.terrainAnnotation?.foothill, true, "precinct adjacent to mountain → foothill=true");
+	assertEqual(
+		precincts[0]!.terrainAnnotation?.foothill,
+		true,
+		"precinct adjacent to mountain → foothill=true",
+	);
 });
 
 test("scenarioToSpike: riverside annotation derived when no terrain tile adjacency", () => {
@@ -336,8 +359,16 @@ test("scenarioToSpike: riverside annotation derived when no terrain tile adjacen
 		river_edges: [[p1.id, p2.id]],
 	});
 	const { precincts } = scenarioToSpike(scenario);
-	assertEqual(precincts[0]!.terrainAnnotation?.riverside, true, "p1 in river edge → riverside=true");
-	assertEqual(precincts[1]!.terrainAnnotation?.riverside, true, "p2 in river edge → riverside=true");
+	assertEqual(
+		precincts[0]!.terrainAnnotation?.riverside,
+		true,
+		"p1 in river edge → riverside=true",
+	);
+	assertEqual(
+		precincts[1]!.terrainAnnotation?.riverside,
+		true,
+		"p2 in river edge → riverside=true",
+	);
 });
 
 test("scenarioToSpike: foothill suppresses riverside when mountain is adjacent", () => {
@@ -354,7 +385,11 @@ test("scenarioToSpike: foothill suppresses riverside when mountain is adjacent",
 	});
 	const { precincts } = scenarioToSpike(scenario);
 	assertEqual(precincts[0]!.terrainAnnotation?.foothill, true, "foothill=true (mountain adjacent)");
-	assertEqual(precincts[0]!.terrainAnnotation?.riverside, false, "riverside=false (suppressed by foothill)");
+	assertEqual(
+		precincts[0]!.terrainAnnotation?.riverside,
+		false,
+		"riverside=false (suppressed by foothill)",
+	);
 });
 
 test("scenarioToSpike: lakeside annotation derived from adjacency to lake tile", () => {
@@ -366,8 +401,16 @@ test("scenarioToSpike: lakeside annotation derived from adjacency to lake tile",
 		terrain_tiles: [{ position: { q: 1, r: 0 }, type: "lake" }],
 	});
 	const { precincts } = scenarioToSpike(scenario);
-	assertEqual(precincts[0]!.terrainAnnotation?.lakeside, true, "precinct adjacent to lake → lakeside=true");
-	assertEqual(precincts[0]!.terrainAnnotation?.riverside, false, "riverside=false (suppressed by lakeside)");
+	assertEqual(
+		precincts[0]!.terrainAnnotation?.lakeside,
+		true,
+		"precinct adjacent to lake → lakeside=true",
+	);
+	assertEqual(
+		precincts[0]!.terrainAnnotation?.riverside,
+		false,
+		"riverside=false (suppressed by lakeside)",
+	);
 });
 
 test("scenarioToSpike: passableNeighbors nulls river edges when river_blocks_contiguity is true", () => {

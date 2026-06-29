@@ -7,32 +7,32 @@ import type { PartialScenario } from "../model/scenario.js";
 import type { PipelineSpec } from "./spec-types.js";
 
 export function runPipeline(spec: PipelineSpec): PartialScenario {
-  let partial = generateTerrain(spec);
+	let partial = generateTerrain(spec);
 
-  if (spec.population) {
-    partial = populateScenario(partial, spec.population);
-  }
+	if (spec.population) {
+		partial = populateScenario(partial, spec.population);
+	}
 
-  if (spec.demographics) {
-    partial = addDemographics(partial, spec.demographics);
-    // Legacy geometric counties — only when the population-aware stage is not used.
-    if (
-      !spec.counties &&
-      spec.demographics.county_labels &&
-      spec.demographics.county_labels.length > 0
-    ) {
-      partial = assignCounties(partial, spec.demographics.county_labels);
-    }
-  }
+	if (spec.demographics) {
+		partial = addDemographics(partial, spec.demographics);
+		// Legacy geometric counties — only when the population-aware stage is not used.
+		if (
+			!spec.counties &&
+			spec.demographics.county_labels &&
+			spec.demographics.county_labels.length > 0
+		) {
+			partial = assignCounties(partial, spec.demographics.county_labels);
+		}
+	}
 
-  // GAME-089: population-aware cosmetic counties (runs after population field exists).
-  if (spec.counties) {
-    partial = assignCountiesByPopulation(partial, spec.counties);
-  }
+	// GAME-089: population-aware cosmetic counties (runs after population field exists).
+	if (spec.counties) {
+		partial = assignCountiesByPopulation(partial, spec.counties);
+	}
 
-  if (spec.assembly) {
-    partial = assembleScenario(partial, spec.assembly);
-  }
+	if (spec.assembly) {
+		partial = assembleScenario(partial, spec.assembly);
+	}
 
-  return partial;
+	return partial;
 }

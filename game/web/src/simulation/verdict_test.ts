@@ -59,10 +59,7 @@ test("computeStarCount: all required pass, no optional → 1 star", () => {
 test("computeStarCount: each passed optional increments", () => {
 	const base = [cr(true, true, "r1")];
 	assertEqual(computeStarCount([...base, cr(false, true, "o1")], true), 2);
-	assertEqual(
-		computeStarCount([...base, cr(false, true, "o1"), cr(false, true, "o2")], true),
-		3,
-	);
+	assertEqual(computeStarCount([...base, cr(false, true, "o1"), cr(false, true, "o2")], true), 3);
 });
 
 test("computeStarCount: failed optional does not count", () => {
@@ -85,10 +82,7 @@ test("computeStarCount: invalid map → 0 stars even when all criteria pass", ()
 test("computeMaxStars: 1 base + 1 per optional", () => {
 	assertEqual(computeMaxStars([cr(true, true)]), 1);
 	assertEqual(computeMaxStars([cr(true, true), cr(false, false)]), 2);
-	assertEqual(
-		computeMaxStars([cr(true, true), cr(false, false), cr(false, true)]),
-		3,
-	);
+	assertEqual(computeMaxStars([cr(true, true), cr(false, false), cr(false, true)]), 3);
 });
 
 // ─── buildValidityRows ─────────────────────────────────────────────────────────
@@ -102,10 +96,7 @@ test("buildValidityRows: emits unassigned row when no district_count criterion",
 });
 
 test("buildValidityRows: suppresses unassigned row when district_count criterion present", () => {
-	const rows = buildValidityRows(
-		validity({ unassignedCount: 3 }),
-		new Set(["district_count"]),
-	);
+	const rows = buildValidityRows(validity({ unassignedCount: 3 }), new Set(["district_count"]));
 	assertEqual(rows.length, 0);
 });
 
@@ -130,7 +121,10 @@ test("buildValidityRows: combines unassigned + contiguity rows", () => {
 });
 
 test("buildValidityRows: no rows when validity is clean", () => {
-	const contiguity = new Map<number, boolean>([[0, true], [1, true]]);
+	const contiguity = new Map<number, boolean>([
+		[0, true],
+		[1, true],
+	]);
 	const rows = buildValidityRows(validity({ unassignedCount: 0, contiguity }), new Set());
 	assertEqual(rows.length, 0);
 });

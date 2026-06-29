@@ -22,9 +22,9 @@ import type { ValidityStats } from "./validity.js";
  * earns 0.
  */
 export function computeStarCount(criterionResults: CriterionResult[], mapIsValid: boolean): number {
-	const allRequiredPass = criterionResults.every(cr => !cr.required || cr.passed);
+	const allRequiredPass = criterionResults.every((cr) => !cr.required || cr.passed);
 	if (!mapIsValid || !allRequiredPass) return 0;
-	return 1 + criterionResults.filter(cr => !cr.required && cr.passed).length;
+	return 1 + criterionResults.filter((cr) => !cr.required && cr.passed).length;
 }
 
 /**
@@ -32,7 +32,7 @@ export function computeStarCount(criterionResults: CriterionResult[], mapIsValid
  * Based on scenario structure, independent of the player's actual results.
  */
 export function computeMaxStars(criterionResults: CriterionResult[]): number {
-	return 1 + criterionResults.filter(cr => !cr.required).length;
+	return 1 + criterionResults.filter((cr) => !cr.required).length;
 }
 
 /**

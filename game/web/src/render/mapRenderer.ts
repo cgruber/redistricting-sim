@@ -302,7 +302,7 @@ export class SvgMapRenderer implements MapRenderer {
 	// Lightness coefficients for population-density district color shading
 	// District hex lightness = HEX_LIGHTNESS_BASE − normPop × HEX_LIGHTNESS_RANGE
 	private static readonly HEX_LIGHTNESS_BASE = 0.55;
-	private static readonly HEX_LIGHTNESS_RANGE = 0.30;
+	private static readonly HEX_LIGHTNESS_RANGE = 0.3;
 
 	// Dash patterns (on,off in map units before zoom correction)
 	// Short dashes + wide gaps so an underlying white district border shows through.
@@ -381,14 +381,20 @@ export class SvgMapRenderer implements MapRenderer {
 		this.riverGroup = this.zoomGroup.append("g").attr("class", "rivers");
 		this.countyBorderGroup = this.zoomGroup.append("g").attr("class", "county-borders");
 		this.previewBorderGroup = this.zoomGroup.append("g").attr("class", "preview-borders");
-		this.coordLabelGroup = this.zoomGroup.append("g").attr("class", "coord-labels").attr("display", "none");
+		this.coordLabelGroup = this.zoomGroup
+			.append("g")
+			.attr("class", "coord-labels")
+			.attr("display", "none");
 
 		const pops = getState().precincts.map((p) => p.population);
 		this.popMin = Math.min(...pops);
 		this.popMax = Math.max(...pops);
 
 		this.countySegments = computeCountySegments(getState().precincts);
-		this.terrainFacingEdges = computeTerrainFacingEdges(getState().precincts, getState().terrainTiles);
+		this.terrainFacingEdges = computeTerrainFacingEdges(
+			getState().precincts,
+			getState().terrainTiles,
+		);
 
 		this.initZoom();
 		this.initBrushEvents();
@@ -437,7 +443,11 @@ export class SvgMapRenderer implements MapRenderer {
 			const { precincts, terrainTiles } = this.getState();
 			const fs = SvgMapRenderer.COORD_LABEL_FONT_SIZE / this.currentK;
 			const sw = 3 / this.currentK;
-			const labelAttrs = <T extends { coord: { q: number; r: number }; center: { x: number; y: number } }>(sel: d3.Selection<SVGTextElement, T, SVGGElement, unknown>) =>
+			const labelAttrs = <
+				T extends { coord: { q: number; r: number }; center: { x: number; y: number } },
+			>(
+				sel: d3.Selection<SVGTextElement, T, SVGGElement, unknown>,
+			) =>
 				sel
 					.attr("text-anchor", "middle")
 					.attr("dominant-baseline", "central")
@@ -456,7 +466,7 @@ export class SvgMapRenderer implements MapRenderer {
 					.join("text")
 					.attr("class", "coord-label")
 					.attr("x", (d) => d.center.x)
-					.attr("y", (d) => d.center.y)
+					.attr("y", (d) => d.center.y),
 			).text((d) => `${d.coord.q},${d.coord.r}`);
 
 			// Terrain tiles (mountain/sea/lake) are not precincts — label them separately.
@@ -467,7 +477,7 @@ export class SvgMapRenderer implements MapRenderer {
 					.join("text")
 					.attr("class", "coord-label-tile")
 					.attr("x", (d) => d.center.x)
-					.attr("y", (d) => d.center.y)
+					.attr("y", (d) => d.center.y),
 			).text((d) => `${d.coord.q},${d.coord.r}`);
 
 			this.coordLabelsRendered = true;
@@ -481,10 +491,7 @@ export class SvgMapRenderer implements MapRenderer {
 			.data(this.countySegments)
 			.join(
 				(enter) =>
-					enter
-						.append("line")
-						.attr("class", "county-boundary")
-						.attr("stroke-linecap", "round"),
+					enter.append("line").attr("class", "county-boundary").attr("stroke-linecap", "round"),
 				(update) => update,
 				(exit) => exit.remove(),
 			)
@@ -494,7 +501,10 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("y2", (d) => d.y2)
 			.attr("stroke", "#1c1c1c")
 			.attr("stroke-width", SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK)
-			.attr("stroke-dasharray", `${SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`)
+			.attr(
+				"stroke-dasharray",
+				`${SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`,
+			)
 			.attr("opacity", SvgMapRenderer.COUNTY_OPACITY);
 	}
 
@@ -502,9 +512,12 @@ export class SvgMapRenderer implements MapRenderer {
 
 	private terrainFill(type: TerrainTileRuntime["type"]): string {
 		switch (type) {
-			case "sea": return SvgMapRenderer.TERRAIN_FILL_SEA;
-			case "lake": return SvgMapRenderer.TERRAIN_FILL_LAKE;
-			case "mountain": return SvgMapRenderer.TERRAIN_FILL_MOUNTAIN;
+			case "sea":
+				return SvgMapRenderer.TERRAIN_FILL_SEA;
+			case "lake":
+				return SvgMapRenderer.TERRAIN_FILL_LAKE;
+			case "mountain":
+				return SvgMapRenderer.TERRAIN_FILL_MOUNTAIN;
 		}
 	}
 
@@ -512,9 +525,12 @@ export class SvgMapRenderer implements MapRenderer {
 		// DESIGN-008: lake glyph is optional and is omitted here — the aqua fill alone
 		// distinguishes lakes from the darker sea, and white-on-aqua has low contrast.
 		switch (type) {
-			case "sea": return SvgMapRenderer.TERRAIN_GLYPH_SEA;
-			case "lake": return "";
-			case "mountain": return SvgMapRenderer.TERRAIN_GLYPH_MOUNTAIN;
+			case "sea":
+				return SvgMapRenderer.TERRAIN_GLYPH_SEA;
+			case "lake":
+				return "";
+			case "mountain":
+				return SvgMapRenderer.TERRAIN_GLYPH_MOUNTAIN;
 		}
 	}
 
@@ -591,7 +607,11 @@ export class SvgMapRenderer implements MapRenderer {
 		//    visible meander through hex vertices than curveBasis's tighter
 		//    approximation, while still avoiding the sharp Catmull-Rom overshoot
 		//    at sharp turns.
-		const lineGen = d3.line<Point2D>().x((p) => p[0]).y((p) => p[1]).curve(d3.curveCardinal.tension(0.4));
+		const lineGen = d3
+			.line<Point2D>()
+			.x((p) => p[0])
+			.y((p) => p[1])
+			.curve(d3.curveCardinal.tension(0.4));
 
 		this.riverGroup
 			.selectAll<SVGPathElement, Point2D[]>("path.river-chain")
@@ -627,10 +647,22 @@ export class SvgMapRenderer implements MapRenderer {
 		const tilePosMap = new Map<string, TerrainTileRuntime["type"]>();
 		for (const tile of terrainTiles) tilePosMap.set(`${tile.coord.q},${tile.coord.r}`, tile.type);
 
-		interface IntrusionShape { terrainType: "sea" | "mountain" | "lake"; path: string; boundaryPath: string; }
-		interface CornerCap { cx: number; cy: number; r: number; terrainType: "sea" | "mountain" | "lake"; }
+		interface IntrusionShape {
+			terrainType: "sea" | "mountain" | "lake";
+			path: string;
+			boundaryPath: string;
+		}
+		interface CornerCap {
+			cx: number;
+			cy: number;
+			r: number;
+			terrainType: "sea" | "mountain" | "lake";
+		}
 		// SVG arc tracing the district-facing edge of a corner cap (the 120° interior arc).
-		interface CapArc { path: string; terrainType: "sea" | "mountain" | "lake"; }
+		interface CapArc {
+			path: string;
+			terrainType: "sea" | "mountain" | "lake";
+		}
 		const intrusions: IntrusionShape[] = [];
 		const cornerCaps: CornerCap[] = [];
 		const capArcs: CapArc[] = [];
@@ -638,7 +670,11 @@ export class SvgMapRenderer implements MapRenderer {
 		// Curve generator for the inner (eaten-away) boundary. d3.curveBasis approximates the
 		// sample points smoothly without rigidly passing through them — gives a "crinkly but
 		// not jagged" feel when the depth profile has small ripples.
-		const innerCurve = d3.line<Point2D>().x((p) => p[0]).y((p) => p[1]).curve(d3.curveBasis);
+		const innerCurve = d3
+			.line<Point2D>()
+			.x((p) => p[0])
+			.y((p) => p[1])
+			.curve(d3.curveBasis);
 
 		// Per-variant inward-depth profile sampled at fixed t along the edge.
 		// Profile entries are (t, depth-multiplier). Endpoints anchor at depth 0 (the
@@ -646,10 +682,26 @@ export class SvgMapRenderer implements MapRenderer {
 		// "smooth": symmetric with a slight midpoint dip — gentle coastline ripple.
 		// "rugged": asymmetric with two unequal peaks — feels like an uneven mountain edge.
 		const profileSmooth: ReadonlyArray<[number, number]> = [
-			[0, 0], [0.13, 0.50], [0.27, 0.95], [0.42, 0.58], [0.55, 1.05], [0.68, 0.52], [0.80, 0.90], [0.92, 0.42], [1, 0],
+			[0, 0],
+			[0.13, 0.5],
+			[0.27, 0.95],
+			[0.42, 0.58],
+			[0.55, 1.05],
+			[0.68, 0.52],
+			[0.8, 0.9],
+			[0.92, 0.42],
+			[1, 0],
 		];
 		const profileRugged: ReadonlyArray<[number, number]> = [
-			[0, 0], [0.12, 0.72], [0.25, 1.20], [0.38, 0.38], [0.52, 1.25], [0.65, 0.32], [0.78, 1.10], [0.90, 0.55], [1, 0],
+			[0, 0],
+			[0.12, 0.72],
+			[0.25, 1.2],
+			[0.38, 0.38],
+			[0.52, 1.25],
+			[0.65, 0.32],
+			[0.78, 1.1],
+			[0.9, 0.55],
+			[1, 0],
 		];
 
 		const buildIntrusionAndBoundary = (
@@ -687,7 +739,12 @@ export class SvgMapRenderer implements MapRenderer {
 		};
 
 		for (const p of precincts) {
-			if (!p.terrainAnnotation?.coast && !p.terrainAnnotation?.foothill && !p.terrainAnnotation?.lakeside) continue;
+			if (
+				!p.terrainAnnotation?.coast &&
+				!p.terrainAnnotation?.foothill &&
+				!p.terrainAnnotation?.lakeside
+			)
+				continue;
 			const corners = hexCorners(p.center);
 			// First pass: per-edge intrusion shapes
 			for (let i = 0; i < 6; i++) {
@@ -706,17 +763,29 @@ export class SvgMapRenderer implements MapRenderer {
 				if (c0 === undefined || c1 === undefined) continue;
 				if (tileType === "sea") {
 					const { fillPath, boundaryPath } = buildIntrusionAndBoundary(
-						c0, c1, p.center, SvgMapRenderer.COAST_INTRUSION_DEPTH, profileSmooth,
+						c0,
+						c1,
+						p.center,
+						SvgMapRenderer.COAST_INTRUSION_DEPTH,
+						profileSmooth,
 					);
 					intrusions.push({ terrainType: "sea", path: fillPath, boundaryPath });
 				} else if (tileType === "lake") {
 					const { fillPath, boundaryPath } = buildIntrusionAndBoundary(
-						c0, c1, p.center, SvgMapRenderer.LAKE_INTRUSION_DEPTH, profileSmooth,
+						c0,
+						c1,
+						p.center,
+						SvgMapRenderer.LAKE_INTRUSION_DEPTH,
+						profileSmooth,
 					);
 					intrusions.push({ terrainType: "lake", path: fillPath, boundaryPath });
 				} else {
 					const { fillPath, boundaryPath } = buildIntrusionAndBoundary(
-						c0, c1, p.center, SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH, profileRugged,
+						c0,
+						c1,
+						p.center,
+						SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH,
+						profileRugged,
 					);
 					intrusions.push({ terrainType: "mountain", path: fillPath, boundaryPath });
 				}
@@ -738,9 +807,10 @@ export class SvgMapRenderer implements MapRenderer {
 				if (lType !== "sea" && lType !== "mountain" && lType !== "lake") continue;
 				const capCenter = corners[i];
 				if (capCenter === undefined) continue;
-				const r = lType === "sea" || lType === "lake"
-					? SvgMapRenderer.COAST_INTRUSION_DEPTH + 4
-					: SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH + 4;
+				const r =
+					lType === "sea" || lType === "lake"
+						? SvgMapRenderer.COAST_INTRUSION_DEPTH + 4
+						: SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH + 4;
 				cornerCaps.push({ cx: capCenter[0], cy: capCenter[1], r, terrainType: lType });
 
 				// Compute the arc endpoints from the direction the adjacent intrusion boundary
@@ -760,34 +830,43 @@ export class SvgMapRenderer implements MapRenderer {
 				const rightAdj = corners[(i + 1) % 6];
 				if (leftAdj === undefined || rightAdj === undefined) continue;
 
-				const depthVal = lType === "mountain" ? SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH
-					: lType === "lake" ? SvgMapRenderer.LAKE_INTRUSION_DEPTH
-					: SvgMapRenderer.COAST_INTRUSION_DEPTH;
-				const [tFracL, dProfL] = lType === "mountain" ? [0.12, 0.72] as const : [0.13, 0.50] as const;
-				const [tFracR, dProfR] = lType === "mountain" ? [0.10, 0.55] as const : [0.08, 0.42] as const;
+				const depthVal =
+					lType === "mountain"
+						? SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH
+						: lType === "lake"
+							? SvgMapRenderer.LAKE_INTRUSION_DEPTH
+							: SvgMapRenderer.COAST_INTRUSION_DEPTH;
+				const [tFracL, dProfL] =
+					lType === "mountain" ? ([0.12, 0.72] as const) : ([0.13, 0.5] as const);
+				const [tFracR, dProfR] =
+					lType === "mountain" ? ([0.1, 0.55] as const) : ([0.08, 0.42] as const);
 
 				// Inward normal for left edge (from leftAdj to capCenter)
-				const lMidX = (leftAdj[0] + capCenter[0]) / 2, lMidY = (leftAdj[1] + capCenter[1]) / 2;
+				const lMidX = (leftAdj[0] + capCenter[0]) / 2,
+					lMidY = (leftAdj[1] + capCenter[1]) / 2;
 				const lNLen = Math.hypot(p.center.x - lMidX, p.center.y - lMidY) || 1;
-				const lNx = (p.center.x - lMidX) / lNLen, lNy = (p.center.y - lMidY) / lNLen;
+				const lNx = (p.center.x - lMidX) / lNLen,
+					lNy = (p.center.y - lMidY) / lNLen;
 
 				// Inward normal for right edge (from capCenter to rightAdj)
-				const rMidX = (capCenter[0] + rightAdj[0]) / 2, rMidY = (capCenter[1] + rightAdj[1]) / 2;
+				const rMidX = (capCenter[0] + rightAdj[0]) / 2,
+					rMidY = (capCenter[1] + rightAdj[1]) / 2;
 				const rNLen = Math.hypot(p.center.x - rMidX, p.center.y - rMidY) || 1;
-				const rNx = (p.center.x - rMidX) / rNLen, rNy = (p.center.y - rMidY) / rNLen;
+				const rNx = (p.center.x - rMidX) / rNLen,
+					rNy = (p.center.y - rMidY) / rNLen;
 
 				// Exit direction = along-edge component + inward component, projected to radius r
 				const lDx = tFracL * (leftAdj[0] - capCenter[0]) + depthVal * dProfL * lNx;
 				const lDy = tFracL * (leftAdj[1] - capCenter[1]) + depthVal * dProfL * lNy;
 				const lDLen = Math.hypot(lDx, lDy) || 1;
-				const startX = capCenter[0] + r * lDx / lDLen;
-				const startY = capCenter[1] + r * lDy / lDLen;
+				const startX = capCenter[0] + (r * lDx) / lDLen;
+				const startY = capCenter[1] + (r * lDy) / lDLen;
 
 				const rDx = tFracR * (rightAdj[0] - capCenter[0]) + depthVal * dProfR * rNx;
 				const rDy = tFracR * (rightAdj[1] - capCenter[1]) + depthVal * dProfR * rNy;
 				const rDLen = Math.hypot(rDx, rDy) || 1;
-				const endX = capCenter[0] + r * rDx / rDLen;
-				const endY = capCenter[1] + r * rDy / rDLen;
+				const endX = capCenter[0] + (r * rDx) / rDLen;
+				const endY = capCenter[1] + (r * rDy) / rDLen;
 
 				// Sweep: cross product of exit directions → positive in SVG (y-down) = CW = sweep 1.
 				const cross = lDx * rDy - lDy * rDx;
@@ -801,9 +880,11 @@ export class SvgMapRenderer implements MapRenderer {
 		}
 
 		const fillForIntrusion = (t: "sea" | "mountain" | "lake"): string =>
-			t === "sea" ? SvgMapRenderer.TERRAIN_FILL_SEA
-			: t === "lake" ? SvgMapRenderer.TERRAIN_FILL_LAKE
-			: SvgMapRenderer.TERRAIN_FILL_MOUNTAIN;
+			t === "sea"
+				? SvgMapRenderer.TERRAIN_FILL_SEA
+				: t === "lake"
+					? SvgMapRenderer.TERRAIN_FILL_LAKE
+					: SvgMapRenderer.TERRAIN_FILL_MOUNTAIN;
 
 		// Layer order (bottom → top within terrainOverlayGroup):
 		// 1. Intrusion fills — terrain color, cover hex edge area
@@ -944,7 +1025,10 @@ export class SvgMapRenderer implements MapRenderer {
 				this.countyBorderGroup
 					.selectAll<SVGLineElement, Segment>("line.county-boundary")
 					.attr("stroke-width", SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK)
-					.attr("stroke-dasharray", `${SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`);
+					.attr(
+						"stroke-dasharray",
+						`${SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`,
+					);
 				if (this.keyboardFocusPath !== null) {
 					d3.select(this.keyboardFocusPath)
 						.attr("stroke-width", 2 / this.currentK)
@@ -952,7 +1036,8 @@ export class SvgMapRenderer implements MapRenderer {
 				}
 				if (this.coordLabelsRendered) {
 					const fs = SvgMapRenderer.COORD_LABEL_FONT_SIZE / this.currentK;
-					this.coordLabelGroup.selectAll("text.coord-label, text.coord-label-tile")
+					this.coordLabelGroup
+						.selectAll("text.coord-label, text.coord-label-tile")
 						.attr("font-size", fs)
 						.attr("stroke-width", 3 / this.currentK);
 				}
@@ -975,10 +1060,16 @@ export class SvgMapRenderer implements MapRenderer {
 			if (svgNode.closest("[inert]")) return;
 			if (e.key === "=" || e.key === "+") {
 				e.preventDefault();
-				this.svg.transition().duration(SvgMapRenderer.ZOOM_DURATION_SHORT).call(this.zoomBehavior.scaleBy, SvgMapRenderer.ZOOM_STEP);
+				this.svg
+					.transition()
+					.duration(SvgMapRenderer.ZOOM_DURATION_SHORT)
+					.call(this.zoomBehavior.scaleBy, SvgMapRenderer.ZOOM_STEP);
 			} else if (e.key === "-") {
 				e.preventDefault();
-				this.svg.transition().duration(SvgMapRenderer.ZOOM_DURATION_SHORT).call(this.zoomBehavior.scaleBy, 1 / SvgMapRenderer.ZOOM_STEP);
+				this.svg
+					.transition()
+					.duration(SvgMapRenderer.ZOOM_DURATION_SHORT)
+					.call(this.zoomBehavior.scaleBy, 1 / SvgMapRenderer.ZOOM_STEP);
 			} else if (e.key === "0") {
 				e.preventDefault();
 				this.svg
@@ -1054,7 +1145,11 @@ export class SvgMapRenderer implements MapRenderer {
 			previewAssignments.set(id, this.strokeDistrict);
 		}
 
-		const segments = computeBoundarySegments(precincts, previewAssignments, this.terrainFacingEdges);
+		const segments = computeBoundarySegments(
+			precincts,
+			previewAssignments,
+			this.terrainFacingEdges,
+		);
 		const strokeWidth = SvgMapRenderer.PREVIEW_BASE_WIDTH / this.currentK;
 
 		this.previewBorderGroup
@@ -1062,10 +1157,7 @@ export class SvgMapRenderer implements MapRenderer {
 			.data(segments)
 			.join(
 				(enter) =>
-					enter
-						.append("line")
-						.attr("class", "preview-boundary")
-						.attr("stroke-linecap", "round"),
+					enter.append("line").attr("class", "preview-boundary").attr("stroke-linecap", "round"),
 				(update) => update,
 				(exit) => exit.remove(),
 			)
@@ -1075,7 +1167,10 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("y2", (d) => d.y2)
 			.attr("stroke", "#ffffff")
 			.attr("stroke-width", strokeWidth)
-			.attr("stroke-dasharray", `${SvgMapRenderer.PREVIEW_DASH_ON / this.currentK},${SvgMapRenderer.PREVIEW_DASH_OFF / this.currentK}`)
+			.attr(
+				"stroke-dasharray",
+				`${SvgMapRenderer.PREVIEW_DASH_ON / this.currentK},${SvgMapRenderer.PREVIEW_DASH_OFF / this.currentK}`,
+			)
 			.attr("opacity", SvgMapRenderer.PREVIEW_OPACITY);
 	}
 
@@ -1117,7 +1212,8 @@ export class SvgMapRenderer implements MapRenderer {
 				const segs: Segment[] = [];
 				for (let i = 0; i < 6; i++) {
 					if (this.terrainFacingEdges.has(`${d.id}:${i}`)) continue;
-					const c0 = corners[i], c1 = corners[(i + 1) % 6];
+					const c0 = corners[i],
+						c1 = corners[(i + 1) % 6];
 					if (c0 && c1) segs.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
 				}
 				this.hoverHighlightGroup
@@ -1125,8 +1221,10 @@ export class SvgMapRenderer implements MapRenderer {
 					.data(segs)
 					.join("line")
 					.attr("class", "hover-edge")
-					.attr("x1", (s) => s.x1).attr("y1", (s) => s.y1)
-					.attr("x2", (s) => s.x2).attr("y2", (s) => s.y2)
+					.attr("x1", (s) => s.x1)
+					.attr("y1", (s) => s.y1)
+					.attr("x2", (s) => s.x2)
+					.attr("y2", (s) => s.y2)
 					.attr("stroke", "#ffffff")
 					.attr("stroke-width", SvgMapRenderer.HOVER_STROKE_WIDTH / this.currentK)
 					.attr("stroke-linecap", "round")
@@ -1286,9 +1384,7 @@ export class SvgMapRenderer implements MapRenderer {
 		if (dId == null) return "#2a2a3e";
 		const base = districtColor(dId);
 		const normPop =
-			this.popMax > this.popMin
-				? (d.population - this.popMin) / (this.popMax - this.popMin)
-				: 0.5;
+			this.popMax > this.popMin ? (d.population - this.popMin) / (this.popMax - this.popMin) : 0.5;
 		const c = d3.hsl(base);
 		c.l = SvgMapRenderer.HEX_LIGHTNESS_BASE - normPop * SvgMapRenderer.HEX_LIGHTNESS_RANGE;
 		return c.formatHex();
@@ -1320,16 +1416,16 @@ export class SvgMapRenderer implements MapRenderer {
 				return;
 			}
 
-			const current = precincts.find(p => p.id === this.focusedPrecinctId);
+			const current = precincts.find((p) => p.id === this.focusedPrecinctId);
 			if (current === undefined) return;
 
 			// Arrow key → neighbor direction mapping for flat-top hex grid
 			// Try primary then secondary direction to handle diagonal movement
 			const dirMap: Record<string, number[]> = {
-				ArrowUp:    [4],
-				ArrowDown:  [1],
+				ArrowUp: [4],
+				ArrowDown: [1],
 				ArrowRight: [5, 0],
-				ArrowLeft:  [3, 2],
+				ArrowLeft: [3, 2],
 			};
 
 			const dirs = dirMap[e.key];
@@ -1346,7 +1442,7 @@ export class SvgMapRenderer implements MapRenderer {
 			}
 
 			// Number keys 1–5: assign focused precinct to that district
-			const num = parseInt(e.key, 10);
+			const num = Number.parseInt(e.key, 10);
 			if (num >= 1 && num <= districtCount) {
 				e.preventDefault();
 				this.paintStroke([this.focusedPrecinctId], num);
@@ -1388,15 +1484,16 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("stroke-dasharray", `${4 / this.currentK},${2 / this.currentK}`);
 
 		// Update SVG aria-label with current precinct context
-		const p = precincts.find(pr => pr.id === precinctId);
+		const p = precincts.find((pr) => pr.id === precinctId);
 		if (p !== undefined) {
 			const { assignments, districtCount } = this.getState();
 			const dId = assignments.get(p.id);
 			const distLabel = dId != null ? `district ${dId}` : "unassigned";
 			const label = p.name ?? `Precinct ${p.id}`;
-			this.svg.attr("aria-label",
+			this.svg.attr(
+				"aria-label",
 				`District map — focused: ${label}, ${distLabel}. ` +
-				`Arrow keys navigate. Number keys 1–${districtCount} assign district. Space assigns active district.`
+					`Arrow keys navigate. Number keys 1–${districtCount} assign district. Space assigns active district.`,
 			);
 		}
 	}
@@ -1417,11 +1514,11 @@ export class SvgMapRenderer implements MapRenderer {
 			}
 			// Restore default aria-label
 			const { districtCount } = this.getState();
-			this.svg.attr("aria-label",
+			this.svg.attr(
+				"aria-label",
 				"District map. Use mouse or keyboard to paint precincts. " +
-				`Arrow keys navigate precincts, number keys 1–${districtCount} assign to a district.`
+					`Arrow keys navigate precincts, number keys 1–${districtCount} assign to a district.`,
 			);
 		}
 	}
 }
-
