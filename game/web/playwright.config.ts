@@ -11,31 +11,31 @@ import { defineConfig, devices } from "@playwright/test";
  * Bazel and served statically.
  */
 export default defineConfig({
-  testDir: "./e2e",
-  timeout: 10_000,
-  retries: 0,
-  reporter: [["list"], ["html", { outputFolder: "test-results/html", open: "never" }]],
-  outputDir: "test-results/artifacts",
+	testDir: "./e2e",
+	timeout: 10_000,
+	retries: 0,
+	reporter: [["list"], ["html", { outputFolder: "test-results/html", open: "never" }]],
+	outputDir: "test-results/artifacts",
 
-  use: {
-    baseURL: "http://localhost:58173",
-    // Collect trace on any test failure (on-first-retry is dead config with retries:0)
-    trace: "retain-on-failure",
-    // Skip sequential-reveal animations globally so existing tests don't time out
-    // waiting for 400ms×N stagger + 1200ms CHECKING hold per row. Tests that want
-    // to exercise the animated path override this with test.use({ reducedMotion: 'no-preference' }).
-    reducedMotion: "reduce",
-  },
+	use: {
+		baseURL: "http://localhost:58173",
+		// Collect trace on any test failure (on-first-retry is dead config with retries:0)
+		trace: "retain-on-failure",
+		// Skip sequential-reveal animations globally so existing tests don't time out
+		// waiting for 400ms×N stagger + 1200ms CHECKING hold per row. Tests that want
+		// to exercise the animated path override this with test.use({ reducedMotion: 'no-preference' }).
+		reducedMotion: "reduce",
+	},
 
-  projects: [
-    {
-      // Use Playwright's managed Chromium download rather than system Chrome.
-      // setup.sh runs `playwright install chromium` to download it once per
-      // machine into ~/.cache/ms-playwright (macOS: ~/Library/Caches/ms-playwright).
-      // This works on any machine that has run setup.sh — including CI agents
-      // that don't have a system Chrome installed.
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-    },
-  ],
+	projects: [
+		{
+			// Use Playwright's managed Chromium download rather than system Chrome.
+			// setup.sh runs `playwright install chromium` to download it once per
+			// machine into ~/.cache/ms-playwright (macOS: ~/Library/Caches/ms-playwright).
+			// This works on any machine that has run setup.sh — including CI agents
+			// that don't have a system Chrome installed.
+			name: "chromium",
+			use: { ...devices["Desktop Chrome"] },
+		},
+	],
 });

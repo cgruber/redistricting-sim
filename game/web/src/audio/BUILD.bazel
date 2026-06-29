@@ -20,6 +20,19 @@ filegroup(
     visibility = ["//game/web:__pkg__"],
 )
 
+# GAME-107: expose lint-able sources to //game/web:lint_test (see model/BUILD.bazel).
+filegroup(
+    name = "lint_sources",
+    srcs = glob(
+        [
+            "*.ts",
+            "tsconfig*.json",
+        ],
+        allow_empty = True,
+    ),
+    visibility = ["//game/web:__pkg__"],
+)
+
 ts_config(
     name = "tsconfig",
     src = "tsconfig.json",

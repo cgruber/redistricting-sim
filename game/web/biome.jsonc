@@ -1,0 +1,82 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	// Generated/output dirs (web/test-results/, _serve_dist/, .deploy_*/, bazel-*,
+	// bundle.js) are excluded via `files.ignore` below. We intentionally do NOT use
+	// Biome's `vcs.useIgnoreFile`: the gate runs from game/web/ where it would not
+	// find game/.gitignore, and enabling git VCS adds a needless git dependency to
+	// the Bazel test. The explicit ignore list is the single source of truth.
+	// TODO GAME-107: enable organizeImports later — it reorders/merges imports
+	// across all source files, which is a non-formatting change. Deferred to keep
+	// the initial format pass purely mechanical.
+	"organizeImports": {
+		"enabled": false
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"style": {
+				// TODO GAME-107: tighten later. noNonNullAssertion fires ~400x on the
+				// intentional `spec.count!` / `spec.threshold!` pattern (optional fields
+				// validated upstream). Re-enable incrementally once those are narrowed.
+				"noNonNullAssertion": "off",
+				// TODO GAME-107: the rules below have residual violations whose autofix
+				// is unsafe (behavior- or semantics-adjacent). Deferred so the gate stays
+				// green; tighten one rule at a time with a focused fix pass.
+				"useTemplate": "off", // 7 — string concat -> template literal
+				"useSingleVarDeclarator": "off", // 7
+				"noUnusedTemplateLiteral": "off", // 7
+				"noUselessElse": "off", // 3
+				"useNodejsImportProtocol": "off", // 2 — import "node:fs" form
+				"useExponentiationOperator": "off" // 1
+			},
+			"complexity": {
+				// TODO GAME-107: tighten later. useLiteralKeys (~214x) autofix rewrites
+				// obj["k"] -> obj.k, which can break the strict tsconfig
+				// (noUncheckedIndexedAccess / exactOptionalPropertyTypes). Deferred.
+				"useLiteralKeys": "off",
+				// TODO GAME-107: noForEach (13) / useOptionalChain (1) — unsafe autofix
+				// (control-flow rewrite); deferred to keep the gate green.
+				"noForEach": "off",
+				"useOptionalChain": "off"
+			},
+			"suspicious": {
+				// TODO GAME-107: tighten later. A handful of intentional `any` casts.
+				"noExplicitAny": "off"
+			},
+			"performance": {
+				// TODO GAME-107: noDelete (6) — autofix swaps `delete o.x` for
+				// `o.x = undefined`, which is NOT equivalent under `in`/key-presence
+				// checks. Deferred until each site is reviewed by hand.
+				"noDelete": "off"
+			}
+		}
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"lineWidth": 100
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double",
+			"semicolons": "always",
+			"trailingCommas": "all"
+		}
+	},
+	"files": {
+		"ignore": [
+			"node_modules",
+			"dist",
+			".deploy_pkg",
+			"bazel-out",
+			"bazel-bin",
+			"test-results",
+			"playwright-report",
+			"_serve_dist",
+			"**/*.d.ts",
+			"react-stub.js",
+			"bundle.js"
+		]
+	}
+}

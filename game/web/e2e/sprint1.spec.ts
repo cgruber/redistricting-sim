@@ -31,10 +31,7 @@ import { test, expect } from "@playwright/test";
  * IMPORTANT: Set the active district BEFORE calling this (click a .district-btn)
  * so the stroke paints to the intended district.
  */
-async function paintHex(
-	page: import("@playwright/test").Page,
-	selector: string,
-): Promise<void> {
+async function paintHex(page: import("@playwright/test").Page, selector: string): Promise<void> {
 	const hex = page.locator(selector);
 	await hex.dispatchEvent("mousedown");
 	await page.evaluate(() => window.dispatchEvent(new MouseEvent("mouseup")));

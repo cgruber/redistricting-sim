@@ -57,11 +57,16 @@ export function groupFilterLabel(filter: GroupFilter): string {
 
 function applyOp(actual: number, op: CompareOp, threshold: number): boolean {
 	switch (op) {
-		case "lt":  return actual < threshold;
-		case "lte": return actual <= threshold;
-		case "eq":  return Math.abs(actual - threshold) < 1e-9;
-		case "gte": return actual >= threshold;
-		case "gt":  return actual > threshold;
+		case "lt":
+			return actual < threshold;
+		case "lte":
+			return actual <= threshold;
+		case "eq":
+			return Math.abs(actual - threshold) < 1e-9;
+		case "gte":
+			return actual >= threshold;
+		case "gt":
+			return actual > threshold;
 	}
 }
 
@@ -200,7 +205,7 @@ export function evaluateCriteria(
 			}
 
 			case "population_balance": {
-				const failing = validityStats.districtPop.filter(d => d.status !== "ok");
+				const failing = validityStats.districtPop.filter((d) => d.status !== "ok");
 				passed = failing.length === 0;
 				if (!passed) {
 					const worst = failing[0]!;
@@ -229,7 +234,7 @@ export function evaluateCriteria(
 			case "safe_seats": {
 				const key = partyIdToKey.get(c.party) ?? String(c.party);
 				const safeCount = simResult.districtResults.filter(
-					dr => dr.winner === key && dr.margin >= c.margin,
+					(dr) => dr.winner === key && dr.margin >= c.margin,
 				).length;
 				passed = safeCount >= c.min_count;
 				detail = `${key}: ${safeCount} safe seat(s) with margin ≥${(c.margin * 100).toFixed(0)}% (required ≥${c.min_count})`;
@@ -237,9 +242,7 @@ export function evaluateCriteria(
 			}
 
 			case "competitive_seats": {
-				const competitive = simResult.districtResults.filter(
-					dr => dr.margin <= c.margin,
-				).length;
+				const competitive = simResult.districtResults.filter((dr) => dr.margin <= c.margin).length;
 				passed = competitive >= c.min_count;
 				detail = `${competitive} competitive seat(s) with margin ≤${(c.margin * 100).toFixed(0)}% (required ≥${c.min_count})`;
 				break;
@@ -284,7 +287,7 @@ export function evaluateCriteria(
 				// Criterion applies applyOp to the raw (signed) difference.
 				const key = partyIdToKey.get(c.party) ?? String(c.party);
 				const shares = simResult.districtResults.map(
-					dr => (dr.voteTotals as unknown as Record<string, number>)[key] ?? 0,
+					(dr) => (dr.voteTotals as unknown as Record<string, number>)[key] ?? 0,
 				);
 				if (shares.length === 0) {
 					passed = false;
@@ -295,9 +298,7 @@ export function evaluateCriteria(
 				const sorted = shares.slice().sort((a, b) => a - b);
 				const n = sorted.length;
 				const median =
-					n % 2 === 0
-						? (sorted[n / 2 - 1]! + sorted[n / 2]!) / 2
-						: sorted[Math.floor(n / 2)]!;
+					n % 2 === 0 ? (sorted[n / 2 - 1]! + sorted[n / 2]!) / 2 : sorted[Math.floor(n / 2)]!;
 				const diff = mean - median;
 				passed = applyOp(diff, c.operator, c.threshold);
 				const sign = diff >= 0 ? "+" : "";
@@ -318,7 +319,7 @@ export function evaluateCriteria(
 					districtCount,
 					c.group_filter,
 				);
-				const qualifying = groupShares.filter(s => s >= c.min_eligible_share).length;
+				const qualifying = groupShares.filter((s) => s >= c.min_eligible_share).length;
 				passed = qualifying >= c.min_districts;
 				detail = `${qualifying} of ${districtCount} district(s) have target group ≥${(c.min_eligible_share * 100).toFixed(0)}% (required ${c.min_districts})`;
 				break;
@@ -345,9 +346,7 @@ export function evaluateCriteria(
 		criterionResults.push(entry);
 	}
 
-	const overallPass = criterionResults
-		.filter(r => r.required)
-		.every(r => r.passed);
+	const overallPass = criterionResults.filter((r) => r.required).every((r) => r.passed);
 
 	return { criterionResults, overallPass };
 }
@@ -371,7 +370,7 @@ export function isMapSubmittable(
 	enforceBalance = true,
 ): boolean {
 	if (validityStats.unassignedCount > 0) return false;
-	if (enforceBalance && validityStats.districtPop.some(d => d.status !== "ok")) return false;
+	if (enforceBalance && validityStats.districtPop.some((d) => d.status !== "ok")) return false;
 	if (rules.contiguity === "required" && validityStats.contiguity !== null) {
 		for (const ok of validityStats.contiguity.values()) {
 			if (!ok) return false;

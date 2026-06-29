@@ -21,13 +21,26 @@ import { createGameStore } from "./gameStore.js";
 import type { Scenario, Party, District, Precinct as ScenarioPrecinct } from "../model/scenario.js";
 import type { PartyId, DistrictId, PrecinctId } from "../model/scenario.js";
 import type { AssignmentMap } from "../model/types.js";
-import { test, assertEqual, assertNotNull, assertNull, assertTrue, summarize } from "../testing/test_runner.js";
+import {
+	test,
+	assertEqual,
+	assertNotNull,
+	assertNull,
+	assertTrue,
+	summarize,
+} from "../testing/test_runner.js";
 
 // ─── Scenario fixture helpers ─────────────────────────────────────────────────
 
-function pid(s: string): PartyId { return s as unknown as PartyId; }
-function did(s: string): DistrictId { return s as unknown as DistrictId; }
-function pcid(s: string): PrecinctId { return s as unknown as PrecinctId; }
+function pid(s: string): PartyId {
+	return s as unknown as PartyId;
+}
+function did(s: string): DistrictId {
+	return s as unknown as DistrictId;
+}
+function pcid(s: string): PrecinctId {
+	return s as unknown as PrecinctId;
+}
 
 const PARTY_R: Party = { id: pid("r"), name: "Red", abbreviation: "R" };
 const PARTY_D: Party = { id: pid("d"), name: "Blue", abbreviation: "D" };
@@ -38,7 +51,10 @@ function makeGroup(rShare: number) {
 	return {
 		id: pcid("g1") as unknown as import("../model/scenario.js").GroupId,
 		population_share: 1.0,
-		vote_shares: { [pid("r")]: rShare, [pid("d")]: 1 - rShare } as unknown as Record<PartyId, number>,
+		vote_shares: { [pid("r")]: rShare, [pid("d")]: 1 - rShare } as unknown as Record<
+			PartyId,
+			number
+		>,
 		turnout_rate: 1.0,
 	};
 }
@@ -78,11 +94,7 @@ function makeScenario(): Scenario {
 		},
 		parties: [PARTY_R, PARTY_D],
 		districts: [DISTRICT_1, DISTRICT_2],
-		precincts: [
-			makePrecinct(0, 0, "d1"),
-			makePrecinct(1, 0, "d1"),
-			makePrecinct(0, 1, "d2"),
-		],
+		precincts: [makePrecinct(0, 0, "d1"), makePrecinct(1, 0, "d1"), makePrecinct(0, 1, "d2")],
 	};
 }
 
@@ -176,7 +188,11 @@ test("resetToInitial: restores assignments after changes", () => {
 
 test("restoreAssignments: sets provided assignment map and active district", () => {
 	const { store } = createGameStore(makeScenario());
-	const custom: AssignmentMap = new Map([[0, 2], [1, 2], [2, 1]]);
+	const custom: AssignmentMap = new Map([
+		[0, 2],
+		[1, 2],
+		[2, 1],
+	]);
 	store.getState().restoreAssignments(custom, 2);
 	const state = store.getState();
 	assertEqual(state.assignments.get(0), 2, "precinct 0 → district 2");
@@ -194,10 +210,15 @@ test("undo: reverts a paintPrecinct to previous assignment", () => {
 	assertEqual(store.getState().assignments.get(0), 2, "precinct 0 → district 2 (post-paint)");
 
 	// Access zundo temporal store and undo
-	const temporal = (store as unknown as { temporal: { getState: () => { undo: () => void } } }).temporal;
+	const temporal = (store as unknown as { temporal: { getState: () => { undo: () => void } } })
+		.temporal;
 	temporal.getState().undo();
 
-	assertEqual(store.getState().assignments.get(0), 1, "precinct 0 restored → district 1 (post-undo)");
+	assertEqual(
+		store.getState().assignments.get(0),
+		1,
+		"precinct 0 restored → district 1 (post-undo)",
+	);
 });
 
 test("undo: reverts assignments but leaves the live active district untouched (GAME-106)", () => {
@@ -212,11 +233,16 @@ test("undo: reverts assignments but leaves the live active district untouched (G
 	// (No new snapshot: assignments are unchanged, so the equality gate skips it.)
 	store.getState().setActiveDistrict(1);
 
-	const temporal = (store as unknown as { temporal: { getState: () => { undo: () => void } } }).temporal;
+	const temporal = (store as unknown as { temporal: { getState: () => { undo: () => void } } })
+		.temporal;
 	temporal.getState().undo();
 
 	// Assignments revert to the pre-paint state...
-	assertEqual(store.getState().assignments.get(0), 1, "precinct 0 reverted → district 1 (post-undo)");
+	assertEqual(
+		store.getState().assignments.get(0),
+		1,
+		"precinct 0 reverted → district 1 (post-undo)",
+	);
 	// ...but the active district stays the live value (1), not the snapshot value (2).
 	assertEqual(store.getState().activeDistrict, 1, "activeDistrict unchanged by undo (stays 1)");
 });

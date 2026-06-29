@@ -30,11 +30,11 @@ let _mutedCache: boolean | undefined = undefined;
  * so the browser can begin preloading them.
  */
 export function preload(clips: Record<string, string>): void {
-  for (const [name, url] of Object.entries(clips)) {
-    const el = new Audio(url);
-    el.preload = "auto";
-    _clips.set(name, el);
-  }
+	for (const [name, url] of Object.entries(clips)) {
+		const el = new Audio(url);
+		el.preload = "auto";
+		_clips.set(name, el);
+	}
 }
 
 /**
@@ -45,33 +45,33 @@ export function preload(clips: Record<string, string>): void {
  *   - browser autoplay policy blocks playback
  */
 export function play(name: string): void {
-  if (isMuted()) return;
-  const el = _clips.get(name);
-  if (el === undefined) return;
+	if (isMuted()) return;
+	const el = _clips.get(name);
+	if (el === undefined) return;
 
-  try {
-    const result = el.play();
-    // play() returns a Promise in modern browsers; catch policy rejections.
-    if (result !== undefined) {
-      result.catch(() => {
-        // Autoplay blocked or interrupted — silently ignore.
-      });
-    }
-  } catch {
-    // Synchronous throw (older browsers) — silently ignore.
-  }
+	try {
+		const result = el.play();
+		// play() returns a Promise in modern browsers; catch policy rejections.
+		if (result !== undefined) {
+			result.catch(() => {
+				// Autoplay blocked or interrupted — silently ignore.
+			});
+		}
+	} catch {
+		// Synchronous throw (older browsers) — silently ignore.
+	}
 }
 
 /**
  * Set mute state and persist it to localStorage.
  */
 export function setMuted(muted: boolean): void {
-  _mutedCache = muted;
-  try {
-    localStorage.setItem(MUTE_KEY, muted ? "true" : "false");
-  } catch {
-    // Storage unavailable — silently ignore.
-  }
+	_mutedCache = muted;
+	try {
+		localStorage.setItem(MUTE_KEY, muted ? "true" : "false");
+	} catch {
+		// Storage unavailable — silently ignore.
+	}
 }
 
 /**
@@ -79,14 +79,14 @@ export function setMuted(muted: boolean): void {
  * defaults to false if the key is absent or storage is unavailable.
  */
 export function isMuted(): boolean {
-  if (_mutedCache !== undefined) return _mutedCache;
-  try {
-    const raw = localStorage.getItem(MUTE_KEY);
-    _mutedCache = raw === "true";
-  } catch {
-    _mutedCache = false;
-  }
-  return _mutedCache;
+	if (_mutedCache !== undefined) return _mutedCache;
+	try {
+		const raw = localStorage.getItem(MUTE_KEY);
+		_mutedCache = raw === "true";
+	} catch {
+		_mutedCache = false;
+	}
+	return _mutedCache;
 }
 
 // ─── Test-only helpers ────────────────────────────────────────────────────────
@@ -98,6 +98,6 @@ export function isMuted(): boolean {
  * a known-clean slate without carrying over clips registered in prior tests.
  */
 export function _resetForTesting(): void {
-  _clips.clear();
-  _mutedCache = undefined;
+	_clips.clear();
+	_mutedCache = undefined;
 }

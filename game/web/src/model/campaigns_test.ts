@@ -34,13 +34,7 @@ import {
 	saveLastPlayedScenario,
 	loadLastPlayedScenario,
 } from "./campaigns.js";
-import {
-	test,
-	assertEqual,
-	assertNull,
-	assertNotNull,
-	summarize,
-} from "../testing/test_runner.js";
+import { test, assertEqual, assertNull, assertNotNull, summarize } from "../testing/test_runner.js";
 
 function resetStorage(): void {
 	_store.clear();

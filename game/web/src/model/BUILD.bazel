@@ -25,6 +25,22 @@ filegroup(
     visibility = ["//game/web:__pkg__"],
 )
 
+# GAME-107: expose this package's lint-able sources to //game/web:lint_test.
+# glob does not cross package boundaries, so each subpackage surfaces its own
+# .ts + tsconfig files. These must be data deps of lint_test so that editing in
+# a violation invalidates its cache (otherwise Bazel serves a stale PASS).
+filegroup(
+    name = "lint_sources",
+    srcs = glob(
+        [
+            "*.ts",
+            "tsconfig*.json",
+        ],
+        allow_empty = True,
+    ),
+    visibility = ["//game/web:__pkg__"],
+)
+
 # Standalone ts_config for this package (game/web/src/model/tsconfig.json has no
 # extends field — it is a self-contained config, not derived from //web:tsconfig).
 # A local tsconfig.json avoids requiring visibility changes to //web:tsconfig or

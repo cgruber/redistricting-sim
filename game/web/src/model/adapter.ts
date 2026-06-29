@@ -14,7 +14,13 @@
  */
 
 import type { Scenario } from "./scenario.js";
-import type { AssignmentMap, DistrictId, Precinct, TerrainAnnotation, TerrainTileRuntime } from "./types.js";
+import type {
+	AssignmentMap,
+	DistrictId,
+	Precinct,
+	TerrainAnnotation,
+	TerrainTileRuntime,
+} from "./types.js";
 import { winnerOf } from "./types.js";
 import { HEX_DIRECTIONS, hexToPixel } from "./hex-geometry.js";
 
@@ -168,8 +174,7 @@ export function scenarioToSpike(scenario: Scenario): {
 	const assignments: AssignmentMap = new Map();
 	scenario.precincts.forEach((pc, i) => {
 		const sDistId = pc.initial_district_id;
-		const spikeDistId =
-			sDistId != null ? (districtIndexMap.get(sDistId) ?? null) : null;
+		const spikeDistId = sDistId != null ? (districtIndexMap.get(sDistId) ?? null) : null;
 		assignments.set(i, spikeDistId);
 	});
 
@@ -180,5 +185,11 @@ export function scenarioToSpike(scenario: Scenario): {
 		type: tile.type,
 	}));
 
-	return { precincts, assignments, districtCount: scenario.districts.length, terrainTiles, riverEdges: riverPairs };
+	return {
+		precincts,
+		assignments,
+		districtCount: scenario.districts.length,
+		terrainTiles,
+		riverEdges: riverPairs,
+	};
 }

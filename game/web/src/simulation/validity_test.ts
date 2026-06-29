@@ -25,7 +25,14 @@ import { computeValidityStats } from "./validity.js";
 import type { Precinct } from "../model/types.js";
 import type { ScenarioRules } from "../model/scenario.js";
 
-import { test, assertEqual, assertNull, assertNotNull, assertClose, summarize } from "../testing/test_runner.js";
+import {
+	test,
+	assertEqual,
+	assertNull,
+	assertNotNull,
+	assertClose,
+	summarize,
+} from "../testing/test_runner.js";
 
 // ─── Test fixtures ────────────────────────────────────────────────────────────
 
@@ -34,28 +41,28 @@ import { test, assertEqual, assertNull, assertNotNull, assertClose, summarize } 
  * All other fields are placeholder values not relevant to validity computation.
  */
 function makePrecinct(id: number, population: number, neighbors: (number | null)[]): Precinct {
-  return {
-    id,
-    coord: { q: 0, r: id },
-    center: { x: id * 10, y: 0 },
-    neighbors,
-    population,
-    partyShare: { R: 0.5, D: 0.5, L: 0, G: 0, I: 0 },
-    previousResult: { winner: "D", margin: 0 },
-    demographics: { male: 0.49, female: 0.49, nonbinary: 0.02 },
-  };
+	return {
+		id,
+		coord: { q: 0, r: id },
+		center: { x: id * 10, y: 0 },
+		neighbors,
+		population,
+		partyShare: { R: 0.5, D: 0.5, L: 0, G: 0, I: 0 },
+		previousResult: { winner: "D", margin: 0 },
+		demographics: { male: 0.49, female: 0.49, nonbinary: 0.02 },
+	};
 }
 
 /** Standard rules: contiguity required, 5% tolerance. */
 const RULES_REQUIRED: ScenarioRules = {
-  contiguity: "required",
-  population_tolerance: 0.05,
+	contiguity: "required",
+	population_tolerance: 0.05,
 };
 
 /** Rules where contiguity check is skipped. */
 const RULES_ALLOWED: ScenarioRules = {
-  contiguity: "allowed",
-  population_tolerance: 0.05,
+	contiguity: "allowed",
+	population_tolerance: 0.05,
 };
 
 // ─── Precinct fixtures ────────────────────────────────────────────────────────
@@ -70,205 +77,258 @@ const P2 = makePrecinct(2, 100, [null, null, null, 1, null, null]);
 // ─── Population balance tests ─────────────────────────────────────────────────
 
 test("population: all precincts in one district — deviation 0%, status ok", () => {
-  const precincts = [P0, P1, P2];
-  const assignments = new Map([[0, 1], [1, 1], [2, 1]]);
-  const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
+	const precincts = [P0, P1, P2];
+	const assignments = new Map([
+		[0, 1],
+		[1, 1],
+		[2, 1],
+	]);
+	const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
 
-  assertEqual(stats.totalPopulation, 300, "totalPopulation");
-  assertEqual(stats.idealPopulation, 300, "idealPopulation (1 district)");
-  assertEqual(stats.districtPop.length, 1, "one district entry");
+	assertEqual(stats.totalPopulation, 300, "totalPopulation");
+	assertEqual(stats.idealPopulation, 300, "idealPopulation (1 district)");
+	assertEqual(stats.districtPop.length, 1, "one district entry");
 
-  const d1 = stats.districtPop[0]!;
-  assertEqual(d1.districtId, 1, "districtId");
-  assertEqual(d1.population, 300, "population");
-  assertClose(d1.deviationPct, 0, 0.01, "deviationPct");
-  assertEqual(d1.status, "ok", "status");
+	const d1 = stats.districtPop[0]!;
+	assertEqual(d1.districtId, 1, "districtId");
+	assertEqual(d1.population, 300, "population");
+	assertClose(d1.deviationPct, 0, 0.01, "deviationPct");
+	assertEqual(d1.status, "ok", "status");
 });
 
 test("population: two districts equal split — both 0% deviation, both ok", () => {
-  const precincts = [P0, P1];
-  const assignments = new Map([[0, 1], [1, 2]]);
-  const stats = computeValidityStats(precincts, assignments, 2, RULES_REQUIRED);
+	const precincts = [P0, P1];
+	const assignments = new Map([
+		[0, 1],
+		[1, 2],
+	]);
+	const stats = computeValidityStats(precincts, assignments, 2, RULES_REQUIRED);
 
-  assertEqual(stats.totalPopulation, 200, "totalPopulation");
-  assertEqual(stats.idealPopulation, 100, "idealPopulation");
-  assertEqual(stats.districtPop.length, 2, "two district entries");
+	assertEqual(stats.totalPopulation, 200, "totalPopulation");
+	assertEqual(stats.idealPopulation, 100, "idealPopulation");
+	assertEqual(stats.districtPop.length, 2, "two district entries");
 
-  for (const d of stats.districtPop) {
-    assertEqual(d.population, 100, `district ${d.districtId} population`);
-    assertClose(d.deviationPct, 0, 0.01, `district ${d.districtId} deviationPct`);
-    assertEqual(d.status, "ok", `district ${d.districtId} status`);
-  }
+	for (const d of stats.districtPop) {
+		assertEqual(d.population, 100, `district ${d.districtId} population`);
+		assertClose(d.deviationPct, 0, 0.01, `district ${d.districtId} deviationPct`);
+		assertEqual(d.status, "ok", `district ${d.districtId} status`);
+	}
 });
 
 test("population: uneven split — over/under computed correctly", () => {
-  // District 1: 150 pop, District 2: 50 pop. Ideal = 100.
-  // D1 deviation: (150-100)/100*100 = +50%; D2: (50-100)/100*100 = -50%
-  const p0 = makePrecinct(0, 150, [null, null, null, null, null, null]);
-  const p1 = makePrecinct(1, 50, [null, null, null, null, null, null]);
-  const assignments = new Map([[0, 1], [1, 2]]);
-  const stats = computeValidityStats([p0, p1], assignments, 2, RULES_REQUIRED);
+	// District 1: 150 pop, District 2: 50 pop. Ideal = 100.
+	// D1 deviation: (150-100)/100*100 = +50%; D2: (50-100)/100*100 = -50%
+	const p0 = makePrecinct(0, 150, [null, null, null, null, null, null]);
+	const p1 = makePrecinct(1, 50, [null, null, null, null, null, null]);
+	const assignments = new Map([
+		[0, 1],
+		[1, 2],
+	]);
+	const stats = computeValidityStats([p0, p1], assignments, 2, RULES_REQUIRED);
 
-  const d1 = stats.districtPop.find((d) => d.districtId === 1)!;
-  const d2 = stats.districtPop.find((d) => d.districtId === 2)!;
+	const d1 = stats.districtPop.find((d) => d.districtId === 1)!;
+	const d2 = stats.districtPop.find((d) => d.districtId === 2)!;
 
-  assertClose(d1.deviationPct, 50, 0.01, "D1 deviationPct");
-  assertEqual(d1.status, "over", "D1 status");
+	assertClose(d1.deviationPct, 50, 0.01, "D1 deviationPct");
+	assertEqual(d1.status, "over", "D1 status");
 
-  assertClose(d2.deviationPct, -50, 0.01, "D2 deviationPct");
-  assertEqual(d2.status, "under", "D2 status");
+	assertClose(d2.deviationPct, -50, 0.01, "D2 deviationPct");
+	assertEqual(d2.status, "under", "D2 status");
 });
 
 test("population: deviation at exactly tolerance boundary — status ok", () => {
-  // Tolerance = 5% (0.05). Ideal = 100. District at exactly 105 → deviation = 5% → ok.
-  const p0 = makePrecinct(0, 105, [null, null, null, null, null, null]);
-  const p1 = makePrecinct(1, 95, [null, null, null, null, null, null]);
-  const assignments = new Map([[0, 1], [1, 2]]);
-  const stats = computeValidityStats([p0, p1], assignments, 2, RULES_REQUIRED);
+	// Tolerance = 5% (0.05). Ideal = 100. District at exactly 105 → deviation = 5% → ok.
+	const p0 = makePrecinct(0, 105, [null, null, null, null, null, null]);
+	const p1 = makePrecinct(1, 95, [null, null, null, null, null, null]);
+	const assignments = new Map([
+		[0, 1],
+		[1, 2],
+	]);
+	const stats = computeValidityStats([p0, p1], assignments, 2, RULES_REQUIRED);
 
-  const d1 = stats.districtPop.find((d) => d.districtId === 1)!;
-  const d2 = stats.districtPop.find((d) => d.districtId === 2)!;
+	const d1 = stats.districtPop.find((d) => d.districtId === 1)!;
+	const d2 = stats.districtPop.find((d) => d.districtId === 2)!;
 
-  // 5% exactly == tolerance * 100 → NOT over (strict inequality)
-  assertEqual(d1.status, "ok", "D1 at exactly 5% should be ok");
-  assertEqual(d2.status, "ok", "D2 at exactly -5% should be ok");
+	// 5% exactly == tolerance * 100 → NOT over (strict inequality)
+	assertEqual(d1.status, "ok", "D1 at exactly 5% should be ok");
+	assertEqual(d2.status, "ok", "D2 at exactly -5% should be ok");
 });
 
 test("population: deviation just over tolerance — status over/under", () => {
-  // Tolerance = 5%. Ideal = 100. District at 106 → deviation = 6% → over.
-  const p0 = makePrecinct(0, 106, [null, null, null, null, null, null]);
-  const p1 = makePrecinct(1, 94, [null, null, null, null, null, null]);
-  const assignments = new Map([[0, 1], [1, 2]]);
-  const stats = computeValidityStats([p0, p1], assignments, 2, RULES_REQUIRED);
+	// Tolerance = 5%. Ideal = 100. District at 106 → deviation = 6% → over.
+	const p0 = makePrecinct(0, 106, [null, null, null, null, null, null]);
+	const p1 = makePrecinct(1, 94, [null, null, null, null, null, null]);
+	const assignments = new Map([
+		[0, 1],
+		[1, 2],
+	]);
+	const stats = computeValidityStats([p0, p1], assignments, 2, RULES_REQUIRED);
 
-  const d1 = stats.districtPop.find((d) => d.districtId === 1)!;
-  const d2 = stats.districtPop.find((d) => d.districtId === 2)!;
+	const d1 = stats.districtPop.find((d) => d.districtId === 1)!;
+	const d2 = stats.districtPop.find((d) => d.districtId === 2)!;
 
-  assertEqual(d1.status, "over", "D1 at 6% should be over");
-  assertEqual(d2.status, "under", "D2 at -6% should be under");
+	assertEqual(d1.status, "over", "D1 at 6% should be over");
+	assertEqual(d2.status, "under", "D2 at -6% should be under");
 });
 
 // ─── Unassigned count tests ───────────────────────────────────────────────────
 
 test("unassigned: all assigned — count is 0", () => {
-  const precincts = [P0, P1, P2];
-  const assignments = new Map([[0, 1], [1, 1], [2, 1]]);
-  const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
-  assertEqual(stats.unassignedCount, 0, "unassignedCount");
+	const precincts = [P0, P1, P2];
+	const assignments = new Map([
+		[0, 1],
+		[1, 1],
+		[2, 1],
+	]);
+	const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
+	assertEqual(stats.unassignedCount, 0, "unassignedCount");
 });
 
 test("unassigned: two null assignments — count is 2", () => {
-  const precincts = [P0, P1, P2];
-  const assignments = new Map<number, number | null>([[0, 1], [1, null], [2, null]]);
-  const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
-  assertEqual(stats.unassignedCount, 2, "unassignedCount");
+	const precincts = [P0, P1, P2];
+	const assignments = new Map<number, number | null>([
+		[0, 1],
+		[1, null],
+		[2, null],
+	]);
+	const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
+	assertEqual(stats.unassignedCount, 2, "unassignedCount");
 });
 
 // ─── Contiguity tests ─────────────────────────────────────────────────────────
 
 test("contiguity: rules.contiguity === 'allowed' returns null", () => {
-  const precincts = [P0, P1, P2];
-  const assignments = new Map([[0, 1], [1, 1], [2, 1]]);
-  const stats = computeValidityStats(precincts, assignments, 1, RULES_ALLOWED);
-  assertNull(stats.contiguity, "contiguity should be null when allowed");
+	const precincts = [P0, P1, P2];
+	const assignments = new Map([
+		[0, 1],
+		[1, 1],
+		[2, 1],
+	]);
+	const stats = computeValidityStats(precincts, assignments, 1, RULES_ALLOWED);
+	assertNull(stats.contiguity, "contiguity should be null when allowed");
 });
 
 test("contiguity: single precinct in district is trivially contiguous", () => {
-  const precincts = [P0];
-  const assignments = new Map([[0, 1]]);
-  const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
-  assertNotNull(stats.contiguity, "contiguity map should exist");
-  assertEqual(stats.contiguity!.get(1), true, "single-precinct district is contiguous");
+	const precincts = [P0];
+	const assignments = new Map([[0, 1]]);
+	const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
+	assertNotNull(stats.contiguity, "contiguity map should exist");
+	assertEqual(stats.contiguity!.get(1), true, "single-precinct district is contiguous");
 });
 
 test("contiguity: two adjacent precincts in same district — contiguous", () => {
-  // P0 and P1 are adjacent (P0.neighbors[0] = 1, P1.neighbors[3] = 0)
-  const precincts = [P0, P1];
-  const assignments = new Map([[0, 1], [1, 1]]);
-  const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
-  assertNotNull(stats.contiguity, "contiguity map should exist");
-  assertEqual(stats.contiguity!.get(1), true, "adjacent precincts are contiguous");
+	// P0 and P1 are adjacent (P0.neighbors[0] = 1, P1.neighbors[3] = 0)
+	const precincts = [P0, P1];
+	const assignments = new Map([
+		[0, 1],
+		[1, 1],
+	]);
+	const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
+	assertNotNull(stats.contiguity, "contiguity map should exist");
+	assertEqual(stats.contiguity!.get(1), true, "adjacent precincts are contiguous");
 });
 
 test("contiguity: two non-adjacent precincts in same district — not contiguous", () => {
-  // P0 and P2: P0.neighbors[0]=1 (not P2), P2.neighbors[3]=1 (not P0).
-  // District 1 contains P0 and P2, which are only connected through P1 (in D2).
-  const precincts = [P0, P1, P2];
-  const assignments = new Map([[0, 1], [1, 2], [2, 1]]);
-  const stats = computeValidityStats(precincts, assignments, 2, RULES_REQUIRED);
-  assertNotNull(stats.contiguity, "contiguity map should exist");
-  assertEqual(stats.contiguity!.get(1), false, "non-adjacent precincts are not contiguous");
-  assertEqual(stats.contiguity!.get(2), true, "single-precinct district 2 is contiguous");
+	// P0 and P2: P0.neighbors[0]=1 (not P2), P2.neighbors[3]=1 (not P0).
+	// District 1 contains P0 and P2, which are only connected through P1 (in D2).
+	const precincts = [P0, P1, P2];
+	const assignments = new Map([
+		[0, 1],
+		[1, 2],
+		[2, 1],
+	]);
+	const stats = computeValidityStats(precincts, assignments, 2, RULES_REQUIRED);
+	assertNotNull(stats.contiguity, "contiguity map should exist");
+	assertEqual(stats.contiguity!.get(1), false, "non-adjacent precincts are not contiguous");
+	assertEqual(stats.contiguity!.get(2), true, "single-precinct district 2 is contiguous");
 });
 
 // ─── River-blocking contiguity (GAME-075) ─────────────────────────────────────
 
 /** Build a precinct with both neighbors and an explicit passableNeighbors override. */
 function makePrecinctWithBlocked(
-  id: number,
-  neighbors: (number | null)[],
-  passableNeighbors: (number | null)[],
+	id: number,
+	neighbors: (number | null)[],
+	passableNeighbors: (number | null)[],
 ): Precinct {
-  return {
-    id,
-    coord: { q: 0, r: id },
-    center: { x: id * 10, y: 0 },
-    neighbors,
-    passableNeighbors,
-    population: 100,
-    partyShare: { R: 0.5, D: 0.5, L: 0, G: 0, I: 0 },
-    previousResult: { winner: "D", margin: 0 },
-    demographics: { male: 0.49, female: 0.49, nonbinary: 0.02 },
-  };
+	return {
+		id,
+		coord: { q: 0, r: id },
+		center: { x: id * 10, y: 0 },
+		neighbors,
+		passableNeighbors,
+		population: 100,
+		partyShare: { R: 0.5, D: 0.5, L: 0, G: 0, I: 0 },
+		previousResult: { winner: "D", margin: 0 },
+		demographics: { male: 0.49, female: 0.49, nonbinary: 0.02 },
+	};
 }
 
 test("contiguity: river-blocked edge (passableNeighbors null) breaks BFS traversal", () => {
-  // P0 — P1 (adjacent geographically, river blocks)
-  // P0.neighbors[0] = 1 (river edge); P0.passableNeighbors[0] = null
-  // P1.neighbors[3] = 0; P1.passableNeighbors[3] = null
-  // Same district assignment → should be non-contiguous because the river blocks traversal.
-  const p0 = makePrecinctWithBlocked(
-    0,
-    [1, null, null, null, null, null],
-    [null, null, null, null, null, null],
-  );
-  const p1 = makePrecinctWithBlocked(
-    1,
-    [null, null, null, 0, null, null],
-    [null, null, null, null, null, null],
-  );
-  const precincts = [p0, p1];
-  const assignments = new Map([[0, 1], [1, 1]]);
-  const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
-  assertNotNull(stats.contiguity, "contiguity map should exist");
-  assertEqual(stats.contiguity!.get(1), false, "river-blocked edge should break contiguity");
+	// P0 — P1 (adjacent geographically, river blocks)
+	// P0.neighbors[0] = 1 (river edge); P0.passableNeighbors[0] = null
+	// P1.neighbors[3] = 0; P1.passableNeighbors[3] = null
+	// Same district assignment → should be non-contiguous because the river blocks traversal.
+	const p0 = makePrecinctWithBlocked(
+		0,
+		[1, null, null, null, null, null],
+		[null, null, null, null, null, null],
+	);
+	const p1 = makePrecinctWithBlocked(
+		1,
+		[null, null, null, 0, null, null],
+		[null, null, null, null, null, null],
+	);
+	const precincts = [p0, p1];
+	const assignments = new Map([
+		[0, 1],
+		[1, 1],
+	]);
+	const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
+	assertNotNull(stats.contiguity, "contiguity map should exist");
+	assertEqual(stats.contiguity!.get(1), false, "river-blocked edge should break contiguity");
 });
 
 test("contiguity: passableNeighbors absent falls back to neighbors", () => {
-  // Legacy precincts (no passableNeighbors) — BFS uses neighbors as before.
-  // P0 — P1 contiguous via neighbors[0]/neighbors[3].
-  const precincts = [P0, P1];
-  const assignments = new Map([[0, 1], [1, 1]]);
-  const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
-  assertNotNull(stats.contiguity, "contiguity map should exist");
-  assertEqual(stats.contiguity!.get(1), true, "legacy precincts (no passableNeighbors) still work");
+	// Legacy precincts (no passableNeighbors) — BFS uses neighbors as before.
+	// P0 — P1 contiguous via neighbors[0]/neighbors[3].
+	const precincts = [P0, P1];
+	const assignments = new Map([
+		[0, 1],
+		[1, 1],
+	]);
+	const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
+	assertNotNull(stats.contiguity, "contiguity map should exist");
+	assertEqual(stats.contiguity!.get(1), true, "legacy precincts (no passableNeighbors) still work");
 });
 
 test("contiguity: passableNeighbors preserves traversability for non-river edges", () => {
-  // P0 — P1 — P2 chain. River blocks only P1-P2 edge; P0-P1 stays passable.
-  // All three in district 1: P0-P1 connected via passable; P2 isolated → not contiguous overall.
-  const p0 = makePrecinctWithBlocked(0, [1, null, null, null, null, null], [1, null, null, null, null, null]);
-  const p1 = makePrecinctWithBlocked(
-    1,
-    [2, null, null, 0, null, null],
-    [null, null, null, 0, null, null], // edge to 2 blocked; edge to 0 passable
-  );
-  const p2 = makePrecinctWithBlocked(2, [null, null, null, 1, null, null], [null, null, null, null, null, null]);
-  const precincts = [p0, p1, p2];
-  const assignments = new Map([[0, 1], [1, 1], [2, 1]]);
-  const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
-  assertNotNull(stats.contiguity, "contiguity map should exist");
-  assertEqual(stats.contiguity!.get(1), false, "river splits district into two components");
+	// P0 — P1 — P2 chain. River blocks only P1-P2 edge; P0-P1 stays passable.
+	// All three in district 1: P0-P1 connected via passable; P2 isolated → not contiguous overall.
+	const p0 = makePrecinctWithBlocked(
+		0,
+		[1, null, null, null, null, null],
+		[1, null, null, null, null, null],
+	);
+	const p1 = makePrecinctWithBlocked(
+		1,
+		[2, null, null, 0, null, null],
+		[null, null, null, 0, null, null], // edge to 2 blocked; edge to 0 passable
+	);
+	const p2 = makePrecinctWithBlocked(
+		2,
+		[null, null, null, 1, null, null],
+		[null, null, null, null, null, null],
+	);
+	const precincts = [p0, p1, p2];
+	const assignments = new Map([
+		[0, 1],
+		[1, 1],
+		[2, 1],
+	]);
+	const stats = computeValidityStats(precincts, assignments, 1, RULES_REQUIRED);
+	assertNotNull(stats.contiguity, "contiguity map should exist");
+	assertEqual(stats.contiguity!.get(1), false, "river splits district into two components");
 });
 
 summarize();

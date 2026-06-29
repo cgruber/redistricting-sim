@@ -11,8 +11,7 @@ export const CAMPAIGN_REGISTRY: Campaign[] = [
 	{
 		id: "tutorial",
 		title: "Tutorial",
-		description:
-			"Learn the basics of district drawing and the map's geographic features.",
+		description: "Learn the basics of district drawing and the map's geographic features.",
 		scenarioIds: ["tutorial-001", "tutorial-002", "tutorial-003", "tutorial-004"],
 	},
 	{
