@@ -8,8 +8,8 @@ opt=/opt/geekinasuit/agents int=$opt/internal pub=$opt/public
 
 §PURPOSE
 Educational simulator: gerrymandering dynamics, district-boundary effects on electoral outcomes.
-Stack TBD via parallel spikes — working direction: TypeScript browser game, SVG/D3 map rendering,
-client-side election simulation. See $ts/vision/game-vision.compressed.md for full scope.
+Stack: TypeScript browser game, SVG/D3 map rendering, client-side election simulation, Bazel build
+(validated via early spikes, since removed — impl in game/). See $ts/vision/game-vision.compressed.md for full scope.
 
 §DOCS
 $ts/ docs have two forms: <name>.md(human) + <name>.compressed.md(token-efficient,lossless)
@@ -36,20 +36,13 @@ $ts/research/   read before implementing
 $ts/tickets/    TICKETS.md index + ticket files; check before starting new work
 $ts/plans/      implementation plans
 $ts/handoffs/   session handoff documents
-spike/001-game-poc/   SPIKE-001: game tech stack proof-of-concept (TypeScript/npm) — independent source root
-spike/002-build-poc/  SPIKE-002: harmonized Bazel build proof-of-concept — independent source root
+game/web/   the game: TypeScript app(src/), e2e tests, Bazel build
+game/       rust/(wasm), scenarios/, release.main.kts + deploy tooling
 
 before non-trivial impl: check $ts/vision/ + $ts/tickets/TICKETS.md + $ts/research/ for prior work
 
-SPIKE ISOLATION: work directly in main repo checkout; touch ONLY spike/NNN-name/**; no other repo files; no jj workspaces
-SPIKE COMMANDS: use names (npm,bazel,node) not absolute paths; all tooling must be on PATH
-SPIKE COMMIT WORKFLOW:
-  during: commit after each logical chunk; run build+tests before commit; squash fixes freely; no PR
-  at completion: all AC met + SPIKE-REPORT.md written → one PR → full critique cycle → merge
-SPIKE CHECKPOINTING: maintain PROGRESS.md in spike dir; update+commit with each chunk
-  format: working-dir(absolute path inside repo e.g. .../redistricting-sim/spike/NNN-name/) | status | AC checklist(next-up bolded) | decisions(non-obvious only) | blockers
-  resuming agent: read ticket → PROGRESS.md → jj log; continue from Next up
-  keep under 30 lines; skip anything evident from ticket or code
+SPIKES: complete + REMOVED (SPIKE-001 TS/npm game stack, SPIKE-002 Bazel build — validated the stack; impl now in game/; dead spike code deleted, in git history). reports preserved: $ts/research/spike-001-game-poc-report.md + spike-002-build-poc-report.md
+future spike(if ever): own spike/NNN-*/ independent root(no cross-repo imports); on-PATH cmds by name; lightweight commits during; one PR + full review cycle at completion
 
 §PR
 task-list-completed CI check scans ALL checkboxes — PR description AND every comment (inline included).

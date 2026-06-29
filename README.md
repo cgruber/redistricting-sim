@@ -8,24 +8,26 @@ same votes, dramatically different results depending on who drew the lines.
 
 ## Status
 
-Early design and prototyping phase. The game vision is documented in
-`thoughts/shared/vision/game-vision.md`. The tech stack is being validated via parallel
-proof-of-concept spikes (see `thoughts/shared/tickets/`).
+The tech stack has been validated and the game is implemented. The game vision is documented
+in `thoughts/shared/vision/game-vision.md`. (The early proof-of-concept spikes that validated
+the stack and build have been removed now that the real implementation exists — their
+completion reports are preserved in `thoughts/shared/research/`.)
 
-Working direction:
+The stack:
 - Browser-based, desktop-first
 - TypeScript + SVG/D3 for map rendering and game UI
 - Client-side election simulation (no server-side compute)
 - Local browser storage for progress (no user accounts in v1)
+- Bazel build
 
 ## Repository Layout
 
 ```
 thoughts/shared/vision/     # Game design documents — start here
-thoughts/shared/research/   # Research and architectural decisions
+thoughts/shared/research/   # Research, architectural decisions, completed spike reports
 thoughts/shared/tickets/    # Work tracking
-spike/001-game-poc/         # SPIKE-001: game tech stack proof-of-concept (in progress)
-spike/002-build-poc/        # SPIKE-002: build system proof-of-concept (in progress)
+game/web/                   # The game: TypeScript app, SVG/D3 rendering, election sim
+game/                       # rust/ (wasm), scenarios/, release + deploy tooling
 ```
 
 ## Contributing
