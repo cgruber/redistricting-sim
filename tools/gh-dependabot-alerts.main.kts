@@ -20,17 +20,29 @@
  *   tools/gh-dependabot-alerts.main.kts --state all --severity high
  *   tools/gh-dependabot-alerts.main.kts --owner cgruber --repo redistricting-sim
  *
- * Flags:
+ * Flags (listing):
  *   --owner      GitHub owner/org (default: cgruber)
  *   --repo       GitHub repo name (default: redistricting-sim)
  *   --state      Alert state: open | dismissed | fixed | auto_dismissed | all (default: open)
  *   --severity   Filter by severity: critical | high | medium | low (default: all)
  *   --ecosystem  Filter by ecosystem: npm | pip | maven | … (default: all)
+ *
+ * Flags (dismissing — a reviewed write, no raw gh PATCH needed):
+ *   --dismiss N  Alert number(s) to dismiss (repeatable). Switches to dismiss mode.
+ *   --reason R   Dismiss reason: fix_started | inaccurate | no_bandwidth | not_used |
+ *                tolerable_risk (default: not_used)
+ *   --comment C  Optional note recorded with the dismissal
+ *
+ * Example:
+ *   tools/gh-dependabot-alerts.main.kts --dismiss 2 --dismiss 3 --reason not_used \
+ *     --comment "spike/001-game-poc is a frozen POC illustration, not deployed"
  */
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.types.int
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 
@@ -54,10 +66,40 @@ class GhDependabotAlerts : CliktCommand(
     val state     by option("--state",     help = "open | dismissed | fixed | auto_dismissed | all").default("open")
     val severity  by option("--severity",  help = "critical | high | medium | low (default: all)").default("")
     val ecosystem by option("--ecosystem", help = "npm | pip | maven | … (default: all)").default("")
+    val dismiss   by option("--dismiss",   help = "alert number to dismiss (repeatable)").int().multiple()
+    val reason    by option("--reason",    help = "dismiss reason").default("not_used")
+    val comment   by option("--comment",   help = "note recorded with the dismissal").default("")
 
     val mapper = jacksonObjectMapper()
 
+    private val dismissReasons = setOf("fix_started", "inaccurate", "no_bandwidth", "not_used", "tolerable_risk")
+
     override fun run() {
+        if (dismiss.isNotEmpty()) {
+            dismissAlerts()
+            return
+        }
+        listAlerts()
+    }
+
+    private fun dismissAlerts() {
+        if (reason !in dismissReasons) {
+            System.err.println("Invalid --reason '$reason'. Must be one of: ${dismissReasons.sorted().joinToString(", ")}")
+            kotlin.system.exitProcess(2)
+        }
+        for (n in dismiss) {
+            val cmd = mutableListOf(
+                "gh", "api", "-X", "PATCH", "repos/$owner/$repo/dependabot/alerts/$n",
+                "-f", "state=dismissed", "-f", "dismissed_reason=$reason",
+            )
+            if (comment.isNotBlank()) cmd += listOf("-f", "dismissed_comment=$comment")
+            cmd += listOf("--jq", "{number, state, dismissed_reason, package: .dependency.package.name}")
+            val res = sh(*cmd.toTypedArray()).trim()
+            println("dismissed #$n ($reason): $res")
+        }
+    }
+
+    private fun listAlerts() {
         // Build the gh api call. The Dependabot alerts API takes state/severity/ecosystem
         // as QUERY params on a GET. We append them to the URL path directly rather than via
         // `-f key=value` — `-f` flips `gh api` to a POST, which 404s on this GET-only route.

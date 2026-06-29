@@ -1,0 +1,26 @@
+# Dependabot version-update PRs.
+#
+# SCOPE NOTE: this file governs Dependabot *version-update PRs* only. It does NOT
+# affect Dependabot *security alerts* — those are generated from GitHub's dependency
+# graph, which indexes every manifest in the repo (including spike/). There is no
+# committed-config way to path-exclude a directory from alerts; spike alerts are
+# handled by dismissal (reason: not_used — frozen POC, not deployed).
+#
+# We intentionally scope updates to the live game (/game) and deliberately do NOT
+# list spike/* : the spikes (spike/001-game-poc, spike/002-build-poc) are frozen
+# proof-of-concept illustrations of past work, not maintained code, so they must
+# never receive dependency-bump PRs.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/game" # game/package.json — the live web game's deps
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # One grouped PR per run instead of one-per-dependency, to keep noise low.
+      npm:
+        patterns:
+          - "*"
