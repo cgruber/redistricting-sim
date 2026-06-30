@@ -274,6 +274,26 @@ sh_test(
     visibility = ["//visibility:public"],
 )
 
+# Meta-test (GAME-111): keep the lint gate's per-subpackage coverage from eroding.
+# Every game/web/src subpackage surfaces its sources to lint_test via a :lint_sources
+# filegroup (glob stops at package boundaries). A new subpackage that forgets to add
+# one would be unlinted, and its violations wouldn't invalidate the gate's cache
+# (silent stale PASS). This test asserts that every subpackage the unwired-tests
+# backstop already enumerates (via :test_sources_for_meta) is ALSO wired into
+# lint_test (via :lint_sources) — so the two enumerations can't drift apart.
+#
+# LIMIT (irreducible): a brand-new subpackage referenced by NEITHER backstop is
+# invisible to both — Bazel can't enumerate an un-referenced package from a hermetic
+# test (genquery `scope` rejects `//game/web/src/...`). The per-package filegroup
+# convention + code review remain the first line; this guards the common drift
+# (added a subpackage, wired its tests, forgot lint).
+sh_test(
+    name = "lint_coverage_test",
+    srcs = ["lint_coverage_test.sh"],
+    data = ["BUILD.bazel"],
+    visibility = ["//visibility:public"],
+)
+
 # Meta-test (GAME-109): fail when a colocated `src/**/*_test.ts` has no
 # corresponding js_test target. A backstop for the explicit per-target
 # convention — a new test file the author forgets to wire would otherwise
