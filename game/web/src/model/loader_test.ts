@@ -83,6 +83,41 @@ test("happy path: valid scenario passes and returns typed Scenario", () => {
 	assertEqual(result.precincts.length, 1);
 });
 
+// ─── Party color (GAME-043) ───────────────────────────────────────────────────
+
+test("parses party color when present", () => {
+	const result = loadScenario(
+		minimalScenario({
+			parties: [
+				{ id: "blue", name: "Blue Party", abbreviation: "B", color: "#c96d00" },
+				{ id: "red", name: "Red Party", abbreviation: "R", color: "#7b35a8" },
+			],
+		}),
+	);
+	assertEqual(result.parties[0]!.color, "#c96d00");
+	assertEqual(result.parties[1]!.color, "#7b35a8");
+});
+
+test("party without color loads with color undefined", () => {
+	const result = loadScenario(minimalScenario());
+	assertEqual(result.parties[0]!.color, undefined);
+});
+
+test("rejects non-string party color", () => {
+	assertThrows(
+		() =>
+			loadScenario(
+				minimalScenario({
+					parties: [
+						{ id: "blue", name: "Blue Party", abbreviation: "B", color: 123 },
+						{ id: "red", name: "Red Party", abbreviation: "R" },
+					],
+				}),
+			),
+		/parties\[0\]\.color/,
+	);
+});
+
 // ─── format_version ───────────────────────────────────────────────────────────
 
 test("rejects unknown format_version", () => {

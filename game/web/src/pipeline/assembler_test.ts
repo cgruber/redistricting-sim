@@ -128,6 +128,26 @@ test("assembleScenario: parties mapped from spec", () => {
 	assertEqual(result.parties![1]!.id, RYU);
 });
 
+test("assembleScenario: party color passes through when spec has it", () => {
+	const partial = makeEnrichedPartial(2);
+	const spec = baseAssemblySpec({
+		parties: [
+			{ id: "ken", name: "Ken Party", abbreviation: "KEN", color: "#c96d00" },
+			{ id: "ryu", name: "Ryu Party", abbreviation: "RYU", color: "#7b35a8" },
+		],
+	});
+	const result = assembleScenario(partial, spec);
+	assertEqual(result.parties![0]!.color, "#c96d00");
+	assertEqual(result.parties![1]!.color, "#7b35a8");
+});
+
+test("assembleScenario: party without color gets no color field", () => {
+	const partial = makeEnrichedPartial(2);
+	const result = assembleScenario(partial, baseAssemblySpec());
+	assertEqual(result.parties![0]!.color, undefined);
+	assertEqual("color" in result.parties![0]!, false);
+});
+
 // ─── Districts ────────────────────────────────────────────────────────────────
 
 test("assembleScenario: districts mapped from spec", () => {

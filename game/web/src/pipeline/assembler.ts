@@ -85,6 +85,7 @@ export function assembleScenario(partial: PartialScenario, spec: AssemblySpec): 
 		id: ps.id as PartyId,
 		name: ps.name,
 		abbreviation: ps.abbreviation,
+		...(ps.color !== undefined ? { color: ps.color } : {}),
 	}));
 
 	const districts: District[] = spec.districts.map((ds) => ({

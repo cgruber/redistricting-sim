@@ -100,11 +100,15 @@ function parseGeometry(raw: unknown): GeometrySpec {
 
 function parseParty(raw: unknown, idx: number): Party {
 	const r = requireObject(raw, `parties[${idx}]`);
-	return {
+	const p: Party = {
 		id: requireString(r["id"], `parties[${idx}].id`) as PartyId,
 		name: requireString(r["name"], `parties[${idx}].name`),
 		abbreviation: requireString(r["abbreviation"], `parties[${idx}].abbreviation`),
 	};
+	if (r["color"] !== undefined) {
+		p.color = requireString(r["color"], `parties[${idx}].color`);
+	}
+	return p;
 }
 
 function parseDistrict(raw: unknown, idx: number): District {

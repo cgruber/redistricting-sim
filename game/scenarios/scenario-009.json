@@ -14,12 +14,14 @@
     {
       "id": "cat",
       "name": "Cat Party",
-      "abbreviation": "CAT"
+      "abbreviation": "CAT",
+      "color": "#c96d00"
     },
     {
       "id": "dog",
       "name": "Dog Party",
-      "abbreviation": "DOG"
+      "abbreviation": "DOG",
+      "color": "#7b35a8"
     }
   ],
   "districts": [
