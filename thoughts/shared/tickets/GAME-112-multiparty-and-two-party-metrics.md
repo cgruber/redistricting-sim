@@ -1,0 +1,70 @@
+---
+id: GAME-112
+title: Multiparty support in the adapter + two-party-normalized fairness metrics
+area: game, simulation, architecture
+status: open
+created: 2026-06-30
+---
+
+## Summary
+
+The engine can already model up to five parties, but the adapter throws that away: it maps
+`scenario.parties[0] → R` and `parties[1] → D` positionally and drops every party after the
+first two. We want third parties to actually appear in elections. AND — once third-party vote
+share can be nonzero — the efficiency-gap and mean-median criteria must be computed on the
+**two-party** vote, or a minor party silently corrupts both fairness metrics. These are one
+workstream: enabling third parties without fixing the metrics would ship wrong numbers.
+
+Sourced from the 2026-06-30 metrics audit (`thoughts/shared/research/2026-06-30-gerrymandering-metrics-audit.md`).
+
+## Current State
+
+- `adapter.ts:113-129`: reads only `firstPartyId = parties[0].id` (→ R) and
+  `secondPartyId = parties[1].id` (→ D), sums each demographic group's
+  `population_share × vote_shares[thatId]`, and hardcodes `L: 0, G: 0, I: 0`. Third+ parties
+  in a scenario's `vote_shares` are ignored. This is a spike-era shortcut, not a real limit.
+- The runtime `PartyShare` type (`model/types.ts`) already has 5 slots (`R,D,L,G,I`).
+- The engine (`simulation/election.ts`) already iterates `ALL_PARTIES` for the plurality
+  winner, margins, and `seatsByParty` — it is already multiparty-capable; it just receives
+  zeros for L/G/I.
+- `main.ts`'s `partyIdToKey` maps scenario party ids → runtime keys but currently only for the
+  first two.
+- **Metrics (`evaluate.ts`):** the efficiency gap (`251-281`) uses a denominator of *all* votes
+  and a `V_total × 0.5` win line; mean-median (`283-307`) uses each district's *raw* share.
+  Both are correct only when third-party share is exactly 0 (true today, precisely because the
+  adapter zeroes L/G/I). See the audit for the two failure modes under nonzero minor parties.
+- **Relationship to GAME-043** (unify spike/scenario type systems; retire `adapter.ts`): the
+  positional two-party mapping is exactly the spike layer GAME-043 targets. Decide whether to
+  do the minimal fix here or fold this into GAME-043.
+
+## Goals / Acceptance Criteria
+
+- [ ] Decide the scope (record the choice):
+  - **Minimal:** map up to 5 scenario parties onto the existing `R/D/L/G/I` slots (no type
+    change) — extend the adapter's positional mapping + `partyIdToKey` to all parties, keep the
+    fixed 5-key `PartyShare`.
+  - **Proper (prefer, coordinate with GAME-043):** make the runtime party-agnostic (arbitrary
+    party ids, real names), retiring the `R/D/L/G/I` spike keys and the adapter spike layer.
+- [ ] The adapter populates every scenario party (not just the first two); a scenario with an
+  L/G/I-style third party produces nonzero third-party vote share, and the election
+  (`winner`, `margin`, `seatsByParty`) reflects it (a third party can win a district).
+- [ ] **Two-party-normalize the fairness metrics** so they stay correct with third parties:
+  efficiency gap and mean-median compute on the top-two (or R+D) vote per district — winner
+  surplus over *half the two-party total*, wasted votes and denominators restricted to the two
+  major parties. Document the two-party assumption in the metric comments.
+- [ ] No behavioral change for existing (strictly two-party) scenarios — EG/mean-median values
+  are identical when third-party share is 0.
+
+## Test Coverage
+
+- [ ] Adapter test: a scenario/precinct fixture with three+ parties yields nonzero third-party
+  `partyShare`, and a district where a third party has plurality reports that winner.
+- [ ] `evaluate_test.ts`: EG and mean-median on a fixture WITH nonzero third-party votes match
+  the hand-computed two-party values (and are unchanged vs. the current output when third-party
+  share is 0 — a regression guard).
+
+## References
+
+- Audit: `thoughts/shared/research/2026-06-30-gerrymandering-metrics-audit.compressed.md` (§FINDINGS 1, 2, 7)
+- `game/web/src/model/adapter.ts`, `game/web/src/model/types.ts`, `game/web/src/simulation/election.ts`, `game/web/src/simulation/evaluate.ts`, `game/web/src/main.ts`
+- Related: **GAME-043** (unify spike/scenario type systems — this may subsume the adapter half), GAME-113 (framing copy)
