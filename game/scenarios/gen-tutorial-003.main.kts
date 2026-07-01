@@ -142,8 +142,8 @@ val json = """{
   },
   "geometry": { "type": "hex_axial" },
   "parties": [
-    { "id": "ash", "name": "Ash Party", "abbreviation": "ASH" },
-    { "id": "birch", "name": "Birch Party", "abbreviation": "BIR" }
+    { "id": "ash", "name": "Ash Party", "abbreviation": "ASH", "color": "#c96d00" },
+    { "id": "birch", "name": "Birch Party", "abbreviation": "BIR", "color": "#7b35a8" }
   ],
   "districts": [
     { "id": "d1", "name": "District 1" },

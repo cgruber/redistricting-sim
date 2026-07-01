@@ -10,6 +10,7 @@ export function renderResults(
 	container: HTMLElement,
 	state: GameStore,
 	partyNames?: Partial<Record<PartyId, string>>,
+	partyColors?: Partial<Record<PartyId, string>>,
 ): void {
 	if (state.simulationResult === null || state.simulationResult.districtResults.length === 0) {
 		container.innerHTML =
@@ -29,7 +30,7 @@ export function renderResults(
 	const html = districtResults
 		.map((r) => {
 			const color = districtColor(r.districtId);
-			const winnerColor = partyColor(parties, r.winner);
+			const winnerColor = partyColors?.[r.winner] ?? partyColor(parties, r.winner);
 			// Party labels derive from scenario.parties[].name — escape before
 			// interpolating into innerHTML markup (GAME-103).
 			const winnerLabel = labelOf(r.winner);

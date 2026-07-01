@@ -722,15 +722,24 @@ const IS_DEBUG =
 	const parties: PartyId[] = scenario.parties.map((p) => p.id);
 	const partyNames: Partial<Record<PartyId, string>> = {};
 	for (const p of scenario.parties) partyNames[p.id] = p.name;
+	const partyColors: Partial<Record<PartyId, string>> = {};
+	for (const p of scenario.parties) if (p.color !== undefined) partyColors[p.id] = p.color;
 	renderer.setParties(parties, partyNames);
 
 	// Re-apply the vote-bar CSS vars from the scenario's first two parties'
-	// resolved colors (palette-by-index today; scenario-authored in a later PR).
+	// resolved colors — scenario-authored (GAME-043) when present, else the
+	// palette-by-index fallback.
 	if (parties[0] !== undefined) {
-		document.documentElement.style.setProperty("--party-r", partyColor(parties, parties[0]));
+		document.documentElement.style.setProperty(
+			"--party-r",
+			partyColors[parties[0]] ?? partyColor(parties, parties[0]),
+		);
 	}
 	if (parties[1] !== undefined) {
-		document.documentElement.style.setProperty("--party-d", partyColor(parties, parties[1]));
+		document.documentElement.style.setProperty(
+			"--party-d",
+			partyColors[parties[1]] ?? partyColor(parties, parties[1]),
+		);
 	}
 
 	// Panel applicability (GAME-097): only surface UI for things this scenario
@@ -760,7 +769,7 @@ const IS_DEBUG =
 
 		renderer.render();
 
-		if (showResults) renderResults(resultsEl!, state, partyNames);
+		if (showResults) renderResults(resultsEl!, state, partyNames, partyColors);
 		if (showValidity) renderValidityPanel(validityEl!, state, scenario.rules, hasBalanceCriterion);
 
 		let demoStat: DistrictDemoStat | undefined;

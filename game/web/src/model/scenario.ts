@@ -71,6 +71,9 @@ export interface Party {
 	id: PartyId;
 	name: string;
 	abbreviation: string;
+	/** Optional authored display color (hex, e.g. "#c96d00"). When absent, the
+	 *  renderer falls back to PARTY_PALETTE by party order (see model/party.ts). */
+	color?: string;
 }
 
 export interface District {

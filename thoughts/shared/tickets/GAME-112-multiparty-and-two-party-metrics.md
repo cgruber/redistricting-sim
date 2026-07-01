@@ -19,6 +19,18 @@ Sourced from the 2026-06-30 metrics audit (`thoughts/shared/research/2026-06-30-
 
 ## Current State
 
+> **Post-GAME-043 update (2026-06-30):** GAME-043 PR 1 (#318) landed the party-agnostic runtime,
+> so the "Current State" below is largely superseded — `model/types.ts`, the `R/D/L/G/I` slots,
+> `ALL_PARTIES`, and `partyIdToKey` no longer exist. The adapter (`scenarioToRuntime`) now already
+> aggregates **all** scenario parties pop-weighted; the remaining 112 work is (a) a multiparty
+> *scenario/fixture* to exercise it and (b) two-party-normalizing efficiency-gap / mean-median
+> (still hardcoded to `parties[0]/[1]`). Rework this section when implementing.
+>
+> **Display-string finding (PR #318 critique):** `evaluate.ts` criterion `detail` strings now
+> interpolate the raw scenario party-id (e.g. `ken-disadvantaged`) rather than a display name.
+> Lateral to the old raw `R`/`D` key — not a regression — but when metrics go multiparty these
+> should use the scenario's authored party *name*/abbreviation. Coordinate with GAME-113.
+
 - `adapter.ts:113-129`: reads only `firstPartyId = parties[0].id` (→ R) and
   `secondPartyId = parties[1].id` (→ D), sums each demographic group's
   `population_share × vote_shares[thatId]`, and hardcodes `L: 0, G: 0, I: 0`. Third+ parties

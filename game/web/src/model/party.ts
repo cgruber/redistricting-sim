@@ -55,8 +55,9 @@ export function winnerOf(share: PartyShare, parties: PartyId[]): PartyId {
  * lean-view palette so party badges and the lean map share a color language
  * (party 1 → orange, party 2 → purple).
  *
- * GAME-043 keeps colors palette-by-index; scenario-authored `Party.color` is a
- * later PR (GAME-043 PR 2 / GAME-112).
+ * This is the FALLBACK: since GAME-043 PR 2, scenarios author `Party.color`
+ * directly (resolved into the `partyColors` map in main.ts); the palette is used
+ * only for a party that omits a color, or by `partyColor()` below.
  */
 export const PARTY_PALETTE: readonly string[] = [
 	"#c96d00", // party 1 (was R): orange

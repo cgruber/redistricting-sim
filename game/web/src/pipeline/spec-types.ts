@@ -232,6 +232,9 @@ export interface PartySpec {
 	id: string;
 	name: string;
 	abbreviation: string;
+	/** Optional authored display color (hex, e.g. "#c96d00"). Falls back to
+	 *  PARTY_PALETTE by party order when absent. */
+	color?: string;
 }
 
 export interface DistrictSpec {
