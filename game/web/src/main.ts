@@ -44,7 +44,8 @@ import {
 	saveLastPlayedScenario,
 } from "./model/campaigns.js";
 import { initAssets, assetUrl } from "./assets.js";
-import { ALL_PARTIES, PARTY_COLORS } from "./model/types.js";
+import { PARTY_PALETTE, partyColor } from "./model/party.js";
+import type { PartyId } from "./model/scenario.js";
 import { getCriterionIcon } from "./criterion-icons.js";
 import { preload, play, setMuted, isMuted } from "./audio/audioPlayer.js";
 
@@ -243,9 +244,11 @@ const IS_DEBUG =
 
 	// Drive party colors in CSS from the TS palette (single source of truth,
 	// GAME-104). The .result-district .vote-bar gradient reads these vars; the
-	// var() fallbacks keep it visible if this never runs.
-	document.documentElement.style.setProperty("--party-d", PARTY_COLORS.D);
-	document.documentElement.style.setProperty("--party-r", PARTY_COLORS.R);
+	// var() fallbacks keep it visible if this never runs. These are the palette
+	// defaults (party1=orange, party2=purple); per-scenario colors are re-applied
+	// after the scenario loads (see setParties below).
+	document.documentElement.style.setProperty("--party-r", PARTY_PALETTE[0]!);
+	document.documentElement.style.setProperty("--party-d", PARTY_PALETTE[1]!);
 
 	let progress = loadProgress();
 
@@ -712,21 +715,23 @@ const IS_DEBUG =
 		(id) => store.getState().setActiveDistrict(id),
 	);
 
-	// ── Party ID → spike PartyKey mapping (for criteria evaluation) ──────────
-	// First scenario party → "R", second → "D", rest → "L"/"G"/"I"
-	const partyIdToKey = new Map<string, string>();
-	scenario.parties.forEach((p, i) => {
-		partyIdToKey.set(p.id, ALL_PARTIES[i] ?? "I");
-	});
+	// ── Party list + display names (GAME-043) ────────────────────────────────
+	// Party-id-native: criteria, seats, and colors all key on the scenario's
+	// PartyId directly — no PartyKey mapping. The ordered list is the source of
+	// the tie-break order and the palette index.
+	const parties: PartyId[] = scenario.parties.map((p) => p.id);
+	const partyNames: Partial<Record<PartyId, string>> = {};
+	for (const p of scenario.parties) partyNames[p.id] = p.name;
+	renderer.setParties(parties, partyNames);
 
-	// ── Party labels derived from scenario data (GAME-055) ───────────────────
-	// Override the hardcoded PARTY_LABELS fallbacks with scenario party names.
-	const partyLabels: Partial<Record<"R" | "D" | "L" | "G" | "I", string>> = {};
-	scenario.parties.forEach((p) => {
-		const key = partyIdToKey.get(p.id);
-		if (key !== undefined) partyLabels[key as "R" | "D" | "L" | "G" | "I"] = p.name;
-	});
-	renderer.setPartyLabels(partyLabels);
+	// Re-apply the vote-bar CSS vars from the scenario's first two parties'
+	// resolved colors (palette-by-index today; scenario-authored in a later PR).
+	if (parties[0] !== undefined) {
+		document.documentElement.style.setProperty("--party-r", partyColor(parties, parties[0]));
+	}
+	if (parties[1] !== undefined) {
+		document.documentElement.style.setProperty("--party-d", partyColor(parties, parties[1]));
+	}
 
 	// Panel applicability (GAME-097): only surface UI for things this scenario
 	// actually involves. Pre-electoral tutorials hide the outcome prediction
@@ -755,7 +760,7 @@ const IS_DEBUG =
 
 		renderer.render();
 
-		if (showResults) renderResults(resultsEl!, state, partyLabels);
+		if (showResults) renderResults(resultsEl!, state, partyNames);
 		if (showValidity) renderValidityPanel(validityEl!, state, scenario.rules, hasBalanceCriterion);
 
 		let demoStat: DistrictDemoStat | undefined;
@@ -1232,7 +1237,7 @@ const IS_DEBUG =
 			state.precincts,
 			state.assignments,
 			state.districtCount,
-			partyIdToKey,
+			parties,
 			scenario.precincts,
 		);
 
@@ -1284,7 +1289,9 @@ const IS_DEBUG =
 			} else {
 				charType = raw;
 			}
-			const entry: { type: CharacterType; party_id?: string } = { type: charType };
+			const entry: { type: CharacterType; party_id?: string } = {
+				type: charType,
+			};
 			if (sc.party_id !== undefined) entry.party_id = sc.party_id as string;
 			charInfoMap.set(sc.id as string, entry);
 		}
@@ -1305,7 +1312,10 @@ const IS_DEBUG =
 		resultCriteriaList.innerHTML = "";
 
 		// Resolve character info for a row (validity rows default to commissioner).
-		function resolveCharInfo(cr: CriterionResult): { type: CharacterType; party_id?: string } {
+		function resolveCharInfo(cr: CriterionResult): {
+			type: CharacterType;
+			party_id?: string;
+		} {
 			return charInfoMap.get(cr.criterionId as string) ?? { type: "commissioner" };
 		}
 

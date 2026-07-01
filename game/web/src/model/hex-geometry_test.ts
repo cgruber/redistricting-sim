@@ -13,7 +13,7 @@
  */
 
 import { hexToPixel, hexCorners, mapBounds, HEX_DIRECTIONS } from "./hex-geometry.js";
-import type { Precinct } from "./types.js";
+import type { Precinct } from "./runtime.js";
 import { test, assertEqual, assertClose, assertTrue, summarize } from "../testing/test_runner.js";
 
 const HEX_SIZE = 36;

@@ -14,14 +14,21 @@ import type {
 	CompareOp,
 	GroupFilter,
 	DemographicGroup,
+	PartyId,
 	Precinct as ScenarioPrecinct,
 } from "../model/scenario.js";
 import type { ValidityStats } from "./validity.js";
-import type { SimulationResult, AssignmentMap, Precinct } from "../model/types.js";
+import type { SimulationResult, AssignmentMap, Precinct } from "../model/runtime.js";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const OP_LABEL: Record<CompareOp, string> = { lt: "<", lte: "≤", eq: "=", gte: "≥", gt: ">" };
+const OP_LABEL: Record<CompareOp, string> = {
+	lt: "<",
+	lte: "≤",
+	eq: "=",
+	gte: "≥",
+	gt: ">",
+};
 
 // ─── Public types ─────────────────────────────────────────────────────────────
 
@@ -159,7 +166,7 @@ export function computeDistrictGroupShares(
  * @param precincts        Spike-type Precinct array (for compactness calc)
  * @param assignments      Current precinct→district assignment map
  * @param districtCount    Number of districts in this scenario
- * @param partyIdToKey     Mapping from scenario PartyId → spike PartyKey (e.g. "ken"→"R")
+ * @param parties          Scenario parties in declaration order (party-id keyspace)
  * @param scenarioPrecincts Scenario-format precincts (needed for majority_minority); omit if unused
  */
 export function evaluateCriteria(
@@ -170,7 +177,7 @@ export function evaluateCriteria(
 	precincts: Precinct[],
 	assignments: AssignmentMap,
 	districtCount: number,
-	partyIdToKey: Map<string, string>,
+	parties: PartyId[],
 	scenarioPrecincts: ScenarioPrecinct[] = [],
 ): EvaluationResult {
 	// Lazy-compute compactness only if any compactness criterion exists
@@ -224,20 +231,18 @@ export function evaluateCriteria(
 			}
 
 			case "seat_count": {
-				const key = partyIdToKey.get(c.party) ?? String(c.party);
-				const seats = (simResult.seatsByParty as Record<string, number>)[key] ?? 0;
+				const seats = (simResult.seatsByParty as Record<string, number>)[c.party] ?? 0;
 				passed = applyOp(seats, c.operator, c.count);
-				detail = `${key}: ${seats} seat(s) (required ${OP_LABEL[c.operator]}${c.count})`;
+				detail = `${c.party}: ${seats} seat(s) (required ${OP_LABEL[c.operator]}${c.count})`;
 				break;
 			}
 
 			case "safe_seats": {
-				const key = partyIdToKey.get(c.party) ?? String(c.party);
 				const safeCount = simResult.districtResults.filter(
-					(dr) => dr.winner === key && dr.margin >= c.margin,
+					(dr) => dr.winner === c.party && dr.margin >= c.margin,
 				).length;
 				passed = safeCount >= c.min_count;
-				detail = `${key}: ${safeCount} safe seat(s) with margin ≥${(c.margin * 100).toFixed(0)}% (required ≥${c.min_count})`;
+				detail = `${c.party}: ${safeCount} safe seat(s) with margin ≥${(c.margin * 100).toFixed(0)}% (required ≥${c.min_count})`;
 				break;
 			}
 
@@ -249,33 +254,37 @@ export function evaluateCriteria(
 			}
 
 			case "efficiency_gap": {
-				// Wasted-vote efficiency gap between R and D.
-				// Positive = R has more wasted votes (map packed R, favors D).
-				// Negative = D has more wasted votes (map packed D, favors R).
+				// Wasted-vote efficiency gap between the two major parties (the
+				// scenario's first two parties, party1/party2). GAME-043 keeps this
+				// two-party to preserve behavior; the proper two-party normalization
+				// for N>2 is GAME-112.
+				// Positive = party1 has more wasted votes; negative = party2 does.
 				// Criterion uses abs(gap) so direction doesn't matter.
-				let rWasted = 0;
-				let dWasted = 0;
+				const party1 = parties[0]!;
+				const party2 = parties[1]!;
+				let p1Wasted = 0;
+				let p2Wasted = 0;
 				let allVotes = 0;
 				for (const dr of simResult.districtResults) {
-					const rVotes = dr.voteTotals.R * dr.totalVotes;
-					const dVotes = dr.voteTotals.D * dr.totalVotes;
+					const p1Votes = (dr.voteTotals[party1] ?? 0) * dr.totalVotes;
+					const p2Votes = (dr.voteTotals[party2] ?? 0) * dr.totalVotes;
 					allVotes += dr.totalVotes;
-					if (dr.winner === "R") {
-						rWasted += Math.max(0, rVotes - dr.totalVotes * 0.5);
-						dWasted += dVotes;
-					} else if (dr.winner === "D") {
-						dWasted += Math.max(0, dVotes - dr.totalVotes * 0.5);
-						rWasted += rVotes;
+					if (dr.winner === party1) {
+						p1Wasted += Math.max(0, p1Votes - dr.totalVotes * 0.5);
+						p2Wasted += p2Votes;
+					} else if (dr.winner === party2) {
+						p2Wasted += Math.max(0, p2Votes - dr.totalVotes * 0.5);
+						p1Wasted += p1Votes;
 					} else {
-						// Third-party winner: both R and D wasted all votes
-						rWasted += rVotes;
-						dWasted += dVotes;
+						// Third-party winner: both major parties wasted all votes
+						p1Wasted += p1Votes;
+						p2Wasted += p2Votes;
 					}
 				}
-				const rawGap = allVotes > 0 ? (rWasted - dWasted) / allVotes : 0;
+				const rawGap = allVotes > 0 ? (p1Wasted - p2Wasted) / allVotes : 0;
 				const absGap = Math.abs(rawGap);
 				passed = applyOp(absGap, c.operator, c.threshold);
-				const direction = rawGap >= 0 ? "R-disadvantaged" : "D-disadvantaged";
+				const direction = rawGap >= 0 ? `${party1}-disadvantaged` : `${party2}-disadvantaged`;
 				detail = `efficiency gap: ${(absGap * 100).toFixed(1)}% (${direction}; required ${OP_LABEL[c.operator]}${(c.threshold * 100).toFixed(0)}%)`;
 				break;
 			}
@@ -285,9 +294,8 @@ export function evaluateCriteria(
 				// Large positive value = party wins fewer seats than votes warrant (packed wins).
 				// Large negative value = party wins more seats than votes warrant (cracked opponents).
 				// Criterion applies applyOp to the raw (signed) difference.
-				const key = partyIdToKey.get(c.party) ?? String(c.party);
 				const shares = simResult.districtResults.map(
-					(dr) => (dr.voteTotals as unknown as Record<string, number>)[key] ?? 0,
+					(dr) => (dr.voteTotals as unknown as Record<string, number>)[c.party] ?? 0,
 				);
 				if (shares.length === 0) {
 					passed = false;
@@ -302,7 +310,7 @@ export function evaluateCriteria(
 				const diff = mean - median;
 				passed = applyOp(diff, c.operator, c.threshold);
 				const sign = diff >= 0 ? "+" : "";
-				detail = `${key}: mean ${(mean * 100).toFixed(1)}% − median ${(median * 100).toFixed(1)}% = ${sign}${(diff * 100).toFixed(1)}% (required ${OP_LABEL[c.operator]}${(c.threshold * 100).toFixed(0)}%)`;
+				detail = `${c.party}: mean ${(mean * 100).toFixed(1)}% − median ${(median * 100).toFixed(1)}% = ${sign}${(diff * 100).toFixed(1)}% (required ${OP_LABEL[c.operator]}${(c.threshold * 100).toFixed(0)}%)`;
 				break;
 			}
 

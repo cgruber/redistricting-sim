@@ -5,7 +5,7 @@
  * and scenario rules, return plain data objects. No DOM, no D3.
  */
 
-import type { AssignmentMap, Precinct } from "../model/types.js";
+import type { AssignmentMap, Precinct } from "../model/runtime.js";
 import type { ScenarioRules } from "../model/scenario.js";
 
 // ─── Public types ─────────────────────────────────────────────────────────────

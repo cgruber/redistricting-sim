@@ -27,16 +27,25 @@
 import { evaluateCriteria, isMapSubmittable } from "./evaluate.js";
 import { computeValidityStats } from "./validity.js";
 import { runElection } from "./election.js";
-import type { Precinct, GameState, AssignmentMap } from "../model/types.js";
+import type { Precinct, GameState, AssignmentMap } from "../model/runtime.js";
 import type {
 	ScenarioRules,
 	SuccessCriterion,
+	PartyId,
+	PrecinctId,
 	Precinct as ScenarioPrecinct,
 } from "../model/scenario.js";
 
 import { test, assertEqual, assertTrue, assertFalse, summarize } from "../testing/test_runner.js";
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
+
+// Party-id keyspace (GAME-043): vote shares and criterion `party` are ONE
+// keyspace now (ken/ryu) — no PartyId→PartyKey mapping. ken = parties[0] (wins
+// ties, the pre-GAME-043 "R" slot), ryu = parties[1] (the "D" slot).
+const KEN = "ken" as PartyId;
+const RYU = "ryu" as PartyId;
+const PARTIES: PartyId[] = [KEN, RYU];
 
 function makePrecinct(
 	id: number,
@@ -46,14 +55,17 @@ function makePrecinct(
 	neighbors: (number | null)[],
 ): Precinct {
 	return {
-		id,
+		index: id,
+		scenarioId: `p${id}` as unknown as PrecinctId,
 		coord: { q: 0, r: id },
 		center: { x: id * 10, y: 0 },
 		neighbors,
 		population,
-		partyShare: { R: partyR, D: partyD, L: 0, G: 0, I: 0 },
-		previousResult: { winner: partyR >= partyD ? "R" : "D", margin: Math.abs(partyR - partyD) },
-		demographics: { male: 0.49, female: 0.49, nonbinary: 0.02 },
+		voteShare: { [KEN]: partyR, [RYU]: partyD },
+		previousResult: {
+			winner: partyR >= partyD ? KEN : RYU,
+			margin: Math.abs(partyR - partyD),
+		},
 	};
 }
 
@@ -79,11 +91,6 @@ const RULES_LENIENT: ScenarioRules = {
 	contiguity: "allowed",
 	population_tolerance: 0.2,
 };
-
-const PARTY_MAP = new Map([
-	["ken", "R"],
-	["ryu", "D"],
-]);
 
 function makeDistrictCountCriterion(required = true): SuccessCriterion {
 	return {
@@ -142,6 +149,7 @@ function runEval(
 	const validityStats = computeValidityStats(precincts, assignments, districtCount, rules);
 	const state: GameState = {
 		precincts,
+		parties: PARTIES,
 		assignments,
 		districtCount,
 		activeDistrict: 1,
@@ -156,7 +164,7 @@ function runEval(
 		precincts,
 		assignments,
 		districtCount,
-		PARTY_MAP,
+		PARTIES,
 		scenarioPrecincts,
 	);
 }
@@ -579,7 +587,9 @@ function makeMajorityMinorityCriterion(
 		description: `At least ${minDistricts} majority-minority district(s)`,
 		criterion: {
 			type: "majority_minority",
-			group_filter: { group_ids: ["minority" as import("../model/scenario.js").GroupId] },
+			group_filter: {
+				group_ids: ["minority" as import("../model/scenario.js").GroupId],
+			},
 			min_eligible_share: minShare,
 			min_districts: minDistricts,
 		},

@@ -22,8 +22,8 @@
  */
 
 import { computeValidityStats } from "./validity.js";
-import type { Precinct } from "../model/types.js";
-import type { ScenarioRules } from "../model/scenario.js";
+import type { Precinct } from "../model/runtime.js";
+import type { ScenarioRules, PartyId, PrecinctId } from "../model/scenario.js";
 
 import {
 	test,
@@ -42,14 +42,14 @@ import {
  */
 function makePrecinct(id: number, population: number, neighbors: (number | null)[]): Precinct {
 	return {
-		id,
+		index: id,
+		scenarioId: `p${id}` as unknown as PrecinctId,
 		coord: { q: 0, r: id },
 		center: { x: id * 10, y: 0 },
 		neighbors,
 		population,
-		partyShare: { R: 0.5, D: 0.5, L: 0, G: 0, I: 0 },
-		previousResult: { winner: "D", margin: 0 },
-		demographics: { male: 0.49, female: 0.49, nonbinary: 0.02 },
+		voteShare: { ["R" as PartyId]: 0.5, ["D" as PartyId]: 0.5 },
+		previousResult: { winner: "D" as PartyId, margin: 0 },
 	};
 }
 
@@ -252,15 +252,15 @@ function makePrecinctWithBlocked(
 	passableNeighbors: (number | null)[],
 ): Precinct {
 	return {
-		id,
+		index: id,
+		scenarioId: `p${id}` as unknown as PrecinctId,
 		coord: { q: 0, r: id },
 		center: { x: id * 10, y: 0 },
 		neighbors,
 		passableNeighbors,
 		population: 100,
-		partyShare: { R: 0.5, D: 0.5, L: 0, G: 0, I: 0 },
-		previousResult: { winner: "D", margin: 0 },
-		demographics: { male: 0.49, female: 0.49, nonbinary: 0.02 },
+		voteShare: { ["R" as PartyId]: 0.5, ["D" as PartyId]: 0.5 },
+		previousResult: { winner: "D" as PartyId, margin: 0 },
 	};
 }
 

@@ -59,7 +59,7 @@ import {
 	requireObject,
 } from "./runtime-types.js";
 
-import { MAX_DISTRICTS } from "./types.js";
+import { MAX_DISTRICTS } from "./runtime.js";
 
 // Flat-top axial hex direction vectors (mirrors HEX_DIRECTIONS in hex-geometry.ts)
 const HEX_DIRS: [number, number][] = [

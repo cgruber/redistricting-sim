@@ -1,5 +1,5 @@
 /**
- * Unit tests for scenarioToSpike (GAME-037).
+ * Unit tests for scenarioToRuntime (GAME-037, GAME-043).
  *
  * Uses the shared TAP runner. Run via Bazel:
  *   bazel test //web/src/model:adapter_test
@@ -15,7 +15,7 @@
  *   - precinct IDs are 0-based array indices
  */
 
-import { scenarioToSpike } from "./adapter.js";
+import { scenarioToRuntime } from "./adapter.js";
 import type { Scenario, Party, District } from "./scenario.js";
 import type { PartyId, DistrictId, PrecinctId } from "./scenario.js";
 import {
@@ -50,7 +50,10 @@ function makeScenario(
 		id: "test-001" as unknown as Scenario["id"],
 		title: "Test",
 		election_type: "congressional",
-		region: { id: "r1" as unknown as Scenario["region"]["id"], name: "Test Region" },
+		region: {
+			id: "r1" as unknown as Scenario["region"]["id"],
+			name: "Test Region",
+		},
 		geometry: { type: "hex_axial" },
 		events: [],
 		rules: { population_tolerance: 0.05, contiguity: "allowed" },
@@ -91,7 +94,7 @@ function makePrecinct(
 
 // ─── Precinct count ───────────────────────────────────────────────────────────
 
-test("scenarioToSpike: produces correct number of precincts", () => {
+test("scenarioToRuntime: produces correct number of precincts", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.6, [pid("d_party")]: 0.4 });
 	const scenario = makeScenario({
 		parties: [PARTY_R, PARTY_D],
@@ -102,27 +105,27 @@ test("scenarioToSpike: produces correct number of precincts", () => {
 			makePrecinct(2, 0, [g], "d2"),
 		],
 	});
-	const { precincts } = scenarioToSpike(scenario);
+	const { precincts } = scenarioToRuntime(scenario);
 	assertEqual(precincts.length, 3, "3 precincts produced");
 });
 
 // ─── Precinct IDs are 0-based array indices ───────────────────────────────────
 
-test("scenarioToSpike: precinct IDs are 0-based array indices", () => {
+test("scenarioToRuntime: precinct IDs are 0-based array indices", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const scenario = makeScenario({
 		parties: [PARTY_R, PARTY_D],
 		districts: [{ id: did("d1") }],
 		precincts: [makePrecinct(0, 0, [g], "d1"), makePrecinct(1, 0, [g], "d1")],
 	});
-	const { precincts } = scenarioToSpike(scenario);
-	assertEqual(precincts[0]!.id, 0, "first precinct id=0");
-	assertEqual(precincts[1]!.id, 1, "second precinct id=1");
+	const { precincts } = scenarioToRuntime(scenario);
+	assertEqual(precincts[0]!.index, 0, "first precinct index=0");
+	assertEqual(precincts[1]!.index, 1, "second precinct index=1");
 });
 
 // ─── Party vote shares ────────────────────────────────────────────────────────
 
-test("scenarioToSpike: first party → R, second party → D (single group)", () => {
+test("scenarioToRuntime: first party → R, second party → D (single group)", () => {
 	// 70% R, 30% D in a single demographic group
 	const g = makeGroup({ [pid("r_party")]: 0.7, [pid("d_party")]: 0.3 });
 	const scenario = makeScenario({
@@ -130,14 +133,14 @@ test("scenarioToSpike: first party → R, second party → D (single group)", ()
 		districts: [{ id: did("d1") }],
 		precincts: [makePrecinct(0, 0, [g], "d1")],
 	});
-	const { precincts } = scenarioToSpike(scenario);
+	const { precincts } = scenarioToRuntime(scenario);
 	const p = precincts[0]!;
-	assertClose(p.partyShare.R, 0.7, 0.001, "R share");
-	assertClose(p.partyShare.D, 0.3, 0.001, "D share");
-	assertEqual(p.partyShare.L, 0, "L share");
+	assertClose(p.voteShare[pid("r_party")] ?? 0, 0.7, 0.001, "R share");
+	assertClose(p.voteShare[pid("d_party")] ?? 0, 0.3, 0.001, "D share");
+	assertEqual(p.voteShare[pid("l_party")], undefined, "no L party in 2-party scenario");
 });
 
-test("scenarioToSpike: population-weighted across two groups", () => {
+test("scenarioToRuntime: population-weighted across two groups", () => {
 	// Group 1: 60% of pop, votes 80% R / 20% D → contributes R: 0.48, D: 0.12
 	// Group 2: 40% of pop, votes 20% R / 80% D → contributes R: 0.08, D: 0.32
 	// Total: R=0.56, D=0.44
@@ -148,25 +151,25 @@ test("scenarioToSpike: population-weighted across two groups", () => {
 		districts: [{ id: did("d1") }],
 		precincts: [makePrecinct(0, 0, [g1, g2], "d1")],
 	});
-	const { precincts } = scenarioToSpike(scenario);
+	const { precincts } = scenarioToRuntime(scenario);
 	const p = precincts[0]!;
-	assertClose(p.partyShare.R, 0.56, 0.001, "R share");
-	assertClose(p.partyShare.D, 0.44, 0.001, "D share");
+	assertClose(p.voteShare[pid("r_party")] ?? 0, 0.56, 0.001, "R share");
+	assertClose(p.voteShare[pid("d_party")] ?? 0, 0.44, 0.001, "D share");
 });
 
-test("scenarioToSpike: R wins → winner R, correct margin", () => {
+test("scenarioToRuntime: R wins → winner R, correct margin", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.7, [pid("d_party")]: 0.3 });
 	const scenario = makeScenario({
 		parties: [PARTY_R, PARTY_D],
 		districts: [{ id: did("d1") }],
 		precincts: [makePrecinct(0, 0, [g], "d1")],
 	});
-	const { precincts } = scenarioToSpike(scenario);
-	assertEqual(precincts[0]!.previousResult.winner, "R", "winner");
+	const { precincts } = scenarioToRuntime(scenario);
+	assertEqual(precincts[0]!.previousResult.winner, pid("r_party"), "winner");
 	assertClose(precincts[0]!.previousResult.margin, 0.4, 0.01, "margin");
 });
 
-test("scenarioToSpike: R wins on exact R/D tie (canonical tie-break)", () => {
+test("scenarioToRuntime: R wins on exact R/D tie (canonical tie-break)", () => {
 	// GAME-104: the adapter's displayed winner now uses the SAME winnerOf() helper
 	// as the election simulation, so the displayed winner always follows the
 	// computed result. Canonical rule: ties resolve to the party first in
@@ -178,17 +181,17 @@ test("scenarioToSpike: R wins on exact R/D tie (canonical tie-break)", () => {
 		districts: [{ id: did("d1") }],
 		precincts: [makePrecinct(0, 0, [g], "d1")],
 	});
-	const { precincts } = scenarioToSpike(scenario);
+	const { precincts } = scenarioToRuntime(scenario);
 	assertEqual(
 		precincts[0]!.previousResult.winner,
-		"R",
-		"R wins on exact tie (winnerOf, R before D)",
+		pid("r_party"),
+		"first party wins on exact tie (winnerOf, parties[0] before parties[1])",
 	);
 });
 
 // ─── Neighbor lists ───────────────────────────────────────────────────────────
 
-test("scenarioToSpike: neighbor lists — two adjacent precincts wired to each other", () => {
+test("scenarioToRuntime: neighbor lists — two adjacent precincts wired to each other", () => {
 	// P0 at (0,0), P1 at (1,0).
 	// HEX_DIRECTIONS[0]=[+1,0] → P0's edge-0 neighbor is at (1,0) = P1 (index 1)
 	// HEX_DIRECTIONS[3]=[-1,0] → P1's edge-3 neighbor is at (0,0) = P0 (index 0)
@@ -198,7 +201,7 @@ test("scenarioToSpike: neighbor lists — two adjacent precincts wired to each o
 		districts: [{ id: did("d1") }],
 		precincts: [makePrecinct(0, 0, [g], "d1"), makePrecinct(1, 0, [g], "d1")],
 	});
-	const { precincts } = scenarioToSpike(scenario);
+	const { precincts } = scenarioToRuntime(scenario);
 	const p0 = precincts[0]!;
 	const p1 = precincts[1]!;
 
@@ -214,14 +217,14 @@ test("scenarioToSpike: neighbor lists — two adjacent precincts wired to each o
 	assertNull(p1.neighbors[0], "p1 edge-0 is null");
 });
 
-test("scenarioToSpike: isolated precinct has all-null neighbor array", () => {
+test("scenarioToRuntime: isolated precinct has all-null neighbor array", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const scenario = makeScenario({
 		parties: [PARTY_R, PARTY_D],
 		districts: [{ id: did("d1") }],
 		precincts: [makePrecinct(0, 0, [g], "d1")],
 	});
-	const { precincts } = scenarioToSpike(scenario);
+	const { precincts } = scenarioToRuntime(scenario);
 	const p = precincts[0]!;
 	assertEqual(p.neighbors.length, 6, "6 neighbors");
 	assertEqual(p.neighbors.filter((n) => n === null).length, 6, "all null");
@@ -229,7 +232,7 @@ test("scenarioToSpike: isolated precinct has all-null neighbor array", () => {
 
 // ─── District assignments ─────────────────────────────────────────────────────
 
-test("scenarioToSpike: initial_district_id maps to 1-based spike district ID", () => {
+test("scenarioToRuntime: initial_district_id maps to 1-based spike district ID", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const scenario = makeScenario({
 		parties: [PARTY_R, PARTY_D],
@@ -239,38 +242,38 @@ test("scenarioToSpike: initial_district_id maps to 1-based spike district ID", (
 			makePrecinct(1, 0, [g], "d2"), // → spike district 2
 		],
 	});
-	const { assignments } = scenarioToSpike(scenario);
+	const { assignments } = scenarioToRuntime(scenario);
 	assertEqual(assignments.get(0), 1, "precinct 0 → district 1");
 	assertEqual(assignments.get(1), 2, "precinct 1 → district 2");
 });
 
-test("scenarioToSpike: precinct with null initial_district_id → null assignment", () => {
+test("scenarioToRuntime: precinct with null initial_district_id → null assignment", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const scenario = makeScenario({
 		parties: [PARTY_R, PARTY_D],
 		districts: [{ id: did("d1") }],
 		precincts: [makePrecinct(0, 0, [g])], // no initial_district_id
 	});
-	const { assignments } = scenarioToSpike(scenario);
+	const { assignments } = scenarioToRuntime(scenario);
 	assertNull(assignments.get(0), "unassigned precinct → null");
 });
 
 // ─── District count ───────────────────────────────────────────────────────────
 
-test("scenarioToSpike: districtCount matches scenario.districts.length", () => {
+test("scenarioToRuntime: districtCount matches scenario.districts.length", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const scenario = makeScenario({
 		parties: [PARTY_R, PARTY_D],
 		districts: [{ id: did("d1") }, { id: did("d2") }, { id: did("d3") }],
 		precincts: [makePrecinct(0, 0, [g], "d1")],
 	});
-	const { districtCount } = scenarioToSpike(scenario);
+	const { districtCount } = scenarioToRuntime(scenario);
 	assertEqual(districtCount, 3, "districtCount = 3");
 });
 
 // ─── Terrain ──────────────────────────────────────────────────────────────────
 
-test("scenarioToSpike: terrain tiles converted with pixel centers", () => {
+test("scenarioToRuntime: terrain tiles converted with pixel centers", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const scenario = makeScenario({
 		parties: [PARTY_R, PARTY_D],
@@ -281,13 +284,13 @@ test("scenarioToSpike: terrain tiles converted with pixel centers", () => {
 			{ position: { q: 0, r: 1 }, type: "mountain" },
 		],
 	});
-	const { terrainTiles } = scenarioToSpike(scenario);
+	const { terrainTiles } = scenarioToRuntime(scenario);
 	assertEqual(terrainTiles.length, 2, "two terrain tiles");
 	assertEqual(terrainTiles[0]!.type, "sea", "first is sea");
 	assertEqual(terrainTiles[1]!.type, "mountain", "second is mountain");
 });
 
-test("scenarioToSpike: coast annotation derived from adjacency to sea tile", () => {
+test("scenarioToRuntime: coast annotation derived from adjacency to sea tile", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const scenario = makeScenario({
 		parties: [PARTY_R, PARTY_D],
@@ -295,11 +298,11 @@ test("scenarioToSpike: coast annotation derived from adjacency to sea tile", () 
 		precincts: [makePrecinct(0, 0, [g], "d1")],
 		terrain_tiles: [{ position: { q: 1, r: 0 }, type: "sea" }],
 	});
-	const { precincts } = scenarioToSpike(scenario);
+	const { precincts } = scenarioToRuntime(scenario);
 	assertEqual(precincts[0]!.terrainAnnotation?.coast, true, "precinct adjacent to sea → coast");
 });
 
-test("scenarioToSpike: river edges converted to integer index pairs", () => {
+test("scenarioToRuntime: river edges converted to integer index pairs", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const p1 = makePrecinct(0, 0, [g], "d1");
 	const p2 = makePrecinct(1, 0, [g], "d1");
@@ -309,13 +312,13 @@ test("scenarioToSpike: river edges converted to integer index pairs", () => {
 		precincts: [p1, p2],
 		river_edges: [[p1.id, p2.id]],
 	});
-	const { riverEdges } = scenarioToSpike(scenario);
+	const { riverEdges } = scenarioToRuntime(scenario);
 	assertEqual(riverEdges.length, 1, "one river pair");
 	assertEqual(riverEdges[0]![0], 0, "p1 → index 0");
 	assertEqual(riverEdges[0]![1], 1, "p2 → index 1");
 });
 
-test("scenarioToSpike: passableNeighbors = neighbors when river_blocks_contiguity is false", () => {
+test("scenarioToRuntime: passableNeighbors = neighbors when river_blocks_contiguity is false", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const p1 = makePrecinct(0, 0, [g], "d1");
 	const p2 = makePrecinct(1, 0, [g], "d1");
@@ -326,13 +329,13 @@ test("scenarioToSpike: passableNeighbors = neighbors when river_blocks_contiguit
 		river_edges: [[p1.id, p2.id]],
 		river_blocks_contiguity: false,
 	});
-	const { precincts } = scenarioToSpike(scenario);
+	const { precincts } = scenarioToRuntime(scenario);
 	// p1.neighbors[0] = 1 (lower-right); passableNeighbors[0] should also be 1
 	assertEqual(precincts[0]!.neighbors[0], 1, "p1.neighbors[0] = 1");
 	assertEqual(precincts[0]!.passableNeighbors![0], 1, "passable unchanged when not blocking");
 });
 
-test("scenarioToSpike: foothill annotation derived from mountain adjacency", () => {
+test("scenarioToRuntime: foothill annotation derived from mountain adjacency", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const scenario = makeScenario({
 		parties: [PARTY_R, PARTY_D],
@@ -340,7 +343,7 @@ test("scenarioToSpike: foothill annotation derived from mountain adjacency", () 
 		precincts: [makePrecinct(0, 0, [g], "d1")],
 		terrain_tiles: [{ position: { q: 1, r: 0 }, type: "mountain" }],
 	});
-	const { precincts } = scenarioToSpike(scenario);
+	const { precincts } = scenarioToRuntime(scenario);
 	assertEqual(
 		precincts[0]!.terrainAnnotation?.foothill,
 		true,
@@ -348,7 +351,7 @@ test("scenarioToSpike: foothill annotation derived from mountain adjacency", () 
 	);
 });
 
-test("scenarioToSpike: riverside annotation derived when no terrain tile adjacency", () => {
+test("scenarioToRuntime: riverside annotation derived when no terrain tile adjacency", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const p1 = makePrecinct(0, 0, [g], "d1");
 	const p2 = makePrecinct(1, 0, [g], "d1");
@@ -358,7 +361,7 @@ test("scenarioToSpike: riverside annotation derived when no terrain tile adjacen
 		precincts: [p1, p2],
 		river_edges: [[p1.id, p2.id]],
 	});
-	const { precincts } = scenarioToSpike(scenario);
+	const { precincts } = scenarioToRuntime(scenario);
 	assertEqual(
 		precincts[0]!.terrainAnnotation?.riverside,
 		true,
@@ -371,7 +374,7 @@ test("scenarioToSpike: riverside annotation derived when no terrain tile adjacen
 	);
 });
 
-test("scenarioToSpike: foothill suppresses riverside when mountain is adjacent", () => {
+test("scenarioToRuntime: foothill suppresses riverside when mountain is adjacent", () => {
 	// riverside is only set when isRiverside && !hasSea && !hasMountain.
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const p1 = makePrecinct(0, 0, [g], "d1");
@@ -383,7 +386,7 @@ test("scenarioToSpike: foothill suppresses riverside when mountain is adjacent",
 		terrain_tiles: [{ position: { q: 1, r: 0 }, type: "mountain" }],
 		river_edges: [[p1.id, p2.id]],
 	});
-	const { precincts } = scenarioToSpike(scenario);
+	const { precincts } = scenarioToRuntime(scenario);
 	assertEqual(precincts[0]!.terrainAnnotation?.foothill, true, "foothill=true (mountain adjacent)");
 	assertEqual(
 		precincts[0]!.terrainAnnotation?.riverside,
@@ -392,7 +395,7 @@ test("scenarioToSpike: foothill suppresses riverside when mountain is adjacent",
 	);
 });
 
-test("scenarioToSpike: lakeside annotation derived from adjacency to lake tile", () => {
+test("scenarioToRuntime: lakeside annotation derived from adjacency to lake tile", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const scenario = makeScenario({
 		parties: [PARTY_R, PARTY_D],
@@ -400,7 +403,7 @@ test("scenarioToSpike: lakeside annotation derived from adjacency to lake tile",
 		precincts: [makePrecinct(0, 0, [g], "d1")],
 		terrain_tiles: [{ position: { q: 1, r: 0 }, type: "lake" }],
 	});
-	const { precincts } = scenarioToSpike(scenario);
+	const { precincts } = scenarioToRuntime(scenario);
 	assertEqual(
 		precincts[0]!.terrainAnnotation?.lakeside,
 		true,
@@ -413,7 +416,7 @@ test("scenarioToSpike: lakeside annotation derived from adjacency to lake tile",
 	);
 });
 
-test("scenarioToSpike: passableNeighbors nulls river edges when river_blocks_contiguity is true", () => {
+test("scenarioToRuntime: passableNeighbors nulls river edges when river_blocks_contiguity is true", () => {
 	const g = makeGroup({ [pid("r_party")]: 0.5, [pid("d_party")]: 0.5 });
 	const p1 = makePrecinct(0, 0, [g], "d1");
 	const p2 = makePrecinct(1, 0, [g], "d1");
@@ -424,7 +427,7 @@ test("scenarioToSpike: passableNeighbors nulls river edges when river_blocks_con
 		river_edges: [[p1.id, p2.id]],
 		river_blocks_contiguity: true,
 	});
-	const { precincts } = scenarioToSpike(scenario);
+	const { precincts } = scenarioToRuntime(scenario);
 	// neighbors retains 1 for geometry; passableNeighbors nulls it
 	assertEqual(precincts[0]!.neighbors[0], 1, "neighbors[0] still 1 (geometry preserved)");
 	assertNull(precincts[0]!.passableNeighbors![0], "passableNeighbors[0] nulled (river blocks)");
