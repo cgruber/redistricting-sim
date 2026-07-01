@@ -40,6 +40,24 @@ test("campaign select: progress shows 0 / 4 for Tutorial with fresh localStorage
 	await expect(page.locator(".campaign-card").first()).toContainText("0 / 4 scenarios complete");
 });
 
+test("campaign select: debug campaign is hidden without debug mode (GAME-115)", async ({
+	page,
+}) => {
+	await page.goto("/?view=campaigns");
+	await expect(page.locator("#campaign-select")).toBeVisible({ timeout: 10_000 });
+	// Only the two shipped campaigns; the debug-only campaign must not appear.
+	await expect(page.locator(".campaign-card")).toHaveCount(2);
+	await expect(page.locator("#campaign-select")).not.toContainText("Debug (dev)");
+});
+
+test("campaign select: debug campaign appears with &debug (GAME-115)", async ({ page }) => {
+	await page.goto("/?view=campaigns&debug");
+	await expect(page.locator("#campaign-select")).toBeVisible({ timeout: 10_000 });
+	// Debug mode active → the gated debug campaign is the third card.
+	await expect(page.locator(".campaign-card")).toHaveCount(3);
+	await expect(page.locator("#campaign-select")).toContainText("Debug (dev)");
+});
+
 test("campaign select: Back button is present", async ({ page }) => {
 	await page.goto("/?view=campaigns");
 	await expect(page.locator("#btn-campaign-back")).toBeVisible({ timeout: 10_000 });

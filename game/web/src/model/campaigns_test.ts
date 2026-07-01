@@ -33,6 +33,7 @@ import {
 	getCampaign,
 	saveLastPlayedScenario,
 	loadLastPlayedScenario,
+	visibleCampaigns,
 } from "./campaigns.js";
 import { test, assertEqual, assertNull, assertNotNull, summarize } from "../testing/test_runner.js";
 
@@ -42,8 +43,8 @@ function resetStorage(): void {
 
 // ─── CAMPAIGN_REGISTRY ────────────────────────────────────────────────────────
 
-test("CAMPAIGN_REGISTRY contains exactly 2 campaigns", () => {
-	assertEqual(CAMPAIGN_REGISTRY.length, 2, "registry length");
+test("CAMPAIGN_REGISTRY contains 3 campaigns (tutorial, educational, debug)", () => {
+	assertEqual(CAMPAIGN_REGISTRY.length, 3, "registry length");
 });
 
 test("CAMPAIGN_REGISTRY: first campaign is tutorial", () => {
@@ -82,6 +83,47 @@ test("educational campaign ends with scenario-009", () => {
 	const edu = getCampaign("educational");
 	assertNotNull(edu, "educational exists");
 	assertEqual(edu!.scenarioIds[edu!.scenarioIds.length - 1], "scenario-009", "last scenario");
+});
+
+// ─── debugOnly gating (GAME-115) ────────────────────────────────────────────
+
+test("debug campaign is flagged debugOnly", () => {
+	const debug = getCampaign("debug");
+	assertNotNull(debug, "debug campaign exists");
+	assertEqual(debug!.debugOnly, true, "debugOnly true");
+});
+
+test("tutorial and educational campaigns are not debugOnly", () => {
+	assertEqual(getCampaign("tutorial")!.debugOnly, undefined, "tutorial not debugOnly");
+	assertEqual(getCampaign("educational")!.debugOnly, undefined, "educational not debugOnly");
+});
+
+test("visibleCampaigns(false) hides the debug campaign", () => {
+	const visible = visibleCampaigns(false);
+	assertEqual(visible.length, 2, "two campaigns without debug");
+	assertEqual(
+		visible.some((c) => c.id === "debug"),
+		false,
+		"debug campaign absent",
+	);
+});
+
+test("visibleCampaigns(true) includes the debug campaign", () => {
+	const visible = visibleCampaigns(true);
+	assertEqual(visible.length, 3, "three campaigns with debug");
+	assertEqual(
+		visible.some((c) => c.id === "debug"),
+		true,
+		"debug campaign present",
+	);
+});
+
+test("visibleCampaigns always includes non-debug campaigns", () => {
+	for (const isDebug of [false, true]) {
+		const ids = visibleCampaigns(isDebug).map((c) => c.id);
+		assertEqual(ids.includes("tutorial"), true, "tutorial visible");
+		assertEqual(ids.includes("educational"), true, "educational visible");
+	}
 });
 
 // ─── getCampaign ──────────────────────────────────────────────────────────────
