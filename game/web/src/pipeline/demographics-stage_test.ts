@@ -6,9 +6,11 @@
  *   - All precincts get a demographic_groups array with one group
  *   - Group ID format: "<precinct_id>-<id_suffix>"
  *   - population_share is exactly 1.0
- *   - vote_shares sum to 1.0 (primary + secondary = 1)
- *   - Both party keys present in vote_shares
+ *   - vote_shares sum to 1.0 (primary + others = 1)
+ *   - All party keys present in vote_shares
  *   - Vote shares are in [0, 1]
+ *   - N-party (GAME-116): 3-party bases realized as weights over the remainder;
+ *     unspecified others split equally; 2-party path byte-identical; N=3 determinism
  *   - Turnout in [spec.turnout.min, spec.turnout.max]
  *   - Zone matching: first-match-wins, ANDed filter conditions
  *   - hex_dist_lte boundary (at boundary = match, just outside = no match)
@@ -154,7 +156,9 @@ test("addDemographics: turnout_rate within [min, max]", () => {
 // ─── group.name propagation ────────────────────────────────────────────────────
 
 test("addDemographics: group.name propagated when present", () => {
-	const spec = baseDemoSpec({ group: { id_suffix: "all", name: "All voters" } });
+	const spec = baseDemoSpec({
+		group: { id_suffix: "all", name: "All voters" },
+	});
 	const partial = makePartial(1);
 	const result = addDemographics(partial, spec);
 	for (const p of result.precincts) {
@@ -229,7 +233,11 @@ test("addDemographics: ANDed filter conditions both must hold", () => {
 	// Precincts with q >= 0 but hex_dist > 2 should fall through to default.
 	const spec = baseDemoSpec({
 		zones: [
-			{ name: "inner_east", filter: { q_gte: 0, hex_dist_lte: 2 }, party_base: { ken: 0.9 } },
+			{
+				name: "inner_east",
+				filter: { q_gte: 0, hex_dist_lte: 2 },
+				party_base: { ken: 0.9 },
+			},
 			{ name: "other", filter: { default: true }, party_base: { ken: 0.1 } },
 		],
 		jitter: 0,
@@ -319,6 +327,101 @@ test("addDemographics: different seeds produce different outputs", () => {
 		return ga.turnout_rate !== gb.turnout_rate || ga.vote_shares[KEN] !== gb.vote_shares[KEN];
 	});
 	assertEqual(anyDiff, true);
+});
+
+// ─── N-party (GAME-116) ─────────────────────────────────────────────────────
+
+const IND = "ind" as PartyId;
+
+test("addDemographics: 3-party vote_shares include all parties and sum to 1.0", () => {
+	const spec = baseDemoSpec({
+		parties: ["ken", "ryu", "ind"],
+		zones: [
+			{
+				name: "all",
+				filter: { default: true },
+				party_base: { ken: 0.55, ryu: 0.37, ind: 0.08 },
+			},
+		],
+	});
+	const result = addDemographics(makePartial(3), spec);
+	for (const p of result.precincts) {
+		const vs = p.demographic_groups![0]!.vote_shares;
+		assertEqual(KEN in vs && RYU in vs && IND in vs, true);
+		const sum = (vs[KEN] ?? 0) + (vs[RYU] ?? 0) + (vs[IND] ?? 0);
+		assertEqual(Math.abs(sum - 1.0) < 1e-10, true);
+	}
+});
+
+test("addDemographics: 3-party realizes authored bases at jitter 0 (weights sum to 1)", () => {
+	const spec = baseDemoSpec({
+		parties: ["ken", "ryu", "ind"],
+		jitter: 0,
+		turnout: { min: 0.6, max: 0.6 },
+		zones: [
+			{
+				name: "all",
+				filter: { default: true },
+				party_base: { ken: 0.55, ryu: 0.37, ind: 0.08 },
+			},
+		],
+	});
+	const result = addDemographics(makePartial(2), spec);
+	for (const p of result.precincts) {
+		const vs = p.demographic_groups![0]!.vote_shares;
+		assertEqual(Math.abs((vs[KEN] ?? 0) - 0.55) < 1e-10, true);
+		assertEqual(Math.abs((vs[RYU] ?? 0) - 0.37) < 1e-10, true);
+		assertEqual(Math.abs((vs[IND] ?? 0) - 0.08) < 1e-10, true);
+	}
+});
+
+test("addDemographics: unspecified non-primary bases split the remainder equally", () => {
+	const spec = baseDemoSpec({
+		parties: ["ken", "ryu", "ind"],
+		jitter: 0,
+		turnout: { min: 0.6, max: 0.6 },
+		zones: [{ name: "all", filter: { default: true }, party_base: { ken: 0.5 } }],
+	});
+	const result = addDemographics(makePartial(2), spec);
+	for (const p of result.precincts) {
+		const vs = p.demographic_groups![0]!.vote_shares;
+		// remainder 0.5 split equally between the two unspecified others → 0.25 each
+		assertEqual(Math.abs((vs[RYU] ?? 0) - 0.25) < 1e-10, true);
+		assertEqual(Math.abs((vs[IND] ?? 0) - 0.25) < 1e-10, true);
+	}
+});
+
+test("addDemographics: 2-party path unchanged — secondary is exactly 1 − primary", () => {
+	// Regression guard for byte-identity: with only the primary base specified,
+	// the single other party gets remainder × 1.0, bit-identical to 1 − primary.
+	const result = addDemographics(makePartial(3), baseDemoSpec({ seed: 7 }));
+	for (const p of result.precincts) {
+		const vs = p.demographic_groups![0]!.vote_shares;
+		assertEqual(vs[RYU], 1 - (vs[KEN] ?? 0));
+	}
+});
+
+test("addDemographics: N=3 deterministic — same seed twice produces identical shares", () => {
+	const spec = baseDemoSpec({
+		parties: ["ken", "ryu", "ind"],
+		seed: 42,
+		zones: [
+			{
+				name: "all",
+				filter: { default: true },
+				party_base: { ken: 0.5, ryu: 0.3, ind: 0.2 },
+			},
+		],
+	});
+	const partial = makePartial(3);
+	const a = addDemographics(partial, spec);
+	const b = addDemographics(partial, spec);
+	for (let i = 0; i < a.precincts.length; i++) {
+		const ga = a.precincts[i]!.demographic_groups![0]!;
+		const gb = b.precincts[i]!.demographic_groups![0]!;
+		assertEqual(ga.vote_shares[IND], gb.vote_shares[IND]);
+		assertEqual(ga.turnout_rate, gb.turnout_rate);
+	}
 });
 
 // ─── Immutability ─────────────────────────────────────────────────────────────

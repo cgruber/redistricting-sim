@@ -16,10 +16,26 @@ function matchesFilter(filter: ZoneFilter, q: number, r: number): boolean {
 	return true;
 }
 
+/**
+ * N-party vote-share model (GAME-116): the PRIMARY party (`parties[0]`) gets
+ * `base + jitter` (clamped); the remainder `(1 − primary)` is split among the
+ * other parties by their `party_base` values as WEIGHTS — proportional when any
+ * are specified, otherwise equally.
+ *
+ * `party_base` for a non-primary party is a WEIGHT over the remainder, NOT an
+ * absolute share: author all N bases to sum to ~1.0 (with the primary) for the
+ * numbers to be realized literally (e.g. `{ken: 0.55, ryu: 0.37, ind: 0.08}`).
+ * The primary party alone carries the seeded jitter.
+ *
+ * Byte-identical for the 2-party case: with only the primary base specified, the
+ * single other party has weightSum 0 → gets `remainder / 1 = (1 − primary) × 1.0`,
+ * which is bit-identical to the pre-GAME-116 `secondary = 1 − primary`.
+ */
 export function addDemographics(partial: PartialScenario, spec: DemographicsSpec): PartialScenario {
 	const prng = makePrng(spec.seed);
-	const primaryParty = spec.parties[0] as PartyId;
-	const secondaryParty = spec.parties[1] as PartyId;
+	const parties = spec.parties as PartyId[];
+	const primaryParty = parties[0]!;
+	const otherParties = parties.slice(1);
 
 	const precincts = partial.precincts.map((p) => {
 		const pos = p.position;
@@ -29,10 +45,21 @@ export function addDemographics(partial: PartialScenario, spec: DemographicsSpec
 		const zone = spec.zones.find((z) => matchesFilter(z.filter, q, r));
 		if (!zone) throw new Error(`No zone matched precinct ${p.id} at q=${q} r=${r}`);
 
+		// One jitter draw (primary only), then the turnout draw — order preserved
+		// from the 2-party version so seeded output is byte-identical at N=2.
 		const rawJitter = prng.nextDouble(-spec.jitter, spec.jitter);
 		const primaryBase = zone.party_base[primaryParty] ?? 0;
 		const primaryShare = Math.min(1, Math.max(0, primaryBase + rawJitter));
-		const secondaryShare = 1 - primaryShare;
+		const remainder = 1 - primaryShare;
+
+		const weights = otherParties.map((op) => zone.party_base[op] ?? 0);
+		const weightSum = weights.reduce((a, b) => a + b, 0);
+
+		const vote_shares = { [primaryParty]: primaryShare } as Record<PartyId, number>;
+		otherParties.forEach((op, i) => {
+			const w = weightSum > 0 ? weights[i]! / weightSum : 1 / otherParties.length;
+			vote_shares[op] = remainder * w;
+		});
 
 		const turnout = prng.nextDouble(spec.turnout.min, spec.turnout.max);
 
@@ -45,10 +72,7 @@ export function addDemographics(partial: PartialScenario, spec: DemographicsSpec
 					id: groupId,
 					...(spec.group.name !== undefined ? { name: spec.group.name } : {}),
 					population_share: 1.0,
-					vote_shares: {
-						[primaryParty]: primaryShare,
-						[secondaryParty]: secondaryShare,
-					} as Record<PartyId, number>,
+					vote_shares,
 					turnout_rate: turnout,
 				},
 			],
