@@ -1,14 +1,15 @@
 """
 Bazel targets for the scenario model:
 
-  model_lib  — scenario.ts (GAME-001 types; DistrictId, PartyId, Scenario, etc.)
-  loader_lib — loader.ts (GAME-002 loadScenario function)
-  types_lib  — types.ts (spike/legacy types for the hex-grid spike renderer)
+  model_lib   — scenario.ts (GAME-001 types; DistrictId, PartyId, Scenario, etc.)
+  loader_lib  — loader.ts (GAME-002 loadScenario function)
+  runtime_lib — runtime.ts (GAME-043 unified runtime model)
+  party_lib   — party.ts (GAME-043 party-agnostic vote-share helpers + palette)
 
 Creating this BUILD.bazel makes src/model/ a separate Bazel package, so the
 parent's glob(["src/**/*.ts"]) no longer covers this directory.  game/web/BUILD.bazel
-lists the model targets (model_lib, loader_lib, types_lib, …) as explicit deps so
-the parent typecheck and bundle remain intact.
+lists the model targets (model_lib, loader_lib, runtime_lib, party_lib, …) as
+explicit deps so the parent typecheck and bundle remain intact.
 """
 
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
@@ -51,13 +52,25 @@ ts_config(
     visibility = ["//game/web/src/model:__pkg__"],
 )
 
-# ── types_lib: types.ts (spike/legacy types for the hex-grid renderer) ────────
+# ── party_lib: party-agnostic vote-share helpers + palette (GAME-043) ─────────
 
 ts_project(
-    name = "types_lib",
-    srcs = ["types.ts"],
+    name = "party_lib",
+    srcs = ["party.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
+    deps = [":model_lib"],
+    visibility = ["//game/web:__subpackages__"],
+)
+
+# ── runtime_lib: unified runtime model (runtime.ts; GAME-043) ─────────────────
+
+ts_project(
+    name = "runtime_lib",
+    srcs = ["runtime.ts"],
+    tsconfig = ":tsconfig",
+    declaration = True,
+    deps = [":model_lib", ":party_lib"],
     visibility = ["//game/web:__subpackages__"],
 )
 
@@ -68,7 +81,7 @@ ts_project(
     srcs = ["hex-geometry.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    deps = [":types_lib"],
+    deps = [":runtime_lib"],
     visibility = ["//game/web:__subpackages__"],
 )
 
@@ -99,7 +112,7 @@ ts_project(
     srcs = ["loader.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    deps = [":model_lib", ":runtime_types_lib", ":types_lib"],
+    deps = [":model_lib", ":runtime_types_lib", ":runtime_lib"],
     visibility = ["//game/web:__subpackages__"],
 )
 
@@ -190,7 +203,7 @@ ts_project(
     srcs = ["adapter.ts"],
     tsconfig = ":tsconfig",
     declaration = True,
-    deps = [":model_lib", ":types_lib", ":hex_geometry_lib"],
+    deps = [":model_lib", ":runtime_lib", ":party_lib", ":hex_geometry_lib"],
     visibility = ["//game/web:__subpackages__"],
 )
 
@@ -228,7 +241,9 @@ js_test(
         ":adapter_test_lib",
         ":adapter_lib",
         ":model_lib",
-        ":types_lib",
+        ":runtime_lib",
+        ":party_lib",
+        ":hex_geometry_lib",
         "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
@@ -314,7 +329,7 @@ ts_project(
     declaration = True,
     deps = [
         ":hex_geometry_lib",
-        ":types_lib",
+        ":runtime_lib",
         "//game/web/src/testing:test_runner_lib",
     ],
     testonly = True,
@@ -328,7 +343,9 @@ js_test(
     data = [
         ":hex_geometry_test_lib",
         ":hex_geometry_lib",
-        ":types_lib",
+        ":runtime_lib",
+        ":party_lib",
+        ":model_lib",
         "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
@@ -371,7 +388,8 @@ js_test(
         ":loader_lib",
         ":runtime_types_lib",
         ":model_lib",
-        ":types_lib",
+        ":runtime_lib",
+        ":party_lib",
         "//game/scenarios:scenario_json",
         "//game/web/src/testing:test_runner_lib",
     ],
@@ -406,7 +424,8 @@ js_test(
         ":loader_lib",
         ":runtime_types_lib",
         ":model_lib",
-        ":types_lib",
+        ":runtime_lib",
+        ":party_lib",
         "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
@@ -448,7 +467,8 @@ js_test(
         ":loader_lib",
         ":runtime_types_lib",
         ":model_lib",
-        ":types_lib",
+        ":runtime_lib",
+        ":party_lib",
         "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [

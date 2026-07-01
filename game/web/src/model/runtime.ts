@@ -1,66 +1,25 @@
 /**
- * Core data model types for the redistricting simulator spike.
- * All types are pure data — no DOM, no D3, no side effects.
- */
-
-/**
- * Canonical party set and iteration order — the single source of truth for every
- * winner/margin computation, party-color/label lookup, and party→key mapping.
+ * Unified runtime data model (GAME-043).
  *
- * `PartyKey` is DERIVED from this array (`typeof ALL_PARTIES[number]`), so the
- * array is authoritative: adding or removing a party here updates the type, and
- * any record keyed by `PartyKey` (PARTY_COLORS, PARTY_LABELS, PartyShare-shaped
- * data) must then account for it — a party can't be silently dropped from one
- * place while another still expects it. Iterating this (not an inline literal)
- * also keeps tie-breaks deterministic everywhere.
- */
-export const ALL_PARTIES = ["R", "D", "L", "G", "I"] as const;
-
-/** Party keys used throughout the sim (derived from {@link ALL_PARTIES}). */
-export type PartyKey = (typeof ALL_PARTIES)[number];
-
-/**
- * Plurality winner of a PartyShare.
+ * The single runtime precinct/district/state model the simulation, renderer, and
+ * store all operate on. Built once at load by the runtime builder (adapter.ts)
+ * from the canonical `scenario.ts` types. Pure data — no DOM, no D3, no side
+ * effects.
  *
- * CANONICAL TIE-BREAK RULE (GAME-104): ties resolve to the party that comes
- * FIRST in `ALL_PARTIES` order. Implementation: seed best = ALL_PARTIES[0] (R)
- * and replace only on a strict `>`, so an equal share never displaces an
- * earlier-listed party. This is deterministic for every tie, including L/G/I:
- * order of preference is R > D > L > G > I. This matches the authoritative
- * election simulation (election.ts), so the displayed winner always follows the
- * computed result — there is exactly one tie-break direction in the codebase.
+ * Party representation is party-agnostic: vote shares are keyed by the scenario's
+ * arbitrary `PartyId` (see party.ts), not a fixed R/D/L/G/I key set. This is what
+ * lets multiparty (GAME-112) fall out instead of being bolted onto fixed keys.
+ *
+ * The runtime precinct keeps a numeric `index` (load-bearing: AssignmentMap keys,
+ * BFS contiguity, keyboard nav, WIP save/restore) and carries the canonical string
+ * `scenarioId` alongside it. District ids stay 1-based numbers at runtime (distinct
+ * from scenario.ts's branded string DistrictId).
  */
-export function winnerOf(share: PartyShare): PartyKey {
-	let best: PartyKey = ALL_PARTIES[0]!;
-	for (const p of ALL_PARTIES) {
-		if (share[p] > share[best]) {
-			best = p;
-		}
-	}
-	return best;
-}
 
-/** Partisan vote share: floats 0.0–1.0 summing to 1.0 */
-export interface PartyShare {
-	R: number;
-	D: number;
-	L: number;
-	G: number;
-	I: number;
-}
+import type { PartyId, PrecinctId } from "./scenario.js";
+import type { PartyShare } from "./party.js";
 
-/** Simulated prior election result for a precinct */
-export interface PreviousResult {
-	winner: PartyKey;
-	margin: number; // 0.0–1.0 (e.g. 0.07 = 7-point margin)
-}
-
-/** Sex/gender demographic breakdown; floats summing to 1.0 */
-export interface Demographics {
-	male: number;
-	female: number;
-	nonbinary: number;
-}
+// ─── Geometry ─────────────────────────────────────────────────────────────────
 
 /** Axial hex grid coordinates (cube system, q+r+s = 0) */
 export interface HexCoord {
@@ -74,13 +33,23 @@ export interface Point {
 	y: number;
 }
 
+// ─── Precinct ─────────────────────────────────────────────────────────────────
+
+/** Simulated prior election result for a precinct */
+export interface PreviousResult {
+	winner: PartyId;
+	margin: number; // 0.0–1.0 (e.g. 0.07 = 7-point margin)
+}
+
 /**
- * A single precinct — the atomic geographic unit.
- * Generated once; immutable after creation (assignments live in GameState).
+ * A single runtime precinct — the atomic geographic unit.
+ * Built once at load; immutable after creation (assignments live in GameState).
  */
 export interface Precinct {
-	/** Unique integer ID */
-	id: number;
+	/** Numeric runtime index (0-based array position); AssignmentMap key. */
+	index: number;
+	/** Canonical scenario precinct id (branded string). */
+	scenarioId: PrecinctId;
 	/** Human-readable name from scenario (e.g. "Far West Ridge") */
 	name?: string;
 	/** County identifier from scenario (used for county border overlay) */
@@ -92,7 +61,7 @@ export interface Precinct {
 	/** Pixel center (pre-computed for rendering) */
 	center: Point;
 	/**
-	 * Fixed-length array of 6 neighbor precinct IDs (or null if no neighbor).
+	 * Fixed-length array of 6 neighbor precinct indices (or null if no neighbor).
 	 * Index i corresponds to edge i (corner[i] → corner[i+1]) and its outward direction.
 	 * Directions: [0]=lower-right, [1]=down, [2]=lower-left, [3]=upper-left, [4]=up, [5]=upper-right
 	 */
@@ -107,20 +76,22 @@ export interface Precinct {
 	terrainAnnotation?: TerrainAnnotation;
 	/** Population count (arbitrary units) */
 	population: number;
-	/** Partisan vote share, floats summing to 1.0 */
-	partyShare: PartyShare;
+	/** Partisan vote share keyed by PartyId, floats summing to 1.0 */
+	voteShare: PartyShare;
 	/** Simulated prior election result */
 	previousResult: PreviousResult;
-	/** Demographic breakdown */
-	demographics: Demographics;
 	/** Per-group population shares from scenario demographic_groups (for info panel) */
-	groupShares?: { name: string; share: number; dimensions?: Record<string, string> }[];
+	groupShares?: {
+		name: string;
+		share: number;
+		dimensions?: Record<string, string>;
+	}[];
 }
 
 /**
  * Composable terrain annotations for a precinct. All fields are independent —
  * a single precinct can be coast AND foothill AND lakeside simultaneously.
- * All derived at adapter time from tile adjacency and river membership.
+ * All derived at build time from tile adjacency and river membership.
  */
 export interface TerrainAnnotation {
 	coast: boolean;
@@ -136,13 +107,15 @@ export interface TerrainTileRuntime {
 	type: "sea" | "lake" | "mountain";
 }
 
-/** A district is identified by a 1-based integer index */
+// ─── Districts and results ────────────────────────────────────────────────────
+
+/** A district is identified by a 1-based integer index at runtime */
 export type DistrictId = number;
 
 /** Per-district election result */
 export interface DistrictResult {
 	districtId: DistrictId;
-	winner: PartyKey;
+	winner: PartyId;
 	/** Vote totals by party (weighted by precinct population) */
 	voteTotals: PartyShare;
 	/** Total votes cast in the district */
@@ -159,15 +132,20 @@ export interface DistrictResult {
 export interface SimulationResult {
 	districtResults: DistrictResult[];
 	/** Summary: seats won per party */
-	seatsByParty: Partial<Record<PartyKey, number>>;
+	seatsByParty: Record<PartyId, number>;
 }
 
-/** Precinct-to-district assignment map: precinctId → districtId (or null = unassigned) */
+/** Precinct-to-district assignment map: precinct index → districtId (or null = unassigned) */
 export type AssignmentMap = Map<number, DistrictId | null>;
+
+// ─── Game state ───────────────────────────────────────────────────────────────
 
 /** Full game state — the single source of truth for the Zustand store */
 export interface GameState {
 	precincts: Precinct[];
+	/** Scenario parties in declaration order — the authoritative party list for
+	 *  every winner/margin/seat computation (source of the tie-break order). */
+	parties: PartyId[];
 	/** Number of districts available to draw */
 	districtCount: number;
 	/** Current assignment of each precinct to a district */
@@ -182,10 +160,12 @@ export interface GameState {
 	riverEdges?: [number, number][];
 }
 
-/** A brush stroke undo/redo diff: maps precinctId → {from, to} */
+/** A brush stroke undo/redo diff: maps precinct index → {from, to} */
 export interface StrokeDiff {
 	changes: Map<number, { from: DistrictId | null; to: DistrictId | null }>;
 }
+
+// ─── District palette (party-agnostic) ────────────────────────────────────────
 
 /** District color palette — Okabe-Ito (2008) color-blind-safe 8-color set, 5 used here.
  *  Source: https://jfly.uni-koeln.de/color/
@@ -220,26 +200,3 @@ export const MAX_DISTRICTS = DISTRICT_COLORS.length;
 export function districtColor(id: number): string {
 	return DISTRICT_COLORS[id - 1] ?? "#888";
 }
-
-/** Party display colors — aligned with PuOr lean-view palette so party badges
- *  and the lean map use a consistent color language.
- *  D → purple (D-leaning end of PuOr), R → orange (R-leaning end of PuOr).
- */
-export const PARTY_COLORS: Record<PartyKey, string> = {
-	R: "#c96d00",
-	D: "#7b35a8",
-	L: "#f0c040",
-	G: "#50c878",
-	I: "#a0a0a0",
-};
-
-/** Party display labels — fallbacks used when a scenario does not supply party names.
- *  Generic "Party 1/2" avoids color-name confusion since party colors vary by scenario.
- */
-export const PARTY_LABELS: Record<PartyKey, string> = {
-	R: "Party 1",
-	D: "Party 2",
-	L: "Libertarian",
-	G: "Green",
-	I: "Independent",
-};

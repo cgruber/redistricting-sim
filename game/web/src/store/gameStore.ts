@@ -15,9 +15,9 @@
 
 import { temporal } from "zundo";
 import { createStore } from "zustand/vanilla";
-import { scenarioToSpike } from "../model/adapter.js";
+import { scenarioToRuntime } from "../model/adapter.js";
 import type { Scenario } from "../model/scenario.js";
-import type { AssignmentMap, DistrictId, GameState } from "../model/types.js";
+import type { AssignmentMap, DistrictId, GameState } from "../model/runtime.js";
 import { runElection } from "../simulation/election.js";
 
 // ─── Store shape ─────────────────────────────────────────────────────────────
@@ -49,14 +49,15 @@ function cloneAssignments(m: AssignmentMap): AssignmentMap {
  * Called once in main.ts after fetching + validating the scenario JSON.
  */
 export function createGameStore(scenario: Scenario) {
-	const { precincts, assignments, districtCount, terrainTiles, riverEdges } =
-		scenarioToSpike(scenario);
+	const { precincts, parties, assignments, districtCount, terrainTiles, riverEdges } =
+		scenarioToRuntime(scenario);
 
 	// Snapshot of initial assignments — used by resetToInitial() to restore scenario start state
 	const initialAssignments: AssignmentMap = new Map(assignments);
 
 	const initialState: GameState = {
 		precincts,
+		parties,
 		districtCount,
 		assignments,
 		activeDistrict: 1,

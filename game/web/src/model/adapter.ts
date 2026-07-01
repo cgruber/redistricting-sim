@@ -1,40 +1,49 @@
 /**
- * Adapter: converts a loaded Scenario (spec types, GAME-001) to spike
- * internal types (types.ts) for the Sprint 1 renderer and store.
+ * Runtime builder (GAME-043): builds the unified runtime model (runtime.ts) from
+ * a loaded Scenario (scenario.ts) once at load.
+ *
+ * No longer a bridge between two type *systems* — just derivation: hex geometry,
+ * neighbor indices, terrain annotations, all-party vote aggregation, previousResult.
  *
  * Strategy:
- *  - Stable numeric IDs from array position (precincts[i].id = i)
+ *  - Numeric runtime index from array position (precincts[i].index = i); the
+ *    canonical string PrecinctId is carried as `scenarioId`.
  *  - District IDs: 1-based integers (scenario.districts[i] → i+1)
- *  - partyShare: population-weighted vote shares; first party→R, second→D; L/G/I=0
+ *  - voteShare: population-weighted shares over EVERY scenario party (turnout
+ *    ignored — GAME-112/113). Behavior-preserving today: shipped scenarios are 2-party.
  *  - neighbors: computed from hex axial positions via HEX_DIRECTIONS
  *  - center: hexToPixel(q, r)
  *  - initial assignments from loader-filled initial_district_id
- *
- * This is a Sprint 1 shortcut — Sprint 3 will replace spike types entirely.
  */
 
-import type { Scenario } from "./scenario.js";
+import type { Party, PartyId, Scenario } from "./scenario.js";
 import type {
 	AssignmentMap,
 	DistrictId,
 	Precinct,
 	TerrainAnnotation,
 	TerrainTileRuntime,
-} from "./types.js";
-import { winnerOf } from "./types.js";
+} from "./runtime.js";
+import type { PartyShare } from "./party.js";
+import { winnerOf, zeroShare } from "./party.js";
 import { HEX_DIRECTIONS, hexToPixel } from "./hex-geometry.js";
 
 // vote_shares is Record<PartyId, number> with branded keys; cast to plain string map at runtime
 type VoteShareRecord = Record<string, number>;
 
-export function scenarioToSpike(scenario: Scenario): {
+export function scenarioToRuntime(scenario: Scenario): {
 	precincts: Precinct[];
+	parties: PartyId[];
 	assignments: AssignmentMap;
 	districtCount: number;
 	terrainTiles: TerrainTileRuntime[];
 	riverEdges: [number, number][];
 } {
-	// Map scenario DistrictId (branded string) → spike DistrictId (1-based number)
+	// Ordered scenario party list — the source of the tie-break order and every
+	// winner/margin/seat computation downstream.
+	const parties: PartyId[] = scenario.parties.map((p: Party) => p.id);
+
+	// Map scenario DistrictId (branded string) → runtime DistrictId (1-based number)
 	const districtIndexMap = new Map<string, DistrictId>();
 	scenario.districts.forEach((d, i) => {
 		districtIndexMap.set(d.id, (i + 1) as DistrictId);
@@ -110,56 +119,58 @@ export function scenarioToSpike(scenario: Scenario): {
 			riverside: isRiverside && !hasSea && !hasMountain && !hasLakeAdj,
 		};
 
-		// Population-weighted vote shares (turnout ignored until Sprint 3)
-		// Map first scenario party → R, second → D (matches partyIdToKey in main.ts)
-		const firstPartyId = scenario.parties[0]?.id as string | undefined;
-		const secondPartyId = scenario.parties[1]?.id as string | undefined;
-		let firstShare = 0;
-		let secondShare = 0;
+		// Population-weighted vote shares over EVERY scenario party (turnout ignored
+		// until GAME-112/113). Round each to 3 decimals to match the pre-GAME-043
+		// two-party path (which rounded R/D to 3 decimals).
+		const voteShare: PartyShare = zeroShare(parties);
 		for (const g of pc.demographic_groups) {
 			const vs = g.vote_shares as unknown as VoteShareRecord;
-			if (firstPartyId) firstShare += g.population_share * (vs[firstPartyId] ?? 0);
-			if (secondPartyId) secondShare += g.population_share * (vs[secondPartyId] ?? 0);
+			for (const party of parties) {
+				voteShare[party] = (voteShare[party] ?? 0) + g.population_share * (vs[party] ?? 0);
+			}
+		}
+		for (const party of parties) {
+			voteShare[party] = Math.round((voteShare[party] ?? 0) * 1000) / 1000;
 		}
 
-		const partyShare = {
-			R: Math.round(firstShare * 1000) / 1000,
-			D: Math.round(secondShare * 1000) / 1000,
-			L: 0,
-			G: 0,
-			I: 0,
-		};
+		// Canonical tie-break (GAME-104): winnerOf scans `parties` with strict >,
+		// so an exact tie resolves to the first-listed party — matching the election
+		// simulation.
+		const winner = winnerOf(voteShare, parties);
+		// Margin vs. the actual runner-up (sorted). For a 2-party scenario this is
+		// |party2 − party1|, identical to the pre-GAME-043 |D − R|. Rounded to 2
+		// decimals to preserve the prior previousResult.margin precision.
+		const sorted = parties.slice().sort((a, b) => (voteShare[b] ?? 0) - (voteShare[a] ?? 0));
+		const runnerUp = sorted[1];
+		const rawMargin =
+			runnerUp !== undefined ? (voteShare[winner] ?? 0) - (voteShare[runnerUp] ?? 0) : 0;
+		const margin = Math.round(rawMargin * 100) / 100;
 
-		// Canonical tie-break (GAME-104): winnerOf scans ALL_PARTIES with strict >,
-		// so an exact R/D tie resolves to R — matching the election simulation.
-		const winner = winnerOf(partyShare);
-		// This adapter is the 2-party spike path: L/G/I are hardcoded to 0 above and
-		// only the first two scenario parties are mapped, so |D − R| is the exact
-		// winner-vs-runner-up margin here. A future 3+-party adapter must compute the
-		// margin against actual second place instead.
-		const margin = Math.round(Math.abs(partyShare.D - partyShare.R) * 100) / 100;
-
-		const spikePrecinct: import("./types.js").Precinct = {
-			id: i,
+		const runtimePrecinct: Precinct = {
+			index: i,
+			scenarioId: pc.id,
 			coord: { q, r },
 			center,
 			neighbors,
 			passableNeighbors,
 			population: pc.total_population,
-			partyShare,
+			voteShare,
 			previousResult: { winner, margin },
-			demographics: { male: 0.49, female: 0.49, nonbinary: 0.02 },
 		};
-		if (pc.name !== undefined) spikePrecinct.name = pc.name;
-		if (pc.county_id !== undefined) spikePrecinct.county_id = pc.county_id;
-		if (pc.county_name !== undefined) spikePrecinct.county_name = pc.county_name;
+		if (pc.name !== undefined) runtimePrecinct.name = pc.name;
+		if (pc.county_id !== undefined) runtimePrecinct.county_id = pc.county_id;
+		if (pc.county_name !== undefined) runtimePrecinct.county_name = pc.county_name;
 		// Only store annotation when at least one flag is true (avoids polluting all precincts)
 		if (hasSea || hasMountain || isRiverside || hasLakeAdj) {
-			spikePrecinct.terrainAnnotation = terrainAnnotation;
+			runtimePrecinct.terrainAnnotation = terrainAnnotation;
 		}
 		if (pc.demographic_groups.length > 1) {
-			spikePrecinct.groupShares = pc.demographic_groups.map((g) => {
-				const entry: { name: string; share: number; dimensions?: Record<string, string> } = {
+			runtimePrecinct.groupShares = pc.demographic_groups.map((g) => {
+				const entry: {
+					name: string;
+					share: number;
+					dimensions?: Record<string, string>;
+				} = {
 					name: g.name ?? g.id,
 					share: g.population_share,
 				};
@@ -167,15 +178,15 @@ export function scenarioToSpike(scenario: Scenario): {
 				return entry;
 			});
 		}
-		return spikePrecinct;
+		return runtimePrecinct;
 	});
 
 	// Build initial assignments from loader-filled initial_district_id values
 	const assignments: AssignmentMap = new Map();
 	scenario.precincts.forEach((pc, i) => {
 		const sDistId = pc.initial_district_id;
-		const spikeDistId = sDistId != null ? (districtIndexMap.get(sDistId) ?? null) : null;
-		assignments.set(i, spikeDistId);
+		const runtimeDistId = sDistId != null ? (districtIndexMap.get(sDistId) ?? null) : null;
+		assignments.set(i, runtimeDistId);
 	});
 
 	// Build initial runtime terrain tiles with axial coord + pixel center
@@ -187,6 +198,7 @@ export function scenarioToSpike(scenario: Scenario): {
 
 	return {
 		precincts,
+		parties,
 		assignments,
 		districtCount: scenario.districts.length,
 		terrainTiles,

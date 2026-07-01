@@ -20,7 +20,7 @@
 import { createGameStore } from "./gameStore.js";
 import type { Scenario, Party, District, Precinct as ScenarioPrecinct } from "../model/scenario.js";
 import type { PartyId, DistrictId, PrecinctId } from "../model/scenario.js";
-import type { AssignmentMap } from "../model/types.js";
+import type { AssignmentMap } from "../model/runtime.js";
 import {
 	test,
 	assertEqual,

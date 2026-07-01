@@ -1,4 +1,4 @@
-import type { HexCoord, Point, Precinct } from "./types.js";
+import type { HexCoord, Point, Precinct } from "./runtime.js";
 
 export type { HexCoord };
 

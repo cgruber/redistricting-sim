@@ -25,21 +25,27 @@ are never used directly by simulation or rendering.
 
 ## Goals / Acceptance Criteria
 
-- [ ] A single unified runtime precinct/district model (either extend `scenario.ts` types
-  or define a new `model/runtime.ts`); no separate spike types
-- [ ] `election.ts`, `validity.ts`, `evaluate.ts`, `mapRenderer.ts`, `gameStore.ts` all
+- [x] A single unified runtime precinct/district model (`model/runtime.ts` — GAME-043 PR 1);
+  no separate spike types
+- [x] `election.ts`, `validity.ts`, `evaluate.ts`, `mapRenderer.ts`, `gameStore.ts` all
   operate on the unified model
-- [ ] `adapter.ts` eliminated (or reduced to a trivial load-time parse with no structural
-  translation)
-- [ ] `model/types.ts` eliminated or reduced to just the shared utility types that remain
-- [ ] `partyIdToKey` indirection, `SPIKE_PARTY_KEYS`, dummy `demographics` field removed
-- [ ] All unit tests and e2e tests pass
+- [x] `adapter.ts` reduced to a trivial load-time builder (`scenarioToRuntime`) with no
+  structural translation — party-agnostic, aggregates all scenario parties
+- [x] `model/types.ts` eliminated; runtime types → `model/runtime.ts`, party helpers +
+  palette → `model/party.ts`; party-agnostic `DISTRICT_COLORS`/`MAX_DISTRICTS`/`districtColor`
+  live in `runtime.ts`
+- [x] `partyIdToKey` indirection removed; dummy `demographics` field removed; fixed
+  `PartyKey`/`PartyShare`/`ALL_PARTIES`/`PARTY_COLORS` retired (shares now keyed by `PartyId`)
+- [x] All unit tests and e2e tests pass (47/47 `bazel test //game/...`)
+- [ ] Party COLORS authored per party (`Party.color`) — deferred to GAME-043 PR 2 (this PR
+  keeps colors palette-by-index via `PARTY_PALETTE`/`partyColor`)
 
 ## Test Coverage
 
-- [ ] All existing unit tests (`loader_test`, `evaluate_test`, `validity_test`, `progress_test`,
-  `election_test`, `adapter_test`) must pass against the unified model with no behavior change
-- [ ] All Playwright e2e tests pass
+- [x] All existing unit tests (`loader_test`, `evaluate_test`, `validity_test`, `progress_test`,
+  `election_test`, `adapter_test`) pass against the unified model with no behavior change
+  (fixtures migrated to the PartyId keyspace; `evaluate_test` rekeyed to ken/ryu)
+- [x] All Playwright e2e tests (winnability) pass
 - Scope note: this refactor has no new testable behaviors of its own — it is a structural
   change; correctness is validated by the existing test suites continuing to pass
 

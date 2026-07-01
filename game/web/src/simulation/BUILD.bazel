@@ -48,7 +48,9 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [
-        "//game/web/src/model:types_lib",
+        "//game/web/src/model:runtime_lib",
+        "//game/web/src/model:party_lib",
+        "//game/web/src/model:model_lib",
     ],
     visibility = ["//game/web:__subpackages__"],
 )
@@ -61,7 +63,7 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [
-        "//game/web/src/model:types_lib",
+        "//game/web/src/model:runtime_lib",
         "//game/web/src/model:model_lib",
     ],
     visibility = ["//game/web:__pkg__", "//game/web/src/simulation:__pkg__"],
@@ -84,7 +86,7 @@ ts_project(
     declaration = True,
     deps = [
         ":validity_lib",
-        "//game/web/src/model:types_lib",
+        "//game/web/src/model:runtime_lib",
         "//game/web/src/model:model_lib",
         "//game/web/src/testing:test_runner_lib",
     ],
@@ -99,7 +101,8 @@ js_test(
     data = [
         ":validity_test_lib",
         ":validity_lib",
-        "//game/web/src/model:types_lib",
+        "//game/web/src/model:runtime_lib",
+        "//game/web/src/model:party_lib",
         "//game/web/src/model:model_lib",
         "//game/web/src/testing:test_runner_lib",
     ],
@@ -118,7 +121,9 @@ ts_project(
     declaration = True,
     deps = [
         ":election_lib",
-        "//game/web/src/model:types_lib",
+        "//game/web/src/model:runtime_lib",
+        "//game/web/src/model:party_lib",
+        "//game/web/src/model:model_lib",
         "//game/web/src/testing:test_runner_lib",
     ],
     testonly = True,
@@ -132,7 +137,9 @@ js_test(
     data = [
         ":election_test_lib",
         ":election_lib",
-        "//game/web/src/model:types_lib",
+        "//game/web/src/model:runtime_lib",
+        "//game/web/src/model:party_lib",
+        "//game/web/src/model:model_lib",
         "//game/web/src/testing:test_runner_lib",
     ],
     node_options = [
@@ -211,7 +218,7 @@ ts_project(
         ":validity_lib",
         ":election_lib",
         "//game/web/src/model:model_lib",
-        "//game/web/src/model:types_lib",
+        "//game/web/src/model:runtime_lib",
     ],
     visibility = ["//game/web:__pkg__", "//game/web/src/simulation:__pkg__"],
 )
@@ -235,7 +242,8 @@ ts_project(
         ":evaluate_lib",
         ":validity_lib",
         ":election_lib",
-        "//game/web/src/model:types_lib",
+        "//game/web/src/model:runtime_lib",
+        "//game/web/src/model:party_lib",
         "//game/web/src/model:model_lib",
         "//game/web/src/testing:test_runner_lib",
     ],
@@ -252,7 +260,8 @@ js_test(
         ":evaluate_lib",
         ":validity_lib",
         ":election_lib",
-        "//game/web/src/model:types_lib",
+        "//game/web/src/model:runtime_lib",
+        "//game/web/src/model:party_lib",
         "//game/web/src/model:model_lib",
         "//game/web/src/testing:test_runner_lib",
     ],

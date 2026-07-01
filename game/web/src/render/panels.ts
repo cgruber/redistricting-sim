@@ -1,6 +1,7 @@
 import { escapeHtml } from "../model/escape-html.js";
-import type { ScenarioRules } from "../model/scenario.js";
-import { PARTY_COLORS, PARTY_LABELS, districtColor, type PartyKey } from "../model/types.js";
+import type { PartyId, ScenarioRules } from "../model/scenario.js";
+import { districtColor } from "../model/runtime.js";
+import { partyColor, partyLabel } from "../model/party.js";
 import type { DistrictDemoStat } from "../simulation/evaluate.js";
 import { computeValidityStats } from "../simulation/validity.js";
 import type { GameStore } from "../store/gameStore.js";
@@ -8,7 +9,7 @@ import type { GameStore } from "../store/gameStore.js";
 export function renderResults(
 	container: HTMLElement,
 	state: GameStore,
-	partyLabels?: Partial<Record<PartyKey, string>>,
+	partyNames?: Partial<Record<PartyId, string>>,
 ): void {
 	if (state.simulationResult === null || state.simulationResult.districtResults.length === 0) {
 		container.innerHTML =
@@ -16,27 +17,34 @@ export function renderResults(
 		return;
 	}
 
-	const labels: Record<PartyKey, string> = { ...PARTY_LABELS, ...partyLabels };
+	const parties = state.parties;
+	// The two lean parties used for the vote bar / detail line — the scenario's
+	// first two parties (party1, party2). For a 2-party scenario this is all of
+	// them; preserves the pre-GAME-043 party2-then-party1 card layout.
+	const party1 = parties[0]!;
+	const party2 = parties[1] ?? party1;
+	const labelOf = (p: PartyId): string => escapeHtml(partyNames?.[p] ?? partyLabel(parties, p));
+
 	const { districtResults } = state.simulationResult;
 	const html = districtResults
 		.map((r) => {
 			const color = districtColor(r.districtId);
-			const winnerColor = PARTY_COLORS[r.winner];
+			const winnerColor = partyColor(parties, r.winner);
 			// Party labels derive from scenario.parties[].name — escape before
 			// interpolating into innerHTML markup (GAME-103).
-			const winnerLabel = escapeHtml(labels[r.winner]);
-			const dLabel = escapeHtml(labels.D);
-			const rLabel = escapeHtml(labels.R);
-			const dPct = (r.voteTotals.D * 100).toFixed(1);
-			const rPct = (r.voteTotals.R * 100).toFixed(1);
+			const winnerLabel = labelOf(r.winner);
+			const p2Label = labelOf(party2);
+			const p1Label = labelOf(party1);
+			const p2Pct = ((r.voteTotals[party2] ?? 0) * 100).toFixed(1);
+			const p1Pct = ((r.voteTotals[party1] ?? 0) * 100).toFixed(1);
 			const marginPct = (r.margin * 100).toFixed(1);
 			return `
       <div class="result-district" style="border-left-color:${color}">
         <div class="dist-name">District ${r.districtId}</div>
         <div class="winner-badge" style="background:${winnerColor};color:#fff">${winnerLabel} +${marginPct}%</div>
-        <div class="vote-bar" style="--d-pct:${dPct}%"></div>
+        <div class="vote-bar" style="--d-pct:${p2Pct}%"></div>
         <div class="vote-details">
-          ${dLabel} ${dPct}% · ${rLabel} ${rPct}% · ${r.precinctCount} precincts · pop ${r.population.toLocaleString()}
+          ${p2Label} ${p2Pct}% · ${p1Label} ${p1Pct}% · ${r.precinctCount} precincts · pop ${r.population.toLocaleString()}
         </div>
       </div>`;
 		})

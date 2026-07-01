@@ -23,8 +23,10 @@
 import * as d3 from "d3";
 import { escapeHtml } from "../model/escape-html.js";
 import { HEX_DIRECTIONS, HEX_SIZE, hexCorners, mapBounds } from "../model/hex-geometry.js";
-import type { Precinct, TerrainTileRuntime, PartyKey } from "../model/types.js";
-import { PARTY_LABELS, districtColor, winnerOf } from "../model/types.js";
+import type { PartyId } from "../model/scenario.js";
+import type { Precinct, TerrainTileRuntime } from "../model/runtime.js";
+import { districtColor } from "../model/runtime.js";
+import { partyLabel, winnerOf } from "../model/party.js";
 import type { GameStore } from "../store/gameStore.js";
 
 // ─── Public interface ─────────────────────────────────────────────────────────
@@ -49,8 +51,9 @@ export interface MapRenderer {
 	setCountyBordersVisible(visible: boolean): void;
 	/** Toggle hex coordinate labels (debug overlay). */
 	setCoordLabelsVisible(visible: boolean): void;
-	/** Provide scenario party display names for the precinct-info panel. */
-	setPartyLabels(labels: Partial<Record<PartyKey, string>>): void;
+	/** Provide the scenario's ordered party list + display names for the
+	 *  precinct-info panel and lean view (GAME-043). */
+	setParties(parties: PartyId[], names: Partial<Record<PartyId, string>>): void;
 	/** Reset the zoom/pan to the initial fitted vantage point (used by Reset). */
 	resetView(): void;
 }
@@ -160,7 +163,7 @@ function computeBoundarySegments(
 ): Segment[] {
 	const segments: Segment[] = [];
 	for (const p of precincts) {
-		const pDist = assignments.get(p.id);
+		const pDist = assignments.get(p.index);
 		const corners = hexCorners(p.center);
 		for (let i = 0; i < 6; i++) {
 			const nId = p.neighbors[i] ?? null;
@@ -169,7 +172,7 @@ function computeBoundarySegments(
 			if (c0 === undefined || c1 === undefined) continue;
 			if (nId === null) {
 				// Skip terrain-facing outer edges — the intrusion fill replaces them.
-				if (terrainFacingEdges?.has(`${p.id}:${i}`)) continue;
+				if (terrainFacingEdges?.has(`${p.index}:${i}`)) continue;
 				segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
 				continue;
 			}
@@ -198,7 +201,7 @@ function computeTerrainFacingEdges(
 			const dir = HEX_DIRECTIONS[i];
 			if (!dir) continue;
 			const key = `${p.coord.q + dir[0]},${p.coord.r + dir[1]}`;
-			if (tilePosSet.has(key)) set.add(`${p.id}:${i}`);
+			if (tilePosSet.has(key)) set.add(`${p.index}:${i}`);
 		}
 	}
 	return set;
@@ -218,7 +221,7 @@ function computeCountySegments(precincts: Precinct[]): Segment[] {
 		const corners = hexCorners(p.center);
 		for (let i = 0; i < 6; i++) {
 			const nId = p.neighbors[i] ?? null;
-			if (nId === null || nId < p.id) continue; // skip outer edges and already-drawn edges
+			if (nId === null || nId < p.index) continue; // skip outer edges and already-drawn edges
 			const neighbor = precincts[nId];
 			if (neighbor === undefined) continue;
 			if (p.county_id === undefined && neighbor.county_id === undefined) continue;
@@ -317,7 +320,8 @@ export class SvgMapRenderer implements MapRenderer {
 	// the district boundary line on these edges (the terrain intrusion fill covers them).
 	private terrainFacingEdges: Set<string> = new Set();
 	private countyBordersVisible = false;
-	private partyLabels: Partial<Record<PartyKey, string>> = {};
+	private parties: PartyId[] = [];
+	private partyNames: Partial<Record<PartyId, string>> = {};
 	private coordLabelsVisible = false;
 	private coordLabelsRendered = false;
 	private coordLabelGroup!: GSel;
@@ -434,8 +438,9 @@ export class SvgMapRenderer implements MapRenderer {
 		this.renderCoordLabels();
 	}
 
-	setPartyLabels(labels: Partial<Record<PartyKey, string>>) {
-		this.partyLabels = labels;
+	setParties(parties: PartyId[], names: Partial<Record<PartyId, string>>) {
+		this.parties = parties;
+		this.partyNames = names;
 	}
 
 	private renderCoordLabels() {
@@ -444,7 +449,10 @@ export class SvgMapRenderer implements MapRenderer {
 			const fs = SvgMapRenderer.COORD_LABEL_FONT_SIZE / this.currentK;
 			const sw = 3 / this.currentK;
 			const labelAttrs = <
-				T extends { coord: { q: number; r: number }; center: { x: number; y: number } },
+				T extends {
+					coord: { q: number; r: number };
+					center: { x: number; y: number };
+				},
 			>(
 				sel: d3.Selection<SVGTextElement, T, SVGGElement, unknown>,
 			) =>
@@ -778,7 +786,11 @@ export class SvgMapRenderer implements MapRenderer {
 						SvgMapRenderer.LAKE_INTRUSION_DEPTH,
 						profileSmooth,
 					);
-					intrusions.push({ terrainType: "lake", path: fillPath, boundaryPath });
+					intrusions.push({
+						terrainType: "lake",
+						path: fillPath,
+						boundaryPath,
+					});
 				} else {
 					const { fillPath, boundaryPath } = buildIntrusionAndBoundary(
 						c0,
@@ -787,7 +799,11 @@ export class SvgMapRenderer implements MapRenderer {
 						SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH,
 						profileRugged,
 					);
-					intrusions.push({ terrainType: "mountain", path: fillPath, boundaryPath });
+					intrusions.push({
+						terrainType: "mountain",
+						path: fillPath,
+						boundaryPath,
+					});
 				}
 			}
 			// Second pass: corner caps + cap boundary arcs. Corner i is shared between
@@ -811,7 +827,12 @@ export class SvgMapRenderer implements MapRenderer {
 					lType === "sea" || lType === "lake"
 						? SvgMapRenderer.COAST_INTRUSION_DEPTH + 4
 						: SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH + 4;
-				cornerCaps.push({ cx: capCenter[0], cy: capCenter[1], r, terrainType: lType });
+				cornerCaps.push({
+					cx: capCenter[0],
+					cy: capCenter[1],
+					r,
+					terrainType: lType,
+				});
 
 				// Compute the arc endpoints from the direction the adjacent intrusion boundary
 				// curves EXIT the cap circle — not from the hex edge directions. Using the edge
@@ -1088,13 +1109,13 @@ export class SvgMapRenderer implements MapRenderer {
 
 		this.hexGroup
 			.selectAll<SVGPathElement, Precinct>("path.hex")
-			.data(precincts, (d) => String(d.id))
+			.data(precincts, (d) => String(d.index))
 			.join(
 				(enter) =>
 					enter
 						.append("path")
 						.attr("class", "hex")
-						.attr("data-precinct-id", (d) => String(d.id))
+						.attr("data-precinct-id", (d) => String(d.index))
 						.attr("d", (d) => hexPolygonPath(d))
 						.attr("stroke", "none")
 						.attr("stroke-width", 0.5)
@@ -1211,7 +1232,7 @@ export class SvgMapRenderer implements MapRenderer {
 				const corners = hexCorners(d.center);
 				const segs: Segment[] = [];
 				for (let i = 0; i < 6; i++) {
-					if (this.terrainFacingEdges.has(`${d.id}:${i}`)) continue;
+					if (this.terrainFacingEdges.has(`${d.index}:${i}`)) continue;
 					const c0 = corners[i],
 						c1 = corners[(i + 1) % 6];
 					if (c0 && c1) segs.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
@@ -1232,17 +1253,19 @@ export class SvgMapRenderer implements MapRenderer {
 					.style("pointer-events", "none");
 
 				const { assignments } = this.getState();
-				const dId = assignments.get(d.id);
+				const dId = assignments.get(d.index);
 				const infoPanel = document.getElementById("precinct-info");
 				if (infoPanel !== null) {
 					// Precinct / county / group / party names are scenario-derived
 					// strings reaching innerHTML — escape them (GAME-103). Numeric
 					// and `District N` / `Precinct N` fallbacks stay as markup.
-					const precinctLabel = d.name != null ? escapeHtml(d.name) : `Precinct ${d.id}`;
+					const precinctLabel = d.name != null ? escapeHtml(d.name) : `Precinct ${d.index}`;
 					const distLabel = dId != null ? `District ${dId}` : "Unassigned";
-					const topParty = winnerOf(d.partyShare);
-					const partyName = escapeHtml(this.partyLabels[topParty] ?? PARTY_LABELS[topParty]);
-					const leanLabel = `${partyName} (${(d.partyShare[topParty] * 100).toFixed(1)}%)`;
+					const topParty = winnerOf(d.voteShare, this.parties);
+					const partyName = escapeHtml(
+						this.partyNames[topParty] ?? partyLabel(this.parties, topParty),
+					);
+					const leanLabel = `${partyName} (${((d.voteShare[topParty] ?? 0) * 100).toFixed(1)}%)`;
 					let groupsHtml = "";
 					if (d.groupShares && d.groupShares.length > 1) {
 						const lines = d.groupShares.map(
@@ -1318,7 +1341,7 @@ export class SvgMapRenderer implements MapRenderer {
 			const { activeDistrict, assignments } = this.getState();
 			this.isPainting = true;
 			this.strokeDistrict = activeDistrict;
-			this.strokePrecincts = new Set([d.id]);
+			this.strokePrecincts = new Set([d.index]);
 			this.strokeSnapshot = new Map(assignments);
 			this.setActiveDistrict(activeDistrict);
 			this.applyPaintVisual(path, activeDistrict);
@@ -1331,9 +1354,9 @@ export class SvgMapRenderer implements MapRenderer {
 			if (!target.classList.contains("hex")) return;
 			const path = target as SVGPathElement;
 			const d = d3.select<SVGPathElement, Precinct>(path).datum();
-			if (d === undefined || this.strokePrecincts.has(d.id)) return;
+			if (d === undefined || this.strokePrecincts.has(d.index)) return;
 
-			this.strokePrecincts.add(d.id);
+			this.strokePrecincts.add(d.index);
 			this.applyPaintVisual(path, this.strokeDistrict);
 			this.updateBoundaryPreview();
 		});
@@ -1373,14 +1396,20 @@ export class SvgMapRenderer implements MapRenderer {
 
 	private hexFill(d: Precinct, assignments: GameStore["assignments"]): string {
 		if (this.viewMode === "lean") {
-			const lean = d.partyShare.D - d.partyShare.R;
+			// Lean between the two lean parties (scenario party1/party2). For a 2-party
+			// scenario this is party2 − party1, identical to the pre-GAME-043 D − R.
+			const party1 = this.parties[0];
+			const party2 = this.parties[1];
+			const p1Share = party1 !== undefined ? (d.voteShare[party1] ?? 0) : 0;
+			const p2Share = party2 !== undefined ? (d.voteShare[party2] ?? 0) : 0;
+			const lean = p2Share - p1Share;
 			// PuOr (purple-orange): CVD-safe diverging palette; avoids party color collision.
-			// t=0 → orange (R-leaning), t=1 → purple (D-leaning). Clamped to [0.1,0.9] for dark-bg contrast.
+			// t=0 → orange (party1-leaning), t=1 → purple (party2-leaning). Clamped to [0.1,0.9] for dark-bg contrast.
 			// Source: ColorBrewer (Brewer 2003) https://colorbrewer2.org/
 			const t = Math.max(0.1, Math.min(0.9, (lean + 1) / 2));
 			return d3.interpolatePuOr(t);
 		}
-		const dId = assignments.get(d.id);
+		const dId = assignments.get(d.index);
 		if (dId == null) return "#2a2a3e";
 		const base = districtColor(dId);
 		const normPop =
@@ -1392,7 +1421,7 @@ export class SvgMapRenderer implements MapRenderer {
 
 	private hexOpacity(d: Precinct, assignments: GameStore["assignments"]): number {
 		if (this.viewMode === "lean") return SvgMapRenderer.LEAN_OPACITY;
-		const dId = assignments.get(d.id);
+		const dId = assignments.get(d.index);
 		return dId != null ? SvgMapRenderer.ASSIGNED_OPACITY : SvgMapRenderer.UNASSIGNED_OPACITY;
 	}
 
@@ -1412,11 +1441,11 @@ export class SvgMapRenderer implements MapRenderer {
 
 			// Initialize focus to first precinct if none selected
 			if (this.focusedPrecinctId === null) {
-				this.setKeyboardFocus(precincts[0]!.id, precincts);
+				this.setKeyboardFocus(precincts[0]!.index, precincts);
 				return;
 			}
 
-			const current = precincts.find((p) => p.id === this.focusedPrecinctId);
+			const current = precincts.find((p) => p.index === this.focusedPrecinctId);
 			if (current === undefined) return;
 
 			// Arrow key → neighbor direction mapping for flat-top hex grid
@@ -1484,12 +1513,12 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("stroke-dasharray", `${4 / this.currentK},${2 / this.currentK}`);
 
 		// Update SVG aria-label with current precinct context
-		const p = precincts.find((pr) => pr.id === precinctId);
+		const p = precincts.find((pr) => pr.index === precinctId);
 		if (p !== undefined) {
 			const { assignments, districtCount } = this.getState();
-			const dId = assignments.get(p.id);
+			const dId = assignments.get(p.index);
 			const distLabel = dId != null ? `district ${dId}` : "unassigned";
-			const label = p.name ?? `Precinct ${p.id}`;
+			const label = p.name ?? `Precinct ${p.index}`;
 			this.svg.attr(
 				"aria-label",
 				`District map — focused: ${label}, ${distLabel}. ` +
