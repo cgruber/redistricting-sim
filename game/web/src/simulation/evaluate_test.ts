@@ -45,7 +45,9 @@ import { test, assertEqual, assertTrue, assertFalse, summarize } from "../testin
 // ties, the pre-GAME-043 "R" slot), ryu = parties[1] (the "D" slot).
 const KEN = "ken" as PartyId;
 const RYU = "ryu" as PartyId;
+const IND = "ind" as PartyId;
 const PARTIES: PartyId[] = [KEN, RYU];
+const PARTIES3: PartyId[] = [KEN, RYU, IND];
 
 function makePrecinct(
 	id: number,
@@ -66,6 +68,28 @@ function makePrecinct(
 			winner: partyR >= partyD ? KEN : RYU,
 			margin: Math.abs(partyR - partyD),
 		},
+	};
+}
+
+// Three-party precinct (GAME-112): vote shares over ken/ryu/ind summing to 1.
+function makePrecinct3(
+	id: number,
+	population: number,
+	ken: number,
+	ryu: number,
+	ind: number,
+	neighbors: (number | null)[],
+): Precinct {
+	const winner = ken >= ryu && ken >= ind ? KEN : ryu >= ind ? RYU : IND;
+	return {
+		index: id,
+		scenarioId: `p${id}` as unknown as PrecinctId,
+		coord: { q: 0, r: id },
+		center: { x: id * 10, y: 0 },
+		neighbors,
+		population,
+		voteShare: { [KEN]: ken, [RYU]: ryu, [IND]: ind },
+		previousResult: { winner, margin: 0 },
 	};
 }
 
@@ -145,11 +169,12 @@ function runEval(
 	districtCount: number,
 	rules = RULES,
 	scenarioPrecincts: ScenarioPrecinct[] = [],
+	partiesList: PartyId[] = PARTIES,
 ) {
 	const validityStats = computeValidityStats(precincts, assignments, districtCount, rules);
 	const state: GameState = {
 		precincts,
-		parties: PARTIES,
+		parties: partiesList,
 		assignments,
 		districtCount,
 		activeDistrict: 1,
@@ -164,7 +189,7 @@ function runEval(
 		precincts,
 		assignments,
 		districtCount,
-		PARTIES,
+		partiesList,
 		scenarioPrecincts,
 	);
 }
@@ -798,6 +823,166 @@ test("competitive_seats: a district above the margin threshold is not competitiv
 		RULES_LENIENT,
 	);
 	assertFalse(result.criterionResults[0]!.passed, "only 2 of 3 districts ≤ 0.20 margin → fail");
+});
+
+// ─── N-party two-party-normalized metrics (GAME-112) ──────────────────────────
+//
+// A 3-party fixture (ken/ryu/ind), 3 districts, 1 precinct each, pop 1000.
+//   D1  ken 0.5 / ryu 0.3 / ind 0.2  → ken wins
+//   D2  ken 0.3 / ryu 0.5 / ind 0.2  → ryu wins
+//   D3  ken 0.3 / ryu 0.5 / ind 0.2  → ryu wins
+//
+// TWO-PARTY efficiency gap (the correct, normalized value): win line = half the
+// TWO-party vote (800/2=400), denominator = Σ two-party votes (2400).
+//   D1 ken wins: ken_wasted 500−400=100, ryu_wasted 300
+//   D2 ryu wins: ryu_wasted 500−400=100, ken_wasted 300
+//   D3 ryu wins: ryu_wasted 100,        ken_wasted 300
+//   ken_wasted 700, ryu_wasted 500 → |700−500|/2400 = 0.0833
+// The OLD (all-vote) formula would give |600−300|/3000 = 0.10 — so a `lte 0.09`
+// test PASSES only under two-party normalization (0.0833 ≤ 0.09; the old 0.10 fails it).
+
+const EG3_PRECINCTS = [
+	makePrecinct3(0, 1000, 0.5, 0.3, 0.2, [null, null, null, null, null, null]),
+	makePrecinct3(1, 1000, 0.3, 0.5, 0.2, [null, null, null, null, null, null]),
+	makePrecinct3(2, 1000, 0.3, 0.5, 0.2, [null, null, null, null, null, null]),
+];
+const EG3_ASSIGNMENTS = new Map([
+	[0, 1],
+	[1, 2],
+	[2, 3],
+]);
+
+test("efficiency_gap (3-party): two-party gap ≈0.083 ≤ 0.09 → pass (old all-vote 0.10 would fail)", () => {
+	const result = runEval(
+		[makeEfficiencyGapCriterion("lte", 0.09)],
+		EG3_PRECINCTS,
+		EG3_ASSIGNMENTS,
+		3,
+		RULES_LENIENT,
+		[],
+		PARTIES3,
+	);
+	assertTrue(result.criterionResults[0]!.passed, "two-party gap 0.083 ≤ 0.09 → pass");
+});
+
+test("efficiency_gap (3-party): two-party gap ≈0.083 > 0.08 → fail (pins the value >0.08)", () => {
+	const result = runEval(
+		[makeEfficiencyGapCriterion("lte", 0.08)],
+		EG3_PRECINCTS,
+		EG3_ASSIGNMENTS,
+		3,
+		RULES_LENIENT,
+		[],
+		PARTIES3,
+	);
+	assertFalse(result.criterionResults[0]!.passed, "two-party gap 0.083 > 0.08 → fail");
+});
+
+// TWO-PARTY mean−median for ken: per-district two-party share ken/(ken+ryu):
+//   D1 0.5/0.8=0.625,  D2 0.3/0.8=0.375,  D3 0.3/0.8=0.375
+//   mean 0.4583, median 0.375 → diff +0.0833
+// The OLD (raw all-vote share) formula would give shares [0.5,0.3,0.3] →
+// mean 0.3667 − median 0.30 = 0.0667 — so a `lte 0.075` test FAILS only under
+// two-party normalization (0.0833 > 0.075; the old 0.0667 would pass it).
+
+test("mean_median (3-party): two-party diff ≈0.083 > 0.075 → fail (old raw 0.067 would pass)", () => {
+	const result = runEval(
+		[makeMeanMedianCriterion("ken", "lte", 0.075)],
+		EG3_PRECINCTS,
+		EG3_ASSIGNMENTS,
+		3,
+		RULES_LENIENT,
+		[],
+		PARTIES3,
+	);
+	assertFalse(result.criterionResults[0]!.passed, "two-party diff 0.083 > 0.075 → fail");
+});
+
+test("mean_median (3-party): two-party diff ≈0.083 ≤ 0.09 → pass (pins the value ≤0.09)", () => {
+	const result = runEval(
+		[makeMeanMedianCriterion("ken", "lte", 0.09)],
+		EG3_PRECINCTS,
+		EG3_ASSIGNMENTS,
+		3,
+		RULES_LENIENT,
+		[],
+		PARTIES3,
+	);
+	assertTrue(result.criterionResults[0]!.passed, "two-party diff 0.083 ≤ 0.09 → pass");
+});
+
+// ─── Behavior-preservation guard: tight-boundary 2-party values (GAME-112) ────
+//
+// The pre-existing 2-party threshold tests sit far from their boundaries, so they
+// only catch gross regressions. These pin the exact two-party values so a formula
+// change (e.g. reverting the two-party normalization) is caught. Two-party EG for
+// EG_PRECINCTS is 0.0333; two-party mean-median for MM_GERRYMANDER (ken) is 0.1667.
+
+test("efficiency_gap (2-party regression): value ≈0.0333 — ≤0.034 passes, ≤0.033 fails", () => {
+	const pass = runEval(
+		[makeEfficiencyGapCriterion("lte", 0.034)],
+		EG_PRECINCTS,
+		EG_ASSIGNMENTS,
+		3,
+		RULES_LENIENT,
+	);
+	assertTrue(pass.criterionResults[0]!.passed, "0.0333 ≤ 0.034 → pass");
+	const fail = runEval(
+		[makeEfficiencyGapCriterion("lte", 0.033)],
+		EG_PRECINCTS,
+		EG_ASSIGNMENTS,
+		3,
+		RULES_LENIENT,
+	);
+	assertFalse(fail.criterionResults[0]!.passed, "0.0333 > 0.033 → fail (pins the value)");
+});
+
+test("mean_median (2-party regression): gerrymander diff ≈0.1667 — ≤0.17 passes, ≤0.16 fails", () => {
+	const pass = runEval(
+		[makeMeanMedianCriterion("ken", "lte", 0.17)],
+		MM_GERRYMANDER_PRECINCTS,
+		MM_ASSIGNMENTS,
+		3,
+		RULES_LENIENT,
+	);
+	assertTrue(pass.criterionResults[0]!.passed, "0.1667 ≤ 0.17 → pass");
+	const fail = runEval(
+		[makeMeanMedianCriterion("ken", "lte", 0.16)],
+		MM_GERRYMANDER_PRECINCTS,
+		MM_ASSIGNMENTS,
+		3,
+		RULES_LENIENT,
+	);
+	assertFalse(fail.criterionResults[0]!.passed, "0.1667 > 0.16 → fail (pins the value)");
+});
+
+// ─── mean_median minor-party guard (GAME-112) ─────────────────────────────────
+//
+// Two-party normalization is only meaningful for a major party; targeting a MINOR
+// party must fall back to the raw share (else pShare/(party1+party2) exceeds 1 and
+// is meaningless). Fixture: ind raw shares [0.6, 0.2, 0.2] → guarded diff 0.133.
+// WITHOUT the guard it would be ind/(ken+ryu) = [1.5, 0.25, 0.25] → diff 0.417.
+
+const MINOR_TARGET_PRECINCTS = [
+	makePrecinct3(0, 1000, 0.3, 0.1, 0.6, [null, null, null, null, null, null]),
+	makePrecinct3(1, 1000, 0.4, 0.4, 0.2, [null, null, null, null, null, null]),
+	makePrecinct3(2, 1000, 0.4, 0.4, 0.2, [null, null, null, null, null, null]),
+];
+
+test("mean_median (minor target): falls back to raw share — diff ≈0.133 ≤ 0.20 (ungarded 0.417 would fail)", () => {
+	const result = runEval(
+		[makeMeanMedianCriterion("ind", "lte", 0.2)],
+		MINOR_TARGET_PRECINCTS,
+		EG3_ASSIGNMENTS,
+		3,
+		RULES_LENIENT,
+		[],
+		PARTIES3,
+	);
+	assertTrue(
+		result.criterionResults[0]!.passed,
+		"raw-share diff 0.133 ≤ 0.20 → pass (the unguarded two-party 0.417 would fail)",
+	);
 });
 
 summarize();

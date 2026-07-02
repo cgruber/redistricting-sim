@@ -30,6 +30,16 @@ Sourced from the 2026-06-30 metrics audit (`thoughts/shared/research/2026-06-30-
 > interpolate the raw scenario party-id (e.g. `ken-disadvantaged`) rather than a display name.
 > Lateral to the old raw `R`/`D` key — not a regression — but when metrics go multiparty these
 > should use the scenario's authored party *name*/abbreviation. Coordinate with GAME-113.
+>
+> **PR 1 of 2 done (#322) — the metrics half:** efficiency-gap + mean-median are now
+> two-party-normalized (win line = half the two-party vote; denominator = Σ two-party votes; mean-
+> median on `c.party/(party1+party2)` shares), byte-identical at third-party-share 0. 3-party
+> `evaluate_test` fixtures pin the normalized values (EG 0.083 not the old 0.10; mean-median 0.083
+> not the old 0.067). **Remaining for PR 2 (collaborative):** the 3-party `tutorial-005` demo
+> scenario (generated via GAME-116's N-party stage, housed in GAME-115's debug campaign, eyeballed
+> on serve-local) + a 3-party *adapter* test (nonzero third-party share; a district a third party
+> wins). Also fold in the `buildContinueUrl` gating-symmetry note from the #321 critique once the
+> debug scenario is actually playable.
 
 - `adapter.ts:113-129`: reads only `firstPartyId = parties[0].id` (→ R) and
   `secondPartyId = parties[1].id` (→ D), sums each demographic group's

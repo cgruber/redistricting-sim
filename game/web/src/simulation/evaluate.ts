@@ -254,34 +254,44 @@ export function evaluateCriteria(
 			}
 
 			case "efficiency_gap": {
-				// Wasted-vote efficiency gap between the two major parties (the
-				// scenario's first two parties, party1/party2). GAME-043 keeps this
-				// two-party to preserve behavior; the proper two-party normalization
-				// for N>2 is GAME-112.
+				// Two-party-normalized wasted-vote efficiency gap between the two major
+				// parties (the scenario's first two parties, party1/party2). GAME-112:
+				// the win line, the wasted-vote counts, AND the denominator are all
+				// restricted to the two-party vote (party1 + party2), so a nonzero third
+				// party cannot corrupt the gap. When third-party share is 0 this reduces
+				// to the plain two-party EG up to floating-point (party1+party2 == 1), so
+				// the shipped two-party scenarios are preserved to display/threshold
+				// precision; a tight-boundary 2-party regression test (evaluate_test)
+				// guards against a gross formula change.
 				// Positive = party1 has more wasted votes; negative = party2 does.
 				// Criterion uses abs(gap) so direction doesn't matter.
 				const party1 = parties[0]!;
 				const party2 = parties[1]!;
 				let p1Wasted = 0;
 				let p2Wasted = 0;
-				let allVotes = 0;
+				let twoPartyVotes = 0;
 				for (const dr of simResult.districtResults) {
 					const p1Votes = (dr.voteTotals[party1] ?? 0) * dr.totalVotes;
 					const p2Votes = (dr.voteTotals[party2] ?? 0) * dr.totalVotes;
-					allVotes += dr.totalVotes;
+					// Half the TWO-PARTY vote is the win line, not half of all votes —
+					// third-party ballots are excluded from the two-party contest.
+					const twoPartyTotal = p1Votes + p2Votes;
+					const winLine = twoPartyTotal * 0.5;
+					twoPartyVotes += twoPartyTotal;
 					if (dr.winner === party1) {
-						p1Wasted += Math.max(0, p1Votes - dr.totalVotes * 0.5);
+						p1Wasted += Math.max(0, p1Votes - winLine);
 						p2Wasted += p2Votes;
 					} else if (dr.winner === party2) {
-						p2Wasted += Math.max(0, p2Votes - dr.totalVotes * 0.5);
+						p2Wasted += Math.max(0, p2Votes - winLine);
 						p1Wasted += p1Votes;
 					} else {
-						// Third-party winner: both major parties wasted all votes
+						// Third-party winner: both major parties lost the seat → all their
+						// two-party votes are wasted.
 						p1Wasted += p1Votes;
 						p2Wasted += p2Votes;
 					}
 				}
-				const rawGap = allVotes > 0 ? (p1Wasted - p2Wasted) / allVotes : 0;
+				const rawGap = twoPartyVotes > 0 ? (p1Wasted - p2Wasted) / twoPartyVotes : 0;
 				const absGap = Math.abs(rawGap);
 				passed = applyOp(absGap, c.operator, c.threshold);
 				const direction = rawGap >= 0 ? `${party1}-disadvantaged` : `${party2}-disadvantaged`;
@@ -290,13 +300,27 @@ export function evaluateCriteria(
 			}
 
 			case "mean_median": {
-				// Mean − median of party vote share across districts.
+				// Mean − median of c.party's TWO-PARTY vote share across districts
+				// (party's votes / (party1 + party2 votes)). GAME-112: normalizing to the
+				// two-party vote keeps this correct when a third party is present; with
+				// third-party share 0 it reduces to the raw share up to floating-point, so
+				// two-party scenarios are preserved to display/threshold precision (a
+				// tight-boundary 2-party regression test guards a gross change).
 				// Large positive value = party wins fewer seats than votes warrant (packed wins).
 				// Large negative value = party wins more seats than votes warrant (cracked opponents).
 				// Criterion applies applyOp to the raw (signed) difference.
-				const shares = simResult.districtResults.map(
-					(dr) => (dr.voteTotals as unknown as Record<string, number>)[c.party] ?? 0,
-				);
+				const party1 = parties[0]!;
+				const party2 = parties[1]!;
+				// Two-party normalization is only meaningful when the target is one of the
+				// two major parties; for any other target (a minor party) the denominator
+				// would exclude c.party and blow past 1, so fall back to the raw share.
+				const targetIsMajor = c.party === party1 || c.party === party2;
+				const shares = simResult.districtResults.map((dr) => {
+					const pShare = (dr.voteTotals as unknown as Record<string, number>)[c.party] ?? 0;
+					if (!targetIsMajor) return pShare;
+					const twoParty = (dr.voteTotals[party1] ?? 0) + (dr.voteTotals[party2] ?? 0);
+					return twoParty > 0 ? pShare / twoParty : 0;
+				});
 				if (shares.length === 0) {
 					passed = false;
 					detail = "no districts to evaluate";
