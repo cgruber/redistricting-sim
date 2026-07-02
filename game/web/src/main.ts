@@ -42,6 +42,7 @@ import {
 	getCampaign,
 	loadLastPlayedScenario,
 	saveLastPlayedScenario,
+	visibleCampaigns,
 } from "./model/campaigns.js";
 import { initAssets, assetUrl } from "./assets.js";
 import { PARTY_PALETTE, partyColor } from "./model/party.js";
@@ -73,6 +74,9 @@ type ManifestEntry = (typeof SCENARIO_MANIFEST)[number];
 // the fallback all-scenarios list). Add an entry here when a new scenario ships campaign-only.
 const CAMPAIGN_ONLY_SCENARIOS: { id: string; title: string }[] = [
 	{ id: "tutorial-001", title: "Welcome to Redistricting: Millbrook County" },
+	// Debug-only 3-party demo — reachable via the gated "debug" campaign, never the
+	// all-scenarios fallback. The scenario itself lands in GAME-112.
+	{ id: "tutorial-005", title: "Three-Party Demo (debug)" },
 ];
 
 const MANIFEST_BY_ID = new Map<string, { id: string; title: string }>([
@@ -398,7 +402,8 @@ const IS_DEBUG =
 		const cardsEl = document.getElementById("campaign-cards");
 		if (cardsEl) {
 			cardsEl.innerHTML = "";
-			for (const campaign of CAMPAIGN_REGISTRY) {
+			// GAME-115: debug-only campaigns appear only when debug mode is active.
+			for (const campaign of visibleCampaigns(IS_DEBUG)) {
 				const completed = campaign.scenarioIds.filter((id) => isCompleted(progress, id)).length;
 				const total = campaign.scenarioIds.length;
 				const card = document.createElement("div");
