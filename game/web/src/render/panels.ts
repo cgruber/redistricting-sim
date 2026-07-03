@@ -19,26 +19,56 @@ export function renderResults(
 	}
 
 	const parties = state.parties;
-	// The two lean parties used for the vote bar / detail line — the scenario's
-	// first two parties (party1, party2). For a 2-party scenario this is all of
-	// them; preserves the pre-GAME-043 party2-then-party1 card layout.
+	// The two lean parties used for the 2-party vote bar / detail line — the
+	// scenario's first two parties (party1, party2). Multiparty scenarios (GAME-112)
+	// take the all-parties branch below instead.
 	const party1 = parties[0]!;
 	const party2 = parties[1] ?? party1;
+	const isMultiparty = parties.length > 2;
+	// Party labels derive from scenario.parties[].name — escape before interpolating
+	// into innerHTML markup (GAME-103). Colors are the scenario's authored hex, else
+	// the palette fallback (GAME-043).
 	const labelOf = (p: PartyId): string => escapeHtml(partyNames?.[p] ?? partyLabel(parties, p));
+	const colorOf = (p: PartyId): string => partyColors?.[p] ?? partyColor(parties, p);
 
 	const { districtResults } = state.simulationResult;
 	const html = districtResults
 		.map((r) => {
 			const color = districtColor(r.districtId);
-			const winnerColor = partyColors?.[r.winner] ?? partyColor(parties, r.winner);
-			// Party labels derive from scenario.parties[].name — escape before
-			// interpolating into innerHTML markup (GAME-103).
+			const winnerColor = colorOf(r.winner);
 			const winnerLabel = labelOf(r.winner);
+			const marginPct = (r.margin * 100).toFixed(1);
+
+			if (isMultiparty) {
+				// Every party, ranked by share: a proportional multi-segment bar in each
+				// party's color + a full breakdown, so a third bloc (e.g. an independent)
+				// is visible in each district even when it doesn't win.
+				const ranked = parties
+					.map((p) => ({ p, pct: (r.voteTotals[p] ?? 0) * 100 }))
+					.sort((a, b) => b.pct - a.pct);
+				const segments = ranked
+					.map(
+						({ p, pct }) =>
+							`<span style="width:${pct.toFixed(1)}%;background:${colorOf(p)}"></span>`,
+					)
+					.join("");
+				const details = ranked.map(({ p, pct }) => `${labelOf(p)} ${pct.toFixed(1)}%`).join(" · ");
+				return `
+      <div class="result-district" style="border-left-color:${color}">
+        <div class="dist-name">District ${r.districtId}</div>
+        <div class="winner-badge" style="background:${winnerColor};color:#fff">${winnerLabel} +${marginPct}%</div>
+        <div class="vote-bar-multi">${segments}</div>
+        <div class="vote-details">
+          ${details} · ${r.precinctCount} precincts · pop ${r.population.toLocaleString()}
+        </div>
+      </div>`;
+			}
+
+			// 2-party card (unchanged from pre-GAME-112).
 			const p2Label = labelOf(party2);
 			const p1Label = labelOf(party1);
 			const p2Pct = ((r.voteTotals[party2] ?? 0) * 100).toFixed(1);
 			const p1Pct = ((r.voteTotals[party1] ?? 0) * 100).toFixed(1);
-			const marginPct = (r.margin * 100).toFixed(1);
 			return `
       <div class="result-district" style="border-left-color:${color}">
         <div class="dist-name">District ${r.districtId}</div>

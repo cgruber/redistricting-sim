@@ -489,6 +489,22 @@ body {
 	margin-bottom: 4px;
 }
 
+/* Multiparty vote bar (GAME-112): one proportional segment per party, each in the
+   party's color, so a third bloc is visible. Used for 3+ party scenarios; 2-party
+   scenarios keep the two-stop .vote-bar gradient above. */
+.result-district .vote-bar-multi {
+	display: flex;
+	height: 8px;
+	border-radius: 4px;
+	overflow: hidden;
+	margin-bottom: 4px;
+}
+
+.result-district .vote-bar-multi span {
+	display: block;
+	height: 100%;
+}
+
 .result-district .vote-details {
 	font-size: 0.78rem;
 	color: #a0a0b0;
