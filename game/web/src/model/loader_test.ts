@@ -15,6 +15,7 @@
  */
 
 import { loadScenario } from "./loader.js";
+import { candidateForDistrict } from "./party.js";
 import {
 	test,
 	assertEqual,
@@ -1252,6 +1253,61 @@ test("terrain: rejects river_edges when geometry is custom", () => {
 			),
 		/custom geometry is not supported/,
 	);
+});
+
+// ─── Named per-district candidates (GAME-117) ─────────────────────────────────
+
+test("parties: candidates array parses when present; absent → undefined", () => {
+	const s = loadScenario(
+		minimalScenario({
+			parties: [
+				{ id: "blue", name: "Blue Party", abbreviation: "B", candidates: ["Alice", "Bob"] },
+				{ id: "red", name: "Red Party", abbreviation: "R" },
+			],
+		}),
+	);
+	assertEqual(s.parties[0]!.candidates?.[0], "Alice");
+	assertEqual(s.parties[0]!.candidates?.[1], "Bob");
+	assertEqual(s.parties[1]!.candidates, undefined, "no candidates → undefined");
+});
+
+test("parties: non-array candidates is rejected", () => {
+	assertThrows(
+		() =>
+			loadScenario(
+				minimalScenario({
+					parties: [
+						{ id: "blue", name: "Blue Party", abbreviation: "B", candidates: "Alice" },
+						{ id: "red", name: "Red Party", abbreviation: "R" },
+					],
+				}),
+			),
+		/candidates must be an array/,
+	);
+});
+
+test("parties: a non-string candidate element is rejected", () => {
+	assertThrows(
+		() =>
+			loadScenario(
+				minimalScenario({
+					parties: [
+						{ id: "blue", name: "Blue Party", abbreviation: "B", candidates: ["Alice", 42] },
+						{ id: "red", name: "Red Party", abbreviation: "R" },
+					],
+				}),
+			),
+		/candidates\[1\]/,
+	);
+});
+
+test("candidateForDistrict: 1-based indexing with fallback to undefined", () => {
+	// district ids are 1-based → district 1 is candidates[0].
+	assertEqual(candidateForDistrict(["Alice", "Bob"], 1), "Alice");
+	assertEqual(candidateForDistrict(["Alice", "Bob"], 2), "Bob");
+	assertEqual(candidateForDistrict(["Alice", "Bob"], 3), undefined, "beyond roster → undefined");
+	assertEqual(candidateForDistrict(undefined, 1), undefined, "no roster → undefined");
+	assertEqual(candidateForDistrict([], 1), undefined, "empty roster → undefined");
 });
 
 summarize();

@@ -452,6 +452,7 @@ ts_project(
     deps = [
         ":loader_lib",
         ":model_lib",
+        ":party_lib",
         "//game/web/src/testing:test_runner_lib",
     ],
     testonly = True,
