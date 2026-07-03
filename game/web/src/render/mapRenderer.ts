@@ -26,7 +26,7 @@ import { HEX_DIRECTIONS, HEX_SIZE, hexCorners, mapBounds } from "../model/hex-ge
 import type { PartyId } from "../model/scenario.js";
 import type { Precinct, TerrainTileRuntime } from "../model/runtime.js";
 import { districtColor } from "../model/runtime.js";
-import { partyLabel, winnerOf } from "../model/party.js";
+import { partyColor, partyLabel, winnerOf } from "../model/party.js";
 import type { GameStore } from "../store/gameStore.js";
 
 // ─── Public interface ─────────────────────────────────────────────────────────
@@ -306,6 +306,12 @@ export class SvgMapRenderer implements MapRenderer {
 	// District hex lightness = HEX_LIGHTNESS_BASE − normPop × HEX_LIGHTNESS_RANGE
 	private static readonly HEX_LIGHTNESS_BASE = 0.55;
 	private static readonly HEX_LIGHTNESS_RANGE = 0.3;
+
+	// Multiparty (3+) lean shading (GAME-112): a precinct is painted its plurality
+	// party's color, its lightness pulled toward LEAN_PALE_L as the plurality margin
+	// over the runner-up shrinks toward 0 — a ≥LEAN_FULL_MARGIN lead reads full-saturation.
+	private static readonly LEAN_FULL_MARGIN = 0.4;
+	private static readonly LEAN_PALE_L = 0.82;
 
 	// Dash patterns (on,off in map units before zoom correction)
 	// Short dashes + wide gaps so an underlying white district border shows through.
@@ -1266,6 +1272,30 @@ export class SvgMapRenderer implements MapRenderer {
 						this.partyNames[topParty] ?? partyLabel(this.parties, topParty),
 					);
 					const leanLabel = `${partyName} (${((d.voteShare[topParty] ?? 0) * 100).toFixed(1)}%)`;
+					// Per-precinct vote breakdown (GAME-112): for 3+ party scenarios the single
+					// "Lean" leader hides the split, so show a proportional bar in each party's
+					// color + every party's share. 2-party scenarios keep the leader-only line.
+					let breakdownHtml = "";
+					if (this.parties.length > 2) {
+						const ranked = this.parties
+							.map((p) => ({ p, pct: (d.voteShare[p] ?? 0) * 100 }))
+							.sort((a, b) => b.pct - a.pct);
+						const bar = ranked
+							.map(
+								({ p, pct }) =>
+									`<span style="width:${pct.toFixed(1)}%;background:${partyColor(this.parties, p)}"></span>`,
+							)
+							.join("");
+						const legend = ranked
+							.map(
+								({ p, pct }) =>
+									`${escapeHtml(this.partyNames[p] ?? partyLabel(this.parties, p))} ${pct.toFixed(0)}%`,
+							)
+							.join(" · ");
+						breakdownHtml =
+							`<div class="vote-bar-multi" style="margin:5px 0 3px">${bar}</div>` +
+							`<span style="color:#8898b0">${legend}</span>`;
+					}
 					let groupsHtml = "";
 					if (d.groupShares && d.groupShares.length > 1) {
 						const lines = d.groupShares.map(
@@ -1283,6 +1313,7 @@ export class SvgMapRenderer implements MapRenderer {
 						`${distLabel}<br>` +
 						`Pop: ${d.population.toLocaleString()}<br>` +
 						`Lean: ${leanLabel}` +
+						breakdownHtml +
 						groupsHtml +
 						`</div>`;
 				}
@@ -1396,6 +1427,21 @@ export class SvgMapRenderer implements MapRenderer {
 
 	private hexFill(d: Precinct, assignments: GameStore["assignments"]): string {
 		if (this.viewMode === "lean") {
+			// 3+ parties (GAME-112): a two-party diverging gradient can't represent a
+			// third bloc, so paint each precinct its PLURALITY party's colour, shaded by
+			// how dominant that plurality is (margin over the runner-up) — a stronghold
+			// reads saturated, a contested precinct pale, restoring the strength cue the
+			// PuOr scale gives. Two-party scenarios keep the PuOr gradient below unchanged
+			// (T1–T4 + the educational scenarios).
+			if (this.parties.length > 2) {
+				const top = winnerOf(d.voteShare, this.parties);
+				const sorted = this.parties.map((p) => d.voteShare[p] ?? 0).sort((a, b) => b - a);
+				const margin = (sorted[0] ?? 0) - (sorted[1] ?? 0);
+				const strength = Math.min(1, margin / SvgMapRenderer.LEAN_FULL_MARGIN);
+				const c = d3.hsl(partyColor(this.parties, top));
+				c.l = c.l + (1 - strength) * (SvgMapRenderer.LEAN_PALE_L - c.l);
+				return c.formatHex();
+			}
 			// Lean between the two lean parties (scenario party1/party2). For a 2-party
 			// scenario this is party2 − party1, identical to the pre-GAME-043 D − R.
 			const party1 = this.parties[0];
