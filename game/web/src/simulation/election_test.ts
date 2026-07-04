@@ -59,7 +59,11 @@ function makePrecinct(index: number, r: number, d: number, pop: number): Precinc
 	};
 }
 
-function makeState(precincts: Precinct[], assignments: AssignmentMap): GameState {
+function makeState(
+	precincts: Precinct[],
+	assignments: AssignmentMap,
+	independentHomes?: ReadonlyMap<PartyId, number>,
+): GameState {
 	return {
 		precincts,
 		parties: PARTIES,
@@ -67,6 +71,7 @@ function makeState(precincts: Precinct[], assignments: AssignmentMap): GameState
 		assignments,
 		activeDistrict: 1,
 		simulationResult: null,
+		...(independentHomes ? { independentHomes } : {}),
 	};
 }
 
@@ -260,6 +265,150 @@ test("runElection: district results sorted by districtId", () => {
 	assertEqual(result.districtResults.length, 2, "two results");
 	assertEqual(result.districtResults[0]!.districtId, 1, "first result is district 1");
 	assertEqual(result.districtResults[1]!.districtId, 3, "second result is district 3");
+});
+
+// ─── GAME-118: home-base independent (on-ballot only in its home district) ──────
+
+// Like makePrecinct, but lets a test set an arbitrary party's share (e.g. the
+// independent I). Reuses share() so the omitted parties stay 0 and sum to 1.
+function makePrecinctShares(
+	index: number,
+	shares: Partial<Record<PartyId, number>>,
+	pop: number,
+): Precinct {
+	return {
+		index,
+		scenarioId: `p${index}` as unknown as import("../model/scenario.js").PrecinctId,
+		coord: { q: 0, r: index },
+		center: { x: index * 10, y: 0 },
+		neighbors: [null, null, null, null, null, null],
+		population: pop,
+		voteShare: share(shares),
+		previousResult: { winner: D, margin: 0 },
+	};
+}
+
+test("simulateDistrict (GAME-118): independent on the ballot at home wins on plurality", () => {
+	// Precinct 0 is I's home, assigned to district 1. I leads: R .35 / D .20 / I .45.
+	const p = makePrecinctShares(0, { [R]: 0.35, [D]: 0.2, [I]: 0.45 }, 100);
+	const assignments: AssignmentMap = new Map([[0, 1]]);
+	const homes = new Map([[I, 0]]); // I's home is precinct index 0
+	const result = simulateDistrict(1, [p], assignments, PARTIES, homes);
+
+	assertEqual(result.winner, I, "I is on the ballot at home and wins the plurality");
+	assertClose(result.margin, 0.1, 0.001, "margin = I 0.45 − R 0.35");
+	assertClose(result.voteTotals[I] ?? 0, 0.45, 0.001, "I's lean is still present in voteTotals");
+});
+
+test("simulateDistrict (GAME-118): independent excluded away from home — a major takes the seat", () => {
+	// Precinct 1 is in district 2; I's home is precinct 0 (district 1), so I is OFF
+	// the ballot here. I leads the lean (.45) but among eligible parties D (.35) beats
+	// R (.20) for the seat — I's votes are disregarded, not redistributed.
+	const p = makePrecinctShares(1, { [R]: 0.2, [D]: 0.35, [I]: 0.45 }, 100);
+	const assignments: AssignmentMap = new Map([
+		[0, 1],
+		[1, 2],
+	]);
+	const homes = new Map([[I, 0]]);
+	const result = simulateDistrict(2, [p], assignments, PARTIES, homes);
+
+	assertEqual(result.winner, D, "I excluded away from home → the top major (D) wins");
+	assertClose(
+		result.voteTotals[I] ?? 0,
+		0.45,
+		0.001,
+		"I's lean is unchanged in voteTotals (map view intact)",
+	);
+	assertClose(result.margin, 0.15, 0.001, "margin among eligible = D 0.35 − R 0.20");
+});
+
+test("simulateDistrict (GAME-118): an independent whose home is unassigned is on no ballot", () => {
+	// I's home precinct (0) is unassigned (null). District 1 contains precinct 1 where
+	// I leads the lean — but with no home district, I is excluded and a major wins.
+	const home = makePrecinctShares(0, { [R]: 0.5, [D]: 0.5 }, 100); // home, unassigned
+	const p1 = makePrecinctShares(1, { [R]: 0.2, [D]: 0.35, [I]: 0.45 }, 100);
+	const assignments: AssignmentMap = new Map([
+		[0, null],
+		[1, 1],
+	]);
+	const homes = new Map([[I, 0]]);
+	const result = simulateDistrict(1, [home, p1], assignments, PARTIES, homes);
+
+	assertEqual(result.winner, D, "unassigned home ⇒ I off every ballot ⇒ major (D) wins");
+});
+
+test("runElection (GAME-118): independent wins only its home district — exactly one seat", () => {
+	// I's home = precinct 0 (district 1). Precincts 0 and 1 have identical I-leading
+	// leans; I wins d1 (home) but is excluded from d2 → R takes d2. d3 is a plain R hold.
+	const p0 = makePrecinctShares(0, { [R]: 0.3, [D]: 0.25, [I]: 0.45 }, 100); // d1 (home)
+	const p1 = makePrecinctShares(1, { [R]: 0.3, [D]: 0.25, [I]: 0.45 }, 100); // d2 (away)
+	const p2 = makePrecinctShares(2, { [R]: 0.7, [D]: 0.3 }, 100); // d3
+	const assignments: AssignmentMap = new Map([
+		[0, 1],
+		[1, 2],
+		[2, 3],
+	]);
+	const state = makeState([p0, p1, p2], assignments, new Map([[I, 0]]));
+	const result = runElection(state);
+
+	const d1 = result.districtResults.find((r) => r.districtId === 1)!;
+	const d2 = result.districtResults.find((r) => r.districtId === 2)!;
+	assertEqual(d1.winner, I, "d1 (home): I wins");
+	assertEqual(d2.winner, R, "d2 (away): I excluded → R wins");
+	assertEqual(result.seatsByParty[I] ?? 0, 1, "I holds exactly one seat");
+	assertEqual(result.seatsByParty[R] ?? 0, 2, "R holds d2 and d3");
+});
+
+test("runElection (GAME-118): multiple independents each win their own home district", () => {
+	// Two independents: I (home precinct 0 → d1) and G (home precinct 1 → d2). Each
+	// leads its home precinct and is excluded from the other's district.
+	const p0 = makePrecinctShares(0, { [R]: 0.3, [D]: 0.25, [I]: 0.45 }, 100); // d1: I home
+	const p1 = makePrecinctShares(1, { [R]: 0.3, [D]: 0.25, [G]: 0.45 }, 100); // d2: G home
+	const assignments: AssignmentMap = new Map([
+		[0, 1],
+		[1, 2],
+	]);
+	const homes = new Map([
+		[I, 0],
+		[G, 1],
+	]);
+	const result = runElection(makeState([p0, p1], assignments, homes));
+
+	assertEqual(
+		result.districtResults.find((r) => r.districtId === 1)!.winner,
+		I,
+		"d1: I wins its home",
+	);
+	assertEqual(
+		result.districtResults.find((r) => r.districtId === 2)!.winner,
+		G,
+		"d2: G wins its home",
+	);
+});
+
+test("runElection (GAME-118): with no independentHomes, every party contests every district", () => {
+	// Same board as the home-win test but WITHOUT independentHomes: I is excluded
+	// nowhere, so it wins d2 too — proving the exclusion is strictly opt-in (the
+	// pre-GAME-118 all-eligible behaviour is preserved when the map is absent).
+	const p0 = makePrecinctShares(0, { [R]: 0.3, [D]: 0.25, [I]: 0.45 }, 100);
+	const p1 = makePrecinctShares(1, { [R]: 0.3, [D]: 0.25, [I]: 0.45 }, 100);
+	const assignments: AssignmentMap = new Map([
+		[0, 1],
+		[1, 2],
+	]);
+	const result = runElection(makeState([p0, p1], assignments)); // no independentHomes
+
+	assertEqual(
+		result.districtResults.find((r) => r.districtId === 1)!.winner,
+		I,
+		"d1: I wins (no exclusion)",
+	);
+	assertEqual(
+		result.districtResults.find((r) => r.districtId === 2)!.winner,
+		I,
+		"d2: I also wins (no exclusion)",
+	);
+	assertEqual(result.seatsByParty[I], 2, "I wins both — the pre-GAME-118 all-eligible behaviour");
 });
 
 summarize();

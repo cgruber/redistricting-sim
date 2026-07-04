@@ -38,6 +38,7 @@ export function scenarioToRuntime(scenario: Scenario): {
 	districtCount: number;
 	terrainTiles: TerrainTileRuntime[];
 	riverEdges: [number, number][];
+	independentHomes?: ReadonlyMap<PartyId, number>;
 } {
 	// Ordered scenario party list — the source of the tie-break order and every
 	// winner/margin/seat computation downstream.
@@ -54,6 +55,22 @@ export function scenarioToRuntime(scenario: Scenario): {
 	scenario.precincts.forEach((pc, i) => {
 		const pos = pc.position;
 		if ("q" in pos) posMap.set(`${pos.q},${pos.r}`, i);
+	});
+
+	// GAME-118: resolve each home-base independent's home coord → precinct index.
+	// Only the (stable) precinct index is stored; the election derives the home
+	// *district* fresh from assignments each run. Loader guarantees independent⟺home
+	// and hex_axial geometry, so posMap has the coord unless it's simply wrong.
+	const independentHomes = new Map<PartyId, number>();
+	scenario.parties.forEach((p: Party) => {
+		if (!p.independent || p.home === undefined) return;
+		const homeIndex = posMap.get(`${p.home.q},${p.home.r}`);
+		if (homeIndex === undefined) {
+			throw new Error(
+				`Independent party "${p.id}" home (${p.home.q},${p.home.r}) matches no precinct`,
+			);
+		}
+		independentHomes.set(p.id, homeIndex);
 	});
 
 	// Build terrain tile position map for annotation derivation
@@ -203,5 +220,7 @@ export function scenarioToRuntime(scenario: Scenario): {
 		districtCount: scenario.districts.length,
 		terrainTiles,
 		riverEdges: riverPairs,
+		// Omit when empty so no-independent scenarios produce an identical GameState.
+		...(independentHomes.size > 0 ? { independentHomes } : {}),
 	};
 }

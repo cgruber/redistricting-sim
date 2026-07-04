@@ -24,6 +24,7 @@ import {
 	assertNull,
 	assertNotNull,
 	assertClose,
+	assertThrows,
 	summarize,
 } from "../testing/test_runner.js";
 
@@ -431,6 +432,67 @@ test("scenarioToRuntime: passableNeighbors nulls river edges when river_blocks_c
 	// neighbors retains 1 for geometry; passableNeighbors nulls it
 	assertEqual(precincts[0]!.neighbors[0], 1, "neighbors[0] still 1 (geometry preserved)");
 	assertNull(precincts[0]!.passableNeighbors![0], "passableNeighbors[0] nulled (river blocks)");
+});
+
+// ─── GAME-118: home-base independent home resolution ──────────────────────────
+
+test("scenarioToRuntime (GAME-118): independent home coord resolves to its precinct index", () => {
+	const g = makeGroup({
+		[pid("r_party")]: 0.3,
+		[pid("d_party")]: 0.25,
+		[pid("ind_party")]: 0.45,
+	});
+	const indParty: Party = {
+		id: pid("ind_party"),
+		name: "Ind",
+		abbreviation: "I",
+		independent: true,
+		home: { q: 1, r: 0 }, // the SECOND precinct → index 1 (proves it isn't hardcoded to 0)
+	};
+	const scenario = makeScenario({
+		parties: [PARTY_R, PARTY_D, indParty],
+		districts: [{ id: did("d1") }, { id: did("d2") }],
+		precincts: [makePrecinct(0, 0, [g], "d1"), makePrecinct(1, 0, [g], "d1")],
+	});
+	const { independentHomes } = scenarioToRuntime(scenario);
+	assertNotNull(independentHomes, "independentHomes present");
+	assertEqual(independentHomes!.get(pid("ind_party")), 1, "home (1,0) → precinct index 1");
+});
+
+test("scenarioToRuntime (GAME-118): an independent home matching no precinct throws", () => {
+	const g = makeGroup({
+		[pid("r_party")]: 0.3,
+		[pid("d_party")]: 0.25,
+		[pid("ind_party")]: 0.45,
+	});
+	const indParty: Party = {
+		id: pid("ind_party"),
+		name: "Ind",
+		abbreviation: "I",
+		independent: true,
+		home: { q: 9, r: 9 }, // no precinct at (9,9)
+	};
+	const scenario = makeScenario({
+		parties: [PARTY_R, PARTY_D, indParty],
+		districts: [{ id: did("d1") }, { id: did("d2") }],
+		precincts: [makePrecinct(0, 0, [g], "d1"), makePrecinct(1, 0, [g], "d1")],
+	});
+	assertThrows(() => scenarioToRuntime(scenario), /matches no precinct/);
+});
+
+test("scenarioToRuntime (GAME-118): no independents → independentHomes omitted", () => {
+	const g = makeGroup({ [pid("r_party")]: 0.6, [pid("d_party")]: 0.4 });
+	const scenario = makeScenario({
+		parties: [PARTY_R, PARTY_D],
+		districts: [{ id: did("d1") }],
+		precincts: [makePrecinct(0, 0, [g], "d1")],
+	});
+	const { independentHomes } = scenarioToRuntime(scenario);
+	assertEqual(
+		independentHomes,
+		undefined,
+		"no independents ⇒ field omitted (byte-identical GameState)",
+	);
 });
 
 summarize();
