@@ -1,7 +1,7 @@
 import { escapeHtml } from "../model/escape-html.js";
 import type { PartyId, ScenarioRules } from "../model/scenario.js";
 import { districtColor } from "../model/runtime.js";
-import { partyColor, partyLabel } from "../model/party.js";
+import { candidateForDistrict, partyColor, partyLabel } from "../model/party.js";
 import type { DistrictDemoStat } from "../simulation/evaluate.js";
 import { computeValidityStats } from "../simulation/validity.js";
 import type { GameStore } from "../store/gameStore.js";
@@ -11,6 +11,7 @@ export function renderResults(
 	state: GameStore,
 	partyNames?: Partial<Record<PartyId, string>>,
 	partyColors?: Partial<Record<PartyId, string>>,
+	partyCandidates?: Partial<Record<PartyId, string[]>>,
 ): void {
 	if (state.simulationResult === null || state.simulationResult.districtResults.length === 0) {
 		container.innerHTML =
@@ -30,13 +31,20 @@ export function renderResults(
 	// the palette fallback (GAME-043).
 	const labelOf = (p: PartyId): string => escapeHtml(partyNames?.[p] ?? partyLabel(parties, p));
 	const colorOf = (p: PartyId): string => partyColors?.[p] ?? partyColor(parties, p);
+	// The seat is held by a named CANDIDATE when authored (GAME-117): candidates are
+	// indexed by districtId − 1 (ids are 1-based). Falls back to the party name, so a
+	// scenario without candidates reads exactly as before.
+	const winnerOfDistrict = (p: PartyId, districtId: number): string => {
+		const name = candidateForDistrict(partyCandidates?.[p], districtId);
+		return name !== undefined ? escapeHtml(name) : labelOf(p);
+	};
 
 	const { districtResults } = state.simulationResult;
 	const html = districtResults
 		.map((r) => {
 			const color = districtColor(r.districtId);
 			const winnerColor = colorOf(r.winner);
-			const winnerLabel = labelOf(r.winner);
+			const winnerLabel = winnerOfDistrict(r.winner, r.districtId);
 			const marginPct = (r.margin * 100).toFixed(1);
 
 			if (isMultiparty) {

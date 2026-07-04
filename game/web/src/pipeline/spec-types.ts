@@ -235,6 +235,8 @@ export interface PartySpec {
 	/** Optional authored display color (hex, e.g. "#c96d00"). Falls back to
 	 *  PARTY_PALETTE by party order when absent. */
 	color?: string;
+	/** Optional per-district candidate names (GAME-117), `candidates[districtId-1]`. */
+	candidates?: string[];
 }
 
 export interface DistrictSpec {

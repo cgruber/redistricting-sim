@@ -108,6 +108,15 @@ function parseParty(raw: unknown, idx: number): Party {
 	if (r["color"] !== undefined) {
 		p.color = requireString(r["color"], `parties[${idx}].color`);
 	}
+	if (r["candidates"] !== undefined) {
+		const rawCandidates = r["candidates"];
+		if (!Array.isArray(rawCandidates)) {
+			throw new Error(`parties[${idx}].candidates must be an array of strings`);
+		}
+		p.candidates = rawCandidates.map((c, i) =>
+			requireString(c, `parties[${idx}].candidates[${i}]`),
+		);
+	}
 	return p;
 }
 

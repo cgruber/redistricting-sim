@@ -729,6 +729,10 @@ const IS_DEBUG =
 	for (const p of scenario.parties) partyNames[p.id] = p.name;
 	const partyColors: Partial<Record<PartyId, string>> = {};
 	for (const p of scenario.parties) if (p.color !== undefined) partyColors[p.id] = p.color;
+	// Per-district candidate names (GAME-117): candidates[districtId-1] for each party.
+	const partyCandidates: Partial<Record<PartyId, string[]>> = {};
+	for (const p of scenario.parties)
+		if (p.candidates !== undefined) partyCandidates[p.id] = p.candidates;
 	renderer.setParties(parties, partyNames);
 
 	// Re-apply the vote-bar CSS vars from the scenario's first two parties'
@@ -774,7 +778,7 @@ const IS_DEBUG =
 
 		renderer.render();
 
-		if (showResults) renderResults(resultsEl!, state, partyNames, partyColors);
+		if (showResults) renderResults(resultsEl!, state, partyNames, partyColors, partyCandidates);
 		if (showValidity) renderValidityPanel(validityEl!, state, scenario.rules, hasBalanceCriterion);
 
 		let demoStat: DistrictDemoStat | undefined;

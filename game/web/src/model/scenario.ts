@@ -74,6 +74,11 @@ export interface Party {
 	/** Optional authored display color (hex, e.g. "#c96d00"). When absent, the
 	 *  renderer falls back to PARTY_PALETTE by party order (see model/party.ts). */
 	color?: string;
+	/** Optional per-district candidate names (GAME-117): `candidates[districtId - 1]`
+	 *  is this party's candidate in district N (ids are 1-based). When absent for a
+	 *  district, results fall back to the party name — so a person, not an abstract
+	 *  party, holds each seat (and one person can't hold two). */
+	candidates?: string[];
 }
 
 export interface District {

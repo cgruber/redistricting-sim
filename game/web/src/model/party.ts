@@ -98,3 +98,16 @@ export function partyLabel(parties: PartyId[], partyId: PartyId): string {
 	const idx = parties.indexOf(partyId);
 	return PARTY_LABELS[idx] ?? String(partyId);
 }
+
+/**
+ * The candidate a party runs in a given district (GAME-117): candidate names are
+ * indexed by `districtId - 1` because district ids are 1-based. Returns `undefined`
+ * when the party authored no candidate for that district (or none at all), so the
+ * caller falls back to the party name — a scenario without candidates is unchanged.
+ */
+export function candidateForDistrict(
+	candidates: string[] | undefined,
+	districtId: number,
+): string | undefined {
+	return candidates?.[districtId - 1];
+}
