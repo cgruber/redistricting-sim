@@ -248,6 +248,7 @@ export class SvgMapRenderer implements MapRenderer {
 	private hoverHighlightGroup: GSel;
 	private riverGroup: GSel;
 	private previewBorderGroup: GSel;
+	private homePinGroup: GSel;
 	private getState: () => GameStore;
 	private paintStroke: GameStore["paintStroke"];
 	private setActiveDistrict: GameStore["setActiveDistrict"];
@@ -350,6 +351,8 @@ export class SvgMapRenderer implements MapRenderer {
 	private static readonly FOOTHILL_INTRUSION_DEPTH = 6;
 	private static readonly LAKE_INTRUSION_DEPTH = 5;
 	private static readonly COORD_LABEL_FONT_SIZE = 9; // apparent px at any zoom level
+	// Home-pin (GAME-118) label size — apparent px at any zoom level, like coord labels.
+	private static readonly HOME_PIN_FONT_SIZE = 12;
 
 	// Keyboard precinct navigation state
 	private focusedPrecinctId: number | null = null;
@@ -395,6 +398,9 @@ export class SvgMapRenderer implements MapRenderer {
 			.append("g")
 			.attr("class", "coord-labels")
 			.attr("display", "none");
+		// Home-base independents (GAME-118): a "⌂ name" label pinned at each independent's home
+		// precinct. Appended last so it sits above every map layer and is never occluded.
+		this.homePinGroup = this.zoomGroup.append("g").attr("class", "home-pins");
 
 		const pops = getState().precincts.map((p) => p.population);
 		this.popMin = Math.min(...pops);
@@ -1068,6 +1074,11 @@ export class SvgMapRenderer implements MapRenderer {
 						.attr("font-size", fs)
 						.attr("stroke-width", 3 / this.currentK);
 				}
+				// Home pins keep a constant apparent size like coord labels.
+				this.homePinGroup
+					.selectAll("text.home-pin")
+					.attr("font-size", SvgMapRenderer.HOME_PIN_FONT_SIZE / this.currentK)
+					.attr("stroke-width", 3.5 / this.currentK);
 			});
 
 		// Prevent context menu on right-click so drag-pan isn't interrupted.
@@ -1133,6 +1144,45 @@ export class SvgMapRenderer implements MapRenderer {
 			.attr("opacity", (d) => this.hexOpacity(d, assignments));
 
 		this.renderBoundaries(computeBoundarySegments(precincts, assignments, this.terrainFacingEdges));
+		this.renderHomePins();
+	}
+
+	// Home pins (GAME-118): a "⌂ name" label at each home-base independent's home precinct.
+	// An independent contests only its home district, so the pin tells the player where that
+	// candidate is actually on the ballot. Font/stroke divide by currentK so the label keeps a
+	// constant apparent size at any zoom (mirrors coord labels); the zoom handler re-applies both.
+	private renderHomePins() {
+		const { precincts, independentHomes } = this.getState();
+		const homes = independentHomes ? [...independentHomes] : [];
+		const pins = homes.flatMap(([party, precinctIndex]) => {
+			const precinct = precincts[precinctIndex];
+			if (precinct === undefined) return [];
+			const name = this.partyNames[party] ?? partyLabel(this.parties, party);
+			return [{ party, x: precinct.center.x, y: precinct.center.y, label: `⌂ ${name}` }];
+		});
+		this.homePinGroup
+			.selectAll<SVGTextElement, (typeof pins)[number]>("text.home-pin")
+			.data(pins, (d) => String(d.party))
+			.join(
+				(enter) =>
+					enter
+						.append("text")
+						.attr("class", "home-pin")
+						.attr("text-anchor", "middle")
+						.attr("dominant-baseline", "central")
+						.attr("font-weight", 700)
+						.attr("fill", "white")
+						.attr("stroke", "rgba(0,0,0,0.8)")
+						.attr("paint-order", "stroke")
+						.attr("pointer-events", "none"),
+				(update) => update,
+				(exit) => exit.remove(),
+			)
+			.attr("x", (d) => d.x)
+			.attr("y", (d) => d.y)
+			.attr("font-size", SvgMapRenderer.HOME_PIN_FONT_SIZE / this.currentK)
+			.attr("stroke-width", 3.5 / this.currentK)
+			.text((d) => d.label);
 	}
 
 	private renderBoundaries(segments: Segment[]) {
@@ -1258,7 +1308,7 @@ export class SvgMapRenderer implements MapRenderer {
 					.attr("opacity", SvgMapRenderer.BOUNDARY_OPACITY)
 					.style("pointer-events", "none");
 
-				const { assignments } = this.getState();
+				const { assignments, independentHomes } = this.getState();
 				const dId = assignments.get(d.index);
 				const infoPanel = document.getElementById("precinct-info");
 				if (infoPanel !== null) {
@@ -1287,10 +1337,19 @@ export class SvgMapRenderer implements MapRenderer {
 							)
 							.join("");
 						const legend = ranked
-							.map(
-								({ p, pct }) =>
-									`${escapeHtml(this.partyNames[p] ?? partyLabel(this.parties, p))} ${pct.toFixed(0)}%`,
-							)
+							.map(({ p, pct }) => {
+								const entry = `${escapeHtml(this.partyNames[p] ?? partyLabel(this.parties, p))} ${pct.toFixed(0)}%`;
+								// Home-base independent (GAME-118): on the ballot only where its home
+								// precinct's district matches this precinct's. Its lean shows everywhere
+								// (map-wide), so mark on-ballot precincts with ⌂ and flag the rest — the
+								// precinct info panel is where lean ≠ ballot is easiest to misread.
+								const homeIdx = independentHomes?.get(p);
+								if (homeIdx === undefined) return entry;
+								const homeDist = assignments.get(homeIdx);
+								return homeDist !== undefined && homeDist === dId
+									? `⌂ ${entry}`
+									: `${entry} <span class="off-ballot">(not on ballot)</span>`;
+							})
 							.join(" · ");
 						breakdownHtml =
 							`<div class="vote-bar-multi" style="margin:5px 0 3px">${bar}</div>` +
