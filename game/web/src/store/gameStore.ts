@@ -49,8 +49,15 @@ function cloneAssignments(m: AssignmentMap): AssignmentMap {
  * Called once in main.ts after fetching + validating the scenario JSON.
  */
 export function createGameStore(scenario: Scenario) {
-	const { precincts, parties, assignments, districtCount, terrainTiles, riverEdges } =
-		scenarioToRuntime(scenario);
+	const {
+		precincts,
+		parties,
+		assignments,
+		districtCount,
+		terrainTiles,
+		riverEdges,
+		independentHomes,
+	} = scenarioToRuntime(scenario);
 
 	// Snapshot of initial assignments — used by resetToInitial() to restore scenario start state
 	const initialAssignments: AssignmentMap = new Map(assignments);
@@ -64,6 +71,9 @@ export function createGameStore(scenario: Scenario) {
 		simulationResult: null,
 		terrainTiles,
 		riverEdges,
+		// Conditional spread: with exactOptionalPropertyTypes, an absent independent set
+		// must OMIT the field, not set it to undefined.
+		...(independentHomes ? { independentHomes } : {}),
 	};
 	initialState.simulationResult = runElection(initialState);
 

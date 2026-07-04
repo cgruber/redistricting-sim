@@ -158,6 +158,12 @@ export interface GameState {
 	terrainTiles?: TerrainTileRuntime[];
 	/** River edge pairs as precinct index pairs (absent = no rivers in scenario) */
 	riverEdges?: [number, number][];
+	/** GAME-118: home-base independents → their home precinct index (the array index,
+	 *  equal to precinct.index and the assignment-map key). The election resolves each
+	 *  independent's home *district* fresh from `assignments` every run, so this stays
+	 *  correct as the player repaints. Absent or empty ⇒ no independents ⇒ every party
+	 *  contests every district (the pre-GAME-118 behaviour, byte-for-byte). */
+	independentHomes?: ReadonlyMap<PartyId, number>;
 }
 
 /** A brush stroke undo/redo diff: maps precinct index → {from, to} */

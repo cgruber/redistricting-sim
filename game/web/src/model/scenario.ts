@@ -79,6 +79,19 @@ export interface Party {
 	 *  district, results fall back to the party name — so a person, not an abstract
 	 *  party, holds each seat (and one person can't hold two). */
 	candidates?: string[];
+	/** GAME-118: marks a home-base independent — a candidate who appears on the
+	 *  ballot only in the district containing `home`. An independent still carries a
+	 *  map-wide lean (its precinct vote-share, shown everywhere), but can win at most
+	 *  the single seat for its home district; in every other district it is excluded
+	 *  from the contest and its votes are disregarded for that seat. Must be declared
+	 *  in slot ≥2 — slots 0 and 1 anchor the two-party fairness normalisation
+	 *  (see evaluate.ts). Requires hex_axial geometry (home is an axial coordinate). */
+	independent?: boolean;
+	/** GAME-118: an independent's home precinct as an axial coordinate. Required when
+	 *  (and only when) `independent` is true. Resolved to a precinct index at adapter
+	 *  time; the election puts the independent on the ballot only in the district that
+	 *  precinct is currently assigned to (unassigned home ⇒ no ballot anywhere). */
+	home?: HexAxialPosition;
 }
 
 export interface District {

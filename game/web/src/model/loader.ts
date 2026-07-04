@@ -117,6 +117,32 @@ function parseParty(raw: unknown, idx: number): Party {
 			requireString(c, `parties[${idx}].candidates[${i}]`),
 		);
 	}
+	// GAME-118: home-base independent — `independent` and `home` are coupled, and an
+	// independent may not occupy a major-party slot.
+	if (r["independent"] !== undefined) {
+		p.independent = requireBoolean(r["independent"], `parties[${idx}].independent`);
+	}
+	if (r["home"] !== undefined) {
+		const h = requireObject(r["home"], `parties[${idx}].home`);
+		p.home = {
+			q: requireNumber(h["q"], `parties[${idx}].home.q`),
+			r: requireNumber(h["r"], `parties[${idx}].home.r`),
+		};
+	}
+	if (p.independent && p.home === undefined) {
+		throw new Error(`parties[${idx}]: independent party "${p.id}" must declare a home`);
+	}
+	if (p.home !== undefined && !p.independent) {
+		throw new Error(
+			`parties[${idx}]: party "${p.id}" declares a home but is not marked independent`,
+		);
+	}
+	if (p.independent && idx < 2) {
+		throw new Error(
+			`parties[${idx}]: independent party "${p.id}" must be declared in slot 2 or later ` +
+				`(slots 0 and 1 are reserved for the two major parties the fairness metrics normalise against)`,
+		);
+	}
 	return p;
 }
 
@@ -1208,6 +1234,21 @@ function validateScenarioInvariants(fields: {
 	// ── Invariant 7: group_schema completeness constraint ────────────────────────
 	if (group_schema !== undefined) {
 		checkGroupSchemaCompleteness(group_schema, rawPrecincts);
+	}
+
+	// ── GAME-118: independent home requires axial geometry ───────────────────────
+	// An independent's home is an axial coordinate; on non-hex geometry there is no
+	// coordinate for the adapter to resolve, so reject it here with a clear message
+	// rather than letting the adapter's coord lookup fail cryptically.
+	if (geometry.type !== "hex_axial") {
+		for (const p of parties) {
+			if (p.independent) {
+				throw new Error(
+					`Independent party "${p.id}" requires hex_axial geometry (home is an axial ` +
+						`coordinate); scenario geometry is "${geometry.type}"`,
+				);
+			}
+		}
 	}
 
 	// ── Terrain + river validation ───────────────────────────────────────────────

@@ -895,4 +895,123 @@ test("agreement: non-adjacent river edge rejected by both paths (river)", () => 
 	assertThrows(() => validateScenarioComplete(partial), /not geometrically adjacent/);
 });
 
+// ─── GAME-118: home-base independent party validation ─────────────────────────
+//
+// parseParty enforces: independent ⟺ home (coupled), and an independent may not sit
+// in a major slot (0/1, reserved for the two parties the fairness metrics normalise
+// against). These fire at parse time.
+
+test("parseScenario (GAME-118): an independent party without a home is rejected", () => {
+	assertThrows(
+		() =>
+			parseScenario(
+				fullScenario({
+					parties: [
+						{ id: "blue", name: "Blue", abbreviation: "B" },
+						{ id: "red", name: "Red", abbreviation: "R" },
+						{ id: "ind", name: "Ind", abbreviation: "I", independent: true },
+					],
+				}),
+			),
+		/home/,
+	);
+});
+
+test("parseScenario (GAME-118): a home without independent:true is rejected", () => {
+	assertThrows(
+		() =>
+			parseScenario(
+				fullScenario({
+					parties: [
+						{ id: "blue", name: "Blue", abbreviation: "B" },
+						{ id: "red", name: "Red", abbreviation: "R" },
+						{ id: "ind", name: "Ind", abbreviation: "I", home: { q: 0, r: 0 } },
+					],
+				}),
+			),
+		/independent/,
+	);
+});
+
+test("parseScenario (GAME-118): an independent in a major slot (0/1) is rejected", () => {
+	assertThrows(
+		() =>
+			parseScenario(
+				fullScenario({
+					parties: [
+						{ id: "ind", name: "Ind", abbreviation: "I", independent: true, home: { q: 0, r: 0 } },
+						{ id: "red", name: "Red", abbreviation: "R" },
+						{ id: "blue", name: "Blue", abbreviation: "B" },
+					],
+				}),
+			),
+		/slot/,
+	);
+});
+
+test("parseScenario (GAME-118): a well-formed slot-2 independent with a home parses", () => {
+	assertDoesNotThrow(() =>
+		parseScenario(
+			fullScenario({
+				parties: [
+					{ id: "blue", name: "Blue", abbreviation: "B" },
+					{ id: "red", name: "Red", abbreviation: "R" },
+					{ id: "ind", name: "Ind", abbreviation: "I", independent: true, home: { q: 0, r: 0 } },
+				],
+				// A 3-party precinct so vote-share completeness (Invariant 6) is satisfied.
+				precincts: [
+					{
+						id: "p1",
+						editable: true,
+						position: { q: 0, r: 0 },
+						total_population: 1000,
+						demographic_groups: [
+							{
+								id: "g1",
+								population_share: 1.0,
+								vote_shares: { blue: 0.4, red: 0.3, ind: 0.3 },
+								turnout_rate: 0.7,
+							},
+						],
+					},
+				],
+			}),
+		),
+	);
+});
+
+test("loadScenario (GAME-118): a complete scenario with a slot-2 independent validates end-to-end", () => {
+	// parseScenario acceptance (above) runs only structural checks; this drives the
+	// FULL complete-path validation (loadScenario = parse + validateScenarioComplete),
+	// which is where the independent-requires-hex_axial guard lives — so a guard or
+	// coupling regression that wrongly rejected a valid hex independent is caught here.
+	assertDoesNotThrow(() =>
+		loadScenario(
+			fullScenario({
+				parties: [
+					{ id: "blue", name: "Blue", abbreviation: "B" },
+					{ id: "red", name: "Red", abbreviation: "R" },
+					{ id: "ind", name: "Ind", abbreviation: "I", independent: true, home: { q: 0, r: 0 } },
+				],
+				precincts: [
+					{
+						id: "p1",
+						editable: true,
+						position: { q: 0, r: 0 },
+						total_population: 1000,
+						demographic_groups: [
+							{
+								id: "g1",
+								population_share: 1.0,
+								vote_shares: { blue: 0.4, red: 0.3, ind: 0.3 },
+								turnout_rate: 0.7,
+							},
+						],
+					},
+				],
+			}),
+		),
+	);
+});
+
 summarize();

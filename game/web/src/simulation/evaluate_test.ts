@@ -170,6 +170,7 @@ function runEval(
 	rules = RULES,
 	scenarioPrecincts: ScenarioPrecinct[] = [],
 	partiesList: PartyId[] = PARTIES,
+	independentHomes?: ReadonlyMap<PartyId, number>,
 ) {
 	const validityStats = computeValidityStats(precincts, assignments, districtCount, rules);
 	const state: GameState = {
@@ -179,6 +180,7 @@ function runEval(
 		districtCount,
 		activeDistrict: 1,
 		simulationResult: null,
+		...(independentHomes ? { independentHomes } : {}),
 	};
 	state.simulationResult = runElection(state);
 	return evaluateCriteria(
@@ -982,6 +984,113 @@ test("mean_median (minor target): falls back to raw share — diff ≈0.133 ≤ 
 	assertTrue(
 		result.criterionResults[0]!.passed,
 		"raw-share diff 0.133 ≤ 0.20 → pass (the unguarded two-party 0.417 would fail)",
+	);
+});
+
+// ─── efficiency_gap: third-party (independent) winner branch (GAME-118) ────────
+//
+// The EG else branch (evaluate.ts) fires only when a district's winner is NEITHER
+// major party — i.e. when a home-base independent wins its home district. The EG3
+// fixture above keeps ind=0.2 everywhere so that branch never fired; this pins it.
+// In D1 the independent wins outright, so BOTH majors' two-party votes are wasted
+// there (the else branch):
+//   D1 ken .35 ryu .20 ind .45 → IND wins → ken_wasted 350, ryu_wasted 200 (else)
+//   D2 ken .55 ryu .30 ind .15 → KEN wins → ken_wasted 125, ryu_wasted 300
+//   D3 ken .30 ryu .55 ind .15 → RYU wins → ken_wasted 300, ryu_wasted 125
+//   totals ken 775 / ryu 625, two-party 2250 → |775−625|/2250 = 0.0667
+// Without the else branch (an IND-win district wasting nothing) both majors would tie
+// at 425 and the gap would be 0 — so the ≤0.06 fail assertion below is what locks it.
+const EG3_IND_WIN_PRECINCTS = [
+	makePrecinct3(0, 1000, 0.35, 0.2, 0.45, [null, null, null, null, null, null]),
+	makePrecinct3(1, 1000, 0.55, 0.3, 0.15, [null, null, null, null, null, null]),
+	makePrecinct3(2, 1000, 0.3, 0.55, 0.15, [null, null, null, null, null, null]),
+];
+
+test("efficiency_gap (GAME-118): independent wins a district → both majors' votes wasted → gap ≈0.0667", () => {
+	const pass = runEval(
+		[makeEfficiencyGapCriterion("lte", 0.07)],
+		EG3_IND_WIN_PRECINCTS,
+		EG3_ASSIGNMENTS,
+		3,
+		RULES_LENIENT,
+		[],
+		PARTIES3,
+	);
+	assertTrue(pass.criterionResults[0]!.passed, "0.0667 ≤ 0.07 → pass");
+
+	const fail = runEval(
+		[makeEfficiencyGapCriterion("lte", 0.06)],
+		EG3_IND_WIN_PRECINCTS,
+		EG3_ASSIGNMENTS,
+		3,
+		RULES_LENIENT,
+		[],
+		PARTIES3,
+	);
+	assertFalse(
+		fail.criterionResults[0]!.passed,
+		"0.0667 > 0.06 → fail (pins the else branch; without it the gap would be 0 and wrongly pass)",
+	);
+});
+
+// ─── efficiency_gap: away independent is excluded, seat AND metric agree (GAME-118) ──
+//
+// This is the GAME-112 × GAME-118 seam: evaluate.ts keys the EG off dr.winner, and
+// dr.winner is the ELIGIBILITY-aware winner from simulateDistrict. If instead the
+// metric recomputed a raw-plurality winner, the seat count and the fairness metric
+// would disagree for an away independent — exactly the confusing artifact to avoid.
+//
+// Same votes as EG3_IND_WIN_PRECINCTS above, but now IND has a HOME in D3 (precinct
+// index 2). D1 is therefore AWAY for IND: IND has the local plurality (0.45) yet is
+// excluded, so KEN (0.35 > ryu 0.20) takes the seat. The full A/B against the sibling
+// test — identical precincts, home mechanic flips D1 IND→KEN — moves the gap:
+//   D1 KEN wins: ken_wasted 350−275=75,  ryu_wasted 200   (was IND-win/else: ken 350)
+//   D2 KEN wins: ken_wasted 550−425=125, ryu_wasted 300
+//   D3 RYU wins: ryu_wasted 550−425=125, ken_wasted 300   (IND eligible at home but loses)
+//   ken 500 / ryu 625, two-party 2250 → |500−625|/2250 = 0.0556
+// So the seat is a major's (KEN=2, RYU=1, IND=0) AND the gap is 0.0556 — NOT the
+// 0.0667 the else branch would yield if IND wrongly "won" its away district. A tight
+// ≤0.056 pass / ≤0.055 fail pins the value away from the sibling test's 0.0667.
+const IND_HOME_D3: ReadonlyMap<PartyId, number> = new Map([[IND, 2]]);
+
+test("efficiency_gap (GAME-118 seam): away independent excluded → major takes seat AND gap agrees (0.0556, not 0.0667)", () => {
+	const pass = runEval(
+		[
+			makeEfficiencyGapCriterion("lte", 0.056),
+			makeSeatCountCriterion("ken", "eq", 2),
+			makeSeatCountCriterion("ind", "eq", 0),
+		],
+		EG3_IND_WIN_PRECINCTS,
+		EG3_ASSIGNMENTS,
+		3,
+		RULES_LENIENT,
+		[],
+		PARTIES3,
+		IND_HOME_D3,
+	);
+	assertTrue(pass.criterionResults[0]!.passed, "two-party gap 0.0556 ≤ 0.056 → pass");
+	assertTrue(
+		pass.criterionResults[1]!.passed,
+		"KEN wins 2 seats (D1 away-seat goes to the major, not the excluded independent)",
+	);
+	assertTrue(
+		pass.criterionResults[2]!.passed,
+		"IND wins 0 seats (excluded in D1/D2, loses at its D3 home)",
+	);
+
+	const fail = runEval(
+		[makeEfficiencyGapCriterion("lte", 0.055)],
+		EG3_IND_WIN_PRECINCTS,
+		EG3_ASSIGNMENTS,
+		3,
+		RULES_LENIENT,
+		[],
+		PARTIES3,
+		IND_HOME_D3,
+	);
+	assertFalse(
+		fail.criterionResults[0]!.passed,
+		"0.0556 > 0.055 → fail (pins the value; the sibling no-home fixture would be 0.0667 here)",
 	);
 });
 

@@ -247,4 +247,89 @@ test("undo: reverts assignments but leaves the live active district untouched (G
 	assertEqual(store.getState().activeDistrict, 1, "activeDistrict unchanged by undo (stays 1)");
 });
 
+// ─── GAME-118: home-base independent wiring (adapter → store → runElection) ─────
+//
+// The advisor's gate: a pure simulateDistrict test can't catch a dropped wire. This
+// exercises the real path — createGameStore runs the adapter (resolving the home
+// coord), builds GameState, and runs the election. If independentHomes fails to
+// thread through, the independent silently wins everywhere it leads and both asserts
+// below break.
+
+const PARTY_IND: Party = { id: pid("ind"), name: "Independent", abbreviation: "I" };
+
+function makeGroup3(rShare: number, dShare: number, indShare: number) {
+	return {
+		id: pcid("g1") as unknown as import("../model/scenario.js").GroupId,
+		population_share: 1.0,
+		vote_shares: {
+			[pid("r")]: rShare,
+			[pid("d")]: dShare,
+			[pid("ind")]: indShare,
+		} as unknown as Record<PartyId, number>,
+		turnout_rate: 1.0,
+	};
+}
+
+function makePrecinct3(
+	q: number,
+	r: number,
+	districtId: string,
+	group: ReturnType<typeof makeGroup3>,
+): ScenarioPrecinct {
+	return {
+		id: pcid(`p${q}_${r}`),
+		editable: true,
+		position: { q, r },
+		total_population: 100,
+		demographic_groups: [group],
+		initial_district_id: did(districtId),
+	};
+}
+
+// A 3-party scenario with a home-base independent (slot 2) whose home is precinct p0
+// at (0,0) in district 1. Both precincts lean independent (.45); the independent must
+// win d1 (home) and be excluded from d2 (a major takes it).
+function makeIndependentScenario(): Scenario {
+	return {
+		format_version: "1",
+		id: "test-ind-001" as unknown as Scenario["id"],
+		title: "Test Independent",
+		election_type: "congressional",
+		region: { id: "r1" as unknown as Scenario["region"]["id"], name: "Test Region" },
+		geometry: { type: "hex_axial" },
+		events: [],
+		rules: { population_tolerance: 0.05, contiguity: "allowed" },
+		success_criteria: [],
+		narrative: {
+			character: { name: "T", role: "Tester", motivation: "Testing" },
+			intro_slides: [],
+			objective: "Test",
+		},
+		parties: [PARTY_R, PARTY_D, { ...PARTY_IND, independent: true, home: { q: 0, r: 0 } }],
+		districts: [DISTRICT_1, DISTRICT_2],
+		precincts: [
+			makePrecinct3(0, 0, "d1", makeGroup3(0.3, 0.25, 0.45)), // I's home (d1)
+			makePrecinct3(1, 0, "d2", makeGroup3(0.3, 0.25, 0.45)), // away (d2)
+		],
+	};
+}
+
+test("createGameStore (GAME-118): independentHomes is carried from the scenario into GameState", () => {
+	const { store } = createGameStore(makeIndependentScenario());
+	const { independentHomes } = store.getState();
+	assertNotNull(independentHomes, "independentHomes present on GameState");
+	assertEqual(independentHomes!.get(pid("ind")), 0, "I's home resolves to precinct index 0");
+});
+
+test("createGameStore (GAME-118): independent wins its home district but is excluded elsewhere", () => {
+	const { store } = createGameStore(makeIndependentScenario());
+	const result = store.getState().simulationResult!;
+	const d1 = result.districtResults.find((r) => r.districtId === 1)!;
+	const d2 = result.districtResults.find((r) => r.districtId === 2)!;
+
+	assertEqual(d1.winner, pid("ind"), "d1 (home): independent wins");
+	assertEqual(d2.winner, pid("r"), "d2 (away): independent excluded → R wins");
+	assertEqual(result.seatsByParty[pid("ind")] ?? 0, 1, "independent holds exactly one seat");
+});
+
 summarize();
