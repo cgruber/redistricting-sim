@@ -519,6 +519,21 @@ body {
 	margin-bottom: 4px;
 }
 
+/* GAME-118: a home-base independent's lean still shows in non-home districts (result card and
+   precinct info panel), muted with "(not on ballot)" since it can't win the seat there. */
+.off-ballot {
+	color: #707088;
+	font-style: italic;
+}
+
+/* GAME-118: one-time legend under the result cards explaining the ⌂ pin / off-ballot marker. */
+.results-footnote {
+	margin-top: 8px;
+	font-size: 0.72rem;
+	line-height: 1.4;
+	color: #707088;
+}
+
 #precinct-info {
 	background: #0a1f3a;
 	border: 1px solid #1a3a5c;

@@ -40,6 +40,17 @@ export function renderResults(
 	};
 
 	const { districtResults } = state.simulationResult;
+	// Home-base independents (GAME-118): declared with a home precinct, they carry a map-wide
+	// lean but appear on the ballot only in the district holding that precinct. `homeDistrictOf`
+	// resolves the live home district (the home precinct's current assignment); an unassigned
+	// home is `undefined`, so the independent reads as off-ballot everywhere — correct, it is on
+	// no ballot at all. Absent `independentHomes` (every shipped scenario today) → all false.
+	const independentHomes = state.independentHomes;
+	const isIndependent = (p: PartyId): boolean => independentHomes?.has(p) ?? false;
+	const homeDistrictOf = (p: PartyId): number | undefined => {
+		const idx = independentHomes?.get(p);
+		return idx === undefined ? undefined : (state.assignments.get(idx) ?? undefined);
+	};
 	const html = districtResults
 		.map((r) => {
 			const color = districtColor(r.districtId);
@@ -60,7 +71,17 @@ export function renderResults(
 							`<span style="width:${pct.toFixed(1)}%;background:${colorOf(p)}"></span>`,
 					)
 					.join("");
-				const details = ranked.map(({ p, pct }) => `${labelOf(p)} ${pct.toFixed(1)}%`).join(" · ");
+				const details = ranked
+					.map(({ p, pct }) => {
+						const entry = `${labelOf(p)} ${pct.toFixed(1)}%`;
+						if (!isIndependent(p)) return entry;
+						// In its home district the independent is a real contender — mark it with the same
+						// ⌂ glyph as the map pin. Elsewhere its lean shows but it isn't on the ballot.
+						return homeDistrictOf(p) === r.districtId
+							? `⌂ ${entry}`
+							: `${entry} <span class="off-ballot">(not on ballot)</span>`;
+					})
+					.join(" · ");
 				return `
       <div class="result-district" style="border-left-color:${color}">
         <div class="dist-name">District ${r.districtId}</div>
@@ -89,7 +110,13 @@ export function renderResults(
 		})
 		.join("");
 
-	container.innerHTML = html;
+	// One-time legend for the ⌂ pin / off-ballot marker — shown only when the scenario has an
+	// independent, so scenarios without one render exactly as before (GAME-118).
+	const footnote =
+		(independentHomes?.size ?? 0) > 0
+			? `<div class="results-footnote">⌂ Independent candidates run only in their home district (pinned on the map). Elsewhere their support is shown for context, but they are not on the ballot.</div>`
+			: "";
+	container.innerHTML = html + footnote;
 }
 
 export function renderDistrictButtons(
