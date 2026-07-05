@@ -161,11 +161,41 @@ const TUTORIAL_004: TutorialStep[] = [
 	},
 ];
 
+/**
+ * tutorial-005 — "A Three-Way Race" (GAME-120). A light orientation over the multiparty map
+ * (debug campaign only): three PARTIES contesting every district, leans hung on real geography
+ * (GAME-119) and outcomes as named candidates (GAME-117). Everything is visible from the start
+ * (nothing hidden, no `reveal`), like T4. The one new beat is the balance twist — the dense city
+ * needs the SMALLER district — taught by having the player paint the compact centre first. Ends
+ * on **Done** (frozen final step), releasing the player to carve the wings and Submit on their own.
+ */
+const TUTORIAL_005: TutorialStep[] = [
+	{
+		text: "A three-cornered race. Three PARTIES run across the Bend — **Ken** out west, **Ryu** in the city, **Chun-Li** out east — each with a candidate in every district. Everything's here from the start: the **Lean** view, the **election result**, and the **Map Validity** panel.",
+		advance: { on: "next" },
+	},
+	{
+		text: "Click **Lean** to colour each precinct by the party its voters favour. Three bases show up — Ken orange in the west, Ryu purple in the centre, Chun-Li teal in the east. That's who you're drawing around.",
+		highlight: "#filter-lean",
+		advance: { on: "click-target" },
+	},
+	{
+		text: "One catch before you carve: Hawthorn city holds most of the people. Three equal-width columns and the middle bursts the balance limit — the **crowded centre needs the smaller district**. Pick **District 2** and paint the city core into a tight central district; let the rural wings run wide.",
+		highlight: ["#district-toolbar", "#map-svg"],
+		advance: { on: "paint-count", district: 2, n: 18 },
+	},
+	{
+		text: "That's the centre. Hit **Done** and the map is yours — carve the west and east wings, keep all three balanced and connected, and **Submit** when the **Map Validity** panel is green. Can you give each party a seat?",
+		advance: { on: "next" },
+	},
+];
+
 const SCRIPTS: Record<string, TutorialStep[]> = {
 	"tutorial-001": TUTORIAL_001,
 	"tutorial-002": TUTORIAL_002,
 	"tutorial-003": TUTORIAL_003,
 	"tutorial-004": TUTORIAL_004,
+	"tutorial-005": TUTORIAL_005,
 };
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────

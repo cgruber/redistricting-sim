@@ -51,9 +51,14 @@ export interface MapRenderer {
 	setCountyBordersVisible(visible: boolean): void;
 	/** Toggle hex coordinate labels (debug overlay). */
 	setCoordLabelsVisible(visible: boolean): void;
-	/** Provide the scenario's ordered party list + display names for the
-	 *  precinct-info panel and lean view (GAME-043). */
-	setParties(parties: PartyId[], names: Partial<Record<PartyId, string>>): void;
+	/** Provide the scenario's ordered party list, display names, and authored colors
+	 *  for the precinct-info panel and lean view (GAME-043). A party that omits a color
+	 *  falls back to PARTY_PALETTE by order via colorOf (GAME-120). */
+	setParties(
+		parties: PartyId[],
+		names: Partial<Record<PartyId, string>>,
+		colors: Partial<Record<PartyId, string>>,
+	): void;
 	/** Reset the zoom/pan to the initial fitted vantage point (used by Reset). */
 	resetView(): void;
 }
@@ -329,6 +334,9 @@ export class SvgMapRenderer implements MapRenderer {
 	private countyBordersVisible = false;
 	private parties: PartyId[] = [];
 	private partyNames: Partial<Record<PartyId, string>> = {};
+	// Scenario-authored party colors (GAME-043), keyed by PartyId; empty until setParties.
+	// A party absent here falls back to PARTY_PALETTE by order via colorOf (GAME-120).
+	private partyColors: Partial<Record<PartyId, string>> = {};
 	private coordLabelsVisible = false;
 	private coordLabelsRendered = false;
 	private coordLabelGroup!: GSel;
@@ -450,9 +458,14 @@ export class SvgMapRenderer implements MapRenderer {
 		this.renderCoordLabels();
 	}
 
-	setParties(parties: PartyId[], names: Partial<Record<PartyId, string>>) {
+	setParties(
+		parties: PartyId[],
+		names: Partial<Record<PartyId, string>>,
+		colors: Partial<Record<PartyId, string>>,
+	) {
 		this.parties = parties;
 		this.partyNames = names;
+		this.partyColors = colors;
 	}
 
 	private renderCoordLabels() {
@@ -1333,7 +1346,7 @@ export class SvgMapRenderer implements MapRenderer {
 						const bar = ranked
 							.map(
 								({ p, pct }) =>
-									`<span style="width:${pct.toFixed(1)}%;background:${partyColor(this.parties, p)}"></span>`,
+									`<span style="width:${pct.toFixed(1)}%;background:${this.colorOf(p)}"></span>`,
 							)
 							.join("");
 						const legend = ranked
@@ -1484,6 +1497,15 @@ export class SvgMapRenderer implements MapRenderer {
 
 	// ─── Fill / opacity helpers ───────────────────────────────────────────────
 
+	/** A party's display color: scenario-authored (GAME-043) when present, else the
+	 *  PARTY_PALETTE fallback by party order. Mirrors panels.ts:colorOf so the lean map
+	 *  and precinct-info bar agree with the results panel on one color per party — the
+	 *  first 3-party scenario (tutorial-005) otherwise renders its third bloc two
+	 *  different colors across surfaces (GAME-120). */
+	private colorOf(party: PartyId): string {
+		return this.partyColors[party] ?? partyColor(this.parties, party);
+	}
+
 	private hexFill(d: Precinct, assignments: GameStore["assignments"]): string {
 		if (this.viewMode === "lean") {
 			// 3+ parties (GAME-112): a two-party diverging gradient can't represent a
@@ -1497,7 +1519,7 @@ export class SvgMapRenderer implements MapRenderer {
 				const sorted = this.parties.map((p) => d.voteShare[p] ?? 0).sort((a, b) => b - a);
 				const margin = (sorted[0] ?? 0) - (sorted[1] ?? 0);
 				const strength = Math.min(1, margin / SvgMapRenderer.LEAN_FULL_MARGIN);
-				const c = d3.hsl(partyColor(this.parties, top));
+				const c = d3.hsl(this.colorOf(top));
 				c.l = c.l + (1 - strength) * (SvgMapRenderer.LEAN_PALE_L - c.l);
 				return c.formatHex();
 			}

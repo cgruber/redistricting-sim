@@ -733,7 +733,7 @@ const IS_DEBUG =
 	const partyCandidates: Partial<Record<PartyId, string[]>> = {};
 	for (const p of scenario.parties)
 		if (p.candidates !== undefined) partyCandidates[p.id] = p.candidates;
-	renderer.setParties(parties, partyNames);
+	renderer.setParties(parties, partyNames, partyColors);
 
 	// Re-apply the vote-bar CSS vars from the scenario's first two parties'
 	// resolved colors — scenario-authored (GAME-043) when present, else the

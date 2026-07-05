@@ -1,10 +1,12 @@
 /**
  * GAME-118 PR 2: home-base independent map surfaces (home pin + party-only note).
  *
- * tutorial-005 already ships a third-party candidate (Dhalsim) in party slot 2. Here we
+ * tutorial-005 ships a third party (the Chun-Li Party) in party slot 2 (index 2). Here we
  * intercept its JSON and flag that party as a home-base independent — `independent` + a
  * `home` precinct — so GAME-118's render paths light up without waiting on GAME-121's
- * authored independent tutorial. Asserts the "⌂ name" pin renders at the home precinct and
+ * authored independent tutorial. (This is a FIXTURE use of tutorial-005: it just needs a
+ * 3-party scenario to patch; the slot-2 party's name is whatever tutorial-005 declares.)
+ * Asserts the "⌂ name" pin renders at the home precinct and
  * that, once districts are drawn, a non-home district's result card marks the independent
  * "(not on ballot)" with the explanatory footnote. Full visual polish is a serve-local
  * eyeball. &debug reaches the gated debug campaign (as in tutorial-005-multiparty.spec).
@@ -18,7 +20,19 @@ test("home-base independent: ⌂ pin renders and a non-home district reads party
 	const errors: string[] = [];
 	page.on("pageerror", (e) => errors.push(String(e)));
 
-	// Patch tutorial-005 in flight: promote the slot-2 party (Dhalsim) to a home-base
+	// tutorial-005 now ships a guided coach overlay (GAME-120: the TUTORIAL_005 script). Its
+	// scrim intercepts pointer events, which would block the hover assertions below. Suppress it
+	// via the per-scenario "complete" flag (same mechanism as tutorial-005-multiparty.spec) — this
+	// test exercises GAME-118's independent render paths, not the coach.
+	await page.addInitScript(() => {
+		try {
+			localStorage.setItem("tutorial-tutorial-005-complete", "1");
+		} catch {
+			/* ignore */
+		}
+	});
+
+	// Patch tutorial-005 in flight: promote the slot-2 party (the Chun-Li Party) to a home-base
 	// independent homed at the first precinct. The route must be registered before navigation.
 	await page.route("**/scenarios/tutorial-005.json", async (route) => {
 		const response = await route.fetch();
@@ -46,7 +60,7 @@ test("home-base independent: ⌂ pin renders and a non-home district reads party
 	const pin = page.locator("text.home-pin");
 	await expect(pin).toHaveCount(1);
 	await expect(pin).toContainText("⌂");
-	await expect(pin).toContainText("Dhalsim");
+	await expect(pin).toContainText("Chun-Li Party");
 
 	// Draw districts so result cards appear: the home precinct (index 0) alone in D1, every
 	// other precinct in D2. D1 holds the independent's home; D2 is a party-only race.
