@@ -14,6 +14,8 @@
  *   - Turnout in [spec.turnout.min, spec.turnout.max]
  *   - Zone matching: first-match-wins, ANDed filter conditions
  *   - hex_dist_lte boundary (at boundary = match, just outside = no match)
+ *   - near/within proximity to an arbitrary anchor (GAME-119): boundary, ANDed
+ *     with q-conditions, and a half-specified (near without within) filter throws
  *   - No-match throws
  *   - Determinism: same spec → same output
  *   - Different seeds → different outputs
@@ -285,6 +287,71 @@ test("addDemographics: hex_dist_lte boundary — at distance matches, just outsi
 			assertEqual(Math.abs(kenShare - 0.1) < 1e-10, true);
 		}
 	}
+});
+
+test("addDemographics: near/within selects precincts around an arbitrary anchor (boundary)", () => {
+	// Anchor at (2,-1) — a NON-origin point, so this exercises proximity to an arbitrary
+	// feature, distinct from hex_dist_lte (distance from the origin). within: 1 → the anchor
+	// hex and its immediate neighbours match; distance 2+ falls through to the default zone.
+	const anchor = { q: 2, r: -1 };
+	const spec = baseDemoSpec({
+		zones: [
+			{ name: "near_anchor", filter: { near: anchor, within: 1 }, party_base: { ken: 0.9 } },
+			{ name: "rest", filter: { default: true }, party_base: { ken: 0.1 } },
+		],
+		jitter: 0,
+		turnout: { min: 0.6, max: 0.6 },
+	});
+	const result = addDemographics(makePartial(3), spec);
+	for (const p of result.precincts) {
+		const { q, r } = hexPos(p);
+		// distance from the anchor = hex distance of the component-wise difference
+		const dq = q - anchor.q;
+		const dr = r - anchor.r;
+		const dist = (Math.abs(dq) + Math.abs(dr) + Math.abs(-dq - dr)) / 2;
+		const kenShare = p.demographic_groups![0]!.vote_shares[KEN] ?? 0;
+		assertEqual(Math.abs(kenShare - (dist <= 1 ? 0.9 : 0.1)) < 1e-10, true);
+	}
+});
+
+test("addDemographics: near/within is ANDed with q conditions", () => {
+	// Zone matches within 2 of the anchor (0,2) AND q <= 0 — both must hold, else the
+	// precinct falls through to default. Guards that proximity composes with the q-filters.
+	const anchor = { q: 0, r: 2 };
+	const spec = baseDemoSpec({
+		zones: [
+			{ name: "sw", filter: { near: anchor, within: 2, q_lte: 0 }, party_base: { ken: 0.85 } },
+			{ name: "rest", filter: { default: true }, party_base: { ken: 0.15 } },
+		],
+		jitter: 0,
+		turnout: { min: 0.6, max: 0.6 },
+		seed: 3,
+	});
+	const result = addDemographics(makePartial(3), spec);
+	for (const p of result.precincts) {
+		const { q, r } = hexPos(p);
+		const dq = q - anchor.q;
+		const dr = r - anchor.r;
+		const dist = (Math.abs(dq) + Math.abs(dr) + Math.abs(-dq - dr)) / 2;
+		const inZone = dist <= 2 && q <= 0;
+		const kenShare = p.demographic_groups![0]!.vote_shares[KEN] ?? 0;
+		assertEqual(Math.abs(kenShare - (inZone ? 0.85 : 0.15)) < 1e-10, true);
+	}
+});
+
+test("addDemographics: near without within throws (malformed filter, fail-fast)", () => {
+	// The anchor and radius are a pair; a half-specified proximity filter is rejected
+	// rather than silently ignored (which would produce wrong leans).
+	const spec = baseDemoSpec({
+		zones: [{ name: "bad", filter: { near: { q: 0, r: 0 } }, party_base: { ken: 0.5 } }],
+	});
+	let threw = false;
+	try {
+		addDemographics(makePartial(1), spec);
+	} catch {
+		threw = true;
+	}
+	assertEqual(threw, true);
 });
 
 test("addDemographics: throws when no zone matches a precinct", () => {

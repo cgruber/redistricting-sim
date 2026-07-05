@@ -13,6 +13,16 @@ function matchesFilter(filter: ZoneFilter, q: number, r: number): boolean {
 	if (filter.q_lte !== undefined && q > filter.q_lte) return false;
 	if (filter.q_gte !== undefined && q < filter.q_gte) return false;
 	if (filter.hex_dist_lte !== undefined && hexDist(q, r) > filter.hex_dist_lte) return false;
+	// Proximity to an arbitrary anchor (GAME-119): within `within` hexes of `near`.
+	// Axial hex distance is translation-invariant, so the distance from the anchor is
+	// hexDist of the component-wise difference. `near` and `within` are a pair — one
+	// without the other is a malformed filter, so fail fast on authored specs.
+	if (filter.near !== undefined || filter.within !== undefined) {
+		if (filter.near === undefined || filter.within === undefined) {
+			throw new Error("Zone filter `near` and `within` must be specified together");
+		}
+		if (hexDist(q - filter.near.q, r - filter.near.r) > filter.within) return false;
+	}
 	return true;
 }
 

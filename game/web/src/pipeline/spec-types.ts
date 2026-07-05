@@ -159,6 +159,17 @@ export interface ZoneFilter {
 	q_lte?: number;
 	q_gte?: number;
 	hex_dist_lte?: number;
+	/**
+	 * Proximity to an arbitrary anchor (GAME-119): matches precincts whose axial-hex
+	 * distance from `near` is ≤ `within`. Lets partisan leans hang on real geography —
+	 * the urban core, the smaller city, riverside — instead of vertical q-bands measured
+	 * from the origin (which is all `q_lte`/`q_gte`/`hex_dist_lte` can express).
+	 * `near` and `within` are a pair (both required together, else the filter is
+	 * rejected); ANDed with the other conditions; first-match-wins across zones is
+	 * unchanged. Deterministic — pure geometry, no PRNG draw.
+	 */
+	near?: { q: number; r: number };
+	within?: number;
 	default?: true;
 }
 
