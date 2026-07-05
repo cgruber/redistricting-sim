@@ -1,20 +1,26 @@
-# Spec file for tutorial-005: "Hawthorn Bend: The Hollow's Champion"
+# Spec file for tutorial-005: "Hawthorn Bend: A Three-Way Race"
 # Source of truth for the map generation pipeline.
 # Generated output: game/scenarios/tutorial-005.json
 #
 # Regenerate:  bazel run //game/web/src/pipeline:generate_scenario -- \
 #                game/scenarios/tutorial-005.spec.yaml game/scenarios/tutorial-005.json
 #
-# DEBUG-ONLY DEMO (GAME-112 PR 2): the multiparty showcase. Reachable only via the gated
-# "debug" campaign (GAME-115) — it does not ship to normal players. Built on GAME-116's N-party
-# demographics stage + GAME-043's party-agnostic runtime + GAME-112's two-party-normalized metrics.
+# DEBUG-ONLY DEMO (GAME-112 PR 2 / GAME-120): the multiparty tutorial. Reachable only via the
+# gated "debug" campaign (GAME-115) — it does not ship to normal players. Built on GAME-116's
+# N-party demographics stage + GAME-043's party-agnostic runtime + GAME-112's two-party-normalized
+# metrics + GAME-119 feature-anchored leans + GAME-117 named candidates.
 #
-# PEDAGOGY — a THIRD force, an Independent:
-#   A clone of tutorial-003 "Reading the Vote", but the Bend isn't purely two-party: East Hollow
-#   has its own champion, the Independent Ada Hollis, who commands the east. The lesson is T3's —
-#   the lines decide — extended to a third bloc: keep the Hollow together and Hollis contends or
-#   wins that seat; crack it across districts and her support dilutes (packing/cracking, applied to
-#   an independent). Whether she wins is EMERGENT from how the player draws, not hard-coded.
+# PEDAGOGY — three PARTIES, three corners (GAME-120):
+#   A genuine three-cornered race: Ken out west, Ryu in the city, Chun-Li out east — three PARTIES,
+#   each contesting every district (no independents; the home-base independent is GAME-121's job).
+#   The lesson is T3's — the lines decide — extended to a third bloc: keep the east together and
+#   Chun-Li carries that seat; crack it across districts and her ~40% base dilutes below plurality
+#   everywhere (packing/cracking, applied to a third party). Who wins how many seats is EMERGENT
+#   from how the player draws, not hard-coded.
+#
+#   Because the city (Hawthorn) is the population mass, a naive equal-COLUMN split over-fills the
+#   centre (>±15%): the dense core needs the SMALLER district. The winnable map draws the centre
+#   narrow and the rural wings wide — the same lesson tutorial-002 "A Legal Map" teaches.
 #
 #   Still a legal-map tutorial: gates district_count + population_balance + contiguity, NO seat goal.
 #   The result is shown to READ (repaint, watch who wins move), not to chase.
@@ -25,7 +31,7 @@ format_version: "1"
 
 scenario:
   id: tutorial-005
-  title: "Hawthorn Bend: The Hollow's Champion"
+  title: "Hawthorn Bend: A Three-Way Race"
   election_type: state_house
   region:
     id: hawthorn_bend
@@ -47,7 +53,9 @@ terrain:
 
 # ── Stage 2: Population ───────────────────────────────────────────────────────
 # T3's population shape: a central city (Hawthorn) on a rural base, with East Hollow and
-# Westford villages. East Hollow is the Independent's home turf.
+# Westford villages. Hawthorn is the population mass — its density is why the winnable map
+# draws the centre district narrow (see the pedagogy note at the top). UNTOUCHED from the
+# draft: balance depends on population, so the geometry is left exactly as-is.
 
 population:
   seed: 13
@@ -85,7 +93,7 @@ population:
 
 demographics:
   seed: 13
-  parties: [ken, ryu, dhalsim]
+  parties: [ken, ryu, chunli]
   group:
     id_suffix: all
     name: All voters
@@ -94,18 +102,21 @@ demographics:
     max: 0.70
   jitter: 0.04
   zones:
-    - name: urban_core      # Hawthorn city core — Ryu (Sakura) country
-      filter: { hex_dist_lte: 1 }
-      party_base: { ken: 0.25, ryu: 0.60, dhalsim: 0.15 }
-    - name: west            # Ken (Sean) country
-      filter: { q_lte: -2 }
-      party_base: { ken: 0.60, ryu: 0.30, dhalsim: 0.10 }
-    - name: hollow          # East Hollow — Dhalsim's stronghold (he leads here)
-      filter: { q_gte: 2 }
-      party_base: { ken: 0.25, ryu: 0.25, dhalsim: 0.50 }
-    - name: center          # inner ring around the core — leans Ryu, so a central seat is winnable
+    - name: urban_core      # Hawthorn city core — Ryu (Sakura) country. Anchored on the
+                            # seat (0,0); first-match, so it claims the dense centre before
+                            # the flank zones' disks can reach in.
+      filter: { near: { q: 0, r: 0 }, within: 2 }
+      party_base: { ken: 0.25, ryu: 0.60, chunli: 0.15 }
+    - name: westford        # Westford — Ken (Sean) country. Anchored on the western town.
+      filter: { near: { q: -3, r: 0 }, within: 3 }
+      party_base: { ken: 0.58, ryu: 0.28, chunli: 0.14 }
+    - name: east_hollow     # East Hollow — Chun-Li's stronghold. Anchored on the eastern
+                            # town (up the Bend, riverside).
+      filter: { near: { q: 3, r: -1 }, within: 3 }
+      party_base: { ken: 0.24, ryu: 0.24, chunli: 0.52 }
+    - name: countryside     # rural remainder — leans Ryu, so a central seat is winnable
       filter: { default: true }
-      party_base: { ken: 0.38, ryu: 0.47, dhalsim: 0.15 }
+      party_base: { ken: 0.38, ryu: 0.46, chunli: 0.16 }
 
 # ── Stage 3b: Counties ────────────────────────────────────────────────────────
 
@@ -118,11 +129,27 @@ counties:
 
 assembly:
   parties:
-    - { id: ken, name: Ken Party, abbreviation: KEN, color: "#c96d00" }
-    - { id: ryu, name: Ryu Party, abbreviation: RYU, color: "#7b35a8" }
-    # The Independent — East Hollow's local champion, the unaffiliated yogi Dhalsim.
-    # Gold (palette slot 3).
-    - { id: dhalsim, name: Dhalsim (Independent), abbreviation: IND, color: "#f0c040" }
+    # GAME-117 named candidates: candidates[districtId-1], one per district (d1,d2,d3). Each
+    # party fields three people, so a multi-seat party win reads as different candidates. The
+    # marquee face of each party sits in the district it carries on the intended map — Sean out
+    # west (d1), Sakura in the city (d2), Chun-Li out east (d3).
+    - id: ken
+      name: Ken Party
+      abbreviation: KEN
+      color: "#c96d00"
+      candidates: [Sean Matsuda, Eliza Masters, Ken Masters]
+    - id: ryu
+      name: Ryu Party
+      abbreviation: RYU
+      color: "#7b35a8"
+      candidates: [Ryu, Sakura Kasugano, Gouken]
+    # Chun-Li's party — the third bloc, strong out east. Teal, CVD-distinct from the
+    # Ken orange and Ryu purple (palette slot 3).
+    - id: chunli
+      name: Chun-Li Party
+      abbreviation: CHU
+      color: "#2a9d8f"
+      candidates: [Cammy White, Guile, Chun-Li]
   districts:
     - { id: d1, name: District 1 }
     - { id: d2, name: District 2 }
@@ -148,27 +175,33 @@ assembly:
       name: You
       role: Mapmaker, Hawthorn Bend
       motivation: >
-        Three candidates are on the ballot in the Bend: Sean for the Ken Party out west, Sakura
-        for the Ryu Party in the city, and Dhalsim — the unaffiliated yogi the Hollow reveres —
-        running as an Independent in the east. Three bases, three corners. Where you draw the lines
-        decides how many of them win.
+        Three parties are on the ballot across the Bend: the Ken Party out west, the Ryu Party in
+        the city, and the Chun-Li Party out east. Each runs a candidate in every district — but
+        each is strongest on its home ground. Three bases, three corners. Where you draw the lines
+        decides how many seats each party wins.
     intro_slides:
       - heading: A Three-Cornered Race
         body: >
-          The west is Ken country, where Sean runs strong. The city core leans Ryu behind Sakura.
-          And out east, in the Hollow, the Independent Dhalsim takes about half the vote — ahead of
-          both parties on his home ground.
+          The west is Ken country, where Sean Matsuda runs strong. The city core leans Ryu behind
+          Sakura. And out east, along the Bend, the Chun-Li Party takes about two in five — ahead
+          of both the others on its home ground.
       - heading: Three Bases, Three Corners
         body: >
-          Each candidate has one part of the Bend. Draw a district around each base — west, city,
-          Hollow — and all three can win a seat. Blur those lines and one base can swallow another,
-          or split Dhalsim's Hollow until his half-here, half-there adds up to nothing.
+          Each party has one part of the Bend. Draw a district around each base — west, city, east
+          — and all three can carry a seat. Blur those lines and one base swallows another; split
+          the east across districts and Chun-Li's two-in-five becomes a plurality nowhere.
+      - heading: The Dense Centre Needs Less Land
+        body: >
+          Hawthorn city is where most people live. Carve three equal-width columns and the middle
+          one bursts the balance limit. Like your last legal map, the crowded centre needs the
+          SMALLER district — draw it narrow, and let the rural wings run wide.
     objective: >
       Draw three balanced, connected districts — a legal map, like before — and read the result.
       There's no seat to chase; repaint the lines and watch the three-cornered race change — can you
-      draw a map where Sean, Sakura, and Dhalsim each carry a seat?
+      draw a map where the Ken Party, the Ryu Party, and the Chun-Li Party each carry a seat?
     epilogue: >
-      A third voice changes the map. An Independent with a concentrated base is powerful when his
-      community stays together and powerless when it's split — the same packing-and-cracking that
-      moves seats between two parties. The lines don't just pick between two sides; they decide
-      whose voice counts at all — and whether three corners can each keep their champion.
+      A third party changes the map. A party with a concentrated base is powerful when its ground
+      stays together and powerless when it's split — the same packing-and-cracking that moves seats
+      between two sides, now with three. And the crowded city taught the other half of the lesson:
+      dense ground needs the smaller district, so the centre is drawn tight and the rural wings run
+      wide. The lines don't just pick between two sides — they decide how many corners keep a seat.
