@@ -1840,15 +1840,18 @@ test("guided overlay: tutorial-002 runs the legal-map script (orient → paint �
 
 // ─── GAME-048: Campaign-driven scenario select ──────────────────────────────
 
-test("campaign select: ?campaign=tutorial shows the four tutorials in order", async ({ page }) => {
+test("campaign select: ?campaign=tutorial shows the six tutorials in order", async ({ page }) => {
 	await page.goto("/?campaign=tutorial");
 	await expect(page.locator("#scenario-select")).toBeVisible({ timeout: 10_000 });
 	const cards = page.locator(".scenario-card");
-	await expect(cards).toHaveCount(4);
+	// GAME-121 promoted the multi-party (005) and independent (006) demos into the public ladder.
+	await expect(cards).toHaveCount(6);
 	await expect(cards.nth(0)).toContainText("Welcome to Redistricting");
 	await expect(cards.nth(1)).toContainText("A Legal Map");
 	await expect(cards.nth(2)).toContainText("Hawthorn Bend"); // "Reading the Vote"
-	await expect(cards.nth(3)).toContainText("Fairhaven"); // "Putting It Together" (Capstone)
+	await expect(cards.nth(3)).toContainText("Fairhaven"); // "Putting It Together" (Synthesis)
+	await expect(cards.nth(4)).toContainText("Three-Way Race"); // tutorial-005 (title also has "Hawthorn Bend")
+	await expect(cards.nth(5)).toContainText("The Hollow's Own"); // tutorial-006 (independent)
 });
 
 test("campaign select: ?campaign=tutorial Back button is visible", async ({ page }) => {
@@ -2272,7 +2275,7 @@ test("guided overlay: tutorial-004 gives a light orient then a read-only Done be
 	await expect(page.locator("#map-filters")).toBeVisible();
 
 	// Step 1 — orient.
-	await expect(page.locator("#tutorial-panel")).toContainText("capstone");
+	await expect(page.locator("#tutorial-panel")).toContainText("Putting it together");
 	await page.locator("#tutorial-panel .tutorial-next").click();
 
 	// Step 2 — paint a full district's worth (32). The live counter shows the target and progress.

@@ -1,0 +1,215 @@
+# Spec file for tutorial-006: "The Hollow's Own: An Independent's Home Ground"
+# Source of truth for the map generation pipeline.
+# Generated output: game/scenarios/tutorial-006.json
+#
+# Regenerate:  bazel run //game/web/src/pipeline:generate_scenario -- \
+#                game/scenarios/tutorial-006.spec.yaml game/scenarios/tutorial-006.json
+#
+# PUBLIC TUTORIAL (GAME-121): the sixth and final rung of the tutorial ladder — the home-base
+# independent. Promoted into the public "tutorial" campaign alongside 001–005 (see
+# thoughts/shared/decisions/2026-07-05-tutorial-progression-and-multiparty-placement.md). Built on
+# GAME-118's home-base independent mechanic + GAME-116 N-party demographics + GAME-117 named
+# candidates + GAME-119 geography-anchored leans (here as q-strips) + GAME-043 party-agnostic
+# runtime. First AUTHORED
+# use of the independent mechanic (the GAME-112 draft only faked it as a full party; GAME-121 PR
+# extends the pipeline — spec-types PartySpec + assembler — so an independent can be generated,
+# not hand-patched into the JSON).
+#
+# PEDAGOGY — lean is map-wide, the ballot is home-only (GAME-118):
+#   Two major parties — the Ken Party out west, the Ryu Party through the central townships —
+#   contest every district. Dhalsim, the unaffiliated yogi of the eastern Hollow, carries a
+#   map-wide LEAN but appears on the BALLOT only in the district holding his home precinct
+#   (marked ⌂). So his fate is a line-drawing puzzle, not a vote count:
+#     • Keep the Hollow together around his home → he is on the ballot AND holds ~half the vote
+#       there → he WINS the seat.
+#     • Crack his base across districts (or draw his home into a party's ground) → he is on the
+#       ballot at home but diluted below a plurality, and his support elsewhere is off-ballot →
+#       he WINS NOTHING.
+#   Like the rest of the ladder, this is a legal-map tutorial: it gates on district_count +
+#   population_balance + contiguity, with NO seat goal. Electing Dhalsim is the thing to SEE, not a
+#   pass condition — keep the Hollow whole and the live result shows him winning; crack it and it
+#   shows him losing. Both maps are legal; the lines decide who gets a voice, and the player reads
+#   that off the result, not off a win/lose gate.
+#
+#   Population is deliberately UNIFORM (no terrain, no settlements) so balance never forces a
+#   particular map — the lesson is the ballot-vs-lean mechanic, not a density puzzle. Dhalsim's
+#   base is an eastern q-STRIP (q >= 2), not a disk: cracking it with cross-cutting districts
+#   dilutes it cleanly (a thin eastern sliver swamped by a long western body), so the "lose" map
+#   really loses. See thoughts/shared/plans/2026-07-05-game-121-tutorial-006-independent.md.
+
+format_version: "1"
+
+# ── Scenario identity ─────────────────────────────────────────────────────────
+
+scenario:
+  id: tutorial-006
+  title: "The Hollow's Own: An Independent's Home Ground"
+  election_type: state_house
+  region:
+    id: hollowmere
+    name: Hollowmere
+
+# ── Stage 1a: Map layout ──────────────────────────────────────────────────────
+# Radius 5 = 91 precincts, same familiar frame as T3/T5. Three districts of ~30.
+
+map:
+  geometry: hex_axial
+  shape: hex_circle
+  radius: 5
+
+# ── Stage 1b: Terrain ─────────────────────────────────────────────────────────
+# NONE. A uniform population field (below) needs no terrain suitability multipliers; the lesson
+# is the independent's home-only ballot, not a density puzzle, so the map is left plain. (Any
+# river/coast would bump riverside population 1.3x and bias a column heavy — see the pedagogy
+# note; visual texture, if wanted, is an eyeball-time refinement that must survive a balance
+# re-check.)
+
+# ── Stage 2: Population (UNIFORM) ─────────────────────────────────────────────
+# Flat base with light jitter and no settlements/gradient → every precinct ~1000 people. Over
+# ~30-precinct districts the jitter averages out, so equal-precinct-count districts are
+# equal-population districts. Balance is a real gate (the player must draw ~equal thirds) but it
+# never *forces* one shape over another — freeing the map to teach the independent mechanic.
+
+population:
+  seed: 21
+  base: 1000
+  variance: 60
+  smoothing: 0
+
+# ── Stage 3: Demographics (TWO MAJORS + ONE HOME-BASE INDEPENDENT) ────────────
+#
+# Three geographic bases. GAME-116 weight model: the PRIMARY party (ken, slot 0) gets
+# base+jitter; the remainder (1 - ken) is split among the others by their party_base weights.
+# Each zone's three bases sum to 1.0, so the intended shares are realized literally (jitter on
+# ken only). Zone match is FIRST-WINS; west (q<=-2) and east (q>=2) are disjoint q-strips, and
+# the central townships fall through to the default.
+#   • WEST  (q <= -2) — Ken country (Ken 0.52 leads).
+#   • EAST  (q >=  2) — the HOLLOW, Dhalsim's ground (Dhalsim 0.48 leads; a q-strip, not a disk,
+#                       so cross-cutting districts crack it cleanly).
+#   • CENTRE (default, -1..1) — the townships lean Ryu (Ryu 0.50 leads).
+
+demographics:
+  seed: 21
+  parties: [ken, ryu, dhalsim]
+  group:
+    id_suffix: all
+    name: All voters
+  turnout:
+    min: 0.55
+    max: 0.70
+  jitter: 0.04
+  zones:
+    - name: west_fields    # Ken country out west.
+      filter: { q_lte: -2 }
+      party_base: { ken: 0.52, ryu: 0.38, dhalsim: 0.10 }
+    - name: east_hollow    # The Hollow — Dhalsim's home ground. He takes ~half here and leads;
+                           # a q-strip (q>=2) so a horizontal/cross-cut district only clips a
+                           # thin eastern sliver of it.
+      filter: { q_gte: 2 }
+      party_base: { ken: 0.30, ryu: 0.22, dhalsim: 0.48 }
+    - name: central_townships  # The centre leans Ryu — the two-party heart of the map.
+      filter: { default: true }
+      party_base: { ken: 0.30, ryu: 0.50, dhalsim: 0.20 }
+
+# ── Stage 3b: Counties (cosmetic) ─────────────────────────────────────────────
+
+counties:
+  model: seat_and_hinterland
+  target_count: 3
+  id_prefix: hollowmere
+
+# ── Stage 4: Assembly ─────────────────────────────────────────────────────────
+
+assembly:
+  parties:
+    # Two MAJOR parties (slots 0/1 — the pair the fairness metrics two-party-normalize to) and
+    # one home-base INDEPENDENT (slot 2). GAME-117 candidates are indexed candidates[districtId-1];
+    # the majors field three people for flavour. Dhalsim is one person wherever his home lands, so
+    # he runs the same name in every district slot — his winner badge always reads "Dhalsim".
+    # Colours: Ken keeps his orange and Ryu his purple from T5; Dhalsim takes the CVD-distinct
+    # teal. All three hues stay distinct through the lean view's contested-precinct paling (the
+    # warm orange/gold collapse fixed in GAME-120 doesn't bite — only orange is warm here).
+    - id: ken
+      name: Ken Party
+      abbreviation: KEN
+      color: "#c96d00"
+      candidates: [Sean Matsuda, Eliza Masters, Ken Masters]
+    - id: ryu
+      name: Ryu Party
+      abbreviation: RYU
+      color: "#7b35a8"
+      candidates: [Sakura Kasugano, Ryu, Gouken]
+    # Dhalsim — the home-base INDEPENDENT of the eastern Hollow. `independent: true` + `home`
+    # make him a candidate on the ballot ONLY in the district holding his home precinct (3,-1),
+    # up in the Hollow; everywhere else his lean shows but he is not on the ballot. The loader
+    # requires the independent/home pair, slot >= 2, hex_axial geometry, and that (3,-1) is a real
+    # precinct.
+    - id: dhalsim
+      name: Dhalsim
+      abbreviation: IND
+      color: "#2a9d8f"
+      independent: true
+      home: { q: 3, r: -1 }
+      candidates: [Dhalsim, Dhalsim, Dhalsim]
+  districts:
+    - { id: d1, name: District 1 }
+    - { id: d2, name: District 2 }
+    - { id: d3, name: District 3 }
+  default_district_id: d1
+  guided: true
+  hide_election_results: false
+  hide_view_toolbar: false
+  rules:
+    population_tolerance: 0.15
+    contiguity: required
+  success_criteria:
+    - id: sc-district-count
+      required: true
+      description: All three districts are in use and every precinct is assigned.
+      criterion: { type: district_count }
+    - id: sc-population-balance
+      required: true
+      description: All three districts have roughly equal population (within 15%).
+      criterion: { type: population_balance }
+    # Legality only — like tutorial-005. No seat criterion: whether Dhalsim wins is EMERGENT from
+    # the player's lines and read off the live result panel, not gated. (Keep his home + eastern
+    # base together and he carries the Hollow; crack it and he doesn't — both maps are legal.)
+  narrative:
+    character:
+      name: You
+      role: Mapmaker, Hollowmere
+      motivation: >
+        Two parties run across Hollowmere: the Ken Party out west and the Ryu Party through the
+        central townships, each with a candidate in every district. But the eastern Hollow has its
+        own — Dhalsim, an independent, no party behind him. His neighbours favour him right across
+        the east, yet he stands in only one race: the district that holds his home. Where you draw
+        the lines decides whether the Hollow gets a voice.
+    intro_slides:
+      - heading: An Independent's Home Ground
+        body: >
+          Dhalsim isn't a party — he's the Hollow's own. Out east he's the favourite, ahead of both
+          Ken and Ryu on his home ground. But an independent runs where he lives: he appears on the
+          ballot only in the district that contains his home, marked with a ⌂ pin on the map.
+      - heading: A Lean Is Not a Ballot
+        body: >
+          Switch to the Lean view and you'll see Dhalsim's teal spread across the east — that's who
+          FAVOURS him. It isn't who can VOTE for him. Support that sits in a district which doesn't
+          hold his home is support he can't collect: he isn't on that ballot. Lean is map-wide; the
+          ballot is home-only.
+      - heading: Give the Hollow a Voice
+        body: >
+          To send Dhalsim to the assembly, draw his home and enough of his eastern base into ONE
+          district. Keep the Hollow together and he carries it. Split it across districts — or pull
+          his home out into Ken's or Ryu's ground — and his neighbours' support scatters, uncounted,
+          and a party takes the seat instead.
+    objective: >
+      Draw three balanced, connected districts — a legal map, like before — and read the result.
+      There's no seat to chase: keep Dhalsim's home (the ⌂ pin) and his eastern base together in one
+      district and watch him carry the Hollow; crack it and his support scatters off his ballot. Can
+      you draw a map that gives the Hollow a voice of its own?
+    epilogue: >
+      A home-base independent lives or dies by a single line. A party spreads its risk across many
+      seats; an independent bets everything on the shape of one district — the one that holds his
+      home. Keep a community together and it can elect its own; split it and its voice vanishes,
+      even when a clear majority there favours them. The lines don't just divide the vote — they
+      decide who is even allowed on the ballot.

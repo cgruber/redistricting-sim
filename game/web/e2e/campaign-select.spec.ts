@@ -29,33 +29,30 @@ test("campaign select: clicking Educational Campaign navigates to ?campaign=educ
 	await expect(page).toHaveURL(/campaign=educational/);
 });
 
-test("campaign select: progress shows 0 / 4 for Tutorial with fresh localStorage", async ({
+test("campaign select: progress shows 0 / 6 for Tutorial with fresh localStorage", async ({
 	page,
 }) => {
 	await page.goto("/?view=campaigns");
 	await page.evaluate((key) => localStorage.removeItem(key), PROGRESS_KEY);
 	await page.reload();
 	await expect(page.locator("#campaign-select")).toBeVisible({ timeout: 10_000 });
-	// The tutorial campaign has four scenarios (T1 core loop → T2 legal map → T3 reading the vote → T4 capstone).
-	await expect(page.locator(".campaign-card").first()).toContainText("0 / 4 scenarios complete");
+	// The tutorial campaign has six scenarios (T1 core loop → T2 legal map → T3 reading the vote →
+	// T4 synthesis → T5 multi-party → T6 independent).
+	await expect(page.locator(".campaign-card").first()).toContainText("0 / 6 scenarios complete");
 });
 
-test("campaign select: debug campaign is hidden without debug mode (GAME-115)", async ({
+test("campaign select: only the two public campaigns show, with or without &debug (GAME-121)", async ({
 	page,
 }) => {
-	await page.goto("/?view=campaigns");
-	await expect(page.locator("#campaign-select")).toBeVisible({ timeout: 10_000 });
-	// Only the two shipped campaigns; the debug-only campaign must not appear.
-	await expect(page.locator(".campaign-card")).toHaveCount(2);
-	await expect(page.locator("#campaign-select")).not.toContainText("Debug (dev)");
-});
-
-test("campaign select: debug campaign appears with &debug (GAME-115)", async ({ page }) => {
-	await page.goto("/?view=campaigns&debug");
-	await expect(page.locator("#campaign-select")).toBeVisible({ timeout: 10_000 });
-	// Debug mode active → the gated debug campaign is the third card.
-	await expect(page.locator(".campaign-card")).toHaveCount(3);
-	await expect(page.locator("#campaign-select")).toContainText("Debug (dev)");
+	// GAME-121 promoted the multi-party + independent demos into the public tutorial and retired the
+	// debug campaign, so no shipped campaign is debugOnly — the card count no longer depends on
+	// &debug. (The debugOnly filter itself is still unit-tested against a synthetic fixture.)
+	for (const url of ["/?view=campaigns", "/?view=campaigns&debug"]) {
+		await page.goto(url);
+		await expect(page.locator("#campaign-select")).toBeVisible({ timeout: 10_000 });
+		await expect(page.locator(".campaign-card")).toHaveCount(2);
+		await expect(page.locator("#campaign-select")).not.toContainText("Debug (dev)");
+	}
 });
 
 test("campaign select: Back button is present", async ({ page }) => {

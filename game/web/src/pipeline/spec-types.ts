@@ -248,6 +248,18 @@ export interface PartySpec {
 	color?: string;
 	/** Optional per-district candidate names (GAME-117), `candidates[districtId-1]`. */
 	candidates?: string[];
+	/**
+	 * GAME-118 home-base independent: a candidate who carries a map-wide lean but is on the
+	 * ballot only in the district holding `home`. `independent` and `home` are a pair (both or
+	 * neither), and an independent must be declared in slot 2 or later — slots 0/1 are the two
+	 * major parties the fairness metrics two-party-normalize to (evaluate.ts). Passed through to
+	 * the JSON verbatim; the loader validates the coupling, the slot, and that `home` matches a
+	 * precinct on hex_axial geometry.
+	 */
+	independent?: boolean;
+	/** GAME-118: an independent's home precinct as an axial coordinate. Required when (and only
+	 *  when) `independent` is true. */
+	home?: { q: number; r: number };
 }
 
 export interface DistrictSpec {

@@ -39,7 +39,7 @@ accessible(no prior knowledge required) + rewarding(depth for experts)
 
 §MENU
 New Game | Continue(if progress) | Custom Level | Settings | About
-Tutorial: NOT separate item — baked into level 1 as guided walkthrough
+Tutorial: dedicated campaign of 6 guided rungs(tutorial-001–006), each teaches 1 mechanic via in-level coach(core loop→rules→read the vote→synthesis→multi-party→home-base independent); legality-only gates(outcome shown-to-read, never required)→teach by guided demonstration not win/lose; guidance baked per-level(not skippable standalone)→learn in context. See decisions/2026-07-05-tutorial-progression-and-multiparty-placement
 Custom Level: full scenario creator(paint populations, success criteria, rules design,
   community sharing) — see §CUSTOM_LEVEL
 

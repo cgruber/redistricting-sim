@@ -102,9 +102,14 @@ achievements, edge cases).
   audio, display
 - **About**: project description, credits, educational resources, donation link
 
-**Tutorial** is not a separate menu item — it is baked into the first scenario as an
-in-level guided walkthrough. This avoids the common pattern where players skip standalone
-tutorials and then feel lost.
+**Tutorial** is a dedicated campaign of six short guided rungs (tutorial-001–006), each
+introducing one mechanic through an in-level coach walkthrough: the core loop, the legality
+rules, reading the vote, synthesis, multi-party races, and the home-base independent. Every
+rung gates on legality only (a valid map) — the electoral outcome is shown to read, never
+required — so the tutorials teach by guided demonstration rather than win/lose challenges.
+Because the guidance is baked into each level (not a skippable standalone screen), players
+learn in context rather than skipping ahead and feeling lost. See the tutorial-progression ADR
+(`thoughts/shared/decisions/2026-07-05-tutorial-progression-and-multiparty-placement.md`).
 
 ---
 

@@ -30,6 +30,7 @@ const localStorageShim = {
 
 import {
 	CAMPAIGN_REGISTRY,
+	type Campaign,
 	getCampaign,
 	saveLastPlayedScenario,
 	loadLastPlayedScenario,
@@ -43,28 +44,30 @@ function resetStorage(): void {
 
 // ─── CAMPAIGN_REGISTRY ────────────────────────────────────────────────────────
 
-test("CAMPAIGN_REGISTRY contains 3 campaigns (tutorial, educational, debug)", () => {
-	assertEqual(CAMPAIGN_REGISTRY.length, 3, "registry length");
+test("CAMPAIGN_REGISTRY contains 2 campaigns (tutorial, educational)", () => {
+	assertEqual(CAMPAIGN_REGISTRY.length, 2, "registry length");
 });
 
 test("CAMPAIGN_REGISTRY: first campaign is tutorial", () => {
 	assertEqual(CAMPAIGN_REGISTRY[0]?.id, "tutorial", "first id");
 });
 
-test("tutorial campaign has exactly 4 scenario IDs", () => {
+test("tutorial campaign has exactly 6 scenario IDs", () => {
 	const tutorial = getCampaign("tutorial");
 	assertNotNull(tutorial, "tutorial exists");
-	assertEqual(tutorial!.scenarioIds.length, 4, "tutorial scenarioIds length");
+	assertEqual(tutorial!.scenarioIds.length, 6, "tutorial scenarioIds length");
 });
 
-test("tutorial campaign scenarioIds are tutorial-001 through tutorial-004", () => {
+test("tutorial campaign scenarioIds are tutorial-001 through tutorial-006", () => {
 	const tutorial = getCampaign("tutorial");
 	assertNotNull(tutorial, "tutorial exists");
-	assertEqual(tutorial!.scenarioIds.length, 4, "four tutorial scenarios");
-	assertEqual(tutorial!.scenarioIds[0], "tutorial-001", "first scenario");
-	assertEqual(tutorial!.scenarioIds[1], "tutorial-002", "second scenario");
-	assertEqual(tutorial!.scenarioIds[2], "tutorial-003", "third scenario (Reading the Vote)");
-	assertEqual(tutorial!.scenarioIds[3], "tutorial-004", "fourth scenario (Capstone)");
+	assertEqual(tutorial!.scenarioIds.length, 6, "six tutorial scenarios");
+	assertEqual(tutorial!.scenarioIds[0], "tutorial-001", "first scenario (core loop)");
+	assertEqual(tutorial!.scenarioIds[1], "tutorial-002", "second scenario (legal map)");
+	assertEqual(tutorial!.scenarioIds[2], "tutorial-003", "third scenario (reading the vote)");
+	assertEqual(tutorial!.scenarioIds[3], "tutorial-004", "fourth scenario (synthesis)");
+	assertEqual(tutorial!.scenarioIds[4], "tutorial-005", "fifth scenario (multi-party leans)");
+	assertEqual(tutorial!.scenarioIds[5], "tutorial-006", "sixth scenario (independent)");
 });
 
 test("educational campaign has exactly 8 scenario IDs", () => {
@@ -86,11 +89,22 @@ test("educational campaign ends with scenario-009", () => {
 });
 
 // ─── debugOnly gating (GAME-115) ────────────────────────────────────────────
+// No SHIPPED campaign sets debugOnly since GAME-121 promoted the multi-party + independent demos
+// into the public tutorial. The flag + visibleCampaigns filter are retained (dormant), so the
+// gating is exercised here against a synthetic fixture registry via the injectable `registry` arg.
 
-test("debug campaign is flagged debugOnly", () => {
-	const debug = getCampaign("debug");
-	assertNotNull(debug, "debug campaign exists");
-	assertEqual(debug!.debugOnly, true, "debugOnly true");
+const FIXTURE_REGISTRY: Campaign[] = [
+	{ id: "public-a", title: "A", description: "", scenarioIds: [] },
+	{ id: "gated", title: "G", description: "", scenarioIds: [], debugOnly: true },
+	{ id: "public-b", title: "B", description: "", scenarioIds: [] },
+];
+
+test("no shipped campaign is debugOnly", () => {
+	assertEqual(
+		CAMPAIGN_REGISTRY.some((c) => c.debugOnly === true),
+		false,
+		"no debugOnly campaign ships",
+	);
 });
 
 test("tutorial and educational campaigns are not debugOnly", () => {
@@ -98,31 +112,32 @@ test("tutorial and educational campaigns are not debugOnly", () => {
 	assertEqual(getCampaign("educational")!.debugOnly, undefined, "educational not debugOnly");
 });
 
-test("visibleCampaigns(false) hides the debug campaign", () => {
-	const visible = visibleCampaigns(false);
-	assertEqual(visible.length, 2, "two campaigns without debug");
+test("visibleCampaigns(false, fixture) hides the debugOnly campaign", () => {
+	const visible = visibleCampaigns(false, FIXTURE_REGISTRY);
+	assertEqual(visible.length, 2, "two public campaigns without debug");
 	assertEqual(
-		visible.some((c) => c.id === "debug"),
+		visible.some((c) => c.id === "gated"),
 		false,
-		"debug campaign absent",
+		"gated campaign absent",
 	);
 });
 
-test("visibleCampaigns(true) includes the debug campaign", () => {
-	const visible = visibleCampaigns(true);
-	assertEqual(visible.length, 3, "three campaigns with debug");
+test("visibleCampaigns(true, fixture) includes the debugOnly campaign", () => {
+	const visible = visibleCampaigns(true, FIXTURE_REGISTRY);
+	assertEqual(visible.length, 3, "all three campaigns with debug");
 	assertEqual(
-		visible.some((c) => c.id === "debug"),
+		visible.some((c) => c.id === "gated"),
 		true,
-		"debug campaign present",
+		"gated campaign present",
 	);
 });
 
-test("visibleCampaigns always includes non-debug campaigns", () => {
+test("visibleCampaigns (default registry) shows every shipped campaign in both modes", () => {
 	for (const isDebug of [false, true]) {
 		const ids = visibleCampaigns(isDebug).map((c) => c.id);
 		assertEqual(ids.includes("tutorial"), true, "tutorial visible");
 		assertEqual(ids.includes("educational"), true, "educational visible");
+		assertEqual(ids.length, CAMPAIGN_REGISTRY.length, "no campaign hidden (none debugOnly)");
 	}
 });
 
