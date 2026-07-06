@@ -74,9 +74,11 @@ type ManifestEntry = (typeof SCENARIO_MANIFEST)[number];
 // the fallback all-scenarios list). Add an entry here when a new scenario ships campaign-only.
 const CAMPAIGN_ONLY_SCENARIOS: { id: string; title: string }[] = [
 	{ id: "tutorial-001", title: "Welcome to Redistricting: Millbrook County" },
-	// Debug-only 3-party demo — reachable via the gated "debug" campaign, never the
-	// all-scenarios fallback. The scenario itself lands in GAME-112.
-	{ id: "tutorial-005", title: "Three-Party Demo (debug)" },
+	// Tutorial rungs 5–6 — reachable via the "tutorial" campaign, not the all-scenarios fallback
+	// (like tutorial-001). Promoted out of the retired debug campaign (GAME-121; see the
+	// tutorial-progression ADR). tutorial-005 = three-party race; tutorial-006 = home-base independent.
+	{ id: "tutorial-005", title: "Hawthorn Bend: A Three-Way Race" },
+	{ id: "tutorial-006", title: "The Hollow's Own: An Independent's Home Ground" },
 ];
 
 const MANIFEST_BY_ID = new Map<string, { id: string; title: string }>([

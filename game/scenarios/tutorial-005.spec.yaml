@@ -5,10 +5,11 @@
 # Regenerate:  bazel run //game/web/src/pipeline:generate_scenario -- \
 #                game/scenarios/tutorial-005.spec.yaml game/scenarios/tutorial-005.json
 #
-# DEBUG-ONLY DEMO (GAME-112 PR 2 / GAME-120): the multiparty tutorial. Reachable only via the
-# gated "debug" campaign (GAME-115) — it does not ship to normal players. Built on GAME-116's
-# N-party demographics stage + GAME-043's party-agnostic runtime + GAME-112's two-party-normalized
-# metrics + GAME-119 feature-anchored leans + GAME-117 named candidates.
+# PUBLIC TUTORIAL (GAME-112 PR 2 / GAME-120): the multiparty tutorial — the fifth rung of the
+# tutorial ladder, promoted into the public "tutorial" campaign alongside 001–004 + 006 (GAME-121;
+# see thoughts/shared/decisions/2026-07-05-tutorial-progression-and-multiparty-placement.md). Built
+# on GAME-116's N-party demographics stage + GAME-043's party-agnostic runtime + GAME-112's
+# two-party-normalized metrics + GAME-119 feature-anchored leans + GAME-117 named candidates.
 #
 # PEDAGOGY — three PARTIES, three corners (GAME-120):
 #   A genuine three-cornered race: Ken out west, Ryu in the city, Chun-Li out east — three PARTIES,

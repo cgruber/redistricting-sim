@@ -9,7 +9,8 @@
  * Asserts the "⌂ name" pin renders at the home precinct and
  * that, once districts are drawn, a non-home district's result card marks the independent
  * "(not on ballot)" with the explanatory footnote. Full visual polish is a serve-local
- * eyeball. &debug reaches the gated debug campaign (as in tutorial-005-multiparty.spec).
+ * eyeball. The load uses ?campaign=tutorial&s=tutorial-005&debug — tutorial-005 lives in the tutorial
+ * campaign, and &debug clears the rung lock (as in tutorial-005-multiparty.spec).
  */
 
 import { expect, test } from "@playwright/test";
@@ -46,7 +47,7 @@ test("home-base independent: ⌂ pin renders and a non-home district reads party
 		await route.fulfill({ json: scenario });
 	});
 
-	await page.goto("/?s=tutorial-005&campaign=debug&debug");
+	await page.goto("/?campaign=tutorial&s=tutorial-005&debug");
 	await page.emulateMedia({ reducedMotion: "reduce" });
 
 	const skip = page.locator("#btn-intro-skip");

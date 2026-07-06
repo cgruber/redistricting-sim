@@ -138,16 +138,17 @@ const TUTORIAL_003: TutorialStep[] = [
 ];
 
 /**
- * tutorial-004 — "Capstone" (DESIGN-012 / GAME-099). A light orientation over a fuller map
+ * tutorial-004 — "Synthesis" (DESIGN-012 / GAME-099). A light orientation over a fuller map
  * with every tool visible from the start (nothing hidden, no `reveal`): orient → paint → a
  * closing "Done" beat that releases the player. Like T2/T3, it ends on **Done**, not an
  * in-overlay Submit — the final step is frozen (no highlight), so clicking Done ends the
- * tutorial and unlocks everything, and the player pans/inspects/submits on their own (the bridge
- * to the real campaign). The player synthesises T1–T3 — connected districts, read the lean + result.
+ * tutorial and unlocks everything, and the player pans/inspects/submits on their own. The player
+ * synthesises T1–T3 (connected districts, read the lean + result) — a milestone, not the last
+ * rung: T5 (multi-party) and T6 (independent) still follow before the campaign.
  */
 const TUTORIAL_004: TutorialStep[] = [
 	{
-		text: "The capstone — everything you've learned, one map. Nothing's hidden: the **Map Validity** panel, the **Lean** view, the **County** borders, and the **election result** are all here from the start.",
+		text: "Putting it together — everything you've learned so far, one map. Nothing's hidden: the **Map Validity** panel, the **Lean** view, the **County** borders, and the **election result** are all here from the start.",
 		advance: { on: "next" },
 	},
 	{
@@ -156,14 +157,14 @@ const TUTORIAL_004: TutorialStep[] = [
 		advance: { on: "paint-count", district: 2, n: 32 },
 	},
 	{
-		text: "You've drawn a district — you've got this. Hit **Done** and the map is yours: pan around, watch the **Map Validity** panel, and **Submit** when your four districts are balanced and connected. Then on to the real thing.",
+		text: "You've drawn a district — you've got this. Hit **Done** and the map is yours: pan around, watch the **Map Validity** panel, and **Submit** when your four districts are balanced and connected. Two more maps still to come — a three-way race, then an independent — before the campaign.",
 		advance: { on: "next" },
 	},
 ];
 
 /**
  * tutorial-005 — "A Three-Way Race" (GAME-120). A light orientation over the multiparty map
- * (debug campaign only): three PARTIES contesting every district, leans hung on real geography
+ * (public tutorial, rung 5): three PARTIES contesting every district, leans hung on real geography
  * (GAME-119) and outcomes as named candidates (GAME-117). Everything is visible from the start
  * (nothing hidden, no `reveal`), like T4. The one new beat is the balance twist — the dense city
  * needs the SMALLER district — taught by having the player paint the compact centre first. Ends
@@ -190,12 +191,43 @@ const TUTORIAL_005: TutorialStep[] = [
 	},
 ];
 
+/**
+ * tutorial-006 — "The Hollow's Own" (GAME-121). A light orientation over the home-base independent
+ * map (public tutorial, rung 6 — the final rung): two major parties contest every district, and
+ * Dhalsim — an INDEPENDENT — is on the ballot only in the district holding his home (the ⌂ pin),
+ * though his lean shows map-wide. Everything is visible from the start (like T4/T5). The one new
+ * beat is the lean-vs-ballot distinction — taught by having the player gather the eastern Hollow
+ * (around the ⌂ pin) into one district so Dhalsim is both on the ballot AND holds the votes. Ends
+ * on **Done** (frozen final step), releasing the player to carve the rest and Submit.
+ */
+const TUTORIAL_006: TutorialStep[] = [
+	{
+		text: "Hollowmere. Two parties run everywhere — **Ken** out west, **Ryu** through the centre — but the eastern Hollow has its own: **Dhalsim**, an independent. Everything's here from the start: the **Lean** view, the **election result**, and the **Map Validity** panel.",
+		advance: { on: "next" },
+	},
+	{
+		text: "Click **Lean** to colour each precinct by who its voters favour. Dhalsim's teal fills the east — that's who *favours* him. But find the **⌂ pin**: that's his home, and an independent is on the **ballot only in the district that holds it**. Lean is map-wide; the ballot is home-only.",
+		highlight: "#filter-lean",
+		advance: { on: "click-target" },
+	},
+	{
+		text: "So give the Hollow a voice: pick **District 3** and paint the eastern precincts — the teal ones, around the **⌂ pin** — into it. Keep his home and his base together and Dhalsim is both on the ballot *and* ahead.",
+		highlight: ["#district-toolbar", "#map-svg"],
+		advance: { on: "paint-count", district: 3, n: 20 },
+	},
+	{
+		text: "That's the Hollow together. Hit **Done** and the map is yours — carve the west and centre into the other two districts, keep all three balanced and connected, and **Submit**. Watch the result: with his home and base in one district, Dhalsim carries the Hollow. (Split it across districts instead, and his voice slips away.)",
+		advance: { on: "next" },
+	},
+];
+
 const SCRIPTS: Record<string, TutorialStep[]> = {
 	"tutorial-001": TUTORIAL_001,
 	"tutorial-002": TUTORIAL_002,
 	"tutorial-003": TUTORIAL_003,
 	"tutorial-004": TUTORIAL_004,
 	"tutorial-005": TUTORIAL_005,
+	"tutorial-006": TUTORIAL_006,
 };
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────

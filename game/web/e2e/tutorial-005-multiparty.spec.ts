@@ -1,5 +1,5 @@
 /**
- * tutorial-005 "A Three-Way Race" (GAME-120): the debug-only multiparty tutorial.
+ * tutorial-005 "A Three-Way Race" (GAME-120 / GAME-121): the multiparty tutorial — rung 5 of the public ladder.
  *
  * Three PARTIES contest every district — Ken (orange) out west, Ryu (purple) in the
  * city, Chun-Li (teal) out east — with leans hung on real geography (GAME-119) and
@@ -12,7 +12,9 @@
  *     the result panel shows each party's named candidate for the seat it carries.
  *   - overlay: the guided coach script (registered for tutorial-005) runs.
  *
- * tutorial-005 is campaign-only (GAME-115); &debug + &campaign=debug reach it.
+ * tutorial-005 is a public tutorial (GAME-121 promoted it out of the debug campaign). It lives in the
+ * tutorial campaign (not the default all-scenarios manifest) and sits behind rung 4, so the e2e load uses
+ * ?campaign=tutorial&s=tutorial-005&debug — &campaign puts it in the active list, &debug clears the rung lock.
  */
 
 import { expect, test } from "@playwright/test";
@@ -31,9 +33,9 @@ test.beforeEach(async ({ page }) => {
 	});
 });
 
-/** Navigate to the debug-gated tutorial-005, dismiss the intro, wait for the hex grid. */
+/** Navigate to the public tutorial-005, dismiss the intro, wait for the hex grid. */
 async function loadTutorial005(page: import("@playwright/test").Page): Promise<void> {
-	await page.goto("/?s=tutorial-005&campaign=debug&debug");
+	await page.goto("/?campaign=tutorial&s=tutorial-005&debug");
 	// The Bazel-sandboxed Chromium ignores config reducedMotion; emulate it so the instant
 	// result-screen path runs (otherwise the animated criteria reveal leaves the verdict empty).
 	await page.emulateMedia({ reducedMotion: "reduce" });
@@ -123,7 +125,7 @@ test("overlay: the guided coach script runs and introduces the three-party race"
 }) => {
 	// ?resetTutorial=1 clears the per-scenario complete flag on load, so the coach runs even
 	// though the beforeEach marked it complete.
-	await page.goto("/?s=tutorial-005&campaign=debug&debug&resetTutorial=1");
+	await page.goto("/?campaign=tutorial&s=tutorial-005&debug&resetTutorial=1");
 	await page.emulateMedia({ reducedMotion: "reduce" });
 
 	// Dismiss the intro; the guided overlay starts once the editor is up.

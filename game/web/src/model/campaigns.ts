@@ -18,8 +18,20 @@ export const CAMPAIGN_REGISTRY: Campaign[] = [
 	{
 		id: "tutorial",
 		title: "Tutorial",
-		description: "Learn the basics of district drawing and the map's geographic features.",
-		scenarioIds: ["tutorial-001", "tutorial-002", "tutorial-003", "tutorial-004"],
+		description:
+			"Learn to draw districts: the core loop, the rules, reading elections, and races with multiple parties and independents.",
+		// The public tutorial ladder (GAME-121; see thoughts/shared/decisions/2026-07-05-
+		// tutorial-progression-and-multiparty-placement.md): six rungs, each teaching one new
+		// mechanic through the guided coach, all gated on legality only (no seat goals). 005 and
+		// 006 were promoted here out of the retired debug campaign.
+		scenarioIds: [
+			"tutorial-001",
+			"tutorial-002",
+			"tutorial-003",
+			"tutorial-004",
+			"tutorial-005",
+			"tutorial-006",
+		],
 	},
 	{
 		id: "educational",
@@ -37,15 +49,6 @@ export const CAMPAIGN_REGISTRY: Campaign[] = [
 			"scenario-009",
 		],
 	},
-	{
-		id: "debug",
-		title: "Debug (dev)",
-		description: "Developer-only demo and test scenarios — visible only when debug mode is active.",
-		// The 3-party multiparty demo scenario lands in GAME-112; this campaign is its
-		// gated home. Until then the card is debug-only and its scenario is not yet built.
-		scenarioIds: ["tutorial-005"],
-		debugOnly: true,
-	},
 ];
 
 export function getCampaign(id: string): Campaign | undefined {
@@ -55,9 +58,17 @@ export function getCampaign(id: string): Campaign | undefined {
 /**
  * Campaigns to show in campaign-select for the given debug state (GAME-115):
  * `debugOnly` campaigns appear only when debug mode is active; all others always.
+ *
+ * `registry` defaults to CAMPAIGN_REGISTRY; it is injectable so the gating can be unit-tested with
+ * a synthetic fixture. No shipped campaign currently sets `debugOnly` — the multi-party and
+ * independent demos were promoted into the public tutorial (GAME-121) — so the flag + this filter
+ * are retained, dormant, for future demo/test scenarios.
  */
-export function visibleCampaigns(isDebug: boolean): Campaign[] {
-	return CAMPAIGN_REGISTRY.filter((c) => !c.debugOnly || isDebug);
+export function visibleCampaigns(
+	isDebug: boolean,
+	registry: readonly Campaign[] = CAMPAIGN_REGISTRY,
+): Campaign[] {
+	return registry.filter((c) => !c.debugOnly || isDebug);
 }
 
 export function saveLastPlayedScenario(scenarioId: string): void {

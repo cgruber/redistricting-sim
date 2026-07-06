@@ -87,6 +87,10 @@ export function assembleScenario(partial: PartialScenario, spec: AssemblySpec): 
 		abbreviation: ps.abbreviation,
 		...(ps.color !== undefined ? { color: ps.color } : {}),
 		...(ps.candidates !== undefined ? { candidates: ps.candidates } : {}),
+		// GAME-118 home-base independent — forwarded verbatim; the loader validates the
+		// independent/home coupling, the slot-≥2 rule, and the home-matches-a-precinct constraint.
+		...(ps.independent !== undefined ? { independent: ps.independent } : {}),
+		...(ps.home !== undefined ? { home: ps.home } : {}),
 	}));
 
 	const districts: District[] = spec.districts.map((ds) => ({

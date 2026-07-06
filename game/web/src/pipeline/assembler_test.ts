@@ -148,6 +148,37 @@ test("assembleScenario: party without color gets no color field", () => {
 	assertEqual("color" in result.parties![0]!, false);
 });
 
+// GAME-118 home-base independent authoring: `independent` + `home` are forwarded verbatim so a
+// scenario can be authored from a spec (not hand-patched into the JSON). Slot/coupling/geometry
+// validation lives in the loader, not the assembler — this only proves the pass-through.
+test("assembleScenario: independent + home pass through when spec has them", () => {
+	const partial = makeEnrichedPartial(2);
+	const spec = baseAssemblySpec({
+		parties: [
+			{ id: "ken", name: "Ken Party", abbreviation: "KEN" },
+			{ id: "ryu", name: "Ryu Party", abbreviation: "RYU" },
+			{
+				id: "dhalsim",
+				name: "Dhalsim",
+				abbreviation: "IND",
+				independent: true,
+				home: { q: 1, r: -1 },
+			},
+		],
+	});
+	const result = assembleScenario(partial, spec);
+	assertEqual(result.parties![2]!.independent, true);
+	assertEqual(result.parties![2]!.home?.q, 1);
+	assertEqual(result.parties![2]!.home?.r, -1);
+});
+
+test("assembleScenario: party without independent/home gets no such fields", () => {
+	const partial = makeEnrichedPartial(2);
+	const result = assembleScenario(partial, baseAssemblySpec());
+	assertEqual("independent" in result.parties![0]!, false);
+	assertEqual("home" in result.parties![0]!, false);
+});
+
 // ─── Districts ────────────────────────────────────────────────────────────────
 
 test("assembleScenario: districts mapped from spec", () => {
