@@ -157,7 +157,7 @@ const TUTORIAL_004: TutorialStep[] = [
 		advance: { on: "paint-count", district: 2, n: 32 },
 	},
 	{
-		text: "You've drawn a district — you've got this. Hit **Done** and the map is yours: pan around, watch the **Map Validity** panel, and **Submit** when your four districts are balanced and connected. Two more maps still to come — a three-way race, then an independent — before the campaign.",
+		text: "You've drawn a district — you've got this. Hit **Done** and the map is yours: pan around, watch the **Map Validity** panel, and **Submit** when your four districts are balanced and connected. That's every tool, one map — the whole craft is yours now.",
 		advance: { on: "next" },
 	},
 ];
