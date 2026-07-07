@@ -134,4 +134,23 @@ test("mapBounds: two precincts — correct width and height for diagonal placeme
 	assertTrue(bounds.height > 0, "height positive");
 });
 
+// GAME-125: extraCenters (terrain-tile centers) must extend the fit so rim-framing
+// mountains/coastline placed just outside the precinct circle stay in view.
+test("mapBounds: extra centers extend the box beyond the precincts", () => {
+	const pad = HEX_SIZE * 1.2;
+	// One precinct at the origin; a terrain-tile center out past it (+x) and above it (-y).
+	const bounds = mapBounds([makePrecinct(0, 0)], [{ x: 100, y: -40 }]);
+	assertClose(bounds.minX, -pad, 0.001, "minX from precinct side (-pad)");
+	assertClose(bounds.minY, -40 - pad, 0.001, "minY from extra-center side (-40 - pad)");
+	assertClose(bounds.width, 100 + 2 * pad, 0.001, "width spans 0..100 + 2*pad");
+	assertClose(bounds.height, 40 + 2 * pad, 0.001, "height spans -40..0 + 2*pad");
+});
+
+test("mapBounds: empty extraCenters leaves precinct-only bounds unchanged", () => {
+	const pad = HEX_SIZE * 1.2;
+	const bounds = mapBounds([makePrecinct(0, 0), makePrecinct(54, 0)], []);
+	assertClose(bounds.width, 54 + 2 * pad, 0.001, "width unchanged by empty extras");
+	assertClose(bounds.height, 2 * pad, 0.001, "height unchanged by empty extras");
+});
+
 summarize();

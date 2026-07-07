@@ -51,16 +51,27 @@ export function hexCorners(center: Point): [number, number][] {
 	return corners;
 }
 
-/** Bounding box of all precinct centers (for SVG viewBox calculation) */
-export function mapBounds(precincts: Precinct[]): {
+/**
+ * Bounding box of all precinct centers (for the SVG auto-fit transform).
+ *
+ * `extraCenters` (GAME-125) folds additional pixel centers into the extent — pass the
+ * terrain-tile centers so a scenario whose mountains/coastline frame the rim (tiles placed
+ * just outside the precinct circle) fits fully in view. Precinct-only bounds clip those tiles,
+ * since the map container is `overflow:hidden` and the zoom floor is pinned to this fit.
+ * Defaults to empty, so precinct-only callers are unaffected.
+ */
+export function mapBounds(
+	precincts: Precinct[],
+	extraCenters: Point[] = [],
+): {
 	minX: number;
 	minY: number;
 	width: number;
 	height: number;
 } {
 	const pad = HEX_SIZE * 1.2;
-	const xs = precincts.map((p) => p.center.x);
-	const ys = precincts.map((p) => p.center.y);
+	const xs = [...precincts.map((p) => p.center.x), ...extraCenters.map((c) => c.x)];
+	const ys = [...precincts.map((p) => p.center.y), ...extraCenters.map((c) => c.y)];
 	const minX = Math.min(...xs) - pad;
 	const maxX = Math.max(...xs) + pad;
 	const minY = Math.min(...ys) - pad;

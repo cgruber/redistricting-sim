@@ -209,6 +209,7 @@ sh_test(
         "e2e/a11y.spec.ts",
         "e2e/submit-on-invalid.spec.ts",
         "e2e/sprint5.spec.ts",
+        "e2e/tutorial-004-terrain.spec.ts",
         "e2e/tutorial-005-multiparty.spec.ts",
         "e2e/home-independent.spec.ts",
         "e2e/tutorial-006-independent.spec.ts",

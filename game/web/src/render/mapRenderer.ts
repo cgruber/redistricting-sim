@@ -1003,8 +1003,14 @@ export class SvgMapRenderer implements MapRenderer {
 	 */
 	private initZoom() {
 		const svgNode = this.svg.node()!;
-		const { precincts } = this.getState();
-		const bounds = mapBounds(precincts);
+		const { precincts, terrainTiles } = this.getState();
+		// GAME-125: fold terrain-tile centers into the fit so rim-framing tiles (mountains,
+		// coastline) placed just outside the precinct circle stay fully in view rather than
+		// clipping against the overflow-hidden container.
+		const bounds = mapBounds(
+			precincts,
+			(terrainTiles ?? []).map((t) => t.center),
+		);
 
 		// SVG element fills its container; getBoundingClientRect gives pixel dims.
 		const svgRect = svgNode.getBoundingClientRect();
