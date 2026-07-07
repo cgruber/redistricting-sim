@@ -24,8 +24,9 @@
 #     - radius 6 (127 precincts), 4 districts — bigger and more districts than T3.
 #     - City view: the City overlay (GAME-096) still isn't built, so there's no #filter-city;
 #       the map carries an urban core for when it ships. Lean + County + result are all visible.
-#     - Coastline: deferred to the owner's precinct picks — a sea tile can sit on a rim hex-edge
-#       (shared edge of the circle), it does not have to be fully outside the precinct set.
+#     - Topography (GAME-125): the full frame is now authored — a mountain range on the NW rim,
+#       an ocean on the SE rim curling around the south vertex, and a river flowing from the
+#       mountains out to that sea. All cosmetic (terrain_weights pinned to 1.0); see Stage 1b.
 
 format_version: "1"
 
@@ -50,16 +51,48 @@ map:
 
 # ── Stage 1b: Terrain (COSMETIC) ──────────────────────────────────────────────
 #
-# A river through Fairhaven with the SAME dogleg shape as T003 (familiarity as we add terrain):
-# it enters at the NE rim, runs diagonally to the centre-west, then veers south to the bottom
-# edge. Cosmetic — districts may cross it. The terrain stage ROUTES the river (GAME-100) through
-# the `via` waypoint, chaining vertex-to-vertex and terminating off-map at both rims. (A coastline
-# is deferred to the visual pass; see note above.)
+# The full topographic frame for the capstone (GAME-125): a mountain range along the NORTH-WEST
+# rim, an ocean along the SOUTH-EAST rim that curls around the south vertex, and a river that
+# flows OUT OF the mountains, bends through the interior, and empties into that sea.
+#
+# Tiles sit ONE ring OUTSIDE the precinct circle (the terrain stage requires off-grid tiles), so
+# they frame the rim without removing playable hexes. On a radius-6 hex circle:
+#   - mountains: the q+r = -7 ring — the whole NW edge (W-vertex → N-vertex)
+#   - ocean:     the q+r = +7 ring (SE edge, SE-vertex → S-vertex) + two tiles curling west of the
+#                south vertex (r = 7) so the coast wraps the bottom point
+#   - river:     from the NW rim (out of the mountains) to the south vertex (into the sea)
+#
+# COSMETIC: every terrain weight is pinned to 1.0 in the population stage, so mountains and coast
+# are scenery only. Left at defaults they would halve the NW wedge (mountain_adjacent 0.5) and
+# thin the SE wedge (coastal 0.9), breaking the symmetric four-way balance this tutorial teaches.
+# Districts may cross any of it — terrain is never a rule (the "geography is cosmetic" principle).
 
 terrain:
-  # from: NE rim → via: centre-west (one hex further south than T003, to wrap a bit more around
-  # the larger centre) → to: south rim. Same dogleg family as T003, scaled to radius 6.
-  river: { from: { q: 4, r: -6 }, via: [ { q: -2, r: 2 } ], to: { q: 0, r: 6 } }
+  tiles:
+    # Mountains — NW edge frame (q + r = -7), W-vertex end → N-vertex end.
+    - { q: -7, r: 0, type: mountain }
+    - { q: -6, r: -1, type: mountain }
+    - { q: -5, r: -2, type: mountain }
+    - { q: -4, r: -3, type: mountain }
+    - { q: -3, r: -4, type: mountain }
+    - { q: -2, r: -5, type: mountain }
+    - { q: -1, r: -6, type: mountain }
+    - { q: 0, r: -7, type: mountain }
+    # Ocean — SE edge frame (q + r = +7), SE-vertex end → S-vertex end...
+    - { q: 7, r: 0, type: sea }
+    - { q: 6, r: 1, type: sea }
+    - { q: 5, r: 2, type: sea }
+    - { q: 4, r: 3, type: sea }
+    - { q: 3, r: 4, type: sea }
+    - { q: 2, r: 5, type: sea }
+    - { q: 1, r: 6, type: sea }
+    - { q: 0, r: 7, type: sea }
+    # ...curling west of the south vertex along the bottom edge (r = 7).
+    - { q: -1, r: 7, type: sea }
+    - { q: -2, r: 7, type: sea }
+  # Routed river (GAME-100): from the NW rim out of the mountains, bent west of the dense centre,
+  # emptying into the sea at the south vertex. from/to terminate at the rim by construction.
+  river: { from: { q: -3, r: -3 }, via: [ { q: -2, r: 2 } ], to: { q: 0, r: 6 } }
 
 # ── Stage 2: Population ───────────────────────────────────────────────────────
 #
@@ -74,6 +107,15 @@ population:
   base: 4000
   variance: 650         # rural noise so the countryside reads as varied, not flat (matches T3)
   smoothing: 0          # keep the texture — don't average the noise away
+  # COSMETIC terrain (GAME-125): pin every weight to 1.0 so the NW mountains and SE/south coast
+  # do NOT reshape population. Defaults (mountain_adjacent 0.5, coastal 0.9, riverside 1.3) would
+  # break the symmetric four-wedge balance — with all weights 1.0 the field is the opposite-pair
+  # villages alone, the clean balanceable design this tutorial relies on.
+  terrain_weights:
+    lakeside: 1.0
+    riverside: 1.0
+    coastal: 1.0
+    mountain_adjacent: 1.0
   settlements:
     - label: Fairhaven (city)
       anchor: center
@@ -141,8 +183,9 @@ counties:
 
 assembly:
   parties:
-    - { id: ken, name: Ken Party, abbreviation: KEN }
-    - { id: ryu, name: Ryu Party, abbreviation: RYU }
+    # color: authored display colors (GAME-043) — kept in the spec so regeneration preserves them.
+    - { id: ken, name: Ken Party, abbreviation: KEN, color: "#c96d00" }
+    - { id: ryu, name: Ryu Party, abbreviation: RYU, color: "#7b35a8" }
   districts:
     - { id: d1, name: District 1 }
     - { id: d2, name: District 2 }
