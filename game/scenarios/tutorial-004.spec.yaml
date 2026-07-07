@@ -173,27 +173,28 @@ assembly:
       name: You
       role: Mapmaker, Fairhaven
       motivation: >
-        One last practice map — bigger, four districts, and every tool on the table at once.
-        Draw a legal map, read the result, and you're ready for the real thing.
+        The whole toolkit, one map — bigger, four districts, everything on the table at once.
+        Draw a legal map, read the result, and you've got the fundamentals cold.
     intro_slides:
       - heading: Everything You've Learned
         body: >
           This is the whole kit. Fairhaven is bigger — four districts — and nothing is hidden:
           the Map Validity panel, the Lean view, the County borders, and the election result
           are all here from the start. Draw a legal map and watch what it produces.
-      - heading: Then the Real Thing
+      - heading: A Complete Legal Map
         body: >
           A legal map is the same as ever: four districts, roughly equal in population, each one
           connected. The Map Validity panel tracks both — even the districts out and keep each
           whole until it's green. There's no seat target; read the result to see who your lines
-          elect, then submit. The campaign scenarios are where that starts to count.
+          elect, then submit. Get this down and the maps ahead are the same craft with new twists.
     objective: >
       Draw four balanced, connected districts — a complete legal map — and read the result your
-      lines produce, then submit. (No seat target; this is your last warm-up before the campaign.)
+      lines produce, then submit. (No seat target; the outcome is yours to read, not to hit.)
     epilogue: >
       That's everything: pick a district and paint it, keep the populations even and each
       district whole, and read the lean and the result to see who your lines elect. You've got
       the whole loop now.
 
-      From here the maps come with a reason to draw them one way or another — a party to favor,
-      a community to protect or split, a rule to satisfy. Same tools, real stakes. Good luck.
+      Every race so far has come down to two sides. Next the map opens up — a third party with
+      ground of its own to hold, then a candidate who answers to no party. Same tools, more
+      corners to weigh. On to the three-way race.
