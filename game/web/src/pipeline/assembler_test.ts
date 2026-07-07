@@ -263,6 +263,49 @@ test("assembleScenario: no-match diagonal_strip throws", () => {
 	assertEqual(threw, true);
 });
 
+// ─── Row band / initial_district_id ──────────────────────────────────────────
+
+test("assembleScenario: row_band assigns initial_district_id via max_r cascade on r", () => {
+	// The r-axis analog of diagonal_strip — first band where r<=max_r wins, default
+	// catches the rest. This is scenario-004's initial shape: consolidate the r=0
+	// corridor into a center district so it is NOT pre-cracked (which diagonal strips,
+	// cutting across the row, would do — shipping the puzzle already solved).
+	const partial = makeEnrichedPartial(2);
+	const spec = baseAssemblySpec({
+		initial_district_rule: {
+			type: "row_band",
+			bands: [
+				{ max_r: -2, district: "d1" },
+				{ max_r: 0, district: "d2" },
+				{ default: true, district: "d3" },
+			],
+		},
+	});
+	const result = assembleScenario(partial, spec);
+	for (const p of result.precincts) {
+		const pos = p.position as { q: number; r: number };
+		const expected = pos.r <= -2 ? D1 : pos.r <= 0 ? D2 : D3;
+		assertEqual(p.initial_district_id, expected);
+	}
+});
+
+test("assembleScenario: no-match row_band throws", () => {
+	const partial = makeEnrichedPartial(1);
+	const spec = baseAssemblySpec({
+		initial_district_rule: {
+			type: "row_band",
+			bands: [{ max_r: -999, district: "d1" }],
+		},
+	});
+	let threw = false;
+	try {
+		assembleScenario(partial, spec);
+	} catch {
+		threw = true;
+	}
+	assertEqual(threw, true);
+});
+
 // ─── Precinct names ───────────────────────────────────────────────────────────
 
 test("assembleScenario: precinct name derived from county_id last segment + (q,r)", () => {

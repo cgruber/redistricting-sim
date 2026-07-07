@@ -1,0 +1,161 @@
+# Spec file for scenario-003: "Riverport: The Packing Problem"
+# Source of truth for the map generation pipeline (GAME-084 / GAME-126 migration).
+# Generated output: game/scenarios/scenario-003.json
+#
+# Migrated from the legacy gen-scenario-003.main.kts (GAME-126). The shipped JSON had
+# drifted from that script — criteria `character` assignments, `instigator_character`, and
+# `character_demographics` were added post-generation; this spec folds them in so the spec
+# is the complete source. Bones (concentric partisan geography, the packing lesson,
+# criteria, and narrative) are preserved from the gen script + shipped JSON.
+#
+# Draft simplifications (GAME-126 — flagged for owner review):
+#   - The initial "old map" uses diagonal_strip (the only spec-supported initial rule) as a
+#     generic FAILING start, replacing the gen script's 5 angular wedge sectors.
+#   - Uniform population (base 1500 +/- 150); per-zone turnout dropped (unused in the sim).
+
+format_version: "1"
+
+# ── Scenario identity ─────────────────────────────────────────────────────────
+
+scenario:
+  id: scenario-003
+  title: "Riverport: The Packing Problem"
+  election_type: state_house
+  region:
+    id: riverport_metro
+    name: Riverport Metro Area
+
+# ── Stage 1: Map + terrain ────────────────────────────────────────────────────
+#
+# A pure political puzzle — no geographic features; precincts fill the full R=6 circle.
+
+map:
+  geometry: hex_axial
+  shape: hex_circle
+  radius: 6
+
+terrain: {}
+
+# ── Stage 2: Population ───────────────────────────────────────────────────────
+#
+# Uniform field: base 1500 +/- 150, no terrain suitability and no settlement/gradient
+# shaping. The packing lesson is about partisan geography, not density.
+
+population:
+  seed: 43
+  base: 1500
+  variance: 150
+
+# ── Stage 3: Demographics ─────────────────────────────────────────────────────
+#
+# Concentric partisan geography (first-match-wins, inner -> outer):
+#   Urban core (d <= 2):  ken 0.15 — dense Ryu stronghold (the bloc to PACK)
+#   Suburban   (d <= 4):  ken 0.42 — competitive Ryu-lean
+#   Rural      (default): ken 0.65 — reliable Ken
+# County labels reuse the same concentric rings (cosmetic dashed overlay + precinct names).
+
+demographics:
+  seed: 43
+  parties: [ken, ryu]
+  group:
+    id_suffix: all
+    name: All voters
+  turnout:
+    min: 0.50
+    max: 0.75
+  jitter: 0.04
+  zones:
+    - name: urban_core
+      filter: { hex_dist_lte: 2 }
+      party_base: { ken: 0.15 }
+    - name: suburban
+      filter: { hex_dist_lte: 4 }
+      party_base: { ken: 0.42 }
+    - name: rural
+      filter: { default: true }
+      party_base: { ken: 0.65 }
+  county_labels:
+    - id: riverport_city
+      filter: { hex_dist_lte: 2 }
+    - id: riverport_suburbs
+      filter: { hex_dist_lte: 4 }
+    - id: greenfield_county
+      filter: { default: true }
+
+# ── Stage 4: Assembly ─────────────────────────────────────────────────────────
+
+assembly:
+  parties:
+    - { id: ken, name: Ken Party, abbreviation: KEN, color: "#c96d00" }
+    - { id: ryu, name: Ryu Party, abbreviation: RYU, color: "#7b35a8" }
+  districts:
+    - { id: d1, name: District 1 }
+    - { id: d2, name: District 2 }
+    - { id: d3, name: District 3 }
+    - { id: d4, name: District 4 }
+    - { id: d5, name: District 5 }
+  default_district_id: d1
+  # Generic FAILING initial: 5 diagonal (q+r=k) strips cutting across the concentric
+  # rings, so each district mixes core + suburb + rural -> ~2-3 Ken seats -> fails ken >= 4.
+  # (Replaces the gen script's 5 angular wedges; the initial only needs to fail.)
+  initial_district_rule:
+    type: diagonal_strip
+    strips:
+      - { max_k: -4, district: d1 }
+      - { max_k: -1, district: d2 }
+      - { max_k: 1,  district: d3 }
+      - { max_k: 4,  district: d4 }
+      - { default: true, district: d5 }
+  rules:
+    population_tolerance: 0.10
+    contiguity: required
+  success_criteria:
+    - id: sc-district-count
+      required: true
+      description: All five districts are in use and every precinct is assigned.
+      criterion: { type: district_count }
+      character: commissioner
+    - id: sc-population-balance
+      required: true
+      description: All five districts have roughly equal population (within 10%).
+      criterion: { type: population_balance }
+      character: commissioner
+    - id: sc-ken-seats
+      required: true
+      description: Ken Party wins at least 4 of the 5 districts.
+      criterion: { type: seat_count, party: ken, operator: gte, count: 4 }
+      character: party
+      party_id: ken
+    - id: sc-efficiency-gap
+      required: false
+      description: Packing creates a large efficiency gap — can you keep it under 15%?
+      criterion: { type: efficiency_gap, operator: lte, threshold: 0.15 }
+      character: judge
+  narrative:
+    character:
+      name: You
+      role: Ken Party Campaign Strategist, Riverport Metro
+      motivation: |-
+        The Ken Party controls the state legislature but is losing ground in Riverport's urban core. The Ryu Party's voters are concentrated downtown — a liability if you know how to exploit it. Your job: draw a map that locks in 4 of 5 seats by packing their voters into one unwinnable district.
+    intro_slides:
+      - heading: The Urban Problem
+        body: |-
+          Riverport's downtown is a Ryu stronghold — dense, politically active, and growing. If you let those voters spread across multiple districts, they could flip seats.
+
+          But concentration is a weakness. If all those Ryu voters end up in the same district, they win it by a landslide — and waste thousands of votes that could have helped them elsewhere.
+      - heading: The Packing Play
+        body: |-
+          Packing means drawing one district that your opponents win overwhelmingly — 80%, 85%, even 90%. Every vote above 50%+1 is wasted. Meanwhile, you spread your own voters efficiently across the remaining districts, winning each by a comfortable but not wasteful margin.
+
+          The result: they win one seat by a landslide. You win four seats by steady margins.
+      - heading: The Efficiency Gap
+        body: |-
+          Political scientists measure this with the efficiency gap — the difference in wasted votes between the two parties. A packed map has a huge efficiency gap: the opposition wastes votes in their landslide district, while the mapmaker wastes very few.
+
+          Draw your map. Then look at the efficiency gap and see what packing costs.
+    objective: |-
+      Pack Ryu voters into as few districts as possible. Ken Party must win at least 4 of 5 seats.
+  instigator_character: party
+  character_demographics:
+    commissioner: wf
+    judge: naf

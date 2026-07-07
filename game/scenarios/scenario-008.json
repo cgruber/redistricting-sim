@@ -46,3055 +46,3054 @@
       "name": "District 5"
     }
   ],
-  "default_district_id": "d1",
   "precincts": [
     {
       "id": "p001",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 0,
         "r": -6
       },
-      "total_population": 1463,
-      "initial_district_id": "d1",
-      "name": "Exurb (0,-6)",
+      "total_population": 1602,
       "demographic_groups": [
         {
           "id": "p001-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8064,
-            "ryu": 0.1936
-          }
+            "ken": 0.827034668121487,
+            "ryu": 0.17296533187851304
+          },
+          "turnout_rate": 0.6528968486119993,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (0,-6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p002",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 1,
         "r": -6
       },
-      "total_population": 1612,
-      "initial_district_id": "d1",
-      "name": "Exurb (1,-6)",
+      "total_population": 1556,
       "demographic_groups": [
         {
           "id": "p002-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8376,
-            "ryu": 0.1624
-          }
+            "ken": 0.79178472943604,
+            "ryu": 0.20821527056396005
+          },
+          "turnout_rate": 0.6057628600276075,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (1,-6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p003",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 2,
         "r": -6
       },
-      "total_population": 1542,
-      "initial_district_id": "d2",
-      "name": "Exurb (2,-6)",
+      "total_population": 1469,
       "demographic_groups": [
         {
           "id": "p003-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7942,
-            "ryu": 0.2058
-          }
+            "ken": 0.7897466660290957,
+            "ryu": 0.2102533339709043
+          },
+          "turnout_rate": 0.5778479722677731,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (2,-6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p004",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 3,
         "r": -6
       },
-      "total_population": 1367,
-      "initial_district_id": "d2",
-      "name": "Exurb (3,-6)",
+      "total_population": 1461,
       "demographic_groups": [
         {
           "id": "p004-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7829,
-            "ryu": 0.2171
-          }
+            "ken": 0.8015954293869436,
+            "ryu": 0.19840457061305639
+          },
+          "turnout_rate": 0.6042261925525964,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (3,-6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p005",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 4,
         "r": -6
       },
-      "total_population": 1385,
-      "initial_district_id": "d2",
-      "name": "Exurb (4,-6)",
+      "total_population": 1461,
       "demographic_groups": [
         {
           "id": "p005-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8037,
-            "ryu": 0.1963
-          }
+            "ken": 0.7775420362316072,
+            "ryu": 0.22245796376839277
+          },
+          "turnout_rate": 0.5926375175709836,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (4,-6)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p006",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 5,
         "r": -6
       },
-      "total_population": 1378,
-      "initial_district_id": "d2",
-      "name": "Exurb (5,-6)",
+      "total_population": 1405,
       "demographic_groups": [
         {
           "id": "p006-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7616,
-            "ryu": 0.2384
-          }
+            "ken": 0.7691651859134436,
+            "ryu": 0.23083481408655637
+          },
+          "turnout_rate": 0.69209533885587,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (5,-6)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p007",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 6,
         "r": -6
       },
-      "total_population": 1403,
-      "initial_district_id": "d2",
-      "name": "Exurb (6,-6)",
+      "total_population": 1506,
       "demographic_groups": [
         {
           "id": "p007-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8125,
-            "ryu": 0.1875
-          }
+            "ken": 0.7918872521445156,
+            "ryu": 0.2081127478554844
+          },
+          "turnout_rate": 0.6160923125804402,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (6,-6)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p008",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -1,
         "r": -5
       },
-      "total_population": 1420,
-      "initial_district_id": "d1",
-      "name": "Exurb (-1,-5)",
+      "total_population": 1458,
       "demographic_groups": [
         {
           "id": "p008-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.808,
-            "ryu": 0.192
-          }
+            "ken": 0.8200285217352212,
+            "ryu": 0.17997147826477877
+          },
+          "turnout_rate": 0.6427723016007804,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-1,-5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p009",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 0,
         "r": -5
       },
-      "total_population": 1466,
-      "initial_district_id": "d1",
-      "name": "Exurb (0,-5)",
+      "total_population": 1416,
       "demographic_groups": [
         {
           "id": "p009-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7732,
-            "ryu": 0.2268
-          }
+            "ken": 0.797870327308774,
+            "ryu": 0.20212967269122595
+          },
+          "turnout_rate": 0.6260405578534118,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (0,-5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p010",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 1,
         "r": -5
       },
-      "total_population": 1614,
-      "initial_district_id": "d1",
-      "name": "Exurb (1,-5)",
+      "total_population": 1435,
       "demographic_groups": [
         {
           "id": "p010-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.832,
-            "ryu": 0.168
-          }
+            "ken": 0.7612070941179991,
+            "ryu": 0.23879290588200086
+          },
+          "turnout_rate": 0.5854888230678625,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (1,-5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p011",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 2,
         "r": -5
       },
-      "total_population": 1584,
-      "initial_district_id": "d2",
-      "name": "Exurb (2,-5)",
+      "total_population": 1384,
       "demographic_groups": [
         {
           "id": "p011-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7924,
-            "ryu": 0.2076
-          }
+            "ken": 0.7680865700356663,
+            "ryu": 0.23191342996433373
+          },
+          "turnout_rate": 0.6971873681875876,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (2,-5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p012",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 3,
         "r": -5
       },
-      "total_population": 1593,
-      "initial_district_id": "d2",
-      "name": "Exurb (3,-5)",
+      "total_population": 1635,
       "demographic_groups": [
         {
           "id": "p012-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.824,
-            "ryu": 0.176
-          }
+            "ken": 0.7673785604909062,
+            "ryu": 0.23262143950909375
+          },
+          "turnout_rate": 0.5922648999257945,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (3,-5)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p013",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 4,
         "r": -5
       },
-      "total_population": 1608,
-      "initial_district_id": "d2",
-      "name": "Exurb (4,-5)",
+      "total_population": 1469,
       "demographic_groups": [
         {
           "id": "p013-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8287,
-            "ryu": 0.1713
-          }
+            "ken": 0.8277811491489411,
+            "ryu": 0.17221885085105892
+          },
+          "turnout_rate": 0.550066599494312,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (4,-5)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p014",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 5,
         "r": -5
       },
-      "total_population": 1406,
-      "initial_district_id": "d2",
-      "name": "Exurb (5,-5)",
+      "total_population": 1482,
       "demographic_groups": [
         {
           "id": "p014-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7852,
-            "ryu": 0.2148
-          }
+            "ken": 0.8398654095083475,
+            "ryu": 0.16013459049165246
+          },
+          "turnout_rate": 0.6497440085513517,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (5,-5)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p015",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 6,
         "r": -5
       },
-      "total_population": 1511,
-      "initial_district_id": "d2",
-      "name": "Exurb (6,-5)",
+      "total_population": 1575,
       "demographic_groups": [
         {
           "id": "p015-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8252,
-            "ryu": 0.1748
-          }
+            "ken": 0.7779672470130027,
+            "ryu": 0.22203275298699732
+          },
+          "turnout_rate": 0.6697353679570369,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (6,-5)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p016",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -2,
         "r": -4
       },
-      "total_population": 1596,
-      "initial_district_id": "d1",
-      "name": "Exurb (-2,-4)",
+      "total_population": 1536,
       "demographic_groups": [
         {
           "id": "p016-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.799,
-            "ryu": 0.201
-          }
+            "ken": 0.8179043064638972,
+            "ryu": 0.18209569353610278
+          },
+          "turnout_rate": 0.6119657221366651,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-2,-4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p017",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -1,
         "r": -4
       },
-      "total_population": 1379,
-      "initial_district_id": "d1",
-      "name": "Exurb (-1,-4)",
+      "total_population": 1492,
       "demographic_groups": [
         {
           "id": "p017-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8235,
-            "ryu": 0.1765
-          }
+            "ken": 0.8332597637549043,
+            "ryu": 0.1667402362450957
+          },
+          "turnout_rate": 0.6089032553718425,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-1,-4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p018",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 0,
         "r": -4
       },
-      "total_population": 1397,
-      "initial_district_id": "d1",
-      "name": "Suburb (0,-4)",
+      "total_population": 1502,
       "demographic_groups": [
         {
           "id": "p018-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4926,
-            "ryu": 0.5074
-          }
+            "ken": 0.48519951397553085,
+            "ryu": 0.5148004860244692
+          },
+          "turnout_rate": 0.6844753705547191,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (0,-4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p019",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 1,
         "r": -4
       },
-      "total_population": 1584,
-      "initial_district_id": "d2",
-      "name": "Suburb (1,-4)",
+      "total_population": 1354,
       "demographic_groups": [
         {
           "id": "p019-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4682,
-            "ryu": 0.5318
-          }
+            "ken": 0.4978476804494858,
+            "ryu": 0.5021523195505142
+          },
+          "turnout_rate": 0.6171552610467188,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (1,-4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p020",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 2,
         "r": -4
       },
-      "total_population": 1566,
-      "initial_district_id": "d2",
-      "name": "Suburb (2,-4)",
+      "total_population": 1421,
       "demographic_groups": [
         {
           "id": "p020-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.53,
-            "ryu": 0.47
-          }
+            "ken": 0.48258706729859113,
+            "ryu": 0.5174129327014089
+          },
+          "turnout_rate": 0.5863371726009063,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (2,-4)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p021",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 3,
         "r": -4
       },
-      "total_population": 1629,
-      "initial_district_id": "d2",
-      "name": "Suburb (3,-4)",
+      "total_population": 1380,
       "demographic_groups": [
         {
           "id": "p021-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5226,
-            "ryu": 0.4774
-          }
+            "ken": 0.4729385062120855,
+            "ryu": 0.5270614937879146
+          },
+          "turnout_rate": 0.6701971257105469,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (3,-4)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p022",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 4,
         "r": -4
       },
-      "total_population": 1538,
-      "initial_district_id": "d2",
-      "name": "Suburb (4,-4)",
+      "total_population": 1645,
       "demographic_groups": [
         {
           "id": "p022-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5241,
-            "ryu": 0.4759
-          }
+            "ken": 0.5281426272541284,
+            "ryu": 0.4718573727458716
+          },
+          "turnout_rate": 0.6084097405429929,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (4,-4)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p023",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 5,
         "r": -4
       },
-      "total_population": 1491,
-      "initial_district_id": "d2",
-      "name": "Exurb (5,-4)",
+      "total_population": 1377,
       "demographic_groups": [
         {
           "id": "p023-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8322,
-            "ryu": 0.1678
-          }
+            "ken": 0.7745570016279817,
+            "ryu": 0.2254429983720183
+          },
+          "turnout_rate": 0.6013567478512414,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (5,-4)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p024",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 6,
         "r": -4
       },
-      "total_population": 1645,
-      "initial_district_id": "d2",
-      "name": "Exurb (6,-4)",
+      "total_population": 1434,
       "demographic_groups": [
         {
           "id": "p024-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.765,
-            "ryu": 0.235
-          }
+            "ken": 0.8164889258518816,
+            "ryu": 0.1835110741481184
+          },
+          "turnout_rate": 0.6812402710551395,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (6,-4)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p025",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -3,
         "r": -3
       },
-      "total_population": 1623,
-      "initial_district_id": "d1",
-      "name": "Exurb (-3,-3)",
+      "total_population": 1605,
       "demographic_groups": [
         {
           "id": "p025-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7881,
-            "ryu": 0.2119
-          }
+            "ken": 0.8222127944417298,
+            "ryu": 0.1777872055582702
+          },
+          "turnout_rate": 0.6154962241766043,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-3,-3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p026",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -2,
         "r": -3
       },
-      "total_population": 1578,
-      "initial_district_id": "d1",
-      "name": "Exurb (-2,-3)",
+      "total_population": 1350,
       "demographic_groups": [
         {
           "id": "p026-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7953,
-            "ryu": 0.2047
-          }
+            "ken": 0.8370601957850159,
+            "ryu": 0.1629398042149841
+          },
+          "turnout_rate": 0.609306782647036,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-2,-3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p027",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -1,
         "r": -3
       },
-      "total_population": 1611,
-      "initial_district_id": "d1",
-      "name": "Suburb (-1,-3)",
+      "total_population": 1650,
       "demographic_groups": [
         {
           "id": "p027-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4869,
-            "ryu": 0.5131
-          }
+            "ken": 0.5077644290402532,
+            "ryu": 0.4922355709597468
+          },
+          "turnout_rate": 0.5919266136479564,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-1,-3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p028",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 0,
         "r": -3
       },
-      "total_population": 1462,
-      "initial_district_id": "d1",
-      "name": "Suburb (0,-3)",
+      "total_population": 1550,
       "demographic_groups": [
         {
           "id": "p028-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4713,
-            "ryu": 0.5287
-          }
+            "ken": 0.48330236971378326,
+            "ryu": 0.5166976302862167
+          },
+          "turnout_rate": 0.6986030052066781,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (0,-3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p029",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 1,
         "r": -3
       },
-      "total_population": 1548,
-      "initial_district_id": "d2",
-      "name": "Suburb (1,-3)",
+      "total_population": 1417,
       "demographic_groups": [
         {
           "id": "p029-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5174,
-            "ryu": 0.4826
-          }
+            "ken": 0.4754876734688878,
+            "ryu": 0.5245123265311122
+          },
+          "turnout_rate": 0.6916584130492992,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (1,-3)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p030",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 2,
         "r": -3
       },
-      "total_population": 1389,
-      "initial_district_id": "d2",
-      "name": "Suburb (2,-3)",
+      "total_population": 1590,
       "demographic_groups": [
         {
           "id": "p030-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4906,
-            "ryu": 0.5094
-          }
+            "ken": 0.4618105571903288,
+            "ryu": 0.5381894428096712
+          },
+          "turnout_rate": 0.6763888296554796,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (2,-3)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p031",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 3,
         "r": -3
       },
-      "total_population": 1632,
-      "initial_district_id": "d2",
-      "name": "Suburb (3,-3)",
+      "total_population": 1567,
       "demographic_groups": [
         {
           "id": "p031-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4627,
-            "ryu": 0.5373
-          }
+            "ken": 0.47029875084757805,
+            "ryu": 0.529701249152422
+          },
+          "turnout_rate": 0.6252894192934036,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (3,-3)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p032",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 4,
         "r": -3
       },
-      "total_population": 1490,
-      "initial_district_id": "d2",
-      "name": "Suburb (4,-3)",
+      "total_population": 1474,
       "demographic_groups": [
         {
           "id": "p032-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5286,
-            "ryu": 0.4714
-          }
+            "ken": 0.5322945372574032,
+            "ryu": 0.46770546274259683
+          },
+          "turnout_rate": 0.6646089461399242,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (4,-3)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p033",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 5,
         "r": -3
       },
-      "total_population": 1528,
-      "initial_district_id": "d2",
-      "name": "Exurb (5,-3)",
+      "total_population": 1625,
       "demographic_groups": [
         {
           "id": "p033-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8332,
-            "ryu": 0.1668
-          }
+            "ken": 0.8115767626836896,
+            "ryu": 0.1884232373163104
+          },
+          "turnout_rate": 0.5514327241573483,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (5,-3)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p034",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 6,
         "r": -3
       },
-      "total_population": 1426,
-      "initial_district_id": "d3",
-      "name": "Exurb (6,-3)",
+      "total_population": 1468,
       "demographic_groups": [
         {
           "id": "p034-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7668,
-            "ryu": 0.2332
-          }
+            "ken": 0.778663696218282,
+            "ryu": 0.22133630378171798
+          },
+          "turnout_rate": 0.572925240546465,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (6,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p035",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -4,
         "r": -2
       },
-      "total_population": 1584,
-      "initial_district_id": "d1",
-      "name": "Exurb (-4,-2)",
+      "total_population": 1444,
       "demographic_groups": [
         {
           "id": "p035-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7631,
-            "ryu": 0.2369
-          }
+            "ken": 0.7744827256724239,
+            "ryu": 0.22551727432757607
+          },
+          "turnout_rate": 0.6275709692854434,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-4,-2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p036",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -3,
         "r": -2
       },
-      "total_population": 1517,
-      "initial_district_id": "d1",
-      "name": "Exurb (-3,-2)",
+      "total_population": 1619,
       "demographic_groups": [
         {
           "id": "p036-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8218,
-            "ryu": 0.1782
-          }
+            "ken": 0.7731933676451445,
+            "ryu": 0.22680663235485554
+          },
+          "turnout_rate": 0.6458030684269034,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-3,-2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p037",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -2,
         "r": -2
       },
-      "total_population": 1372,
-      "initial_district_id": "d1",
-      "name": "Suburb (-2,-2)",
+      "total_population": 1492,
       "demographic_groups": [
         {
           "id": "p037-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5282,
-            "ryu": 0.4718
-          }
+            "ken": 0.5009626782126725,
+            "ryu": 0.4990373217873275
+          },
+          "turnout_rate": 0.6813398067839443,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-2,-2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p038",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -1,
         "r": -2
       },
-      "total_population": 1572,
-      "initial_district_id": "d1",
-      "name": "Suburb (-1,-2)",
+      "total_population": 1484,
       "demographic_groups": [
         {
           "id": "p038-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.516,
-            "ryu": 0.484
-          }
+            "ken": 0.465656658411026,
+            "ryu": 0.534343341588974
+          },
+          "turnout_rate": 0.5690730724250899,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-1,-2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p039",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 0,
         "r": -2
       },
-      "total_population": 1598,
-      "initial_district_id": "d1",
-      "name": "Core (0,-2)",
+      "total_population": 1434,
       "demographic_groups": [
         {
           "id": "p039-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1707,
-            "ryu": 0.8293
-          }
+            "ken": 0.21081283405423165,
+            "ryu": 0.7891871659457683
+          },
+          "turnout_rate": 0.6660148037481122,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (0,-2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p040",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 1,
         "r": -2
       },
-      "total_population": 1353,
-      "initial_district_id": "d2",
-      "name": "Core (1,-2)",
+      "total_population": 1422,
       "demographic_groups": [
         {
           "id": "p040-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2341,
-            "ryu": 0.7659
-          }
+            "ken": 0.1664535539597273,
+            "ryu": 0.8335464460402727
+          },
+          "turnout_rate": 0.5973664324148559,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (1,-2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p041",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 2,
         "r": -2
       },
-      "total_population": 1382,
-      "initial_district_id": "d2",
-      "name": "Core (2,-2)",
+      "total_population": 1398,
       "demographic_groups": [
         {
           "id": "p041-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2236,
-            "ryu": 0.7764
-          }
+            "ken": 0.18991430304944518,
+            "ryu": 0.8100856969505548
+          },
+          "turnout_rate": 0.656823945324868,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (2,-2)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p042",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 3,
         "r": -2
       },
-      "total_population": 1422,
-      "initial_district_id": "d2",
-      "name": "Suburb (3,-2)",
+      "total_population": 1591,
       "demographic_groups": [
         {
           "id": "p042-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4769,
-            "ryu": 0.5231
-          }
+            "ken": 0.5238427315466105,
+            "ryu": 0.47615726845338946
+          },
+          "turnout_rate": 0.626339323213324,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (3,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p043",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 4,
         "r": -2
       },
-      "total_population": 1559,
-      "initial_district_id": "d3",
-      "name": "Suburb (4,-2)",
+      "total_population": 1606,
       "demographic_groups": [
         {
           "id": "p043-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4931,
-            "ryu": 0.5069
-          }
+            "ken": 0.4611806559190154,
+            "ryu": 0.5388193440809845
+          },
+          "turnout_rate": 0.6057775588822552,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (4,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p044",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 5,
         "r": -2
       },
-      "total_population": 1393,
-      "initial_district_id": "d3",
-      "name": "Exurb (5,-2)",
+      "total_population": 1467,
       "demographic_groups": [
         {
           "id": "p044-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7875,
-            "ryu": 0.2125
-          }
+            "ken": 0.8083857333473862,
+            "ryu": 0.19161426665261383
+          },
+          "turnout_rate": 0.6211922349757515,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (5,-2)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p045",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 6,
         "r": -2
       },
-      "total_population": 1477,
-      "initial_district_id": "d3",
-      "name": "Exurb (6,-2)",
+      "total_population": 1404,
       "demographic_groups": [
         {
           "id": "p045-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7984,
-            "ryu": 0.2016
-          }
+            "ken": 0.8359054522961379,
+            "ryu": 0.16409454770386211
+          },
+          "turnout_rate": 0.6891559307230636,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (6,-2)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p046",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -5,
         "r": -1
       },
-      "total_population": 1621,
-      "initial_district_id": "d1",
-      "name": "Exurb (-5,-1)",
+      "total_population": 1453,
       "demographic_groups": [
         {
           "id": "p046-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7764,
-            "ryu": 0.2236
-          }
+            "ken": 0.8256912560760975,
+            "ryu": 0.1743087439239025
+          },
+          "turnout_rate": 0.6336489308043383,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-5,-1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p047",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -4,
         "r": -1
       },
-      "total_population": 1539,
-      "initial_district_id": "d1",
-      "name": "Exurb (-4,-1)",
+      "total_population": 1562,
       "demographic_groups": [
         {
           "id": "p047-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8395,
-            "ryu": 0.1605
-          }
+            "ken": 0.8361150311678649,
+            "ryu": 0.1638849688321351
+          },
+          "turnout_rate": 0.5760187726002187,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-4,-1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p048",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -3,
         "r": -1
       },
-      "total_population": 1587,
-      "initial_district_id": "d1",
-      "name": "Suburb (-3,-1)",
+      "total_population": 1613,
       "demographic_groups": [
         {
           "id": "p048-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4876,
-            "ryu": 0.5124
-          }
+            "ken": 0.46792561309412123,
+            "ryu": 0.5320743869058788
+          },
+          "turnout_rate": 0.6443477279390208,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-3,-1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p049",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -2,
         "r": -1
       },
-      "total_population": 1507,
-      "initial_district_id": "d1",
-      "name": "Suburb (-2,-1)",
+      "total_population": 1584,
       "demographic_groups": [
         {
           "id": "p049-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4822,
-            "ryu": 0.5178
-          }
+            "ken": 0.513826809078455,
+            "ryu": 0.486173190921545
+          },
+          "turnout_rate": 0.556887023744639,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-2,-1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p050",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -1,
         "r": -1
       },
-      "total_population": 1541,
-      "initial_district_id": "d1",
-      "name": "Core (-1,-1)",
+      "total_population": 1481,
       "demographic_groups": [
         {
           "id": "p050-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.192,
-            "ryu": 0.808
-          }
+            "ken": 0.20622712383046748,
+            "ryu": 0.7937728761695325
+          },
+          "turnout_rate": 0.607875480200164,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-1,-1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p051",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 0,
         "r": -1
       },
-      "total_population": 1600,
-      "initial_district_id": "d1",
-      "name": "Core (0,-1)",
+      "total_population": 1639,
       "demographic_groups": [
         {
           "id": "p051-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2398,
-            "ryu": 0.7602
-          }
+            "ken": 0.17957582365721464,
+            "ryu": 0.8204241763427853
+          },
+          "turnout_rate": 0.6146679607918486,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (0,-1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p052",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 1,
         "r": -1
       },
-      "total_population": 1503,
-      "initial_district_id": "d2",
-      "name": "Core (1,-1)",
+      "total_population": 1469,
       "demographic_groups": [
         {
           "id": "p052-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1668,
-            "ryu": 0.8332
-          }
+            "ken": 0.17965640991926193,
+            "ryu": 0.8203435900807381
+          },
+          "turnout_rate": 0.633452969242353,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (1,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p053",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 2,
         "r": -1
       },
-      "total_population": 1535,
-      "initial_district_id": "d3",
-      "name": "Core (2,-1)",
+      "total_population": 1529,
       "demographic_groups": [
         {
           "id": "p053-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2151,
-            "ryu": 0.7849
-          }
+            "ken": 0.19414882089942695,
+            "ryu": 0.805851179100573
+          },
+          "turnout_rate": 0.580538214254193,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (2,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p054",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 3,
         "r": -1
       },
-      "total_population": 1371,
-      "initial_district_id": "d3",
-      "name": "Suburb (3,-1)",
+      "total_population": 1434,
       "demographic_groups": [
         {
           "id": "p054-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4848,
-            "ryu": 0.5152
-          }
+            "ken": 0.4905625687725842,
+            "ryu": 0.5094374312274158
+          },
+          "turnout_rate": 0.6363712834077887,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (3,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p055",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 4,
         "r": -1
       },
-      "total_population": 1513,
-      "initial_district_id": "d3",
-      "name": "Suburb (4,-1)",
+      "total_population": 1437,
       "demographic_groups": [
         {
           "id": "p055-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4899,
-            "ryu": 0.5101
-          }
+            "ken": 0.5238284820690751,
+            "ryu": 0.47617151793092494
+          },
+          "turnout_rate": 0.6774813540512695,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (4,-1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p056",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 5,
         "r": -1
       },
-      "total_population": 1394,
-      "initial_district_id": "d3",
-      "name": "Exurb (5,-1)",
+      "total_population": 1648,
       "demographic_groups": [
         {
           "id": "p056-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8039,
-            "ryu": 0.1961
-          }
+            "ken": 0.8303882597014308,
+            "ryu": 0.16961174029856918
+          },
+          "turnout_rate": 0.5749072177917697,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (5,-1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p057",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 6,
         "r": -1
       },
-      "total_population": 1376,
-      "initial_district_id": "d3",
-      "name": "Exurb (6,-1)",
+      "total_population": 1408,
       "demographic_groups": [
         {
           "id": "p057-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7962,
-            "ryu": 0.2038
-          }
+            "ken": 0.8254273806512357,
+            "ryu": 0.17457261934876434
+          },
+          "turnout_rate": 0.6957129423157311,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (6,-1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p058",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -6,
         "r": 0
       },
-      "total_population": 1519,
-      "initial_district_id": "d5",
-      "name": "Exurb (-6,0)",
+      "total_population": 1634,
       "demographic_groups": [
         {
           "id": "p058-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8071,
-            "ryu": 0.1929
-          }
+            "ken": 0.8090249021723867,
+            "ryu": 0.19097509782761335
+          },
+          "turnout_rate": 0.5934278676868416,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-6,0)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p059",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -5,
         "r": 0
       },
-      "total_population": 1465,
-      "initial_district_id": "d5",
-      "name": "Exurb (-5,0)",
+      "total_population": 1356,
       "demographic_groups": [
         {
           "id": "p059-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8237,
-            "ryu": 0.1763
-          }
+            "ken": 0.7725864092260599,
+            "ryu": 0.22741359077394008
+          },
+          "turnout_rate": 0.602183777524624,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-5,0)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p060",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -4,
         "r": 0
       },
-      "total_population": 1457,
-      "initial_district_id": "d5",
-      "name": "Suburb (-4,0)",
+      "total_population": 1603,
       "demographic_groups": [
         {
           "id": "p060-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4601,
-            "ryu": 0.5399
-          }
+            "ken": 0.49222300209105013,
+            "ryu": 0.5077769979089499
+          },
+          "turnout_rate": 0.5816830512951129,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-4,0)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p061",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -3,
         "r": 0
       },
-      "total_population": 1525,
-      "initial_district_id": "d5",
-      "name": "Suburb (-3,0)",
+      "total_population": 1388,
       "demographic_groups": [
         {
           "id": "p061-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4871,
-            "ryu": 0.5129
-          }
+            "ken": 0.5034798055700958,
+            "ryu": 0.49652019442990425
+          },
+          "turnout_rate": 0.6863129130797461,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-3,0)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p062",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -2,
         "r": 0
       },
-      "total_population": 1596,
-      "initial_district_id": "d5",
-      "name": "Core (-2,0)",
+      "total_population": 1501,
       "demographic_groups": [
         {
           "id": "p062-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.216,
-            "ryu": 0.784
-          }
+            "ken": 0.18957924304530024,
+            "ryu": 0.8104207569546997
+          },
+          "turnout_rate": 0.6733496171538718,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-2,0)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p063",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -1,
         "r": 0
       },
-      "total_population": 1411,
-      "initial_district_id": "d5",
-      "name": "Core (-1,0)",
+      "total_population": 1622,
       "demographic_groups": [
         {
           "id": "p063-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2033,
-            "ryu": 0.7967
-          }
+            "ken": 0.173414178583771,
+            "ryu": 0.8265858214162289
+          },
+          "turnout_rate": 0.651367630099412,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-1,0)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p064",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 0,
         "r": 0
       },
-      "total_population": 1401,
-      "initial_district_id": "d3",
-      "name": "Core (0,0)",
+      "total_population": 1579,
       "demographic_groups": [
         {
           "id": "p064-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1659,
-            "ryu": 0.8341
-          }
+            "ken": 0.21180643213912845,
+            "ryu": 0.7881935678608716
+          },
+          "turnout_rate": 0.5797820852487349,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (0,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p065",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 1,
         "r": 0
       },
-      "total_population": 1640,
-      "initial_district_id": "d3",
-      "name": "Core (1,0)",
+      "total_population": 1544,
       "demographic_groups": [
         {
           "id": "p065-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1736,
-            "ryu": 0.8264
-          }
+            "ken": 0.16587375419214367,
+            "ryu": 0.8341262458078563
+          },
+          "turnout_rate": 0.6930115755880251,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (1,0)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p066",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 2,
         "r": 0
       },
-      "total_population": 1585,
-      "initial_district_id": "d3",
-      "name": "Core (2,0)",
+      "total_population": 1352,
       "demographic_groups": [
         {
           "id": "p066-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1687,
-            "ryu": 0.8313
-          }
+            "ken": 0.2158667520992458,
+            "ryu": 0.7841332479007542
+          },
+          "turnout_rate": 0.6231651100330055,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (2,0)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p067",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 3,
         "r": 0
       },
-      "total_population": 1535,
-      "initial_district_id": "d3",
-      "name": "Suburb (3,0)",
+      "total_population": 1420,
       "demographic_groups": [
         {
           "id": "p067-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4793,
-            "ryu": 0.5207
-          }
+            "ken": 0.5259768844768405,
+            "ryu": 0.47402311552315946
+          },
+          "turnout_rate": 0.6753693062579259,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (3,0)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p068",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 4,
         "r": 0
       },
-      "total_population": 1405,
-      "initial_district_id": "d3",
-      "name": "Suburb (4,0)",
+      "total_population": 1396,
       "demographic_groups": [
         {
           "id": "p068-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5145,
-            "ryu": 0.4855
-          }
+            "ken": 0.5045507768727839,
+            "ryu": 0.49544922312721607
+          },
+          "turnout_rate": 0.6102805320173502,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (4,0)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p069",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 5,
         "r": 0
       },
-      "total_population": 1519,
-      "initial_district_id": "d3",
-      "name": "Exurb (5,0)",
+      "total_population": 1404,
       "demographic_groups": [
         {
           "id": "p069-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7859,
-            "ryu": 0.2141
-          }
+            "ken": 0.7700180284492671,
+            "ryu": 0.22998197155073286
+          },
+          "turnout_rate": 0.6942951301927678,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (5,0)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p070",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 6,
         "r": 0
       },
-      "total_population": 1457,
-      "initial_district_id": "d3",
-      "name": "Exurb (6,0)",
+      "total_population": 1505,
       "demographic_groups": [
         {
           "id": "p070-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.821,
-            "ryu": 0.179
-          }
+            "ken": 0.8360343186184764,
+            "ryu": 0.16396568138152356
+          },
+          "turnout_rate": 0.5702337913913653,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (6,0)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p071",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -6,
         "r": 1
       },
-      "total_population": 1405,
-      "initial_district_id": "d5",
-      "name": "Exurb (-6,1)",
+      "total_population": 1399,
       "demographic_groups": [
         {
           "id": "p071-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8396,
-            "ryu": 0.1604
-          }
+            "ken": 0.7807625982351601,
+            "ryu": 0.21923740176483986
+          },
+          "turnout_rate": 0.6203860368812457,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-6,1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p072",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -5,
         "r": 1
       },
-      "total_population": 1354,
-      "initial_district_id": "d5",
-      "name": "Exurb (-5,1)",
+      "total_population": 1542,
       "demographic_groups": [
         {
           "id": "p072-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7726,
-            "ryu": 0.2274
-          }
+            "ken": 0.8170797704532743,
+            "ryu": 0.1829202295467257
+          },
+          "turnout_rate": 0.6776162443682551,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-5,1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p073",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -4,
         "r": 1
       },
-      "total_population": 1551,
-      "initial_district_id": "d5",
-      "name": "Suburb (-4,1)",
+      "total_population": 1504,
       "demographic_groups": [
         {
           "id": "p073-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.466,
-            "ryu": 0.534
-          }
+            "ken": 0.5228675030544401,
+            "ryu": 0.4771324969455599
+          },
+          "turnout_rate": 0.6008586764102801,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-4,1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p074",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -3,
         "r": 1
       },
-      "total_population": 1372,
-      "initial_district_id": "d5",
-      "name": "Suburb (-3,1)",
+      "total_population": 1613,
       "demographic_groups": [
         {
           "id": "p074-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5323,
-            "ryu": 0.4677
-          }
+            "ken": 0.4658090298436582,
+            "ryu": 0.5341909701563419
+          },
+          "turnout_rate": 0.6820796848856844,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-3,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p075",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -2,
         "r": 1
       },
-      "total_population": 1646,
-      "initial_district_id": "d5",
-      "name": "Core (-2,1)",
+      "total_population": 1371,
       "demographic_groups": [
         {
           "id": "p075-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1772,
-            "ryu": 0.8228
-          }
+            "ken": 0.21197652256116273,
+            "ryu": 0.7880234774388373
+          },
+          "turnout_rate": 0.5669700400670991,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-2,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p076",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -1,
         "r": 1
       },
-      "total_population": 1603,
-      "initial_district_id": "d5",
-      "name": "Core (-1,1)",
+      "total_population": 1388,
       "demographic_groups": [
         {
           "id": "p076-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2061,
-            "ryu": 0.7939
-          }
+            "ken": 0.20170717393979432,
+            "ryu": 0.7982928260602057
+          },
+          "turnout_rate": 0.6205894265556708,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-1,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p077",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 0,
         "r": 1
       },
-      "total_population": 1501,
-      "initial_district_id": "d4",
-      "name": "Core (0,1)",
+      "total_population": 1541,
       "demographic_groups": [
         {
           "id": "p077-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1682,
-            "ryu": 0.8318
-          }
+            "ken": 0.1706623035296798,
+            "ryu": 0.8293376964703202
+          },
+          "turnout_rate": 0.6923342729685827,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (0,1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p078",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 1,
         "r": 1
       },
-      "total_population": 1547,
-      "initial_district_id": "d3",
-      "name": "Core (1,1)",
+      "total_population": 1582,
       "demographic_groups": [
         {
           "id": "p078-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2205,
-            "ryu": 0.7795
-          }
+            "ken": 0.2351423529908061,
+            "ryu": 0.7648576470091939
+          },
+          "turnout_rate": 0.6162627768469975,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (1,1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p079",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 2,
         "r": 1
       },
-      "total_population": 1647,
-      "initial_district_id": "d3",
-      "name": "Suburb (2,1)",
+      "total_population": 1374,
       "demographic_groups": [
         {
           "id": "p079-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4935,
-            "ryu": 0.5065
-          }
+            "ken": 0.5008226617798209,
+            "ryu": 0.49917733822017907
+          },
+          "turnout_rate": 0.6641710036434233,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (2,1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p080",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 3,
         "r": 1
       },
-      "total_population": 1650,
-      "initial_district_id": "d3",
-      "name": "Suburb (3,1)",
+      "total_population": 1445,
       "demographic_groups": [
         {
           "id": "p080-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5006,
-            "ryu": 0.4994
-          }
+            "ken": 0.48717577060684564,
+            "ryu": 0.5128242293931544
+          },
+          "turnout_rate": 0.5526678461348639,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (3,1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p081",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 4,
         "r": 1
       },
-      "total_population": 1613,
-      "initial_district_id": "d3",
-      "name": "Exurb (4,1)",
+      "total_population": 1462,
       "demographic_groups": [
         {
           "id": "p081-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7872,
-            "ryu": 0.2128
-          }
+            "ken": 0.8248662586882711,
+            "ryu": 0.17513374131172887
+          },
+          "turnout_rate": 0.5702799192396925,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (4,1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p082",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 5,
         "r": 1
       },
-      "total_population": 1521,
-      "initial_district_id": "d3",
-      "name": "Exurb (5,1)",
+      "total_population": 1564,
       "demographic_groups": [
         {
           "id": "p082-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7693,
-            "ryu": 0.2307
-          }
+            "ken": 0.7847370475158095,
+            "ryu": 0.21526295248419047
+          },
+          "turnout_rate": 0.6850034024100751,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (5,1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p083",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -6,
         "r": 2
       },
-      "total_population": 1362,
-      "initial_district_id": "d5",
-      "name": "Exurb (-6,2)",
+      "total_population": 1590,
       "demographic_groups": [
         {
           "id": "p083-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7696,
-            "ryu": 0.2304
-          }
+            "ken": 0.8002243404835463,
+            "ryu": 0.1997756595164537
+          },
+          "turnout_rate": 0.5902080922620371,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-6,2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p084",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -5,
         "r": 2
       },
-      "total_population": 1576,
-      "initial_district_id": "d5",
-      "name": "Exurb (-5,2)",
+      "total_population": 1503,
       "demographic_groups": [
         {
           "id": "p084-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.832,
-            "ryu": 0.168
-          }
+            "ken": 0.781219191402197,
+            "ryu": 0.21878080859780302
+          },
+          "turnout_rate": 0.6681094102677889,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-5,2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p085",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -4,
         "r": 2
       },
-      "total_population": 1650,
-      "initial_district_id": "d5",
-      "name": "Suburb (-4,2)",
+      "total_population": 1354,
       "demographic_groups": [
         {
           "id": "p085-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4965,
-            "ryu": 0.5035
-          }
+            "ken": 0.48812539532780647,
+            "ryu": 0.5118746046721936
+          },
+          "turnout_rate": 0.5906902421382256,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-4,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p086",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -3,
         "r": 2
       },
-      "total_population": 1583,
-      "initial_district_id": "d5",
-      "name": "Suburb (-3,2)",
+      "total_population": 1461,
       "demographic_groups": [
         {
           "id": "p086-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4893,
-            "ryu": 0.5107
-          }
+            "ken": 0.47854967242106794,
+            "ryu": 0.5214503275789321
+          },
+          "turnout_rate": 0.6068129210034385,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-3,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p087",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -2,
         "r": 2
       },
-      "total_population": 1561,
-      "initial_district_id": "d5",
-      "name": "Core (-2,2)",
+      "total_population": 1532,
       "demographic_groups": [
         {
           "id": "p087-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1892,
-            "ryu": 0.8108
-          }
+            "ken": 0.1796373740769923,
+            "ryu": 0.8203626259230077
+          },
+          "turnout_rate": 0.6443428890663199,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-2,2)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p088",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -1,
         "r": 2
       },
-      "total_population": 1350,
-      "initial_district_id": "d4",
-      "name": "Core (-1,2)",
+      "total_population": 1492,
       "demographic_groups": [
         {
           "id": "p088-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2301,
-            "ryu": 0.7699
-          }
+            "ken": 0.2087132955901325,
+            "ryu": 0.7912867044098675
+          },
+          "turnout_rate": 0.6240680937888101,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-1,2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p089",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 0,
         "r": 2
       },
-      "total_population": 1619,
-      "initial_district_id": "d4",
-      "name": "Core (0,2)",
+      "total_population": 1635,
       "demographic_groups": [
         {
           "id": "p089-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1622,
-            "ryu": 0.8378
-          }
+            "ken": 0.17735864818096161,
+            "ryu": 0.8226413518190384
+          },
+          "turnout_rate": 0.5690696932259016,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (0,2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p090",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 1,
         "r": 2
       },
-      "total_population": 1559,
-      "initial_district_id": "d4",
-      "name": "Suburb (1,2)",
+      "total_population": 1629,
       "demographic_groups": [
         {
           "id": "p090-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5188,
-            "ryu": 0.4812
-          }
+            "ken": 0.46989933678880336,
+            "ryu": 0.5301006632111966
+          },
+          "turnout_rate": 0.6585651345201767,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (1,2)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p091",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 2,
         "r": 2
       },
-      "total_population": 1430,
-      "initial_district_id": "d3",
-      "name": "Suburb (2,2)",
+      "total_population": 1597,
       "demographic_groups": [
         {
           "id": "p091-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4686,
-            "ryu": 0.5314
-          }
+            "ken": 0.5182297216169536,
+            "ryu": 0.4817702783830464
+          },
+          "turnout_rate": 0.6968319085426629,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (2,2)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p092",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 3,
         "r": 2
       },
-      "total_population": 1591,
-      "initial_district_id": "d3",
-      "name": "Exurb (3,2)",
+      "total_population": 1517,
       "demographic_groups": [
         {
           "id": "p092-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8334,
-            "ryu": 0.1666
-          }
+            "ken": 0.7809937785938382,
+            "ryu": 0.21900622140616177
+          },
+          "turnout_rate": 0.6967918500304222,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (3,2)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p093",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 4,
         "r": 2
       },
-      "total_population": 1434,
-      "initial_district_id": "d3",
-      "name": "Exurb (4,2)",
+      "total_population": 1636,
       "demographic_groups": [
         {
           "id": "p093-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8335,
-            "ryu": 0.1665
-          }
+            "ken": 0.8264708315581084,
+            "ryu": 0.1735291684418916
+          },
+          "turnout_rate": 0.6658693355391733,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (4,2)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p094",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -6,
         "r": 3
       },
-      "total_population": 1443,
-      "initial_district_id": "d5",
-      "name": "Exurb (-6,3)",
+      "total_population": 1402,
       "demographic_groups": [
         {
           "id": "p094-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8006,
-            "ryu": 0.1994
-          }
+            "ken": 0.7807662669569254,
+            "ryu": 0.21923373304307459
+          },
+          "turnout_rate": 0.5956662925076671,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-6,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p095",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -5,
         "r": 3
       },
-      "total_population": 1456,
-      "initial_district_id": "d5",
-      "name": "Exurb (-5,3)",
+      "total_population": 1379,
       "demographic_groups": [
         {
           "id": "p095-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7824,
-            "ryu": 0.2176
-          }
+            "ken": 0.8156358816288412,
+            "ryu": 0.18436411837115885
+          },
+          "turnout_rate": 0.6151583960046991,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-5,3)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p096",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -4,
         "r": 3
       },
-      "total_population": 1357,
-      "initial_district_id": "d5",
-      "name": "Suburb (-4,3)",
+      "total_population": 1539,
       "demographic_groups": [
         {
           "id": "p096-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4863,
-            "ryu": 0.5137
-          }
+            "ken": 0.4775210426561534,
+            "ryu": 0.5224789573438466
+          },
+          "turnout_rate": 0.6899343441007658,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-4,3)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p097",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -3,
         "r": 3
       },
-      "total_population": 1437,
-      "initial_district_id": "d5",
-      "name": "Suburb (-3,3)",
+      "total_population": 1552,
       "demographic_groups": [
         {
           "id": "p097-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5243,
-            "ryu": 0.4757
-          }
+            "ken": 0.535162837523967,
+            "ryu": 0.464837162476033
+          },
+          "turnout_rate": 0.6917141068843193,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-3,3)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p098",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -2,
         "r": 3
       },
-      "total_population": 1500,
-      "initial_district_id": "d4",
-      "name": "Suburb (-2,3)",
+      "total_population": 1363,
       "demographic_groups": [
         {
           "id": "p098-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4737,
-            "ryu": 0.5263
-          }
+            "ken": 0.49047143103554847,
+            "ryu": 0.5095285689644515
+          },
+          "turnout_rate": 0.6295009583001956,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-2,3)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p099",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": -1,
         "r": 3
       },
-      "total_population": 1565,
-      "initial_district_id": "d4",
-      "name": "Suburb (-1,3)",
+      "total_population": 1523,
       "demographic_groups": [
         {
           "id": "p099-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5177,
-            "ryu": 0.4823
-          }
+            "ken": 0.4623321821168065,
+            "ryu": 0.5376678178831935
+          },
+          "turnout_rate": 0.670107328321319,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (-1,3)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p100",
       "editable": true,
-      "county_id": "accord_central",
       "position": {
         "q": 0,
         "r": 3
       },
-      "total_population": 1542,
-      "initial_district_id": "d4",
-      "name": "Suburb (0,3)",
+      "total_population": 1466,
       "demographic_groups": [
         {
           "id": "p100-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4661,
-            "ryu": 0.5339
-          }
+            "ken": 0.5341864292509854,
+            "ryu": 0.46581357074901464
+          },
+          "turnout_rate": 0.6715517884353175,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_central",
+      "name": "Central (0,3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p101",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 1,
         "r": 3
       },
-      "total_population": 1609,
-      "initial_district_id": "d4",
-      "name": "Suburb (1,3)",
+      "total_population": 1423,
       "demographic_groups": [
         {
           "id": "p101-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.536,
-            "ryu": 0.464
-          }
+            "ken": 0.5058551188930869,
+            "ryu": 0.4941448811069131
+          },
+          "turnout_rate": 0.6838200267753564,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (1,3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p102",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 2,
         "r": 3
       },
-      "total_population": 1554,
-      "initial_district_id": "d4",
-      "name": "Exurb (2,3)",
+      "total_population": 1479,
       "demographic_groups": [
         {
           "id": "p102-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8137,
-            "ryu": 0.1863
-          }
+            "ken": 0.8065164362639189,
+            "ryu": 0.1934835637360811
+          },
+          "turnout_rate": 0.5741306712734513,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (2,3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p103",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 3,
         "r": 3
       },
-      "total_population": 1491,
-      "initial_district_id": "d3",
-      "name": "Exurb (3,3)",
+      "total_population": 1423,
       "demographic_groups": [
         {
           "id": "p103-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8131,
-            "ryu": 0.1869
-          }
+            "ken": 0.8349130805395544,
+            "ryu": 0.16508691946044562
+          },
+          "turnout_rate": 0.5627729628118687,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (3,3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p104",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -6,
         "r": 4
       },
-      "total_population": 1392,
-      "initial_district_id": "d5",
-      "name": "Exurb (-6,4)",
+      "total_population": 1517,
       "demographic_groups": [
         {
           "id": "p104-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8246,
-            "ryu": 0.1754
-          }
+            "ken": 0.8210222521796823,
+            "ryu": 0.17897774782031772
+          },
+          "turnout_rate": 0.6274150549899786,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-6,4)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p105",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -5,
         "r": 4
       },
-      "total_population": 1384,
-      "initial_district_id": "d5",
-      "name": "Exurb (-5,4)",
+      "total_population": 1478,
       "demographic_groups": [
         {
           "id": "p105-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8052,
-            "ryu": 0.1948
-          }
+            "ken": 0.7696486006490887,
+            "ryu": 0.2303513993509113
+          },
+          "turnout_rate": 0.5650371569558047,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-5,4)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p106",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -4,
         "r": 4
       },
-      "total_population": 1467,
-      "initial_district_id": "d5",
-      "name": "Suburb (-4,4)",
+      "total_population": 1411,
       "demographic_groups": [
         {
           "id": "p106-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.538,
-            "ryu": 0.462
-          }
+            "ken": 0.47484069304540755,
+            "ryu": 0.5251593069545925
+          },
+          "turnout_rate": 0.6248506142641418,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-4,4)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p107",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -3,
         "r": 4
       },
-      "total_population": 1480,
-      "initial_district_id": "d4",
-      "name": "Suburb (-3,4)",
+      "total_population": 1464,
       "demographic_groups": [
         {
           "id": "p107-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4609,
-            "ryu": 0.5391
-          }
+            "ken": 0.49800683848559857,
+            "ryu": 0.5019931615144014
+          },
+          "turnout_rate": 0.6497805133112706,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-3,4)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p108",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -2,
         "r": 4
       },
-      "total_population": 1350,
-      "initial_district_id": "d4",
-      "name": "Suburb (-2,4)",
+      "total_population": 1523,
       "demographic_groups": [
         {
           "id": "p108-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4792,
-            "ryu": 0.5208
-          }
+            "ken": 0.481443824544549,
+            "ryu": 0.5185561754554511
+          },
+          "turnout_rate": 0.6441263115499168,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-2,4)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p109",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -1,
         "r": 4
       },
-      "total_population": 1456,
-      "initial_district_id": "d4",
-      "name": "Suburb (-1,4)",
+      "total_population": 1590,
       "demographic_groups": [
         {
           "id": "p109-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4838,
-            "ryu": 0.5162
-          }
+            "ken": 0.5385805109888315,
+            "ryu": 0.46141948901116847
+          },
+          "turnout_rate": 0.5669495605980046,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-1,4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p110",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 0,
         "r": 4
       },
-      "total_population": 1559,
-      "initial_district_id": "d4",
-      "name": "Suburb (0,4)",
+      "total_population": 1605,
       "demographic_groups": [
         {
           "id": "p110-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4795,
-            "ryu": 0.5205
-          }
+            "ken": 0.4753953814506531,
+            "ryu": 0.5246046185493469
+          },
+          "turnout_rate": 0.6099548882688396,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (0,4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p111",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 1,
         "r": 4
       },
-      "total_population": 1501,
-      "initial_district_id": "d4",
-      "name": "Exurb (1,4)",
+      "total_population": 1614,
       "demographic_groups": [
         {
           "id": "p111-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7607,
-            "ryu": 0.2393
-          }
+            "ken": 0.805224877819419,
+            "ryu": 0.19477512218058102
+          },
+          "turnout_rate": 0.5803865654044785,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (1,4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p112",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 2,
         "r": 4
       },
-      "total_population": 1490,
-      "initial_district_id": "d4",
-      "name": "Exurb (2,4)",
+      "total_population": 1399,
       "demographic_groups": [
         {
           "id": "p112-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7992,
-            "ryu": 0.2008
-          }
+            "ken": 0.8135120066441596,
+            "ryu": 0.18648799335584043
+          },
+          "turnout_rate": 0.5682689987239429,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (2,4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p113",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -6,
         "r": 5
       },
-      "total_population": 1544,
-      "initial_district_id": "d5",
-      "name": "Exurb (-6,5)",
+      "total_population": 1596,
       "demographic_groups": [
         {
           "id": "p113-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8268,
-            "ryu": 0.1732
-          }
+            "ken": 0.8387508435174823,
+            "ryu": 0.1612491564825177
+          },
+          "turnout_rate": 0.6186889506760054,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-6,5)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p114",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -5,
         "r": 5
       },
-      "total_population": 1602,
-      "initial_district_id": "d5",
-      "name": "Exurb (-5,5)",
+      "total_population": 1642,
       "demographic_groups": [
         {
           "id": "p114-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8331,
-            "ryu": 0.1669
-          }
+            "ken": 0.781683896817267,
+            "ryu": 0.21831610318273298
+          },
+          "turnout_rate": 0.6090382085531019,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-5,5)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p115",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -4,
         "r": 5
       },
-      "total_population": 1612,
-      "initial_district_id": "d5",
-      "name": "Exurb (-4,5)",
+      "total_population": 1534,
       "demographic_groups": [
         {
           "id": "p115-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.763,
-            "ryu": 0.237
-          }
+            "ken": 0.7609938862547279,
+            "ryu": 0.23900611374527214
+          },
+          "turnout_rate": 0.6375949553214013,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-4,5)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p116",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -3,
         "r": 5
       },
-      "total_population": 1482,
-      "initial_district_id": "d4",
-      "name": "Exurb (-3,5)",
+      "total_population": 1437,
       "demographic_groups": [
         {
           "id": "p116-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.774,
-            "ryu": 0.226
-          }
+            "ken": 0.8004129081591964,
+            "ryu": 0.1995870918408036
+          },
+          "turnout_rate": 0.6731795784085989,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-3,5)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p117",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -2,
         "r": 5
       },
-      "total_population": 1535,
-      "initial_district_id": "d4",
-      "name": "Exurb (-2,5)",
+      "total_population": 1397,
       "demographic_groups": [
         {
           "id": "p117-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8105,
-            "ryu": 0.1895
-          }
+            "ken": 0.7785958535410464,
+            "ryu": 0.22140414645895357
+          },
+          "turnout_rate": 0.6785913407104089,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-2,5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p118",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -1,
         "r": 5
       },
-      "total_population": 1471,
-      "initial_district_id": "d4",
-      "name": "Exurb (-1,5)",
+      "total_population": 1454,
       "demographic_groups": [
         {
           "id": "p118-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7782,
-            "ryu": 0.2218
-          }
+            "ken": 0.8228119662590325,
+            "ryu": 0.17718803374096748
+          },
+          "turnout_rate": 0.604197317105718,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-1,5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p119",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 0,
         "r": 5
       },
-      "total_population": 1416,
-      "initial_district_id": "d4",
-      "name": "Exurb (0,5)",
+      "total_population": 1471,
       "demographic_groups": [
         {
           "id": "p119-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8302,
-            "ryu": 0.1698
-          }
+            "ken": 0.8340706136636437,
+            "ryu": 0.16592938633635634
+          },
+          "turnout_rate": 0.6529268619720824,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (0,5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p120",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 1,
         "r": 5
       },
-      "total_population": 1416,
-      "initial_district_id": "d4",
-      "name": "Exurb (1,5)",
+      "total_population": 1413,
       "demographic_groups": [
         {
           "id": "p120-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.836,
-            "ryu": 0.164
-          }
+            "ken": 0.813141031805426,
+            "ryu": 0.18685896819457404
+          },
+          "turnout_rate": 0.6421945355483331,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (1,5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p121",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -6,
         "r": 6
       },
-      "total_population": 1454,
-      "initial_district_id": "d5",
-      "name": "Exurb (-6,6)",
+      "total_population": 1513,
       "demographic_groups": [
         {
           "id": "p121-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7811,
-            "ryu": 0.2189
-          }
+            "ken": 0.7695931285619736,
+            "ryu": 0.2304068714380264
+          },
+          "turnout_rate": 0.6465079866931773,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-6,6)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p122",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -5,
         "r": 6
       },
-      "total_population": 1508,
-      "initial_district_id": "d5",
-      "name": "Exurb (-5,6)",
+      "total_population": 1623,
       "demographic_groups": [
         {
           "id": "p122-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8059,
-            "ryu": 0.1941
-          }
+            "ken": 0.8058060963079334,
+            "ryu": 0.19419390369206657
+          },
+          "turnout_rate": 0.6128221817547456,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-5,6)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p123",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -4,
         "r": 6
       },
-      "total_population": 1452,
-      "initial_district_id": "d4",
-      "name": "Exurb (-4,6)",
+      "total_population": 1461,
       "demographic_groups": [
         {
           "id": "p123-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8352,
-            "ryu": 0.1648
-          }
+            "ken": 0.7835370324738324,
+            "ryu": 0.21646296752616756
+          },
+          "turnout_rate": 0.6293112595914863,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-4,6)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p124",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -3,
         "r": 6
       },
-      "total_population": 1436,
-      "initial_district_id": "d4",
-      "name": "Exurb (-3,6)",
+      "total_population": 1597,
       "demographic_groups": [
         {
           "id": "p124-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7609,
-            "ryu": 0.2391
-          }
+            "ken": 0.8072449366748333,
+            "ryu": 0.19275506332516668
+          },
+          "turnout_rate": 0.5692689159070142,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-3,6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p125",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -2,
         "r": 6
       },
-      "total_population": 1541,
-      "initial_district_id": "d4",
-      "name": "Exurb (-2,6)",
+      "total_population": 1400,
       "demographic_groups": [
         {
           "id": "p125-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8389,
-            "ryu": 0.1611
-          }
+            "ken": 0.8222775507718325,
+            "ryu": 0.1777224492281675
+          },
+          "turnout_rate": 0.6382646544720046,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-2,6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p126",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": -1,
         "r": 6
       },
-      "total_population": 1487,
-      "initial_district_id": "d4",
-      "name": "Exurb (-1,6)",
+      "total_population": 1553,
       "demographic_groups": [
         {
           "id": "p126-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7753,
-            "ryu": 0.2247
-          }
+            "ken": 0.7652852016501129,
+            "ryu": 0.23471479834988707
+          },
+          "turnout_rate": 0.6483934990596026,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (-1,6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p127",
       "editable": true,
-      "county_id": "accord_outer",
       "position": {
         "q": 0,
         "r": 6
       },
-      "total_population": 1431,
-      "initial_district_id": "d4",
-      "name": "Exurb (0,6)",
+      "total_population": 1544,
       "demographic_groups": [
         {
           "id": "p127-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.8263,
-            "ryu": 0.1737
-          }
+            "ken": 0.7818629218079151,
+            "ryu": 0.21813707819208494
+          },
+          "turnout_rate": 0.5692027641809546,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "accord_outer",
+      "name": "Outer (0,6)",
+      "initial_district_id": "d5"
     }
   ],
   "events": [],
@@ -3152,20 +3151,21 @@
     },
     "intro_slides": [
       {
-        "heading": "The Accord",
-        "body": "It took two years of negotiations, three failed bills, and a court order, but both parties finally agreed: an independent commission would draw the new map using strictly neutral criteria.\n\nNo partisan registration data. No incumbent addresses. Just geometry: equal population, compact districts, no disconnected pieces. Both parties signed the agreement. Both parties praised it publicly."
+        "body": "It took two years of negotiations, three failed bills, and a court order, but both parties finally agreed: an independent commission would draw the new map using strictly neutral criteria.\n\nNo partisan registration data. No incumbent addresses. Just geometry: equal population, compact districts, no disconnected pieces. Both parties signed the agreement. Both parties praised it publicly.",
+        "heading": "The Accord"
       },
       {
-        "heading": "The Problem with Perfect Neutrality",
-        "body": "Here's what both parties understood privately, even as they signed: neutral rules don't produce neutral outcomes. They produce outcomes driven by geography.\n\nIn Accord County, geography has a lean. Ryu voters cluster tightly in the urban core. Ken voters spread across the suburbs and exurbs. Any compact map will reflect that geography — not because anyone drew it that way, but because that's where people live."
+        "body": "Here's what both parties understood privately, even as they signed: neutral rules don't produce neutral outcomes. They produce outcomes driven by geography.\n\nIn Accord County, geography has a lean. Ryu voters cluster tightly in the urban core. Ken voters spread across the suburbs and exurbs. Any compact map will reflect that geography — not because anyone drew it that way, but because that's where people live.",
+        "heading": "The Problem with Perfect Neutrality"
       },
       {
-        "heading": "A Fair Process, An Unfair Outcome?",
-        "body": "Draw the most geometrically neutral map you can. Then submit it and look at the results.\n\nBoth parties will complain. Ryu will say the compact map packed their voters unfairly. Ken will say their geographic spread deserves more representation. Both arguments will have merit.\n\nThis is not a bug in your map. It's a feature of representative democracy that no one has solved."
+        "body": "Draw the most geometrically neutral map you can. Then submit it and look at the results.\n\nBoth parties will complain. Ryu will say the compact map packed their voters unfairly. Ken will say their geographic spread deserves more representation. Both arguments will have merit.\n\nThis is not a bug in your map. It's a feature of representative democracy that no one has solved.",
+        "heading": "A Fair Process, An Unfair Outcome?"
       }
     ],
     "objective": "Apply the agreed neutral criteria. Draw a compact, population-balanced map. Watch both sides declare the process rigged."
   },
+  "default_district_id": "d1",
   "instigator_character": "commissioner",
   "character_demographics": {
     "commissioner": "bf",

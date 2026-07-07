@@ -960,16 +960,20 @@ test("scenario-006 winnability: column strips separate partisan flanks into safe
 	/**
 	 * Hex-of-hexes R=6: 127 precincts, 5 districts of ~25.
 	 * Geography: left (q≤0) = 62% Ken, right (q≥1) = 38% Ken.
-	 * Initial: angular wedges mixing both sides → all competitive.
+	 * Initial: diagonal strips (k=q+r) mixing both flanks → all competitive + imbalanced.
 	 *
 	 * Winning strategy: vertical column strips that keep flanks separated.
 	 * Boundary columns (q=-1, q=1, q=3) are shared between adjacent districts.
 	 *   D1 (24): q=-6,-5,-4 — pure Ken (62%, margin 25% → safe Ken)
 	 *   D2 (25): q=-3,-2 + upper q=-1 — pure Ken (62%, margin 24% → safe Ken)
 	 *   D3 (25): lower q=-1 + q=0 + upper q=1 — mostly Ken (59%, margin 18% → safe Ken)
-	 *   D4 (25): lower q=1 + q=2 + upper q=3 — Ryu territory (38%, margin 25% → safe Ryu)
-	 *   D5 (28): lower q=3 + q=4,5,6 — Ryu territory (38%, margin 24% → safe Ryu)
+	 *   D4 (27): lower q=1 + q=2 + q=3 rows -6..-1,2,3 — Ryu territory (38%, margin 25% → safe Ryu)
+	 *   D5 (26): q=3 rows 0,1 + q=4,5,6 — Ryu territory (38%, margin 24% → safe Ryu)
 	 * Result: 3 Ken safe + 2 Ryu safe ✓
+	 *
+	 * GAME-126: D4/D5 boundary rebalanced from the original 25/28 split — two lower-q=3
+	 * hexes ([3,2],[3,3]) moved D5→D4 so population_balance is robust under the migrated
+	 * pipeline's RNG (a 28-hex D5 sits at the +10% tolerance edge by count alone).
 	 */
 	await loadScenario(page, "scenario-006");
 
@@ -1074,7 +1078,7 @@ test("scenario-006 winnability: column strips separate partisan flanks into safe
 		3,
 	);
 
-	// D4: right Ryu strip — lower q=1 + q=2 + upper 6 of q=3 (25 hexes)
+	// D4: right Ryu strip — lower q=1 + q=2 + q=3 rows -6..-1,2,3 (27 hexes; [3,2],[3,3] moved from D5)
 	await paintHexes(
 		page,
 		[
@@ -1103,11 +1107,13 @@ test("scenario-006 winnability: column strips separate partisan flanks into safe
 			[1, 4],
 			[2, 4],
 			[1, 5],
+			[3, 2],
+			[3, 3],
 		],
 		4,
 	);
 
-	// D5: far-right Ryu strip — lower q=3 + q=4,5,6 (28 hexes)
+	// D5: far-right Ryu strip — q=3 rows 0,1 + q=4,5,6 (26 hexes)
 	await paintHexes(
 		page,
 		[
@@ -1136,9 +1142,7 @@ test("scenario-006 winnability: column strips separate partisan flanks into safe
 			[3, 1],
 			[4, 1],
 			[5, 1],
-			[3, 2],
 			[4, 2],
-			[3, 3],
 		],
 		5,
 	);

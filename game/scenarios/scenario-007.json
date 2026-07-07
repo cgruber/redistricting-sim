@@ -46,3055 +46,3054 @@
       "name": "District 5"
     }
   ],
-  "default_district_id": "d1",
   "precincts": [
     {
       "id": "p001",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 0,
         "r": -6
       },
-      "total_population": 1428,
-      "initial_district_id": "d1",
-      "name": "Exurb (0,-6)",
+      "total_population": 1478,
       "demographic_groups": [
         {
           "id": "p001-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6413,
-            "ryu": 0.3587
-          }
+            "ken": 0.664048108458519,
+            "ryu": 0.335951891541481
+          },
+          "turnout_rate": 0.5563329636701383,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (0,-6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p002",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 1,
         "r": -6
       },
-      "total_population": 1496,
-      "initial_district_id": "d1",
-      "name": "Exurb (1,-6)",
+      "total_population": 1362,
       "demographic_groups": [
         {
           "id": "p002-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6315,
-            "ryu": 0.3685
-          }
+            "ken": 0.685680538378656,
+            "ryu": 0.31431946162134405
+          },
+          "turnout_rate": 0.6228847344289534,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (1,-6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p003",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 2,
         "r": -6
       },
-      "total_population": 1543,
-      "initial_district_id": "d1",
-      "name": "Exurb (2,-6)",
+      "total_population": 1559,
       "demographic_groups": [
         {
           "id": "p003-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.694,
-            "ryu": 0.306
-          }
+            "ken": 0.6392610105872154,
+            "ryu": 0.3607389894127846
+          },
+          "turnout_rate": 0.6739162278361618,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (2,-6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p004",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 3,
         "r": -6
       },
-      "total_population": 1451,
-      "initial_district_id": "d1",
-      "name": "Exurb (3,-6)",
+      "total_population": 1496,
       "demographic_groups": [
         {
           "id": "p004-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.651,
-            "ryu": 0.349
-          }
+            "ken": 0.7006518797948957,
+            "ryu": 0.29934812020510426
+          },
+          "turnout_rate": 0.6675992726231925,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (3,-6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p005",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 4,
         "r": -6
       },
-      "total_population": 1620,
-      "initial_district_id": "d2",
-      "name": "Exurb (4,-6)",
+      "total_population": 1384,
       "demographic_groups": [
         {
           "id": "p005-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6372,
-            "ryu": 0.3628
-          }
+            "ken": 0.6344772964902222,
+            "ryu": 0.3655227035097778
+          },
+          "turnout_rate": 0.5771120322286152,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (4,-6)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p006",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 5,
         "r": -6
       },
-      "total_population": 1493,
-      "initial_district_id": "d2",
-      "name": "Exurb (5,-6)",
+      "total_population": 1598,
       "demographic_groups": [
         {
           "id": "p006-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6703,
-            "ryu": 0.3297
-          }
+            "ken": 0.7027383386157453,
+            "ryu": 0.2972616613842547
+          },
+          "turnout_rate": 0.6375877546030096,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (5,-6)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p007",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 6,
         "r": -6
       },
-      "total_population": 1387,
-      "initial_district_id": "d3",
-      "name": "Exurb (6,-6)",
+      "total_population": 1615,
       "demographic_groups": [
         {
           "id": "p007-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6703,
-            "ryu": 0.3297
-          }
+            "ken": 0.6696730924583972,
+            "ryu": 0.33032690754160277
+          },
+          "turnout_rate": 0.6534048175089993,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (6,-6)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p008",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -1,
         "r": -5
       },
-      "total_population": 1511,
-      "initial_district_id": "d1",
-      "name": "Exurb (-1,-5)",
+      "total_population": 1585,
       "demographic_groups": [
         {
           "id": "p008-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6472,
-            "ryu": 0.3528
-          }
+            "ken": 0.6637688666395843,
+            "ryu": 0.33623113336041566
+          },
+          "turnout_rate": 0.5580533725209534,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-1,-5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p009",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 0,
         "r": -5
       },
-      "total_population": 1492,
-      "initial_district_id": "d1",
-      "name": "Exurb (0,-5)",
+      "total_population": 1366,
       "demographic_groups": [
         {
           "id": "p009-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5182,
-            "ryu": 0.4818
-          }
+            "ken": 0.5204235248453916,
+            "ryu": 0.47957647515460844
+          },
+          "turnout_rate": 0.5612248299759813,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (0,-5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p010",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 1,
         "r": -5
       },
-      "total_population": 1440,
-      "initial_district_id": "d1",
-      "name": "Exurb (1,-5)",
+      "total_population": 1404,
       "demographic_groups": [
         {
           "id": "p010-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5179,
-            "ryu": 0.4821
-          }
+            "ken": 0.543326706122607,
+            "ryu": 0.45667329387739297
+          },
+          "turnout_rate": 0.6259880536468699,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (1,-5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p011",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 2,
         "r": -5
       },
-      "total_population": 1633,
-      "initial_district_id": "d1",
-      "name": "Exurb (2,-5)",
+      "total_population": 1623,
       "demographic_groups": [
         {
           "id": "p011-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5842,
-            "ryu": 0.4158
-          }
+            "ken": 0.5881238623149694,
+            "ryu": 0.4118761376850306
+          },
+          "turnout_rate": 0.5586285196477547,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (2,-5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p012",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 3,
         "r": -5
       },
-      "total_population": 1430,
-      "initial_district_id": "d2",
-      "name": "Exurb (3,-5)",
+      "total_population": 1525,
       "demographic_groups": [
         {
           "id": "p012-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5256,
-            "ryu": 0.4744
-          }
+            "ken": 0.5330598135851324,
+            "ryu": 0.46694018641486756
+          },
+          "turnout_rate": 0.5874210944049992,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (3,-5)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p013",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 4,
         "r": -5
       },
-      "total_population": 1623,
-      "initial_district_id": "d2",
-      "name": "Exurb (4,-5)",
+      "total_population": 1499,
       "demographic_groups": [
         {
           "id": "p013-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.577,
-            "ryu": 0.423
-          }
+            "ken": 0.5208885596320033,
+            "ryu": 0.4791114403679967
+          },
+          "turnout_rate": 0.5811758904834278,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (4,-5)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p014",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 5,
         "r": -5
       },
-      "total_population": 1393,
-      "initial_district_id": "d3",
-      "name": "Exurb (5,-5)",
+      "total_population": 1557,
       "demographic_groups": [
         {
           "id": "p014-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5349,
-            "ryu": 0.4651
-          }
+            "ken": 0.527440517898649,
+            "ryu": 0.472559482101351
+          },
+          "turnout_rate": 0.5512386702117511,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (5,-5)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p015",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 6,
         "r": -5
       },
-      "total_population": 1437,
-      "initial_district_id": "d4",
-      "name": "Exurb (6,-5)",
+      "total_population": 1477,
       "demographic_groups": [
         {
           "id": "p015-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7083,
-            "ryu": 0.2917
-          }
+            "ken": 0.6952500265091658,
+            "ryu": 0.3047499734908342
+          },
+          "turnout_rate": 0.6281611175742,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (6,-5)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p016",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -2,
         "r": -4
       },
-      "total_population": 1591,
-      "initial_district_id": "d1",
-      "name": "Exurb (-2,-4)",
+      "total_population": 1366,
       "demographic_groups": [
         {
           "id": "p016-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6448,
-            "ryu": 0.3552
-          }
+            "ken": 0.6680828929133713,
+            "ryu": 0.3319171070866287
+          },
+          "turnout_rate": 0.6409076557029039,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-2,-4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p017",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -1,
         "r": -4
       },
-      "total_population": 1538,
-      "initial_district_id": "d1",
-      "name": "Exurb (-1,-4)",
+      "total_population": 1389,
       "demographic_groups": [
         {
           "id": "p017-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5246,
-            "ryu": 0.4754
-          }
+            "ken": 0.53430231442675,
+            "ryu": 0.46569768557325
+          },
+          "turnout_rate": 0.5888594197342173,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-1,-4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p018",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 0,
         "r": -4
       },
-      "total_population": 1368,
-      "initial_district_id": "d1",
-      "name": "Suburb (0,-4)",
+      "total_population": 1372,
       "demographic_groups": [
         {
           "id": "p018-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4166,
-            "ryu": 0.5834
-          }
+            "ken": 0.4578389468975365,
+            "ryu": 0.5421610531024634
+          },
+          "turnout_rate": 0.5913703579688445,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (0,-4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p019",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 1,
         "r": -4
       },
-      "total_population": 1534,
-      "initial_district_id": "d1",
-      "name": "Suburb (1,-4)",
+      "total_population": 1475,
       "demographic_groups": [
         {
           "id": "p019-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4805,
-            "ryu": 0.5195
-          }
+            "ken": 0.4667793035320938,
+            "ryu": 0.5332206964679063
+          },
+          "turnout_rate": 0.6165459973039106,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (1,-4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p020",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 2,
         "r": -4
       },
-      "total_population": 1415,
-      "initial_district_id": "d2",
-      "name": "Suburb (2,-4)",
+      "total_population": 1502,
       "demographic_groups": [
         {
           "id": "p020-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4637,
-            "ryu": 0.5363
-          }
+            "ken": 0.46001594446599486,
+            "ryu": 0.5399840555340052
+          },
+          "turnout_rate": 0.6382727623917163,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (2,-4)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p021",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 3,
         "r": -4
       },
-      "total_population": 1621,
-      "initial_district_id": "d2",
-      "name": "Suburb (3,-4)",
+      "total_population": 1643,
       "demographic_groups": [
         {
           "id": "p021-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4169,
-            "ryu": 0.5831
-          }
+            "ken": 0.44197720594704154,
+            "ryu": 0.5580227940529585
+          },
+          "turnout_rate": 0.567464229464531,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (3,-4)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p022",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 4,
         "r": -4
       },
-      "total_population": 1583,
-      "initial_district_id": "d3",
-      "name": "Suburb (4,-4)",
+      "total_population": 1367,
       "demographic_groups": [
         {
           "id": "p022-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4728,
-            "ryu": 0.5272
-          }
+            "ken": 0.43445788253098727,
+            "ryu": 0.5655421174690127
+          },
+          "turnout_rate": 0.6342143835616298,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (4,-4)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p023",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 5,
         "r": -4
       },
-      "total_population": 1522,
-      "initial_district_id": "d4",
-      "name": "Exurb (5,-4)",
+      "total_population": 1436,
       "demographic_groups": [
         {
           "id": "p023-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5213,
-            "ryu": 0.4787
-          }
+            "ken": 0.5105490269325674,
+            "ryu": 0.48945097306743257
+          },
+          "turnout_rate": 0.6896070585469715,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (5,-4)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p024",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 6,
         "r": -4
       },
-      "total_population": 1418,
-      "initial_district_id": "d4",
-      "name": "Exurb (6,-4)",
+      "total_population": 1425,
       "demographic_groups": [
         {
           "id": "p024-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6399,
-            "ryu": 0.3601
-          }
+            "ken": 0.6401022752560676,
+            "ryu": 0.35989772474393245
+          },
+          "turnout_rate": 0.6860062202555127,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (6,-4)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p025",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -3,
         "r": -3
       },
-      "total_population": 1486,
-      "initial_district_id": "d1",
-      "name": "Exurb (-3,-3)",
+      "total_population": 1390,
       "demographic_groups": [
         {
           "id": "p025-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6627,
-            "ryu": 0.3373
-          }
+            "ken": 0.6691138848662377,
+            "ryu": 0.3308861151337623
+          },
+          "turnout_rate": 0.6724081958062015,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-3,-3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p026",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -2,
         "r": -3
       },
-      "total_population": 1643,
-      "initial_district_id": "d1",
-      "name": "Exurb (-2,-3)",
+      "total_population": 1412,
       "demographic_groups": [
         {
           "id": "p026-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5612,
-            "ryu": 0.4388
-          }
+            "ken": 0.5354114105179907,
+            "ryu": 0.4645885894820093
+          },
+          "turnout_rate": 0.6065040715504437,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-2,-3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p027",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -1,
         "r": -3
       },
-      "total_population": 1573,
-      "initial_district_id": "d1",
-      "name": "Suburb (-1,-3)",
+      "total_population": 1415,
       "demographic_groups": [
         {
           "id": "p027-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.414,
-            "ryu": 0.586
-          }
+            "ken": 0.43185775192454456,
+            "ryu": 0.5681422480754554
+          },
+          "turnout_rate": 0.6475616158451885,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-1,-3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p028",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 0,
         "r": -3
       },
-      "total_population": 1607,
-      "initial_district_id": "d1",
-      "name": "Suburb (0,-3)",
+      "total_population": 1352,
       "demographic_groups": [
         {
           "id": "p028-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4485,
-            "ryu": 0.5515
-          }
+            "ken": 0.4777947559207678,
+            "ryu": 0.5222052440792322
+          },
+          "turnout_rate": 0.6120843979762867,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (0,-3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p029",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 1,
         "r": -3
       },
-      "total_population": 1442,
-      "initial_district_id": "d2",
-      "name": "Suburb (1,-3)",
+      "total_population": 1595,
       "demographic_groups": [
         {
           "id": "p029-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4455,
-            "ryu": 0.5545
-          }
+            "ken": 0.4411323943920434,
+            "ryu": 0.5588676056079567
+          },
+          "turnout_rate": 0.6350416034343652,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (1,-3)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p030",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 2,
         "r": -3
       },
-      "total_population": 1558,
-      "initial_district_id": "d2",
-      "name": "Suburb (2,-3)",
+      "total_population": 1506,
       "demographic_groups": [
         {
           "id": "p030-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4189,
-            "ryu": 0.5811
-          }
+            "ken": 0.43381148789078,
+            "ryu": 0.56618851210922
+          },
+          "turnout_rate": 0.6642603288171812,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (2,-3)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p031",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 3,
         "r": -3
       },
-      "total_population": 1476,
-      "initial_district_id": "d3",
-      "name": "Suburb (3,-3)",
+      "total_population": 1493,
       "demographic_groups": [
         {
           "id": "p031-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4115,
-            "ryu": 0.5885
-          }
+            "ken": 0.43996270198374987,
+            "ryu": 0.5600372980162501
+          },
+          "turnout_rate": 0.6116112358402461,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (3,-3)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p032",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 4,
         "r": -3
       },
-      "total_population": 1626,
-      "initial_district_id": "d4",
-      "name": "Suburb (4,-3)",
+      "total_population": 1532,
       "demographic_groups": [
         {
           "id": "p032-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4489,
-            "ryu": 0.5511
-          }
+            "ken": 0.4370554898120463,
+            "ryu": 0.5629445101879538
+          },
+          "turnout_rate": 0.621200553770177,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (4,-3)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p033",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 5,
         "r": -3
       },
-      "total_population": 1599,
-      "initial_district_id": "d4",
-      "name": "Exurb (5,-3)",
+      "total_population": 1441,
       "demographic_groups": [
         {
           "id": "p033-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5213,
-            "ryu": 0.4787
-          }
+            "ken": 0.5605068180151285,
+            "ryu": 0.43949318198487153
+          },
+          "turnout_rate": 0.6318072502384894,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (5,-3)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p034",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 6,
         "r": -3
       },
-      "total_population": 1456,
-      "initial_district_id": "d5",
-      "name": "Exurb (6,-3)",
+      "total_population": 1427,
       "demographic_groups": [
         {
           "id": "p034-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6966,
-            "ryu": 0.3034
-          }
+            "ken": 0.6946613240242004,
+            "ryu": 0.30533867597579956
+          },
+          "turnout_rate": 0.6266460002865643,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (6,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p035",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -4,
         "r": -2
       },
-      "total_population": 1448,
-      "initial_district_id": "d1",
-      "name": "Exurb (-4,-2)",
+      "total_population": 1529,
       "demographic_groups": [
         {
           "id": "p035-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6786,
-            "ryu": 0.3214
-          }
+            "ken": 0.6716920374147595,
+            "ryu": 0.32830796258524053
+          },
+          "turnout_rate": 0.6278008856228553,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-4,-2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p036",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -3,
         "r": -2
       },
-      "total_population": 1560,
-      "initial_district_id": "d1",
-      "name": "Exurb (-3,-2)",
+      "total_population": 1433,
       "demographic_groups": [
         {
           "id": "p036-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5697,
-            "ryu": 0.4303
-          }
+            "ken": 0.5385756671987474,
+            "ryu": 0.4614243328012526
+          },
+          "turnout_rate": 0.620564653002657,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-3,-2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p037",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -2,
         "r": -2
       },
-      "total_population": 1437,
-      "initial_district_id": "d1",
-      "name": "Suburb (-2,-2)",
+      "total_population": 1563,
       "demographic_groups": [
         {
           "id": "p037-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4418,
-            "ryu": 0.5582
-          }
+            "ken": 0.4587248459458351,
+            "ryu": 0.5412751540541649
+          },
+          "turnout_rate": 0.6408241646829993,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-2,-2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p038",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -1,
         "r": -2
       },
-      "total_population": 1517,
-      "initial_district_id": "d1",
-      "name": "Suburb (-1,-2)",
+      "total_population": 1483,
       "demographic_groups": [
         {
           "id": "p038-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4544,
-            "ryu": 0.5456
-          }
+            "ken": 0.43804681904613973,
+            "ryu": 0.5619531809538603
+          },
+          "turnout_rate": 0.6182867726776748,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-1,-2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p039",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 0,
         "r": -2
       },
-      "total_population": 1564,
-      "initial_district_id": "d2",
-      "name": "Core (0,-2)",
+      "total_population": 1538,
       "demographic_groups": [
         {
           "id": "p039-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.263,
-            "ryu": 0.737
-          }
+            "ken": 0.2159818741492927,
+            "ryu": 0.7840181258507073
+          },
+          "turnout_rate": 0.5675033781211823,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (0,-2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p040",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 1,
         "r": -2
       },
-      "total_population": 1374,
-      "initial_district_id": "d2",
-      "name": "Core (1,-2)",
+      "total_population": 1527,
       "demographic_groups": [
         {
           "id": "p040-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2615,
-            "ryu": 0.7385
-          }
+            "ken": 0.21282588275149464,
+            "ryu": 0.7871741172485054
+          },
+          "turnout_rate": 0.6108056154334918,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (1,-2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p041",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 2,
         "r": -2
       },
-      "total_population": 1415,
-      "initial_district_id": "d3",
-      "name": "Core (2,-2)",
+      "total_population": 1470,
       "demographic_groups": [
         {
           "id": "p041-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.248,
-            "ryu": 0.752
-          }
+            "ken": 0.2347699447348714,
+            "ryu": 0.7652300552651286
+          },
+          "turnout_rate": 0.6154000983107835,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (2,-2)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p042",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 3,
         "r": -2
       },
-      "total_population": 1506,
-      "initial_district_id": "d4",
-      "name": "Suburb (3,-2)",
+      "total_population": 1385,
       "demographic_groups": [
         {
           "id": "p042-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4342,
-            "ryu": 0.5658
-          }
+            "ken": 0.4295348710380495,
+            "ryu": 0.5704651289619505
+          },
+          "turnout_rate": 0.5967231218353846,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (3,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p043",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 4,
         "r": -2
       },
-      "total_population": 1541,
-      "initial_district_id": "d4",
-      "name": "Suburb (4,-2)",
+      "total_population": 1442,
       "demographic_groups": [
         {
           "id": "p043-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4474,
-            "ryu": 0.5526
-          }
+            "ken": 0.4595635951310396,
+            "ryu": 0.5404364048689604
+          },
+          "turnout_rate": 0.5583901617210358,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (4,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p044",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 5,
         "r": -2
       },
-      "total_population": 1397,
-      "initial_district_id": "d5",
-      "name": "Exurb (5,-2)",
+      "total_population": 1518,
       "demographic_groups": [
         {
           "id": "p044-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5441,
-            "ryu": 0.4559
-          }
+            "ken": 0.5461408654600383,
+            "ryu": 0.45385913453996174
+          },
+          "turnout_rate": 0.6722688467008993,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (5,-2)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p045",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 6,
         "r": -2
       },
-      "total_population": 1572,
-      "initial_district_id": "d5",
-      "name": "Exurb (6,-2)",
+      "total_population": 1352,
       "demographic_groups": [
         {
           "id": "p045-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6918,
-            "ryu": 0.3082
-          }
+            "ken": 0.6841632601059974,
+            "ryu": 0.3158367398940026
+          },
+          "turnout_rate": 0.6317373736295849,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (6,-2)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p046",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -5,
         "r": -1
       },
-      "total_population": 1547,
-      "initial_district_id": "d1",
-      "name": "Exurb (-5,-1)",
+      "total_population": 1630,
       "demographic_groups": [
         {
           "id": "p046-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6724,
-            "ryu": 0.3276
-          }
+            "ken": 0.6774854025058449,
+            "ryu": 0.3225145974941551
+          },
+          "turnout_rate": 0.597673936013598,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-5,-1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p047",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -4,
         "r": -1
       },
-      "total_population": 1408,
-      "initial_district_id": "d1",
-      "name": "Exurb (-4,-1)",
+      "total_population": 1388,
       "demographic_groups": [
         {
           "id": "p047-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5529,
-            "ryu": 0.4471
-          }
+            "ken": 0.5745945569872857,
+            "ryu": 0.4254054430127143
+          },
+          "turnout_rate": 0.6289457456441596,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-4,-1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p048",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -3,
         "r": -1
       },
-      "total_population": 1579,
-      "initial_district_id": "d1",
-      "name": "Suburb (-3,-1)",
+      "total_population": 1622,
       "demographic_groups": [
         {
           "id": "p048-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.414,
-            "ryu": 0.586
-          }
+            "ken": 0.48932231789454816,
+            "ryu": 0.5106776821054518
+          },
+          "turnout_rate": 0.5936017190106213,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-3,-1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p049",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -2,
         "r": -1
       },
-      "total_population": 1589,
-      "initial_district_id": "d1",
-      "name": "Suburb (-2,-1)",
+      "total_population": 1497,
       "demographic_groups": [
         {
           "id": "p049-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4418,
-            "ryu": 0.5582
-          }
+            "ken": 0.410786292552948,
+            "ryu": 0.589213707447052
+          },
+          "turnout_rate": 0.6689085678779519,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-2,-1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p050",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -1,
         "r": -1
       },
-      "total_population": 1409,
-      "initial_district_id": "d2",
-      "name": "Core (-1,-1)",
+      "total_population": 1595,
       "demographic_groups": [
         {
           "id": "p050-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2785,
-            "ryu": 0.7215
-          }
+            "ken": 0.2218779779970646,
+            "ryu": 0.7781220220029355
+          },
+          "turnout_rate": 0.5553045799373649,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-1,-1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p051",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 0,
         "r": -1
       },
-      "total_population": 1383,
-      "initial_district_id": "d2",
-      "name": "Core (0,-1)",
+      "total_population": 1445,
       "demographic_groups": [
         {
           "id": "p051-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2375,
-            "ryu": 0.7625
-          }
+            "ken": 0.2425973691791296,
+            "ryu": 0.7574026308208703
+          },
+          "turnout_rate": 0.5517808405566029,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (0,-1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p052",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 1,
         "r": -1
       },
-      "total_population": 1501,
-      "initial_district_id": "d3",
-      "name": "Core (1,-1)",
+      "total_population": 1463,
       "demographic_groups": [
         {
           "id": "p052-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2605,
-            "ryu": 0.7395
-          }
+            "ken": 0.2754830949194729,
+            "ryu": 0.7245169050805271
+          },
+          "turnout_rate": 0.6210596824763343,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (1,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p053",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 2,
         "r": -1
       },
-      "total_population": 1446,
-      "initial_district_id": "d4",
-      "name": "Core (2,-1)",
+      "total_population": 1432,
       "demographic_groups": [
         {
           "id": "p053-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2224,
-            "ryu": 0.7776
-          }
+            "ken": 0.2167091198451817,
+            "ryu": 0.7832908801548183
+          },
+          "turnout_rate": 0.6491394648328424,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (2,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p054",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 3,
         "r": -1
       },
-      "total_population": 1378,
-      "initial_district_id": "d4",
-      "name": "Suburb (3,-1)",
+      "total_population": 1545,
       "demographic_groups": [
         {
           "id": "p054-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4886,
-            "ryu": 0.5114
-          }
+            "ken": 0.43870333598926664,
+            "ryu": 0.5612966640107333
+          },
+          "turnout_rate": 0.5639360705856235,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (3,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p055",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 4,
         "r": -1
       },
-      "total_population": 1593,
-      "initial_district_id": "d5",
-      "name": "Suburb (4,-1)",
+      "total_population": 1605,
       "demographic_groups": [
         {
           "id": "p055-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4708,
-            "ryu": 0.5292
-          }
+            "ken": 0.42720521278679374,
+            "ryu": 0.5727947872132062
+          },
+          "turnout_rate": 0.5643176642013714,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (4,-1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p056",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 5,
         "r": -1
       },
-      "total_population": 1532,
-      "initial_district_id": "d5",
-      "name": "Exurb (5,-1)",
+      "total_population": 1474,
       "demographic_groups": [
         {
           "id": "p056-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.58,
-            "ryu": 0.42
-          }
+            "ken": 0.5306506186164917,
+            "ryu": 0.46934938138350835
+          },
+          "turnout_rate": 0.6717939840513281,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (5,-1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p057",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 6,
         "r": -1
       },
-      "total_population": 1544,
-      "initial_district_id": "d5",
-      "name": "Exurb (6,-1)",
+      "total_population": 1467,
       "demographic_groups": [
         {
           "id": "p057-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6719,
-            "ryu": 0.3281
-          }
+            "ken": 0.6943579503893853,
+            "ryu": 0.3056420496106147
+          },
+          "turnout_rate": 0.5737496055080555,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (6,-1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p058",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -6,
         "r": 0
       },
-      "total_population": 1561,
-      "initial_district_id": "d1",
-      "name": "Exurb (-6,0)",
+      "total_population": 1520,
       "demographic_groups": [
         {
           "id": "p058-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6956,
-            "ryu": 0.3044
-          }
+            "ken": 0.6705894124135375,
+            "ryu": 0.32941058758646247
+          },
+          "turnout_rate": 0.6929808040498755,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-6,0)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p059",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -5,
         "r": 0
       },
-      "total_population": 1428,
-      "initial_district_id": "d1",
-      "name": "Exurb (-5,0)",
+      "total_population": 1439,
       "demographic_groups": [
         {
           "id": "p059-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5171,
-            "ryu": 0.4829
-          }
+            "ken": 0.5510114964470267,
+            "ryu": 0.44898850355297326
+          },
+          "turnout_rate": 0.6726912949350662,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-5,0)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p060",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -4,
         "r": 0
       },
-      "total_population": 1608,
-      "initial_district_id": "d1",
-      "name": "Suburb (-4,0)",
+      "total_population": 1579,
       "demographic_groups": [
         {
           "id": "p060-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4206,
-            "ryu": 0.5794
-          }
+            "ken": 0.4581532940268517,
+            "ryu": 0.5418467059731483
+          },
+          "turnout_rate": 0.6288094252347947,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-4,0)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p061",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -3,
         "r": 0
       },
-      "total_population": 1378,
-      "initial_district_id": "d1",
-      "name": "Suburb (-3,0)",
+      "total_population": 1462,
       "demographic_groups": [
         {
           "id": "p061-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4563,
-            "ryu": 0.5437
-          }
+            "ken": 0.4285806459002197,
+            "ryu": 0.5714193540997803
+          },
+          "turnout_rate": 0.5514811467961409,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-3,0)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p062",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -2,
         "r": 0
       },
-      "total_population": 1426,
-      "initial_district_id": "d2",
-      "name": "Core (-2,0)",
+      "total_population": 1473,
       "demographic_groups": [
         {
           "id": "p062-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2216,
-            "ryu": 0.7784
-          }
+            "ken": 0.22883583955466746,
+            "ryu": 0.7711641604453325
+          },
+          "turnout_rate": 0.5788362484541721,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-2,0)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p063",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -1,
         "r": 0
       },
-      "total_population": 1444,
-      "initial_district_id": "d2",
-      "name": "Core (-1,0)",
+      "total_population": 1451,
       "demographic_groups": [
         {
           "id": "p063-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.241,
-            "ryu": 0.759
-          }
+            "ken": 0.2473440537415445,
+            "ryu": 0.7526559462584554
+          },
+          "turnout_rate": 0.658614563755691,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-1,0)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p064",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 0,
         "r": 0
       },
-      "total_population": 1466,
-      "initial_district_id": "d3",
-      "name": "Core (0,0)",
+      "total_population": 1492,
       "demographic_groups": [
         {
           "id": "p064-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2184,
-            "ryu": 0.7816
-          }
+            "ken": 0.2713043210841715,
+            "ryu": 0.7286956789158285
+          },
+          "turnout_rate": 0.6647695772815495,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (0,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p065",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 1,
         "r": 0
       },
-      "total_population": 1529,
-      "initial_district_id": "d4",
-      "name": "Core (1,0)",
+      "total_population": 1540,
       "demographic_groups": [
         {
           "id": "p065-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2731,
-            "ryu": 0.7269
-          }
+            "ken": 0.21604845082387328,
+            "ryu": 0.7839515491761267
+          },
+          "turnout_rate": 0.57903720154427,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (1,0)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p066",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 2,
         "r": 0
       },
-      "total_population": 1616,
-      "initial_district_id": "d4",
-      "name": "Core (2,0)",
+      "total_population": 1514,
       "demographic_groups": [
         {
           "id": "p066-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2847,
-            "ryu": 0.7153
-          }
+            "ken": 0.27248016292229293,
+            "ryu": 0.7275198370777071
+          },
+          "turnout_rate": 0.6013905204948969,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (2,0)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p067",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 3,
         "r": 0
       },
-      "total_population": 1392,
-      "initial_district_id": "d5",
-      "name": "Suburb (3,0)",
+      "total_population": 1593,
       "demographic_groups": [
         {
           "id": "p067-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4707,
-            "ryu": 0.5293
-          }
+            "ken": 0.4536553598195314,
+            "ryu": 0.5463446401804686
+          },
+          "turnout_rate": 0.6213573278393596,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (3,0)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p068",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 4,
         "r": 0
       },
-      "total_population": 1496,
-      "initial_district_id": "d5",
-      "name": "Suburb (4,0)",
+      "total_population": 1503,
       "demographic_groups": [
         {
           "id": "p068-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4518,
-            "ryu": 0.5482
-          }
+            "ken": 0.4113741555064917,
+            "ryu": 0.5886258444935083
+          },
+          "turnout_rate": 0.6885869369609281,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (4,0)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p069",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 5,
         "r": 0
       },
-      "total_population": 1365,
-      "initial_district_id": "d5",
-      "name": "Exurb (5,0)",
+      "total_population": 1506,
       "demographic_groups": [
         {
           "id": "p069-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5351,
-            "ryu": 0.4649
-          }
+            "ken": 0.5282103220745922,
+            "ryu": 0.4717896779254078
+          },
+          "turnout_rate": 0.6072022058884613,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (5,0)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p070",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 6,
         "r": 0
       },
-      "total_population": 1636,
-      "initial_district_id": "d5",
-      "name": "Exurb (6,0)",
+      "total_population": 1506,
       "demographic_groups": [
         {
           "id": "p070-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6887,
-            "ryu": 0.3113
-          }
+            "ken": 0.6937650383636356,
+            "ryu": 0.30623496163636443
+          },
+          "turnout_rate": 0.5683127455529757,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (6,0)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p071",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -6,
         "r": 1
       },
-      "total_population": 1511,
-      "initial_district_id": "d1",
-      "name": "Exurb (-6,1)",
+      "total_population": 1457,
       "demographic_groups": [
         {
           "id": "p071-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6543,
-            "ryu": 0.3457
-          }
+            "ken": 0.6920936314947903,
+            "ryu": 0.3079063685052097
+          },
+          "turnout_rate": 0.6858950316905975,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-6,1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p072",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -5,
         "r": 1
       },
-      "total_population": 1493,
-      "initial_district_id": "d1",
-      "name": "Exurb (-5,1)",
+      "total_population": 1491,
       "demographic_groups": [
         {
           "id": "p072-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5762,
-            "ryu": 0.4238
-          }
+            "ken": 0.5749595618247987,
+            "ryu": 0.4250404381752013
+          },
+          "turnout_rate": 0.6076768483035266,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-5,1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p073",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -4,
         "r": 1
       },
-      "total_population": 1451,
-      "initial_district_id": "d1",
-      "name": "Suburb (-4,1)",
+      "total_population": 1533,
       "demographic_groups": [
         {
           "id": "p073-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4611,
-            "ryu": 0.5389
-          }
+            "ken": 0.4325472902879119,
+            "ryu": 0.567452709712088
+          },
+          "turnout_rate": 0.645688164094463,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-4,1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p074",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -3,
         "r": 1
       },
-      "total_population": 1489,
-      "initial_district_id": "d2",
-      "name": "Suburb (-3,1)",
+      "total_population": 1532,
       "demographic_groups": [
         {
           "id": "p074-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4537,
-            "ryu": 0.5463
-          }
+            "ken": 0.48488650465384125,
+            "ryu": 0.5151134953461587
+          },
+          "turnout_rate": 0.6580088522285222,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-3,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p075",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -2,
         "r": 1
       },
-      "total_population": 1426,
-      "initial_district_id": "d2",
-      "name": "Core (-2,1)",
+      "total_population": 1455,
       "demographic_groups": [
         {
           "id": "p075-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.227,
-            "ryu": 0.773
-          }
+            "ken": 0.21128285201266409,
+            "ryu": 0.7887171479873359
+          },
+          "turnout_rate": 0.6354073678608984,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-2,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p076",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -1,
         "r": 1
       },
-      "total_population": 1453,
-      "initial_district_id": "d3",
-      "name": "Core (-1,1)",
+      "total_population": 1487,
       "demographic_groups": [
         {
           "id": "p076-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2533,
-            "ryu": 0.7467
-          }
+            "ken": 0.2159478953666985,
+            "ryu": 0.7840521046333015
+          },
+          "turnout_rate": 0.6093018393148668,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-1,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p077",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 0,
         "r": 1
       },
-      "total_population": 1436,
-      "initial_district_id": "d4",
-      "name": "Core (0,1)",
+      "total_population": 1372,
       "demographic_groups": [
         {
           "id": "p077-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2758,
-            "ryu": 0.7242
-          }
+            "ken": 0.28491306900978086,
+            "ryu": 0.7150869309902191
+          },
+          "turnout_rate": 0.6233852269826456,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (0,1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p078",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 1,
         "r": 1
       },
-      "total_population": 1642,
-      "initial_district_id": "d4",
-      "name": "Core (1,1)",
+      "total_population": 1385,
       "demographic_groups": [
         {
           "id": "p078-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2654,
-            "ryu": 0.7346
-          }
+            "ken": 0.26089124258607627,
+            "ryu": 0.7391087574139237
+          },
+          "turnout_rate": 0.6057990477769636,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (1,1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p079",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 2,
         "r": 1
       },
-      "total_population": 1461,
-      "initial_district_id": "d5",
-      "name": "Suburb (2,1)",
+      "total_population": 1360,
       "demographic_groups": [
         {
           "id": "p079-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4502,
-            "ryu": 0.5498
-          }
+            "ken": 0.4694583722390235,
+            "ryu": 0.5305416277609765
+          },
+          "turnout_rate": 0.6130366231082007,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (2,1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p080",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 3,
         "r": 1
       },
-      "total_population": 1533,
-      "initial_district_id": "d5",
-      "name": "Suburb (3,1)",
+      "total_population": 1472,
       "demographic_groups": [
         {
           "id": "p080-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.42,
-            "ryu": 0.58
-          }
+            "ken": 0.48758428733795883,
+            "ryu": 0.5124157126620412
+          },
+          "turnout_rate": 0.6983425248879939,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (3,1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p081",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 4,
         "r": 1
       },
-      "total_population": 1587,
-      "initial_district_id": "d5",
-      "name": "Exurb (4,1)",
+      "total_population": 1443,
       "demographic_groups": [
         {
           "id": "p081-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5158,
-            "ryu": 0.4842
-          }
+            "ken": 0.5795239808410406,
+            "ryu": 0.4204760191589594
+          },
+          "turnout_rate": 0.6391175314900466,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (4,1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p082",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 5,
         "r": 1
       },
-      "total_population": 1628,
-      "initial_district_id": "d5",
-      "name": "Exurb (5,1)",
+      "total_population": 1481,
       "demographic_groups": [
         {
           "id": "p082-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6917,
-            "ryu": 0.3083
-          }
+            "ken": 0.653641308695078,
+            "ryu": 0.34635869130492203
+          },
+          "turnout_rate": 0.6142417003284208,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (5,1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p083",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -6,
         "r": 2
       },
-      "total_population": 1550,
-      "initial_district_id": "d1",
-      "name": "Exurb (-6,2)",
+      "total_population": 1423,
       "demographic_groups": [
         {
           "id": "p083-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6485,
-            "ryu": 0.3515
-          }
+            "ken": 0.6689816568233073,
+            "ryu": 0.33101834317669265
+          },
+          "turnout_rate": 0.6359594346140511,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-6,2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p084",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -5,
         "r": 2
       },
-      "total_population": 1406,
-      "initial_district_id": "d1",
-      "name": "Exurb (-5,2)",
+      "total_population": 1443,
       "demographic_groups": [
         {
           "id": "p084-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.55,
-            "ryu": 0.45
-          }
+            "ken": 0.5816027884930373,
+            "ryu": 0.41839721150696274
+          },
+          "turnout_rate": 0.6570192022831179,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-5,2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p085",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -4,
         "r": 2
       },
-      "total_population": 1416,
-      "initial_district_id": "d2",
-      "name": "Suburb (-4,2)",
+      "total_population": 1536,
       "demographic_groups": [
         {
           "id": "p085-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4799,
-            "ryu": 0.5201
-          }
+            "ken": 0.46022315876558423,
+            "ryu": 0.5397768412344157
+          },
+          "turnout_rate": 0.6345887445728294,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-4,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p086",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -3,
         "r": 2
       },
-      "total_population": 1541,
-      "initial_district_id": "d2",
-      "name": "Suburb (-3,2)",
+      "total_population": 1366,
       "demographic_groups": [
         {
           "id": "p086-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4355,
-            "ryu": 0.5645
-          }
+            "ken": 0.42802276868373157,
+            "ryu": 0.5719772313162684
+          },
+          "turnout_rate": 0.6549074408365414,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-3,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p087",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -2,
         "r": 2
       },
-      "total_population": 1355,
-      "initial_district_id": "d3",
-      "name": "Core (-2,2)",
+      "total_population": 1485,
       "demographic_groups": [
         {
           "id": "p087-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.285,
-            "ryu": 0.715
-          }
+            "ken": 0.22250885693356395,
+            "ryu": 0.7774911430664361
+          },
+          "turnout_rate": 0.6586561774252914,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-2,2)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p088",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -1,
         "r": 2
       },
-      "total_population": 1362,
-      "initial_district_id": "d4",
-      "name": "Core (-1,2)",
+      "total_population": 1595,
       "demographic_groups": [
         {
           "id": "p088-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2824,
-            "ryu": 0.7176
-          }
+            "ken": 0.2336151435226202,
+            "ryu": 0.7663848564773799
+          },
+          "turnout_rate": 0.561099350405857,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-1,2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p089",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 0,
         "r": 2
       },
-      "total_population": 1460,
-      "initial_district_id": "d4",
-      "name": "Core (0,2)",
+      "total_population": 1553,
       "demographic_groups": [
         {
           "id": "p089-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2727,
-            "ryu": 0.7273
-          }
+            "ken": 0.2652780357003212,
+            "ryu": 0.7347219642996787
+          },
+          "turnout_rate": 0.6708395363879389,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (0,2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p090",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 1,
         "r": 2
       },
-      "total_population": 1365,
-      "initial_district_id": "d5",
-      "name": "Suburb (1,2)",
+      "total_population": 1514,
       "demographic_groups": [
         {
           "id": "p090-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4257,
-            "ryu": 0.5743
-          }
+            "ken": 0.44900351455435156,
+            "ryu": 0.5509964854456484
+          },
+          "turnout_rate": 0.6209369375021196,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (1,2)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p091",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 2,
         "r": 2
       },
-      "total_population": 1552,
-      "initial_district_id": "d5",
-      "name": "Suburb (2,2)",
+      "total_population": 1528,
       "demographic_groups": [
         {
           "id": "p091-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4491,
-            "ryu": 0.5509
-          }
+            "ken": 0.4509165693074465,
+            "ryu": 0.5490834306925535
+          },
+          "turnout_rate": 0.6700861555989831,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (2,2)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p092",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 3,
         "r": 2
       },
-      "total_population": 1502,
-      "initial_district_id": "d5",
-      "name": "Exurb (3,2)",
+      "total_population": 1445,
       "demographic_groups": [
         {
           "id": "p092-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5146,
-            "ryu": 0.4854
-          }
+            "ken": 0.546308353189379,
+            "ryu": 0.453691646810621
+          },
+          "turnout_rate": 0.6159643532242626,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (3,2)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p093",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 4,
         "r": 2
       },
-      "total_population": 1539,
-      "initial_district_id": "d5",
-      "name": "Exurb (4,2)",
+      "total_population": 1593,
       "demographic_groups": [
         {
           "id": "p093-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6522,
-            "ryu": 0.3478
-          }
+            "ken": 0.6820188205316663,
+            "ryu": 0.3179811794683337
+          },
+          "turnout_rate": 0.5817858425201848,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (4,2)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p094",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -6,
         "r": 3
       },
-      "total_population": 1502,
-      "initial_district_id": "d1",
-      "name": "Exurb (-6,3)",
+      "total_population": 1508,
       "demographic_groups": [
         {
           "id": "p094-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6435,
-            "ryu": 0.3565
-          }
+            "ken": 0.7060222511552274,
+            "ryu": 0.29397774884477257
+          },
+          "turnout_rate": 0.5957231182837859,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-6,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p095",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -5,
         "r": 3
       },
-      "total_population": 1419,
-      "initial_district_id": "d2",
-      "name": "Exurb (-5,3)",
+      "total_population": 1648,
       "demographic_groups": [
         {
           "id": "p095-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5717,
-            "ryu": 0.4283
-          }
+            "ken": 0.584601350221783,
+            "ryu": 0.41539864977821706
+          },
+          "turnout_rate": 0.5775152021553368,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-5,3)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p096",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -4,
         "r": 3
       },
-      "total_population": 1647,
-      "initial_district_id": "d2",
-      "name": "Suburb (-4,3)",
+      "total_population": 1437,
       "demographic_groups": [
         {
           "id": "p096-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4819,
-            "ryu": 0.5181
-          }
+            "ken": 0.41857760785147546,
+            "ryu": 0.5814223921485245
+          },
+          "turnout_rate": 0.5822537761647254,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-4,3)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p097",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -3,
         "r": 3
       },
-      "total_population": 1360,
-      "initial_district_id": "d3",
-      "name": "Suburb (-3,3)",
+      "total_population": 1352,
       "demographic_groups": [
         {
           "id": "p097-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4761,
-            "ryu": 0.5239
-          }
+            "ken": 0.44801321741193534,
+            "ryu": 0.5519867825880647
+          },
+          "turnout_rate": 0.5907756619038992,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-3,3)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p098",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -2,
         "r": 3
       },
-      "total_population": 1594,
-      "initial_district_id": "d4",
-      "name": "Suburb (-2,3)",
+      "total_population": 1588,
       "demographic_groups": [
         {
           "id": "p098-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4149,
-            "ryu": 0.5851
-          }
+            "ken": 0.45853457842022183,
+            "ryu": 0.5414654215797782
+          },
+          "turnout_rate": 0.5927833387628197,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-2,3)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p099",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": -1,
         "r": 3
       },
-      "total_population": 1473,
-      "initial_district_id": "d4",
-      "name": "Suburb (-1,3)",
+      "total_population": 1394,
       "demographic_groups": [
         {
           "id": "p099-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4101,
-            "ryu": 0.5899
-          }
+            "ken": 0.4455326432362199,
+            "ryu": 0.5544673567637801
+          },
+          "turnout_rate": 0.6711928013013675,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (-1,3)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p100",
       "editable": true,
-      "county_id": "reform_central",
       "position": {
         "q": 0,
         "r": 3
       },
-      "total_population": 1373,
-      "initial_district_id": "d5",
-      "name": "Suburb (0,3)",
+      "total_population": 1360,
       "demographic_groups": [
         {
           "id": "p100-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4273,
-            "ryu": 0.5727
-          }
+            "ken": 0.45979605309665206,
+            "ryu": 0.5402039469033479
+          },
+          "turnout_rate": 0.641809034079779,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_central",
+      "name": "Central (0,3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p101",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 1,
         "r": 3
       },
-      "total_population": 1364,
-      "initial_district_id": "d5",
-      "name": "Suburb (1,3)",
+      "total_population": 1472,
       "demographic_groups": [
         {
           "id": "p101-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4709,
-            "ryu": 0.5291
-          }
+            "ken": 0.4265700692124665,
+            "ryu": 0.5734299307875335
+          },
+          "turnout_rate": 0.5572840242763051,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (1,3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p102",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 2,
         "r": 3
       },
-      "total_population": 1637,
-      "initial_district_id": "d5",
-      "name": "Exurb (2,3)",
+      "total_population": 1353,
       "demographic_groups": [
         {
           "id": "p102-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5299,
-            "ryu": 0.4701
-          }
+            "ken": 0.5483471238613129,
+            "ryu": 0.4516528761386871
+          },
+          "turnout_rate": 0.6879954449483193,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (2,3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p103",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 3,
         "r": 3
       },
-      "total_population": 1517,
-      "initial_district_id": "d5",
-      "name": "Exurb (3,3)",
+      "total_population": 1596,
       "demographic_groups": [
         {
           "id": "p103-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6605,
-            "ryu": 0.3395
-          }
+            "ken": 0.6440285510569811,
+            "ryu": 0.3559714489430189
+          },
+          "turnout_rate": 0.5618854868342169,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (3,3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p104",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -6,
         "r": 4
       },
-      "total_population": 1548,
-      "initial_district_id": "d2",
-      "name": "Exurb (-6,4)",
+      "total_population": 1492,
       "demographic_groups": [
         {
           "id": "p104-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6932,
-            "ryu": 0.3068
-          }
+            "ken": 0.6465831391513348,
+            "ryu": 0.3534168608486652
+          },
+          "turnout_rate": 0.5902894843486138,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-6,4)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p105",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -5,
         "r": 4
       },
-      "total_population": 1619,
-      "initial_district_id": "d2",
-      "name": "Exurb (-5,4)",
+      "total_population": 1375,
       "demographic_groups": [
         {
           "id": "p105-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5864,
-            "ryu": 0.4136
-          }
+            "ken": 0.5648306192085147,
+            "ryu": 0.43516938079148526
+          },
+          "turnout_rate": 0.5529642886598595,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-5,4)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p106",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -4,
         "r": 4
       },
-      "total_population": 1566,
-      "initial_district_id": "d3",
-      "name": "Suburb (-4,4)",
+      "total_population": 1548,
       "demographic_groups": [
         {
           "id": "p106-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4117,
-            "ryu": 0.5883
-          }
+            "ken": 0.48257673522457484,
+            "ryu": 0.5174232647754251
+          },
+          "turnout_rate": 0.5586075954837725,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-4,4)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p107",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -3,
         "r": 4
       },
-      "total_population": 1398,
-      "initial_district_id": "d4",
-      "name": "Suburb (-3,4)",
+      "total_population": 1457,
       "demographic_groups": [
         {
           "id": "p107-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.461,
-            "ryu": 0.539
-          }
+            "ken": 0.4208209193684161,
+            "ryu": 0.579179080631584
+          },
+          "turnout_rate": 0.6901940776617266,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-3,4)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p108",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -2,
         "r": 4
       },
-      "total_population": 1612,
-      "initial_district_id": "d4",
-      "name": "Suburb (-2,4)",
+      "total_population": 1377,
       "demographic_groups": [
         {
           "id": "p108-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4704,
-            "ryu": 0.5296
-          }
+            "ken": 0.4568154007382691,
+            "ryu": 0.5431845992617309
+          },
+          "turnout_rate": 0.5969695275765844,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-2,4)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p109",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -1,
         "r": 4
       },
-      "total_population": 1440,
-      "initial_district_id": "d5",
-      "name": "Suburb (-1,4)",
+      "total_population": 1414,
       "demographic_groups": [
         {
           "id": "p109-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4643,
-            "ryu": 0.5357
-          }
+            "ken": 0.46877813680097463,
+            "ryu": 0.5312218631990253
+          },
+          "turnout_rate": 0.6959749889676459,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-1,4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p110",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 0,
         "r": 4
       },
-      "total_population": 1557,
-      "initial_district_id": "d5",
-      "name": "Suburb (0,4)",
+      "total_population": 1378,
       "demographic_groups": [
         {
           "id": "p110-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.439,
-            "ryu": 0.561
-          }
+            "ken": 0.4360530809313059,
+            "ryu": 0.5639469190686941
+          },
+          "turnout_rate": 0.674003276694566,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (0,4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p111",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 1,
         "r": 4
       },
-      "total_population": 1515,
-      "initial_district_id": "d5",
-      "name": "Exurb (1,4)",
+      "total_population": 1427,
       "demographic_groups": [
         {
           "id": "p111-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5146,
-            "ryu": 0.4854
-          }
+            "ken": 0.5412254495918751,
+            "ryu": 0.45877455040812487
+          },
+          "turnout_rate": 0.6620284188655204,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (1,4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p112",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 2,
         "r": 4
       },
-      "total_population": 1432,
-      "initial_district_id": "d5",
-      "name": "Exurb (2,4)",
+      "total_population": 1594,
       "demographic_groups": [
         {
           "id": "p112-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6739,
-            "ryu": 0.3261
-          }
+            "ken": 0.6830324932560325,
+            "ryu": 0.31696750674396745
+          },
+          "turnout_rate": 0.6989578531472943,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (2,4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p113",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -6,
         "r": 5
       },
-      "total_population": 1362,
-      "initial_district_id": "d2",
-      "name": "Exurb (-6,5)",
+      "total_population": 1592,
       "demographic_groups": [
         {
           "id": "p113-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.7039,
-            "ryu": 0.2961
-          }
+            "ken": 0.6397587515413762,
+            "ryu": 0.3602412484586238
+          },
+          "turnout_rate": 0.577496203314513,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-6,5)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p114",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -5,
         "r": 5
       },
-      "total_population": 1354,
-      "initial_district_id": "d3",
-      "name": "Exurb (-5,5)",
+      "total_population": 1397,
       "demographic_groups": [
         {
           "id": "p114-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5881,
-            "ryu": 0.4119
-          }
+            "ken": 0.5473435491137207,
+            "ryu": 0.45265645088627926
+          },
+          "turnout_rate": 0.6888480380293913,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-5,5)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p115",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -4,
         "r": 5
       },
-      "total_population": 1556,
-      "initial_district_id": "d4",
-      "name": "Exurb (-4,5)",
+      "total_population": 1502,
       "demographic_groups": [
         {
           "id": "p115-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5716,
-            "ryu": 0.4284
-          }
+            "ken": 0.5616426595300437,
+            "ryu": 0.43835734046995634
+          },
+          "turnout_rate": 0.651704624586273,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-4,5)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p116",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -3,
         "r": 5
       },
-      "total_population": 1381,
-      "initial_district_id": "d4",
-      "name": "Exurb (-3,5)",
+      "total_population": 1636,
       "demographic_groups": [
         {
           "id": "p116-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5145,
-            "ryu": 0.4855
-          }
+            "ken": 0.5558992823399603,
+            "ryu": 0.44410071766003967
+          },
+          "turnout_rate": 0.6770809008739889,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-3,5)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p117",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -2,
         "r": 5
       },
-      "total_population": 1467,
-      "initial_district_id": "d5",
-      "name": "Exurb (-2,5)",
+      "total_population": 1504,
       "demographic_groups": [
         {
           "id": "p117-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5509,
-            "ryu": 0.4491
-          }
+            "ken": 0.569080875273794,
+            "ryu": 0.43091912472620597
+          },
+          "turnout_rate": 0.6256811002502218,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-2,5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p118",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -1,
         "r": 5
       },
-      "total_population": 1434,
-      "initial_district_id": "d5",
-      "name": "Exurb (-1,5)",
+      "total_population": 1596,
       "demographic_groups": [
         {
           "id": "p118-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5403,
-            "ryu": 0.4597
-          }
+            "ken": 0.5844459194131196,
+            "ryu": 0.41555408058688037
+          },
+          "turnout_rate": 0.6560392447165213,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-1,5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p119",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 0,
         "r": 5
       },
-      "total_population": 1533,
-      "initial_district_id": "d5",
-      "name": "Exurb (0,5)",
+      "total_population": 1531,
       "demographic_groups": [
         {
           "id": "p119-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.5178,
-            "ryu": 0.4822
-          }
+            "ken": 0.5293002504855395,
+            "ryu": 0.4706997495144605
+          },
+          "turnout_rate": 0.5784072249662131,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (0,5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p120",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 1,
         "r": 5
       },
-      "total_population": 1370,
-      "initial_district_id": "d5",
-      "name": "Exurb (1,5)",
+      "total_population": 1508,
       "demographic_groups": [
         {
           "id": "p120-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6415,
-            "ryu": 0.3585
-          }
+            "ken": 0.6371178201027214,
+            "ryu": 0.36288217989727856
+          },
+          "turnout_rate": 0.5569390413118527,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (1,5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p121",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -6,
         "r": 6
       },
-      "total_population": 1418,
-      "initial_district_id": "d3",
-      "name": "Exurb (-6,6)",
+      "total_population": 1419,
       "demographic_groups": [
         {
           "id": "p121-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.704,
-            "ryu": 0.296
-          }
+            "ken": 0.6727559624239803,
+            "ryu": 0.3272440375760197
+          },
+          "turnout_rate": 0.5647555245901459,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-6,6)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p122",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -5,
         "r": 6
       },
-      "total_population": 1446,
-      "initial_district_id": "d4",
-      "name": "Exurb (-5,6)",
+      "total_population": 1352,
       "demographic_groups": [
         {
           "id": "p122-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6584,
-            "ryu": 0.3416
-          }
+            "ken": 0.6808015676774085,
+            "ryu": 0.3191984323225915
+          },
+          "turnout_rate": 0.6542937437305227,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-5,6)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p123",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -4,
         "r": 6
       },
-      "total_population": 1644,
-      "initial_district_id": "d4",
-      "name": "Exurb (-4,6)",
+      "total_population": 1420,
       "demographic_groups": [
         {
           "id": "p123-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6817,
-            "ryu": 0.3183
-          }
+            "ken": 0.6884320322051645,
+            "ryu": 0.31156796779483553
+          },
+          "turnout_rate": 0.6363980911439284,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-4,6)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p124",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -3,
         "r": 6
       },
-      "total_population": 1360,
-      "initial_district_id": "d5",
-      "name": "Exurb (-3,6)",
+      "total_population": 1407,
       "demographic_groups": [
         {
           "id": "p124-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6735,
-            "ryu": 0.3265
-          }
+            "ken": 0.6499588298797608,
+            "ryu": 0.35004117012023916
+          },
+          "turnout_rate": 0.660975632444024,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-3,6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p125",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -2,
         "r": 6
       },
-      "total_population": 1392,
-      "initial_district_id": "d5",
-      "name": "Exurb (-2,6)",
+      "total_population": 1490,
       "demographic_groups": [
         {
           "id": "p125-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6463,
-            "ryu": 0.3537
-          }
+            "ken": 0.6510467971675098,
+            "ryu": 0.3489532028324902
+          },
+          "turnout_rate": 0.6840450046001934,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-2,6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p126",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": -1,
         "r": 6
       },
-      "total_population": 1648,
-      "initial_district_id": "d5",
-      "name": "Exurb (-1,6)",
+      "total_population": 1567,
       "demographic_groups": [
         {
           "id": "p126-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6408,
-            "ryu": 0.3592
-          }
+            "ken": 0.6622694287262857,
+            "ryu": 0.3377305712737143
+          },
+          "turnout_rate": 0.6628952040453441,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (-1,6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p127",
       "editable": true,
-      "county_id": "reform_outer",
       "position": {
         "q": 0,
         "r": 6
       },
-      "total_population": 1360,
-      "initial_district_id": "d5",
-      "name": "Exurb (0,6)",
+      "total_population": 1580,
       "demographic_groups": [
         {
           "id": "p127-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6656,
-            "ryu": 0.3344
-          }
+            "ken": 0.660366323068738,
+            "ryu": 0.339633676931262
+          },
+          "turnout_rate": 0.6267309551360085,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "reform_outer",
+      "name": "Outer (0,6)",
+      "initial_district_id": "d5"
     }
   ],
   "events": [],
@@ -3152,20 +3151,21 @@
     },
     "intro_slides": [
       {
-        "heading": "The Promise of Neutral Rules",
-        "body": "Proponents of independent redistricting have long argued that if we just take politics out of the process — use an independent commission, apply mechanical criteria, ignore partisan data — the maps will be fair.\n\nMeridian County is your test case. Draw a map using only geometric rules: compact districts, equal population, no disconnected pieces. No partisan data. Just shapes."
+        "body": "Proponents of independent redistricting have long argued that if we just take politics out of the process — use an independent commission, apply mechanical criteria, ignore partisan data — the maps will be fair.\n\nMeridian County is your test case. Draw a map using only geometric rules: compact districts, equal population, no disconnected pieces. No partisan data. Just shapes.",
+        "heading": "The Promise of Neutral Rules"
       },
       {
-        "heading": "The Geography Problem",
-        "body": "Here's what nobody tells you: voters aren't distributed randomly. In Meridian County — as in most American counties — different communities cluster together. Urban neighborhoods vote differently from suburbs, which vote differently from exurbs.\n\nA perfectly geometric map doesn't erase that. It just captures it differently."
+        "body": "Here's what nobody tells you: voters aren't distributed randomly. In Meridian County — as in most American counties — different communities cluster together. Urban neighborhoods vote differently from suburbs, which vote differently from exurbs.\n\nA perfectly geometric map doesn't erase that. It just captures it differently.",
+        "heading": "The Geography Problem"
       },
       {
-        "heading": "What the Map Will Show You",
-        "body": "When you're done, submit your map and look at the results. You drew it without looking at party data. But the outcome won't be perfectly proportional.\n\nThis is called the geography problem. It's not a bug in your map — it's a feature of where people live. Neutral rules don't produce neutral outcomes. They produce different outcomes."
+        "body": "When you're done, submit your map and look at the results. You drew it without looking at party data. But the outcome won't be perfectly proportional.\n\nThis is called the geography problem. It's not a bug in your map — it's a feature of where people live. Neutral rules don't produce neutral outcomes. They produce different outcomes.",
+        "heading": "What the Map Will Show You"
       }
     ],
     "objective": "Draw a compact, population-balanced map using only geometric criteria. No partisan data required — or allowed."
   },
+  "default_district_id": "d1",
   "instigator_character": "commissioner",
   "character_demographics": {
     "commissioner": "wf",
