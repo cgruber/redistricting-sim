@@ -204,6 +204,46 @@ test("addDemographics: zone filter q_lte selects correct precincts", () => {
 	}
 });
 
+test("addDemographics: zone filter r_gte/r_lte selects a horizontal row band", () => {
+	// The r-axis complement to q_lte/q_gte. {r_gte: 0, r_lte: 0} selects exactly the
+	// r = 0 row — the horizontal corridor a "cracking" scenario dilutes. Precincts off
+	// that row fall through to the default zone.
+	const spec = baseDemoSpec({
+		zones: [
+			{ name: "corridor", filter: { r_gte: 0, r_lte: 0 }, party_base: { ken: 0.18 } },
+			{ name: "rest", filter: { default: true }, party_base: { ken: 0.65 } },
+		],
+		jitter: 0,
+		turnout: { min: 0.6, max: 0.6 },
+	});
+	const result = addDemographics(makePartial(3), spec);
+	for (const p of result.precincts) {
+		const { r } = hexPos(p);
+		const kenShare = p.demographic_groups![0]!.vote_shares[KEN] ?? 0;
+		assertEqual(Math.abs(kenShare - (r === 0 ? 0.18 : 0.65)) < 1e-10, true);
+	}
+});
+
+test("addDemographics: zone filter r_gte selects a one-sided row half-plane", () => {
+	// r_gte alone (no r_lte) mirrors q_gte: every precinct with r >= 2 matches — the
+	// "north" band a county overlay uses; r < 2 falls through to default.
+	const spec = baseDemoSpec({
+		zones: [
+			{ name: "north", filter: { r_gte: 2 }, party_base: { ken: 0.9 } },
+			{ name: "rest", filter: { default: true }, party_base: { ken: 0.1 } },
+		],
+		jitter: 0,
+		turnout: { min: 0.6, max: 0.6 },
+		seed: 4,
+	});
+	const result = addDemographics(makePartial(3), spec);
+	for (const p of result.precincts) {
+		const { r } = hexPos(p);
+		const kenShare = p.demographic_groups![0]!.vote_shares[KEN] ?? 0;
+		assertEqual(Math.abs(kenShare - (r >= 2 ? 0.9 : 0.1)) < 1e-10, true);
+	}
+});
+
 test("addDemographics: first-match-wins for overlapping zones", () => {
 	// q_lte: 2 matches any q <= 2; default matches all.
 	// First zone should win for q <= 2.

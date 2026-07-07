@@ -158,6 +158,15 @@ export interface PopulationSpec {
 export interface ZoneFilter {
 	q_lte?: number;
 	q_gte?: number;
+	/**
+	 * Row band on the axial r-axis — the complement to q_lte/q_gte. Matches precincts
+	 * with r ≤ r_lte and/or r ≥ r_gte; combine both for an exact row (e.g. {r_gte: 0,
+	 * r_lte: 0} selects the horizontal r=0 corridor a "cracking" scenario dilutes).
+	 * ANDed with the other conditions; first-match-wins across zones is unchanged.
+	 * Deterministic — pure geometry, no PRNG draw.
+	 */
+	r_lte?: number;
+	r_gte?: number;
 	hex_dist_lte?: number;
 	/**
 	 * Proximity to an arbitrary anchor (GAME-119): matches precincts whose axial-hex
@@ -278,7 +287,29 @@ export interface DiagonalStripRule {
 	strips: DiagonalStripEntry[];
 }
 
-export type InitialDistrictRule = DiagonalStripRule;
+/**
+ * Horizontal row-band initial — the r-axis analog of diagonal_strip. Assigns the
+ * "old map" by axial row r using a max_r cascade: bands are tried in order and the
+ * first whose `max_r` satisfies r <= max_r wins (a trailing `default: true` catches
+ * the rest) — identical first-match semantics to diagonal_strip's max_k, just on r
+ * instead of k = q + r. Lets a scenario ship a starting map that *consolidates* a
+ * horizontal corridor into one district (so the opposition wins it) — the failing
+ * "before" picture a cracking lesson reacts against, which diagonal strips can't
+ * express (a diagonal band cuts across a row rather than isolating it, which would
+ * pre-crack the corridor and ship the puzzle already solved).
+ */
+export interface RowBandEntry {
+	max_r?: number;
+	default?: true;
+	district: string;
+}
+
+export interface RowBandRule {
+	type: "row_band";
+	bands: RowBandEntry[];
+}
+
+export type InitialDistrictRule = DiagonalStripRule | RowBandRule;
 
 export interface AssemblyRulesSpec {
 	population_tolerance: number;

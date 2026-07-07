@@ -1,0 +1,187 @@
+# Spec file for scenario-006: "Harden the Map"
+# Source of truth for the map generation pipeline (GAME-126 migration).
+# Generated output: game/scenarios/scenario-006.json
+#
+# Migrated from the legacy gen-scenario-006.main.kts (GAME-126). The shipped JSON had
+# drifted from that script — per-criterion `character`, `party_id` on the party criteria,
+# `instigator_character`, and `character_demographics` were all added post-generation; this
+# spec folds them in so the spec is the complete source. Bones (the two partisan flanks, the
+# bipartisan-gerrymander lesson, the 3-Ken/2-Ryu safe-seat criteria, and the narrative) are
+# preserved from the gen script + shipped JSON.
+#
+# Geography (confirmed against the shipped JSON, by q-column):
+#   Left flank  (q <= 0):  ken 0.62  — reliable Ken territory (Westbrook)
+#   Right flank (q >= 1):  ken 0.38  — reliable Ryu territory (Eastbrook)
+# The winning play is vertical column strips that keep the flanks separated: 3 safe Ken
+# districts on the left, 2 safe Ryu districts on the right.
+#
+# Draft simplifications (GAME-126):
+#   - Uniform population (base 1500 +/- 150); no terrain/gradient shaping.
+#   - Initial "old map" uses diagonal_strip, NOT the gen script's five atan2 angular wedges
+#     (the pipeline has no angular-wedge rule). A k = q + r diagonal cascade is a faithful
+#     substitute for the pedagogy: every diagonal spans BOTH flanks, so every initial district
+#     is partisan-mixed and competitive (fails safe_seats), and the strips are deliberately
+#     unequal in size (34/23/13/23/34) so they also fail population_balance. That is exactly
+#     the failing "before" picture — a competitive map the consultant is hired to harden.
+#
+# NOTE on the winnability e2e (a fragility fixed here, documented for the reviewer):
+#   - The shipped e2e's far-right column D5 held 28 hexes (+10.2% by count vs the ideal 25.4)
+#     against a ±10% population_tolerance. Shipped passed only because that particular Kotlin
+#     population draw put D5's region ~2% below the mean (D5 landed +8.0%); the expected value
+#     on any fresh seed is ~+10.2%, so a faithful regen fails ~half the time regardless of
+#     seed. Rather than seed-fish for a fragile pass, the migrated e2e rebalances the D4/D5
+#     boundary — 2 lower-q=3 hexes move from D5 to the adjacent D4 (D4=27, D5=26) — so
+#     population_balance is robust under regeneration (max district +5.8% at this seed). The
+#     strategy is unchanged: flanks still separated, 3 Ken-safe + 2 Ryu-safe. See the D4/D5
+#     comment in scenarios.spec.ts.
+
+format_version: "1"
+
+# ── Scenario identity ─────────────────────────────────────────────────────────
+
+scenario:
+  id: scenario-006
+  title: "Harden the Map"
+  election_type: state_house
+  region:
+    id: brookfield_county
+    name: Brookfield County
+
+# ── Stage 1: Map + terrain ────────────────────────────────────────────────────
+#
+# A pure political puzzle — no geographic features; precincts fill the full R=6 circle.
+
+map:
+  geometry: hex_axial
+  shape: hex_circle
+  radius: 6
+
+terrain: {}
+
+# ── Stage 2: Population ───────────────────────────────────────────────────────
+#
+# Uniform field: base 1500 +/- 150, no terrain suitability and no settlement/gradient
+# shaping. Seed chosen so the D5 column (28 hexes) lands comfortably within ±10% (see the
+# FLAGGED note in the header).
+
+population:
+  seed: 66
+  base: 1500
+  variance: 150
+
+# ── Stage 3: Demographics ─────────────────────────────────────────────────────
+#
+# The flank geography (first-match-wins):
+#   Left flank  (q <= 0):  ken 0.62 — reliable Ken territory
+#   Right flank (default): ken 0.38 — reliable Ryu territory
+# County labels split the map into the two flanks (cosmetic overlay + precinct names):
+#   Westbrook (q <= 0), Eastbrook (q >= 1).
+
+demographics:
+  seed: 66
+  parties: [ken, ryu]
+  group:
+    id_suffix: all
+    name: All voters
+  turnout:
+    min: 0.55
+    max: 0.70
+  jitter: 0.04
+  zones:
+    - name: left_flank
+      filter: { q_lte: 0 }
+      party_base: { ken: 0.62 }
+    - name: right_flank
+      filter: { default: true }
+      party_base: { ken: 0.38 }
+  county_labels:
+    - id: westbrook
+      filter: { q_lte: 0 }
+    - id: eastbrook
+      filter: { default: true }
+
+# ── Stage 4: Assembly ─────────────────────────────────────────────────────────
+
+assembly:
+  parties:
+    - { id: ken, name: Ken Party, abbreviation: KEN, color: "#c96d00" }
+    - { id: ryu, name: Ryu Party, abbreviation: RYU, color: "#7b35a8" }
+  districts:
+    - { id: d1, name: District 1 }
+    - { id: d2, name: District 2 }
+    - { id: d3, name: District 3 }
+    - { id: d4, name: District 4 }
+    - { id: d5, name: District 5 }
+  default_district_id: d1
+  # FAILING initial "old map": diagonal strips on k = q + r, deliberately unequal in size.
+  # Substitute for gen-scenario-006's five angular wedges (no angular-wedge rule in the
+  # pipeline). Every diagonal spans both flanks -> every district is competitive (fails
+  # safe_seats); the sizes 34/23/13/23/34 are wildly unequal (fails population_balance).
+  #   k<=-3 d1 (34), k<=-1 d2 (23), k<=0 d3 (13), k<=2 d4 (23), default(k>=3) d5 (34).
+  initial_district_rule:
+    type: diagonal_strip
+    strips:
+      - { max_k: -3, district: d1 }
+      - { max_k: -1, district: d2 }
+      - { max_k: 0,  district: d3 }
+      - { max_k: 2,  district: d4 }
+      - { default: true, district: d5 }
+  rules:
+    population_tolerance: 0.10
+    contiguity: required
+  success_criteria:
+    - id: sc-district-count
+      required: true
+      description: All five districts are in use and every precinct is assigned.
+      criterion: { type: district_count }
+      character: commissioner
+    - id: sc-population-balance
+      required: true
+      description: All five districts have roughly equal population (within 10%).
+      criterion: { type: population_balance }
+      character: commissioner
+    - id: sc-safe-seats-ken
+      required: true
+      description: Ken Party incumbents are protected — at least 3 districts won by a margin of 15 points or more.
+      criterion: { type: safe_seats, party: ken, margin: 0.15, min_count: 3 }
+      character: party
+      party_id: ken
+    - id: sc-safe-seats-ryu
+      required: true
+      description: Ryu Party incumbents are protected — at least 2 districts won by a margin of 15 points or more.
+      criterion: { type: safe_seats, party: ryu, margin: 0.15, min_count: 2 }
+      character: party
+      party_id: ryu
+    - id: sc-compactness
+      required: false
+      description: The map follows natural geographic lines — all districts are reasonably compact (≥ 35%).
+      criterion: { type: compactness, operator: gte, threshold: 0.35 }
+      character: judge
+  narrative:
+    character:
+      name: You
+      role: Bipartisan Redistricting Consultant, Brookfield County
+      motivation: |-
+        Both parties have agreed — privately — that the current map is too competitive. Too many incumbents lost their seats last cycle. You've been hired by both sides to draw a new map where each party keeps what it has. The voters don't need to know the details.
+    intro_slides:
+      - heading: The Deal
+        body: |-
+          It doesn't happen at a press conference. It happens in a conference room, with lawyers from both parties, a map, and a handshake.
+
+          The current map has too many swing districts. Too many incumbents are at risk every two years. The solution, both sides agree, is simple: draw lines that protect everyone.
+      - heading: Safe Seats for Everyone
+        body: |-
+          The goal isn't to help one party win more seats. It's to make sure neither party loses the seats they already have.
+
+          Concentrate Ken voters into Ken districts. Concentrate Ryu voters into Ryu districts. Eliminate the middle ground. Make every race a foregone conclusion.
+      - heading: What the Voters Lose
+        body: |-
+          A safe seat means your representative doesn't need to worry about losing. They only need to survive their own primary — which means appealing to their party's base, not to the median voter.
+
+          Competitive elections create accountability. This map is designed to eliminate them. Notice how many races are decided before anyone votes.
+    objective: |-
+      Draw a map that protects incumbents of both parties — Ken Party wins at least 3 safe seats (margin ≥ 15 points), Ryu Party wins at least 2 safe seats (margin ≥ 15 points).
+  instigator_character: party
+  character_demographics:
+    commissioner: wf
+    judge: naf

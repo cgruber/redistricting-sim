@@ -12,6 +12,8 @@ function matchesFilter(filter: ZoneFilter, q: number, r: number): boolean {
 	if (filter.default) return true;
 	if (filter.q_lte !== undefined && q > filter.q_lte) return false;
 	if (filter.q_gte !== undefined && q < filter.q_gte) return false;
+	if (filter.r_lte !== undefined && r > filter.r_lte) return false;
+	if (filter.r_gte !== undefined && r < filter.r_gte) return false;
 	if (filter.hex_dist_lte !== undefined && hexDist(q, r) > filter.hex_dist_lte) return false;
 	// Proximity to an arbitrary anchor (GAME-119): within `within` hexes of `near`.
 	// Axial hex distance is translation-invariant, so the distance from the anchor is

@@ -10,12 +10,23 @@ import type {
 	CharacterType,
 } from "../model/scenario.js";
 import type { PartyId, DistrictId, CriterionId } from "../model/scenario.js";
-import type { AssemblySpec, CriterionSpec, DiagonalStripEntry } from "./spec-types.js";
+import type {
+	AssemblySpec,
+	CriterionSpec,
+	DiagonalStripEntry,
+	RowBandEntry,
+} from "./spec-types.js";
 
 function applyDiagonalStrip(strips: DiagonalStripEntry[], q: number, r: number): DistrictId {
 	const k = q + r;
 	const match = strips.find((s) => s.default === true || (s.max_k !== undefined && k <= s.max_k));
 	if (!match) throw new Error(`No diagonal strip matched q=${q} r=${r} (k=${k})`);
+	return match.district as DistrictId;
+}
+
+function applyRowBand(bands: RowBandEntry[], r: number): DistrictId {
+	const match = bands.find((b) => b.default === true || (b.max_r !== undefined && r <= b.max_r));
+	if (!match) throw new Error(`No row band matched r=${r}`);
 	return match.district as DistrictId;
 }
 
@@ -103,10 +114,13 @@ export function assembleScenario(partial: PartialScenario, spec: AssemblySpec): 
 		if (!("q" in pos)) throw new Error(`Precinct ${p.id} has no hex position`);
 		const { q, r } = pos;
 
+		const rule = spec.initial_district_rule;
 		const initial_district_id =
-			spec.initial_district_rule?.type === "diagonal_strip"
-				? applyDiagonalStrip(spec.initial_district_rule.strips, q, r)
-				: undefined;
+			rule?.type === "diagonal_strip"
+				? applyDiagonalStrip(rule.strips, q, r)
+				: rule?.type === "row_band"
+					? applyRowBand(rule.bands, r)
+					: undefined;
 
 		const name = precinctName(p);
 

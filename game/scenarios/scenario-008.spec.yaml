@@ -1,0 +1,168 @@
+# Spec file for scenario-008: "Both Sides Unhappy"
+# Source of truth for the map generation pipeline (GAME-126 migration).
+# Generated output: game/scenarios/scenario-008.json
+#
+# Migrated from the legacy gen-scenario-008.main.kts (GAME-126). The shipped JSON had drifted
+# from that script — per-criterion `character`, `instigator_character`, and
+# `character_demographics` were added post-generation, AND population_tolerance was tightened
+# 0.10 -> 0.05 in the shipped criteria. This spec reproduces the SHIPPED JSON (the committed,
+# tested artifact), not the stale gen script. Bones (the concentric ~61%-Ken geography, the
+# "a fair process can still yield an unfair outcome" lesson, the geometry-only criteria, and
+# the narrative) are preserved.
+#
+# Geography (confirmed against the shipped JSON, by hex-distance ring):
+#   inner core (d <= 2):  ken 0.20 — dense Ryu urban core
+#   ring       (d <= 4):  ken 0.50 — evenly-split inner suburbs
+#   outer      (default): ken 0.80 — Ken suburbs + exurbs
+# ~61% Ken overall, but any compact map packs the tight Ryu core and spreads the Ken majority.
+#
+# Draft simplifications (GAME-126):
+#   - Uniform population (base 1500 +/- 150); no terrain/gradient shaping.
+#   - Initial "old map" uses diagonal_strip, NOT the gen script's five atan2 angular wedges
+#     (no angular-wedge rule in the pipeline). A k = q + r diagonal cascade is a faithful
+#     substitute: non-compact and unequal (34/23/13/23/34) so it fails compactness AND
+#     population_balance — the failing "before" the neutral commission redraws.
+#   - County labels (accord_central / accord_outer) split at d <= 3; cosmetic (precinct names).
+#     (Verified against the shipped JSON + gen-scenario-008 countyId: accord_central is d <= 3.)
+
+format_version: "1"
+
+# ── Scenario identity ─────────────────────────────────────────────────────────
+
+scenario:
+  id: scenario-008
+  title: "Both Sides Unhappy"
+  election_type: state_house
+  region:
+    id: accord_county
+    name: Accord County
+
+# ── Stage 1: Map + terrain ────────────────────────────────────────────────────
+
+map:
+  geometry: hex_axial
+  shape: hex_circle
+  radius: 6
+
+terrain: {}
+
+# ── Stage 2: Population ───────────────────────────────────────────────────────
+#
+# Uniform field: base 1500 +/- 150. population_balance is REQUIRED at the tight ±5% tolerance,
+# so the seed is chosen (and jq-verified) so the compact-blob solution sits inside ±5%.
+
+population:
+  seed: 88
+  base: 1500
+  variance: 150
+
+# ── Stage 3: Demographics ─────────────────────────────────────────────────────
+#
+# Concentric geography (first-match-wins, inner to outer):
+#   d <= 2:  ken 0.20    d <= 4:  ken 0.50    default (d >= 5):  ken 0.80
+
+demographics:
+  seed: 88
+  parties: [ken, ryu]
+  group:
+    id_suffix: all
+    name: All voters
+  turnout:
+    min: 0.55
+    max: 0.70
+  jitter: 0.04
+  zones:
+    - name: inner_core
+      filter: { hex_dist_lte: 2 }
+      party_base: { ken: 0.20 }
+    - name: inner_ring
+      filter: { hex_dist_lte: 4 }
+      party_base: { ken: 0.50 }
+    - name: outer
+      filter: { default: true }
+      party_base: { ken: 0.80 }
+  county_labels:
+    - id: accord_central
+      filter: { hex_dist_lte: 3 }
+    - id: accord_outer
+      filter: { default: true }
+
+# ── Stage 4: Assembly ─────────────────────────────────────────────────────────
+
+assembly:
+  parties:
+    - { id: ken, name: Ken Party, abbreviation: KEN, color: "#c96d00" }
+    - { id: ryu, name: Ryu Party, abbreviation: RYU, color: "#7b35a8" }
+  districts:
+    - { id: d1, name: District 1 }
+    - { id: d2, name: District 2 }
+    - { id: d3, name: District 3 }
+    - { id: d4, name: District 4 }
+    - { id: d5, name: District 5 }
+  default_district_id: d1
+  # FAILING initial "old map": diagonal strips on k = q + r, deliberately unequal in size.
+  # Substitute for gen-scenario-008's five angular wedges (no angular-wedge rule in the
+  # pipeline). Sizes 34/23/13/23/34 fail population_balance; the long strips fail compactness.
+  #   k<=-3 d1 (34), k<=-1 d2 (23), k<=0 d3 (13), k<=2 d4 (23), default(k>=3) d5 (34).
+  initial_district_rule:
+    type: diagonal_strip
+    strips:
+      - { max_k: -3, district: d1 }
+      - { max_k: -1, district: d2 }
+      - { max_k: 0,  district: d3 }
+      - { max_k: 2,  district: d4 }
+      - { default: true, district: d5 }
+  rules:
+    population_tolerance: 0.05
+    contiguity: required
+  success_criteria:
+    - id: sc-district-count
+      required: true
+      description: All five districts are in use and every precinct is assigned.
+      criterion: { type: district_count }
+      character: commissioner
+    - id: sc-population-balance
+      required: true
+      description: All five districts have roughly equal population (within 5%).
+      criterion: { type: population_balance }
+      character: commissioner
+    - id: sc-compactness
+      required: true
+      description: All districts must be reasonably compact — no long tentacles or thin strips (compactness ≥ 40%).
+      criterion: { type: compactness, operator: gte, threshold: 0.40 }
+      character: judge
+    - id: sc-efficiency-gap
+      required: false
+      description: How close to zero can you get the efficiency gap on a purely neutral map? (≤ 10%).
+      criterion: { type: efficiency_gap, operator: lte, threshold: 0.10 }
+      character: judge
+  narrative:
+    character:
+      name: You
+      role: Independent Commissioner, Accord County Redistricting Commission
+      motivation: |-
+        After years of partisan warfare over district lines, both parties agreed to something remarkable: an independent commission with binding authority. The rules are strict — equal population, geographic compactness, contiguous districts. No partisan data allowed. Both sides signed off on the criteria. Now you draw the map.
+    intro_slides:
+      - heading: The Accord
+        body: |-
+          It took two years of negotiations, three failed bills, and a court order, but both parties finally agreed: an independent commission would draw the new map using strictly neutral criteria.
+
+          No partisan registration data. No incumbent addresses. Just geometry: equal population, compact districts, no disconnected pieces. Both parties signed the agreement. Both parties praised it publicly.
+      - heading: The Problem with Perfect Neutrality
+        body: |-
+          Here's what both parties understood privately, even as they signed: neutral rules don't produce neutral outcomes. They produce outcomes driven by geography.
+
+          In Accord County, geography has a lean. Ryu voters cluster tightly in the urban core. Ken voters spread across the suburbs and exurbs. Any compact map will reflect that geography — not because anyone drew it that way, but because that's where people live.
+      - heading: A Fair Process, An Unfair Outcome?
+        body: |-
+          Draw the most geometrically neutral map you can. Then submit it and look at the results.
+
+          Both parties will complain. Ryu will say the compact map packed their voters unfairly. Ken will say their geographic spread deserves more representation. Both arguments will have merit.
+
+          This is not a bug in your map. It's a feature of representative democracy that no one has solved.
+    objective: |-
+      Apply the agreed neutral criteria. Draw a compact, population-balanced map. Watch both sides declare the process rigged.
+  instigator_character: commissioner
+  character_demographics:
+    commissioner: bf
+    judge: lm

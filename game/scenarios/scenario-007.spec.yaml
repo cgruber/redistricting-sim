@@ -1,0 +1,173 @@
+# Spec file for scenario-007: "The Reform Map"
+# Source of truth for the map generation pipeline (GAME-126 migration).
+# Generated output: game/scenarios/scenario-007.json
+#
+# Migrated from the legacy gen-scenario-007.main.kts (GAME-126). The shipped JSON had drifted
+# from that script — per-criterion `character`, `instigator_character`, and
+# `character_demographics` were added post-generation, AND the shipped criteria were tightened
+# vs the gen script (compactness 0.40 -> 0.50, population_tolerance 0.10 -> 0.05) and slide 1's
+# opening was reworded. This spec reproduces the SHIPPED JSON (the committed, tested artifact),
+# not the stale gen script. Bones (the concentric urban-core geography, the "neutral rules ->
+# non-neutral outcomes" geography lesson, the geometry-only criteria, and the narrative) are
+# preserved.
+#
+# Geography (confirmed against the shipped JSON, by hex-distance ring):
+#   inner core (d <= 2):  ken 0.25 — dense Ryu-leaning urban core
+#   ring     (d <= 4):    ken 0.45 — competitive inner suburbs
+#   ring     (d == 5):    ken 0.55 — Ken-leaning outer suburbs
+#   rim      (d == 6):    ken 0.67 — Ken exurbs
+# The concentric lean is why a geometrically-neutral map still isn't partisan-neutral.
+#
+# Draft simplifications (GAME-126):
+#   - Uniform population (base 1500 +/- 150); no terrain/gradient shaping.
+#   - County labels (reform_central / reform_outer) split at d <= 3; cosmetic (precinct names).
+#     (Verified against the shipped JSON + gen-scenario-007 countyId: reform_central is d <= 3.)
+#
+# FLAGGED for owner review (faithful reproduction of a shipped quirk, not introduced here):
+#   - character_demographics.judge is "" (empty) in the shipped scenario-007.json. Reproduced
+#     verbatim. Likely a pre-existing authoring gap (003/006 use judge: naf); worth a look.
+
+format_version: "1"
+
+# ── Scenario identity ─────────────────────────────────────────────────────────
+
+scenario:
+  id: scenario-007
+  title: "The Reform Map"
+  election_type: state_house
+  region:
+    id: meridian_county
+    name: Meridian County
+
+# ── Stage 1: Map + terrain ────────────────────────────────────────────────────
+#
+# A pure political puzzle — no geographic features; precincts fill the full R=6 circle.
+
+map:
+  geometry: hex_axial
+  shape: hex_circle
+  radius: 6
+
+terrain: {}
+
+# ── Stage 2: Population ───────────────────────────────────────────────────────
+#
+# Uniform field: base 1500 +/- 150. Population balance is a REQUIRED criterion at the tight
+# ±5% tolerance, so the seed is chosen (and jq-verified) so the compact-blob solution sits
+# comfortably inside ±5%.
+
+population:
+  seed: 77
+  base: 1500
+  variance: 150
+
+# ── Stage 3: Demographics ─────────────────────────────────────────────────────
+#
+# Concentric geography (first-match-wins, inner to outer):
+#   d <= 2:  ken 0.25   d <= 4:  ken 0.45   d <= 5:  ken 0.55   default (d == 6): ken 0.67
+
+demographics:
+  seed: 77
+  parties: [ken, ryu]
+  group:
+    id_suffix: all
+    name: All voters
+  turnout:
+    min: 0.55
+    max: 0.70
+  jitter: 0.04
+  zones:
+    - name: inner_core
+      filter: { hex_dist_lte: 2 }
+      party_base: { ken: 0.25 }
+    - name: inner_ring
+      filter: { hex_dist_lte: 4 }
+      party_base: { ken: 0.45 }
+    - name: outer_ring
+      filter: { hex_dist_lte: 5 }
+      party_base: { ken: 0.55 }
+    - name: rim
+      filter: { default: true }
+      party_base: { ken: 0.67 }
+  county_labels:
+    - id: reform_central
+      filter: { hex_dist_lte: 3 }
+    - id: reform_outer
+      filter: { default: true }
+
+# ── Stage 4: Assembly ─────────────────────────────────────────────────────────
+
+assembly:
+  parties:
+    - { id: ken, name: Ken Party, abbreviation: KEN, color: "#c96d00" }
+    - { id: ryu, name: Ryu Party, abbreviation: RYU, color: "#7b35a8" }
+  districts:
+    - { id: d1, name: District 1 }
+    - { id: d2, name: District 2 }
+    - { id: d3, name: District 3 }
+    - { id: d4, name: District 4 }
+    - { id: d5, name: District 5 }
+  default_district_id: d1
+  # FAILING initial "old map": diagonal strips on k = q + r (the SHIPPED initial). Non-compact
+  # and wildly unequal in size (34/23/13/23/34) so it fails population_balance and compactness.
+  #   k<=-3 d1 (34), k<=-1 d2 (23), k<=0 d3 (13), k<=2 d4 (23), default(k>=3) d5 (34).
+  initial_district_rule:
+    type: diagonal_strip
+    strips:
+      - { max_k: -3, district: d1 }
+      - { max_k: -1, district: d2 }
+      - { max_k: 0,  district: d3 }
+      - { max_k: 2,  district: d4 }
+      - { default: true, district: d5 }
+  rules:
+    population_tolerance: 0.05
+    contiguity: required
+  success_criteria:
+    - id: sc-district-count
+      required: true
+      description: All five districts are in use and every precinct is assigned.
+      criterion: { type: district_count }
+      character: commissioner
+    - id: sc-population-balance
+      required: true
+      description: All five districts have roughly equal population (within 5%).
+      criterion: { type: population_balance }
+      character: commissioner
+    - id: sc-compactness
+      required: true
+      description: All districts must be reasonably compact — no long tentacles or thin strips (compactness ≥ 50%).
+      criterion: { type: compactness, operator: gte, threshold: 0.50 }
+      character: judge
+    - id: sc-efficiency-gap
+      required: false
+      description: Even a geometrically neutral map has an efficiency gap — see how close to zero you can get (≤ 15%).
+      criterion: { type: efficiency_gap, operator: lte, threshold: 0.15 }
+      character: judge
+  narrative:
+    character:
+      name: You
+      role: Independent Reform Commissioner, Meridian County
+      motivation: |-
+        The legislature has deadlocked. A court has ordered an independent commission to draw a new map using only neutral criteria — equal population, geographic compactness, and contiguity. No partisan data allowed. Draw the fairest map you can.
+    intro_slides:
+      - heading: The Promise of Neutral Rules
+        body: |-
+          Proponents of independent redistricting have long argued that if we just take politics out of the process — use an independent commission, apply mechanical criteria, ignore partisan data — the maps will be fair.
+
+          Meridian County is your test case. Draw a map using only geometric rules: compact districts, equal population, no disconnected pieces. No partisan data. Just shapes.
+      - heading: The Geography Problem
+        body: |-
+          Here's what nobody tells you: voters aren't distributed randomly. In Meridian County — as in most American counties — different communities cluster together. Urban neighborhoods vote differently from suburbs, which vote differently from exurbs.
+
+          A perfectly geometric map doesn't erase that. It just captures it differently.
+      - heading: What the Map Will Show You
+        body: |-
+          When you're done, submit your map and look at the results. You drew it without looking at party data. But the outcome won't be perfectly proportional.
+
+          This is called the geography problem. It's not a bug in your map — it's a feature of where people live. Neutral rules don't produce neutral outcomes. They produce different outcomes.
+    objective: |-
+      Draw a compact, population-balanced map using only geometric criteria. No partisan data required — or allowed.
+  instigator_character: commissioner
+  character_demographics:
+    commissioner: wf
+    judge: ""
