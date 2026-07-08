@@ -469,9 +469,12 @@ test("settlement: feature anchors (lakeside, riverside, coastal) resolve without
 		},
 		map: { geometry: "hex_axial", shape: "hex_circle", radius: 2 },
 		terrain: {
+			// GAME-127: terrain lives INSIDE the r=2 boundary and replaces the precinct on its cell.
+			// Opposite equatorial rim tiles (hexDist 2), non-adjacent and clear of the N→S river
+			// endpoints — their inner land neighbours become the lakeside / coastal precincts.
 			tiles: [
-				{ q: 3, r: -1, type: "lake" },
-				{ q: 3, r: -2, type: "sea" },
+				{ q: -2, r: 0, type: "lake" },
+				{ q: 2, r: 0, type: "sea" },
 			],
 			// A routed rim-to-rim river (GAME-100): explicit mid-land single edges are now per-se
 			// invalid (loose ends). We only need *some* river so the `riverside` anchor resolves.

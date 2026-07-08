@@ -1548,8 +1548,11 @@ test("wrap-up screen: completing last scenario shows wrap-up on Next Scenario", 
 	await page.evaluate((ids) => {
 		localStorage.setItem("redistricting-sim-progress", JSON.stringify({ completed: ids }));
 	}, allButLast);
-	// tutorial-004 ("Capstone") opens as one district; carve four wedges around the centre so the
-	// map is balanced (±15%) + contiguous and passes (same winning move as the winnability test).
+	// tutorial-004 ("Fairhaven: Capstone") opens as one district. Win it the same way the dedicated
+	// tutorial-004-terrain winnability test does: sort every precinct north→south by screen-y and
+	// split into four EQUAL-POPULATION horizontal layers — each a contiguous slab within ±15%. The
+	// reshaped capstone (terrain carved off the NW/SE rims) runs uneven under cardinal wedges, so
+	// equal-population layers are the reliable winning move.
 	await loadScenario(page, "tutorial-004");
 	await page.evaluate(() => {
 		const store = (
@@ -1558,34 +1561,31 @@ test("wrap-up screen: completing last scenario shows wrap-up on Next Scenario", 
 				{
 					getState: () => {
 						paintStroke: (ids: number[], d: number) => void;
-						precincts: { coord: { q: number; r: number } }[];
+						precincts: { index: number; coord: { q: number; r: number }; population: number }[];
 					};
 				}
 			>
 		)["__gameStore"];
 		if (!store) throw new Error("__gameStore not found");
 		const state = store.getState();
-		const d2: number[] = [];
-		const d3: number[] = [];
-		const d4: number[] = [];
-		const off = Math.PI / 4;
-		state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
-			const x = Math.sqrt(3) * (p.coord.q + p.coord.r / 2);
-			const y = 1.5 * p.coord.r;
-			let a = Math.atan2(y, x);
-			if (a < 0) a += 2 * Math.PI;
-			const wedge = Math.min(
-				3,
-				Math.floor(((a - off + 2 * Math.PI) % (2 * Math.PI)) / (Math.PI / 2)),
-			);
-			if (wedge === 1) d2.push(i);
-			else if (wedge === 2) d3.push(i);
-			else if (wedge === 3) d4.push(i);
-			// wedge 0 stays District 1
-		});
-		state.paintStroke(d2, 2);
-		state.paintStroke(d3, 3);
-		state.paintStroke(d4, 4);
+		const S3 = Math.sqrt(3);
+		// Screen-y (hex-geometry.ts hexToPixel): y = HEX·(√3·r + (√3/2)·q); smaller y is further north.
+		const byNorth = [...state.precincts].sort(
+			(a, b) => S3 * a.coord.r + (S3 / 2) * a.coord.q - (S3 * b.coord.r + (S3 / 2) * b.coord.q),
+		);
+		const total = byNorth.reduce((sum, p) => sum + p.population, 0);
+		const layers: number[][] = [[], [], [], []];
+		let cumulative = 0;
+		let layer = 0;
+		for (const p of byNorth) {
+			layers[layer]!.push(p.index);
+			cumulative += p.population;
+			if (layer < 3 && cumulative >= (total * (layer + 1)) / 4) layer++;
+		}
+		state.paintStroke(layers[0]!, 4);
+		state.paintStroke(layers[1]!, 3);
+		state.paintStroke(layers[2]!, 2);
+		state.paintStroke(layers[3]!, 1);
 	});
 	await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
 	await page.locator("#btn-submit").click();
@@ -2193,13 +2193,13 @@ test("guided overlay: tutorial-003 reveals the result + lean, then county, then 
 });
 
 // ─── tutorial-004: "Fairhaven: Putting It Together" (GAME-099 — capstone) ───
-// A fuller map (127 precincts, 4 districts) with every tool visible from the start (nothing
-// hidden, no reveal). Light guided orientation; gates the full legal-map skill —
-// district_count + population_balance (±15%) + contiguity.
+// A fuller map (111 precincts, 4 districts, a topographic frame carved off the NW/SE rims) with
+// every tool visible from the start (nothing hidden, no reveal). Light guided orientation; gates
+// the full legal-map skill — district_count + population_balance (±15%) + contiguity.
 
-test("tutorial-004 smoke: loads and renders 127 precincts", async ({ page }) => {
+test("tutorial-004 smoke: loads and renders 111 precincts", async ({ page }) => {
 	await loadScenario(page, "tutorial-004");
-	await expect(page.locator("path.hex")).toHaveCount(127);
+	await expect(page.locator("path.hex")).toHaveCount(111);
 });
 
 test("tutorial-004 capstone chrome: validity panel, view toolbar, and result are all visible", async ({
@@ -2213,55 +2213,10 @@ test("tutorial-004 capstone chrome: validity panel, view toolbar, and result are
 	await expect(page.locator("#results-container")).toBeVisible();
 });
 
-test("tutorial-004 winnability: four balanced, connected districts pass (district_count + balance + contiguity)", async ({
-	page,
-}) => {
-	await loadScenario(page, "tutorial-004");
-	// Carve four wedges around the centre — each district gets an equal slice of the dense core
-	// and the sparse rim, so all four land within ±15% (BFS-verified balanced + contiguous;
-	// a 45° rotation is the best-balanced). This is the "give the dense centre to everyone" move
-	// a player arrives at by evening out the panel.
-	await page.evaluate(() => {
-		const store = (
-			window as unknown as Record<
-				string,
-				{
-					getState: () => {
-						paintStroke: (ids: number[], d: number) => void;
-						precincts: { coord: { q: number; r: number } }[];
-					};
-				}
-			>
-		)["__gameStore"];
-		if (!store) throw new Error("__gameStore not found");
-		const state = store.getState();
-		const d2: number[] = [];
-		const d3: number[] = [];
-		const d4: number[] = [];
-		const off = Math.PI / 4; // 45° rotation — best-balanced wedge orientation
-		state.precincts.forEach((p: { coord: { q: number; r: number } }, i: number) => {
-			const x = Math.sqrt(3) * (p.coord.q + p.coord.r / 2);
-			const y = 1.5 * p.coord.r;
-			let a = Math.atan2(y, x);
-			if (a < 0) a += 2 * Math.PI;
-			const wedge = Math.min(
-				3,
-				Math.floor(((a - off + 2 * Math.PI) % (2 * Math.PI)) / (Math.PI / 2)),
-			);
-			if (wedge === 1) d2.push(i);
-			else if (wedge === 2) d3.push(i);
-			else if (wedge === 3) d4.push(i);
-			// wedge 0 stays District 1
-		});
-		state.paintStroke(d2, 2);
-		state.paintStroke(d3, 3);
-		state.paintStroke(d4, 4);
-	});
-	await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
-	await page.locator("#btn-submit").click();
-	await expect(page.locator("#result-screen")).toBeVisible();
-	await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
-});
+// The tutorial-004 winnability check (four balanced, connected districts pass) lives in the
+// dedicated spec game/web/e2e/tutorial-004-terrain.spec.ts alongside the terrain-rendering smoke —
+// same convention as tutorials 005/006. The reshaped capstone wins via equal-population north–south
+// layers (cardinal wedges run structurally uneven on the pointy-top hex once the rims are carved).
 
 // ─── GAME-099: guided overlay (tutorial-004) — light orient (nothing hidden) ───
 
