@@ -14,12 +14,14 @@
     {
       "id": "cat",
       "name": "Cat Party",
-      "abbreviation": "CAT"
+      "abbreviation": "CAT",
+      "color": "#c96d00"
     },
     {
       "id": "dog",
       "name": "Dog Party",
-      "abbreviation": "DOG"
+      "abbreviation": "DOG",
+      "color": "#7b35a8"
     }
   ],
   "districts": [
@@ -44,3060 +46,3059 @@
       "name": "District 5"
     }
   ],
-  "default_district_id": "d1",
   "precincts": [
     {
       "id": "p001",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 0,
         "r": -6
       },
-      "total_population": 1644,
-      "initial_district_id": "d5",
-      "name": "Dogdale (0,-6)",
+      "total_population": 1428,
       "demographic_groups": [
         {
           "id": "p001-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4103,
-            "dog": 0.5897
-          }
+            "cat": 0.40083726499229666,
+            "dog": 0.5991627350077033
+          },
+          "turnout_rate": 0.6707234148285351,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (0,-6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p002",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 1,
         "r": -6
       },
-      "total_population": 1593,
-      "initial_district_id": "d5",
-      "name": "Dogdale (1,-6)",
+      "total_population": 1592,
       "demographic_groups": [
         {
           "id": "p002-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4495,
-            "dog": 0.5505
-          }
+            "cat": 0.42326972279697656,
+            "dog": 0.5767302772030234
+          },
+          "turnout_rate": 0.6535365138668567,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (1,-6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p003",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 2,
         "r": -6
       },
-      "total_population": 1580,
-      "initial_district_id": "d5",
-      "name": "Dogdale (2,-6)",
+      "total_population": 1512,
       "demographic_groups": [
         {
           "id": "p003-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4298,
-            "dog": 0.5702
-          }
+            "cat": 0.38009109666571017,
+            "dog": 0.6199089033342898
+          },
+          "turnout_rate": 0.6726314631639979,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (2,-6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p004",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 3,
         "r": -6
       },
-      "total_population": 1556,
-      "initial_district_id": "d5",
-      "name": "Dogdale (3,-6)",
+      "total_population": 1557,
       "demographic_groups": [
         {
           "id": "p004-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4472,
-            "dog": 0.5528
-          }
+            "cat": 0.38090806771069763,
+            "dog": 0.6190919322893024
+          },
+          "turnout_rate": 0.5658154755132273,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (3,-6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p005",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 4,
         "r": -6
       },
-      "total_population": 1591,
-      "initial_district_id": "d5",
-      "name": "Dogdale (4,-6)",
+      "total_population": 1350,
       "demographic_groups": [
         {
           "id": "p005-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4211,
-            "dog": 0.5789
-          }
+            "cat": 0.4117262802645564,
+            "dog": 0.5882737197354436
+          },
+          "turnout_rate": 0.6506412319140509,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (4,-6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p006",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 5,
         "r": -6
       },
-      "total_population": 1589,
-      "initial_district_id": "d5",
-      "name": "Dogdale (5,-6)",
+      "total_population": 1596,
       "demographic_groups": [
         {
           "id": "p006-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4526,
-            "dog": 0.5474
-          }
+            "cat": 0.40929535603150724,
+            "dog": 0.5907046439684928
+          },
+          "turnout_rate": 0.5596581667428837,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (5,-6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p007",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 6,
         "r": -6
       },
-      "total_population": 1590,
-      "initial_district_id": "d5",
-      "name": "Dogdale (6,-6)",
+      "total_population": 1353,
       "demographic_groups": [
         {
           "id": "p007-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.3991,
-            "dog": 0.6009
-          }
+            "cat": 0.4071086150407791,
+            "dog": 0.5928913849592209
+          },
+          "turnout_rate": 0.6589626228436828,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (6,-6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p008",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -1,
         "r": -5
       },
-      "total_population": 1455,
-      "initial_district_id": "d5",
-      "name": "Dogdale (-1,-5)",
+      "total_population": 1381,
       "demographic_groups": [
         {
           "id": "p008-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4331,
-            "dog": 0.5669
-          }
+            "cat": 0.40024397276341916,
+            "dog": 0.5997560272365808
+          },
+          "turnout_rate": 0.5781297638546675,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-1,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p009",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 0,
         "r": -5
       },
-      "total_population": 1567,
-      "initial_district_id": "d5",
-      "name": "Dogdale (0,-5)",
+      "total_population": 1469,
       "demographic_groups": [
         {
           "id": "p009-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4492,
-            "dog": 0.5508
-          }
+            "cat": 0.4166533185355365,
+            "dog": 0.5833466814644634
+          },
+          "turnout_rate": 0.6648991747410037,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (0,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p010",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 1,
         "r": -5
       },
-      "total_population": 1465,
-      "initial_district_id": "d5",
-      "name": "Dogdale (1,-5)",
+      "total_population": 1551,
       "demographic_groups": [
         {
           "id": "p010-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4582,
-            "dog": 0.5418
-          }
+            "cat": 0.41934169197455046,
+            "dog": 0.5806583080254495
+          },
+          "turnout_rate": 0.5909493515966461,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (1,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p011",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 2,
         "r": -5
       },
-      "total_population": 1649,
-      "initial_district_id": "d5",
-      "name": "Dogdale (2,-5)",
+      "total_population": 1460,
       "demographic_groups": [
         {
           "id": "p011-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4166,
-            "dog": 0.5834
-          }
+            "cat": 0.4245451469346881,
+            "dog": 0.5754548530653119
+          },
+          "turnout_rate": 0.6643378782202489,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (2,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p012",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 3,
         "r": -5
       },
-      "total_population": 1358,
-      "initial_district_id": "d5",
-      "name": "Dogdale (3,-5)",
+      "total_population": 1369,
       "demographic_groups": [
         {
           "id": "p012-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.3894,
-            "dog": 0.6106
-          }
+            "cat": 0.410469719376415,
+            "dog": 0.5895302806235849
+          },
+          "turnout_rate": 0.6660247452091426,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (3,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p013",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 4,
         "r": -5
       },
-      "total_population": 1408,
-      "initial_district_id": "d5",
-      "name": "Dogdale (4,-5)",
+      "total_population": 1451,
       "demographic_groups": [
         {
           "id": "p013-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.424,
-            "dog": 0.576
-          }
+            "cat": 0.45770949255675075,
+            "dog": 0.5422905074432492
+          },
+          "turnout_rate": 0.6278151868609712,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (4,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p014",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 5,
         "r": -5
       },
-      "total_population": 1611,
-      "initial_district_id": "d5",
-      "name": "Dogdale (5,-5)",
+      "total_population": 1568,
       "demographic_groups": [
         {
           "id": "p014-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.431,
-            "dog": 0.569
-          }
+            "cat": 0.4008723947405815,
+            "dog": 0.5991276052594185
+          },
+          "turnout_rate": 0.6943179514259099,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (5,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p015",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 6,
         "r": -5
       },
-      "total_population": 1618,
-      "initial_district_id": "d5",
-      "name": "Dogdale (6,-5)",
+      "total_population": 1426,
       "demographic_groups": [
         {
           "id": "p015-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.39,
-            "dog": 0.61
-          }
+            "cat": 0.3967678760923445,
+            "dog": 0.6032321239076555
+          },
+          "turnout_rate": 0.6184081175946631,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (6,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p016",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -2,
         "r": -4
       },
-      "total_population": 1562,
-      "initial_district_id": "d5",
-      "name": "Dogdale (-2,-4)",
+      "total_population": 1406,
       "demographic_groups": [
         {
           "id": "p016-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.3937,
-            "dog": 0.6063
-          }
+            "cat": 0.4350552324950695,
+            "dog": 0.5649447675049305
+          },
+          "turnout_rate": 0.6086881977389567,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-2,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p017",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -1,
         "r": -4
       },
-      "total_population": 1529,
-      "initial_district_id": "d5",
-      "name": "Dogdale (-1,-4)",
+      "total_population": 1487,
       "demographic_groups": [
         {
           "id": "p017-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.451,
-            "dog": 0.549
-          }
+            "cat": 0.40380902227014304,
+            "dog": 0.596190977729857
+          },
+          "turnout_rate": 0.5863373249419965,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-1,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p018",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 0,
         "r": -4
       },
-      "total_population": 1625,
-      "initial_district_id": "d5",
-      "name": "Midtown (0,-4)",
+      "total_population": 1580,
       "demographic_groups": [
         {
           "id": "p018-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7402,
-            "dog": 0.2598
-          }
+            "cat": 0.7352585698664188,
+            "dog": 0.2647414301335812
+          },
+          "turnout_rate": 0.6091259690350853,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (0,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p019",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 1,
         "r": -4
       },
-      "total_population": 1409,
-      "initial_district_id": "d5",
-      "name": "Midtown (1,-4)",
+      "total_population": 1498,
       "demographic_groups": [
         {
           "id": "p019-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7114,
-            "dog": 0.2886
-          }
+            "cat": 0.7522345680557191,
+            "dog": 0.2477654319442809
+          },
+          "turnout_rate": 0.5788490270497277,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (1,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p020",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 2,
         "r": -4
       },
-      "total_population": 1463,
-      "initial_district_id": "d5",
-      "name": "Midtown (2,-4)",
+      "total_population": 1432,
       "demographic_groups": [
         {
           "id": "p020-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.708,
-            "dog": 0.292
-          }
+            "cat": 0.7453225341252983,
+            "dog": 0.25467746587470175
+          },
+          "turnout_rate": 0.6228690124582499,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (2,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p021",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 3,
         "r": -4
       },
-      "total_population": 1631,
-      "initial_district_id": "d5",
-      "name": "Midtown (3,-4)",
+      "total_population": 1517,
       "demographic_groups": [
         {
           "id": "p021-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.6944,
-            "dog": 0.3056
-          }
+            "cat": 0.728439908158034,
+            "dog": 0.27156009184196594
+          },
+          "turnout_rate": 0.6552242640289478,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (3,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p022",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 4,
         "r": -4
       },
-      "total_population": 1474,
-      "initial_district_id": "d5",
-      "name": "Midtown (4,-4)",
+      "total_population": 1579,
       "demographic_groups": [
         {
           "id": "p022-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7167,
-            "dog": 0.2833
-          }
+            "cat": 0.7407059268653392,
+            "dog": 0.2592940731346608
+          },
+          "turnout_rate": 0.5915735710295849,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (4,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p023",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 5,
         "r": -4
       },
-      "total_population": 1376,
-      "initial_district_id": "d5",
-      "name": "Dogdale (5,-4)",
+      "total_population": 1464,
       "demographic_groups": [
         {
           "id": "p023-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4283,
-            "dog": 0.5717
-          }
+            "cat": 0.42740012744441624,
+            "dog": 0.5725998725555838
+          },
+          "turnout_rate": 0.6652516688336618,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (5,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p024",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 6,
         "r": -4
       },
-      "total_population": 1471,
-      "initial_district_id": "d5",
-      "name": "Dogdale (6,-4)",
+      "total_population": 1582,
       "demographic_groups": [
         {
           "id": "p024-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4109,
-            "dog": 0.5891
-          }
+            "cat": 0.416383471339941,
+            "dog": 0.583616528660059
+          },
+          "turnout_rate": 0.5737424630089664,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (6,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p025",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -3,
         "r": -3
       },
-      "total_population": 1421,
-      "initial_district_id": "d5",
-      "name": "Dogdale (-3,-3)",
+      "total_population": 1642,
       "demographic_groups": [
         {
           "id": "p025-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4101,
-            "dog": 0.5899
-          }
+            "cat": 0.381669208612293,
+            "dog": 0.618330791387707
+          },
+          "turnout_rate": 0.6469548918539658,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-3,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p026",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -2,
         "r": -3
       },
-      "total_population": 1548,
-      "initial_district_id": "d5",
-      "name": "Dogdale (-2,-3)",
+      "total_population": 1506,
       "demographic_groups": [
         {
           "id": "p026-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4232,
-            "dog": 0.5768
-          }
+            "cat": 0.4592060083337128,
+            "dog": 0.5407939916662872
+          },
+          "turnout_rate": 0.6316515674232506,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-2,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p027",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -1,
         "r": -3
       },
-      "total_population": 1360,
-      "initial_district_id": "d5",
-      "name": "Midtown (-1,-3)",
+      "total_population": 1428,
       "demographic_groups": [
         {
           "id": "p027-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7388,
-            "dog": 0.2612
-          }
+            "cat": 0.7037214138358832,
+            "dog": 0.29627858616411684
+          },
+          "turnout_rate": 0.6582835611770861,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-1,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p028",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 0,
         "r": -3
       },
-      "total_population": 1549,
-      "initial_district_id": "d5",
-      "name": "Midtown (0,-3)",
+      "total_population": 1639,
       "demographic_groups": [
         {
           "id": "p028-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.6884,
-            "dog": 0.3116
-          }
+            "cat": 0.745673098359257,
+            "dog": 0.254326901640743
+          },
+          "turnout_rate": 0.624932136409916,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (0,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p029",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 1,
         "r": -3
       },
-      "total_population": 1466,
-      "initial_district_id": "d5",
-      "name": "Midtown (1,-3)",
+      "total_population": 1413,
       "demographic_groups": [
         {
           "id": "p029-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7259,
-            "dog": 0.2741
-          }
+            "cat": 0.7359653517417609,
+            "dog": 0.2640346482582391
+          },
+          "turnout_rate": 0.5881662694155239,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (1,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p030",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 2,
         "r": -3
       },
-      "total_population": 1644,
-      "initial_district_id": "d5",
-      "name": "Midtown (2,-3)",
+      "total_population": 1487,
       "demographic_groups": [
         {
           "id": "p030-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7409,
-            "dog": 0.2591
-          }
+            "cat": 0.7395032321289181,
+            "dog": 0.2604967678710819
+          },
+          "turnout_rate": 0.6420266054803505,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (2,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p031",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 3,
         "r": -3
       },
-      "total_population": 1643,
-      "initial_district_id": "d5",
-      "name": "Midtown (3,-3)",
+      "total_population": 1557,
       "demographic_groups": [
         {
           "id": "p031-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7198,
-            "dog": 0.2802
-          }
+            "cat": 0.7414234867691993,
+            "dog": 0.25857651323080066
+          },
+          "turnout_rate": 0.5724123610067181,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (3,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p032",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 4,
         "r": -3
       },
-      "total_population": 1535,
-      "initial_district_id": "d5",
-      "name": "Midtown (4,-3)",
+      "total_population": 1467,
       "demographic_groups": [
         {
           "id": "p032-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7575,
-            "dog": 0.2425
-          }
+            "cat": 0.739281328972429,
+            "dog": 0.26071867102757096
+          },
+          "turnout_rate": 0.5629603833891452,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (4,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p033",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 5,
         "r": -3
       },
-      "total_population": 1361,
-      "initial_district_id": "d5",
-      "name": "Dogdale (5,-3)",
+      "total_population": 1439,
       "demographic_groups": [
         {
           "id": "p033-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4359,
-            "dog": 0.5641
-          }
+            "cat": 0.4020242445170879,
+            "dog": 0.5979757554829122
+          },
+          "turnout_rate": 0.6446351698017679,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (5,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p034",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 6,
         "r": -3
       },
-      "total_population": 1503,
-      "initial_district_id": "d5",
-      "name": "Dogdale (6,-3)",
+      "total_population": 1422,
       "demographic_groups": [
         {
           "id": "p034-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4408,
-            "dog": 0.5592
-          }
+            "cat": 0.40994816578924653,
+            "dog": 0.5900518342107535
+          },
+          "turnout_rate": 0.6002232355298475,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (6,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p035",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -4,
         "r": -2
       },
-      "total_population": 1551,
-      "initial_district_id": "d4",
-      "name": "Dogdale (-4,-2)",
+      "total_population": 1557,
       "demographic_groups": [
         {
           "id": "p035-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.424,
-            "dog": 0.576
-          }
+            "cat": 0.4478840114176273,
+            "dog": 0.5521159885823728
+          },
+          "turnout_rate": 0.5600316063384526,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-4,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p036",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -3,
         "r": -2
       },
-      "total_population": 1584,
-      "initial_district_id": "d4",
-      "name": "Dogdale (-3,-2)",
+      "total_population": 1468,
       "demographic_groups": [
         {
           "id": "p036-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4072,
-            "dog": 0.5928
-          }
+            "cat": 0.4423014765232801,
+            "dog": 0.5576985234767199
+          },
+          "turnout_rate": 0.5554884303826839,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-3,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p037",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -2,
         "r": -2
       },
-      "total_population": 1600,
-      "initial_district_id": "d4",
-      "name": "Midtown (-2,-2)",
+      "total_population": 1621,
       "demographic_groups": [
         {
           "id": "p037-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7146,
-            "dog": 0.2854
-          }
+            "cat": 0.7252631769701838,
+            "dog": 0.27473682302981617
+          },
+          "turnout_rate": 0.63363008426968,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-2,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p038",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -1,
         "r": -2
       },
-      "total_population": 1382,
-      "initial_district_id": "d4",
-      "name": "Midtown (-1,-2)",
+      "total_population": 1407,
       "demographic_groups": [
         {
           "id": "p038-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7443,
-            "dog": 0.2557
-          }
+            "cat": 0.7374410507269203,
+            "dog": 0.26255894927307966
+          },
+          "turnout_rate": 0.5515965069993399,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-1,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p039",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 0,
         "r": -2
       },
-      "total_population": 1509,
-      "initial_district_id": "d4",
-      "name": "Catville (0,-2)",
+      "total_population": 1595,
       "demographic_groups": [
         {
           "id": "p039-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.8261,
-            "dog": 0.1739
-          }
+            "cat": 0.8598621159046888,
+            "dog": 0.14013788409531125
+          },
+          "turnout_rate": 0.6748335347976535,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (0,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p040",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 1,
         "r": -2
       },
-      "total_population": 1489,
-      "initial_district_id": "d4",
-      "name": "Catville (1,-2)",
+      "total_population": 1496,
       "demographic_groups": [
         {
           "id": "p040-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.8174,
-            "dog": 0.1826
-          }
+            "cat": 0.7946787078864872,
+            "dog": 0.2053212921135128
+          },
+          "turnout_rate": 0.6359986171126366,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (1,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p041",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 2,
         "r": -2
       },
-      "total_population": 1598,
-      "initial_district_id": "d4",
-      "name": "Catville (2,-2)",
+      "total_population": 1532,
       "demographic_groups": [
         {
           "id": "p041-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.8159,
-            "dog": 0.1841
-          }
+            "cat": 0.8435419743694365,
+            "dog": 0.15645802563056355
+          },
+          "turnout_rate": 0.6910616093198768,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (2,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p042",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 3,
         "r": -2
       },
-      "total_population": 1385,
-      "initial_district_id": "d4",
-      "name": "Midtown (3,-2)",
+      "total_population": 1561,
       "demographic_groups": [
         {
           "id": "p042-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7162,
-            "dog": 0.2838
-          }
+            "cat": 0.6910129890590906,
+            "dog": 0.3089870109409094
+          },
+          "turnout_rate": 0.5613521394901909,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (3,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p043",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 4,
         "r": -2
       },
-      "total_population": 1350,
-      "initial_district_id": "d4",
-      "name": "Midtown (4,-2)",
+      "total_population": 1578,
       "demographic_groups": [
         {
           "id": "p043-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7432,
-            "dog": 0.2568
-          }
+            "cat": 0.7127716502174735,
+            "dog": 0.28722834978252654
+          },
+          "turnout_rate": 0.6538673588307574,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (4,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p044",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 5,
         "r": -2
       },
-      "total_population": 1371,
-      "initial_district_id": "d4",
-      "name": "Dogdale (5,-2)",
+      "total_population": 1433,
       "demographic_groups": [
         {
           "id": "p044-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4213,
-            "dog": 0.5787
-          }
+            "cat": 0.4195855309814215,
+            "dog": 0.5804144690185785
+          },
+          "turnout_rate": 0.6803315402474254,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (5,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p045",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 6,
         "r": -2
       },
-      "total_population": 1379,
-      "initial_district_id": "d4",
-      "name": "Dogdale (6,-2)",
+      "total_population": 1528,
       "demographic_groups": [
         {
           "id": "p045-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4561,
-            "dog": 0.5439
-          }
+            "cat": 0.41165498046204446,
+            "dog": 0.5883450195379556
+          },
+          "turnout_rate": 0.616565617453307,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (6,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p046",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -5,
         "r": -1
       },
-      "total_population": 1358,
-      "initial_district_id": "d4",
-      "name": "Dogdale (-5,-1)",
+      "total_population": 1581,
       "demographic_groups": [
         {
           "id": "p046-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.3911,
-            "dog": 0.6089
-          }
+            "cat": 0.3863135945610702,
+            "dog": 0.6136864054389298
+          },
+          "turnout_rate": 0.5563936438644306,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-5,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p047",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -4,
         "r": -1
       },
-      "total_population": 1550,
-      "initial_district_id": "d4",
-      "name": "Dogdale (-4,-1)",
+      "total_population": 1486,
       "demographic_groups": [
         {
           "id": "p047-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4011,
-            "dog": 0.5989
-          }
+            "cat": 0.44834008252248164,
+            "dog": 0.5516599174775183
+          },
+          "turnout_rate": 0.6042620563064702,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-4,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p048",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -3,
         "r": -1
       },
-      "total_population": 1421,
-      "initial_district_id": "d4",
-      "name": "Midtown (-3,-1)",
+      "total_population": 1397,
       "demographic_groups": [
         {
           "id": "p048-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.6999,
-            "dog": 0.3001
-          }
+            "cat": 0.7378270522505045,
+            "dog": 0.2621729477494955
+          },
+          "turnout_rate": 0.6876263468991964,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-3,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p049",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -2,
         "r": -1
       },
-      "total_population": 1569,
-      "initial_district_id": "d4",
-      "name": "Midtown (-2,-1)",
+      "total_population": 1356,
       "demographic_groups": [
         {
           "id": "p049-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.6894,
-            "dog": 0.3106
-          }
+            "cat": 0.7395454035699367,
+            "dog": 0.2604545964300633
+          },
+          "turnout_rate": 0.6697811060468666,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-2,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p050",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -1,
         "r": -1
       },
-      "total_population": 1590,
-      "initial_district_id": "d4",
-      "name": "Catville (-1,-1)",
+      "total_population": 1544,
       "demographic_groups": [
         {
           "id": "p050-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.8496,
-            "dog": 0.1504
-          }
+            "cat": 0.8516199976764619,
+            "dog": 0.1483800023235381
+          },
+          "turnout_rate": 0.5994531972100958,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-1,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p051",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 0,
         "r": -1
       },
-      "total_population": 1456,
-      "initial_district_id": "d4",
-      "name": "Catville (0,-1)",
+      "total_population": 1648,
       "demographic_groups": [
         {
           "id": "p051-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.8542,
-            "dog": 0.1458
-          }
+            "cat": 0.7829429808817804,
+            "dog": 0.21705701911821962
+          },
+          "turnout_rate": 0.6758552052197047,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (0,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p052",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 1,
         "r": -1
       },
-      "total_population": 1387,
-      "initial_district_id": "d4",
-      "name": "Catville (1,-1)",
+      "total_population": 1513,
       "demographic_groups": [
         {
           "id": "p052-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.8411,
-            "dog": 0.1589
-          }
+            "cat": 0.8281364704854786,
+            "dog": 0.17186352951452144
+          },
+          "turnout_rate": 0.6740661551128141,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (1,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p053",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 2,
         "r": -1
       },
-      "total_population": 1427,
-      "initial_district_id": "d4",
-      "name": "Catville (2,-1)",
+      "total_population": 1439,
       "demographic_groups": [
         {
           "id": "p053-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7836,
-            "dog": 0.2164
-          }
+            "cat": 0.7959192288480699,
+            "dog": 0.20408077115193013
+          },
+          "turnout_rate": 0.6987858367618173,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (2,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p054",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 3,
         "r": -1
       },
-      "total_population": 1526,
-      "initial_district_id": "d4",
-      "name": "Midtown (3,-1)",
+      "total_population": 1567,
       "demographic_groups": [
         {
           "id": "p054-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.6801,
-            "dog": 0.3199
-          }
+            "cat": 0.7086388092674315,
+            "dog": 0.2913611907325685
+          },
+          "turnout_rate": 0.5536401864723303,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (3,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p055",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 4,
         "r": -1
       },
-      "total_population": 1368,
-      "initial_district_id": "d4",
-      "name": "Midtown (4,-1)",
+      "total_population": 1597,
       "demographic_groups": [
         {
           "id": "p055-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7413,
-            "dog": 0.2587
-          }
+            "cat": 0.7229382657818496,
+            "dog": 0.2770617342181504
+          },
+          "turnout_rate": 0.5975806069094688,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (4,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p056",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 5,
         "r": -1
       },
-      "total_population": 1626,
-      "initial_district_id": "d4",
-      "name": "Dogdale (5,-1)",
+      "total_population": 1500,
       "demographic_groups": [
         {
           "id": "p056-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4595,
-            "dog": 0.5405
-          }
+            "cat": 0.41718966405838726,
+            "dog": 0.5828103359416128
+          },
+          "turnout_rate": 0.599950907076709,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (5,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p057",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 6,
         "r": -1
       },
-      "total_population": 1469,
-      "initial_district_id": "d4",
-      "name": "Dogdale (6,-1)",
+      "total_population": 1560,
       "demographic_groups": [
         {
           "id": "p057-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.3958,
-            "dog": 0.6042
-          }
+            "cat": 0.39265014771372075,
+            "dog": 0.6073498522862792
+          },
+          "turnout_rate": 0.6221681676921434,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (6,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p058",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -6,
         "r": 0
       },
-      "total_population": 1645,
-      "initial_district_id": "d3",
-      "name": "Dogdale (-6,0)",
+      "total_population": 1426,
       "demographic_groups": [
         {
           "id": "p058-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4465,
-            "dog": 0.5535
-          }
+            "cat": 0.4366012641973793,
+            "dog": 0.5633987358026207
+          },
+          "turnout_rate": 0.5728918894077651,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-6,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p059",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -5,
         "r": 0
       },
-      "total_population": 1376,
-      "initial_district_id": "d3",
-      "name": "Dogdale (-5,0)",
+      "total_population": 1573,
       "demographic_groups": [
         {
           "id": "p059-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.3853,
-            "dog": 0.6147
-          }
+            "cat": 0.4259211661480367,
+            "dog": 0.5740788338519633
+          },
+          "turnout_rate": 0.625009057938587,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-5,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p060",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -4,
         "r": 0
       },
-      "total_population": 1398,
-      "initial_district_id": "d3",
-      "name": "Midtown (-4,0)",
+      "total_population": 1534,
       "demographic_groups": [
         {
           "id": "p060-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7413,
-            "dog": 0.2587
-          }
+            "cat": 0.7472250106930732,
+            "dog": 0.25277498930692677
+          },
+          "turnout_rate": 0.6510523037752136,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-4,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p061",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -3,
         "r": 0
       },
-      "total_population": 1625,
-      "initial_district_id": "d3",
-      "name": "Midtown (-3,0)",
+      "total_population": 1581,
       "demographic_groups": [
         {
           "id": "p061-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7555,
-            "dog": 0.2445
-          }
+            "cat": 0.7287863996997476,
+            "dog": 0.27121360030025243
+          },
+          "turnout_rate": 0.5830110893934034,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-3,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p062",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -2,
         "r": 0
       },
-      "total_population": 1438,
-      "initial_district_id": "d3",
-      "name": "Catville (-2,0)",
+      "total_population": 1394,
       "demographic_groups": [
         {
           "id": "p062-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.8476,
-            "dog": 0.1524
-          }
+            "cat": 0.786449994686991,
+            "dog": 0.21355000531300905
+          },
+          "turnout_rate": 0.6989273072220384,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-2,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p063",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -1,
         "r": 0
       },
-      "total_population": 1450,
-      "initial_district_id": "d3",
-      "name": "Catville (-1,0)",
+      "total_population": 1573,
       "demographic_groups": [
         {
           "id": "p063-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.8053,
-            "dog": 0.1947
-          }
+            "cat": 0.8150076017528772,
+            "dog": 0.18499239824712277
+          },
+          "turnout_rate": 0.6311126837972552,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-1,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p064",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 0,
         "r": 0
       },
-      "total_population": 1586,
-      "initial_district_id": "d3",
-      "name": "Catville (0,0)",
+      "total_population": 1376,
       "demographic_groups": [
         {
           "id": "p064-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.8304,
-            "dog": 0.1696
-          }
+            "cat": 0.8337224425375461,
+            "dog": 0.16627755746245387
+          },
+          "turnout_rate": 0.6800729497335851,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (0,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p065",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 1,
         "r": 0
       },
-      "total_population": 1384,
-      "initial_district_id": "d3",
-      "name": "Catville (1,0)",
+      "total_population": 1432,
       "demographic_groups": [
         {
           "id": "p065-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7926,
-            "dog": 0.2074
-          }
+            "cat": 0.8343409195728599,
+            "dog": 0.16565908042714006
+          },
+          "turnout_rate": 0.5900007105665281,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (1,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p066",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 2,
         "r": 0
       },
-      "total_population": 1541,
-      "initial_district_id": "d3",
-      "name": "Catville (2,0)",
+      "total_population": 1539,
       "demographic_groups": [
         {
           "id": "p066-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.8196,
-            "dog": 0.1804
-          }
+            "cat": 0.8427665801905095,
+            "dog": 0.15723341980949046
+          },
+          "turnout_rate": 0.5987682791077532,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (2,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p067",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 3,
         "r": 0
       },
-      "total_population": 1434,
-      "initial_district_id": "d3",
-      "name": "Midtown (3,0)",
+      "total_population": 1462,
       "demographic_groups": [
         {
           "id": "p067-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.6923,
-            "dog": 0.3077
-          }
+            "cat": 0.7549441178329289,
+            "dog": 0.24505588216707108
+          },
+          "turnout_rate": 0.6625190822058357,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (3,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p068",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 4,
         "r": 0
       },
-      "total_population": 1503,
-      "initial_district_id": "d3",
-      "name": "Midtown (4,0)",
+      "total_population": 1450,
       "demographic_groups": [
         {
           "id": "p068-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7418,
-            "dog": 0.2582
-          }
+            "cat": 0.7565055766887963,
+            "dog": 0.24349442331120374
+          },
+          "turnout_rate": 0.6918991164769976,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (4,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p069",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 5,
         "r": 0
       },
-      "total_population": 1434,
-      "initial_district_id": "d3",
-      "name": "Dogdale (5,0)",
+      "total_population": 1605,
       "demographic_groups": [
         {
           "id": "p069-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4003,
-            "dog": 0.5997
-          }
+            "cat": 0.4204653955437243,
+            "dog": 0.5795346044562757
+          },
+          "turnout_rate": 0.5823307226644829,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (5,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p070",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 6,
         "r": 0
       },
-      "total_population": 1410,
-      "initial_district_id": "d3",
-      "name": "Dogdale (6,0)",
+      "total_population": 1370,
       "demographic_groups": [
         {
           "id": "p070-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4212,
-            "dog": 0.5788
-          }
+            "cat": 0.4084470225125551,
+            "dog": 0.5915529774874448
+          },
+          "turnout_rate": 0.6840534120332449,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (6,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p071",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -6,
         "r": 1
       },
-      "total_population": 1597,
-      "initial_district_id": "d2",
-      "name": "Dogdale (-6,1)",
+      "total_population": 1584,
       "demographic_groups": [
         {
           "id": "p071-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4008,
-            "dog": 0.5992
-          }
+            "cat": 0.4342670254781842,
+            "dog": 0.5657329745218158
+          },
+          "turnout_rate": 0.5729980877717026,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-6,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p072",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -5,
         "r": 1
       },
-      "total_population": 1375,
-      "initial_district_id": "d2",
-      "name": "Dogdale (-5,1)",
+      "total_population": 1361,
       "demographic_groups": [
         {
           "id": "p072-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4545,
-            "dog": 0.5455
-          }
+            "cat": 0.43177111426368353,
+            "dog": 0.5682288857363165
+          },
+          "turnout_rate": 0.6821843651821836,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-5,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p073",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -4,
         "r": 1
       },
-      "total_population": 1604,
-      "initial_district_id": "d2",
-      "name": "Midtown (-4,1)",
+      "total_population": 1520,
       "demographic_groups": [
         {
           "id": "p073-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.6933,
-            "dog": 0.3067
-          }
+            "cat": 0.7035218038223684,
+            "dog": 0.2964781961776316
+          },
+          "turnout_rate": 0.5568154835724273,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-4,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p074",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -3,
         "r": 1
       },
-      "total_population": 1466,
-      "initial_district_id": "d2",
-      "name": "Midtown (-3,1)",
+      "total_population": 1517,
       "demographic_groups": [
         {
           "id": "p074-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.734,
-            "dog": 0.266
-          }
+            "cat": 0.7359563112445175,
+            "dog": 0.26404368875548245
+          },
+          "turnout_rate": 0.5663660933845677,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-3,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p075",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -2,
         "r": 1
       },
-      "total_population": 1546,
-      "initial_district_id": "d2",
-      "name": "Catville (-2,1)",
+      "total_population": 1566,
       "demographic_groups": [
         {
           "id": "p075-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.8314,
-            "dog": 0.1686
-          }
+            "cat": 0.8583222659118473,
+            "dog": 0.14167773408815265
+          },
+          "turnout_rate": 0.6197132561239413,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-2,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p076",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -1,
         "r": 1
       },
-      "total_population": 1374,
-      "initial_district_id": "d2",
-      "name": "Catville (-1,1)",
+      "total_population": 1353,
       "demographic_groups": [
         {
           "id": "p076-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7821,
-            "dog": 0.2179
-          }
+            "cat": 0.8111014626733958,
+            "dog": 0.18889853732660422
+          },
+          "turnout_rate": 0.6724127710680476,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-1,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p077",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 0,
         "r": 1
       },
-      "total_population": 1649,
-      "initial_district_id": "d2",
-      "name": "Catville (0,1)",
+      "total_population": 1650,
       "demographic_groups": [
         {
           "id": "p077-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7951,
-            "dog": 0.2049
-          }
+            "cat": 0.859883897267282,
+            "dog": 0.14011610273271802
+          },
+          "turnout_rate": 0.6746487757191062,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (0,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p078",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 1,
         "r": 1
       },
-      "total_population": 1357,
-      "initial_district_id": "d2",
-      "name": "Catville (1,1)",
+      "total_population": 1600,
       "demographic_groups": [
         {
           "id": "p078-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.8493,
-            "dog": 0.1507
-          }
+            "cat": 0.8587036546878516,
+            "dog": 0.1412963453121484
+          },
+          "turnout_rate": 0.6025728568434715,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (1,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p079",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 2,
         "r": 1
       },
-      "total_population": 1577,
-      "initial_district_id": "d2",
-      "name": "Midtown (2,1)",
+      "total_population": 1405,
       "demographic_groups": [
         {
           "id": "p079-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7038,
-            "dog": 0.2962
-          }
+            "cat": 0.6904419560916721,
+            "dog": 0.30955804390832786
+          },
+          "turnout_rate": 0.5898130003944971,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (2,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p080",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 3,
         "r": 1
       },
-      "total_population": 1552,
-      "initial_district_id": "d2",
-      "name": "Midtown (3,1)",
+      "total_population": 1522,
       "demographic_groups": [
         {
           "id": "p080-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7483,
-            "dog": 0.2517
-          }
+            "cat": 0.6944318946078419,
+            "dog": 0.30556810539215806
+          },
+          "turnout_rate": 0.5609612459084019,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (3,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p081",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 4,
         "r": 1
       },
-      "total_population": 1552,
-      "initial_district_id": "d2",
-      "name": "Dogdale (4,1)",
+      "total_population": 1589,
       "demographic_groups": [
         {
           "id": "p081-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4513,
-            "dog": 0.5487
-          }
+            "cat": 0.4335456847399473,
+            "dog": 0.5664543152600527
+          },
+          "turnout_rate": 0.6257700058748015,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (4,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p082",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 5,
         "r": 1
       },
-      "total_population": 1497,
-      "initial_district_id": "d2",
-      "name": "Dogdale (5,1)",
+      "total_population": 1633,
       "demographic_groups": [
         {
           "id": "p082-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4341,
-            "dog": 0.5659
-          }
+            "cat": 0.3930299023352563,
+            "dog": 0.6069700976647436
+          },
+          "turnout_rate": 0.6613483203225768,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (5,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p083",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -6,
         "r": 2
       },
-      "total_population": 1496,
-      "initial_district_id": "d2",
-      "name": "Dogdale (-6,2)",
+      "total_population": 1391,
       "demographic_groups": [
         {
           "id": "p083-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.3831,
-            "dog": 0.6169
-          }
+            "cat": 0.4121871213056147,
+            "dog": 0.5878128786943853
+          },
+          "turnout_rate": 0.6135320399655029,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-6,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p084",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -5,
         "r": 2
       },
-      "total_population": 1540,
-      "initial_district_id": "d2",
-      "name": "Dogdale (-5,2)",
+      "total_population": 1372,
       "demographic_groups": [
         {
           "id": "p084-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4485,
-            "dog": 0.5515
-          }
+            "cat": 0.41976638199761507,
+            "dog": 0.5802336180023849
+          },
+          "turnout_rate": 0.5643224225030281,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-5,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p085",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -4,
         "r": 2
       },
-      "total_population": 1371,
-      "initial_district_id": "d2",
-      "name": "Midtown (-4,2)",
+      "total_population": 1473,
       "demographic_groups": [
         {
           "id": "p085-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.6988,
-            "dog": 0.3012
-          }
+            "cat": 0.7438660447858274,
+            "dog": 0.2561339552141726
+          },
+          "turnout_rate": 0.6374973644735291,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-4,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p086",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -3,
         "r": 2
       },
-      "total_population": 1638,
-      "initial_district_id": "d2",
-      "name": "Midtown (-3,2)",
+      "total_population": 1558,
       "demographic_groups": [
         {
           "id": "p086-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.6847,
-            "dog": 0.3153
-          }
+            "cat": 0.6980703429318964,
+            "dog": 0.3019296570681036
+          },
+          "turnout_rate": 0.5976743574836292,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-3,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p087",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -2,
         "r": 2
       },
-      "total_population": 1451,
-      "initial_district_id": "d2",
-      "name": "Catville (-2,2)",
+      "total_population": 1498,
       "demographic_groups": [
         {
           "id": "p087-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.8403,
-            "dog": 0.1597
-          }
+            "cat": 0.7820665294677018,
+            "dog": 0.21793347053229817
+          },
+          "turnout_rate": 0.5611496796132998,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-2,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p088",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -1,
         "r": 2
       },
-      "total_population": 1522,
-      "initial_district_id": "d2",
-      "name": "Catville (-1,2)",
+      "total_population": 1611,
       "demographic_groups": [
         {
           "id": "p088-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7935,
-            "dog": 0.2065
-          }
+            "cat": 0.7848587740212678,
+            "dog": 0.2151412259787322
+          },
+          "turnout_rate": 0.6339620619080961,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-1,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p089",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 0,
         "r": 2
       },
-      "total_population": 1561,
-      "initial_district_id": "d2",
-      "name": "Catville (0,2)",
+      "total_population": 1469,
       "demographic_groups": [
         {
           "id": "p089-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7935,
-            "dog": 0.2065
-          }
+            "cat": 0.8484758562967181,
+            "dog": 0.15152414370328193
+          },
+          "turnout_rate": 0.634745905152522,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (0,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p090",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 1,
         "r": 2
       },
-      "total_population": 1446,
-      "initial_district_id": "d2",
-      "name": "Midtown (1,2)",
+      "total_population": 1483,
       "demographic_groups": [
         {
           "id": "p090-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7424,
-            "dog": 0.2576
-          }
+            "cat": 0.7491965067386627,
+            "dog": 0.25080349326133733
+          },
+          "turnout_rate": 0.6162037087371572,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (1,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p091",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 2,
         "r": 2
       },
-      "total_population": 1433,
-      "initial_district_id": "d2",
-      "name": "Midtown (2,2)",
+      "total_population": 1373,
       "demographic_groups": [
         {
           "id": "p091-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7109,
-            "dog": 0.2891
-          }
+            "cat": 0.7070837400108576,
+            "dog": 0.2929162599891424
+          },
+          "turnout_rate": 0.681092606682796,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (2,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p092",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 3,
         "r": 2
       },
-      "total_population": 1621,
-      "initial_district_id": "d2",
-      "name": "Dogdale (3,2)",
+      "total_population": 1362,
       "demographic_groups": [
         {
           "id": "p092-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.3896,
-            "dog": 0.6104
-          }
+            "cat": 0.42402612855657934,
+            "dog": 0.5759738714434206
+          },
+          "turnout_rate": 0.6801440020441077,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (3,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p093",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 4,
         "r": 2
       },
-      "total_population": 1582,
-      "initial_district_id": "d2",
-      "name": "Dogdale (4,2)",
+      "total_population": 1607,
       "demographic_groups": [
         {
           "id": "p093-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.3854,
-            "dog": 0.6146
-          }
+            "cat": 0.3965456498228013,
+            "dog": 0.6034543501771987
+          },
+          "turnout_rate": 0.618131134356372,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (4,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p094",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -6,
         "r": 3
       },
-      "total_population": 1646,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-6,3)",
+      "total_population": 1458,
       "demographic_groups": [
         {
           "id": "p094-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4549,
-            "dog": 0.5451
-          }
+            "cat": 0.43006641186773775,
+            "dog": 0.5699335881322622
+          },
+          "turnout_rate": 0.5658914868719876,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-6,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p095",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -5,
         "r": 3
       },
-      "total_population": 1554,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-5,3)",
+      "total_population": 1567,
       "demographic_groups": [
         {
           "id": "p095-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4483,
-            "dog": 0.5517
-          }
+            "cat": 0.42468944856896995,
+            "dog": 0.57531055143103
+          },
+          "turnout_rate": 0.5577068071579561,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-5,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p096",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -4,
         "r": 3
       },
-      "total_population": 1529,
-      "initial_district_id": "d1",
-      "name": "Midtown (-4,3)",
+      "total_population": 1626,
       "demographic_groups": [
         {
           "id": "p096-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7204,
-            "dog": 0.2796
-          }
+            "cat": 0.7324016817659139,
+            "dog": 0.2675983182340861
+          },
+          "turnout_rate": 0.6587611785391345,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-4,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p097",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -3,
         "r": 3
       },
-      "total_population": 1548,
-      "initial_district_id": "d1",
-      "name": "Midtown (-3,3)",
+      "total_population": 1574,
       "demographic_groups": [
         {
           "id": "p097-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7177,
-            "dog": 0.2823
-          }
+            "cat": 0.721120479721576,
+            "dog": 0.278879520278424
+          },
+          "turnout_rate": 0.5857783076353371,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-3,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p098",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -2,
         "r": 3
       },
-      "total_population": 1537,
-      "initial_district_id": "d1",
-      "name": "Midtown (-2,3)",
+      "total_population": 1590,
       "demographic_groups": [
         {
           "id": "p098-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7094,
-            "dog": 0.2906
-          }
+            "cat": 0.7081466435082256,
+            "dog": 0.29185335649177435
+          },
+          "turnout_rate": 0.6270003219833598,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-2,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p099",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": -1,
         "r": 3
       },
-      "total_population": 1400,
-      "initial_district_id": "d1",
-      "name": "Midtown (-1,3)",
+      "total_population": 1619,
       "demographic_groups": [
         {
           "id": "p099-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7119,
-            "dog": 0.2881
-          }
+            "cat": 0.7116682510077953,
+            "dog": 0.2883317489922047
+          },
+          "turnout_rate": 0.6593319528270513,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (-1,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p100",
       "editable": true,
-      "county_id": "catville",
       "position": {
         "q": 0,
         "r": 3
       },
-      "total_population": 1534,
-      "initial_district_id": "d1",
-      "name": "Midtown (0,3)",
+      "total_population": 1449,
       "demographic_groups": [
         {
           "id": "p100-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7359,
-            "dog": 0.2641
-          }
+            "cat": 0.7218374387174844,
+            "dog": 0.2781625612825156
+          },
+          "turnout_rate": 0.6849734971066936,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "catville",
+      "name": "Catville (0,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p101",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 1,
         "r": 3
       },
-      "total_population": 1393,
-      "initial_district_id": "d1",
-      "name": "Midtown (1,3)",
+      "total_population": 1361,
       "demographic_groups": [
         {
           "id": "p101-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.6982,
-            "dog": 0.3018
-          }
+            "cat": 0.7464881760254503,
+            "dog": 0.25351182397454974
+          },
+          "turnout_rate": 0.6456003077444621,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (1,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p102",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 2,
         "r": 3
       },
-      "total_population": 1423,
-      "initial_district_id": "d1",
-      "name": "Dogdale (2,3)",
+      "total_population": 1602,
       "demographic_groups": [
         {
           "id": "p102-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.405,
-            "dog": 0.595
-          }
+            "cat": 0.42077982891350985,
+            "dog": 0.5792201710864902
+          },
+          "turnout_rate": 0.6276367565034888,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (2,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p103",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 3,
         "r": 3
       },
-      "total_population": 1374,
-      "initial_district_id": "d1",
-      "name": "Dogdale (3,3)",
+      "total_population": 1531,
       "demographic_groups": [
         {
           "id": "p103-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4138,
-            "dog": 0.5862
-          }
+            "cat": 0.450867676269263,
+            "dog": 0.5491323237307371
+          },
+          "turnout_rate": 0.5895313602057286,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (3,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p104",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -6,
         "r": 4
       },
-      "total_population": 1368,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-6,4)",
+      "total_population": 1598,
       "demographic_groups": [
         {
           "id": "p104-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.3816,
-            "dog": 0.6184
-          }
+            "cat": 0.3982226424477994,
+            "dog": 0.6017773575522005
+          },
+          "turnout_rate": 0.6063855302752927,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-6,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p105",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -5,
         "r": 4
       },
-      "total_population": 1407,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-5,4)",
+      "total_population": 1409,
       "demographic_groups": [
         {
           "id": "p105-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4039,
-            "dog": 0.5961
-          }
+            "cat": 0.45776247773319484,
+            "dog": 0.5422375222668052
+          },
+          "turnout_rate": 0.6142848325893283,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-5,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p106",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -4,
         "r": 4
       },
-      "total_population": 1536,
-      "initial_district_id": "d1",
-      "name": "Midtown (-4,4)",
+      "total_population": 1648,
       "demographic_groups": [
         {
           "id": "p106-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.6912,
-            "dog": 0.3088
-          }
+            "cat": 0.7247438642382622,
+            "dog": 0.2752561357617378
+          },
+          "turnout_rate": 0.6631877313484438,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-4,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p107",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -3,
         "r": 4
       },
-      "total_population": 1612,
-      "initial_district_id": "d1",
-      "name": "Midtown (-3,4)",
+      "total_population": 1457,
       "demographic_groups": [
         {
           "id": "p107-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7022,
-            "dog": 0.2978
-          }
+            "cat": 0.7490260717272759,
+            "dog": 0.25097392827272413
+          },
+          "turnout_rate": 0.6575328851584344,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-3,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p108",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -2,
         "r": 4
       },
-      "total_population": 1585,
-      "initial_district_id": "d1",
-      "name": "Midtown (-2,4)",
+      "total_population": 1357,
       "demographic_groups": [
         {
           "id": "p108-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7191,
-            "dog": 0.2809
-          }
+            "cat": 0.7590931617096066,
+            "dog": 0.2409068382903934
+          },
+          "turnout_rate": 0.5522899609874004,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-2,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p109",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -1,
         "r": 4
       },
-      "total_population": 1479,
-      "initial_district_id": "d1",
-      "name": "Midtown (-1,4)",
+      "total_population": 1511,
       "demographic_groups": [
         {
           "id": "p109-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.6883,
-            "dog": 0.3117
-          }
+            "cat": 0.6858345794305205,
+            "dog": 0.3141654205694795
+          },
+          "turnout_rate": 0.648193679342512,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-1,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p110",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 0,
         "r": 4
       },
-      "total_population": 1405,
-      "initial_district_id": "d1",
-      "name": "Midtown (0,4)",
+      "total_population": 1445,
       "demographic_groups": [
         {
           "id": "p110-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.7302,
-            "dog": 0.2698
-          }
+            "cat": 0.7412747129425407,
+            "dog": 0.25872528705745934
+          },
+          "turnout_rate": 0.6752602789667435,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (0,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p111",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 1,
         "r": 4
       },
-      "total_population": 1400,
-      "initial_district_id": "d1",
-      "name": "Dogdale (1,4)",
+      "total_population": 1489,
       "demographic_groups": [
         {
           "id": "p111-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4177,
-            "dog": 0.5823
-          }
+            "cat": 0.41614169776439663,
+            "dog": 0.5838583022356034
+          },
+          "turnout_rate": 0.6013566865236498,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (1,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p112",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 2,
         "r": 4
       },
-      "total_population": 1635,
-      "initial_district_id": "d1",
-      "name": "Dogdale (2,4)",
+      "total_population": 1450,
       "demographic_groups": [
         {
           "id": "p112-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4576,
-            "dog": 0.5424
-          }
+            "cat": 0.4215490794740617,
+            "dog": 0.5784509205259383
+          },
+          "turnout_rate": 0.5700679918634706,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (2,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p113",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -6,
         "r": 5
       },
-      "total_population": 1435,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-6,5)",
+      "total_population": 1397,
       "demographic_groups": [
         {
           "id": "p113-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4473,
-            "dog": 0.5527
-          }
+            "cat": 0.3935373838059604,
+            "dog": 0.6064626161940396
+          },
+          "turnout_rate": 0.6256936489371583,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-6,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p114",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -5,
         "r": 5
       },
-      "total_population": 1510,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-5,5)",
+      "total_population": 1494,
       "demographic_groups": [
         {
           "id": "p114-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4518,
-            "dog": 0.5482
-          }
+            "cat": 0.40490848176181315,
+            "dog": 0.5950915182381868
+          },
+          "turnout_rate": 0.6326848024618812,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-5,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p115",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -4,
         "r": 5
       },
-      "total_population": 1409,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-4,5)",
+      "total_population": 1562,
       "demographic_groups": [
         {
           "id": "p115-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4437,
-            "dog": 0.5563
-          }
+            "cat": 0.38455858508124946,
+            "dog": 0.6154414149187506
+          },
+          "turnout_rate": 0.6678051423281431,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-4,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p116",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -3,
         "r": 5
       },
-      "total_population": 1570,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-3,5)",
+      "total_population": 1395,
       "demographic_groups": [
         {
           "id": "p116-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4152,
-            "dog": 0.5848
-          }
+            "cat": 0.3885475389845669,
+            "dog": 0.611452461015433
+          },
+          "turnout_rate": 0.6402771630440839,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-3,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p117",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -2,
         "r": 5
       },
-      "total_population": 1617,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-2,5)",
+      "total_population": 1522,
       "demographic_groups": [
         {
           "id": "p117-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.447,
-            "dog": 0.553
-          }
+            "cat": 0.42126136317849155,
+            "dog": 0.5787386368215084
+          },
+          "turnout_rate": 0.6518620387185365,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-2,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p118",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -1,
         "r": 5
       },
-      "total_population": 1534,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-1,5)",
+      "total_population": 1500,
       "demographic_groups": [
         {
           "id": "p118-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.392,
-            "dog": 0.608
-          }
+            "cat": 0.40454853003844615,
+            "dog": 0.5954514699615538
+          },
+          "turnout_rate": 0.5737995666451753,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-1,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p119",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 0,
         "r": 5
       },
-      "total_population": 1408,
-      "initial_district_id": "d1",
-      "name": "Dogdale (0,5)",
+      "total_population": 1602,
       "demographic_groups": [
         {
           "id": "p119-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4032,
-            "dog": 0.5968
-          }
+            "cat": 0.41538261037319896,
+            "dog": 0.584617389626801
+          },
+          "turnout_rate": 0.6480440228711813,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (0,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p120",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 1,
         "r": 5
       },
-      "total_population": 1546,
-      "initial_district_id": "d1",
-      "name": "Dogdale (1,5)",
+      "total_population": 1552,
       "demographic_groups": [
         {
           "id": "p120-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4409,
-            "dog": 0.5591
-          }
+            "cat": 0.4396433585323393,
+            "dog": 0.5603566414676606
+          },
+          "turnout_rate": 0.6356036354671233,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (1,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p121",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -6,
         "r": 6
       },
-      "total_population": 1541,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-6,6)",
+      "total_population": 1533,
       "demographic_groups": [
         {
           "id": "p121-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.3943,
-            "dog": 0.6057
-          }
+            "cat": 0.40623666327446695,
+            "dog": 0.593763336725533
+          },
+          "turnout_rate": 0.6292825161246582,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-6,6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p122",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -5,
         "r": 6
       },
-      "total_population": 1607,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-5,6)",
+      "total_population": 1416,
       "demographic_groups": [
         {
           "id": "p122-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.3944,
-            "dog": 0.6056
-          }
+            "cat": 0.3840317599289119,
+            "dog": 0.6159682400710881
+          },
+          "turnout_rate": 0.6318342946935445,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-5,6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p123",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -4,
         "r": 6
       },
-      "total_population": 1553,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-4,6)",
+      "total_population": 1374,
       "demographic_groups": [
         {
           "id": "p123-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.446,
-            "dog": 0.554
-          }
+            "cat": 0.41207725904881953,
+            "dog": 0.5879227409511805
+          },
+          "turnout_rate": 0.572940296784509,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-4,6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p124",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -3,
         "r": 6
       },
-      "total_population": 1399,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-3,6)",
+      "total_population": 1648,
       "demographic_groups": [
         {
           "id": "p124-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.3854,
-            "dog": 0.6146
-          }
+            "cat": 0.3994635535404086,
+            "dog": 0.6005364464595915
+          },
+          "turnout_rate": 0.5724351003067568,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-3,6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p125",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -2,
         "r": 6
       },
-      "total_population": 1390,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-2,6)",
+      "total_population": 1481,
       "demographic_groups": [
         {
           "id": "p125-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4053,
-            "dog": 0.5947
-          }
+            "cat": 0.42911578953266144,
+            "dog": 0.5708842104673386
+          },
+          "turnout_rate": 0.5578559353598393,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-2,6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p126",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": -1,
         "r": 6
       },
-      "total_population": 1596,
-      "initial_district_id": "d1",
-      "name": "Dogdale (-1,6)",
+      "total_population": 1512,
       "demographic_groups": [
         {
           "id": "p126-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4066,
-            "dog": 0.5934
-          }
+            "cat": 0.44870985051617024,
+            "dog": 0.5512901494838298
+          },
+          "turnout_rate": 0.5640227056923323,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (-1,6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p127",
       "editable": true,
-      "county_id": "dogdale",
       "position": {
         "q": 0,
         "r": 6
       },
-      "total_population": 1446,
-      "initial_district_id": "d1",
-      "name": "Dogdale (0,6)",
+      "total_population": 1552,
       "demographic_groups": [
         {
           "id": "p127-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "cat": 0.4523,
-            "dog": 0.5477
-          }
+            "cat": 0.42387344691902396,
+            "dog": 0.576126553080976
+          },
+          "turnout_rate": 0.6090850246604532,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "dogdale",
+      "name": "Dogdale (0,6)",
+      "initial_district_id": "d1"
     }
   ],
   "events": [],
   "rules": {
-    "population_tolerance": 0.10,
+    "population_tolerance": 0.1,
     "contiguity": "required"
   },
   "success_criteria": [
@@ -3165,20 +3166,21 @@
     },
     "intro_slides": [
       {
-        "heading": "It's a Dog-Eat-Cat World",
-        "body": "The Cat Party has held the majority in Pawprint County for years. The Dog Party has been nipping at their heels.\n\nThe census data is in. Boundaries must be redrawn. The Cat Party leadership has called you in for one reason: make it stick."
+        "body": "The Cat Party has held the majority in Pawprint County for years. The Dog Party has been nipping at their heels.\n\nThe census data is in. Boundaries must be redrawn. The Cat Party leadership has called you in for one reason: make it stick.",
+        "heading": "It's a Dog-Eat-Cat World"
       },
       {
-        "heading": "The Math",
-        "body": "Cats make up about 60% of Pawprint County's voters — a comfortable majority in the urban core, but the outer precincts are more competitive.\n\nLeft to chance, those outer districts could swing either way. Your job is to take chance out of the equation. Draw lines that turn a majority into a durable map."
+        "body": "Cats make up about 60% of Pawprint County's voters — a comfortable majority in the urban core, but the outer precincts are more competitive.\n\nLeft to chance, those outer districts could swing either way. Your job is to take chance out of the equation. Draw lines that turn a majority into a durable map.",
+        "heading": "The Math"
       },
       {
-        "heading": "Same Game, Different Fur",
-        "body": "You've seen this before — packing, cracking, population balance, compactness. The tools are the same whether you're drawing for Cats, Dogs, Ken, Ryu, or anyone else.\n\nThe rules of redistricting don't care about the players. Only the lines matter."
+        "body": "You've seen this before — packing, cracking, population balance, compactness. The tools are the same whether you're drawing for Cats, Dogs, Ken, Ryu, or anyone else.\n\nThe rules of redistricting don't care about the players. Only the lines matter.",
+        "heading": "Same Game, Different Fur"
       }
     ],
     "objective": "Draw a compact, population-balanced map that locks in at least 3 safe Cat Party districts (winning margin ≥ 15 points). Bonus: leave the dogs one safe seat to chew on."
   },
+  "default_district_id": "d1",
   "instigator_character": "party",
   "character_demographics": {
     "commissioner": "wm",

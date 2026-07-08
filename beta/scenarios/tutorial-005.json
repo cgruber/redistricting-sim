@@ -1,7 +1,7 @@
 {
   "format_version": "1",
-  "id": "tutorial-003",
-  "title": "Hawthorn Bend: Reading the Vote",
+  "id": "tutorial-005",
+  "title": "Hawthorn Bend: A Three-Way Race",
   "election_type": "state_house",
   "region": {
     "id": "hawthorn_bend",
@@ -15,13 +15,34 @@
       "id": "ken",
       "name": "Ken Party",
       "abbreviation": "KEN",
-      "color": "#c96d00"
+      "color": "#c96d00",
+      "candidates": [
+        "Sean Matsuda",
+        "Eliza Masters",
+        "Ken Masters"
+      ]
     },
     {
       "id": "ryu",
       "name": "Ryu Party",
       "abbreviation": "RYU",
-      "color": "#7b35a8"
+      "color": "#7b35a8",
+      "candidates": [
+        "Ryu",
+        "Sakura Kasugano",
+        "Gouken"
+      ]
+    },
+    {
+      "id": "chunli",
+      "name": "Chun-Li Party",
+      "abbreviation": "CHU",
+      "color": "#2a9d8f",
+      "candidates": [
+        "Cammy White",
+        "Guile",
+        "Chun-Li"
+      ]
     }
   ],
   "districts": [
@@ -52,8 +73,9 @@
           "id": "p001-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5053058119490743,
-            "ryu": 0.4946941880509257
+            "ken": 0.38530581194907426,
+            "ryu": 0.45606342984423526,
+            "chunli": 0.15863075820669054
           },
           "turnout_rate": 0.6040175742469728,
           "name": "All voters"
@@ -78,7 +100,8 @@
           "population_share": 1,
           "vote_shares": {
             "ken": 0.34564726762473585,
-            "ryu": 0.6543527323752641
+            "ryu": 0.48548751111713145,
+            "chunli": 0.1688652212581327
           },
           "turnout_rate": 0.5572250277968124,
           "name": "All voters"
@@ -103,7 +126,8 @@
           "population_share": 1,
           "vote_shares": {
             "ken": 0.3429416694492102,
-            "ryu": 0.6570583305507898
+            "ryu": 0.48749489040865046,
+            "chunli": 0.16956344014213928
           },
           "turnout_rate": 0.5510160588426516,
           "name": "All voters"
@@ -128,7 +152,8 @@
           "population_share": 1,
           "vote_shares": {
             "ken": 0.3472965960763395,
-            "ryu": 0.6527034039236606
+            "ryu": 0.4842638158143288,
+            "chunli": 0.16843958810933174
           },
           "turnout_rate": 0.6031260804389603,
           "name": "All voters"
@@ -153,7 +178,8 @@
           "population_share": 1,
           "vote_shares": {
             "ken": 0.3846620431356132,
-            "ryu": 0.6153379568643869
+            "ryu": 0.45654106477035156,
+            "chunli": 0.1587968920940353
           },
           "turnout_rate": 0.680589723365847,
           "name": "All voters"
@@ -178,7 +204,8 @@
           "population_share": 1,
           "vote_shares": {
             "ken": 0.3924453490972519,
-            "ryu": 0.6075546509027481
+            "ryu": 0.4507663538955873,
+            "chunli": 0.1567882970071608
           },
           "turnout_rate": 0.663901763537433,
           "name": "All voters"
@@ -202,8 +229,9 @@
           "id": "p007-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6033014810644091,
-            "ryu": 0.39669851893559094
+            "ken": 0.363301481064409,
+            "ryu": 0.4723892237264062,
+            "chunli": 0.16430929520918475
           },
           "turnout_rate": 0.5749593634624034,
           "name": "All voters"
@@ -227,8 +255,9 @@
           "id": "p008-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5048573973588646,
-            "ryu": 0.4951426026411354
+            "ken": 0.38485739735886454,
+            "ryu": 0.45639612454019735,
+            "chunli": 0.1587464781009382
           },
           "turnout_rate": 0.6047889422508888,
           "name": "All voters"
@@ -253,7 +282,8 @@
           "population_share": 1,
           "vote_shares": {
             "ken": 0.3861849446594715,
-            "ryu": 0.6138150553405285
+            "ryu": 0.45541117009135984,
+            "chunli": 0.15840388524916865
           },
           "turnout_rate": 0.6423248105798848,
           "name": "All voters"
@@ -278,7 +308,8 @@
           "population_share": 1,
           "vote_shares": {
             "ken": 0.3498137126863003,
-            "ryu": 0.6501862873136997
+            "ryu": 0.48239627768435783,
+            "chunli": 0.16779000962934185
           },
           "turnout_rate": 0.6469714056001976,
           "name": "All voters"
@@ -302,8 +333,9 @@
           "id": "p011-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3747549327276647,
-            "ryu": 0.6252450672723353
+            "ken": 0.2347549327276647,
+            "ryu": 0.24165633703336903,
+            "chunli": 0.5235887302389662
           },
           "turnout_rate": 0.6483721209457144,
           "name": "All voters"
@@ -327,8 +359,9 @@
           "id": "p012-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.36713062427937987,
-            "ryu": 0.6328693757206201
+            "ken": 0.22713062427937983,
+            "ryu": 0.244064013385459,
+            "chunli": 0.5288053623351612
           },
           "turnout_rate": 0.5654929414857179,
           "name": "All voters"
@@ -352,8 +385,9 @@
           "id": "p013-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.39966733710840346,
-            "ryu": 0.6003326628915966
+            "ken": 0.25966733710840345,
+            "ryu": 0.2337892619657673,
+            "chunli": 0.5065434009258292
           },
           "turnout_rate": 0.6105151803931221,
           "name": "All voters"
@@ -377,8 +411,9 @@
           "id": "p014-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5871632305160165,
-            "ryu": 0.4128367694839835
+            "ken": 0.5471632305160165,
+            "ryu": 0.301891179655989,
+            "chunli": 0.1509455898279945
           },
           "turnout_rate": 0.5972204012214206,
           "name": "All voters"
@@ -402,8 +437,9 @@
           "id": "p015-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5832236292399466,
-            "ryu": 0.41677637076005336
+            "ken": 0.5432236292399466,
+            "ryu": 0.30451758050670225,
+            "chunli": 0.15225879025335112
           },
           "turnout_rate": 0.5592073300504126,
           "name": "All voters"
@@ -427,8 +463,9 @@
           "id": "p016-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.48316059581935406,
-            "ryu": 0.5168394041806459
+            "ken": 0.5631605958193541,
+            "ryu": 0.29122626945376395,
+            "chunli": 0.14561313472688198
           },
           "turnout_rate": 0.6871966380858794,
           "name": "All voters"
@@ -453,7 +490,8 @@
           "population_share": 1,
           "vote_shares": {
             "ken": 0.3692182816937566,
-            "ryu": 0.6307817183062434
+            "ryu": 0.4679993393885032,
+            "chunli": 0.16278237891774022
           },
           "turnout_rate": 0.6587316486402415,
           "name": "All voters"
@@ -477,8 +515,9 @@
           "id": "p018-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.35763386089354754,
-            "ryu": 0.6423661391064525
+            "ken": 0.21763386089354753,
+            "ryu": 0.24706299129677445,
+            "chunli": 0.535303147809678
           },
           "turnout_rate": 0.6047984126838856,
           "name": "All voters"
@@ -502,8 +541,9 @@
           "id": "p019-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3635302943922579,
-            "ryu": 0.6364697056077421
+            "ken": 0.2235302943922579,
+            "ryu": 0.24520095966560276,
+            "chunli": 0.5312687459421394
           },
           "turnout_rate": 0.655289015523158,
           "name": "All voters"
@@ -527,8 +567,9 @@
           "id": "p020-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3414927239902318,
-            "ryu": 0.6585072760097682
+            "ken": 0.20149272399023174,
+            "ryu": 0.25216019242413734,
+            "chunli": 0.5463470835856309
           },
           "turnout_rate": 0.6294742984347976,
           "name": "All voters"
@@ -552,8 +593,9 @@
           "id": "p021-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.34660360815003516,
-            "ryu": 0.6533963918499648
+            "ken": 0.20660360815003515,
+            "ryu": 0.2505462290052521,
+            "chunli": 0.5428501628447129
           },
           "turnout_rate": 0.5785146059468389,
           "name": "All voters"
@@ -577,8 +619,9 @@
           "id": "p022-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6131439528986812,
-            "ryu": 0.3868560471013188
+            "ken": 0.5731439528986811,
+            "ryu": 0.28457069806754587,
+            "chunli": 0.14228534903377293
           },
           "turnout_rate": 0.5677370664547198,
           "name": "All voters"
@@ -602,8 +645,9 @@
           "id": "p023-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5937408154271543,
-            "ryu": 0.4062591845728457
+            "ken": 0.5537408154271543,
+            "ryu": 0.29750612304856383,
+            "chunli": 0.14875306152428192
           },
           "turnout_rate": 0.5893320111674257,
           "name": "All voters"
@@ -627,8 +671,9 @@
           "id": "p024-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6538933295756578,
-            "ryu": 0.3461066704243422
+            "ken": 0.6138933295756578,
+            "ryu": 0.25740444694956144,
+            "chunli": 0.12870222347478072
           },
           "turnout_rate": 0.567436545714736,
           "name": "All voters"
@@ -652,8 +697,9 @@
           "id": "p025-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.47355576261878013,
-            "ryu": 0.5264442373812199
+            "ken": 0.22355576261878013,
+            "ryu": 0.6211553899049759,
+            "chunli": 0.15528884747624397
           },
           "turnout_rate": 0.6638549737283028,
           "name": "All voters"
@@ -677,8 +723,9 @@
           "id": "p026-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.35280013643205166,
-            "ryu": 0.6471998635679483
+            "ken": 0.22280013643205165,
+            "ryu": 0.6217598908543587,
+            "chunli": 0.15543997271358967
           },
           "turnout_rate": 0.5659126444370486,
           "name": "All voters"
@@ -702,8 +749,9 @@
           "id": "p027-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3610617722198367,
-            "ryu": 0.6389382277801633
+            "ken": 0.2310617722198367,
+            "ryu": 0.6151505822241305,
+            "chunli": 0.15378764555603264
           },
           "turnout_rate": 0.6850401484989561,
           "name": "All voters"
@@ -727,8 +775,9 @@
           "id": "p028-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.4196551660820842,
-            "ryu": 0.5803448339179158
+            "ken": 0.2796551660820842,
+            "ryu": 0.22747731597407866,
+            "chunli": 0.49286751794383715
           },
           "turnout_rate": 0.6649249858339317,
           "name": "All voters"
@@ -752,8 +801,9 @@
           "id": "p029-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.35032881528139115,
-            "ryu": 0.6496711847186089
+            "ken": 0.21032881528139113,
+            "ryu": 0.24936984780587648,
+            "chunli": 0.5403013369127324
           },
           "turnout_rate": 0.6065305817988701,
           "name": "All voters"
@@ -777,8 +827,9 @@
           "id": "p030-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.34373225264251234,
-            "ryu": 0.6562677473574876
+            "ken": 0.20373225264251232,
+            "ryu": 0.25145297284973295,
+            "chunli": 0.5448147745077547
           },
           "turnout_rate": 0.6667913675890303,
           "name": "All voters"
@@ -802,8 +853,9 @@
           "id": "p031-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5919478052668273,
-            "ryu": 0.40805219473317267
+            "ken": 0.5519478052668273,
+            "ryu": 0.29870146315544843,
+            "chunli": 0.14935073157772422
           },
           "turnout_rate": 0.5864907047245652,
           "name": "All voters"
@@ -827,8 +879,9 @@
           "id": "p032-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5911093566194177,
-            "ryu": 0.40889064338058234
+            "ken": 0.5511093566194176,
+            "ryu": 0.29926042892038823,
+            "chunli": 0.14963021446019412
           },
           "turnout_rate": 0.6544001593952998,
           "name": "All voters"
@@ -852,8 +905,9 @@
           "id": "p033-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6465382524579764,
-            "ryu": 0.35346174754202364
+            "ken": 0.6065382524579763,
+            "ryu": 0.2623078316946824,
+            "chunli": 0.1311539158473412
           },
           "turnout_rate": 0.695134210458491,
           "name": "All voters"
@@ -877,8 +931,9 @@
           "id": "p034-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.609579965993762,
-            "ryu": 0.39042003400623804
+            "ken": 0.23957996599376202,
+            "ryu": 0.6083360272049902,
+            "chunli": 0.15208400680124756
           },
           "turnout_rate": 0.6106117340852506,
           "name": "All voters"
@@ -902,8 +957,9 @@
           "id": "p035-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5157901692017913,
-            "ryu": 0.4842098307982087
+            "ken": 0.26579016920179127,
+            "ryu": 0.5873678646385669,
+            "chunli": 0.14684196615964173
           },
           "turnout_rate": 0.6856598873157054,
           "name": "All voters"
@@ -927,8 +983,9 @@
           "id": "p036-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.39141374381259086,
-            "ryu": 0.6085862561874091
+            "ken": 0.26141374381259086,
+            "ryu": 0.5908690049499272,
+            "chunli": 0.1477172512374818
           },
           "turnout_rate": 0.655257795273792,
           "name": "All voters"
@@ -952,8 +1009,9 @@
           "id": "p037-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.39735424760729077,
-            "ryu": 0.6026457523927092
+            "ken": 0.26735424760729076,
+            "ryu": 0.5861166019141674,
+            "chunli": 0.14652915047854184
           },
           "turnout_rate": 0.6884932839660904,
           "name": "All voters"
@@ -977,8 +1035,9 @@
           "id": "p038-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3829515208862722,
-            "ryu": 0.6170484791137278
+            "ken": 0.2429515208862722,
+            "ryu": 0.23906794077275612,
+            "chunli": 0.5179805383409716
           },
           "turnout_rate": 0.6663616319186986,
           "name": "All voters"
@@ -1002,8 +1061,9 @@
           "id": "p039-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3826728771068156,
-            "ryu": 0.6173271228931845
+            "ken": 0.24267287710681557,
+            "ryu": 0.2391559335452161,
+            "chunli": 0.5181711893479682
           },
           "turnout_rate": 0.6770163409761153,
           "name": "All voters"
@@ -1027,8 +1087,9 @@
           "id": "p040-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3616636220924556,
-            "ryu": 0.6383363779075444
+            "ken": 0.2216636220924556,
+            "ryu": 0.24579043512869822,
+            "chunli": 0.5325459427788461
           },
           "turnout_rate": 0.6470001933164895,
           "name": "All voters"
@@ -1052,8 +1113,9 @@
           "id": "p041-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5966621379368007,
-            "ryu": 0.4033378620631993
+            "ken": 0.5566621379368006,
+            "ryu": 0.29555857470879954,
+            "chunli": 0.14777928735439977
           },
           "turnout_rate": 0.5962858368991875,
           "name": "All voters"
@@ -1077,8 +1139,9 @@
           "id": "p042-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6300391770154238,
-            "ryu": 0.3699608229845762
+            "ken": 0.5900391770154237,
+            "ryu": 0.2733072153230508,
+            "chunli": 0.1366536076615254
           },
           "turnout_rate": 0.6105476806638762,
           "name": "All voters"
@@ -1102,8 +1165,9 @@
           "id": "p043-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.588989099599421,
-            "ryu": 0.41101090040057897
+            "ken": 0.548989099599421,
+            "ryu": 0.30067393360038597,
+            "chunli": 0.15033696680019298
           },
           "turnout_rate": 0.5608681831741706,
           "name": "All voters"
@@ -1127,8 +1191,9 @@
           "id": "p044-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6419899162836373,
-            "ryu": 0.35801008371636267
+            "ken": 0.2719899162836373,
+            "ryu": 0.5824080669730902,
+            "chunli": 0.14560201674327256
           },
           "turnout_rate": 0.5677682623965666,
           "name": "All voters"
@@ -1152,8 +1217,9 @@
           "id": "p045-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6541187385097146,
-            "ryu": 0.3458812614902854
+            "ken": 0.2841187385097146,
+            "ryu": 0.5727050091922283,
+            "chunli": 0.14317625229805708
           },
           "turnout_rate": 0.668286394921597,
           "name": "All voters"
@@ -1177,8 +1243,9 @@
           "id": "p046-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.4887368250451982,
-            "ryu": 0.5112631749548018
+            "ken": 0.2387368250451982,
+            "ryu": 0.6090105399638414,
+            "chunli": 0.15225263499096034
           },
           "turnout_rate": 0.6866344809881411,
           "name": "All voters"
@@ -1202,8 +1269,9 @@
           "id": "p047-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.41224357556551694,
-            "ryu": 0.5877564244344831
+            "ken": 0.28224357556551694,
+            "ryu": 0.5742051395475865,
+            "chunli": 0.1435512848868966
           },
           "turnout_rate": 0.5720664052525536,
           "name": "All voters"
@@ -1227,8 +1295,9 @@
           "id": "p048-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3678169579803944,
-            "ryu": 0.6321830420196056
+            "ken": 0.23781695798039437,
+            "ryu": 0.6097464336156845,
+            "chunli": 0.15243660840392112
           },
           "turnout_rate": 0.5703441788209602,
           "name": "All voters"
@@ -1252,8 +1321,9 @@
           "id": "p049-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3795511104166508,
-            "ryu": 0.6204488895833492
+            "ken": 0.23955111041665075,
+            "ryu": 0.24014175460526815,
+            "chunli": 0.520307134978081
           },
           "turnout_rate": 0.599921706551686,
           "name": "All voters"
@@ -1277,8 +1347,9 @@
           "id": "p050-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.36999663660302756,
-            "ryu": 0.6300033633969724
+            "ken": 0.22999663660302758,
+            "ryu": 0.2431589568622018,
+            "chunli": 0.5268444065347706
           },
           "turnout_rate": 0.576135411427822,
           "name": "All voters"
@@ -1302,8 +1373,9 @@
           "id": "p051-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.39009894978255033,
-            "ryu": 0.6099010502174497
+            "ken": 0.2500989497825503,
+            "ryu": 0.23681085796340515,
+            "chunli": 0.5130901922540445
           },
           "turnout_rate": 0.6634701381321065,
           "name": "All voters"
@@ -1327,8 +1399,9 @@
           "id": "p052-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6058279548771679,
-            "ryu": 0.3941720451228321
+            "ken": 0.5658279548771679,
+            "ryu": 0.2894480300818881,
+            "chunli": 0.14472401504094404
           },
           "turnout_rate": 0.6764405668829567,
           "name": "All voters"
@@ -1352,8 +1425,9 @@
           "id": "p053-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6567664765007794,
-            "ryu": 0.34323352349922065
+            "ken": 0.6167664765007793,
+            "ryu": 0.2554890156661471,
+            "chunli": 0.12774450783307356
           },
           "turnout_rate": 0.6361133496160619,
           "name": "All voters"
@@ -1377,8 +1451,9 @@
           "id": "p054-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5831201609224081,
-            "ryu": 0.41687983907759185
+            "ken": 0.5431201609224081,
+            "ryu": 0.30458655938506124,
+            "chunli": 0.15229327969253062
           },
           "turnout_rate": 0.5640367951476947,
           "name": "All voters"
@@ -1402,8 +1477,9 @@
           "id": "p055-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.620507898926735,
-            "ryu": 0.37949210107326503
+            "ken": 0.2505078989267349,
+            "ryu": 0.5995936808586121,
+            "chunli": 0.14989842021465302
           },
           "turnout_rate": 0.5803345354739576,
           "name": "All voters"
@@ -1427,8 +1503,9 @@
           "id": "p056-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6473834357596934,
-            "ryu": 0.35261656424030663
+            "ken": 0.2773834357596934,
+            "ryu": 0.5780932513922452,
+            "chunli": 0.1445233128480613
           },
           "turnout_rate": 0.6370124400476925,
           "name": "All voters"
@@ -1452,8 +1529,9 @@
           "id": "p057-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5292632918059826,
-            "ryu": 0.47073670819401736
+            "ken": 0.2792632918059826,
+            "ryu": 0.576589366555214,
+            "chunli": 0.1441473416388035
           },
           "turnout_rate": 0.6629315311438404,
           "name": "All voters"
@@ -1477,8 +1555,9 @@
           "id": "p058-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.41040687944740056,
-            "ryu": 0.5895931205525995
+            "ken": 0.28040687944740056,
+            "ryu": 0.5756744964420795,
+            "chunli": 0.14391862411051987
           },
           "turnout_rate": 0.681887343188282,
           "name": "All voters"
@@ -1502,8 +1581,9 @@
           "id": "p059-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.34263891391456125,
-            "ryu": 0.6573610860854388
+            "ken": 0.20263891391456126,
+            "ryu": 0.2517982377111912,
+            "chunli": 0.5455628483742476
           },
           "turnout_rate": 0.6813205494312569,
           "name": "All voters"
@@ -1527,8 +1607,9 @@
           "id": "p060-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.39963071499019864,
-            "ryu": 0.6003692850098014
+            "ken": 0.25963071499019863,
+            "ryu": 0.23380082684520043,
+            "chunli": 0.5065684581646009
           },
           "turnout_rate": 0.5596533415257,
           "name": "All voters"
@@ -1552,8 +1633,9 @@
           "id": "p061-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3493368224240839,
-            "ryu": 0.6506631775759161
+            "ken": 0.20933682242408394,
+            "ryu": 0.24968310870818403,
+            "chunli": 0.5409800688677321
           },
           "turnout_rate": 0.5542654703021981,
           "name": "All voters"
@@ -1577,8 +1659,9 @@
           "id": "p062-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6447375842370093,
-            "ryu": 0.35526241576299067
+            "ken": 0.6047375842370093,
+            "ryu": 0.2635082771753271,
+            "chunli": 0.13175413858766355
           },
           "turnout_rate": 0.5725578236626462,
           "name": "All voters"
@@ -1602,8 +1685,9 @@
           "id": "p063-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6071773752011359,
-            "ryu": 0.3928226247988641
+            "ken": 0.5671773752011359,
+            "ryu": 0.28854841653257607,
+            "chunli": 0.14427420826628803
           },
           "turnout_rate": 0.5724428012152203,
           "name": "All voters"
@@ -1627,8 +1711,9 @@
           "id": "p064-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6103541999310255,
-            "ryu": 0.38964580006897453
+            "ken": 0.5703541999310254,
+            "ryu": 0.28643053337931634,
+            "chunli": 0.14321526668965817
           },
           "turnout_rate": 0.564119803684298,
           "name": "All voters"
@@ -1652,8 +1737,9 @@
           "id": "p065-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6207892028056086,
-            "ryu": 0.37921079719439144
+            "ken": 0.2507892028056085,
+            "ryu": 0.5993686377555132,
+            "chunli": 0.1498421594388783
           },
           "turnout_rate": 0.6981394277769141,
           "name": "All voters"
@@ -1677,8 +1763,9 @@
           "id": "p066-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.65795061647892,
-            "ryu": 0.34204938352108005
+            "ken": 0.28795061647892,
+            "ryu": 0.5696395068168639,
+            "chunli": 0.14240987670421598
           },
           "turnout_rate": 0.6894861912936903,
           "name": "All voters"
@@ -1702,8 +1789,9 @@
           "id": "p067-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5081325291655958,
-            "ryu": 0.4918674708344042
+            "ken": 0.25813252916559576,
+            "ryu": 0.5934939766675233,
+            "chunli": 0.14837349416688084
           },
           "turnout_rate": 0.674560887098778,
           "name": "All voters"
@@ -1727,8 +1815,9 @@
           "id": "p068-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3408830546401441,
-            "ryu": 0.6591169453598559
+            "ken": 0.2008830546401441,
+            "ryu": 0.2523527195873229,
+            "chunli": 0.546764225772533
           },
           "turnout_rate": 0.583707288315054,
           "name": "All voters"
@@ -1752,8 +1841,9 @@
           "id": "p069-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.39443809710443023,
-            "ryu": 0.6055619028955698
+            "ken": 0.2544380971044302,
+            "ryu": 0.23544060091439045,
+            "chunli": 0.5101213019811793
           },
           "turnout_rate": 0.6672221300425007,
           "name": "All voters"
@@ -1777,8 +1867,9 @@
           "id": "p070-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3502964898571372,
-            "ryu": 0.6497035101428628
+            "ken": 0.2102964898571372,
+            "ryu": 0.24938005583458822,
+            "chunli": 0.5403234543082746
           },
           "turnout_rate": 0.6283688672352582,
           "name": "All voters"
@@ -1802,8 +1893,9 @@
           "id": "p071-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6299490517191588,
-            "ryu": 0.3700509482808412
+            "ken": 0.5899490517191588,
+            "ryu": 0.2733672988538941,
+            "chunli": 0.13668364942694705
           },
           "turnout_rate": 0.6639209776883944,
           "name": "All voters"
@@ -1827,8 +1919,9 @@
           "id": "p072-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5933459560573101,
-            "ryu": 0.4066540439426899
+            "ken": 0.5533459560573101,
+            "ryu": 0.29776936262845993,
+            "chunli": 0.14888468131422997
           },
           "turnout_rate": 0.6732579563977197,
           "name": "All voters"
@@ -1852,8 +1945,9 @@
           "id": "p073-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6401964820362628,
-            "ryu": 0.3598035179637372
+            "ken": 0.6001964820362627,
+            "ryu": 0.2665356786424915,
+            "chunli": 0.13326783932124575
           },
           "turnout_rate": 0.613562690874096,
           "name": "All voters"
@@ -1877,8 +1971,9 @@
           "id": "p074-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6588964271731674,
-            "ryu": 0.34110357282683257
+            "ken": 0.4188964271731675,
+            "ryu": 0.43114136048442414,
+            "chunli": 0.1499622123424084
           },
           "turnout_rate": 0.6288765277131461,
           "name": "All voters"
@@ -1902,8 +1997,9 @@
           "id": "p075-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5910792603716254,
-            "ryu": 0.4089207396283746
+            "ken": 0.3510792603716254,
+            "ryu": 0.48145732295008437,
+            "chunli": 0.1674634166782902
           },
           "turnout_rate": 0.6500821900554001,
           "name": "All voters"
@@ -1927,8 +2023,9 @@
           "id": "p076-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5218706489168108,
-            "ryu": 0.4781293510831892
+            "ken": 0.40187064891681074,
+            "ryu": 0.443773389513334,
+            "chunli": 0.15435596156985532
           },
           "turnout_rate": 0.5953937924001366,
           "name": "All voters"
@@ -1953,7 +2050,8 @@
           "population_share": 1,
           "vote_shares": {
             "ken": 0.40648061826825144,
-            "ryu": 0.5935193817317486
+            "ryu": 0.4403530896719425,
+            "chunli": 0.1531662920598061
           },
           "turnout_rate": 0.6023427072796039,
           "name": "All voters"
@@ -1978,7 +2076,8 @@
           "population_share": 1,
           "vote_shares": {
             "ken": 0.3858691895380616,
-            "ryu": 0.6141308104619384
+            "ryu": 0.45564544002014784,
+            "chunli": 0.15848537044179056
           },
           "turnout_rate": 0.5934965519001708,
           "name": "All voters"
@@ -2002,8 +2101,9 @@
           "id": "p079-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6392676852457225,
-            "ryu": 0.36073231475427747
+            "ken": 0.39926768524572254,
+            "ryu": 0.44570462062414135,
+            "chunli": 0.15502769413013612
           },
           "turnout_rate": 0.6934287487063556,
           "name": "All voters"
@@ -2027,8 +2127,9 @@
           "id": "p080-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5945819167792797,
-            "ryu": 0.40541808322072026
+            "ken": 0.3545819167792797,
+            "ryu": 0.4788585778734377,
+            "chunli": 0.16655950534728267
           },
           "turnout_rate": 0.6639942443580367,
           "name": "All voters"
@@ -2052,8 +2153,9 @@
           "id": "p081-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6378003415837884,
-            "ryu": 0.3621996584162116
+            "ken": 0.3978003415837884,
+            "ryu": 0.4467932949539634,
+            "chunli": 0.15540636346224815
           },
           "turnout_rate": 0.6736637991736643,
           "name": "All voters"
@@ -2077,8 +2179,9 @@
           "id": "p082-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6293722384050489,
-            "ryu": 0.37062776159495114
+            "ken": 0.38937223840504886,
+            "ryu": 0.453046403763996,
+            "chunli": 0.15758135783095512
           },
           "turnout_rate": 0.5678121372242458,
           "name": "All voters"
@@ -2102,8 +2205,9 @@
           "id": "p083-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5907081260718405,
-            "ryu": 0.40929187392815947
+            "ken": 0.35070812607184054,
+            "ryu": 0.48173268065637637,
+            "chunli": 0.1675591932717831
           },
           "turnout_rate": 0.6527216300251893,
           "name": "All voters"
@@ -2127,8 +2231,9 @@
           "id": "p084-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5122939895279706,
-            "ryu": 0.48770601047202944
+            "ken": 0.39229398952797057,
+            "ryu": 0.45087865293086055,
+            "chunli": 0.1568273575411689
           },
           "turnout_rate": 0.5690018963767216,
           "name": "All voters"
@@ -2153,7 +2258,8 @@
           "population_share": 1,
           "vote_shares": {
             "ken": 0.39785484347492456,
-            "ryu": 0.6021451565250755
+            "ryu": 0.4467528580669915,
+            "chunli": 0.155392298458084
           },
           "turnout_rate": 0.5545408094651066,
           "name": "All voters"
@@ -2177,8 +2283,9 @@
           "id": "p086-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6493291041627526,
-            "ryu": 0.3506708958372474
+            "ken": 0.40932910416275264,
+            "ryu": 0.43823969691150605,
+            "chunli": 0.15243119892574122
           },
           "turnout_rate": 0.6804829530417918,
           "name": "All voters"
@@ -2202,8 +2309,9 @@
           "id": "p087-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6256893667764962,
-            "ryu": 0.3743106332235038
+            "ken": 0.3856893667764962,
+            "ryu": 0.4557788569077609,
+            "chunli": 0.1585317763157429
           },
           "turnout_rate": 0.5953932692296803,
           "name": "All voters"
@@ -2227,8 +2335,9 @@
           "id": "p088-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5920063030533492,
-            "ryu": 0.4079936969466508
+            "ken": 0.35200630305334923,
+            "ryu": 0.4807695170894506,
+            "chunli": 0.1672241798572002
           },
           "turnout_rate": 0.666910684958566,
           "name": "All voters"
@@ -2252,8 +2361,9 @@
           "id": "p089-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6519125463813543,
-            "ryu": 0.3480874536186457
+            "ken": 0.4119125463813543,
+            "ryu": 0.4363229494589952,
+            "chunli": 0.15176450415965048
           },
           "turnout_rate": 0.6914643195341341,
           "name": "All voters"
@@ -2277,8 +2387,9 @@
           "id": "p090-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6279194189421833,
-            "ryu": 0.3720805810578167
+            "ken": 0.3879194189421833,
+            "ryu": 0.45412430207515436,
+            "chunli": 0.15795627898266237
           },
           "turnout_rate": 0.5874609076417983,
           "name": "All voters"
@@ -2302,8 +2413,9 @@
           "id": "p091-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5002344448678195,
-            "ryu": 0.49976555513218046
+            "ken": 0.38023444486781954,
+            "ryu": 0.4598260570335532,
+            "chunli": 0.1599394980986272
           },
           "turnout_rate": 0.5741614397382364,
           "name": "All voters"
@@ -2342,20 +2454,24 @@
     "character": {
       "name": "You",
       "role": "Mapmaker, Hawthorn Bend",
-      "motivation": "You can draw a legal map. Now for the part that makes redistricting matter: the voters aren't all the same, and where you draw the lines decides who wins. Let's learn to read the vote.\n"
+      "motivation": "Three parties are on the ballot across the Bend: the Ken Party out west, the Ryu Party in the city, and the Chun-Li Party out east. Each runs a candidate in every district — but each is strongest on its home ground. Three bases, three corners. Where you draw the lines decides how many seats each party wins.\n"
     },
     "intro_slides": [
       {
-        "body": "Hawthorn Bend has a river running through it — scenery only; your districts can cross it freely. What's new is underneath: the people. The west of the Bend leans one way, the east the other, and the centre is a tossup.\n",
-        "heading": "A New Kind of Map"
+        "body": "The west is Ken country, where Sean Matsuda runs strong. The city core leans Ryu behind Sakura. And out east, along the Bend, the Chun-Li Party takes about two in five — ahead of both the others on its home ground.\n",
+        "heading": "A Three-Cornered Race"
       },
       {
-        "body": "Two new things will appear as we go. The **Lean** view colours each precinct by who its voters favour. And the **election result** shows who wins each district you draw. They go together: lean tells you the ground, the result tells you the outcome — and the lines you draw decide it.\n",
-        "heading": "Lean, and the Result"
+        "body": "Each party has one part of the Bend. Draw a district around each base — west, city, east — and all three can carry a seat. Blur those lines and one base swallows another; split the east across districts and Chun-Li's two-in-five becomes a plurality nowhere.\n",
+        "heading": "Three Bases, Three Corners"
+      },
+      {
+        "body": "Hawthorn city is where most people live. Carve three equal-width columns and the middle one bursts the balance limit. Like your last legal map, the crowded centre needs the SMALLER district — draw it narrow, and let the rural wings run wide.\n",
+        "heading": "The Dense Centre Needs Less Land"
       }
     ],
-    "objective": "Draw three balanced, connected districts — a legal map, like before — and read the result. There's no seat to chase; repaint the lines, watch who wins change, and submit when it's legal and you've had a look.\n",
-    "epilogue": "That's the whole picture: precincts lean, and the district lines you draw turn those leanings into seats. The same voters can hand one party a majority of seats or the other — nothing changed but the lines.\nYou've drawn a legal map and learned to read the vote. From here the campaign scenarios put it to work: real maps, real goals, and a reason to draw the lines the way you do.\n"
+    "objective": "Draw three balanced, connected districts — a legal map, like before — and read the result. There's no seat to chase; repaint the lines and watch the three-cornered race change — can you draw a map where the Ken Party, the Ryu Party, and the Chun-Li Party each carry a seat?\n",
+    "epilogue": "A third party changes the map. A party with a concentrated base is powerful when its ground stays together and powerless when it's split — the same packing-and-cracking that moves seats between two sides, now with three. And the crowded city taught the other half of the lesson: dense ground needs the smaller district, so the centre is drawn tight and the rural wings run wide. The lines don't just pick between two sides — they decide how many corners keep a seat.\n"
   },
   "default_district_id": "d1",
   "river_edges": [
