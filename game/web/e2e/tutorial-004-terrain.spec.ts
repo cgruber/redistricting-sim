@@ -3,12 +3,13 @@
  *
  * The capstone map gains its full topographic frame — a mountain range on the NW rim, an ocean
  * on the SE rim curling around the south vertex, and a river flowing from the mountains out to
- * that sea. This is the FIRST shipped scenario with terrain tiles, so the smoke test guards the
- * terrain-tile rendering path (and the map-fit that keeps rim-framing tiles in view, GAME-125).
+ * that sea. Each terrain tile sits on the map's OWN outer ring (GAME-127: terrain replaces the
+ * precinct on its cell), so the smoke test guards the terrain-tile rendering path and the map-fit
+ * that keeps the rim tiles in view.
  *
- * Terrain is COSMETIC (population weights pinned to 1.0), so the four-wedge balance this tutorial
- * teaches is preserved. The winnability test pins that against the real criteria — district_count
- * + population_balance (±15%) + contiguity; there is no seat goal.
+ * Terrain is COSMETIC (population weights pinned to 1.0). The winnability test pins a complete
+ * legal map against the real criteria — district_count + population_balance (±15%) + contiguity;
+ * there is no seat goal.
  *
  * tutorial-004 sits behind rung 3 in the tutorial campaign, so the e2e load uses
  * ?campaign=tutorial&s=tutorial-004&debug — &campaign puts it in the active list, &debug clears
@@ -49,29 +50,29 @@ test("smoke: loads and renders the mountain + coastline terrain tiles without er
 
 	await loadTutorial004(page);
 
-	// Terrain tiles (GAME-125) — the first shipped scenario to use them. renderTerrainTiles draws
-	// each as a `g.terrain-tile terrain-<type>` group: 8 mountains framing the NW rim, 10 sea tiles
-	// framing the SE rim + the southern curl. Both kinds must render, and the map-fit must keep
-	// them in view (they sit one ring outside the precinct circle).
+	// Terrain tiles (GAME-125, refined GAME-127) — the first shipped scenario to use them.
+	// renderTerrainTiles draws each as a `g.terrain-tile terrain-<type>` group: 7 mountains on the
+	// NW rim, 9 sea tiles on the SE rim + the southern curl. Each tile REPLACES the precinct on its
+	// cell, so they sit on the map's own outer ring; the map-fit must keep them in view.
 	await expect(page.locator("g.terrain-mountain").first()).toBeVisible();
 	await expect(page.locator("g.terrain-sea").first()).toBeVisible();
-	await expect(page.locator("g.terrain-mountain")).toHaveCount(8);
-	await expect(page.locator("g.terrain-sea")).toHaveCount(10);
+	await expect(page.locator("g.terrain-mountain")).toHaveCount(7);
+	await expect(page.locator("g.terrain-sea")).toHaveCount(9);
 
 	expect(errors, `page errors during terrain render: ${errors.join("; ")}`).toHaveLength(0);
 });
 
-test("winnability: four cardinal wedges make a complete legal map that passes", async ({
+test("winnability: four balanced north–south layers make a complete legal map that passes", async ({
 	page,
 }) => {
 	await loadTutorial004(page);
 
 	// Strategy (verified against the generated populations, matching validity.ts's per-district
-	// ±15% check): the capstone is a central city ringed by four equal villages at N/E/S/W — a
-	// symmetric field that splits into FOUR WEDGES around the centre. Assign each precinct to the
-	// cardinal wedge (E/S/W/N) its pixel angle falls in; all four land within ±15% of the mean and
-	// each wedge is a contiguous pie-slice from the centre. Terrain is cosmetic, so the NW mountains
-	// and SE coast don't skew the balance.
+	// ±15% check): the reshaped capstone (mountains carved off the NW rim, sea off the SE rim) is a
+	// pointy-top hex, where cardinal "wedges" run structurally uneven (E/W ~+17%). Slicing NORTH→
+	// SOUTH instead cuts across the dense middle: sort every precinct by screen-y and split into
+	// four EQUAL-POPULATION horizontal layers. All four land within ±15% of the mean (±3% here) and
+	// each layer is a contiguous slab. Terrain is cosmetic, so the mountains and coast don't skew it.
 	await page.evaluate(() => {
 		const store = (
 			window as unknown as Record<
@@ -86,21 +87,25 @@ test("winnability: four cardinal wedges make a complete legal map that passes", 
 		)["__gameStore"];
 		if (!store) throw new Error("__gameStore not found on window");
 		const state = store.getState();
-		const HEX = 36;
 		const S3 = Math.sqrt(3);
-		// Flat-top axial → pixel (hex-geometry.ts hexToPixel); in SVG space y is DOWN, so +y = south.
-		const wedges: number[][] = [[], [], [], []]; // 0=E, 1=S, 2=W, 3=N
-		for (const p of state.precincts) {
-			const x = HEX * 1.5 * p.coord.q;
-			const y = HEX * (S3 * p.coord.r + (S3 / 2) * p.coord.q);
-			const deg = (Math.atan2(y, x) * 180) / Math.PI;
-			const w = ((Math.round(deg / 90) % 4) + 4) % 4;
-			wedges[w]!.push(p.index);
+		// Screen-y (hex-geometry.ts hexToPixel): y = HEX·(√3·r + (√3/2)·q); smaller y is further north.
+		const byNorth = [...state.precincts].sort(
+			(a, b) => S3 * a.coord.r + (S3 / 2) * a.coord.q - (S3 * b.coord.r + (S3 / 2) * b.coord.q),
+		);
+		const total = byNorth.reduce((sum, p) => sum + p.population, 0);
+		// Walk north→south, filling each layer to a quarter of the total population before advancing.
+		const layers: number[][] = [[], [], [], []];
+		let cumulative = 0;
+		let layer = 0;
+		for (const p of byNorth) {
+			layers[layer]!.push(p.index);
+			cumulative += p.population;
+			if (layer < 3 && cumulative >= (total * (layer + 1)) / 4) layer++;
 		}
-		state.paintStroke(wedges[0]!, 1); // East wedge  → District 1
-		state.paintStroke(wedges[1]!, 2); // South wedge → District 2
-		state.paintStroke(wedges[2]!, 3); // West wedge  → District 3
-		state.paintStroke(wedges[3]!, 4); // North wedge → District 4
+		state.paintStroke(layers[0]!, 4); // northern layer → District 4
+		state.paintStroke(layers[1]!, 3);
+		state.paintStroke(layers[2]!, 2);
+		state.paintStroke(layers[3]!, 1); // southern layer → District 1
 	});
 
 	// A complete legal map (four districts, all assigned, balanced, each contiguous) → submit

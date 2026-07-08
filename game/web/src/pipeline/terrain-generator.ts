@@ -3,11 +3,12 @@
  *
  * Takes a PipelineSpec and produces a PartialScenario containing:
  *   - Hex positions for all precincts (no population or demographics yet)
- *   - Non-precinct terrain tiles (mountain, sea, lake)
+ *   - Terrain tiles (mountain, sea, lake) that REPLACE the precinct on their cell
  *   - River edges as precinct-ID pairs
  *
  * Validation enforced here:
- *   - Terrain tiles must not overlap any precinct position
+ *   - Terrain tiles must lie within the r=n boundary; each removes the precinct on its
+ *     cell (GAME-127) — terrain is part of the map, never placed off-grid beyond the rim
  *   - River edges must reference precinct positions (not terrain tiles or empty cells)
  */
 
@@ -39,7 +40,16 @@ const HEX_DIRS: [number, number][] = [
 export function generateTerrain(spec: PipelineSpec): PartialScenario {
 	const { scenario, map, terrain } = spec;
 
-	const positions = generateHexCircle(map.radius);
+	const allPositions = generateHexCircle(map.radius);
+
+	// Terrain tiles must lie INSIDE the r=n boundary and REPLACE the precinct on their cell
+	// (GAME-127). Validate + build them first, then drop their cells from the precinct set so the
+	// mountains/sea/lake occupy the map's own hexes rather than framing it from off-grid.
+	const terrainSpecs = terrain?.tiles ?? [];
+	const terrainTiles = buildTerrainTiles(terrainSpecs, map.radius);
+	const terrainKeys = new Set(terrainSpecs.map((t) => posKey(t.q, t.r)));
+
+	const positions = allPositions.filter((p) => !terrainKeys.has(posKey(p.q, p.r)));
 
 	const precincts: PartialPrecinct[] = positions.map((pos, idx) => ({
 		id: sequentialId(idx + 1) as PrecinctId,
@@ -48,8 +58,6 @@ export function generateTerrain(spec: PipelineSpec): PartialScenario {
 	}));
 
 	const posToId = buildPosIndex(precincts);
-
-	const terrainTiles = buildTerrainTiles(terrain?.tiles ?? [], posToId);
 
 	// River: route from intent (`terrain.river`) when present — a connected chain valid by
 	// construction — else use explicit `river_edges`. Either way, reject mid-land loose ends
@@ -117,15 +125,19 @@ function buildPosIndex(precincts: PartialPrecinct[]): Map<string, PrecinctId> {
 
 function buildTerrainTiles(
 	specs: Array<{ q: number; r: number; type: "mountain" | "sea" | "lake" }>,
-	posToId: Map<string, PrecinctId>,
+	radius: number,
 ): TerrainTile[] {
 	return specs.map((t) => {
-		if (posToId.has(posKey(t.q, t.r))) {
-			throw new Error(`Terrain tile at (${t.q},${t.r}) overlaps a precinct position`);
+		const dist = hexDistance(t.q, t.r);
+		if (dist > radius) {
+			throw new Error(
+				`Terrain tile at (${t.q},${t.r}) lies outside the radius-${radius} boundary ` +
+					`(hex distance ${dist}); terrain must be placed within the playable map.`,
+			);
 		}
-		// Tiles outside the precinct grid are intentionally allowed — sea tiles
-		// placed beyond the hex circle boundary create a visible coastline, and
-		// mountain tiles outside the playable area can frame the map edge.
+		// A terrain tile REPLACES the precinct on its cell — the precinct at (q,r) is removed
+		// from the map (see generateTerrain) so the tile occupies that hex. Terrain therefore
+		// lives inside the boundary, never off-grid beyond the rim. GAME-127.
 		return { position: { q: t.q, r: t.r }, type: t.type };
 	});
 }
@@ -148,6 +160,11 @@ function buildRiverEdges(
 
 function areAdjacent(a: HexPos, b: HexPos): boolean {
 	return HEX_DIRS.some(([dq, dr]) => a.q + dq === b.q && a.r + dr === b.r);
+}
+
+/** Axial hex distance from the origin: (|q| + |r| + |q+r|) / 2. */
+function hexDistance(q: number, r: number): number {
+	return (Math.abs(q) + Math.abs(r) + Math.abs(q + r)) / 2;
 }
 
 function posKey(q: number, r: number): string {

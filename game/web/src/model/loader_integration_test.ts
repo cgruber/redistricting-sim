@@ -67,7 +67,7 @@ const EXPECTED: Record<string, { precincts: number; districts: number }> = {
 	"tutorial-001.json": { precincts: 37, districts: 2 },
 	"tutorial-002.json": { precincts: 61, districts: 3 },
 	"tutorial-003.json": { precincts: 91, districts: 3 },
-	"tutorial-004.json": { precincts: 127, districts: 4 },
+	"tutorial-004.json": { precincts: 111, districts: 4 },
 	"scenario-002.json": { precincts: 91, districts: 4 },
 	"scenario-003.json": { precincts: 127, districts: 5 },
 	"scenario-004.json": { precincts: 127, districts: 5 },

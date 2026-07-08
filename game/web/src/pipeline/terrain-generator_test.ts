@@ -6,7 +6,7 @@
  *   - generateTerrain: produces valid PartialScenario structure
  *   - Terrain tiles: accepted, validated, placed in output
  *   - River edges: translated from position pairs to precinct-ID pairs
- *   - Error cases: overlapping terrain, non-precinct river endpoints, non-adjacent river pairs
+ *   - Error cases: out-of-boundary terrain, non-precinct river endpoints, non-adjacent river pairs
  *
  * Run via Bazel: bazel test //game/web/src/pipeline:terrain_generator_test
  */
@@ -137,25 +137,27 @@ test("generateTerrain: no river_edges field when spec has none", () => {
 // ─── generateTerrain: terrain tiles ──────────────────────────────────────────
 
 test("generateTerrain: terrain tiles appear in output", () => {
+	// (0,2) is on the rim of an R=2 hex circle (hex distance 2) — inside the boundary.
 	const spec = minimalSpec(2, {
 		terrain: {
-			tiles: [{ q: 0, r: 3, type: "mountain" }],
+			tiles: [{ q: 0, r: 2, type: "mountain" }],
 		},
 	});
 	const s = generateTerrain(spec);
 	assertEqual(s.terrain_tiles?.length, 1);
 	assertEqual(s.terrain_tiles?.[0]?.type, "mountain");
 	assertEqual(s.terrain_tiles?.[0]?.position.q, 0);
-	assertEqual(s.terrain_tiles?.[0]?.position.r, 3);
+	assertEqual(s.terrain_tiles?.[0]?.position.r, 2);
 });
 
 test("generateTerrain: accepts mountain, sea, and lake tile types", () => {
+	// Three distinct rim cells of an R=3 hex circle (all hex distance 3, inside the boundary).
 	const spec = minimalSpec(3, {
 		terrain: {
 			tiles: [
-				{ q: 0, r: 4, type: "mountain" },
-				{ q: 1, r: 4, type: "sea" },
-				{ q: 2, r: 4, type: "lake" },
+				{ q: 0, r: 3, type: "mountain" },
+				{ q: 3, r: 0, type: "sea" },
+				{ q: -3, r: 0, type: "lake" },
 			],
 		},
 	});
@@ -163,12 +165,55 @@ test("generateTerrain: accepts mountain, sea, and lake tile types", () => {
 	assertEqual(s.terrain_tiles?.length, 3);
 });
 
-test("generateTerrain: terrain tile overlapping precinct throws", () => {
-	// R=2 hex circle includes (0,0); placing mountain there should fail
+test("generateTerrain: terrain tile on a precinct cell removes that precinct (GAME-127)", () => {
+	// R=2 hex circle includes (0,0); a mountain there now REPLACES the precinct rather than
+	// erroring — the (0,0) precinct is dropped and the tile occupies the cell.
 	const spec = minimalSpec(2, {
 		terrain: { tiles: [{ q: 0, r: 0, type: "mountain" }] },
 	});
-	assertThrows(() => generateTerrain(spec), /overlap/i);
+	const s = generateTerrain(spec);
+	assertEqual(s.precincts.length, hexCircleSize(2) - 1); // 19 − 1 = 18
+	const hasOrigin = s.precincts.some((p) => {
+		const pos = p.position as { q: number; r: number };
+		return pos.q === 0 && pos.r === 0;
+	});
+	assertEqual(hasOrigin, false); // no precinct remains under the terrain tile
+	assertEqual(s.terrain_tiles?.length, 1);
+	assertEqual(s.terrain_tiles?.[0]?.position.q, 0);
+	assertEqual(s.terrain_tiles?.[0]?.position.r, 0);
+});
+
+test("generateTerrain: terrain tile outside the radius throws (GAME-127)", () => {
+	// (0,3) is one ring beyond an R=2 hex circle (hex distance 3 > 2). Terrain must live inside
+	// the playable boundary, so this is rejected rather than framing the map off-grid.
+	const spec = minimalSpec(2, {
+		terrain: { tiles: [{ q: 0, r: 3, type: "sea" }] },
+	});
+	assertThrows(() => generateTerrain(spec), /outside the radius|boundary/i);
+});
+
+test("generateTerrain: a routed river coexists with terrain removal and references only land (GAME-127)", () => {
+	// A sea tile on the east rim removes that precinct (off the north–south axis, so the river
+	// anchors are unaffected); a north→south river must still route over the remaining land and
+	// terminate validly (no throw), referencing only surviving land precinct IDs.
+	const spec = minimalSpec(4, {
+		terrain: {
+			tiles: [{ q: 4, r: 0, type: "sea" }],
+			river: { from: "north", to: "south" },
+		},
+	});
+	const s = generateTerrain(spec);
+	const landIds = new Set(s.precincts.map((p) => p.id));
+	const removed = s.precincts.some((p) => {
+		const pos = p.position as { q: number; r: number };
+		return pos.q === 4 && pos.r === 0;
+	});
+	assertEqual(removed, false); // the (4,0) precinct was replaced by the sea tile
+	assertEqual((s.river_edges?.length ?? 0) > 0, true);
+	for (const [a, b] of s.river_edges!) {
+		assertEqual(landIds.has(a), true);
+		assertEqual(landIds.has(b), true);
+	}
 });
 
 // ─── generateTerrain: river edges ────────────────────────────────────────────

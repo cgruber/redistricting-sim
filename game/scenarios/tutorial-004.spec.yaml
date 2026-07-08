@@ -17,16 +17,24 @@
 #     - The full LEGAL-MAP skill is gated: district_count + population_balance + contiguity (the
 #       cumulative T1-T2 skills). No seat goal — winning by seats was never taught here; that's
 #       the real campaign scenarios. The result is VISIBLE to read, the bridge, not the test.
-#     - Balance does NOT need a simple stripe: a hex circle has no clean balanced band split, but
-#       FOUR WEDGES around the centre balance within ±15% (each district gets an equal slice of
-#       the dense core + the sparse rim — verified contiguous). The player draws and evens the
-#       districts out using the Map Validity panel, exactly as in T2.
-#     - radius 6 (127 precincts), 4 districts — bigger and more districts than T3.
+#     - DECISION (2026-07-08, owner — GAME-127): the terrain rim-carve broke the four-cardinal-
+#       WEDGE balance the capstone was originally built around (a natural quadrant carve now runs
+#       E/W ~+17%, S ~−23% on the pointy-top hex, over ±15%). Resolved: ACCEPT the map as-is — the
+#       capstone's win is a complete legal map reached via the Map Validity panel (the e2e proves a
+#       balanced + contiguous partition exists: four EQUAL-POPULATION north–south layers). The
+#       specific "even out four cardinal wedges" framing is retired; the taught skill is balance-
+#       via-panel, and the field stays comfortably balanceable. The opposite-pair village design
+#       below is kept (it still yields a symmetric, balanceable field); its old wedge-centric
+#       wording is now vestigial. See thoughts/shared/plans/2026-07-07-game-127-terrain-inside-boundary.md.
+#     - radius 6, 111 playable precincts (16 outer-ring cells are terrain), 4 districts — bigger
+#       and more districts than T3.
 #     - City view: the City overlay (GAME-096) still isn't built, so there's no #filter-city;
 #       the map carries an urban core for when it ships. Lean + County + result are all visible.
-#     - Topography (GAME-125): the full frame is now authored — a mountain range on the NW rim,
-#       an ocean on the SE rim curling around the south vertex, and a river flowing from the
-#       mountains out to that sea. All cosmetic (terrain_weights pinned to 1.0); see Stage 1b.
+#     - Topography (GAME-125, refined GAME-127): the mountain range (NW rim) and ocean (SE rim,
+#       curling around the south vertex) sit ON the map's outer ring — each terrain tile replaces
+#       the precinct on its cell, so the frame is PART of the r=6 map, not off-grid beyond it
+#       (127 → 111 playable hexes). A river flows from the mountains out to that sea. All cosmetic
+#       (terrain_weights pinned to 1.0); see Stage 1b.
 
 format_version: "1"
 
@@ -42,7 +50,8 @@ scenario:
 
 # ── Stage 1a: Map layout ──────────────────────────────────────────────────────
 #
-# radius 6 = 127 precincts — the largest tutorial map, four districts to draw.
+# radius 6 = 127 hex cells; 16 outer-ring cells become terrain (GAME-127), leaving 111 playable
+# precincts — still the largest tutorial map, four districts to draw.
 
 map:
   geometry: hex_axial
@@ -51,16 +60,17 @@ map:
 
 # ── Stage 1b: Terrain (COSMETIC) ──────────────────────────────────────────────
 #
-# The full topographic frame for the capstone (GAME-125): a mountain range along the NORTH-WEST
-# rim, an ocean along the SOUTH-EAST rim that curls around the south vertex, and a river that
-# flows OUT OF the mountains, bends through the interior, and empties into that sea.
+# The full topographic frame for the capstone (GAME-125, refined GAME-127): a mountain range along
+# the NORTH-WEST rim, an ocean along the SOUTH-EAST rim that curls around the south vertex, and a
+# river that flows OUT OF the mountains, bends through the interior, and empties into that sea.
 #
-# Tiles sit ONE ring OUTSIDE the precinct circle (the terrain stage requires off-grid tiles), so
-# they frame the rim without removing playable hexes. On a radius-6 hex circle:
-#   - mountains: the q+r = -7 ring — the whole NW edge (W-vertex → N-vertex)
-#   - ocean:     the q+r = +7 ring (SE edge, SE-vertex → S-vertex) + two tiles curling west of the
-#                south vertex (r = 7) so the coast wraps the bottom point
-#   - river:     from the NW rim (out of the mountains) to the south vertex (into the sea)
+# Terrain lives INSIDE the r=6 boundary and REPLACES the precinct on its cell (GAME-127): the frame
+# is part of the map's OWN outer ring, not placed off-grid beyond it. The 16 rim cells it occupies
+# drop out of the precinct set (127 → 111 playable hexes). On a radius-6 hex circle:
+#   - mountains: the q+r = -6 edge — the whole NW rim (W-vertex → N-vertex), 7 tiles
+#   - ocean:     the q+r = +6 edge (SE rim, E-vertex → S-vertex, 7 tiles) + two tiles curling west
+#                along the bottom edge (r = 6) so the coast wraps the south vertex, 9 total
+#   - river:     from the foot of the mountains (NW) to the last land before the coast (S)
 #
 # COSMETIC: every terrain weight is pinned to 1.0 in the population stage, so mountains and coast
 # are scenery only. Left at defaults they would halve the NW wedge (mountain_adjacent 0.5) and
@@ -69,38 +79,37 @@ map:
 
 terrain:
   tiles:
-    # Mountains — NW edge frame (q + r = -7), W-vertex end → N-vertex end.
-    - { q: -7, r: 0, type: mountain }
-    - { q: -6, r: -1, type: mountain }
-    - { q: -5, r: -2, type: mountain }
-    - { q: -4, r: -3, type: mountain }
-    - { q: -3, r: -4, type: mountain }
-    - { q: -2, r: -5, type: mountain }
-    - { q: -1, r: -6, type: mountain }
-    - { q: 0, r: -7, type: mountain }
-    # Ocean — SE edge frame (q + r = +7), SE-vertex end → S-vertex end...
-    - { q: 7, r: 0, type: sea }
-    - { q: 6, r: 1, type: sea }
-    - { q: 5, r: 2, type: sea }
-    - { q: 4, r: 3, type: sea }
-    - { q: 3, r: 4, type: sea }
-    - { q: 2, r: 5, type: sea }
-    - { q: 1, r: 6, type: sea }
-    - { q: 0, r: 7, type: sea }
-    # ...curling west of the south vertex along the bottom edge (r = 7).
-    - { q: -1, r: 7, type: sea }
-    - { q: -2, r: 7, type: sea }
-  # Routed river (GAME-100): from the NW rim out of the mountains, bent west of the dense centre,
-  # emptying into the sea at the south vertex. from/to terminate at the rim by construction.
-  river: { from: { q: -3, r: -3 }, via: [ { q: -2, r: 2 } ], to: { q: 0, r: 6 } }
+    # Mountains — NW rim (q + r = -6), W-vertex end → N-vertex end. 7 tiles on the outer ring.
+    - { q: -6, r: 0, type: mountain }
+    - { q: -5, r: -1, type: mountain }
+    - { q: -4, r: -2, type: mountain }
+    - { q: -3, r: -3, type: mountain }
+    - { q: -2, r: -4, type: mountain }
+    - { q: -1, r: -5, type: mountain }
+    - { q: 0, r: -6, type: mountain }
+    # Ocean — SE rim (q + r = +6), E-vertex end → S-vertex end...
+    - { q: 6, r: 0, type: sea }
+    - { q: 5, r: 1, type: sea }
+    - { q: 4, r: 2, type: sea }
+    - { q: 3, r: 3, type: sea }
+    - { q: 2, r: 4, type: sea }
+    - { q: 1, r: 5, type: sea }
+    - { q: 0, r: 6, type: sea }
+    # ...curling west of the south vertex along the bottom edge (r = 6).
+    - { q: -1, r: 6, type: sea }
+    - { q: -2, r: 6, type: sea }
+  # Routed river (GAME-100): from the foot of the NW mountains, bent west of the dense centre,
+  # emptying into the sea near the south vertex. from/to are land cells adjacent to the terrain;
+  # routeRiver snaps each to the mountain/coast rim by construction (mountains → sea).
+  river: { from: { q: -3, r: -2 }, via: [ { q: -2, r: 2 } ], to: { q: 0, r: 5 } }
 
 # ── Stage 2: Population ───────────────────────────────────────────────────────
 #
 # A central city on a textured rural base. Like T003: rural noise (variance) is left un-smoothed
 # so the countryside reads as varied, and a few village peaks break up the fringe (giving the
 # county stage extra seats and the map some life). The villages are placed in opposite pairs so
-# the field stays balanced for a roughly-equal-area four-way split — balance is a skill to apply
-# here, not an obstacle to fight.
+# the field stays symmetric and comfortably balanceable however the player carves it — balance is a
+# skill to apply here, not an obstacle to fight.
 
 population:
   seed: 21
@@ -109,8 +118,8 @@ population:
   smoothing: 0          # keep the texture — don't average the noise away
   # COSMETIC terrain (GAME-125): pin every weight to 1.0 so the NW mountains and SE/south coast
   # do NOT reshape population. Defaults (mountain_adjacent 0.5, coastal 0.9, riverside 1.3) would
-  # break the symmetric four-wedge balance — with all weights 1.0 the field is the opposite-pair
-  # villages alone, the clean balanceable design this tutorial relies on.
+  # skew the symmetric field — with all weights 1.0 the field is the opposite-pair villages alone,
+  # the clean balanceable design this tutorial relies on.
   terrain_weights:
     lakeside: 1.0
     riverside: 1.0
@@ -122,9 +131,9 @@ population:
       peak: 2600
       radius: 2
       profile: plateau
-    # Satellite towns ringing the city at the cardinals (N/E/S/W), in opposite pairs so they
-    # cancel for population balance. Cardinal (not intercardinal) placement keeps each town at the
-    # centre of a wedge in the natural four-way split rather than astride a district boundary.
+    # Satellite towns ringing the city at the cardinals (N/E/S/W), in opposite pairs so they cancel
+    # for population balance — keeping the field symmetric and comfortably balanceable however the
+    # player carves it.
     - label: Millbrook
       anchor: north
       peak: 1200
@@ -201,8 +210,9 @@ assembly:
     contiguity: required             # a legal map: every district one connected piece
   success_criteria:
     # The full legal-map skill: four districts, all assigned, balanced, each connected. No seat
-    # goal — the result is shown to read, not to hit. Balanceable: four wedges around the centre
-    # land all four districts within ±15% (verified), and the player evens them out with the panel.
+    # goal — the result is shown to read, not to hit. A passing map provably exists (the e2e wins it
+    # with equal-population north–south layers); whether a NATURAL four-way split still balances after
+    # the terrain rim-carve is the OPEN QUESTION flagged in the pedagogy header (pending owner review).
     - id: sc-district-count
       required: true
       description: All four districts are in use and every precinct is assigned.
