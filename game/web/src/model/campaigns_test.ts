@@ -88,6 +88,18 @@ test("educational campaign ends with scenario-009", () => {
 	assertEqual(edu!.scenarioIds[edu!.scenarioIds.length - 1], "scenario-009", "last scenario");
 });
 
+// ─── comingSoon gating (GAME-128) ───────────────────────────────────────────
+// The educational arc is authored but not yet published: it shows on campaign-select as a
+// non-interactive "coming soon" placeholder while beta ships with the tutorial live.
+
+test("educational campaign is marked comingSoon", () => {
+	assertEqual(getCampaign("educational")!.comingSoon, true, "educational comingSoon");
+});
+
+test("tutorial campaign is not comingSoon", () => {
+	assertEqual(getCampaign("tutorial")!.comingSoon, undefined, "tutorial not comingSoon");
+});
+
 // ─── debugOnly gating (GAME-115) ────────────────────────────────────────────
 // No SHIPPED campaign sets debugOnly since GAME-121 promoted the multi-party + independent demos
 // into the public tutorial. The flag + visibleCampaigns filter are retained (dormant), so the

@@ -406,18 +406,32 @@ const IS_DEBUG =
 			cardsEl.innerHTML = "";
 			// GAME-115: debug-only campaigns appear only when debug mode is active.
 			for (const campaign of visibleCampaigns(IS_DEBUG)) {
+				const card = document.createElement("div");
+				const heading = document.createElement("h2");
+				heading.textContent = campaign.title;
+				const desc = document.createElement("p");
+				desc.textContent = campaign.description;
+
+				if (campaign.comingSoon) {
+					// GAME-128: not yet playable — a non-interactive placeholder. No navigation, no
+					// scenario count, kept out of the tab order; an italic "coming soon" stands in.
+					card.className = "campaign-card coming-soon";
+					card.setAttribute("aria-disabled", "true");
+					const note = document.createElement("div");
+					note.className = "campaign-progress campaign-coming-soon";
+					note.textContent = "coming soon";
+					card.append(heading, desc, note);
+					cardsEl.appendChild(card);
+					continue;
+				}
+
 				const completed = campaign.scenarioIds.filter((id) => isCompleted(progress, id)).length;
 				const total = campaign.scenarioIds.length;
-				const card = document.createElement("div");
 				card.className = "campaign-card";
 				card.setAttribute("role", "button");
 				card.setAttribute("tabindex", "0");
 				card.setAttribute("aria-label", campaign.title);
 
-				const heading = document.createElement("h2");
-				heading.textContent = campaign.title;
-				const desc = document.createElement("p");
-				desc.textContent = campaign.description;
 				const prog = document.createElement("div");
 				prog.className = "campaign-progress";
 				prog.textContent = `${completed} / ${total} scenarios complete`;

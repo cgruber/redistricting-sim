@@ -763,6 +763,18 @@ body {
 	color: #5a8abf;
 	font-size: 0.8rem;
 }
+/* GAME-128: a campaign that isn't playable yet — non-interactive, dimmed, no hover affordance. */
+.campaign-card.coming-soon {
+	cursor: default;
+	opacity: 0.6;
+}
+.campaign-card.coming-soon:hover {
+	background: #16213e;
+	border-color: #2a5a8c;
+}
+.campaign-coming-soon {
+	font-style: italic;
+}
 
 /* ── Scenario select screen (GAME-018) ────────────────────────────── */
 #scenario-select {

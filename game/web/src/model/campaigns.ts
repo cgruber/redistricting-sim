@@ -12,6 +12,14 @@ export interface Campaign {
 	 * build-exclusion — a direct `?campaign=<id>` link still resolves for developers.
 	 */
 	debugOnly?: boolean;
+	/**
+	 * When true, the campaign is shown on campaign-select but is not yet playable: the card renders
+	 * as a non-interactive "coming soon" placeholder — no scenario count, no navigation, out of the
+	 * tab order. Scenarios may still ship in the bundle and resolve via a direct `?campaign=<id>`
+	 * link (like `debugOnly`, this gates menu discovery, not the build). Lets beta ship with the
+	 * tutorial live while the educational arc is still being authored (GAME-128).
+	 */
+	comingSoon?: boolean;
 }
 
 export const CAMPAIGN_REGISTRY: Campaign[] = [
@@ -38,6 +46,9 @@ export const CAMPAIGN_REGISTRY: Campaign[] = [
 		title: "Educational Campaign",
 		description:
 			"Explore eight scenarios that illustrate real gerrymandering techniques and their effects on elections.",
+		// Not yet playable in beta — shown as a "coming soon" placeholder on campaign-select
+		// (GAME-128). The scenarios exist in the bundle and still resolve via ?campaign=educational.
+		comingSoon: true,
 		scenarioIds: [
 			"scenario-002",
 			"scenario-003",
