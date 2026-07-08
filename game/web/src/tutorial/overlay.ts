@@ -186,7 +186,7 @@ const TUTORIAL_005: TutorialStep[] = [
 		advance: { on: "paint-count", district: 2, n: 18 },
 	},
 	{
-		text: "That's the centre. Hit **Done** and the map is yours — carve the west and east wings, keep all three balanced and connected, and **Submit** when the **Map Validity** panel is green. Can you give each party a seat?",
+		text: "That's the centre. Hit **Done** and the map is yours — carve the west and east wings, keep all three balanced and connected, and **Submit** when the **Map Validity** panel is green. Watch the result: keep the eastern base whole and Chun-Li carries that seat; split it across districts and she's shut out.",
 		advance: { on: "next" },
 	},
 ];
