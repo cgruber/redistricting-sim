@@ -2476,7 +2476,7 @@
       }
     ],
     "objective": "Draw three balanced, connected districts — a legal map, like before — and read the result. There's no seat to chase: keep Dhalsim's home (the ⌂ pin) and his eastern base together in one district and watch him carry the Hollow; crack it and his support scatters off his ballot. Can you draw a map that gives the Hollow a voice of its own?\n",
-    "epilogue": "A home-base independent lives or dies by a single line. A party spreads its risk across many seats; an independent bets everything on the shape of one district — the one that holds his home. Keep a community together and it can elect its own; split it and its voice vanishes, even when a clear majority there favours them. The lines don't just divide the vote — they decide who is even allowed on the ballot.\n"
+    "epilogue": "A home-base independent lives or dies by a single line. A party spreads its risk across many seats; an independent bets everything on the shape of one district — the one that holds his home. Keep a community together and it can elect its own; split it and its voice vanishes, even when a clear majority there favours them. That home-only rule is a simplification of real law: nearly every state requires a legislator to live in the district they represent, so which district a home falls into decides where its candidate can win — the U.S. House is looser, asking only that a member live somewhere in the state. The lines don't just divide the vote — they decide who is even allowed on the ballot.\n"
   },
   "default_district_id": "d1",
   "hide_election_results": false,
