@@ -20,13 +20,20 @@ test("campaign select: clicking Tutorial navigates to ?campaign=tutorial", async
 	await expect(page).toHaveURL(/campaign=tutorial/);
 });
 
-test("campaign select: clicking Educational Campaign navigates to ?campaign=educational", async ({
+test("campaign select: Educational Campaign is a non-interactive 'coming soon' card (GAME-128)", async ({
 	page,
 }) => {
 	await page.goto("/?view=campaigns");
-	await expect(page.locator(".campaign-card").nth(1)).toBeVisible({ timeout: 10_000 });
-	await page.locator(".campaign-card").nth(1).click();
-	await expect(page).toHaveURL(/campaign=educational/);
+	const eduCard = page.locator(".campaign-card").nth(1);
+	await expect(eduCard).toBeVisible({ timeout: 10_000 });
+	await expect(eduCard).toContainText("Educational Campaign");
+	// Not yet playable: an italic "coming soon" replaces the scenario count, the card carries
+	// aria-disabled, and clicking it does not navigate into the campaign.
+	await expect(eduCard).toContainText("coming soon");
+	await expect(eduCard).not.toContainText("scenarios complete");
+	await expect(eduCard).toHaveAttribute("aria-disabled", "true");
+	await eduCard.click();
+	await expect(page).not.toHaveURL(/campaign=educational/);
 });
 
 test("campaign select: progress shows 0 / 6 for Tutorial with fresh localStorage", async ({
