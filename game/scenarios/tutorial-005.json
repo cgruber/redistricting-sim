@@ -2470,7 +2470,7 @@
         "heading": "The Dense Centre Needs Less Land"
       }
     ],
-    "objective": "Draw three balanced, connected districts — a legal map, like before — and read the result. There's no seat to chase; repaint the lines and watch the three-cornered race change — can you draw a map where the Ken Party, the Ryu Party, and the Chun-Li Party each carry a seat?\n",
+    "objective": "Draw three balanced, connected districts — a legal map, like before — and read the result. There's no seat to chase: the winners emerge from where you put the lines. Keep the eastern base whole and Chun-Li carries that seat; split it across districts and she's shut out — repaint and watch the three-cornered race shift.\n",
     "epilogue": "A third party changes the map. A party with a concentrated base is powerful when its ground stays together and powerless when it's split — the same packing-and-cracking that moves seats between two sides, now with three. And the crowded city taught the other half of the lesson: dense ground needs the smaller district, so the centre is drawn tight and the rural wings run wide. The lines don't just pick between two sides — they decide how many corners keep a seat.\n"
   },
   "default_district_id": "d1",

@@ -87,7 +87,8 @@ population:
 #   • WEST — Ken country (Sean carries the Ken banner).
 #   • URBAN CORE — Hawthorn city leans Ryu (Sakura's base): the dense centre incl. the
 #     hexes around the seat (0,0), (-1,0), (0,-1), (1,-1).
-#   • EAST / the HOLLOW — Dhalsim, the unaffiliated local yogi, takes ~half and leads.
+#   • EAST — Chun-Li's ground (Chun-Li carries her party's banner), a ~two-in-five base that leads
+#     while the east stays together.
 # Zone match is first-wins, so urban_core (a distance filter) precedes the q-band zones.
 # GAME-116 weight model: primary (ken) gets base+jitter; the remainder (1 − ken) is split
 # among the others by their party_base weights. Author all three to sum to ~1 for literal shares.
@@ -198,8 +199,9 @@ assembly:
           SMALLER district — draw it narrow, and let the rural wings run wide.
     objective: >
       Draw three balanced, connected districts — a legal map, like before — and read the result.
-      There's no seat to chase; repaint the lines and watch the three-cornered race change — can you
-      draw a map where the Ken Party, the Ryu Party, and the Chun-Li Party each carry a seat?
+      There's no seat to chase: the winners emerge from where you put the lines. Keep the eastern
+      base whole and Chun-Li carries that seat; split it across districts and she's shut out —
+      repaint and watch the three-cornered race shift.
     epilogue: >
       A third party changes the map. A party with a concentrated base is powerful when its ground
       stays together and powerless when it's split — the same packing-and-cracking that moves seats
