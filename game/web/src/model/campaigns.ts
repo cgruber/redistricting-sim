@@ -82,6 +82,36 @@ export function visibleCampaigns(
 	return registry.filter((c) => !c.debugOnly || isDebug);
 }
 
+/**
+ * Hosts where a `comingSoon` campaign is unlocked for preview rather than shown as a placeholder:
+ * the dev deployment only (`dev.pastthepost.gg` — any `dev.` host). Beta, staging, production, and
+ * a default local build all keep `comingSoon` closed, so an unfinished arc stays hidden on every
+ * public channel. Fail-closed: any host not matched here → false (GAME-131).
+ *
+ * Keyed on the *runtime* hostname, deliberately NOT `import.meta.env.DEV`: the dev deploy is a
+ * production `vite build`, where `import.meta.env.DEV` is false — so a build-mode check would
+ * wrongly render the card closed on the very deployment meant to preview it. The hostname is the
+ * reliable per-channel signal.
+ */
+export function isPreviewHost(hostname: string): boolean {
+	return hostname.startsWith("dev.");
+}
+
+/**
+ * Whether `campaign` should render as a non-interactive "coming soon" placeholder in the given
+ * runtime environment. A `comingSoon` campaign is unlocked (interactive + playable) on a preview
+ * host (see {@link isPreviewHost}) or in debug mode (`?debug`, GAME-115); everywhere else it stays a
+ * placeholder. This lets HEAD/dev open the educational arc for testing while beta keeps it closed
+ * until the arc is finished (GAME-131). A campaign without `comingSoon` is never a placeholder.
+ */
+export function rendersAsComingSoon(
+	campaign: Campaign,
+	hostname: string,
+	isDebug: boolean,
+): boolean {
+	return !!campaign.comingSoon && !isDebug && !isPreviewHost(hostname);
+}
+
 export function saveLastPlayedScenario(scenarioId: string): void {
 	try {
 		localStorage.setItem(LAST_PLAYED_KEY, scenarioId);

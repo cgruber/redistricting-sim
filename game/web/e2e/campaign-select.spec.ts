@@ -23,6 +23,8 @@ test("campaign select: clicking Tutorial navigates to ?campaign=tutorial", async
 test("campaign select: Educational Campaign is a non-interactive 'coming soon' card (GAME-128)", async ({
 	page,
 }) => {
+	// Default (non-preview) channel — localhost with no ?debug behaves like beta/production: the
+	// coming-soon gate holds (GAME-131 lifts it only on the dev.* deploy or in debug mode).
 	await page.goto("/?view=campaigns");
 	const eduCard = page.locator(".campaign-card").nth(1);
 	await expect(eduCard).toBeVisible({ timeout: 10_000 });
@@ -34,6 +36,23 @@ test("campaign select: Educational Campaign is a non-interactive 'coming soon' c
 	await expect(eduCard).toHaveAttribute("aria-disabled", "true");
 	await eduCard.click();
 	await expect(page).not.toHaveURL(/campaign=educational/);
+});
+
+test("campaign select: Educational Campaign opens (interactive) in debug / dev builds (GAME-131)", async ({
+	page,
+}) => {
+	// The coming-soon gate lifts on the dev deploy (a `dev.` host) or in debug mode. Playwright runs
+	// on localhost, so `&debug` stands in for the dev host: the card becomes interactive, shows a
+	// scenario count instead of "coming soon", and navigates into the campaign when clicked.
+	await page.goto("/?view=campaigns&debug");
+	const eduCard = page.locator(".campaign-card").nth(1);
+	await expect(eduCard).toBeVisible({ timeout: 10_000 });
+	await expect(eduCard).toContainText("Educational Campaign");
+	await expect(eduCard).toContainText("scenarios complete");
+	await expect(eduCard).not.toContainText("coming soon");
+	await expect(eduCard).toHaveAttribute("role", "button");
+	await eduCard.click();
+	await expect(page).toHaveURL(/campaign=educational/);
 });
 
 test("campaign select: progress shows 0 / 6 for Tutorial with fresh localStorage", async ({

@@ -41,6 +41,7 @@ import {
 	CAMPAIGN_REGISTRY,
 	getCampaign,
 	loadLastPlayedScenario,
+	rendersAsComingSoon,
 	saveLastPlayedScenario,
 	visibleCampaigns,
 } from "./model/campaigns.js";
@@ -412,9 +413,11 @@ const IS_DEBUG =
 				const desc = document.createElement("p");
 				desc.textContent = campaign.description;
 
-				if (campaign.comingSoon) {
-					// GAME-128: not yet playable — a non-interactive placeholder. No navigation, no
-					// scenario count, kept out of the tab order; an italic "coming soon" stands in.
+				if (rendersAsComingSoon(campaign, window.location.hostname, IS_DEBUG)) {
+					// GAME-128 / GAME-131: not yet published on this channel — a non-interactive
+					// placeholder. No navigation, no scenario count, kept out of the tab order; an
+					// italic "coming soon" stands in. The gate lifts on the dev deploy (dev.* host)
+					// or in debug mode (?debug), so HEAD/dev can open the arc while beta stays closed.
 					card.className = "campaign-card coming-soon";
 					card.setAttribute("aria-disabled", "true");
 					const note = document.createElement("div");
