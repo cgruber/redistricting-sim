@@ -2440,3 +2440,260 @@ test("scenario-002 verdict DOM: a failing submission hides the star row", async 
 	await expect(page.locator("#result-verdict")).toHaveClass(/fail/);
 	await expect(page.locator("#result-stars")).toHaveClass(/hidden/);
 });
+
+// ─── scenario-010: "Vera County: The 55% Problem" (VRA / compactness ceiling) ──
+//
+// Numeric two-witness proof lives in the durable unit test
+// (//game/web/src/model:scenario_010_vra_test); these e2e tests confirm the same
+// win / crack outcomes end-to-end through the real browser paint→submit→verdict flow.
+
+test("scenario-010 smoke: loads and renders 127 precincts", async ({ page }) => {
+	await page.goto("/?s=scenario-010&debug");
+	const skip = page.locator("#btn-intro-skip");
+	await expect(skip).toBeVisible({ timeout: 15_000 });
+	await skip.click();
+	await expect(page.locator("path.hex").first()).toBeVisible({ timeout: 15_000 });
+	expect(await page.locator("path.hex").count()).toBe(127);
+});
+
+test("scenario-010 smoke: intro shows the commissioner role and the majority-minority objective", async ({
+	page,
+}) => {
+	await page.goto("/?s=scenario-010&debug");
+	await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
+	await expect(page.locator("#char-role")).toContainText("Commissioner");
+	await expect(page.locator("#objective-text")).toContainText("majority");
+});
+
+test("scenario-010 winnability: a compact Latino coast district + four compact blocks passes", async ({
+	page,
+}) => {
+	/**
+	 * R=6: 127 precincts, 5 districts of ~25. The Latino community is the SOUTHERN COAST
+	 * (rim ~80% Latino, falling off inland). The starting map is the court-struck over-pack:
+	 * a thin rim+spur arm packs the coast into one non-compact district → fails compactness.
+	 *
+	 * Winning strategy: give the coast ONE COMPACT district that is a bare Latino majority
+	 * (~53%, clearing 50%+1 without over-packing), and split the rest into four compact blocks.
+	 * The partition below is the proven Voronoi win (see scenario_010_vra_test for the numbers).
+	 */
+	await loadScenario(page, "scenario-010");
+	await expect(page.locator("#btn-submit")).toBeEnabled();
+
+	// D2 SOUTHERN COAST — the compact Latino opportunity district (~53% Latino, compact ✓).
+	await paintHexes(
+		page,
+		[
+			[0, 1],
+			[-1, 2],
+			[0, 2],
+			[1, 2],
+			[-2, 3],
+			[-1, 3],
+			[0, 3],
+			[1, 3],
+			[-3, 4],
+			[-2, 4],
+			[-1, 4],
+			[0, 4],
+			[1, 4],
+			[2, 4],
+			[-4, 5],
+			[-3, 5],
+			[-2, 5],
+			[-1, 5],
+			[0, 5],
+			[1, 5],
+			[-5, 6],
+			[-4, 6],
+			[-3, 6],
+			[-2, 6],
+			[-1, 6],
+			[0, 6],
+		],
+		2,
+	);
+	// D1 central compact block.
+	await paintHexes(
+		page,
+		[
+			[6, -3],
+			[4, -2],
+			[5, -2],
+			[6, -2],
+			[2, -1],
+			[3, -1],
+			[4, -1],
+			[5, -1],
+			[6, -1],
+			[0, 0],
+			[1, 0],
+			[2, 0],
+			[3, 0],
+			[4, 0],
+			[5, 0],
+			[6, 0],
+			[1, 1],
+			[2, 1],
+			[3, 1],
+			[4, 1],
+			[5, 1],
+			[2, 2],
+			[3, 2],
+			[4, 2],
+			[2, 3],
+			[3, 3],
+		],
+		1,
+	);
+	// D3 west-flank compact block.
+	await paintHexes(
+		page,
+		[
+			[-4, 0],
+			[-3, 0],
+			[-2, 0],
+			[-1, 0],
+			[-6, 1],
+			[-5, 1],
+			[-4, 1],
+			[-3, 1],
+			[-2, 1],
+			[-1, 1],
+			[-6, 2],
+			[-5, 2],
+			[-4, 2],
+			[-3, 2],
+			[-2, 2],
+			[-6, 3],
+			[-5, 3],
+			[-4, 3],
+			[-3, 3],
+			[-6, 4],
+			[-5, 4],
+			[-4, 4],
+			[-6, 5],
+			[-5, 5],
+			[-6, 6],
+		],
+		3,
+	);
+	// D4 north-west compact block.
+	await paintHexes(
+		page,
+		[
+			[0, -6],
+			[1, -6],
+			[-1, -5],
+			[0, -5],
+			[1, -5],
+			[-2, -4],
+			[-1, -4],
+			[0, -4],
+			[-3, -3],
+			[-2, -3],
+			[-1, -3],
+			[0, -3],
+			[-4, -2],
+			[-3, -2],
+			[-2, -2],
+			[-1, -2],
+			[0, -2],
+			[-5, -1],
+			[-4, -1],
+			[-3, -1],
+			[-2, -1],
+			[-1, -1],
+			[0, -1],
+			[-6, 0],
+			[-5, 0],
+		],
+		4,
+	);
+	// D5 north-east compact block.
+	await paintHexes(
+		page,
+		[
+			[2, -6],
+			[3, -6],
+			[4, -6],
+			[5, -6],
+			[6, -6],
+			[2, -5],
+			[3, -5],
+			[4, -5],
+			[5, -5],
+			[6, -5],
+			[1, -4],
+			[2, -4],
+			[3, -4],
+			[4, -4],
+			[5, -4],
+			[6, -4],
+			[1, -3],
+			[2, -3],
+			[3, -3],
+			[4, -3],
+			[5, -3],
+			[1, -2],
+			[2, -2],
+			[3, -2],
+			[1, -1],
+		],
+		5,
+	);
+
+	await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
+	await page.locator("#btn-submit").click();
+	await expect(page.locator("#result-screen")).toBeVisible();
+	await expect(page.locator("#result-verdict")).toHaveText("Map Passed!");
+	await expect(page.locator("#result-verdict")).toHaveClass(/pass/);
+});
+
+test("scenario-010 crack fail-witness: slicing the coast across five districts fails majority-minority", async ({
+	page,
+}) => {
+	/**
+	 * The tempting "fair-looking" move is five compact, equal, vertical columns. But each column
+	 * crosses all latitudes — mixing the southern coast with the anglo north — so NO district
+	 * reaches a Latino majority. The map is otherwise valid (compact, balanced, contiguous), so
+	 * the ONLY red criterion is majority_minority: compactness is necessary but not sufficient.
+	 */
+	await loadScenario(page, "scenario-010");
+
+	// Crack: sort precincts by pixel-x (q + r/2) and cut into five equal vertical slices.
+	await page.evaluate(() => {
+		const store = (
+			window as unknown as Record<
+				string,
+				{
+					getState: () => {
+						paintStroke: (ids: number[], district: number) => void;
+						precincts: { coord: { q: number; r: number } }[];
+					};
+				}
+			>
+		)["__gameStore"];
+		if (!store) throw new Error("__gameStore not found on window");
+		const st = store.getState();
+		const order = st.precincts
+			.map((p, i) => ({ i, x: p.coord.q + p.coord.r * 0.5 }))
+			.sort((a, b) => a.x - b.x || a.i - b.i);
+		for (let s = 0; s < 5; s++) {
+			const ids = order
+				.filter((_, rank) => Math.floor((rank * 5) / order.length) === s)
+				.map((o) => o.i);
+			st.paintStroke(ids, s + 1);
+		}
+	});
+
+	await expect(page.locator("#btn-submit")).toBeEnabled({ timeout: 3_000 });
+	await page.locator("#btn-submit").click();
+	await expect(page.locator("#result-screen")).toBeVisible();
+	await expect(page.locator("#result-verdict")).toHaveText("Map Failed");
+
+	// The specific red criterion is majority-minority — the community was cracked.
+	await expect(page.locator(".result-criterion", { hasText: "Latino majority" })).toHaveClass(
+		/failed-required/,
+	);
+});

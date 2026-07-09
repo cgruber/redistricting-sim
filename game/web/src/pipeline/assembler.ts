@@ -1,21 +1,24 @@
 import type {
-	PartialScenario,
-	PartialPrecinct,
-	Party,
-	District,
-	SuccessCriterion,
-	Criterion,
-	ScenarioRules,
-	Narrative,
 	CharacterType,
+	Criterion,
+	District,
+	GroupFilter,
+	Narrative,
+	PartialPrecinct,
+	PartialScenario,
+	Party,
+	ScenarioRules,
+	SuccessCriterion,
 } from "../model/scenario.js";
-import type { PartyId, DistrictId, CriterionId } from "../model/scenario.js";
+import type { CriterionId, DistrictId, GroupId, PartyId } from "../model/scenario.js";
 import type {
 	AssemblySpec,
 	CriterionSpec,
 	DiagonalStripEntry,
 	RowBandEntry,
+	ZoneDistrictEntry,
 } from "./spec-types.js";
+import { matchesFilter } from "./demographics-stage.js";
 
 function applyDiagonalStrip(strips: DiagonalStripEntry[], q: number, r: number): DistrictId {
 	const k = q + r;
@@ -27,6 +30,16 @@ function applyDiagonalStrip(strips: DiagonalStripEntry[], q: number, r: number):
 function applyRowBand(bands: RowBandEntry[], r: number): DistrictId {
 	const match = bands.find((b) => b.default === true || (b.max_r !== undefined && r <= b.max_r));
 	if (!match) throw new Error(`No row band matched r=${r}`);
+	return match.district as DistrictId;
+}
+
+// GAME-078: zone-filter initial map. First matching ZoneFilter wins — identical
+// semantics to the demographics/county stages (matchesFilter reused, not re-copied),
+// so layered filters express rings and thin non-compact opportunity districts that
+// the single-axis diagonal_strip / row_band cascades cannot.
+function applyZones(zones: ZoneDistrictEntry[], q: number, r: number): DistrictId {
+	const match = zones.find((z) => matchesFilter(z.filter, q, r));
+	if (!match) throw new Error(`No zone matched q=${q} r=${r}`);
 	return match.district as DistrictId;
 }
 
@@ -75,6 +88,24 @@ function mapCriterion(spec: CriterionSpec): Criterion {
 				margin: spec.margin!,
 				min_count: spec.min_count!,
 			};
+		case "majority_minority": {
+			// GAME-078: the protected-group opportunity criterion (VRA arc). group_filter is
+			// either a dimension/value pair (e.g. ethnicity=latino) or explicit group_ids.
+			const gf = spec.group_filter;
+			if (gf === undefined) {
+				throw new Error("majority_minority criterion requires a group_filter");
+			}
+			const group_filter: GroupFilter =
+				gf.group_ids !== undefined
+					? { group_ids: gf.group_ids as GroupId[] }
+					: { dimension: gf.dimension!, value: gf.value! };
+			return {
+				type: "majority_minority",
+				group_filter,
+				min_eligible_share: spec.min_eligible_share!,
+				min_districts: spec.min_districts!,
+			};
+		}
 		default:
 			throw new Error(`Unknown criterion type: ${spec.type}`);
 	}
@@ -120,7 +151,9 @@ export function assembleScenario(partial: PartialScenario, spec: AssemblySpec): 
 				? applyDiagonalStrip(rule.strips, q, r)
 				: rule?.type === "row_band"
 					? applyRowBand(rule.bands, r)
-					: undefined;
+					: rule?.type === "zones"
+						? applyZones(rule.zones, q, r)
+						: undefined;
 
 		const name = precinctName(p);
 

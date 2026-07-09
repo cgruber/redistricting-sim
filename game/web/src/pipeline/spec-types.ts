@@ -63,7 +63,11 @@ export interface TerrainSpec {
 	 * nearest routable hex corner) — use it to shape a river with a deliberate bend instead of the
 	 * shortest straight run. `from`/`to` still terminate at the rim; only the bends are pinned.
 	 */
-	river?: { from: SettlementAnchor; to: SettlementAnchor; via?: SettlementAnchor[] };
+	river?: {
+		from: SettlementAnchor;
+		to: SettlementAnchor;
+		via?: SettlementAnchor[];
+	};
 }
 
 // ─── Stage 2: Population ─────────────────────────────────────────────────────
@@ -185,7 +189,17 @@ export interface ZoneFilter {
 export interface ZoneSpec {
 	name: string;
 	filter: ZoneFilter;
-	party_base: Record<string, number>;
+	/** Partisan lean per party for the single-group demographics path. Optional
+	 *  because multi-group (GAME-078) demographics uses `population_split` instead. */
+	party_base?: Record<string, number>;
+	/**
+	 * Multi-group demographics (GAME-078): this zone's share of precinct population per
+	 * group value (e.g. `{ latino: 0.72, anglo: 0.28 }`). Must cover every declared group
+	 * and sum to ≈ 1.0 (validated). Lets the ethnic composition of the map vary — a
+	 * concentrated minority core vs. a majority hinterland — while each group's vote lean
+	 * stays fixed (racially-polarized bloc voting). Deterministic; no PRNG draw.
+	 */
+	population_split?: Record<string, number>;
 }
 
 export interface CountyLabelSpec {
@@ -198,14 +212,48 @@ export interface DemographicsGroupSpec {
 	name?: string;
 }
 
+/**
+ * Multi-group demographics (GAME-078): one demographic bloc (e.g. an ethnicity) with a
+ * FIXED racially-polarized vote lean and turnout, emitted for every precinct with its
+ * zone-local population share. Unlike the single-group partisan path there is no seeded
+ * jitter — the vote lean is a uniform bloc property, and the majority_minority criterion
+ * reads population share, not vote share, so the leans are cosmetic. Each def's `value`
+ * becomes `dimensions[dimension]` on the emitted group and a member of the group_schema.
+ */
+export interface DemographicGroupDef {
+	/** Dimension value this bloc represents (e.g. "latino"); becomes dimensions[dimension]. */
+	value: string;
+	/** Suffix for the emitted group id: `<precinctId>-<id_suffix>`. */
+	id_suffix: string;
+	/** Optional display name (e.g. "Latino residents"). */
+	name?: string;
+	/** Fixed bloc vote lean as party_id → base, same weight semantics as ZoneSpec.party_base
+	 *  (primary gets its base; the remainder is split among the others by weight). No jitter. */
+	party_base: Record<string, number>;
+	/** Fixed turnout rate for this bloc (0.0–1.0). */
+	turnout: number;
+}
+
 export interface DemographicsSpec {
 	seed: number;
 	parties: string[];
-	group: DemographicsGroupSpec;
-	turnout: { min: number; max: number };
-	jitter: number;
+	/** Single-group partisan path. Optional: multi-group (GAME-078) uses `groups` instead. */
+	group?: DemographicsGroupSpec;
+	/** Single-group turnout draw range. Optional under multi-group (each group fixes its own). */
+	turnout?: { min: number; max: number };
+	/** Single-group seeded jitter magnitude. Optional under multi-group (deterministic, no jitter). */
+	jitter?: number;
 	zones: ZoneSpec[];
 	county_labels?: CountyLabelSpec[];
+	/**
+	 * Multi-group demographics (GAME-078): when both `dimension` and `groups` are present,
+	 * the stage emits one demographic group per def per precinct (each carrying its zone-local
+	 * `population_split` share, its fixed bloc lean and turnout, and `dimensions[dimension] =
+	 * value`) and sets the scenario `group_schema`. `dimension` names the group_schema axis
+	 * (e.g. "ethnicity"). The single-group fields above are then unused.
+	 */
+	dimension?: string;
+	groups?: DemographicGroupDef[];
 }
 
 // ─── Stage 3b: Counties (GAME-089) ────────────────────────────────────────────
@@ -309,7 +357,27 @@ export interface RowBandRule {
 	bands: RowBandEntry[];
 }
 
-export type InitialDistrictRule = DiagonalStripRule | RowBandRule;
+/**
+ * Zone-filter initial map (GAME-078) — the general case behind the VRA arc's
+ * over-packed "before" picture. Assigns each precinct's starting district by the
+ * FIRST matching {@link ZoneFilter} (same first-match-wins semantics as the
+ * demographics/county stages), so a scenario can ship an arbitrary starting
+ * partition — e.g. a thin, non-compact opportunity district drawn around a
+ * community — that the diagonal_strip / row_band cascades (single-axis bands)
+ * cannot express. Layered filters build rings: an early `hex_dist_lte` claims the
+ * interior, later boundary zones catch the rim that falls through.
+ */
+export interface ZoneDistrictEntry {
+	filter: ZoneFilter;
+	district: string;
+}
+
+export interface ZonesRule {
+	type: "zones";
+	zones: ZoneDistrictEntry[];
+}
+
+export type InitialDistrictRule = DiagonalStripRule | RowBandRule | ZonesRule;
 
 export interface AssemblyRulesSpec {
 	population_tolerance: number;
@@ -327,6 +395,9 @@ export interface CriterionSpec {
 	min_count?: number;
 	min_districts?: number;
 	min_eligible_share?: number;
+	/** majority_minority (GAME-078): which groups count toward the protected share —
+	 *  either a dimension/value pair (e.g. ethnicity=latino) or explicit group_ids. */
+	group_filter?: { dimension?: string; value?: string; group_ids?: string[] };
 }
 
 export interface SuccessCriterionSpec {

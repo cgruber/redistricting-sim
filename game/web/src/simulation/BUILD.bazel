@@ -66,7 +66,10 @@ ts_project(
         "//game/web/src/model:runtime_lib",
         "//game/web/src/model:model_lib",
     ],
-    visibility = ["//game/web:__pkg__", "//game/web/src/simulation:__pkg__"],
+    # GAME-078: widened from simulation/web to all game/web subpackages so the
+    # model-package scenario-010 VRA proof test can depend on it (matches loader_lib /
+    # adapter_lib / election_lib, which are already __subpackages__).
+    visibility = ["//game/web:__subpackages__"],
 )
 
 # ── validity_typecheck_test: type-check passes ────────────────────────────────
@@ -220,7 +223,9 @@ ts_project(
         "//game/web/src/model:model_lib",
         "//game/web/src/model:runtime_lib",
     ],
-    visibility = ["//game/web:__pkg__", "//game/web/src/simulation:__pkg__"],
+    # GAME-078: widened so the model-package scenario-010 VRA proof test can depend on
+    # evaluateCriteria + computeDistrictCompactness/GroupShares (see validity_lib note).
+    visibility = ["//game/web:__subpackages__"],
 )
 
 # ── evaluate_typecheck_test ───────────────────────────────────────────────────

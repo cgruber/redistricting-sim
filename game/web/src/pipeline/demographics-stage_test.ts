@@ -32,12 +32,12 @@
  * Run via Bazel: bazel test //game/web/src/pipeline:demographics_stage_test
  */
 
-import { addDemographics, assignCounties } from "./demographics-stage.js";
-import { generateTerrain } from "./terrain-generator.js";
-import type { PipelineSpec, DemographicsSpec, CountyLabelSpec } from "./spec-types.js";
-import type { PartialScenario, PartialPrecinct, PartyId } from "../model/scenario.js";
+import type { PartialPrecinct, PartialScenario, PartyId } from "../model/scenario.js";
 import type { HexAxialPosition } from "../model/scenario.js";
-import { test, assertEqual, summarize } from "../testing/test_runner.js";
+import { assertEqual, summarize, test } from "../testing/test_runner.js";
+import { addDemographics, assignCounties } from "./demographics-stage.js";
+import type { CountyLabelSpec, DemographicsSpec, PipelineSpec } from "./spec-types.js";
+import { generateTerrain } from "./terrain-generator.js";
 
 const KEN = "ken" as PartyId;
 const RYU = "ryu" as PartyId;
@@ -210,7 +210,11 @@ test("addDemographics: zone filter r_gte/r_lte selects a horizontal row band", (
 	// that row fall through to the default zone.
 	const spec = baseDemoSpec({
 		zones: [
-			{ name: "corridor", filter: { r_gte: 0, r_lte: 0 }, party_base: { ken: 0.18 } },
+			{
+				name: "corridor",
+				filter: { r_gte: 0, r_lte: 0 },
+				party_base: { ken: 0.18 },
+			},
 			{ name: "rest", filter: { default: true }, party_base: { ken: 0.65 } },
 		],
 		jitter: 0,
@@ -336,7 +340,11 @@ test("addDemographics: near/within selects precincts around an arbitrary anchor 
 	const anchor = { q: 2, r: -1 };
 	const spec = baseDemoSpec({
 		zones: [
-			{ name: "near_anchor", filter: { near: anchor, within: 1 }, party_base: { ken: 0.9 } },
+			{
+				name: "near_anchor",
+				filter: { near: anchor, within: 1 },
+				party_base: { ken: 0.9 },
+			},
 			{ name: "rest", filter: { default: true }, party_base: { ken: 0.1 } },
 		],
 		jitter: 0,
@@ -360,7 +368,11 @@ test("addDemographics: near/within is ANDed with q conditions", () => {
 	const anchor = { q: 0, r: 2 };
 	const spec = baseDemoSpec({
 		zones: [
-			{ name: "sw", filter: { near: anchor, within: 2, q_lte: 0 }, party_base: { ken: 0.85 } },
+			{
+				name: "sw",
+				filter: { near: anchor, within: 2, q_lte: 0 },
+				party_base: { ken: 0.85 },
+			},
 			{ name: "rest", filter: { default: true }, party_base: { ken: 0.15 } },
 		],
 		jitter: 0,
@@ -383,7 +395,13 @@ test("addDemographics: near without within throws (malformed filter, fail-fast)"
 	// The anchor and radius are a pair; a half-specified proximity filter is rejected
 	// rather than silently ignored (which would produce wrong leans).
 	const spec = baseDemoSpec({
-		zones: [{ name: "bad", filter: { near: { q: 0, r: 0 } }, party_base: { ken: 0.5 } }],
+		zones: [
+			{
+				name: "bad",
+				filter: { near: { q: 0, r: 0 } },
+				party_base: { ken: 0.5 },
+			},
+		],
 	});
 	let threw = false;
 	try {
@@ -552,6 +570,176 @@ test("addDemographics: metadata fields are preserved", () => {
 	assertEqual(result.id, partial.id);
 	assertEqual(result.title, partial.title);
 	assertEqual(result.election_type, partial.election_type);
+});
+
+// ─── Multi-group demographics (GAME-078) ───────────────────────────────────────
+// The racially-polarized-voting path: one demographic group per bloc per precinct, each
+// carrying its zone-local population share, a FIXED bloc vote lean (no jitter), a fixed
+// turnout, and a dimension tag; the stage also sets the scenario group_schema. Fully
+// deterministic — makes no PRNG draws (only population share drives majority_minority).
+
+function baseMultiGroupSpec(overrides: Partial<DemographicsSpec> = {}): DemographicsSpec {
+	return {
+		seed: 0, // unused by the multi-group path (deterministic); present because seed is required
+		parties: ["ken", "ryu"],
+		dimension: "ethnicity",
+		groups: [
+			{
+				value: "latino",
+				id_suffix: "latino",
+				name: "Latino residents",
+				party_base: { ken: 0.8 },
+				turnout: 0.54,
+			},
+			{
+				value: "anglo",
+				id_suffix: "anglo",
+				name: "Anglo residents",
+				party_base: { ken: 0.37 },
+				turnout: 0.65,
+			},
+		],
+		zones: [
+			{
+				name: "core",
+				filter: { hex_dist_lte: 1 },
+				population_split: { latino: 0.7, anglo: 0.3 },
+			},
+			{
+				name: "rest",
+				filter: { default: true },
+				population_split: { latino: 0.15, anglo: 0.85 },
+			},
+		],
+		...overrides,
+	};
+}
+
+test("multi-group: each precinct gets one group per def, in order, dimension-tagged", () => {
+	const result = addDemographics(makePartial(3), baseMultiGroupSpec());
+	for (const p of result.precincts) {
+		const gs = p.demographic_groups!;
+		assertEqual(gs.length, 2);
+		assertEqual(gs[0]!.id, `${p.id}-latino`);
+		assertEqual(gs[1]!.id, `${p.id}-anglo`);
+		assertEqual(gs[0]!.dimensions?.["ethnicity"], "latino");
+		assertEqual(gs[1]!.dimensions?.["ethnicity"], "anglo");
+	}
+});
+
+test("multi-group: population shares come from the matched zone and sum to 1.0", () => {
+	const result = addDemographics(makePartial(3), baseMultiGroupSpec());
+	for (const p of result.precincts) {
+		const { q, r } = hexPos(p);
+		const s = -q - r;
+		const dist = (Math.abs(q) + Math.abs(r) + Math.abs(s)) / 2;
+		const gs = p.demographic_groups!;
+		const latino = gs.find((g) => g.dimensions?.["ethnicity"] === "latino")!;
+		const anglo = gs.find((g) => g.dimensions?.["ethnicity"] === "anglo")!;
+		// hex_dist_lte: 1 → the core zone (latino 0.70); everything else → the default (latino 0.15).
+		const expectedLatino = dist <= 1 ? 0.7 : 0.15;
+		assertEqual(Math.abs(latino.population_share - expectedLatino) < 1e-10, true);
+		assertEqual(Math.abs(latino.population_share + anglo.population_share - 1.0) < 1e-10, true);
+	}
+});
+
+test("multi-group: each group carries its fixed bloc lean and turnout (no jitter)", () => {
+	const result = addDemographics(makePartial(2), baseMultiGroupSpec());
+	for (const p of result.precincts) {
+		const gs = p.demographic_groups!;
+		const latino = gs.find((g) => g.dimensions?.["ethnicity"] === "latino")!;
+		const anglo = gs.find((g) => g.dimensions?.["ethnicity"] === "anglo")!;
+		assertEqual(Math.abs((latino.vote_shares[KEN] ?? 0) - 0.8) < 1e-10, true);
+		assertEqual(Math.abs((latino.vote_shares[RYU] ?? 0) - 0.2) < 1e-10, true);
+		assertEqual(latino.turnout_rate, 0.54);
+		assertEqual(Math.abs((anglo.vote_shares[KEN] ?? 0) - 0.37) < 1e-10, true);
+		assertEqual(Math.abs((anglo.vote_shares[RYU] ?? 0) - 0.63) < 1e-10, true);
+		assertEqual(anglo.turnout_rate, 0.65);
+	}
+});
+
+test("multi-group: sets group_schema with the dimension, its values, and empty eligibility_rules", () => {
+	const result = addDemographics(makePartial(1), baseMultiGroupSpec());
+	assertEqual(result.group_schema !== undefined, true);
+	assertEqual(
+		JSON.stringify(result.group_schema?.dimensions["ethnicity"]),
+		JSON.stringify(["latino", "anglo"]),
+	);
+	assertEqual(result.group_schema?.eligibility_rules.length, 0);
+});
+
+test("multi-group: deterministic — same spec produces byte-identical precincts", () => {
+	const partial = makePartial(3);
+	const a = addDemographics(partial, baseMultiGroupSpec());
+	const b = addDemographics(partial, baseMultiGroupSpec());
+	assertEqual(JSON.stringify(a.precincts), JSON.stringify(b.precincts));
+});
+
+test("multi-group: group.name propagated when present, absent when omitted", () => {
+	const spec = baseMultiGroupSpec({
+		groups: [
+			{
+				value: "latino",
+				id_suffix: "latino",
+				name: "Latino residents",
+				party_base: { ken: 0.8 },
+				turnout: 0.54,
+			},
+			{
+				value: "anglo",
+				id_suffix: "anglo",
+				party_base: { ken: 0.37 },
+				turnout: 0.65,
+			},
+		],
+	});
+	const result = addDemographics(makePartial(1), spec);
+	for (const p of result.precincts) {
+		const gs = p.demographic_groups!;
+		assertEqual(gs[0]!.name, "Latino residents");
+		assertEqual("name" in gs[1]!, false);
+	}
+});
+
+test("multi-group: a zone population_split not summing to 1.0 throws (fail-fast)", () => {
+	const spec = baseMultiGroupSpec({
+		zones: [
+			{
+				name: "bad",
+				filter: { default: true },
+				population_split: { latino: 0.7, anglo: 0.2 },
+			},
+		],
+	});
+	let threw = false;
+	try {
+		addDemographics(makePartial(1), spec);
+	} catch {
+		threw = true;
+	}
+	assertEqual(threw, true);
+});
+
+test("multi-group: a zone missing population_split throws (fail-fast)", () => {
+	const spec = baseMultiGroupSpec({
+		zones: [{ name: "bad", filter: { default: true } }],
+	});
+	let threw = false;
+	try {
+		addDemographics(makePartial(1), spec);
+	} catch {
+		threw = true;
+	}
+	assertEqual(threw, true);
+});
+
+test("multi-group: does not mutate input PartialScenario", () => {
+	const partial = makePartial(2);
+	addDemographics(partial, baseMultiGroupSpec());
+	for (const p of partial.precincts) {
+		assertEqual(p.demographic_groups, undefined);
+	}
+	assertEqual(partial.group_schema, undefined);
 });
 
 // ─── assignCounties ────────────────────────────────────────────────────────────

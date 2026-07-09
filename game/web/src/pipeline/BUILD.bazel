@@ -368,6 +368,7 @@ ts_project(
     tsconfig = ":tsconfig",
     declaration = True,
     deps = [
+        ":demographics_stage_lib",
         ":spec_types_lib",
         "//game/web/src/model:model_lib",
     ],

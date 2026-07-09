@@ -9,7 +9,7 @@ created: 2026-05-18
 ## Summary
 
 Design two new educational scenarios exploring the Voting Rights Act and race-conscious
-redistricting, placed in the Educational campaign after Valle Verde (scenario-006). The
+redistricting, placed in the Educational campaign after Valle Verde (scenario-005). The
 scenarios use the Virginia Bethune-Hill saga and Louisiana v. Callais (April 2026) as
 narrative anchors. Together they form a two-part contrast: (A) the dual-failure zone of
 majority-minority districting under the VRA, and (B) the current "colorblind trap" where
@@ -52,9 +52,21 @@ to give the minority community real representation — without using race as you
 
 | Criterion | Required | Notes |
 |-----------|----------|-------|
-| `majority_minority` | yes | Functional threshold (minority voters can elect preferred candidate) |
-| `compactness` | yes | Tightened threshold — forces geographic integrity |
-| `county_splits` | optional (bonus) | Minimizing splits earns extra star |
+| `majority_minority` | yes | Minority **population share** ≥ 50% (Bartlett v. Strickland 50%+1 floor) — see the note below |
+| `compactness` | yes | Tightened threshold — forces geographic integrity (the visible stand-in for the racial-gerrymander judgment) |
+
+> **What `majority_minority` actually computes (corrected):** the engine measures a district's
+> minority **population share**, *not* voting-age population and *not* whether the community can
+> actually *elect* its preferred candidate (there is no turnout or bloc-voting model in the
+> criterion). The "functional threshold / can-elect" language is real-world VRA context that belongs
+> in narrative prose **with the simplification named** — it is not what the mechanic evaluates
+> (GAME-078 plan, lines 62–65). Scenario-010's intro slide "What This Map Can and Can't Show" names
+> it.
+>
+> **`county_splits` dropped:** an earlier draft listed a `county_splits` optional-bonus criterion.
+> No such criterion type exists in the engine — Scenario A ships **four required** criteria
+> (`district_count`, `population_balance`, `compactness`, `majority_minority`). Re-add only if a
+> `county_splits` criterion type is later implemented (file a follow-up if desired).
 
 ### Starting map
 
@@ -128,11 +140,20 @@ racial data. Use what you can see: income, language, voting history. Draw a fair
 
 ## Campaign placement
 
-Both scenarios placed in the Educational campaign after Valle Verde (scenario-006):
-- Scenario A: position 7 in Educational campaign (currently scenarios 002–009 fill 1–8)
-- Scenario B: position 8 (pushing existing scenarios 007–009 to positions 9–11)
+Both scenarios placed in the Educational campaign **immediately after Valle Verde (scenario-005)**,
+so the VRA arc plays contiguously. Array *order* — not the numeric file ID — drives display and
+unlock (`scenarioIds` in `campaigns.ts`), so existing files are **not** renumbered. The array
+becomes `[002, 003, 004, 005, 010, 011, 006, 007, 008, 009]`:
+- Scenario A = `scenario-010`: inserted at position 5, immediately after Valle Verde; existing
+  006–009 shift to positions 6–9. Educational arc grows 8 → 9.
+- Scenario B = `scenario-011`: inserted at position 6, immediately after Scenario A; existing
+  006–009 shift to positions 7–10. Arc grows 9 → 10.
 
-Exact scenario file IDs and manifest order determined during GAME-078 implementation.
+> **Numbering correction (2026-07-09):** an earlier draft of this section referred to Valle Verde as
+> "scenario-006" and placed the new scenarios at "positions 7/8, pushing 007–009 to 9–11." That was a
+> typo — Valle Verde is **scenario-005** (`scenario-006` = "Harden the Map", partisan). File IDs
+> (010 / 011) and array order are authoritative in the GAME-078 implementation plan
+> (`thoughts/shared/plans/2026-07-09-game-078-vra-arc.md`, Key decision 4).
 
 ---
 

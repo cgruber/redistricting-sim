@@ -399,6 +399,55 @@ js_test(
     visibility = ["//visibility:public"],
 )
 
+# ── scenario_010_vra_test: durable winnability + two-witness proof (GAME-078) ─────
+#
+# Loads the shipped scenario-010.json and runs the REAL evaluateCriteria (+ the compactness /
+# group-share helpers) on the win / start / crack partitions, so the "The 55% Problem" scenario
+# is proven winnable and its over-pack invariant is enforced under the real population weighting.
+
+ts_project(
+    name = "scenario_010_vra_test_lib",
+    srcs = ["scenario_010_vra_test.ts"],
+    tsconfig = ":tsconfig_integration",
+    declaration = True,
+    deps = [
+        ":loader_lib",
+        ":adapter_lib",
+        ":runtime_lib",
+        ":model_lib",
+        "//game/web/src/simulation:evaluate_lib",
+        "//game/web/src/simulation:validity_lib",
+        "//game/web/src/simulation:election_lib",
+        "//game:node_modules/@types/node",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    testonly = True,
+)
+
+js_test(
+    name = "scenario_010_vra_test",
+    entry_point = "scenario_010_vra_test.js",
+    data = [
+        ":scenario_010_vra_test_lib",
+        ":loader_lib",
+        ":adapter_lib",
+        ":runtime_lib",
+        ":runtime_types_lib",
+        ":model_lib",
+        ":party_lib",
+        ":hex_geometry_lib",
+        "//game/web/src/simulation:evaluate_lib",
+        "//game/web/src/simulation:validity_lib",
+        "//game/web/src/simulation:election_lib",
+        "//game/scenarios:scenario_json",
+        "//game/web/src/testing:test_runner_lib",
+    ],
+    node_options = [
+        "--experimental-vm-modules",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 # ── loader_parse_test_lib: compile parseScenario / validateScenarioComplete tests ──
 
 ts_project(

@@ -84,7 +84,7 @@ function applyOp(actual: number, op: CompareOp, threshold: number): boolean {
 // Range: 0 (isolated singletons) → ~0.83 (densely packed blob).
 // "null" neighbour slots (map boundary) count as non-interior.
 
-function computeDistrictCompactness(
+export function computeDistrictCompactness(
 	precincts: Precinct[],
 	assignments: AssignmentMap,
 	districtCount: number,
