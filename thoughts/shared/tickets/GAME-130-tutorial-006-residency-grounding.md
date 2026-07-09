@@ -69,8 +69,8 @@ is left as-is — too small a legend to carry legal nuance; the debrief epilogue
 character-for-character identical (yq fold vs jq extract, trailing `\n` included → `EPILOGUE-IN-SYNC`).
 A repo-wide grep confirmed no test asserts on the T006 epilogue text (the `#result-epilogue`
 assertions in `scenarios.spec.ts` cover scenario-002 "packing" and tutorial-004 "core loop" only;
-the T006 e2e checks the debrief button, not its prose). `bazel test //game/...` green. Held for owner
-serve-local eyeball of the rendered debrief.
+the T006 e2e checks the debrief button, not its prose). `bazel test //game/...` green. Owner-approved
+on beta **v0.0.17** (2026-07-08) — the rendered debrief epilogue reads correctly.
 
 ## Goals / acceptance criteria
 
@@ -81,7 +81,7 @@ serve-local eyeball of the rendered debrief.
       real rule, without overstating (office-residency, not candidacy).
 - [x] `tutorial-006.spec.yaml` and `tutorial-006.json` epilogue in sync (character-for-character).
 - [x] Full local `bazel test //game/...` green.
-- [ ] Owner serve-local eyeball of the rendered T006 debrief. POST-MERGE — approval gate before merge.
+- [x] Owner serve-local eyeball of the rendered T006 debrief — approved on beta v0.0.17 (2026-07-08).
 
 ## Test Coverage
 
