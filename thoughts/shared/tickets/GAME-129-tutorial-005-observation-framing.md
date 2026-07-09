@@ -53,8 +53,8 @@ districts instead, and his voice slips away.)"*):
 character-for-character identical (yq fold vs jq extract, trailing `\n` included). A repo-wide grep
 confirmed no test asserts on any changed string — the T005 e2e (`tutorial-005-multiparty.spec.ts`)
 checks only the candidate winner badges, `"Map Passed!"`, and `"three-cornered race"`, none of
-which the copy edit touches. `bazel test //game/...` 47/47. Held for owner serve-local eyeball (the
-rendered objective under YOUR OBJECTIVE and coach step 4).
+which the copy edit touches. `bazel test //game/...` 47/47. Owner-approved on beta **v0.0.17**
+(2026-07-08) — the rendered objective under YOUR OBJECTIVE and coach step 4 read correctly.
 
 ## Goals / acceptance criteria
 
