@@ -14,12 +14,14 @@
     {
       "id": "ken",
       "name": "Ken Party",
-      "abbreviation": "KEN"
+      "abbreviation": "KEN",
+      "color": "#c96d00"
     },
     {
       "id": "ryu",
       "name": "Ryu Party",
-      "abbreviation": "RYU"
+      "abbreviation": "RYU",
+      "color": "#7b35a8"
     }
   ],
   "districts": [
@@ -44,3060 +46,3059 @@
       "name": "District 5"
     }
   ],
-  "default_district_id": "d1",
   "precincts": [
     {
       "id": "p001",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 0,
         "r": -6
       },
-      "total_population": 1526,
-      "initial_district_id": "d1",
-      "name": "Rural (0,-6)",
+      "total_population": 1650,
       "demographic_groups": [
         {
           "id": "p001-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6578,
-            "ryu": 0.3422
-          }
+            "ken": 0.6899848872609436,
+            "ryu": 0.31001511273905635
+          },
+          "turnout_rate": 0.5691005859407596,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (0,-6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p002",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 1,
         "r": -6
       },
-      "total_population": 1370,
-      "initial_district_id": "d1",
-      "name": "Rural (1,-6)",
+      "total_population": 1433,
       "demographic_groups": [
         {
           "id": "p002-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.54,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6114,
-            "ryu": 0.3886
-          }
+            "ken": 0.6523532681167126,
+            "ryu": 0.34764673188328743
+          },
+          "turnout_rate": 0.5147780809202231,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (1,-6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p003",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 2,
         "r": -6
       },
-      "total_population": 1436,
-      "initial_district_id": "d2",
-      "name": "Rural (2,-6)",
+      "total_population": 1509,
       "demographic_groups": [
         {
           "id": "p003-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6438,
-            "ryu": 0.3562
-          }
+            "ken": 0.615068147238344,
+            "ryu": 0.384931852761656
+          },
+          "turnout_rate": 0.686104201595299,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (2,-6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p004",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 3,
         "r": -6
       },
-      "total_population": 1607,
-      "initial_district_id": "d2",
-      "name": "Rural (3,-6)",
+      "total_population": 1367,
       "demographic_groups": [
         {
           "id": "p004-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6493,
-            "ryu": 0.3507
-          }
+            "ken": 0.6134857535175979,
+            "ryu": 0.38651424648240207
+          },
+          "turnout_rate": 0.5155069000320509,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (3,-6)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p005",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 4,
         "r": -6
       },
-      "total_population": 1552,
-      "initial_district_id": "d2",
-      "name": "Rural (4,-6)",
+      "total_population": 1369,
       "demographic_groups": [
         {
           "id": "p005-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.68,
-            "ryu": 0.32
-          }
+            "ken": 0.6803705399483443,
+            "ryu": 0.3196294600516557
+          },
+          "turnout_rate": 0.5474645811482333,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (4,-6)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p006",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 5,
         "r": -6
       },
-      "total_population": 1622,
-      "initial_district_id": "d2",
-      "name": "Rural (5,-6)",
+      "total_population": 1574,
       "demographic_groups": [
         {
           "id": "p006-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.5,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6579,
-            "ryu": 0.3421
-          }
+            "ken": 0.630763698015362,
+            "ryu": 0.36923630198463797
+          },
+          "turnout_rate": 0.7132806687732227,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (5,-6)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p007",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 6,
         "r": -6
       },
-      "total_population": 1512,
-      "initial_district_id": "d2",
-      "name": "Rural (6,-6)",
+      "total_population": 1363,
       "demographic_groups": [
         {
           "id": "p007-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6457,
-            "ryu": 0.3543
-          }
+            "ken": 0.6847983662411571,
+            "ryu": 0.3152016337588429
+          },
+          "turnout_rate": 0.5142166052828543,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (6,-6)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p008",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -1,
         "r": -5
       },
-      "total_population": 1537,
-      "initial_district_id": "d1",
-      "name": "Rural (-1,-5)",
+      "total_population": 1368,
       "demographic_groups": [
         {
           "id": "p008-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.641,
-            "ryu": 0.359
-          }
+            "ken": 0.6464952622354031,
+            "ryu": 0.3535047377645969
+          },
+          "turnout_rate": 0.5681132421595976,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-1,-5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p009",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 0,
         "r": -5
       },
-      "total_population": 1534,
-      "initial_district_id": "d1",
-      "name": "Rural (0,-5)",
+      "total_population": 1614,
       "demographic_groups": [
         {
           "id": "p009-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.52,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6354,
-            "ryu": 0.3646
-          }
+            "ken": 0.6390035892464221,
+            "ryu": 0.3609964107535779
+          },
+          "turnout_rate": 0.6732010183040984,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (0,-5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p010",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 1,
         "r": -5
       },
-      "total_population": 1564,
-      "initial_district_id": "d1",
-      "name": "Rural (1,-5)",
+      "total_population": 1407,
       "demographic_groups": [
         {
           "id": "p010-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.677,
-            "ryu": 0.323
-          }
+            "ken": 0.6659853678755463,
+            "ryu": 0.3340146321244537
+          },
+          "turnout_rate": 0.7338665371644311,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (1,-5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p011",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 2,
         "r": -5
       },
-      "total_population": 1504,
-      "initial_district_id": "d2",
-      "name": "Rural (2,-5)",
+      "total_population": 1428,
       "demographic_groups": [
         {
           "id": "p011-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6789,
-            "ryu": 0.3211
-          }
+            "ken": 0.6290904483944177,
+            "ryu": 0.37090955160558226
+          },
+          "turnout_rate": 0.5143737745238468,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (2,-5)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p012",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 3,
         "r": -5
       },
-      "total_population": 1643,
-      "initial_district_id": "d2",
-      "name": "Rural (3,-5)",
+      "total_population": 1606,
       "demographic_groups": [
         {
           "id": "p012-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6879,
-            "ryu": 0.3121
-          }
+            "ken": 0.6847954716533423,
+            "ryu": 0.3152045283466577
+          },
+          "turnout_rate": 0.5970159010030329,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (3,-5)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p013",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 4,
         "r": -5
       },
-      "total_population": 1606,
-      "initial_district_id": "d2",
-      "name": "Rural (4,-5)",
+      "total_population": 1631,
       "demographic_groups": [
         {
           "id": "p013-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.51,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6402,
-            "ryu": 0.3598
-          }
+            "ken": 0.6603862474299967,
+            "ryu": 0.33961375257000326
+          },
+          "turnout_rate": 0.6060180907952599,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (4,-5)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p014",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 5,
         "r": -5
       },
-      "total_population": 1421,
-      "initial_district_id": "d2",
-      "name": "Rural (5,-5)",
+      "total_population": 1367,
       "demographic_groups": [
         {
           "id": "p014-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.52,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6239,
-            "ryu": 0.3761
-          }
+            "ken": 0.6755340766534209,
+            "ryu": 0.3244659233465791
+          },
+          "turnout_rate": 0.6690166855696589,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (5,-5)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p015",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 6,
         "r": -5
       },
-      "total_population": 1607,
-      "initial_district_id": "d2",
-      "name": "Rural (6,-5)",
+      "total_population": 1487,
       "demographic_groups": [
         {
           "id": "p015-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6265,
-            "ryu": 0.3735
-          }
+            "ken": 0.6597448473609984,
+            "ryu": 0.34025515263900163
+          },
+          "turnout_rate": 0.7481764616677538,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (6,-5)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p016",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -2,
         "r": -4
       },
-      "total_population": 1456,
-      "initial_district_id": "d1",
-      "name": "Rural (-2,-4)",
+      "total_population": 1432,
       "demographic_groups": [
         {
           "id": "p016-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6604,
-            "ryu": 0.3396
-          }
+            "ken": 0.6300675584003329,
+            "ryu": 0.3699324415996671
+          },
+          "turnout_rate": 0.6471859395969659,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-2,-4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p017",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -1,
         "r": -4
       },
-      "total_population": 1609,
-      "initial_district_id": "d1",
-      "name": "Rural (-1,-4)",
+      "total_population": 1459,
       "demographic_groups": [
         {
           "id": "p017-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6329,
-            "ryu": 0.3671
-          }
+            "ken": 0.6283528385870158,
+            "ryu": 0.37164716141298415
+          },
+          "turnout_rate": 0.5033061929862015,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-1,-4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p018",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 0,
         "r": -4
       },
-      "total_population": 1400,
-      "initial_district_id": "d1",
-      "name": "Suburbs (0,-4)",
+      "total_population": 1558,
       "demographic_groups": [
         {
           "id": "p018-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.3992,
-            "ryu": 0.6008
-          }
+            "ken": 0.44607043627649545,
+            "ryu": 0.5539295637235045
+          },
+          "turnout_rate": 0.7132177611929365,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (0,-4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p019",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 1,
         "r": -4
       },
-      "total_population": 1477,
-      "initial_district_id": "d2",
-      "name": "Suburbs (1,-4)",
+      "total_population": 1560,
       "demographic_groups": [
         {
           "id": "p019-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.53,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.3977,
-            "ryu": 0.6023
-          }
+            "ken": 0.42101133974269034,
+            "ryu": 0.5789886602573097
+          },
+          "turnout_rate": 0.7266645064810291,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (1,-4)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p020",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 2,
         "r": -4
       },
-      "total_population": 1450,
-      "initial_district_id": "d2",
-      "name": "Suburbs (2,-4)",
+      "total_population": 1631,
       "demographic_groups": [
         {
           "id": "p020-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4207,
-            "ryu": 0.5793
-          }
+            "ken": 0.4408415987342596,
+            "ryu": 0.5591584012657405
+          },
+          "turnout_rate": 0.6982228245469742,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (2,-4)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p021",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 3,
         "r": -4
       },
-      "total_population": 1419,
-      "initial_district_id": "d2",
-      "name": "Suburbs (3,-4)",
+      "total_population": 1421,
       "demographic_groups": [
         {
           "id": "p021-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4326,
-            "ryu": 0.5674
-          }
+            "ken": 0.4599349806271493,
+            "ryu": 0.5400650193728507
+          },
+          "turnout_rate": 0.6367149602738209,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (3,-4)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p022",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 4,
         "r": -4
       },
-      "total_population": 1474,
-      "initial_district_id": "d2",
-      "name": "Suburbs (4,-4)",
+      "total_population": 1367,
       "demographic_groups": [
         {
           "id": "p022-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.53,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4187,
-            "ryu": 0.5813
-          }
+            "ken": 0.4372016766667366,
+            "ryu": 0.5627983233332634
+          },
+          "turnout_rate": 0.5747360757086426,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (4,-4)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p023",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 5,
         "r": -4
       },
-      "total_population": 1353,
-      "initial_district_id": "d2",
-      "name": "Rural (5,-4)",
+      "total_population": 1631,
       "demographic_groups": [
         {
           "id": "p023-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.51,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6401,
-            "ryu": 0.3599
-          }
+            "ken": 0.6310375494137407,
+            "ryu": 0.3689624505862593
+          },
+          "turnout_rate": 0.6991716427728534,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (5,-4)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p024",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 6,
         "r": -4
       },
-      "total_population": 1446,
-      "initial_district_id": "d2",
-      "name": "Rural (6,-4)",
+      "total_population": 1466,
       "demographic_groups": [
         {
           "id": "p024-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6473,
-            "ryu": 0.3527
-          }
+            "ken": 0.6145328959077597,
+            "ryu": 0.3854671040922403
+          },
+          "turnout_rate": 0.5806223337422125,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (6,-4)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p025",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -3,
         "r": -3
       },
-      "total_population": 1509,
-      "initial_district_id": "d1",
-      "name": "Rural (-3,-3)",
+      "total_population": 1539,
       "demographic_groups": [
         {
           "id": "p025-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6802,
-            "ryu": 0.3198
-          }
+            "ken": 0.6509768914058804,
+            "ryu": 0.34902310859411956
+          },
+          "turnout_rate": 0.6870283879688941,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-3,-3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p026",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -2,
         "r": -3
       },
-      "total_population": 1574,
-      "initial_district_id": "d1",
-      "name": "Rural (-2,-3)",
+      "total_population": 1477,
       "demographic_groups": [
         {
           "id": "p026-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.52,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6729,
-            "ryu": 0.3271
-          }
+            "ken": 0.6740939357504249,
+            "ryu": 0.32590606424957513
+          },
+          "turnout_rate": 0.5479741044691764,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-2,-3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p027",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -1,
         "r": -3
       },
-      "total_population": 1632,
-      "initial_district_id": "d1",
-      "name": "Suburbs (-1,-3)",
+      "total_population": 1596,
       "demographic_groups": [
         {
           "id": "p027-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4382,
-            "ryu": 0.5618
-          }
+            "ken": 0.44045824281871315,
+            "ryu": 0.5595417571812868
+          },
+          "turnout_rate": 0.5260971421957947,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-1,-3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p028",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 0,
         "r": -3
       },
-      "total_population": 1649,
-      "initial_district_id": "d1",
-      "name": "Suburbs (0,-3)",
+      "total_population": 1553,
       "demographic_groups": [
         {
           "id": "p028-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4442,
-            "ryu": 0.5558
-          }
+            "ken": 0.45608889665454627,
+            "ryu": 0.5439111033454538
+          },
+          "turnout_rate": 0.7214772508013994,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (0,-3)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p029",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 1,
         "r": -3
       },
-      "total_population": 1641,
-      "initial_district_id": "d2",
-      "name": "Suburbs (1,-3)",
+      "total_population": 1537,
       "demographic_groups": [
         {
           "id": "p029-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.51,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4498,
-            "ryu": 0.5502
-          }
+            "ken": 0.38614214677363634,
+            "ryu": 0.6138578532263637
+          },
+          "turnout_rate": 0.7437191893695854,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (1,-3)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p030",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 2,
         "r": -3
       },
-      "total_population": 1548,
-      "initial_district_id": "d2",
-      "name": "Suburbs (2,-3)",
+      "total_population": 1648,
       "demographic_groups": [
         {
           "id": "p030-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.53,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.3977,
-            "ryu": 0.6023
-          }
+            "ken": 0.40644021147862075,
+            "ryu": 0.5935597885213793
+          },
+          "turnout_rate": 0.6020413058577105,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (2,-3)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p031",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 3,
         "r": -3
       },
-      "total_population": 1581,
-      "initial_district_id": "d2",
-      "name": "Suburbs (3,-3)",
+      "total_population": 1425,
       "demographic_groups": [
         {
           "id": "p031-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.53,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.384,
-            "ryu": 0.616
-          }
+            "ken": 0.3844364186003804,
+            "ryu": 0.6155635813996196
+          },
+          "turnout_rate": 0.6045310325571336,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (3,-3)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p032",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 4,
         "r": -3
       },
-      "total_population": 1520,
-      "initial_district_id": "d2",
-      "name": "Suburbs (4,-3)",
+      "total_population": 1527,
       "demographic_groups": [
         {
           "id": "p032-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4171,
-            "ryu": 0.5829
-          }
+            "ken": 0.45643606826663013,
+            "ryu": 0.5435639317333698
+          },
+          "turnout_rate": 0.705556231783703,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (4,-3)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p033",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 5,
         "r": -3
       },
-      "total_population": 1572,
-      "initial_district_id": "d2",
-      "name": "Rural (5,-3)",
+      "total_population": 1419,
       "demographic_groups": [
         {
           "id": "p033-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.682,
-            "ryu": 0.318
-          }
+            "ken": 0.6822441784106196,
+            "ryu": 0.3177558215893804
+          },
+          "turnout_rate": 0.7292434994014911,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (5,-3)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p034",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 6,
         "r": -3
       },
-      "total_population": 1516,
-      "initial_district_id": "d3",
-      "name": "Rural (6,-3)",
+      "total_population": 1353,
       "demographic_groups": [
         {
           "id": "p034-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6321,
-            "ryu": 0.3679
-          }
+            "ken": 0.6605720316618682,
+            "ryu": 0.3394279683381318
+          },
+          "turnout_rate": 0.5468664398067631,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (6,-3)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p035",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -4,
         "r": -2
       },
-      "total_population": 1414,
-      "initial_district_id": "d1",
-      "name": "Rural (-4,-2)",
+      "total_population": 1598,
       "demographic_groups": [
         {
           "id": "p035-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.52,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6874,
-            "ryu": 0.3126
-          }
+            "ken": 0.615892345327884,
+            "ryu": 0.38410765467211605
+          },
+          "turnout_rate": 0.6969960806891322,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-4,-2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p036",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -3,
         "r": -2
       },
-      "total_population": 1572,
-      "initial_district_id": "d1",
-      "name": "Rural (-3,-2)",
+      "total_population": 1606,
       "demographic_groups": [
         {
           "id": "p036-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.51,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6648,
-            "ryu": 0.3352
-          }
+            "ken": 0.670481076668948,
+            "ryu": 0.32951892333105204
+          },
+          "turnout_rate": 0.5842665017116815,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-3,-2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p037",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -2,
         "r": -2
       },
-      "total_population": 1554,
-      "initial_district_id": "d1",
-      "name": "Suburbs (-2,-2)",
+      "total_population": 1504,
       "demographic_groups": [
         {
           "id": "p037-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.53,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.3894,
-            "ryu": 0.6106
-          }
+            "ken": 0.4370815605856478,
+            "ryu": 0.5629184394143523
+          },
+          "turnout_rate": 0.7098321083467454,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-2,-2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p038",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -1,
         "r": -2
       },
-      "total_population": 1565,
-      "initial_district_id": "d1",
-      "name": "Suburbs (-1,-2)",
+      "total_population": 1622,
       "demographic_groups": [
         {
           "id": "p038-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.54,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4148,
-            "ryu": 0.5852
-          }
+            "ken": 0.45345518810674545,
+            "ryu": 0.5465448118932545
+          },
+          "turnout_rate": 0.7396238902583718,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-1,-2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p039",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": 0,
         "r": -2
       },
-      "total_population": 1560,
-      "initial_district_id": "d1",
-      "name": "Downtown (0,-2)",
+      "total_population": 1578,
       "demographic_groups": [
         {
           "id": "p039-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.73,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1815,
-            "ryu": 0.8185
-          }
+            "ken": 0.18565191628411412,
+            "ryu": 0.8143480837158859
+          },
+          "turnout_rate": 0.5687779004219919,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (0,-2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p040",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": 1,
         "r": -2
       },
-      "total_population": 1570,
-      "initial_district_id": "d2",
-      "name": "Downtown (1,-2)",
+      "total_population": 1588,
       "demographic_groups": [
         {
           "id": "p040-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1152,
-            "ryu": 0.8848
-          }
+            "ken": 0.1399820077419281,
+            "ryu": 0.860017992258072
+          },
+          "turnout_rate": 0.5810893545858562,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (1,-2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p041",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": 2,
         "r": -2
       },
-      "total_population": 1572,
-      "initial_district_id": "d2",
-      "name": "Downtown (2,-2)",
+      "total_population": 1650,
       "demographic_groups": [
         {
           "id": "p041-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.72,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1277,
-            "ryu": 0.8723
-          }
+            "ken": 0.15672924146056175,
+            "ryu": 0.8432707585394382
+          },
+          "turnout_rate": 0.5077578111086041,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (2,-2)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p042",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 3,
         "r": -2
       },
-      "total_population": 1354,
-      "initial_district_id": "d2",
-      "name": "Suburbs (3,-2)",
+      "total_population": 1514,
       "demographic_groups": [
         {
           "id": "p042-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.5,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4146,
-            "ryu": 0.5854
-          }
+            "ken": 0.4112772868014872,
+            "ryu": 0.5887227131985129
+          },
+          "turnout_rate": 0.7290242810850032,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (3,-2)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p043",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 4,
         "r": -2
       },
-      "total_population": 1650,
-      "initial_district_id": "d3",
-      "name": "Suburbs (4,-2)",
+      "total_population": 1565,
       "demographic_groups": [
         {
           "id": "p043-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4067,
-            "ryu": 0.5933
-          }
+            "ken": 0.41602119617164135,
+            "ryu": 0.5839788038283587
+          },
+          "turnout_rate": 0.6778786422801204,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (4,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p044",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 5,
         "r": -2
       },
-      "total_population": 1624,
-      "initial_district_id": "d3",
-      "name": "Rural (5,-2)",
+      "total_population": 1439,
       "demographic_groups": [
         {
           "id": "p044-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6167,
-            "ryu": 0.3833
-          }
+            "ken": 0.620717528834939,
+            "ryu": 0.379282471165061
+          },
+          "turnout_rate": 0.5400384361855686,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (5,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p045",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 6,
         "r": -2
       },
-      "total_population": 1410,
-      "initial_district_id": "d3",
-      "name": "Rural (6,-2)",
+      "total_population": 1429,
       "demographic_groups": [
         {
           "id": "p045-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.51,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6667,
-            "ryu": 0.3333
-          }
+            "ken": 0.6559350318461656,
+            "ryu": 0.34406496815383436
+          },
+          "turnout_rate": 0.5416174815618433,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (6,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p046",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -5,
         "r": -1
       },
-      "total_population": 1528,
-      "initial_district_id": "d1",
-      "name": "Rural (-5,-1)",
+      "total_population": 1589,
       "demographic_groups": [
         {
           "id": "p046-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6105,
-            "ryu": 0.3895
-          }
+            "ken": 0.6705533546768129,
+            "ryu": 0.3294466453231871
+          },
+          "turnout_rate": 0.7135551657993346,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-5,-1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p047",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -4,
         "r": -1
       },
-      "total_population": 1601,
-      "initial_district_id": "d1",
-      "name": "Rural (-4,-1)",
+      "total_population": 1367,
       "demographic_groups": [
         {
           "id": "p047-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.53,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6182,
-            "ryu": 0.3818
-          }
+            "ken": 0.625245133470744,
+            "ryu": 0.37475486652925605
+          },
+          "turnout_rate": 0.5768543803715147,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-4,-1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p048",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -3,
         "r": -1
       },
-      "total_population": 1520,
-      "initial_district_id": "d1",
-      "name": "Suburbs (-3,-1)",
+      "total_population": 1447,
       "demographic_groups": [
         {
           "id": "p048-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.54,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4169,
-            "ryu": 0.5831
-          }
+            "ken": 0.4381239278428256,
+            "ryu": 0.5618760721571744
+          },
+          "turnout_rate": 0.5832568455953151,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-3,-1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p049",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -2,
         "r": -1
       },
-      "total_population": 1560,
-      "initial_district_id": "d1",
-      "name": "Suburbs (-2,-1)",
+      "total_population": 1504,
       "demographic_groups": [
         {
           "id": "p049-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.52,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4496,
-            "ryu": 0.5504
-          }
+            "ken": 0.40387180011719465,
+            "ryu": 0.5961281998828054
+          },
+          "turnout_rate": 0.6269226378644817,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-2,-1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p050",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": -1,
         "r": -1
       },
-      "total_population": 1381,
-      "initial_district_id": "d1",
-      "name": "Downtown (-1,-1)",
+      "total_population": 1575,
       "demographic_groups": [
         {
           "id": "p050-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1796,
-            "ryu": 0.8204
-          }
+            "ken": 0.17685583470389246,
+            "ryu": 0.8231441652961076
+          },
+          "turnout_rate": 0.7212428123457357,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (-1,-1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p051",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": 0,
         "r": -1
       },
-      "total_population": 1569,
-      "initial_district_id": "d1",
-      "name": "Downtown (0,-1)",
+      "total_population": 1591,
       "demographic_groups": [
         {
           "id": "p051-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1885,
-            "ryu": 0.8115
-          }
+            "ken": 0.16253871828317643,
+            "ryu": 0.8374612817168235
+          },
+          "turnout_rate": 0.5169789535575546,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (0,-1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p052",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": 1,
         "r": -1
       },
-      "total_population": 1597,
-      "initial_district_id": "d2",
-      "name": "Downtown (1,-1)",
+      "total_population": 1407,
       "demographic_groups": [
         {
           "id": "p052-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1399,
-            "ryu": 0.8601
-          }
+            "ken": 0.1419557125121355,
+            "ryu": 0.8580442874878644
+          },
+          "turnout_rate": 0.6797383834491484,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (1,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p053",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": 2,
         "r": -1
       },
-      "total_population": 1382,
-      "initial_district_id": "d3",
-      "name": "Downtown (2,-1)",
+      "total_population": 1577,
       "demographic_groups": [
         {
           "id": "p053-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.74,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1383,
-            "ryu": 0.8617
-          }
+            "ken": 0.1302571690455079,
+            "ryu": 0.8697428309544921
+          },
+          "turnout_rate": 0.6133070252253674,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (2,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p054",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 3,
         "r": -1
       },
-      "total_population": 1474,
-      "initial_district_id": "d3",
-      "name": "Suburbs (3,-1)",
+      "total_population": 1381,
       "demographic_groups": [
         {
           "id": "p054-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.53,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4005,
-            "ryu": 0.5995
-          }
+            "ken": 0.40125959206372497,
+            "ryu": 0.598740407936275
+          },
+          "turnout_rate": 0.5031362224835902,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (3,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p055",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 4,
         "r": -1
       },
-      "total_population": 1525,
-      "initial_district_id": "d3",
-      "name": "Suburbs (4,-1)",
+      "total_population": 1636,
       "demographic_groups": [
         {
           "id": "p055-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.3968,
-            "ryu": 0.6032
-          }
+            "ken": 0.4125243895873427,
+            "ryu": 0.5874756104126573
+          },
+          "turnout_rate": 0.6141591986524872,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (4,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p056",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 5,
         "r": -1
       },
-      "total_population": 1513,
-      "initial_district_id": "d3",
-      "name": "Rural (5,-1)",
+      "total_population": 1616,
       "demographic_groups": [
         {
           "id": "p056-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6471,
-            "ryu": 0.3529
-          }
+            "ken": 0.6493578687682748,
+            "ryu": 0.35064213123172516
+          },
+          "turnout_rate": 0.6680046059773304,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (5,-1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p057",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 6,
         "r": -1
       },
-      "total_population": 1603,
-      "initial_district_id": "d3",
-      "name": "Rural (6,-1)",
+      "total_population": 1373,
       "demographic_groups": [
         {
           "id": "p057-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6332,
-            "ryu": 0.3668
-          }
+            "ken": 0.6372344444319606,
+            "ryu": 0.36276555556803936
+          },
+          "turnout_rate": 0.5312133947736584,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (6,-1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p058",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -6,
         "r": 0
       },
-      "total_population": 1505,
-      "initial_district_id": "d5",
-      "name": "Rural (-6,0)",
+      "total_population": 1643,
       "demographic_groups": [
         {
           "id": "p058-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.51,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6828,
-            "ryu": 0.3172
-          }
+            "ken": 0.6243078707717359,
+            "ryu": 0.3756921292282641
+          },
+          "turnout_rate": 0.5284396234783344,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-6,0)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p059",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -5,
         "r": 0
       },
-      "total_population": 1401,
-      "initial_district_id": "d5",
-      "name": "Rural (-5,0)",
+      "total_population": 1449,
       "demographic_groups": [
         {
           "id": "p059-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6726,
-            "ryu": 0.3274
-          }
+            "ken": 0.6467626798339188,
+            "ryu": 0.3532373201660812
+          },
+          "turnout_rate": 0.6232793194358237,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-5,0)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p060",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -4,
         "r": 0
       },
-      "total_population": 1368,
-      "initial_district_id": "d5",
-      "name": "Suburbs (-4,0)",
+      "total_population": 1472,
       "demographic_groups": [
         {
           "id": "p060-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.53,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4536,
-            "ryu": 0.5464
-          }
+            "ken": 0.44876319888979194,
+            "ryu": 0.551236801110208
+          },
+          "turnout_rate": 0.5122144175693393,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-4,0)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p061",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -3,
         "r": 0
       },
-      "total_population": 1436,
-      "initial_district_id": "d5",
-      "name": "Suburbs (-3,0)",
+      "total_population": 1366,
       "demographic_groups": [
         {
           "id": "p061-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.422,
-            "ryu": 0.578
-          }
+            "ken": 0.441788556613028,
+            "ryu": 0.558211443386972
+          },
+          "turnout_rate": 0.7058428599848412,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-3,0)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p062",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": -2,
         "r": 0
       },
-      "total_population": 1497,
-      "initial_district_id": "d5",
-      "name": "Downtown (-2,0)",
+      "total_population": 1475,
       "demographic_groups": [
         {
           "id": "p062-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.75,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1333,
-            "ryu": 0.8667
-          }
+            "ken": 0.1855565259605646,
+            "ryu": 0.8144434740394354
+          },
+          "turnout_rate": 0.6625070861191489,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (-2,0)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p063",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": -1,
         "r": 0
       },
-      "total_population": 1489,
-      "initial_district_id": "d5",
-      "name": "Downtown (-1,0)",
+      "total_population": 1637,
       "demographic_groups": [
         {
           "id": "p063-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.73,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.173,
-            "ryu": 0.827
-          }
+            "ken": 0.16367891993373632,
+            "ryu": 0.8363210800662637
+          },
+          "turnout_rate": 0.5368997443001717,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (-1,0)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p064",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": 0,
         "r": 0
       },
-      "total_population": 1551,
-      "initial_district_id": "d3",
-      "name": "Downtown (0,0)",
+      "total_population": 1597,
       "demographic_groups": [
         {
           "id": "p064-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1249,
-            "ryu": 0.8751
-          }
+            "ken": 0.18827449809759855,
+            "ryu": 0.8117255019024014
+          },
+          "turnout_rate": 0.5622222655802034,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (0,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p065",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": 1,
         "r": 0
       },
-      "total_population": 1428,
-      "initial_district_id": "d3",
-      "name": "Downtown (1,0)",
+      "total_population": 1621,
       "demographic_groups": [
         {
           "id": "p065-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1535,
-            "ryu": 0.8465
-          }
+            "ken": 0.12859190396964548,
+            "ryu": 0.8714080960303545
+          },
+          "turnout_rate": 0.6466361412894912,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (1,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p066",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": 2,
         "r": 0
       },
-      "total_population": 1424,
-      "initial_district_id": "d3",
-      "name": "Downtown (2,0)",
+      "total_population": 1626,
       "demographic_groups": [
         {
           "id": "p066-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1551,
-            "ryu": 0.8449
-          }
+            "ken": 0.14896751267835498,
+            "ryu": 0.851032487321645
+          },
+          "turnout_rate": 0.5157980512594804,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (2,0)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p067",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 3,
         "r": 0
       },
-      "total_population": 1409,
-      "initial_district_id": "d3",
-      "name": "Suburbs (3,0)",
+      "total_population": 1540,
       "demographic_groups": [
         {
           "id": "p067-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.53,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.3881,
-            "ryu": 0.6119
-          }
+            "ken": 0.39967739855870604,
+            "ryu": 0.6003226014412939
+          },
+          "turnout_rate": 0.6800021363305859,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (3,0)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p068",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 4,
         "r": 0
       },
-      "total_population": 1369,
-      "initial_district_id": "d3",
-      "name": "Suburbs (4,0)",
+      "total_population": 1406,
       "demographic_groups": [
         {
           "id": "p068-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.3938,
-            "ryu": 0.6062
-          }
+            "ken": 0.43293933298438786,
+            "ryu": 0.5670606670156122
+          },
+          "turnout_rate": 0.6410102276713587,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (4,0)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p069",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 5,
         "r": 0
       },
-      "total_population": 1485,
-      "initial_district_id": "d3",
-      "name": "Rural (5,0)",
+      "total_population": 1372,
       "demographic_groups": [
         {
           "id": "p069-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.51,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6307,
-            "ryu": 0.3693
-          }
+            "ken": 0.6883224897272885,
+            "ryu": 0.3116775102727115
+          },
+          "turnout_rate": 0.5624691489501856,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (5,0)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p070",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 6,
         "r": 0
       },
-      "total_population": 1546,
-      "initial_district_id": "d3",
-      "name": "Rural (6,0)",
+      "total_population": 1587,
       "demographic_groups": [
         {
           "id": "p070-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6138,
-            "ryu": 0.3862
-          }
+            "ken": 0.6274877717159689,
+            "ryu": 0.3725122282840311
+          },
+          "turnout_rate": 0.5962158221518621,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (6,0)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p071",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -6,
         "r": 1
       },
-      "total_population": 1637,
-      "initial_district_id": "d5",
-      "name": "Rural (-6,1)",
+      "total_population": 1577,
       "demographic_groups": [
         {
           "id": "p071-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6865,
-            "ryu": 0.3135
-          }
+            "ken": 0.6370654365234077,
+            "ryu": 0.36293456347659225
+          },
+          "turnout_rate": 0.7378403131733648,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-6,1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p072",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -5,
         "r": 1
       },
-      "total_population": 1548,
-      "initial_district_id": "d5",
-      "name": "Rural (-5,1)",
+      "total_population": 1451,
       "demographic_groups": [
         {
           "id": "p072-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.52,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6452,
-            "ryu": 0.3548
-          }
+            "ken": 0.6778352342359721,
+            "ryu": 0.32216476576402786
+          },
+          "turnout_rate": 0.7455906142713502,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-5,1)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p073",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -4,
         "r": 1
       },
-      "total_population": 1635,
-      "initial_district_id": "d5",
-      "name": "Suburbs (-4,1)",
+      "total_population": 1564,
       "demographic_groups": [
         {
           "id": "p073-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.52,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4199,
-            "ryu": 0.5801
-          }
+            "ken": 0.4502609409019351,
+            "ryu": 0.5497390590980649
+          },
+          "turnout_rate": 0.7268351360689849,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-4,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p074",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -3,
         "r": 1
       },
-      "total_population": 1509,
-      "initial_district_id": "d5",
-      "name": "Suburbs (-3,1)",
+      "total_population": 1602,
       "demographic_groups": [
         {
           "id": "p074-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.52,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.3823,
-            "ryu": 0.6177
-          }
+            "ken": 0.4188433647528291,
+            "ryu": 0.5811566352471709
+          },
+          "turnout_rate": 0.7439081611810252,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-3,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p075",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": -2,
         "r": 1
       },
-      "total_population": 1362,
-      "initial_district_id": "d5",
-      "name": "Downtown (-2,1)",
+      "total_population": 1626,
       "demographic_groups": [
         {
           "id": "p075-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.74,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1624,
-            "ryu": 0.8376
-          }
+            "ken": 0.15028809579089283,
+            "ryu": 0.8497119042091071
+          },
+          "turnout_rate": 0.6237634585122578,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (-2,1)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p076",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": -1,
         "r": 1
       },
-      "total_population": 1383,
-      "initial_district_id": "d5",
-      "name": "Downtown (-1,1)",
+      "total_population": 1638,
       "demographic_groups": [
         {
           "id": "p076-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1147,
-            "ryu": 0.8853
-          }
+            "ken": 0.14944759223610163,
+            "ryu": 0.8505524077638984
+          },
+          "turnout_rate": 0.5584275339497253,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (-1,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p077",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": 0,
         "r": 1
       },
-      "total_population": 1452,
-      "initial_district_id": "d4",
-      "name": "Downtown (0,1)",
+      "total_population": 1634,
       "demographic_groups": [
         {
           "id": "p077-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.74,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.183,
-            "ryu": 0.817
-          }
+            "ken": 0.16232079273089767,
+            "ryu": 0.8376792072691024
+          },
+          "turnout_rate": 0.7333752964623272,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (0,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p078",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": 1,
         "r": 1
       },
-      "total_population": 1404,
-      "initial_district_id": "d3",
-      "name": "Downtown (1,1)",
+      "total_population": 1432,
       "demographic_groups": [
         {
           "id": "p078-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1418,
-            "ryu": 0.8582
-          }
+            "ken": 0.18683751285076142,
+            "ryu": 0.8131624871492386
+          },
+          "turnout_rate": 0.5239685474080034,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (1,1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p079",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 2,
         "r": 1
       },
-      "total_population": 1405,
-      "initial_district_id": "d3",
-      "name": "Suburbs (2,1)",
+      "total_population": 1462,
       "demographic_groups": [
         {
           "id": "p079-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.52,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4203,
-            "ryu": 0.5797
-          }
+            "ken": 0.44665791230276225,
+            "ryu": 0.5533420876972377
+          },
+          "turnout_rate": 0.5984169090515934,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (2,1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p080",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 3,
         "r": 1
       },
-      "total_population": 1597,
-      "initial_district_id": "d3",
-      "name": "Suburbs (3,1)",
+      "total_population": 1447,
       "demographic_groups": [
         {
           "id": "p080-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4054,
-            "ryu": 0.5946
-          }
+            "ken": 0.44380794582888483,
+            "ryu": 0.5561920541711152
+          },
+          "turnout_rate": 0.6250689449952915,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (3,1)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p081",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 4,
         "r": 1
       },
-      "total_population": 1355,
-      "initial_district_id": "d3",
-      "name": "Rural (4,1)",
+      "total_population": 1525,
       "demographic_groups": [
         {
           "id": "p081-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.52,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6631,
-            "ryu": 0.3369
-          }
+            "ken": 0.642791332192719,
+            "ryu": 0.357208667807281
+          },
+          "turnout_rate": 0.6610987152671441,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (4,1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p082",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 5,
         "r": 1
       },
-      "total_population": 1428,
-      "initial_district_id": "d3",
-      "name": "Rural (5,1)",
+      "total_population": 1359,
       "demographic_groups": [
         {
           "id": "p082-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.52,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6204,
-            "ryu": 0.3796
-          }
+            "ken": 0.6496432402916252,
+            "ryu": 0.35035675970837477
+          },
+          "turnout_rate": 0.5399067709804513,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (5,1)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p083",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -6,
         "r": 2
       },
-      "total_population": 1585,
-      "initial_district_id": "d5",
-      "name": "Rural (-6,2)",
+      "total_population": 1467,
       "demographic_groups": [
         {
           "id": "p083-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.54,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6509,
-            "ryu": 0.3491
-          }
+            "ken": 0.6644756332226098,
+            "ryu": 0.33552436677739017
+          },
+          "turnout_rate": 0.6663537167478353,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-6,2)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p084",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -5,
         "r": 2
       },
-      "total_population": 1399,
-      "initial_district_id": "d5",
-      "name": "Rural (-5,2)",
+      "total_population": 1625,
       "demographic_groups": [
         {
           "id": "p084-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.666,
-            "ryu": 0.334
-          }
+            "ken": 0.6890412726439535,
+            "ryu": 0.31095872735604646
+          },
+          "turnout_rate": 0.6399595507537015,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-5,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p085",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -4,
         "r": 2
       },
-      "total_population": 1377,
-      "initial_district_id": "d5",
-      "name": "Suburbs (-4,2)",
+      "total_population": 1485,
       "demographic_groups": [
         {
           "id": "p085-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4164,
-            "ryu": 0.5836
-          }
+            "ken": 0.4391049066931009,
+            "ryu": 0.560895093306899
+          },
+          "turnout_rate": 0.5385791102889925,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-4,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p086",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -3,
         "r": 2
       },
-      "total_population": 1416,
-      "initial_district_id": "d5",
-      "name": "Suburbs (-3,2)",
+      "total_population": 1564,
       "demographic_groups": [
         {
           "id": "p086-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.3939,
-            "ryu": 0.6061
-          }
+            "ken": 0.43920791281387206,
+            "ryu": 0.5607920871861279
+          },
+          "turnout_rate": 0.6971680537099019,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-3,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p087",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": -2,
         "r": 2
       },
-      "total_population": 1443,
-      "initial_district_id": "d5",
-      "name": "Downtown (-2,2)",
+      "total_population": 1390,
       "demographic_groups": [
         {
           "id": "p087-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1596,
-            "ryu": 0.8404
-          }
+            "ken": 0.12423805424943565,
+            "ryu": 0.8757619457505643
+          },
+          "turnout_rate": 0.57414889219217,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (-2,2)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p088",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": -1,
         "r": 2
       },
-      "total_population": 1393,
-      "initial_district_id": "d4",
-      "name": "Downtown (-1,2)",
+      "total_population": 1398,
       "demographic_groups": [
         {
           "id": "p088-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1267,
-            "ryu": 0.8733
-          }
+            "ken": 0.17137844854965806,
+            "ryu": 0.8286215514503419
+          },
+          "turnout_rate": 0.6552131655625999,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (-1,2)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p089",
       "editable": true,
-      "county_id": "riverport_city",
       "position": {
         "q": 0,
         "r": 2
       },
-      "total_population": 1609,
-      "initial_district_id": "d4",
-      "name": "Downtown (0,2)",
+      "total_population": 1522,
       "demographic_groups": [
         {
           "id": "p089-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1464,
-            "ryu": 0.8536
-          }
+            "ken": 0.12358824672177433,
+            "ryu": 0.8764117532782256
+          },
+          "turnout_rate": 0.7095344355329871,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_city",
+      "name": "City (0,2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p090",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 1,
         "r": 2
       },
-      "total_population": 1444,
-      "initial_district_id": "d4",
-      "name": "Suburbs (1,2)",
+      "total_population": 1400,
       "demographic_groups": [
         {
           "id": "p090-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.54,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4182,
-            "ryu": 0.5818
-          }
+            "ken": 0.39171807011589405,
+            "ryu": 0.608281929884106
+          },
+          "turnout_rate": 0.6756511146086268,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (1,2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p091",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 2,
         "r": 2
       },
-      "total_population": 1418,
-      "initial_district_id": "d3",
-      "name": "Suburbs (2,2)",
+      "total_population": 1577,
       "demographic_groups": [
         {
           "id": "p091-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.52,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.3833,
-            "ryu": 0.6167
-          }
+            "ken": 0.43805747926235195,
+            "ryu": 0.561942520737648
+          },
+          "turnout_rate": 0.5540525543619879,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (2,2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p092",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 3,
         "r": 2
       },
-      "total_population": 1392,
-      "initial_district_id": "d3",
-      "name": "Rural (3,2)",
+      "total_population": 1607,
       "demographic_groups": [
         {
           "id": "p092-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6207,
-            "ryu": 0.3793
-          }
+            "ken": 0.6220877859555185,
+            "ryu": 0.3779122140444815
+          },
+          "turnout_rate": 0.5299286607187241,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (3,2)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p093",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 4,
         "r": 2
       },
-      "total_population": 1488,
-      "initial_district_id": "d3",
-      "name": "Rural (4,2)",
+      "total_population": 1407,
       "demographic_groups": [
         {
           "id": "p093-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.54,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6255,
-            "ryu": 0.3745
-          }
+            "ken": 0.6623745072446764,
+            "ryu": 0.3376254927553236
+          },
+          "turnout_rate": 0.6024137057829648,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (4,2)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p094",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -6,
         "r": 3
       },
-      "total_population": 1374,
-      "initial_district_id": "d5",
-      "name": "Rural (-6,3)",
+      "total_population": 1442,
       "demographic_groups": [
         {
           "id": "p094-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.54,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6717,
-            "ryu": 0.3283
-          }
+            "ken": 0.6863225626386702,
+            "ryu": 0.3136774373613298
+          },
+          "turnout_rate": 0.6153769264928997,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-6,3)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p095",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -5,
         "r": 3
       },
-      "total_population": 1367,
-      "initial_district_id": "d5",
-      "name": "Rural (-5,3)",
+      "total_population": 1568,
       "demographic_groups": [
         {
           "id": "p095-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6893,
-            "ryu": 0.3107
-          }
+            "ken": 0.6531359503231943,
+            "ryu": 0.34686404967680573
+          },
+          "turnout_rate": 0.556693926511798,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-5,3)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p096",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -4,
         "r": 3
       },
-      "total_population": 1453,
-      "initial_district_id": "d5",
-      "name": "Suburbs (-4,3)",
+      "total_population": 1450,
       "demographic_groups": [
         {
           "id": "p096-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4315,
-            "ryu": 0.5685
-          }
+            "ken": 0.45496331015601754,
+            "ryu": 0.5450366898439825
+          },
+          "turnout_rate": 0.6319897412904538,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-4,3)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p097",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -3,
         "r": 3
       },
-      "total_population": 1525,
-      "initial_district_id": "d5",
-      "name": "Suburbs (-3,3)",
+      "total_population": 1439,
       "demographic_groups": [
         {
           "id": "p097-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.53,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4404,
-            "ryu": 0.5596
-          }
+            "ken": 0.454182644020766,
+            "ryu": 0.545817355979234
+          },
+          "turnout_rate": 0.7011965989950113,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-3,3)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p098",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -2,
         "r": 3
       },
-      "total_population": 1514,
-      "initial_district_id": "d4",
-      "name": "Suburbs (-2,3)",
+      "total_population": 1502,
       "demographic_groups": [
         {
           "id": "p098-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.3818,
-            "ryu": 0.6182
-          }
+            "ken": 0.4057937030494213,
+            "ryu": 0.5942062969505787
+          },
+          "turnout_rate": 0.5062210866599344,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-2,3)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p099",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -1,
         "r": 3
       },
-      "total_population": 1616,
-      "initial_district_id": "d4",
-      "name": "Suburbs (-1,3)",
+      "total_population": 1601,
       "demographic_groups": [
         {
           "id": "p099-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4409,
-            "ryu": 0.5591
-          }
+            "ken": 0.40314200649037957,
+            "ryu": 0.5968579935096204
+          },
+          "turnout_rate": 0.5105432420386933,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-1,3)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p100",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 0,
         "r": 3
       },
-      "total_population": 1490,
-      "initial_district_id": "d4",
-      "name": "Suburbs (0,3)",
+      "total_population": 1616,
       "demographic_groups": [
         {
           "id": "p100-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.385,
-            "ryu": 0.615
-          }
+            "ken": 0.40195225512608884,
+            "ryu": 0.5980477448739112
+          },
+          "turnout_rate": 0.6358922644867562,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (0,3)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p101",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 1,
         "r": 3
       },
-      "total_population": 1405,
-      "initial_district_id": "d4",
-      "name": "Suburbs (1,3)",
+      "total_population": 1547,
       "demographic_groups": [
         {
           "id": "p101-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4034,
-            "ryu": 0.5966
-          }
+            "ken": 0.3836429323069751,
+            "ryu": 0.6163570676930249
+          },
+          "turnout_rate": 0.5964262183988467,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (1,3)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p102",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 2,
         "r": 3
       },
-      "total_population": 1375,
-      "initial_district_id": "d4",
-      "name": "Rural (2,3)",
+      "total_population": 1370,
       "demographic_groups": [
         {
           "id": "p102-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.53,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6121,
-            "ryu": 0.3879
-          }
+            "ken": 0.6250046420097352,
+            "ryu": 0.37499535799026484
+          },
+          "turnout_rate": 0.7002460320945829,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (2,3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p103",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 3,
         "r": 3
       },
-      "total_population": 1599,
-      "initial_district_id": "d3",
-      "name": "Rural (3,3)",
+      "total_population": 1470,
       "demographic_groups": [
         {
           "id": "p103-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.51,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6549,
-            "ryu": 0.3451
-          }
+            "ken": 0.623568781465292,
+            "ryu": 0.37643121853470796
+          },
+          "turnout_rate": 0.5409259400330484,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (3,3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p104",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -6,
         "r": 4
       },
-      "total_population": 1439,
-      "initial_district_id": "d5",
-      "name": "Rural (-6,4)",
+      "total_population": 1566,
       "demographic_groups": [
         {
           "id": "p104-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.5,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6132,
-            "ryu": 0.3868
-          }
+            "ken": 0.6838208360411226,
+            "ryu": 0.31617916395887735
+          },
+          "turnout_rate": 0.5612340685911477,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-6,4)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p105",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -5,
         "r": 4
       },
-      "total_population": 1557,
-      "initial_district_id": "d5",
-      "name": "Rural (-5,4)",
+      "total_population": 1426,
       "demographic_groups": [
         {
           "id": "p105-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6346,
-            "ryu": 0.3654
-          }
+            "ken": 0.6758503772690893,
+            "ryu": 0.32414962273091075
+          },
+          "turnout_rate": 0.5606183921918273,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-5,4)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p106",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -4,
         "r": 4
       },
-      "total_population": 1459,
-      "initial_district_id": "d5",
-      "name": "Suburbs (-4,4)",
+      "total_population": 1486,
       "demographic_groups": [
         {
           "id": "p106-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4114,
-            "ryu": 0.5886
-          }
+            "ken": 0.4468965114466846,
+            "ryu": 0.5531034885533155
+          },
+          "turnout_rate": 0.5730328549980186,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-4,4)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p107",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -3,
         "r": 4
       },
-      "total_population": 1358,
-      "initial_district_id": "d4",
-      "name": "Suburbs (-3,4)",
+      "total_population": 1429,
       "demographic_groups": [
         {
           "id": "p107-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4391,
-            "ryu": 0.5609
-          }
+            "ken": 0.42498349606990815,
+            "ryu": 0.5750165039300918
+          },
+          "turnout_rate": 0.6927745459252037,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-3,4)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p108",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -2,
         "r": 4
       },
-      "total_population": 1504,
-      "initial_district_id": "d4",
-      "name": "Suburbs (-2,4)",
+      "total_population": 1353,
       "demographic_groups": [
         {
           "id": "p108-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.52,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4292,
-            "ryu": 0.5708
-          }
+            "ken": 0.4377620981261134,
+            "ryu": 0.5622379018738866
+          },
+          "turnout_rate": 0.6486897809081711,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-2,4)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p109",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": -1,
         "r": 4
       },
-      "total_population": 1647,
-      "initial_district_id": "d4",
-      "name": "Suburbs (-1,4)",
+      "total_population": 1472,
       "demographic_groups": [
         {
           "id": "p109-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.4112,
-            "ryu": 0.5888
-          }
+            "ken": 0.4358000770770013,
+            "ryu": 0.5641999229229987
+          },
+          "turnout_rate": 0.6214631880284287,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (-1,4)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p110",
       "editable": true,
-      "county_id": "riverport_suburbs",
       "position": {
         "q": 0,
         "r": 4
       },
-      "total_population": 1485,
-      "initial_district_id": "d4",
-      "name": "Suburbs (0,4)",
+      "total_population": 1487,
       "demographic_groups": [
         {
           "id": "p110-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.51,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.3862,
-            "ryu": 0.6138
-          }
+            "ken": 0.4128134133480489,
+            "ryu": 0.5871865866519511
+          },
+          "turnout_rate": 0.7169921509339474,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "riverport_suburbs",
+      "name": "Suburbs (0,4)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p111",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 1,
         "r": 4
       },
-      "total_population": 1622,
-      "initial_district_id": "d4",
-      "name": "Rural (1,4)",
+      "total_population": 1498,
       "demographic_groups": [
         {
           "id": "p111-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.53,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.681,
-            "ryu": 0.319
-          }
+            "ken": 0.6563327157869935,
+            "ryu": 0.3436672842130065
+          },
+          "turnout_rate": 0.6530686205951497,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (1,4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p112",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 2,
         "r": 4
       },
-      "total_population": 1648,
-      "initial_district_id": "d4",
-      "name": "Rural (2,4)",
+      "total_population": 1552,
       "demographic_groups": [
         {
           "id": "p112-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6368,
-            "ryu": 0.3632
-          }
+            "ken": 0.6440717470832169,
+            "ryu": 0.3559282529167831
+          },
+          "turnout_rate": 0.5499622547649778,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (2,4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p113",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -6,
         "r": 5
       },
-      "total_population": 1488,
-      "initial_district_id": "d5",
-      "name": "Rural (-6,5)",
+      "total_population": 1452,
       "demographic_groups": [
         {
           "id": "p113-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.52,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6753,
-            "ryu": 0.3247
-          }
+            "ken": 0.6180288321524858,
+            "ryu": 0.38197116784751417
+          },
+          "turnout_rate": 0.6748465716373175,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-6,5)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p114",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -5,
         "r": 5
       },
-      "total_population": 1427,
-      "initial_district_id": "d5",
-      "name": "Rural (-5,5)",
+      "total_population": 1387,
       "demographic_groups": [
         {
           "id": "p114-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6112,
-            "ryu": 0.3888
-          }
+            "ken": 0.6277773026376963,
+            "ryu": 0.37222269736230373
+          },
+          "turnout_rate": 0.7471243204199709,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-5,5)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p115",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -4,
         "r": 5
       },
-      "total_population": 1491,
-      "initial_district_id": "d5",
-      "name": "Rural (-4,5)",
+      "total_population": 1403,
       "demographic_groups": [
         {
           "id": "p115-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6142,
-            "ryu": 0.3858
-          }
+            "ken": 0.6429115934483707,
+            "ryu": 0.3570884065516293
+          },
+          "turnout_rate": 0.7168335119495168,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-4,5)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p116",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -3,
         "r": 5
       },
-      "total_population": 1387,
-      "initial_district_id": "d4",
-      "name": "Rural (-3,5)",
+      "total_population": 1384,
       "demographic_groups": [
         {
           "id": "p116-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6679,
-            "ryu": 0.3321
-          }
+            "ken": 0.6404686115309596,
+            "ryu": 0.3595313884690404
+          },
+          "turnout_rate": 0.6466207811026834,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-3,5)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p117",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -2,
         "r": 5
       },
-      "total_population": 1619,
-      "initial_district_id": "d4",
-      "name": "Rural (-2,5)",
+      "total_population": 1488,
       "demographic_groups": [
         {
           "id": "p117-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6297,
-            "ryu": 0.3703
-          }
+            "ken": 0.6722176096402109,
+            "ryu": 0.32778239035978907
+          },
+          "turnout_rate": 0.7082007811986841,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-2,5)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p118",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -1,
         "r": 5
       },
-      "total_population": 1626,
-      "initial_district_id": "d4",
-      "name": "Rural (-1,5)",
+      "total_population": 1498,
       "demographic_groups": [
         {
           "id": "p118-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6831,
-            "ryu": 0.3169
-          }
+            "ken": 0.6768184093013406,
+            "ryu": 0.32318159069865937
+          },
+          "turnout_rate": 0.5364193668938242,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-1,5)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p119",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 0,
         "r": 5
       },
-      "total_population": 1429,
-      "initial_district_id": "d4",
-      "name": "Rural (0,5)",
+      "total_population": 1608,
       "demographic_groups": [
         {
           "id": "p119-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6846,
-            "ryu": 0.3154
-          }
+            "ken": 0.6367286797612906,
+            "ryu": 0.36327132023870945
+          },
+          "turnout_rate": 0.6037977472296916,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (0,5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p120",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 1,
         "r": 5
       },
-      "total_population": 1499,
-      "initial_district_id": "d4",
-      "name": "Rural (1,5)",
+      "total_population": 1364,
       "demographic_groups": [
         {
           "id": "p120-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6706,
-            "ryu": 0.3294
-          }
+            "ken": 0.6351040357723833,
+            "ryu": 0.3648959642276167
+          },
+          "turnout_rate": 0.7212204981478862,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (1,5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p121",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -6,
         "r": 6
       },
-      "total_population": 1550,
-      "initial_district_id": "d5",
-      "name": "Rural (-6,6)",
+      "total_population": 1582,
       "demographic_groups": [
         {
           "id": "p121-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6286,
-            "ryu": 0.3714
-          }
+            "ken": 0.6191549978777766,
+            "ryu": 0.3808450021222234
+          },
+          "turnout_rate": 0.6513736273627728,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-6,6)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p122",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -5,
         "r": 6
       },
-      "total_population": 1391,
-      "initial_district_id": "d5",
-      "name": "Rural (-5,6)",
+      "total_population": 1597,
       "demographic_groups": [
         {
           "id": "p122-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6192,
-            "ryu": 0.3808
-          }
+            "ken": 0.6497450381144881,
+            "ryu": 0.35025496188551186
+          },
+          "turnout_rate": 0.5681328478385694,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-5,6)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p123",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -4,
         "r": 6
       },
-      "total_population": 1576,
-      "initial_district_id": "d4",
-      "name": "Rural (-4,6)",
+      "total_population": 1634,
       "demographic_groups": [
         {
           "id": "p123-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6303,
-            "ryu": 0.3697
-          }
+            "ken": 0.6390963730029762,
+            "ryu": 0.36090362699702383
+          },
+          "turnout_rate": 0.6046683194581419,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-4,6)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p124",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -3,
         "r": 6
       },
-      "total_population": 1500,
-      "initial_district_id": "d4",
-      "name": "Rural (-3,6)",
+      "total_population": 1545,
       "demographic_groups": [
         {
           "id": "p124-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.51,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6721,
-            "ryu": 0.3279
-          }
+            "ken": 0.6599607900902629,
+            "ryu": 0.34003920990973713
+          },
+          "turnout_rate": 0.5442038257024251,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-3,6)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p125",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -2,
         "r": 6
       },
-      "total_population": 1589,
-      "initial_district_id": "d4",
-      "name": "Rural (-2,6)",
+      "total_population": 1551,
       "demographic_groups": [
         {
           "id": "p125-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.51,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6845,
-            "ryu": 0.3155
-          }
+            "ken": 0.6393377433903515,
+            "ryu": 0.36066225660964846
+          },
+          "turnout_rate": 0.5775817606481723,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-2,6)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p126",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": -1,
         "r": 6
       },
-      "total_population": 1563,
-      "initial_district_id": "d4",
-      "name": "Rural (-1,6)",
+      "total_population": 1394,
       "demographic_groups": [
         {
           "id": "p126-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.53,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6529,
-            "ryu": 0.3471
-          }
+            "ken": 0.6809071595594287,
+            "ryu": 0.3190928404405713
+          },
+          "turnout_rate": 0.6688010396319441,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (-1,6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p127",
       "editable": true,
-      "county_id": "greenfield_county",
       "position": {
         "q": 0,
         "r": 6
       },
-      "total_population": 1514,
-      "initial_district_id": "d4",
-      "name": "Rural (0,6)",
+      "total_population": 1644,
       "demographic_groups": [
         {
           "id": "p127-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.53,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6446,
-            "ryu": 0.3554
-          }
+            "ken": 0.6386220723763109,
+            "ryu": 0.36137792762368914
+          },
+          "turnout_rate": 0.7016042876639403,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "greenfield_county",
+      "name": "County (0,6)",
+      "initial_district_id": "d5"
     }
   ],
   "events": [],
   "rules": {
-    "population_tolerance": 0.10,
+    "population_tolerance": 0.1,
     "contiguity": "required"
   },
   "success_criteria": [
@@ -3152,20 +3153,21 @@
     },
     "intro_slides": [
       {
-        "heading": "The Urban Problem",
-        "body": "Riverport's downtown is a Ryu stronghold — dense, politically active, and growing. If you let those voters spread across multiple districts, they could flip seats.\n\nBut concentration is a weakness. If all those Ryu voters end up in the same district, they win it by a landslide — and waste thousands of votes that could have helped them elsewhere."
+        "body": "Riverport's downtown is a Ryu stronghold — dense, politically active, and growing. If you let those voters spread across multiple districts, they could flip seats.\n\nBut concentration is a weakness. If all those Ryu voters end up in the same district, they win it by a landslide — and waste thousands of votes that could have helped them elsewhere.",
+        "heading": "The Urban Problem"
       },
       {
-        "heading": "The Packing Play",
-        "body": "Packing means drawing one district that your opponents win overwhelmingly — 80%, 85%, even 90%. Every vote above 50%+1 is wasted. Meanwhile, you spread your own voters efficiently across the remaining districts, winning each by a comfortable but not wasteful margin.\n\nThe result: they win one seat by a landslide. You win four seats by steady margins."
+        "body": "Packing means drawing one district that your opponents win overwhelmingly — 80%, 85%, even 90%. Every vote above 50%+1 is wasted. Meanwhile, you spread your own voters efficiently across the remaining districts, winning each by a comfortable but not wasteful margin.\n\nThe result: they win one seat by a landslide. You win four seats by steady margins.",
+        "heading": "The Packing Play"
       },
       {
-        "heading": "The Efficiency Gap",
-        "body": "Political scientists measure this with the efficiency gap — the difference in wasted votes between the two parties. A packed map has a huge efficiency gap: the opposition wastes votes in their landslide district, while the mapmaker wastes very few.\n\nDraw your map. Then look at the efficiency gap and see what packing costs."
+        "body": "Political scientists measure this with the efficiency gap — the difference in wasted votes between the two parties. A packed map has a huge efficiency gap: the opposition wastes votes in their landslide district, while the mapmaker wastes very few.\n\nDraw your map. Then look at the efficiency gap and see what packing costs.",
+        "heading": "The Efficiency Gap"
       }
     ],
     "objective": "Pack Ryu voters into as few districts as possible. Ken Party must win at least 4 of 5 seats."
   },
+  "default_district_id": "d1",
   "instigator_character": "party",
   "character_demographics": {
     "commissioner": "wf",

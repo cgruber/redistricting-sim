@@ -1,11 +1,11 @@
 {
   "format_version": "1",
-  "id": "tutorial-003",
-  "title": "Hawthorn Bend: Reading the Vote",
+  "id": "tutorial-006",
+  "title": "The Hollow's Own: An Independent's Home Ground",
   "election_type": "state_house",
   "region": {
-    "id": "hawthorn_bend",
-    "name": "Hawthorn Bend"
+    "id": "hollowmere",
+    "name": "Hollowmere"
   },
   "geometry": {
     "type": "hex_axial"
@@ -15,13 +15,39 @@
       "id": "ken",
       "name": "Ken Party",
       "abbreviation": "KEN",
-      "color": "#c96d00"
+      "color": "#c96d00",
+      "candidates": [
+        "Sean Matsuda",
+        "Eliza Masters",
+        "Ken Masters"
+      ]
     },
     {
       "id": "ryu",
       "name": "Ryu Party",
       "abbreviation": "RYU",
-      "color": "#7b35a8"
+      "color": "#7b35a8",
+      "candidates": [
+        "Sakura Kasugano",
+        "Ryu",
+        "Gouken"
+      ]
+    },
+    {
+      "id": "dhalsim",
+      "name": "Dhalsim",
+      "abbreviation": "IND",
+      "color": "#2a9d8f",
+      "candidates": [
+        "Dhalsim",
+        "Dhalsim",
+        "Dhalsim"
+      ],
+      "independent": true,
+      "home": {
+        "q": 3,
+        "r": -1
+      }
     }
   ],
   "districts": [
@@ -46,22 +72,23 @@
         "q": 0,
         "r": -5
       },
-      "total_population": 4086,
+      "total_population": 992,
       "demographic_groups": [
         {
           "id": "p001-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5053058119490743,
-            "ryu": 0.4946941880509257
+            "ken": 0.29458329772576686,
+            "ryu": 0.5038690730530236,
+            "dhalsim": 0.2015476292212095
           },
-          "turnout_rate": 0.6040175742469728,
+          "turnout_rate": 0.6170543589279986,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (0,-5)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (0,-5)",
       "initial_district_id": "d1"
     },
     {
@@ -71,22 +98,23 @@
         "q": 1,
         "r": -5
       },
-      "total_population": 3819,
+      "total_population": 994,
       "demographic_groups": [
         {
           "id": "p002-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.34564726762473585,
-            "ryu": 0.6543527323752641
+            "ken": 0.28266272250562907,
+            "ryu": 0.5123837696388364,
+            "dhalsim": 0.20495350785553457
           },
-          "turnout_rate": 0.5572250277968124,
+          "turnout_rate": 0.6073579227551817,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (1,-5)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (1,-5)",
       "initial_district_id": "d1"
     },
     {
@@ -96,22 +124,23 @@
         "q": 2,
         "r": -5
       },
-      "total_population": 3458,
+      "total_population": 974,
       "demographic_groups": [
         {
           "id": "p003-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3429416694492102,
-            "ryu": 0.6570583305507898
+            "ken": 0.2981367206014693,
+            "ryu": 0.2205856020966811,
+            "dhalsim": 0.4812776773018496
           },
-          "turnout_rate": 0.5510160588426516,
+          "turnout_rate": 0.6837983632227406,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (2,-5)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (2,-5)",
       "initial_district_id": "d1"
     },
     {
@@ -121,22 +150,23 @@
         "q": 3,
         "r": -5
       },
-      "total_population": 4639,
+      "total_population": 986,
       "demographic_groups": [
         {
           "id": "p004-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3472965960763395,
-            "ryu": 0.6527034039236606
+            "ken": 0.32960671423003074,
+            "ryu": 0.2106950326705618,
+            "dhalsim": 0.4596982530994075
           },
-          "turnout_rate": 0.6031260804389603,
+          "turnout_rate": 0.6018699843203649,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (3,-5)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (3,-5)",
       "initial_district_id": "d1"
     },
     {
@@ -146,22 +176,23 @@
         "q": 4,
         "r": -5
       },
-      "total_population": 5326,
+      "total_population": 997,
       "demographic_groups": [
         {
           "id": "p005-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3846620431356132,
-            "ryu": 0.6153379568643869
+            "ken": 0.29542752871289846,
+            "ryu": 0.22143706240451766,
+            "dhalsim": 0.48313540888258394
           },
-          "turnout_rate": 0.680589723365847,
+          "turnout_rate": 0.6664485651417635,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (4,-5)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (4,-5)",
       "initial_district_id": "d1"
     },
     {
@@ -171,22 +202,23 @@
         "q": 5,
         "r": -5
       },
-      "total_population": 4858,
+      "total_population": 1047,
       "demographic_groups": [
         {
           "id": "p006-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3924453490972519,
-            "ryu": 0.6075546509027481
+            "ken": 0.27510870821774003,
+            "ryu": 0.22782297741728175,
+            "dhalsim": 0.4970683143649783
           },
-          "turnout_rate": 0.663901763537433,
+          "turnout_rate": 0.6010311936144717,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (5,-5)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (5,-5)",
       "initial_district_id": "d1"
     },
     {
@@ -196,22 +228,23 @@
         "q": -1,
         "r": -4
       },
-      "total_population": 3469,
+      "total_population": 1045,
       "demographic_groups": [
         {
           "id": "p007-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6033014810644091,
-            "ryu": 0.39669851893559094
+            "ken": 0.3090602679364383,
+            "ryu": 0.4935283800454012,
+            "dhalsim": 0.1974113520181605
           },
-          "turnout_rate": 0.5749593634624034,
+          "turnout_rate": 0.6010118426987902,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-1,-4)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-1,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -221,22 +254,23 @@
         "q": 0,
         "r": -4
       },
-      "total_population": 3810,
+      "total_population": 981,
       "demographic_groups": [
         {
           "id": "p008-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5048573973588646,
-            "ryu": 0.4951426026411354
+            "ken": 0.26775585748255254,
+            "ryu": 0.5230315303696054,
+            "dhalsim": 0.20921261214784218
           },
-          "turnout_rate": 0.6047889422508888,
+          "turnout_rate": 0.6874086724361405,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (0,-4)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (0,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -246,22 +280,23 @@
         "q": 1,
         "r": -4
       },
-      "total_population": 4077,
+      "total_population": 993,
       "demographic_groups": [
         {
           "id": "p009-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3861849446594715,
-            "ryu": 0.6138150553405285
+            "ken": 0.2765126237459481,
+            "ryu": 0.5167766973243229,
+            "dhalsim": 0.20671067892972914
           },
-          "turnout_rate": 0.6423248105798848,
+          "turnout_rate": 0.6331495414488018,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (1,-4)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (1,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -271,22 +306,23 @@
         "q": 2,
         "r": -4
       },
-      "total_population": 5843,
+      "total_population": 1033,
       "demographic_groups": [
         {
           "id": "p010-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3498137126863003,
-            "ryu": 0.6501862873136997
+            "ken": 0.325865467954427,
+            "ryu": 0.21187085292860866,
+            "dhalsim": 0.4622636791169643
           },
-          "turnout_rate": 0.6469714056001976,
+          "turnout_rate": 0.5577264230814762,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (2,-4)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (2,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -296,22 +332,23 @@
         "q": 3,
         "r": -4
       },
-      "total_population": 5666,
+      "total_population": 962,
       "demographic_groups": [
         {
           "id": "p011-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3747549327276647,
-            "ryu": 0.6252450672723353
+            "ken": 0.29909417912364006,
+            "ryu": 0.22028468656114172,
+            "dhalsim": 0.4806211343152182
           },
-          "turnout_rate": 0.6483721209457144,
+          "turnout_rate": 0.5846481505548582,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (3,-4)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (3,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -321,22 +358,23 @@
         "q": 4,
         "r": -4
       },
-      "total_population": 5247,
+      "total_population": 981,
       "demographic_groups": [
         {
           "id": "p012-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.36713062427937987,
-            "ryu": 0.6328693757206201
+            "ken": 0.303973850402981,
+            "ryu": 0.2187510755876346,
+            "dhalsim": 0.47727507400938446
           },
-          "turnout_rate": 0.5654929414857179,
+          "turnout_rate": 0.6198546073515899,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (4,-4)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (4,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -346,22 +384,23 @@
         "q": 5,
         "r": -4
       },
-      "total_population": 4638,
+      "total_population": 1014,
       "demographic_groups": [
         {
           "id": "p013-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.39966733710840346,
-            "ryu": 0.6003326628915966
+            "ken": 0.26782592011615636,
+            "ryu": 0.23011185367777948,
+            "dhalsim": 0.5020622262060642
           },
-          "turnout_rate": 0.6105151803931221,
+          "turnout_rate": 0.6503202840918675,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (5,-4)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (5,-4)",
       "initial_district_id": "d1"
     },
     {
@@ -371,22 +410,23 @@
         "q": -2,
         "r": -3
       },
-      "total_population": 3583,
+      "total_population": 981,
       "demographic_groups": [
         {
           "id": "p014-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5871632305160165,
-            "ryu": 0.4128367694839835
+            "ken": 0.5443624844960868,
+            "ryu": 0.36071303310726466,
+            "dhalsim": 0.09492448239664858
           },
-          "turnout_rate": 0.5972204012214206,
+          "turnout_rate": 0.6847514454042538,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-2,-3)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-2,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -396,22 +436,23 @@
         "q": -1,
         "r": -3
       },
-      "total_population": 4080,
+      "total_population": 951,
       "demographic_groups": [
         {
           "id": "p015-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5832236292399466,
-            "ryu": 0.41677637076005336
+            "ken": 0.3119073671475053,
+            "ryu": 0.491494737751782,
+            "dhalsim": 0.19659789510071282
           },
-          "turnout_rate": 0.5592073300504126,
+          "turnout_rate": 0.6383641132269986,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-1,-3)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-1,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -421,22 +462,23 @@
         "q": 0,
         "r": -3
       },
-      "total_population": 3825,
+      "total_population": 1050,
       "demographic_groups": [
         {
           "id": "p016-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.48316059581935406,
-            "ryu": 0.5168394041806459
+            "ken": 0.27468108691275117,
+            "ryu": 0.5180849379194634,
+            "dhalsim": 0.2072339751677854
           },
-          "turnout_rate": 0.6871966380858794,
+          "turnout_rate": 0.5998928956803866,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (0,-3)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (0,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -446,22 +488,23 @@
         "q": 1,
         "r": -3
       },
-      "total_population": 5332,
+      "total_population": 964,
       "demographic_groups": [
         {
           "id": "p017-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3692182816937566,
-            "ryu": 0.6307817183062434
+            "ken": 0.29053857995197174,
+            "ryu": 0.5067581571771631,
+            "dhalsim": 0.20270326287086524
           },
-          "turnout_rate": 0.6587316486402415,
+          "turnout_rate": 0.5967233489500359,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (1,-3)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (1,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -471,22 +514,23 @@
         "q": 2,
         "r": -3
       },
-      "total_population": 5412,
+      "total_population": 1007,
       "demographic_groups": [
         {
           "id": "p018-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.35763386089354754,
-            "ryu": 0.6423661391064525
+            "ken": 0.3108471596613526,
+            "ryu": 0.2165908926778606,
+            "dhalsim": 0.47256194766078674
           },
-          "turnout_rate": 0.6047984126838856,
+          "turnout_rate": 0.6137941024033353,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (2,-3)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (2,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -496,22 +540,23 @@
         "q": 3,
         "r": -3
       },
-      "total_population": 3712,
+      "total_population": 1039,
       "demographic_groups": [
         {
           "id": "p019-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3635302943922579,
-            "ryu": 0.6364697056077421
+            "ken": 0.2910903749242425,
+            "ryu": 0.2228001678809524,
+            "dhalsim": 0.48610945719480514
           },
-          "turnout_rate": 0.655289015523158,
+          "turnout_rate": 0.6890918989200144,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (3,-3)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (3,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -521,22 +566,23 @@
         "q": 4,
         "r": -3
       },
-      "total_population": 4394,
+      "total_population": 946,
       "demographic_groups": [
         {
           "id": "p020-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3414927239902318,
-            "ryu": 0.6585072760097682
+            "ken": 0.3065538780391216,
+            "ryu": 0.21794020975913325,
+            "dhalsim": 0.4755059122017452
           },
-          "turnout_rate": 0.6294742984347976,
+          "turnout_rate": 0.6630021613207645,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (4,-3)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (4,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -546,22 +592,23 @@
         "q": 5,
         "r": -3
       },
-      "total_population": 4118,
+      "total_population": 999,
       "demographic_groups": [
         {
           "id": "p021-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.34660360815003516,
-            "ryu": 0.6533963918499648
+            "ken": 0.2851527710445225,
+            "ryu": 0.22466627195743583,
+            "dhalsim": 0.4901809569980417
           },
-          "turnout_rate": 0.5785146059468389,
+          "turnout_rate": 0.6797138896072283,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (5,-3)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (5,-3)",
       "initial_district_id": "d1"
     },
     {
@@ -571,22 +618,23 @@
         "q": -3,
         "r": -2
       },
-      "total_population": 4406,
+      "total_population": 967,
       "demographic_groups": [
         {
           "id": "p022-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6131439528986812,
-            "ryu": 0.3868560471013188
+            "ken": 0.5537163808196783,
+            "ryu": 0.35330786518442137,
+            "dhalsim": 0.09297575399590036
           },
-          "turnout_rate": 0.5677370664547198,
+          "turnout_rate": 0.6692216172930784,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-3,-2)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-3,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -596,22 +644,23 @@
         "q": -2,
         "r": -2
       },
-      "total_population": 3808,
+      "total_population": 1006,
       "demographic_groups": [
         {
           "id": "p023-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5937408154271543,
-            "ryu": 0.4062591845728457
+            "ken": 0.5312357207387686,
+            "ryu": 0.3711050544151416,
+            "dhalsim": 0.09765922484608988
           },
-          "turnout_rate": 0.5893320111674257,
+          "turnout_rate": 0.5691644873120822,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-2,-2)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-2,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -621,22 +670,23 @@
         "q": -1,
         "r": -2
       },
-      "total_population": 3485,
+      "total_population": 996,
       "demographic_groups": [
         {
           "id": "p024-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6538933295756578,
-            "ryu": 0.3461066704243422
+            "ken": 0.297713757995516,
+            "ryu": 0.5016330300032028,
+            "dhalsim": 0.20065321200128117
           },
-          "turnout_rate": 0.567436545714736,
+          "turnout_rate": 0.5589453586959281,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-1,-2)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-1,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -646,22 +696,23 @@
         "q": 0,
         "r": -2
       },
-      "total_population": 5616,
+      "total_population": 951,
       "demographic_groups": [
         {
           "id": "p025-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.47355576261878013,
-            "ryu": 0.5264442373812199
+            "ken": 0.2681223918125033,
+            "ryu": 0.5227697201339262,
+            "dhalsim": 0.2091078880535705
           },
-          "turnout_rate": 0.6638549737283028,
+          "turnout_rate": 0.6586283131851814,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (0,-2)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (0,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -671,22 +722,23 @@
         "q": 1,
         "r": -2
       },
-      "total_population": 5037,
+      "total_population": 1020,
       "demographic_groups": [
         {
           "id": "p026-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.35280013643205166,
-            "ryu": 0.6471998635679483
+            "ken": 0.29136498568579555,
+            "ryu": 0.5061678673672889,
+            "dhalsim": 0.20246714694691556
           },
-          "turnout_rate": 0.5659126444370486,
+          "turnout_rate": 0.6678136123460717,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (1,-2)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (1,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -696,22 +748,23 @@
         "q": 2,
         "r": -2
       },
-      "total_population": 3483,
+      "total_population": 1037,
       "demographic_groups": [
         {
           "id": "p027-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3610617722198367,
-            "ryu": 0.6389382277801633
+            "ken": 0.2823880788311362,
+            "ryu": 0.2255351752245001,
+            "dhalsim": 0.4920767459443638
           },
-          "turnout_rate": 0.6850401484989561,
+          "turnout_rate": 0.5821730385301634,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (2,-2)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (2,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -721,22 +774,23 @@
         "q": 3,
         "r": -2
       },
-      "total_population": 3776,
+      "total_population": 1048,
       "demographic_groups": [
         {
           "id": "p028-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.4196551660820842,
-            "ryu": 0.5803448339179158
+            "ken": 0.31270425867289303,
+            "ryu": 0.21600723298851937,
+            "dhalsim": 0.47128850833858765
           },
-          "turnout_rate": 0.6649249858339317,
+          "turnout_rate": 0.6762797155068255,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (3,-2)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (3,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -746,22 +800,23 @@
         "q": 4,
         "r": -2
       },
-      "total_population": 3419,
+      "total_population": 1018,
       "demographic_groups": [
         {
           "id": "p029-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.35032881528139115,
-            "ryu": 0.6496711847186089
+            "ken": 0.26281436437740924,
+            "ryu": 0.23168691405281427,
+            "dhalsim": 0.5054987215697765
           },
-          "turnout_rate": 0.6065305817988701,
+          "turnout_rate": 0.5536988853244111,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (4,-2)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (4,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -771,22 +826,23 @@
         "q": 5,
         "r": -2
       },
-      "total_population": 3446,
+      "total_population": 1011,
       "demographic_groups": [
         {
           "id": "p030-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.34373225264251234,
-            "ryu": 0.6562677473574876
+            "ken": 0.26971131678670646,
+            "ryu": 0.22951930043846372,
+            "dhalsim": 0.5007693827748299
           },
-          "turnout_rate": 0.6667913675890303,
+          "turnout_rate": 0.5815924910479225,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (5,-2)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (5,-2)",
       "initial_district_id": "d1"
     },
     {
@@ -796,22 +852,23 @@
         "q": -4,
         "r": -1
       },
-      "total_population": 4636,
+      "total_population": 962,
       "demographic_groups": [
         {
           "id": "p031-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5919478052668273,
-            "ryu": 0.40805219473317267
+            "ken": 0.528158362377435,
+            "ryu": 0.3735412964511974,
+            "dhalsim": 0.09830034117136772
           },
-          "turnout_rate": 0.5864907047245652,
+          "turnout_rate": 0.6627799432026222,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-4,-1)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-4,-1)",
       "initial_district_id": "d1"
     },
     {
@@ -821,22 +878,23 @@
         "q": -3,
         "r": -1
       },
-      "total_population": 4742,
+      "total_population": 980,
       "demographic_groups": [
         {
           "id": "p032-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5911093566194177,
-            "ryu": 0.40889064338058234
+            "ken": 0.501841319706291,
+            "ryu": 0.39437562189918635,
+            "dhalsim": 0.10378305839452272
           },
-          "turnout_rate": 0.6544001593952998,
+          "turnout_rate": 0.6956092950189485,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-3,-1)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-3,-1)",
       "initial_district_id": "d1"
     },
     {
@@ -846,22 +904,23 @@
         "q": -2,
         "r": -1
       },
-      "total_population": 3842,
+      "total_population": 986,
       "demographic_groups": [
         {
           "id": "p033-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6465382524579764,
-            "ryu": 0.35346174754202364
+            "ken": 0.4971487576700747,
+            "ryu": 0.3980905668445242,
+            "dhalsim": 0.1047606754854011
           },
-          "turnout_rate": 0.695134210458491,
+          "turnout_rate": 0.6851792228175326,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-2,-1)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-2,-1)",
       "initial_district_id": "d1"
     },
     {
@@ -871,22 +930,23 @@
         "q": -1,
         "r": -1
       },
-      "total_population": 5581,
+      "total_population": 977,
       "demographic_groups": [
         {
           "id": "p034-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.609579965993762,
-            "ryu": 0.39042003400623804
+            "ken": 0.33768755005672574,
+            "ryu": 0.473080321388053,
+            "dhalsim": 0.18923212855522123
           },
-          "turnout_rate": 0.6106117340852506,
+          "turnout_rate": 0.5883194961585104,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-1,-1)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-1,-1)",
       "initial_district_id": "d1"
     },
     {
@@ -896,22 +956,23 @@
         "q": 0,
         "r": -1
       },
-      "total_population": 7927,
+      "total_population": 1016,
       "demographic_groups": [
         {
           "id": "p035-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5157901692017913,
-            "ryu": 0.4842098307982087
+            "ken": 0.2796219392120838,
+            "ryu": 0.5145557577056544,
+            "dhalsim": 0.2058223030822618
           },
-          "turnout_rate": 0.6856598873157054,
+          "turnout_rate": 0.55147852570517,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (0,-1)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (0,-1)",
       "initial_district_id": "d1"
     },
     {
@@ -921,22 +982,23 @@
         "q": 1,
         "r": -1
       },
-      "total_population": 7026,
+      "total_population": 991,
       "demographic_groups": [
         {
           "id": "p036-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.39141374381259086,
-            "ryu": 0.6085862561874091
+            "ken": 0.2669135940633714,
+            "ryu": 0.5236331470975919,
+            "dhalsim": 0.2094532588390368
           },
-          "turnout_rate": 0.655257795273792,
+          "turnout_rate": 0.6638078864663839,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (1,-1)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (1,-1)",
       "initial_district_id": "d1"
     },
     {
@@ -946,22 +1008,23 @@
         "q": 2,
         "r": -1
       },
-      "total_population": 3733,
+      "total_population": 987,
       "demographic_groups": [
         {
           "id": "p037-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.39735424760729077,
-            "ryu": 0.6026457523927092
+            "ken": 0.32570994704961775,
+            "ryu": 0.21191973092726302,
+            "dhalsim": 0.4623703220231193
           },
-          "turnout_rate": 0.6884932839660904,
+          "turnout_rate": 0.6582859521498904,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (2,-1)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (2,-1)",
       "initial_district_id": "d1"
     },
     {
@@ -971,22 +1034,23 @@
         "q": 3,
         "r": -1
       },
-      "total_population": 4264,
+      "total_population": 1052,
       "demographic_groups": [
         {
           "id": "p038-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3829515208862722,
-            "ryu": 0.6170484791137278
+            "ken": 0.29286695385351774,
+            "ryu": 0.22224181450318015,
+            "dhalsim": 0.4848912316433021
           },
-          "turnout_rate": 0.6663616319186986,
+          "turnout_rate": 0.5974374528392218,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (3,-1)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (3,-1)",
       "initial_district_id": "d1"
     },
     {
@@ -996,22 +1060,23 @@
         "q": 4,
         "r": -1
       },
-      "total_population": 3375,
+      "total_population": 1010,
       "demographic_groups": [
         {
           "id": "p039-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3826728771068156,
-            "ryu": 0.6173271228931845
+            "ken": 0.27794720366597175,
+            "ryu": 0.22693087884783747,
+            "dhalsim": 0.4951219174861908
           },
-          "turnout_rate": 0.6770163409761153,
+          "turnout_rate": 0.6204701071605087,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (4,-1)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (4,-1)",
       "initial_district_id": "d1"
     },
     {
@@ -1021,22 +1086,23 @@
         "q": 5,
         "r": -1
       },
-      "total_population": 4040,
+      "total_population": 1031,
       "demographic_groups": [
         {
           "id": "p040-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3616636220924556,
-            "ryu": 0.6383363779075444
+            "ken": 0.3228996835462749,
+            "ryu": 0.2128029565997422,
+            "dhalsim": 0.4642973598539829
           },
-          "turnout_rate": 0.6470001933164895,
+          "turnout_rate": 0.5874460522201844,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (5,-1)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (5,-1)",
       "initial_district_id": "d1"
     },
     {
@@ -1046,22 +1112,23 @@
         "q": -5,
         "r": 0
       },
-      "total_population": 4957,
+      "total_population": 978,
       "demographic_groups": [
         {
           "id": "p041-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5966621379368007,
-            "ryu": 0.4033378620631993
+            "ken": 0.5103200794942677,
+            "ryu": 0.3876632704003714,
+            "dhalsim": 0.1020166501053609
           },
-          "turnout_rate": 0.5962858368991875,
+          "turnout_rate": 0.5742762949317693,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-5,0)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-5,0)",
       "initial_district_id": "d1"
     },
     {
@@ -1071,22 +1138,23 @@
         "q": -4,
         "r": 0
       },
-      "total_population": 4507,
+      "total_population": 1044,
       "demographic_groups": [
         {
           "id": "p042-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6300391770154238,
-            "ryu": 0.3699608229845762
+            "ken": 0.5246276674419642,
+            "ryu": 0.37633642994177835,
+            "dhalsim": 0.09903590261625746
           },
-          "turnout_rate": 0.6105476806638762,
+          "turnout_rate": 0.6094638338778168,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-4,0)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-4,0)",
       "initial_district_id": "d1"
     },
     {
@@ -1096,22 +1164,23 @@
         "q": -3,
         "r": 0
       },
-      "total_population": 4092,
+      "total_population": 1051,
       "demographic_groups": [
         {
           "id": "p043-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.588989099599421,
-            "ryu": 0.41101090040057897
+            "ken": 0.48423614412546157,
+            "ryu": 0.40831305256734296,
+            "dhalsim": 0.10745080330719552
           },
-          "turnout_rate": 0.5608681831741706,
+          "turnout_rate": 0.6335543711320497,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-3,0)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-3,0)",
       "initial_district_id": "d1"
     },
     {
@@ -1121,22 +1190,23 @@
         "q": -2,
         "r": 0
       },
-      "total_population": 4571,
+      "total_population": 1036,
       "demographic_groups": [
         {
           "id": "p044-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6419899162836373,
-            "ryu": 0.35801008371636267
+            "ken": 0.5527446200326085,
+            "ryu": 0.3540771758075183,
+            "dhalsim": 0.09317820415987324
           },
-          "turnout_rate": 0.5677682623965666,
+          "turnout_rate": 0.6039657651796005,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-2,0)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-2,0)",
       "initial_district_id": "d1"
     },
     {
@@ -1146,22 +1216,23 @@
         "q": -1,
         "r": 0
       },
-      "total_population": 7845,
+      "total_population": 1017,
       "demographic_groups": [
         {
           "id": "p045-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6541187385097146,
-            "ryu": 0.3458812614902854
+            "ken": 0.29322360260412095,
+            "ryu": 0.5048402838541993,
+            "dhalsim": 0.20193611354167976
           },
-          "turnout_rate": 0.668286394921597,
+          "turnout_rate": 0.659970424149651,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-1,0)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-1,0)",
       "initial_district_id": "d1"
     },
     {
@@ -1171,22 +1242,23 @@
         "q": 0,
         "r": 0
       },
-      "total_population": 7998,
+      "total_population": 955,
       "demographic_groups": [
         {
           "id": "p046-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.4887368250451982,
-            "ryu": 0.5112631749548018
+            "ken": 0.2869157689064741,
+            "ryu": 0.5093458793525185,
+            "dhalsim": 0.20373835174100743
           },
-          "turnout_rate": 0.6866344809881411,
+          "turnout_rate": 0.5795435580774211,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (0,0)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (0,0)",
       "initial_district_id": "d1"
     },
     {
@@ -1196,22 +1268,23 @@
         "q": 1,
         "r": 0
       },
-      "total_population": 9116,
+      "total_population": 997,
       "demographic_groups": [
         {
           "id": "p047-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.41224357556551694,
-            "ryu": 0.5877564244344831
+            "ken": 0.31577299434691664,
+            "ryu": 0.4887335754664881,
+            "dhalsim": 0.19549343018659526
           },
-          "turnout_rate": 0.5720664052525536,
+          "turnout_rate": 0.6752566414303146,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (1,0)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (1,0)",
       "initial_district_id": "d1"
     },
     {
@@ -1221,22 +1294,23 @@
         "q": 2,
         "r": 0
       },
-      "total_population": 3501,
+      "total_population": 947,
       "demographic_groups": [
         {
           "id": "p048-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3678169579803944,
-            "ryu": 0.6321830420196056
+            "ken": 0.3061813158355653,
+            "ryu": 0.2180573007373938,
+            "dhalsim": 0.47576138342704094
           },
-          "turnout_rate": 0.5703441788209602,
+          "turnout_rate": 0.6903612421476282,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (2,0)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (2,0)",
       "initial_district_id": "d1"
     },
     {
@@ -1246,22 +1320,23 @@
         "q": 3,
         "r": 0
       },
-      "total_population": 3570,
+      "total_population": 952,
       "demographic_groups": [
         {
           "id": "p049-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3795511104166508,
-            "ryu": 0.6204488895833492
+            "ken": 0.296933835465461,
+            "ryu": 0.22096365171085516,
+            "dhalsim": 0.48210251282368394
           },
-          "turnout_rate": 0.599921706551686,
+          "turnout_rate": 0.5574059411534109,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (3,0)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (3,0)",
       "initial_district_id": "d1"
     },
     {
@@ -1271,22 +1346,23 @@
         "q": 4,
         "r": 0
       },
-      "total_population": 4337,
+      "total_population": 1027,
       "demographic_groups": [
         {
           "id": "p050-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.36999663660302756,
-            "ryu": 0.6300033633969724
+            "ken": 0.3146698375232518,
+            "ryu": 0.2153894796355495,
+            "dhalsim": 0.46994068284119883
           },
-          "turnout_rate": 0.576135411427822,
+          "turnout_rate": 0.5504795113229193,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (4,0)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (4,0)",
       "initial_district_id": "d1"
     },
     {
@@ -1296,22 +1372,23 @@
         "q": 5,
         "r": 0
       },
-      "total_population": 3558,
+      "total_population": 987,
       "demographic_groups": [
         {
           "id": "p051-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.39009894978255033,
-            "ryu": 0.6099010502174497
+            "ken": 0.31439762391149995,
+            "ryu": 0.2154750324849572,
+            "dhalsim": 0.4701273436035429
           },
-          "turnout_rate": 0.6634701381321065,
+          "turnout_rate": 0.5541803675820121,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (5,0)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (5,0)",
       "initial_district_id": "d1"
     },
     {
@@ -1321,22 +1398,23 @@
         "q": -5,
         "r": 1
       },
-      "total_population": 4398,
+      "total_population": 1035,
       "demographic_groups": [
         {
           "id": "p052-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6058279548771679,
-            "ryu": 0.3941720451228321
+            "ken": 0.536556583698839,
+            "ryu": 0.36689270457175255,
+            "dhalsim": 0.09655071172940856
           },
-          "turnout_rate": 0.6764405668829567,
+          "turnout_rate": 0.6471529657603241,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-5,1)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-5,1)",
       "initial_district_id": "d1"
     },
     {
@@ -1346,22 +1424,23 @@
         "q": -4,
         "r": 1
       },
-      "total_population": 3895,
+      "total_population": 973,
       "demographic_groups": [
         {
           "id": "p053-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6567664765007794,
-            "ryu": 0.34323352349922065
+            "ken": 0.5013188093341887,
+            "ryu": 0.3947892759437673,
+            "dhalsim": 0.10389191472204402
           },
-          "turnout_rate": 0.6361133496160619,
+          "turnout_rate": 0.6266452410956844,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-4,1)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-4,1)",
       "initial_district_id": "d1"
     },
     {
@@ -1371,22 +1450,23 @@
         "q": -3,
         "r": 1
       },
-      "total_population": 4538,
+      "total_population": 965,
       "demographic_groups": [
         {
           "id": "p054-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5831201609224081,
-            "ryu": 0.41687983907759185
+            "ken": 0.5477532273903489,
+            "ryu": 0.35802869498264045,
+            "dhalsim": 0.09421807762701065
           },
-          "turnout_rate": 0.5640367951476947,
+          "turnout_rate": 0.583696395996958,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-3,1)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-3,1)",
       "initial_district_id": "d1"
     },
     {
@@ -1396,22 +1476,23 @@
         "q": -2,
         "r": 1
       },
-      "total_population": 6039,
+      "total_population": 1019,
       "demographic_groups": [
         {
           "id": "p055-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.620507898926735,
-            "ryu": 0.37949210107326503
+            "ken": 0.5273826665058732,
+            "ryu": 0.3741553890161838,
+            "dhalsim": 0.0984619444779431
           },
-          "turnout_rate": 0.5803345354739576,
+          "turnout_rate": 0.6168884568614885,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-2,1)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-2,1)",
       "initial_district_id": "d1"
     },
     {
@@ -1421,22 +1502,23 @@
         "q": -1,
         "r": 1
       },
-      "total_population": 8850,
+      "total_population": 1041,
       "demographic_groups": [
         {
           "id": "p056-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6473834357596934,
-            "ryu": 0.35261656424030663
+            "ken": 0.2973144599236548,
+            "ryu": 0.5019182429116752,
+            "dhalsim": 0.2007672971646701
           },
-          "turnout_rate": 0.6370124400476925,
+          "turnout_rate": 0.6441837420105003,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-1,1)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (-1,1)",
       "initial_district_id": "d1"
     },
     {
@@ -1446,22 +1528,23 @@
         "q": 0,
         "r": 1
       },
-      "total_population": 7772,
+      "total_population": 944,
       "demographic_groups": [
         {
           "id": "p057-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5292632918059826,
-            "ryu": 0.47073670819401736
+            "ken": 0.33283806623890994,
+            "ryu": 0.47654423840077864,
+            "dhalsim": 0.19061769536031148
           },
-          "turnout_rate": 0.6629315311438404,
+          "turnout_rate": 0.552473549777642,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (0,1)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (0,1)",
       "initial_district_id": "d1"
     },
     {
@@ -1471,22 +1554,23 @@
         "q": 1,
         "r": 1
       },
-      "total_population": 4992,
+      "total_population": 942,
       "demographic_groups": [
         {
           "id": "p058-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.41040687944740056,
-            "ryu": 0.5895931205525995
+            "ken": 0.3190530849806964,
+            "ryu": 0.4863906535852169,
+            "dhalsim": 0.19455626143408677
           },
-          "turnout_rate": 0.681887343188282,
+          "turnout_rate": 0.6111082299030386,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (1,1)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (1,1)",
       "initial_district_id": "d1"
     },
     {
@@ -1496,22 +1580,23 @@
         "q": 2,
         "r": 1
       },
-      "total_population": 3410,
+      "total_population": 954,
       "demographic_groups": [
         {
           "id": "p059-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.34263891391456125,
-            "ryu": 0.6573610860854388
+            "ken": 0.3192987541854381,
+            "ryu": 0.21393467725600518,
+            "dhalsim": 0.4667665685585567
           },
-          "turnout_rate": 0.6813205494312569,
+          "turnout_rate": 0.6410937727545388,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (2,1)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (2,1)",
       "initial_district_id": "d1"
     },
     {
@@ -1521,22 +1606,23 @@
         "q": 3,
         "r": 1
       },
-      "total_population": 4362,
+      "total_population": 965,
       "demographic_groups": [
         {
           "id": "p060-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.39963071499019864,
-            "ryu": 0.6003692850098014
+            "ken": 0.32450605696067214,
+            "ryu": 0.2122980963837888,
+            "dhalsim": 0.4631958466555391
           },
-          "turnout_rate": 0.5596533415257,
+          "turnout_rate": 0.6372832789667882,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (3,1)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (3,1)",
       "initial_district_id": "d1"
     },
     {
@@ -1546,22 +1632,23 @@
         "q": 4,
         "r": 1
       },
-      "total_population": 3544,
+      "total_population": 1012,
       "demographic_groups": [
         {
           "id": "p061-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3493368224240839,
-            "ryu": 0.6506631775759161
+            "ken": 0.31245271967723964,
+            "ryu": 0.216086288101439,
+            "dhalsim": 0.4714609922213214
           },
-          "turnout_rate": 0.5542654703021981,
+          "turnout_rate": 0.6749551395187154,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (4,1)",
+      "county_id": "hollowmere_east",
+      "county_name": "Hollowmere East",
+      "name": "East (4,1)",
       "initial_district_id": "d1"
     },
     {
@@ -1571,22 +1658,23 @@
         "q": -5,
         "r": 2
       },
-      "total_population": 3869,
+      "total_population": 1030,
       "demographic_groups": [
         {
           "id": "p062-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6447375842370093,
-            "ryu": 0.35526241576299067
+            "ken": 0.5175241613388062,
+            "ryu": 0.3819600389401118,
+            "dhalsim": 0.10051579972108204
           },
-          "turnout_rate": 0.5725578236626462,
+          "turnout_rate": 0.6779020464164205,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-5,2)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-5,2)",
       "initial_district_id": "d1"
     },
     {
@@ -1596,22 +1684,23 @@
         "q": -4,
         "r": 2
       },
-      "total_population": 3547,
+      "total_population": 973,
       "demographic_groups": [
         {
           "id": "p063-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6071773752011359,
-            "ryu": 0.3928226247988641
+            "ken": 0.5128197175264358,
+            "ryu": 0.38568439029157164,
+            "dhalsim": 0.10149589218199254
           },
-          "turnout_rate": 0.5724428012152203,
+          "turnout_rate": 0.5586795719340444,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-4,2)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-4,2)",
       "initial_district_id": "d1"
     },
     {
@@ -1621,22 +1710,23 @@
         "q": -3,
         "r": 2
       },
-      "total_population": 4256,
+      "total_population": 1057,
       "demographic_groups": [
         {
           "id": "p064-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6103541999310255,
-            "ryu": 0.38964580006897453
+            "ken": 0.4957636658847332,
+            "ryu": 0.39918709784125295,
+            "dhalsim": 0.10504923627401393
           },
-          "turnout_rate": 0.564119803684298,
+          "turnout_rate": 0.5863387588760816,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-3,2)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-3,2)",
       "initial_district_id": "d1"
     },
     {
@@ -1646,22 +1736,23 @@
         "q": -2,
         "r": 2
       },
-      "total_population": 4432,
+      "total_population": 965,
       "demographic_groups": [
         {
           "id": "p065-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6207892028056086,
-            "ryu": 0.37921079719439144
+            "ken": 0.5323428263701498,
+            "ryu": 0.3702285957902981,
+            "dhalsim": 0.09742857783955212
           },
-          "turnout_rate": 0.6981394277769141,
+          "turnout_rate": 0.560711484157946,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-2,2)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-2,2)",
       "initial_district_id": "d1"
     },
     {
@@ -1671,22 +1762,23 @@
         "q": -1,
         "r": 2
       },
-      "total_population": 4608,
+      "total_population": 1049,
       "demographic_groups": [
         {
           "id": "p066-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.65795061647892,
-            "ryu": 0.34204938352108005
+            "ken": 0.3184880041889846,
+            "ryu": 0.48679428272215386,
+            "dhalsim": 0.19471771308886157
           },
-          "turnout_rate": 0.6894861912936903,
+          "turnout_rate": 0.6110969903646037,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-1,2)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (-1,2)",
       "initial_district_id": "d1"
     },
     {
@@ -1696,22 +1788,23 @@
         "q": 0,
         "r": 2
       },
-      "total_population": 4980,
+      "total_population": 1057,
       "demographic_groups": [
         {
           "id": "p067-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5081325291655958,
-            "ryu": 0.4918674708344042
+            "ken": 0.3370159504190087,
+            "ryu": 0.4735600354149938,
+            "dhalsim": 0.18942401416599755
           },
-          "turnout_rate": 0.674560887098778,
+          "turnout_rate": 0.5944235187605955,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (0,2)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (0,2)",
       "initial_district_id": "d1"
     },
     {
@@ -1721,22 +1814,23 @@
         "q": 1,
         "r": 2
       },
-      "total_population": 5038,
+      "total_population": 970,
       "demographic_groups": [
         {
           "id": "p068-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3408830546401441,
-            "ryu": 0.6591169453598559
+            "ken": 0.3087841776572168,
+            "ryu": 0.49372558738770234,
+            "dhalsim": 0.19749023495508095
           },
-          "turnout_rate": 0.583707288315054,
+          "turnout_rate": 0.613865530048497,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (1,2)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (1,2)",
       "initial_district_id": "d1"
     },
     {
@@ -1746,22 +1840,23 @@
         "q": 2,
         "r": 2
       },
-      "total_population": 4257,
+      "total_population": 969,
       "demographic_groups": [
         {
           "id": "p069-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.39443809710443023,
-            "ryu": 0.6055619028955698
+            "ken": 0.26863826923072337,
+            "ryu": 0.2298565439560584,
+            "dhalsim": 0.5015051868132182
           },
-          "turnout_rate": 0.6672221300425007,
+          "turnout_rate": 0.599796605494339,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (2,2)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (2,2)",
       "initial_district_id": "d1"
     },
     {
@@ -1771,22 +1866,23 @@
         "q": 3,
         "r": 2
       },
-      "total_population": 4526,
+      "total_population": 941,
       "demographic_groups": [
         {
           "id": "p070-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3502964898571372,
-            "ryu": 0.6497035101428628
+            "ken": 0.30545896077528595,
+            "ryu": 0.21828432661348157,
+            "dhalsim": 0.4762567126112325
           },
-          "turnout_rate": 0.6283688672352582,
+          "turnout_rate": 0.5828374742297456,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (3,2)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (3,2)",
       "initial_district_id": "d1"
     },
     {
@@ -1796,22 +1892,23 @@
         "q": -5,
         "r": 3
       },
-      "total_population": 4203,
+      "total_population": 950,
       "demographic_groups": [
         {
           "id": "p071-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6299490517191588,
-            "ryu": 0.3700509482808412
+            "ken": 0.5142386387847364,
+            "ryu": 0.38456107762875036,
+            "dhalsim": 0.10120028358651326
           },
-          "turnout_rate": 0.6639209776883944,
+          "turnout_rate": 0.5601402274565772,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-5,3)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-5,3)",
       "initial_district_id": "d1"
     },
     {
@@ -1821,22 +1918,23 @@
         "q": -4,
         "r": 3
       },
-      "total_population": 4263,
+      "total_population": 1031,
       "demographic_groups": [
         {
           "id": "p072-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5933459560573101,
-            "ryu": 0.4066540439426899
+            "ken": 0.49481948938220743,
+            "ryu": 0.39993457090575246,
+            "dhalsim": 0.10524593971204012
           },
-          "turnout_rate": 0.6732579563977197,
+          "turnout_rate": 0.6807771600433625,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-4,3)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-4,3)",
       "initial_district_id": "d1"
     },
     {
@@ -1846,22 +1944,23 @@
         "q": -3,
         "r": 3
       },
-      "total_population": 4282,
+      "total_population": 1039,
       "demographic_groups": [
         {
           "id": "p073-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6401964820362628,
-            "ryu": 0.3598035179637372
+            "ken": 0.5582401643879712,
+            "ryu": 0.3497265365261895,
+            "dhalsim": 0.09203329908583933
           },
-          "turnout_rate": 0.613562690874096,
+          "turnout_rate": 0.6425249486695975,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-3,3)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-3,3)",
       "initial_district_id": "d1"
     },
     {
@@ -1871,22 +1970,23 @@
         "q": -2,
         "r": 3
       },
-      "total_population": 4551,
+      "total_population": 1027,
       "demographic_groups": [
         {
           "id": "p074-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6588964271731674,
-            "ryu": 0.34110357282683257
+            "ken": 0.5519776852428914,
+            "ryu": 0.35468433251604436,
+            "dhalsim": 0.09333798224106431
           },
-          "turnout_rate": 0.6288765277131461,
+          "turnout_rate": 0.6173283703974448,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-2,3)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (-2,3)",
       "initial_district_id": "d1"
     },
     {
@@ -1896,22 +1996,23 @@
         "q": -1,
         "r": 3
       },
-      "total_population": 4048,
+      "total_population": 989,
       "demographic_groups": [
         {
           "id": "p075-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5910792603716254,
-            "ryu": 0.4089207396283746
+            "ken": 0.3022731164656579,
+            "ryu": 0.4983763453816729,
+            "dhalsim": 0.1993505381526692
           },
-          "turnout_rate": 0.6500821900554001,
+          "turnout_rate": 0.5956029675435275,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-1,3)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (-1,3)",
       "initial_district_id": "d1"
     },
     {
@@ -1921,22 +2022,23 @@
         "q": 0,
         "r": 3
       },
-      "total_population": 5667,
+      "total_population": 978,
       "demographic_groups": [
         {
           "id": "p076-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5218706489168108,
-            "ryu": 0.4781293510831892
+            "ken": 0.2916263542510569,
+            "ryu": 0.5059811755349594,
+            "dhalsim": 0.20239247021398377
           },
-          "turnout_rate": 0.5953937924001366,
+          "turnout_rate": 0.5721381322364323,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (0,3)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (0,3)",
       "initial_district_id": "d1"
     },
     {
@@ -1946,22 +2048,23 @@
         "q": 1,
         "r": 3
       },
-      "total_population": 5256,
+      "total_population": 967,
       "demographic_groups": [
         {
           "id": "p077-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.40648061826825144,
-            "ryu": 0.5935193817317486
+            "ken": 0.2834046847745776,
+            "ryu": 0.5118537965895874,
+            "dhalsim": 0.204741518635835
           },
-          "turnout_rate": 0.6023427072796039,
+          "turnout_rate": 0.6501861247466877,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (1,3)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (1,3)",
       "initial_district_id": "d1"
     },
     {
@@ -1971,22 +2074,23 @@
         "q": 2,
         "r": 3
       },
-      "total_population": 4451,
+      "total_population": 996,
       "demographic_groups": [
         {
           "id": "p078-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.3858691895380616,
-            "ryu": 0.6141308104619384
+            "ken": 0.29841638242825863,
+            "ryu": 0.22049770837969018,
+            "dhalsim": 0.48108590919205124
           },
-          "turnout_rate": 0.5934965519001708,
+          "turnout_rate": 0.641431775689125,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (2,3)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (2,3)",
       "initial_district_id": "d1"
     },
     {
@@ -1996,22 +2100,23 @@
         "q": -5,
         "r": 4
       },
-      "total_population": 3703,
+      "total_population": 1035,
       "demographic_groups": [
         {
           "id": "p079-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6392676852457225,
-            "ryu": 0.36073231475427747
+            "ken": 0.4833656283840537,
+            "ryu": 0.40900221086262417,
+            "dhalsim": 0.10763216075332215
           },
-          "turnout_rate": 0.6934287487063556,
+          "turnout_rate": 0.6727835516445339,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-5,4)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-5,4)",
       "initial_district_id": "d1"
     },
     {
@@ -2021,22 +2126,23 @@
         "q": -4,
         "r": 4
       },
-      "total_population": 4191,
+      "total_population": 970,
       "demographic_groups": [
         {
           "id": "p080-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5945819167792797,
-            "ryu": 0.40541808322072026
+            "ken": 0.53597358064726,
+            "ryu": 0.36735424865425254,
+            "dhalsim": 0.0966721706984875
           },
-          "turnout_rate": 0.6639942443580367,
+          "turnout_rate": 0.6142346638254821,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-4,4)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-4,4)",
       "initial_district_id": "d1"
     },
     {
@@ -2046,22 +2152,23 @@
         "q": -3,
         "r": 4
       },
-      "total_population": 3620,
+      "total_population": 985,
       "demographic_groups": [
         {
           "id": "p081-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6378003415837884,
-            "ryu": 0.3621996584162116
+            "ken": 0.546549930870533,
+            "ryu": 0.3589813047274947,
+            "dhalsim": 0.09446876440197229
           },
-          "turnout_rate": 0.6736637991736643,
+          "turnout_rate": 0.6402034871280193,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-3,4)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-3,4)",
       "initial_district_id": "d1"
     },
     {
@@ -2071,22 +2178,23 @@
         "q": -2,
         "r": 4
       },
-      "total_population": 3751,
+      "total_population": 959,
       "demographic_groups": [
         {
           "id": "p082-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6293722384050489,
-            "ryu": 0.37062776159495114
+            "ken": 0.5416878173872829,
+            "ryu": 0.3628304779017344,
+            "dhalsim": 0.09548170471098273
           },
-          "turnout_rate": 0.5678121372242458,
+          "turnout_rate": 0.670599197782576,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-2,4)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (-2,4)",
       "initial_district_id": "d1"
     },
     {
@@ -2096,22 +2204,23 @@
         "q": -1,
         "r": 4
       },
-      "total_population": 4163,
+      "total_population": 1007,
       "demographic_groups": [
         {
           "id": "p083-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5907081260718405,
-            "ryu": 0.40929187392815947
+            "ken": 0.2813542377576232,
+            "ryu": 0.5133184016016977,
+            "dhalsim": 0.2053273606406791
           },
-          "turnout_rate": 0.6527216300251893,
+          "turnout_rate": 0.6030862923478708,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-1,4)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (-1,4)",
       "initial_district_id": "d1"
     },
     {
@@ -2121,22 +2230,23 @@
         "q": 0,
         "r": 4
       },
-      "total_population": 5038,
+      "total_population": 987,
       "demographic_groups": [
         {
           "id": "p084-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5122939895279706,
-            "ryu": 0.48770601047202944
+            "ken": 0.3026453738287091,
+            "ryu": 0.49811044726520776,
+            "dhalsim": 0.19924417890608312
           },
-          "turnout_rate": 0.5690018963767216,
+          "turnout_rate": 0.6660780387115665,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (0,4)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (0,4)",
       "initial_district_id": "d1"
     },
     {
@@ -2146,22 +2256,23 @@
         "q": 1,
         "r": 4
       },
-      "total_population": 4545,
+      "total_population": 946,
       "demographic_groups": [
         {
           "id": "p085-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.39785484347492456,
-            "ryu": 0.6021451565250755
+            "ken": 0.3305506302602589,
+            "ryu": 0.4781781212426722,
+            "dhalsim": 0.19127124849706892
           },
-          "turnout_rate": 0.5545408094651066,
+          "turnout_rate": 0.5823236346128396,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central2",
-      "county_name": "Hawthorn Central 2",
-      "name": "Central2 (1,4)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (1,4)",
       "initial_district_id": "d1"
     },
     {
@@ -2171,22 +2282,23 @@
         "q": -5,
         "r": 5
       },
-      "total_population": 3444,
+      "total_population": 1007,
       "demographic_groups": [
         {
           "id": "p086-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6493291041627526,
-            "ryu": 0.3506708958372474
+            "ken": 0.5266291642002762,
+            "ryu": 0.3747519116747814,
+            "dhalsim": 0.09861892412494247
           },
-          "turnout_rate": 0.6804829530417918,
+          "turnout_rate": 0.6590292712673544,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-5,5)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-5,5)",
       "initial_district_id": "d1"
     },
     {
@@ -2196,22 +2308,23 @@
         "q": -4,
         "r": 5
       },
-      "total_population": 4358,
+      "total_population": 1050,
       "demographic_groups": [
         {
           "id": "p087-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6256893667764962,
-            "ryu": 0.3743106332235038
+            "ken": 0.5326864813826978,
+            "ryu": 0.36995653557203095,
+            "dhalsim": 0.0973569830452713
           },
-          "turnout_rate": 0.5953932692296803,
+          "turnout_rate": 0.6552091700723395,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-4,5)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-4,5)",
       "initial_district_id": "d1"
     },
     {
@@ -2221,22 +2334,23 @@
         "q": -3,
         "r": 5
       },
-      "total_population": 3504,
+      "total_population": 983,
       "demographic_groups": [
         {
           "id": "p088-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5920063030533492,
-            "ryu": 0.4079936969466508
+            "ken": 0.5034822659380734,
+            "ryu": 0.3930765394656919,
+            "dhalsim": 0.1034411945962347
           },
-          "turnout_rate": 0.666910684958566,
+          "turnout_rate": 0.6588593317428604,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-3,5)",
+      "county_id": "hollowmere_west",
+      "county_name": "Hollowmere West",
+      "name": "West (-3,5)",
       "initial_district_id": "d1"
     },
     {
@@ -2246,22 +2360,23 @@
         "q": -2,
         "r": 5
       },
-      "total_population": 4555,
+      "total_population": 990,
       "demographic_groups": [
         {
           "id": "p089-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6519125463813543,
-            "ryu": 0.3480874536186457
+            "ken": 0.5415500585548579,
+            "ryu": 0.36293953697740416,
+            "dhalsim": 0.09551040446773794
           },
-          "turnout_rate": 0.6914643195341341,
+          "turnout_rate": 0.5795566580141894,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-2,5)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (-2,5)",
       "initial_district_id": "d1"
     },
     {
@@ -2271,22 +2386,23 @@
         "q": -1,
         "r": 5
       },
-      "total_population": 4375,
+      "total_population": 1028,
       "demographic_groups": [
         {
           "id": "p090-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.6279194189421833,
-            "ryu": 0.3720805810578167
+            "ken": 0.3096629149094224,
+            "ryu": 0.4930979179218412,
+            "dhalsim": 0.19723916716873652
           },
-          "turnout_rate": 0.5874609076417983,
+          "turnout_rate": 0.6836399416206405,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (-1,5)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (-1,5)",
       "initial_district_id": "d1"
     },
     {
@@ -2296,22 +2412,23 @@
         "q": 0,
         "r": 5
       },
-      "total_population": 4962,
+      "total_population": 980,
       "demographic_groups": [
         {
           "id": "p091-all",
           "population_share": 1,
           "vote_shares": {
-            "ken": 0.5002344448678195,
-            "ryu": 0.49976555513218046
+            "ken": 0.3159516013972461,
+            "ryu": 0.4886059990019671,
+            "dhalsim": 0.19544239960078685
           },
-          "turnout_rate": 0.5741614397382364,
+          "turnout_rate": 0.6640956641640514,
           "name": "All voters"
         }
       ],
-      "county_id": "hawthorn_central",
-      "county_name": "Hawthorn Central",
-      "name": "Central (0,5)",
+      "county_id": "hollowmere_south",
+      "county_name": "Hollowmere South",
+      "name": "South (0,5)",
       "initial_district_id": "d1"
     }
   ],
@@ -2341,121 +2458,27 @@
   "narrative": {
     "character": {
       "name": "You",
-      "role": "Mapmaker, Hawthorn Bend",
-      "motivation": "You can draw a legal map. Now for the part that makes redistricting matter: the voters aren't all the same, and where you draw the lines decides who wins. Let's learn to read the vote.\n"
+      "role": "Mapmaker, Hollowmere",
+      "motivation": "Two parties run across Hollowmere: the Ken Party out west and the Ryu Party through the central townships, each with a candidate in every district. But the eastern Hollow has its own — Dhalsim, an independent, no party behind him. His neighbours favour him right across the east, yet he stands in only one race: the district that holds his home. Where you draw the lines decides whether the Hollow gets a voice.\n"
     },
     "intro_slides": [
       {
-        "body": "Hawthorn Bend has a river running through it — scenery only; your districts can cross it freely. What's new is underneath: the people. The west of the Bend leans one way, the east the other, and the centre is a tossup.\n",
-        "heading": "A New Kind of Map"
+        "body": "Dhalsim isn't a party — he's the Hollow's own. Out east he's the favourite, ahead of both Ken and Ryu on his home ground. But an independent runs where he lives: he appears on the ballot only in the district that contains his home, marked with a ⌂ pin on the map.\n",
+        "heading": "An Independent's Home Ground"
       },
       {
-        "body": "Two new things will appear as we go. The **Lean** view colours each precinct by who its voters favour. And the **election result** shows who wins each district you draw. They go together: lean tells you the ground, the result tells you the outcome — and the lines you draw decide it.\n",
-        "heading": "Lean, and the Result"
+        "body": "Switch to the Lean view and you'll see Dhalsim's teal spread across the east — that's who FAVOURS him. It isn't who can VOTE for him. Support that sits in a district which doesn't hold his home is support he can't collect: he isn't on that ballot. Lean is map-wide; the ballot is home-only.\n",
+        "heading": "A Lean Is Not a Ballot"
+      },
+      {
+        "body": "To send Dhalsim to the assembly, draw his home and enough of his eastern base into ONE district. Keep the Hollow together and he carries it. Split it across districts — or pull his home out into Ken's or Ryu's ground — and his neighbours' support scatters, uncounted, and a party takes the seat instead.\n",
+        "heading": "Give the Hollow a Voice"
       }
     ],
-    "objective": "Draw three balanced, connected districts — a legal map, like before — and read the result. There's no seat to chase; repaint the lines, watch who wins change, and submit when it's legal and you've had a look.\n",
-    "epilogue": "That's the whole picture: precincts lean, and the district lines you draw turn those leanings into seats. The same voters can hand one party a majority of seats or the other — nothing changed but the lines.\nYou've drawn a legal map and learned to read the vote. From here the campaign scenarios put it to work: real maps, real goals, and a reason to draw the lines the way you do.\n"
+    "objective": "Draw three balanced, connected districts — a legal map, like before — and read the result. There's no seat to chase: keep Dhalsim's home (the ⌂ pin) and his eastern base together in one district and watch him carry the Hollow; crack it and his support scatters off his ballot. Can you draw a map that gives the Hollow a voice of its own?\n",
+    "epilogue": "A home-base independent lives or dies by a single line. A party spreads its risk across many seats; an independent bets everything on the shape of one district — the one that holds his home. Keep a community together and it can elect its own; split it and its voice vanishes, even when a clear majority there favours them. That home-only rule is a simplification of real law: nearly every state requires a legislator to live in the district they represent, so which district a home falls into decides where its candidate can win — the U.S. House is looser, asking only that a member live somewhere in the state. The lines don't just divide the vote — they decide who is even allowed on the ballot.\n"
   },
   "default_district_id": "d1",
-  "river_edges": [
-    [
-      "p004",
-      "p005"
-    ],
-    [
-      "p004",
-      "p011"
-    ],
-    [
-      "p010",
-      "p011"
-    ],
-    [
-      "p010",
-      "p018"
-    ],
-    [
-      "p017",
-      "p018"
-    ],
-    [
-      "p017",
-      "p026"
-    ],
-    [
-      "p025",
-      "p026"
-    ],
-    [
-      "p025",
-      "p035"
-    ],
-    [
-      "p034",
-      "p035"
-    ],
-    [
-      "p034",
-      "p045"
-    ],
-    [
-      "p044",
-      "p045"
-    ],
-    [
-      "p045",
-      "p055"
-    ],
-    [
-      "p045",
-      "p056"
-    ],
-    [
-      "p046",
-      "p056"
-    ],
-    [
-      "p046",
-      "p057"
-    ],
-    [
-      "p047",
-      "p057"
-    ],
-    [
-      "p057",
-      "p058"
-    ],
-    [
-      "p058",
-      "p067"
-    ],
-    [
-      "p067",
-      "p068"
-    ],
-    [
-      "p068",
-      "p076"
-    ],
-    [
-      "p076",
-      "p077"
-    ],
-    [
-      "p077",
-      "p084"
-    ],
-    [
-      "p084",
-      "p085"
-    ],
-    [
-      "p085",
-      "p091"
-    ]
-  ],
   "hide_election_results": false,
   "hide_view_toolbar": false,
   "guided": true

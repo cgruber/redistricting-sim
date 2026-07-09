@@ -23,12 +23,14 @@
     {
       "id": "ken",
       "name": "Ken Party",
-      "abbreviation": "KEN"
+      "abbreviation": "KEN",
+      "color": "#c96d00"
     },
     {
       "id": "ryu",
       "name": "Ryu Party",
-      "abbreviation": "RYU"
+      "abbreviation": "RYU",
+      "color": "#7b35a8"
     }
   ],
   "districts": [

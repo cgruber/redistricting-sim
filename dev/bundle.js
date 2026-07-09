@@ -90,6 +90,15 @@ var __yieldStar = (value) => {
   }, "return" in obj && method("return"), it;
 };
 
+// game/web/src/model/escape-html.js
+function escapeHtml(s2) {
+  return s2.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+var init_escape_html = __esm({
+  "game/web/src/model/escape-html.js"() {
+  }
+});
+
 // game/web/src/model/runtime-types.js
 function isObject(v2) {
   return typeof v2 === "object" && v2 !== null && !Array.isArray(v2);
@@ -114,6 +123,8 @@ function requireString(v2, label) {
 function requireNumber(v2, label) {
   if (!isNumber(v2))
     throw new Error(`${label}: expected number, got ${typeof v2}`);
+  if (!Number.isFinite(v2))
+    throw new Error(`${label}: expected finite number, got ${v2}`);
   return v2;
 }
 function requireBoolean(v2, label) {
@@ -136,6 +147,30 @@ var init_runtime_types = __esm({
   }
 });
 
+// game/web/src/model/runtime.js
+function districtColor(id2) {
+  var _a;
+  return (_a = DISTRICT_COLORS[id2 - 1]) != null ? _a : "#888";
+}
+var DISTRICT_COLORS, MAX_DISTRICTS;
+var init_runtime = __esm({
+  "game/web/src/model/runtime.js"() {
+    DISTRICT_COLORS = [
+      "#E69F00",
+      // amber
+      "#F0E442",
+      // yellow
+      "#009E73",
+      // bluish green
+      "#CC79A7",
+      // mauve
+      "#D55E00"
+      // vermilion
+    ];
+    MAX_DISTRICTS = DISTRICT_COLORS.length;
+  }
+});
+
 // game/web/src/model/loader.js
 function parseRegion(raw) {
   const r = requireObject(raw, "region");
@@ -155,11 +190,41 @@ function parseGeometry(raw) {
 }
 function parseParty(raw, idx) {
   const r = requireObject(raw, `parties[${idx}]`);
-  return {
+  const p = {
     id: requireString(r["id"], `parties[${idx}].id`),
     name: requireString(r["name"], `parties[${idx}].name`),
     abbreviation: requireString(r["abbreviation"], `parties[${idx}].abbreviation`)
   };
+  if (r["color"] !== void 0) {
+    p.color = requireString(r["color"], `parties[${idx}].color`);
+  }
+  if (r["candidates"] !== void 0) {
+    const rawCandidates = r["candidates"];
+    if (!Array.isArray(rawCandidates)) {
+      throw new Error(`parties[${idx}].candidates must be an array of strings`);
+    }
+    p.candidates = rawCandidates.map((c3, i) => requireString(c3, `parties[${idx}].candidates[${i}]`));
+  }
+  if (r["independent"] !== void 0) {
+    p.independent = requireBoolean(r["independent"], `parties[${idx}].independent`);
+  }
+  if (r["home"] !== void 0) {
+    const h = requireObject(r["home"], `parties[${idx}].home`);
+    p.home = {
+      q: requireNumber(h["q"], `parties[${idx}].home.q`),
+      r: requireNumber(h["r"], `parties[${idx}].home.r`)
+    };
+  }
+  if (p.independent && p.home === void 0) {
+    throw new Error(`parties[${idx}]: independent party "${p.id}" must declare a home`);
+  }
+  if (p.home !== void 0 && !p.independent) {
+    throw new Error(`parties[${idx}]: party "${p.id}" declares a home but is not marked independent`);
+  }
+  if (p.independent && idx < 2) {
+    throw new Error(`parties[${idx}]: independent party "${p.id}" must be declared in slot 2 or later (slots 0 and 1 are reserved for the two major parties the fairness metrics normalise against)`);
+  }
+  return p;
 }
 function parseDistrict(raw, idx) {
   const r = requireObject(raw, `districts[${idx}]`);
@@ -223,7 +288,11 @@ function parsePrecinct(raw, idx) {
   }
   const pc = { id: id2, editable, position };
   if (r["total_population"] !== void 0) {
-    pc.total_population = requireNumber(r["total_population"], `${label}.total_population`);
+    const totalPopulation = requireNumber(r["total_population"], `${label}.total_population`);
+    if (totalPopulation < 0) {
+      throw new Error(`${label}.total_population: expected non-negative, got ${totalPopulation}`);
+    }
+    pc.total_population = totalPopulation;
   }
   if (r["demographic_groups"] !== void 0) {
     const groupsRaw = requireArray(r["demographic_groups"], `${label}.demographic_groups`);
@@ -231,6 +300,9 @@ function parsePrecinct(raw, idx) {
   }
   if (r["county_id"] !== void 0) {
     pc.county_id = requireString(r["county_id"], `${label}.county_id`);
+  }
+  if (r["county_name"] !== void 0) {
+    pc.county_name = requireString(r["county_name"], `${label}.county_name`);
   }
   if (r["name"] !== void 0) {
     pc.name = requireString(r["name"], `${label}.name`);
@@ -278,7 +350,9 @@ function parseGroupFilter(raw, label) {
   const r = requireObject(raw, label);
   if ("group_ids" in r) {
     const arr = requireArray(r["group_ids"], `${label}.group_ids`);
-    return { group_ids: arr.map((x3, i) => requireString(x3, `${label}.group_ids[${i}]`)) };
+    return {
+      group_ids: arr.map((x3, i) => requireString(x3, `${label}.group_ids[${i}]`))
+    };
   }
   if ("dimension" in r && "value" in r) {
     return {
@@ -315,10 +389,14 @@ function parseEvent(raw, idx) {
     let precinct_filter;
     if ("precinct_ids" in pfRaw) {
       const arr = requireArray(pfRaw["precinct_ids"], `${label}.precinct_filter.precinct_ids`);
-      precinct_filter = { precinct_ids: arr.map((x3, i) => requireString(x3, `${label}.precinct_filter.precinct_ids[${i}]`)) };
+      precinct_filter = {
+        precinct_ids: arr.map((x3, i) => requireString(x3, `${label}.precinct_filter.precinct_ids[${i}]`))
+      };
     } else if ("tags" in pfRaw) {
       const arr = requireArray(pfRaw["tags"], `${label}.precinct_filter.tags`);
-      precinct_filter = { tags: arr.map((x3, i) => requireString(x3, `${label}.precinct_filter.tags[${i}]`)) };
+      precinct_filter = {
+        tags: arr.map((x3, i) => requireString(x3, `${label}.precinct_filter.tags[${i}]`))
+      };
     } else if ("editable_only" in pfRaw) {
       if (pfRaw["editable_only"] !== true)
         throw new Error(`${label}.precinct_filter.editable_only must be true`);
@@ -450,6 +528,9 @@ function parseNarrative(raw) {
   if (r["flavor_text"] !== void 0) {
     narrative.flavor_text = requireString(r["flavor_text"], "narrative.flavor_text");
   }
+  if (r["epilogue"] !== void 0) {
+    narrative.epilogue = requireString(r["epilogue"], "narrative.epilogue");
+  }
   if (r["instigator"] !== void 0) {
     throw new Error("narrative.instigator removed; use instigator_character at the scenario root level instead");
   }
@@ -538,90 +619,157 @@ function cartesianProduct(dimNames, dims) {
   }
   return result;
 }
-function validateScenarioInvariants(fields) {
-  const { rawPrecincts, parties, districts, events, success_criteria, geometry, group_schema, terrain_tiles, river_edges, default_district_id } = fields;
-  const partyIds = new Set(parties.map((p) => p.id));
-  const districtIds = new Set(districts.map((d) => d.id));
-  const precinctIds = new Set(rawPrecincts.map((p) => p.id));
-  const definedGroupIds = /* @__PURE__ */ new Set();
-  for (const pc of rawPrecincts) {
-    for (const grp of pc.demographic_groups) {
-      definedGroupIds.add(grp.id);
-    }
-  }
-  if (rawPrecincts.length < 1) {
+function checkPrecinctCount(precinctCount) {
+  if (precinctCount < 1) {
     throw new Error("Invariant 12: precincts must have at least 1 element");
   }
-  if (districts.length < 2) {
+}
+function checkDistrictCount(districtCount) {
+  if (districtCount < 2) {
     throw new Error("Invariant 10: districts must have at least 2 elements");
   }
-  {
-    const allIds = /* @__PURE__ */ new Map();
-    const checkId = (id2, label) => {
-      const existing = allIds.get(id2);
-      if (existing !== void 0) {
-        throw new Error(`Invariant 11: duplicate id "${id2}" found in both ${existing} and ${label}`);
+  if (districtCount > MAX_DISTRICTS) {
+    throw new Error(`Invariant 10: districts must have at most ${MAX_DISTRICTS} elements (palette limit), got ${districtCount}`);
+  }
+}
+function checkContextPrecinctDistrictId(precincts) {
+  for (const pc of precincts) {
+    if (!pc.editable) {
+      if (pc.initial_district_id === void 0 || pc.initial_district_id === null) {
+        throw new Error(`Invariant 4: context precinct "${pc.id}" (editable: false) must have a non-null initial_district_id`);
       }
-      allIds.set(id2, label);
-    };
-    for (const p of parties)
+    }
+  }
+}
+function checkUniqueIds(args) {
+  const allIds = /* @__PURE__ */ new Map();
+  const checkId = (id2, label) => {
+    const existing = allIds.get(id2);
+    if (existing !== void 0) {
+      throw new Error(`Invariant 11: duplicate id "${id2}" found in both ${existing} and ${label}`);
+    }
+    allIds.set(id2, label);
+  };
+  if (args.parties !== void 0)
+    for (const p of args.parties)
       checkId(p.id, "parties");
-    for (const d of districts)
+  if (args.districts !== void 0)
+    for (const d of args.districts)
       checkId(d.id, "districts");
-    for (const pc of rawPrecincts) {
-      checkId(pc.id, "precincts");
+  for (const pc of args.precincts) {
+    checkId(pc.id, "precincts");
+    if (pc.demographic_groups !== void 0) {
       for (const grp of pc.demographic_groups)
         checkId(grp.id, `precincts[${pc.id}].demographic_groups`);
     }
-    for (const ev of events)
-      checkId(ev.id, "events");
-    for (const cr of success_criteria)
-      checkId(cr.id, "success_criteria");
   }
-  for (const pc of rawPrecincts) {
+  if (args.events !== void 0)
+    for (const ev of args.events)
+      checkId(ev.id, "events");
+  if (args.success_criteria !== void 0)
+    for (const cr of args.success_criteria)
+      checkId(cr.id, "success_criteria");
+}
+function checkGeometryAndNeighbors(geometry, precincts, precinctIds) {
+  if (geometry.type === "hex_axial") {
+    for (const pc of precincts) {
+      if (pc.neighbors !== void 0) {
+        throw new Error(`Invariant 8: hex_axial geometry precinct "${pc.id}" must not have a neighbors field`);
+      }
+    }
+  } else {
+    for (const pc of precincts) {
+      if (pc.neighbors === void 0) {
+        throw new Error(`Invariant 8: custom geometry precinct "${pc.id}" must have a neighbors field`);
+      }
+    }
+    for (const pc of precincts) {
+      for (const nbId of pc.neighbors) {
+        if (!precinctIds.has(nbId)) {
+          throw new Error(`Invariant 9: precinct "${pc.id}" neighbors[] references unknown precinct "${nbId}"`);
+        }
+      }
+    }
+    const adjMap = /* @__PURE__ */ new Map();
+    for (const pc of precincts)
+      adjMap.set(pc.id, new Set(pc.neighbors));
+    for (const pc of precincts) {
+      for (const nbId of pc.neighbors) {
+        const nbNeighbors = adjMap.get(nbId);
+        if (nbNeighbors === void 0 || !nbNeighbors.has(pc.id)) {
+          throw new Error(`Invariant 8: custom geometry neighbors not symmetric: precinct "${pc.id}" lists "${nbId}" as neighbor, but "${nbId}" does not list "${pc.id}"`);
+        }
+      }
+    }
+  }
+}
+function checkGroupUnknownParties(precinctId, grp, partyIds) {
+  for (const pid of Object.keys(grp.vote_shares)) {
+    if (!partyIds.has(pid)) {
+      throw new Error(`Invariant 1: precinct "${precinctId}" group "${grp.id}" references unknown party "${pid}" in vote_shares`);
+    }
+  }
+}
+function checkGroupVoteShareComplete(precinctId, grp, partyIds) {
+  for (const pid of partyIds) {
+    if (!(pid in grp.vote_shares)) {
+      throw new Error(`Invariant 6: precinct "${precinctId}" group "${grp.id}" is missing vote_share for party "${pid}"`);
+    }
+  }
+  const vsum = Object.values(grp.vote_shares).reduce((a2, v2) => a2 + v2, 0);
+  if (Math.abs(vsum - 1) > EPSILON) {
+    throw new Error(`Invariant 6: precinct "${precinctId}" group "${grp.id}" vote_shares sum is ${vsum}, expected 1.0 (\xB1${EPSILON})`);
+  }
+}
+function checkUnknownPartyRefsInGroups(precincts, partyIds) {
+  for (const pc of precincts) {
+    if (pc.demographic_groups === void 0)
+      continue;
+    for (const grp of pc.demographic_groups) {
+      checkGroupUnknownParties(pc.id, grp, partyIds);
+    }
+  }
+}
+function checkVoteShareCompleteness(precincts, partyIds) {
+  for (const pc of precincts) {
+    if (pc.demographic_groups === void 0)
+      continue;
+    for (const grp of pc.demographic_groups) {
+      checkGroupVoteShareComplete(pc.id, grp, partyIds);
+    }
+  }
+}
+function checkPartyRefsInEventsAndCriteria(events, success_criteria, partyIds) {
+  if (events !== void 0) {
+    for (const ev of events) {
+      if (ev.type === "vote_share_shift" && !partyIds.has(ev.party)) {
+        throw new Error(`Invariant 1: event "${ev.id}" references unknown party "${ev.party}"`);
+      }
+    }
+  }
+  if (success_criteria !== void 0) {
+    for (const cr of success_criteria) {
+      const c3 = cr.criterion;
+      if (c3.type === "seat_count" || c3.type === "mean_median" || c3.type === "safe_seats") {
+        if (!partyIds.has(c3.party)) {
+          throw new Error(`Invariant 1: criterion "${cr.id}" references unknown party "${c3.party}"`);
+        }
+      }
+    }
+  }
+}
+function checkPopulationShareSums(precincts) {
+  for (const pc of precincts) {
+    if (pc.demographic_groups === void 0)
+      continue;
     const sum4 = pc.demographic_groups.reduce((acc, g) => acc + g.population_share, 0);
     if (Math.abs(sum4 - 1) > EPSILON) {
       throw new Error(`Invariant 5: precinct "${pc.id}" demographic_groups population_share sum is ${sum4}, expected 1.0 (\xB1${EPSILON})`);
     }
   }
-  for (const pc of rawPrecincts) {
-    for (const grp of pc.demographic_groups) {
-      for (const partyId of partyIds) {
-        if (!(partyId in grp.vote_shares)) {
-          throw new Error(`Invariant 6: precinct "${pc.id}" group "${grp.id}" is missing vote_share for party "${partyId}"`);
-        }
-      }
-      const sum4 = Object.values(grp.vote_shares).reduce((acc, v2) => acc + v2, 0);
-      if (Math.abs(sum4 - 1) > EPSILON) {
-        throw new Error(`Invariant 6: precinct "${pc.id}" group "${grp.id}" vote_shares sum is ${sum4}, expected 1.0 (\xB1${EPSILON})`);
-      }
-    }
-  }
-  for (const pc of rawPrecincts) {
-    for (const grp of pc.demographic_groups) {
-      for (const pid of Object.keys(grp.vote_shares)) {
-        if (!partyIds.has(pid)) {
-          throw new Error(`Invariant 1: precinct "${pc.id}" group "${grp.id}" references unknown party "${pid}" in vote_shares`);
-        }
-      }
-    }
-  }
-  for (const ev of events) {
-    if (ev.type === "vote_share_shift") {
-      if (!partyIds.has(ev.party)) {
-        throw new Error(`Invariant 1: event "${ev.id}" references unknown party "${ev.party}"`);
-      }
-    }
-  }
-  for (const cr of success_criteria) {
-    const c3 = cr.criterion;
-    if (c3.type === "seat_count" || c3.type === "mean_median" || c3.type === "safe_seats") {
-      if (!partyIds.has(c3.party)) {
-        throw new Error(`Invariant 1: criterion "${cr.id}" references unknown party "${c3.party}"`);
-      }
-    }
-  }
-  for (const pc of rawPrecincts) {
+}
+function checkDistrictRefs(precincts, districtIds, default_district_id) {
+  for (const pc of precincts) {
     if (pc.initial_district_id !== void 0 && pc.initial_district_id !== null) {
       if (!districtIds.has(pc.initial_district_id)) {
         throw new Error(`Invariant 2: precinct "${pc.id}" initial_district_id "${pc.initial_district_id}" does not exist in districts`);
@@ -631,104 +779,79 @@ function validateScenarioInvariants(fields) {
   if (default_district_id !== void 0 && !districtIds.has(default_district_id)) {
     throw new Error(`Invariant 2: default_district_id "${default_district_id}" does not exist in districts`);
   }
+}
+function collectDefinedGroupIds(precincts) {
+  const definedGroupIds = /* @__PURE__ */ new Set();
+  for (const pc of precincts) {
+    if (pc.demographic_groups !== void 0) {
+      for (const grp of pc.demographic_groups)
+        definedGroupIds.add(grp.id);
+    }
+  }
+  return definedGroupIds;
+}
+function checkGroupRefsInEvents(events, definedGroupIds, group_schema) {
   for (const ev of events) {
-    const gf = ev.group_filter;
-    const gids = groupFilterGroupIds(gf);
+    const gids = groupFilterGroupIds(ev.group_filter);
     for (const gid of gids) {
       if (!definedGroupIds.has(gid)) {
         throw new Error(`Invariant 3: event "${ev.id}" group_filter references unknown group "${gid}"`);
       }
     }
-    validateDimensionFilter(gf, group_schema, `event "${ev.id}"`);
+    validateDimensionFilter(ev.group_filter, group_schema, `event "${ev.id}"`);
   }
+}
+function checkGroupRefsInCriteria(success_criteria, definedGroupIds, group_schema) {
   for (const cr of success_criteria) {
     const c3 = cr.criterion;
     if (c3.type === "majority_minority") {
-      const gf = c3.group_filter;
-      const gids = groupFilterGroupIds(gf);
+      const gids = groupFilterGroupIds(c3.group_filter);
       for (const gid of gids) {
         if (!definedGroupIds.has(gid)) {
           throw new Error(`Invariant 3: criterion "${cr.id}" group_filter references unknown group "${gid}"`);
         }
       }
-      validateDimensionFilter(gf, group_schema, `criterion "${cr.id}"`);
+      validateDimensionFilter(c3.group_filter, group_schema, `criterion "${cr.id}"`);
     }
   }
-  for (const pc of rawPrecincts) {
-    if (!pc.editable) {
-      if (pc.initial_district_id === void 0 || pc.initial_district_id === null) {
-        throw new Error(`Invariant 4: context precinct "${pc.id}" (editable: false) must have a non-null initial_district_id`);
-      }
-    }
-  }
-  if (geometry.type === "hex_axial") {
-    for (const pc of rawPrecincts) {
-      if (pc.neighbors !== void 0) {
-        throw new Error(`Invariant 8: hex_axial geometry precinct "${pc.id}" must not have a neighbors field`);
-      }
-    }
-  } else {
-    for (const pc of rawPrecincts) {
-      if (pc.neighbors === void 0) {
-        throw new Error(`Invariant 8: custom geometry precinct "${pc.id}" must have a neighbors field`);
-      }
-    }
-    for (const pc of rawPrecincts) {
-      for (const nbId of pc.neighbors) {
-        if (!precinctIds.has(nbId)) {
-          throw new Error(`Invariant 9: precinct "${pc.id}" neighbors[] references unknown precinct "${nbId}"`);
+}
+function checkGroupSchemaCompleteness(group_schema, precincts) {
+  const dims = group_schema.dimensions;
+  const dimNames = Object.keys(dims);
+  for (const pc of precincts) {
+    if (pc.demographic_groups === void 0)
+      continue;
+    for (const grp of pc.demographic_groups) {
+      for (const dimName of dimNames) {
+        if (grp.dimensions === void 0 || !(dimName in grp.dimensions)) {
+          throw new Error(`Invariant 7: precinct "${pc.id}" group "${grp.id}" is missing dimension "${dimName}" (required by group_schema)`);
         }
-      }
-    }
-    const adjMap = /* @__PURE__ */ new Map();
-    for (const pc of rawPrecincts) {
-      adjMap.set(pc.id, new Set(pc.neighbors));
-    }
-    for (const pc of rawPrecincts) {
-      for (const nbId of pc.neighbors) {
-        const nbNeighbors = adjMap.get(nbId);
-        if (nbNeighbors === void 0 || !nbNeighbors.has(pc.id)) {
-          throw new Error(`Invariant 8: custom geometry neighbors not symmetric: precinct "${pc.id}" lists "${nbId}" as neighbor, but "${nbId}" does not list "${pc.id}"`);
-        }
-      }
-    }
-  }
-  if (group_schema !== void 0) {
-    const dims = group_schema.dimensions;
-    const dimNames = Object.keys(dims);
-    for (const pc of rawPrecincts) {
-      for (const grp of pc.demographic_groups) {
-        for (const dimName of dimNames) {
-          if (grp.dimensions === void 0 || !(dimName in grp.dimensions)) {
-            throw new Error(`Invariant 7: precinct "${pc.id}" group "${grp.id}" is missing dimension "${dimName}" (required by group_schema)`);
-          }
-          const val = grp.dimensions[dimName];
-          const allowed = dims[dimName];
-          if (allowed === void 0 || !allowed.includes(val)) {
-            throw new Error(`Invariant 7: precinct "${pc.id}" group "${grp.id}" dimension "${dimName}" value "${val}" is not in schema values [${allowed == null ? void 0 : allowed.join(", ")}]`);
-          }
+        const val = grp.dimensions[dimName];
+        const allowed = dims[dimName];
+        if (allowed === void 0 || !allowed.includes(val)) {
+          throw new Error(`Invariant 7: precinct "${pc.id}" group "${grp.id}" dimension "${dimName}" value "${val}" is not in schema values [${allowed == null ? void 0 : allowed.join(", ")}]`);
         }
       }
     }
     const expectedCombos = cartesianProduct(dimNames, dims);
-    for (const pc of rawPrecincts) {
-      for (const expectedCombo of expectedCombos) {
-        const matchingGroups = pc.demographic_groups.filter((grp) => {
-          if (grp.dimensions === void 0)
-            return false;
-          return dimNames.every((d) => grp.dimensions[d] === expectedCombo[d]);
-        });
-        if (matchingGroups.length === 0) {
-          const comboStr = Object.entries(expectedCombo).map(([k2, v2]) => `${k2}=${v2}`).join(", ");
-          throw new Error(`Invariant 7: precinct "${pc.id}" is missing a group for dimension combo {${comboStr}} (required by group_schema)`);
-        }
-        if (matchingGroups.length > 1) {
-          const comboStr = Object.entries(expectedCombo).map(([k2, v2]) => `${k2}=${v2}`).join(", ");
-          throw new Error(`Invariant 7: precinct "${pc.id}" has ${matchingGroups.length} groups for dimension combo {${comboStr}}; expected exactly 1`);
-        }
+    for (const expectedCombo of expectedCombos) {
+      const matchingGroups = pc.demographic_groups.filter((grp) => {
+        if (grp.dimensions === void 0)
+          return false;
+        return dimNames.every((d) => grp.dimensions[d] === expectedCombo[d]);
+      });
+      if (matchingGroups.length === 0) {
+        const comboStr = Object.entries(expectedCombo).map(([k2, v2]) => `${k2}=${v2}`).join(", ");
+        throw new Error(`Invariant 7: precinct "${pc.id}" is missing a group for dimension combo {${comboStr}} (required by group_schema)`);
+      }
+      if (matchingGroups.length > 1) {
+        const comboStr = Object.entries(expectedCombo).map(([k2, v2]) => `${k2}=${v2}`).join(", ");
+        throw new Error(`Invariant 7: precinct "${pc.id}" has ${matchingGroups.length} groups for dimension combo {${comboStr}}; expected exactly 1`);
       }
     }
   }
+}
+function validateTerrainAndRivers(geometry, precincts, precinctIds, terrain_tiles, river_edges) {
   if (geometry.type === "custom") {
     if (terrain_tiles !== void 0 && terrain_tiles.length > 0) {
       throw new Error(`Terrain validation: terrain_tiles require geometry.type "hex_axial"; custom geometry is not supported in v1`);
@@ -739,7 +862,7 @@ function validateScenarioInvariants(fields) {
   }
   if (terrain_tiles !== void 0 && terrain_tiles.length > 0) {
     const precinctPosSet = /* @__PURE__ */ new Set();
-    for (const pc of rawPrecincts) {
+    for (const pc of precincts) {
       const pos = pc.position;
       if ("q" in pos)
         precinctPosSet.add(`${pos.q},${pos.r}`);
@@ -771,7 +894,7 @@ function validateScenarioInvariants(fields) {
       if (mountainSet.size > 0) {
         const allQs = [];
         const allRs = [];
-        for (const pc of rawPrecincts) {
+        for (const pc of precincts) {
           const pos = pc.position;
           if ("q" in pos) {
             allQs.push(pos.q);
@@ -804,7 +927,7 @@ function validateScenarioInvariants(fields) {
             }
           }
         }
-        for (const pc of rawPrecincts) {
+        for (const pc of precincts) {
           const pos = pc.position;
           if ("q" in pos) {
             const key = `${pos.q},${pos.r}`;
@@ -819,7 +942,7 @@ function validateScenarioInvariants(fields) {
   if (river_edges !== void 0) {
     const precinctPosByid = /* @__PURE__ */ new Map();
     if (geometry.type === "hex_axial") {
-      for (const pc of rawPrecincts) {
+      for (const pc of precincts) {
         const pos = pc.position;
         if ("q" in pos)
           precinctPosByid.set(pc.id, { q: pos.q, r: pos.r });
@@ -844,6 +967,36 @@ function validateScenarioInvariants(fields) {
       }
     }
   }
+}
+function validateScenarioInvariants(fields) {
+  const { rawPrecincts, parties, districts, events, success_criteria, geometry, group_schema, terrain_tiles, river_edges, default_district_id } = fields;
+  const partyIds = new Set(parties.map((p) => p.id));
+  const districtIds = new Set(districts.map((d) => d.id));
+  const precinctIds = new Set(rawPrecincts.map((p) => p.id));
+  const definedGroupIds = collectDefinedGroupIds(rawPrecincts);
+  checkPrecinctCount(rawPrecincts.length);
+  checkDistrictCount(districts.length);
+  checkUniqueIds({ parties, districts, precincts: rawPrecincts, events, success_criteria });
+  checkPopulationShareSums(rawPrecincts);
+  checkVoteShareCompleteness(rawPrecincts, partyIds);
+  checkUnknownPartyRefsInGroups(rawPrecincts, partyIds);
+  checkPartyRefsInEventsAndCriteria(events, success_criteria, partyIds);
+  checkDistrictRefs(rawPrecincts, districtIds, default_district_id);
+  checkGroupRefsInEvents(events, definedGroupIds, group_schema);
+  checkGroupRefsInCriteria(success_criteria, definedGroupIds, group_schema);
+  checkContextPrecinctDistrictId(rawPrecincts);
+  checkGeometryAndNeighbors(geometry, rawPrecincts, precinctIds);
+  if (group_schema !== void 0) {
+    checkGroupSchemaCompleteness(group_schema, rawPrecincts);
+  }
+  if (geometry.type !== "hex_axial") {
+    for (const p of parties) {
+      if (p.independent) {
+        throw new Error(`Independent party "${p.id}" requires hex_axial geometry (home is an axial coordinate); scenario geometry is "${geometry.type}"`);
+      }
+    }
+  }
+  validateTerrainAndRivers(geometry, rawPrecincts, precinctIds, terrain_tiles, river_edges);
 }
 function parseAllFields(raw) {
   const id2 = requireString(raw["id"], "id");
@@ -948,6 +1101,18 @@ function parseAllFields(raw) {
   if (raw["river_blocks_contiguity"] !== void 0) {
     river_blocks_contiguity = requireBoolean(raw["river_blocks_contiguity"], "river_blocks_contiguity");
   }
+  let hide_election_results;
+  if (raw["hide_election_results"] !== void 0) {
+    hide_election_results = requireBoolean(raw["hide_election_results"], "hide_election_results");
+  }
+  let hide_view_toolbar;
+  if (raw["hide_view_toolbar"] !== void 0) {
+    hide_view_toolbar = requireBoolean(raw["hide_view_toolbar"], "hide_view_toolbar");
+  }
+  let guided;
+  if (raw["guided"] !== void 0) {
+    guided = requireBoolean(raw["guided"], "guided");
+  }
   const partial = {
     format_version: "1",
     id: id2,
@@ -985,331 +1150,54 @@ function parseAllFields(raw) {
     partial.river_edges = river_edges;
   if (river_blocks_contiguity !== void 0)
     partial.river_blocks_contiguity = river_blocks_contiguity;
+  if (hide_election_results !== void 0)
+    partial.hide_election_results = hide_election_results;
+  if (hide_view_toolbar !== void 0)
+    partial.hide_view_toolbar = hide_view_toolbar;
+  if (guided !== void 0)
+    partial.guided = guided;
   return partial;
 }
 function validateStructural(s2) {
   const { precincts, parties, districts, events, success_criteria, geometry, group_schema, terrain_tiles, river_edges, default_district_id } = s2;
-  if (precincts.length < 1) {
-    throw new Error("Invariant 12: precincts must have at least 1 element");
-  }
-  for (const pc of precincts) {
-    if (!pc.editable) {
-      if (pc.initial_district_id === void 0 || pc.initial_district_id === null) {
-        throw new Error(`Invariant 4: context precinct "${pc.id}" (editable: false) must have a non-null initial_district_id`);
-      }
-    }
-  }
-  {
-    const allIds = /* @__PURE__ */ new Map();
-    const checkId = (id2, label) => {
-      const existing = allIds.get(id2);
-      if (existing !== void 0) {
-        throw new Error(`Invariant 11: duplicate id "${id2}" found in both ${existing} and ${label}`);
-      }
-      allIds.set(id2, label);
-    };
-    if (parties !== void 0)
-      for (const p of parties)
-        checkId(p.id, "parties");
-    if (districts !== void 0)
-      for (const d of districts)
-        checkId(d.id, "districts");
-    for (const pc of precincts) {
-      checkId(pc.id, "precincts");
-      if (pc.demographic_groups !== void 0) {
-        for (const grp of pc.demographic_groups)
-          checkId(grp.id, `precincts[${pc.id}].demographic_groups`);
-      }
-    }
-    if (events !== void 0)
-      for (const ev of events)
-        checkId(ev.id, "events");
-    if (success_criteria !== void 0)
-      for (const cr of success_criteria)
-        checkId(cr.id, "success_criteria");
-  }
+  checkPrecinctCount(precincts.length);
+  checkContextPrecinctDistrictId(precincts);
+  checkUniqueIds({ parties, districts, precincts, events, success_criteria });
   const precinctIds = new Set(precincts.map((p) => p.id));
-  if (geometry.type === "hex_axial") {
-    for (const pc of precincts) {
-      if (pc.neighbors !== void 0) {
-        throw new Error(`Invariant 8: hex_axial geometry precinct "${pc.id}" must not have a neighbors field`);
-      }
-    }
-  } else {
-    for (const pc of precincts) {
-      if (pc.neighbors === void 0) {
-        throw new Error(`Invariant 8: custom geometry precinct "${pc.id}" must have a neighbors field`);
-      }
-    }
-    for (const pc of precincts) {
-      for (const nbId of pc.neighbors) {
-        if (!precinctIds.has(nbId)) {
-          throw new Error(`Invariant 9: precinct "${pc.id}" neighbors[] references unknown precinct "${nbId}"`);
-        }
-      }
-    }
-    const adjMap = /* @__PURE__ */ new Map();
-    for (const pc of precincts)
-      adjMap.set(pc.id, new Set(pc.neighbors));
-    for (const pc of precincts) {
-      for (const nbId of pc.neighbors) {
-        const nbNeighbors = adjMap.get(nbId);
-        if (nbNeighbors === void 0 || !nbNeighbors.has(pc.id)) {
-          throw new Error(`Invariant 8: custom geometry neighbors not symmetric: precinct "${pc.id}" lists "${nbId}" as neighbor, but "${nbId}" does not list "${pc.id}"`);
-        }
-      }
-    }
-  }
+  checkGeometryAndNeighbors(geometry, precincts, precinctIds);
   if (parties !== void 0) {
     const partyIds = new Set(parties.map((p) => p.id));
     for (const pc of precincts) {
       if (pc.demographic_groups === void 0)
         continue;
       for (const grp of pc.demographic_groups) {
-        for (const pid of Object.keys(grp.vote_shares)) {
-          if (!partyIds.has(pid)) {
-            throw new Error(`Invariant 1: precinct "${pc.id}" group "${grp.id}" references unknown party "${pid}" in vote_shares`);
-          }
-        }
-        for (const pid of partyIds) {
-          if (!(pid in grp.vote_shares)) {
-            throw new Error(`Invariant 6: precinct "${pc.id}" group "${grp.id}" is missing vote_share for party "${pid}"`);
-          }
-        }
-        const vsum = Object.values(grp.vote_shares).reduce((a2, v2) => a2 + v2, 0);
-        if (Math.abs(vsum - 1) > EPSILON) {
-          throw new Error(`Invariant 6: precinct "${pc.id}" group "${grp.id}" vote_shares sum is ${vsum}, expected 1.0 (\xB1${EPSILON})`);
-        }
+        checkGroupUnknownParties(pc.id, grp, partyIds);
+        checkGroupVoteShareComplete(pc.id, grp, partyIds);
       }
     }
-    if (events !== void 0) {
-      for (const ev of events) {
-        if (ev.type === "vote_share_shift" && !partyIds.has(ev.party)) {
-          throw new Error(`Invariant 1: event "${ev.id}" references unknown party "${ev.party}"`);
-        }
-      }
-    }
-    if (success_criteria !== void 0) {
-      for (const cr of success_criteria) {
-        const c3 = cr.criterion;
-        if (c3.type === "seat_count" || c3.type === "mean_median" || c3.type === "safe_seats") {
-          if (!partyIds.has(c3.party)) {
-            throw new Error(`Invariant 1: criterion "${cr.id}" references unknown party "${c3.party}"`);
-          }
-        }
-      }
-    }
+    checkPartyRefsInEventsAndCriteria(events, success_criteria, partyIds);
   }
-  for (const pc of precincts) {
-    if (pc.demographic_groups === void 0)
-      continue;
-    const sum4 = pc.demographic_groups.reduce((acc, g) => acc + g.population_share, 0);
-    if (Math.abs(sum4 - 1) > EPSILON) {
-      throw new Error(`Invariant 5: precinct "${pc.id}" demographic_groups population_share sum is ${sum4}, expected 1.0 (\xB1${EPSILON})`);
-    }
-  }
+  checkPopulationShareSums(precincts);
   if (districts !== void 0) {
     const districtIds = new Set(districts.map((d) => d.id));
-    for (const pc of precincts) {
-      if (pc.initial_district_id !== void 0 && pc.initial_district_id !== null) {
-        if (!districtIds.has(pc.initial_district_id)) {
-          throw new Error(`Invariant 2: precinct "${pc.id}" initial_district_id "${pc.initial_district_id}" does not exist in districts`);
-        }
-      }
-    }
-    if (default_district_id !== void 0 && !districtIds.has(default_district_id)) {
-      throw new Error(`Invariant 2: default_district_id "${default_district_id}" does not exist in districts`);
-    }
+    checkDistrictRefs(precincts, districtIds, default_district_id);
   }
   if (events !== void 0) {
-    const definedGroupIds = /* @__PURE__ */ new Set();
-    for (const pc of precincts) {
-      if (pc.demographic_groups !== void 0) {
-        for (const grp of pc.demographic_groups)
-          definedGroupIds.add(grp.id);
-      }
-    }
+    const definedGroupIds = collectDefinedGroupIds(precincts);
     if (definedGroupIds.size > 0) {
-      for (const ev of events) {
-        const gids = groupFilterGroupIds(ev.group_filter);
-        for (const gid of gids) {
-          if (!definedGroupIds.has(gid)) {
-            throw new Error(`Invariant 3: event "${ev.id}" group_filter references unknown group "${gid}"`);
-          }
-        }
-        validateDimensionFilter(ev.group_filter, group_schema, `event "${ev.id}"`);
-      }
+      checkGroupRefsInEvents(events, definedGroupIds, group_schema);
     }
   }
   if (success_criteria !== void 0) {
-    const definedGroupIds = /* @__PURE__ */ new Set();
-    for (const pc of precincts) {
-      if (pc.demographic_groups !== void 0) {
-        for (const grp of pc.demographic_groups)
-          definedGroupIds.add(grp.id);
-      }
-    }
+    const definedGroupIds = collectDefinedGroupIds(precincts);
     if (definedGroupIds.size > 0) {
-      for (const cr of success_criteria) {
-        const c3 = cr.criterion;
-        if (c3.type === "majority_minority") {
-          const gids = groupFilterGroupIds(c3.group_filter);
-          for (const gid of gids) {
-            if (!definedGroupIds.has(gid)) {
-              throw new Error(`Invariant 3: criterion "${cr.id}" group_filter references unknown group "${gid}"`);
-            }
-          }
-          validateDimensionFilter(c3.group_filter, group_schema, `criterion "${cr.id}"`);
-        }
-      }
+      checkGroupRefsInCriteria(success_criteria, definedGroupIds, group_schema);
     }
   }
   if (group_schema !== void 0) {
-    const dims = group_schema.dimensions;
-    const dimNames = Object.keys(dims);
-    for (const pc of precincts) {
-      if (pc.demographic_groups === void 0)
-        continue;
-      for (const grp of pc.demographic_groups) {
-        for (const dimName of dimNames) {
-          if (grp.dimensions === void 0 || !(dimName in grp.dimensions)) {
-            throw new Error(`Invariant 7: precinct "${pc.id}" group "${grp.id}" is missing dimension "${dimName}" (required by group_schema)`);
-          }
-          const val = grp.dimensions[dimName];
-          const allowed = dims[dimName];
-          if (allowed === void 0 || !allowed.includes(val)) {
-            throw new Error(`Invariant 7: precinct "${pc.id}" group "${grp.id}" dimension "${dimName}" value "${val}" is not in schema values [${allowed == null ? void 0 : allowed.join(", ")}]`);
-          }
-        }
-      }
-      const expectedCombos = cartesianProduct(dimNames, dims);
-      for (const expectedCombo of expectedCombos) {
-        const matchingGroups = pc.demographic_groups.filter((grp) => {
-          if (grp.dimensions === void 0)
-            return false;
-          return dimNames.every((d) => grp.dimensions[d] === expectedCombo[d]);
-        });
-        if (matchingGroups.length === 0) {
-          const comboStr = Object.entries(expectedCombo).map(([k2, v2]) => `${k2}=${v2}`).join(", ");
-          throw new Error(`Invariant 7: precinct "${pc.id}" is missing a group for dimension combo {${comboStr}} (required by group_schema)`);
-        }
-        if (matchingGroups.length > 1) {
-          const comboStr = Object.entries(expectedCombo).map(([k2, v2]) => `${k2}=${v2}`).join(", ");
-          throw new Error(`Invariant 7: precinct "${pc.id}" has ${matchingGroups.length} groups for dimension combo {${comboStr}}; expected exactly 1`);
-        }
-      }
-    }
+    checkGroupSchemaCompleteness(group_schema, precincts);
   }
-  if (geometry.type === "custom") {
-    if (terrain_tiles !== void 0 && terrain_tiles.length > 0) {
-      throw new Error(`Terrain validation: terrain_tiles require geometry.type "hex_axial"; custom geometry is not supported in v1`);
-    }
-    if (river_edges !== void 0 && river_edges.length > 0) {
-      throw new Error(`Terrain validation: river_edges require geometry.type "hex_axial"; custom geometry is not supported in v1`);
-    }
-  }
-  if (terrain_tiles !== void 0 && terrain_tiles.length > 0) {
-    const precinctPosSet = /* @__PURE__ */ new Set();
-    for (const pc of precincts) {
-      const pos = pc.position;
-      if ("q" in pos)
-        precinctPosSet.add(`${pos.q},${pos.r}`);
-    }
-    const tileTypeMap = /* @__PURE__ */ new Map();
-    for (const tile of terrain_tiles) {
-      const key = `${tile.position.q},${tile.position.r}`;
-      if (precinctPosSet.has(key)) {
-        throw new Error(`Terrain validation: terrain_tile at (${tile.position.q},${tile.position.r}) overlaps precinct position`);
-      }
-      tileTypeMap.set(key, tile.type);
-    }
-    for (const tile of terrain_tiles) {
-      if (tile.type !== "lake")
-        continue;
-      for (const [dq, dr] of HEX_DIRS) {
-        const nKey = `${tile.position.q + dq},${tile.position.r + dr}`;
-        if (tileTypeMap.get(nKey) === "sea") {
-          throw new Error(`Terrain validation: lake tile at (${tile.position.q},${tile.position.r}) is adjacent to sea tile at (${tile.position.q + dq},${tile.position.r + dr})`);
-        }
-      }
-    }
-    {
-      const mountainSet = /* @__PURE__ */ new Set();
-      for (const tile of terrain_tiles) {
-        if (tile.type === "mountain")
-          mountainSet.add(`${tile.position.q},${tile.position.r}`);
-      }
-      if (mountainSet.size > 0) {
-        const allQs = [];
-        const allRs = [];
-        for (const pc of precincts) {
-          const pos = pc.position;
-          if ("q" in pos) {
-            allQs.push(pos.q);
-            allRs.push(pos.r);
-          }
-        }
-        for (const tile of terrain_tiles) {
-          allQs.push(tile.position.q);
-          allRs.push(tile.position.r);
-        }
-        const minQ = Math.min(...allQs) - 2, maxQ = Math.max(...allQs) + 2;
-        const minR = Math.min(...allRs) - 2, maxR = Math.max(...allRs) + 2;
-        const outsideKey = `${minQ},${minR}`;
-        const visited = /* @__PURE__ */ new Set([outsideKey]);
-        const queue = [outsideKey];
-        while (queue.length > 0) {
-          const curr = queue.shift();
-          const [cq, cr] = curr.split(",").map(Number);
-          for (const [dq, dr] of HEX_DIRS) {
-            const nq = cq + dq, nr = cr + dr;
-            if (nq < minQ - 1 || nq > maxQ + 1 || nr < minR - 1 || nr > maxR + 1)
-              continue;
-            const nKey = `${nq},${nr}`;
-            if (!visited.has(nKey) && !mountainSet.has(nKey)) {
-              visited.add(nKey);
-              queue.push(nKey);
-            }
-          }
-        }
-        for (const pc of precincts) {
-          const pos = pc.position;
-          if ("q" in pos) {
-            const key = `${pos.q},${pos.r}`;
-            if (!visited.has(key)) {
-              throw new Error(`Terrain validation: precinct "${pc.id}" at (${pos.q},${pos.r}) is fully enclosed by mountain tiles`);
-            }
-          }
-        }
-      }
-    }
-  }
-  if (river_edges !== void 0) {
-    const precinctPosByid = /* @__PURE__ */ new Map();
-    if (geometry.type === "hex_axial") {
-      for (const pc of precincts) {
-        const pos = pc.position;
-        if ("q" in pos)
-          precinctPosByid.set(pc.id, { q: pos.q, r: pos.r });
-      }
-    }
-    for (const [aId, bId] of river_edges) {
-      if (!precinctIds.has(aId)) {
-        throw new Error(`river_edges: precinct "${aId}" does not exist in precincts`);
-      }
-      if (!precinctIds.has(bId)) {
-        throw new Error(`river_edges: precinct "${bId}" does not exist in precincts`);
-      }
-      const aPos = precinctPosByid.get(aId), bPos = precinctPosByid.get(bId);
-      if (aPos !== void 0 && bPos !== void 0) {
-        const dq = bPos.q - aPos.q, dr = bPos.r - aPos.r;
-        const isAdjacent = HEX_DIRS.some(([ddq, ddr]) => ddq === dq && ddr === dr);
-        if (!isAdjacent) {
-          throw new Error(`river_edges: precincts "${aId}" (${aPos.q},${aPos.r}) and "${bId}" (${bPos.q},${bPos.r}) are not geometrically adjacent`);
-        }
-      }
-    }
-  }
+  validateTerrainAndRivers(geometry, precincts, precinctIds, terrain_tiles, river_edges);
 }
 function assembleScenario(partial, parties, districts, events, rules, success_criteria, narrative) {
   var _a;
@@ -1354,6 +1242,12 @@ function assembleScenario(partial, parties, districts, events, rules, success_cr
     scenario.river_edges = partial.river_edges;
   if (partial.river_blocks_contiguity !== void 0)
     scenario.river_blocks_contiguity = partial.river_blocks_contiguity;
+  if (partial.hide_election_results !== void 0)
+    scenario.hide_election_results = partial.hide_election_results;
+  if (partial.hide_view_toolbar !== void 0)
+    scenario.hide_view_toolbar = partial.hide_view_toolbar;
+  if (partial.guided !== void 0)
+    scenario.guided = partial.guided;
   return scenario;
 }
 function parseScenario(json) {
@@ -1370,9 +1264,10 @@ function validateScenarioComplete(partial) {
   if (partial.parties === void 0 || partial.parties.length === 0) {
     throw new Error("completeness: parties is required for gameplay and must not be empty");
   }
-  if (partial.districts === void 0 || partial.districts.length < 2) {
+  if (partial.districts === void 0) {
     throw new Error("Invariant 10: districts must have at least 2 elements");
   }
+  checkDistrictCount(partial.districts.length);
   if (partial.events === void 0) {
     throw new Error("completeness: events is required for gameplay (use [] for none)");
   }
@@ -1414,6 +1309,7 @@ var HEX_DIRS, EPSILON;
 var init_loader = __esm({
   "game/web/src/model/loader.js"() {
     init_runtime_types();
+    init_runtime();
     HEX_DIRS = [
       [1, 0],
       [0, 1],
@@ -13808,10 +13704,10 @@ function hexCorners(center) {
   }
   return corners;
 }
-function mapBounds(precincts) {
+function mapBounds(precincts, extraCenters = []) {
   const pad3 = HEX_SIZE * 1.2;
-  const xs = precincts.map((p) => p.center.x);
-  const ys = precincts.map((p) => p.center.y);
+  const xs = [...precincts.map((p) => p.center.x), ...extraCenters.map((c3) => c3.x)];
+  const ys = [...precincts.map((p) => p.center.y), ...extraCenters.map((c3) => c3.y)];
   const minX = Math.min(...xs) - pad3;
   const maxX = Math.max(...xs) + pad3;
   const minY = Math.min(...ys) - pad3;
@@ -13839,36 +13735,58 @@ var init_hex_geometry = __esm({
   }
 });
 
-// game/web/src/model/types.js
-var DISTRICT_COLORS, PARTY_COLORS, PARTY_LABELS;
-var init_types = __esm({
-  "game/web/src/model/types.js"() {
-    DISTRICT_COLORS = [
-      "#E69F00",
-      // amber
-      "#F0E442",
-      // yellow
-      "#009E73",
-      // bluish green
-      "#CC79A7",
-      // mauve
-      "#D55E00"
-      // vermilion
+// game/web/src/model/party.js
+function zeroShare(parties) {
+  const share = {};
+  for (const p of parties)
+    share[p] = 0;
+  return share;
+}
+function winnerOf(share, parties) {
+  var _a, _b;
+  let best = parties[0];
+  for (const p of parties) {
+    if (((_a = share[p]) != null ? _a : 0) > ((_b = share[best]) != null ? _b : 0)) {
+      best = p;
+    }
+  }
+  return best;
+}
+function partyColor(parties, partyId) {
+  var _a;
+  const idx = parties.indexOf(partyId);
+  return (_a = PARTY_PALETTE[idx]) != null ? _a : "#a0a0a0";
+}
+function partyLabel(parties, partyId) {
+  var _a;
+  const idx = parties.indexOf(partyId);
+  return (_a = PARTY_LABELS[idx]) != null ? _a : String(partyId);
+}
+function candidateForDistrict(candidates, districtId) {
+  return candidates == null ? void 0 : candidates[districtId - 1];
+}
+var PARTY_PALETTE, PARTY_LABELS;
+var init_party = __esm({
+  "game/web/src/model/party.js"() {
+    PARTY_PALETTE = [
+      "#c96d00",
+      // party 1 (was R): orange
+      "#7b35a8",
+      // party 2 (was D): purple
+      "#f0c040",
+      // party 3 (was L)
+      "#50c878",
+      // party 4 (was G)
+      "#a0a0a0"
+      // party 5 (was I)
     ];
-    PARTY_COLORS = {
-      R: "#c96d00",
-      D: "#7b35a8",
-      L: "#f0c040",
-      G: "#50c878",
-      I: "#a0a0a0"
-    };
-    PARTY_LABELS = {
-      R: "Party 1",
-      D: "Party 2",
-      L: "Libertarian",
-      G: "Green",
-      I: "Independent"
-    };
+    PARTY_LABELS = [
+      "Party 1",
+      "Party 2",
+      "Party 3",
+      "Party 4",
+      "Party 5"
+    ];
   }
 });
 
@@ -13931,7 +13849,7 @@ function computeBoundarySegments(precincts, assignments, terrainFacingEdges) {
   var _a;
   const segments = [];
   for (const p of precincts) {
-    const pDist = assignments.get(p.id);
+    const pDist = assignments.get(p.index);
     const corners = hexCorners(p.center);
     for (let i = 0; i < 6; i++) {
       const nId = (_a = p.neighbors[i]) != null ? _a : null;
@@ -13940,7 +13858,7 @@ function computeBoundarySegments(precincts, assignments, terrainFacingEdges) {
       if (c0 === void 0 || c1 === void 0)
         continue;
       if (nId === null) {
-        if (terrainFacingEdges == null ? void 0 : terrainFacingEdges.has(`${p.id}:${i}`))
+        if (terrainFacingEdges == null ? void 0 : terrainFacingEdges.has(`${p.index}:${i}`))
           continue;
         segments.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
         continue;
@@ -13964,7 +13882,7 @@ function computeTerrainFacingEdges(precincts, terrainTiles) {
         continue;
       const key = `${p.coord.q + dir[0]},${p.coord.r + dir[1]}`;
       if (tilePosSet.has(key))
-        set3.add(`${p.id}:${i}`);
+        set3.add(`${p.index}:${i}`);
     }
   }
   return set3;
@@ -13976,7 +13894,7 @@ function computeCountySegments(precincts) {
     const corners = hexCorners(p.center);
     for (let i = 0; i < 6; i++) {
       const nId = (_a = p.neighbors[i]) != null ? _a : null;
-      if (nId === null || nId < p.id)
+      if (nId === null || nId < p.index)
         continue;
       const neighbor = precincts[nId];
       if (neighbor === void 0)
@@ -13998,8 +13916,10 @@ var _SvgMapRenderer, SvgMapRenderer;
 var init_mapRenderer = __esm({
   "game/web/src/render/mapRenderer.ts"() {
     init_src32();
+    init_escape_html();
     init_hex_geometry();
-    init_types();
+    init_runtime();
+    init_party();
     _SvgMapRenderer = class _SvgMapRenderer {
       constructor(svgEl, getState, paintStroke, setActiveDistrict) {
         __publicField(this, "svg");
@@ -14012,6 +13932,7 @@ var init_mapRenderer = __esm({
         __publicField(this, "hoverHighlightGroup");
         __publicField(this, "riverGroup");
         __publicField(this, "previewBorderGroup");
+        __publicField(this, "homePinGroup");
         __publicField(this, "getState");
         __publicField(this, "paintStroke");
         __publicField(this, "setActiveDistrict");
@@ -14038,10 +13959,14 @@ var init_mapRenderer = __esm({
         // the district boundary line on these edges (the terrain intrusion fill covers them).
         __publicField(this, "terrainFacingEdges", /* @__PURE__ */ new Set());
         __publicField(this, "countyBordersVisible", false);
+        __publicField(this, "parties", []);
+        __publicField(this, "partyNames", {});
+        // Scenario-authored party colors (GAME-043), keyed by PartyId; empty until setParties.
+        // A party absent here falls back to PARTY_PALETTE by order via colorOf (GAME-120).
+        __publicField(this, "partyColors", {});
         __publicField(this, "coordLabelsVisible", false);
         __publicField(this, "coordLabelsRendered", false);
         __publicField(this, "coordLabelGroup");
-        // apparent px at any zoom level
         // Keyboard precinct navigation state
         __publicField(this, "focusedPrecinctId", null);
         __publicField(this, "keyboardFocusPath", null);
@@ -14055,15 +13980,19 @@ var init_mapRenderer = __esm({
         this.hexGroup = this.zoomGroup.append("g").attr("class", "hexes");
         this.terrainOverlayGroup = this.zoomGroup.append("g").attr("class", "terrain-overlay");
         this.hoverHighlightGroup = this.zoomGroup.append("g").attr("class", "hover-highlight");
-        this.countyBorderGroup = this.zoomGroup.append("g").attr("class", "county-borders");
         this.riverGroup = this.zoomGroup.append("g").attr("class", "rivers");
+        this.countyBorderGroup = this.zoomGroup.append("g").attr("class", "county-borders");
         this.previewBorderGroup = this.zoomGroup.append("g").attr("class", "preview-borders");
         this.coordLabelGroup = this.zoomGroup.append("g").attr("class", "coord-labels").attr("display", "none");
+        this.homePinGroup = this.zoomGroup.append("g").attr("class", "home-pins");
         const pops = getState().precincts.map((p) => p.population);
         this.popMin = Math.min(...pops);
         this.popMax = Math.max(...pops);
         this.countySegments = computeCountySegments(getState().precincts);
-        this.terrainFacingEdges = computeTerrainFacingEdges(getState().precincts, getState().terrainTiles);
+        this.terrainFacingEdges = computeTerrainFacingEdges(
+          getState().precincts,
+          getState().terrainTiles
+        );
         this.initZoom();
         this.initBrushEvents();
         this.initKeyboardNav();
@@ -14076,6 +14005,9 @@ var init_mapRenderer = __esm({
         this.viewMode = mode2;
         this.render();
       }
+      resetView() {
+        this.svg.transition().duration(_SvgMapRenderer.ZOOM_DURATION_RESET).call(this.zoomBehavior.transform, this.initialTransform);
+      }
       setCountyBordersVisible(visible) {
         this.countyBordersVisible = visible;
         if (visible) {
@@ -14087,6 +14019,11 @@ var init_mapRenderer = __esm({
       setCoordLabelsVisible(visible) {
         this.coordLabelsVisible = visible;
         this.renderCoordLabels();
+      }
+      setParties(parties, names, colors) {
+        this.parties = parties;
+        this.partyNames = names;
+        this.partyColors = colors;
       }
       renderCoordLabels() {
         if (!this.coordLabelsRendered) {
@@ -14109,7 +14046,10 @@ var init_mapRenderer = __esm({
           (enter) => enter.append("line").attr("class", "county-boundary").attr("stroke-linecap", "round"),
           (update) => update,
           (exit) => exit.remove()
-        ).attr("x1", (d) => d.x1).attr("y1", (d) => d.y1).attr("x2", (d) => d.x2).attr("y2", (d) => d.y2).attr("stroke", "#606060").attr("stroke-width", _SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK).attr("stroke-dasharray", `${_SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${_SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`).attr("opacity", _SvgMapRenderer.COUNTY_OPACITY);
+        ).attr("x1", (d) => d.x1).attr("y1", (d) => d.y1).attr("x2", (d) => d.x2).attr("y2", (d) => d.y2).attr("stroke", "#1c1c1c").attr("stroke-width", _SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK).attr(
+          "stroke-dasharray",
+          `${_SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${_SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`
+        ).attr("opacity", _SvgMapRenderer.COUNTY_OPACITY);
       }
       // ─── Terrain rendering (GAME-075) ─────────────────────────────────────────
       terrainFill(type2) {
@@ -14266,7 +14206,11 @@ var init_mapRenderer = __esm({
                 _SvgMapRenderer.LAKE_INTRUSION_DEPTH,
                 profileSmooth
               );
-              intrusions.push({ terrainType: "lake", path: fillPath, boundaryPath });
+              intrusions.push({
+                terrainType: "lake",
+                path: fillPath,
+                boundaryPath
+              });
             } else {
               const { fillPath, boundaryPath } = buildIntrusionAndBoundary(
                 c0,
@@ -14275,7 +14219,11 @@ var init_mapRenderer = __esm({
                 _SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH,
                 profileRugged
               );
-              intrusions.push({ terrainType: "mountain", path: fillPath, boundaryPath });
+              intrusions.push({
+                terrainType: "mountain",
+                path: fillPath,
+                boundaryPath
+              });
             }
           }
           for (let i = 0; i < 6; i++) {
@@ -14295,7 +14243,12 @@ var init_mapRenderer = __esm({
             if (capCenter === void 0)
               continue;
             const r = lType === "sea" || lType === "lake" ? _SvgMapRenderer.COAST_INTRUSION_DEPTH + 4 : _SvgMapRenderer.FOOTHILL_INTRUSION_DEPTH + 4;
-            cornerCaps.push({ cx: capCenter[0], cy: capCenter[1], r, terrainType: lType });
+            cornerCaps.push({
+              cx: capCenter[0],
+              cy: capCenter[1],
+              r,
+              terrainType: lType
+            });
             const leftAdj = corners[(i - 1 + 6) % 6];
             const rightAdj = corners[(i + 1) % 6];
             if (leftAdj === void 0 || rightAdj === void 0)
@@ -14342,8 +14295,11 @@ var init_mapRenderer = __esm({
        */
       initZoom() {
         const svgNode2 = this.svg.node();
-        const { precincts } = this.getState();
-        const bounds = mapBounds(precincts);
+        const { precincts, terrainTiles } = this.getState();
+        const bounds = mapBounds(
+          precincts,
+          (terrainTiles != null ? terrainTiles : []).map((t) => t.center)
+        );
         const svgRect = svgNode2.getBoundingClientRect();
         const svgW = svgRect.width > 0 ? svgRect.width : _SvgMapRenderer.FALLBACK_SVG_WIDTH;
         const svgH = svgRect.height > 0 ? svgRect.height : _SvgMapRenderer.FALLBACK_SVG_HEIGHT;
@@ -14375,7 +14331,10 @@ var init_mapRenderer = __esm({
           this.terrainOverlayGroup.selectAll("path.terrain-boundary").attr("stroke-width", tbw);
           this.terrainOverlayGroup.selectAll("path.terrain-cap-arc").attr("stroke-width", tbw);
           this.hoverHighlightGroup.selectAll("line.hover-edge").attr("stroke-width", _SvgMapRenderer.HOVER_STROKE_WIDTH / this.currentK);
-          this.countyBorderGroup.selectAll("line.county-boundary").attr("stroke-width", _SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK).attr("stroke-dasharray", `${_SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${_SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`);
+          this.countyBorderGroup.selectAll("line.county-boundary").attr("stroke-width", _SvgMapRenderer.COUNTY_BASE_WIDTH / this.currentK).attr(
+            "stroke-dasharray",
+            `${_SvgMapRenderer.COUNTY_DASH_ON / this.currentK},${_SvgMapRenderer.COUNTY_DASH_OFF / this.currentK}`
+          );
           if (this.keyboardFocusPath !== null) {
             select_default2(this.keyboardFocusPath).attr("stroke-width", 2 / this.currentK).attr("stroke-dasharray", `${4 / this.currentK},${2 / this.currentK}`);
           }
@@ -14383,6 +14342,7 @@ var init_mapRenderer = __esm({
             const fs = _SvgMapRenderer.COORD_LABEL_FONT_SIZE / this.currentK;
             this.coordLabelGroup.selectAll("text.coord-label, text.coord-label-tile").attr("font-size", fs).attr("stroke-width", 3 / this.currentK);
           }
+          this.homePinGroup.selectAll("text.home-pin").attr("font-size", _SvgMapRenderer.HOME_PIN_FONT_SIZE / this.currentK).attr("stroke-width", 3.5 / this.currentK);
         });
         svgNode2.addEventListener("contextmenu", (e) => e.preventDefault());
         this.svg.call(this.zoomBehavior);
@@ -14390,6 +14350,8 @@ var init_mapRenderer = __esm({
         document.addEventListener("keydown", (e) => {
           const target = e.target;
           if (target.tagName === "INPUT" || target.tagName === "TEXTAREA")
+            return;
+          if (svgNode2.closest("[inert]"))
             return;
           if (e.key === "=" || e.key === "+") {
             e.preventDefault();
@@ -14407,12 +14369,34 @@ var init_mapRenderer = __esm({
       /** Called on every committed state change. Reconciles fills and solid boundaries. */
       render() {
         const { precincts, assignments } = this.getState();
-        this.hexGroup.selectAll("path.hex").data(precincts, (d) => String(d.id)).join(
-          (enter) => enter.append("path").attr("class", "hex").attr("data-precinct-id", (d) => String(d.id)).attr("d", (d) => hexPolygonPath(d)).attr("stroke", "none").attr("stroke-width", 0.5).style("cursor", "crosshair"),
+        this.hexGroup.selectAll("path.hex").data(precincts, (d) => String(d.index)).join(
+          (enter) => enter.append("path").attr("class", "hex").attr("data-precinct-id", (d) => String(d.index)).attr("d", (d) => hexPolygonPath(d)).attr("stroke", "none").attr("stroke-width", 0.5).style("cursor", "crosshair"),
           (update) => update,
           (exit) => exit.remove()
         ).attr("fill", (d) => this.hexFill(d, assignments)).attr("opacity", (d) => this.hexOpacity(d, assignments));
         this.renderBoundaries(computeBoundarySegments(precincts, assignments, this.terrainFacingEdges));
+        this.renderHomePins();
+      }
+      // Home pins (GAME-118): a "⌂ name" label at each home-base independent's home precinct.
+      // An independent contests only its home district, so the pin tells the player where that
+      // candidate is actually on the ballot. Font/stroke divide by currentK so the label keeps a
+      // constant apparent size at any zoom (mirrors coord labels); the zoom handler re-applies both.
+      renderHomePins() {
+        const { precincts, independentHomes } = this.getState();
+        const homes = independentHomes ? [...independentHomes] : [];
+        const pins = homes.flatMap(([party, precinctIndex]) => {
+          var _a;
+          const precinct = precincts[precinctIndex];
+          if (precinct === void 0)
+            return [];
+          const name = (_a = this.partyNames[party]) != null ? _a : partyLabel(this.parties, party);
+          return [{ party, x: precinct.center.x, y: precinct.center.y, label: `\u2302 ${name}` }];
+        });
+        this.homePinGroup.selectAll("text.home-pin").data(pins, (d) => String(d.party)).join(
+          (enter) => enter.append("text").attr("class", "home-pin").attr("text-anchor", "middle").attr("dominant-baseline", "central").attr("font-weight", 700).attr("fill", "white").attr("stroke", "rgba(0,0,0,0.8)").attr("paint-order", "stroke").attr("pointer-events", "none"),
+          (update) => update,
+          (exit) => exit.remove()
+        ).attr("x", (d) => d.x).attr("y", (d) => d.y).attr("font-size", _SvgMapRenderer.HOME_PIN_FONT_SIZE / this.currentK).attr("stroke-width", 3.5 / this.currentK).text((d) => d.label);
       }
       renderBoundaries(segments) {
         const strokeWidth = _SvgMapRenderer.BOUNDARY_BASE_WIDTH / this.currentK;
@@ -14436,13 +14420,20 @@ var init_mapRenderer = __esm({
         for (const id2 of this.strokePrecincts) {
           previewAssignments.set(id2, this.strokeDistrict);
         }
-        const segments = computeBoundarySegments(precincts, previewAssignments, this.terrainFacingEdges);
+        const segments = computeBoundarySegments(
+          precincts,
+          previewAssignments,
+          this.terrainFacingEdges
+        );
         const strokeWidth = _SvgMapRenderer.PREVIEW_BASE_WIDTH / this.currentK;
         this.previewBorderGroup.selectAll("line.preview-boundary").data(segments).join(
           (enter) => enter.append("line").attr("class", "preview-boundary").attr("stroke-linecap", "round"),
           (update) => update,
           (exit) => exit.remove()
-        ).attr("x1", (d) => d.x1).attr("y1", (d) => d.y1).attr("x2", (d) => d.x2).attr("y2", (d) => d.y2).attr("stroke", "#ffffff").attr("stroke-width", strokeWidth).attr("stroke-dasharray", `${_SvgMapRenderer.PREVIEW_DASH_ON / this.currentK},${_SvgMapRenderer.PREVIEW_DASH_OFF / this.currentK}`).attr("opacity", _SvgMapRenderer.PREVIEW_OPACITY);
+        ).attr("x1", (d) => d.x1).attr("y1", (d) => d.y1).attr("x2", (d) => d.x2).attr("y2", (d) => d.y2).attr("stroke", "#ffffff").attr("stroke-width", strokeWidth).attr(
+          "stroke-dasharray",
+          `${_SvgMapRenderer.PREVIEW_DASH_ON / this.currentK},${_SvgMapRenderer.PREVIEW_DASH_OFF / this.currentK}`
+        ).attr("opacity", _SvgMapRenderer.PREVIEW_OPACITY);
       }
       clearBoundaryPreview() {
         this.previewBorderGroup.selectAll("line.preview-boundary").remove();
@@ -14457,7 +14448,7 @@ var init_mapRenderer = __esm({
       initHoverEvents() {
         const svgNode2 = this.svg.node();
         svgNode2.addEventListener("mousemove", (event) => {
-          var _a;
+          var _a, _b;
           const target = event.target;
           if (!target.classList.contains("hex")) {
             this.clearHover();
@@ -14476,31 +14467,53 @@ var init_mapRenderer = __esm({
             const corners = hexCorners(d.center);
             const segs = [];
             for (let i = 0; i < 6; i++) {
-              if (this.terrainFacingEdges.has(`${d.id}:${i}`))
+              if (this.terrainFacingEdges.has(`${d.index}:${i}`))
                 continue;
               const c0 = corners[i], c1 = corners[(i + 1) % 6];
               if (c0 && c1)
                 segs.push({ x1: c0[0], y1: c0[1], x2: c1[0], y2: c1[1] });
             }
             this.hoverHighlightGroup.selectAll("line.hover-edge").data(segs).join("line").attr("class", "hover-edge").attr("x1", (s2) => s2.x1).attr("y1", (s2) => s2.y1).attr("x2", (s2) => s2.x2).attr("y2", (s2) => s2.y2).attr("stroke", "#ffffff").attr("stroke-width", _SvgMapRenderer.HOVER_STROKE_WIDTH / this.currentK).attr("stroke-linecap", "round").attr("opacity", _SvgMapRenderer.BOUNDARY_OPACITY).style("pointer-events", "none");
-            const { assignments } = this.getState();
-            const dId = assignments.get(d.id);
+            const { assignments, independentHomes } = this.getState();
+            const dId = assignments.get(d.index);
             const infoPanel = document.getElementById("precinct-info");
             if (infoPanel !== null) {
-              const precinctLabel = (_a = d.name) != null ? _a : `Precinct ${d.id}`;
+              const precinctLabel = d.name != null ? escapeHtml(d.name) : `Precinct ${d.index}`;
               const distLabel = dId != null ? `District ${dId}` : "Unassigned";
-              const topParty = ["D", "R", "L", "G", "I"].reduce(
-                (a2, b) => d.partyShare[a2] > d.partyShare[b] ? a2 : b
+              const topParty = winnerOf(d.voteShare, this.parties);
+              const partyName = escapeHtml(
+                (_a = this.partyNames[topParty]) != null ? _a : partyLabel(this.parties, topParty)
               );
-              const leanLabel = `${PARTY_LABELS[topParty]} (${(d.partyShare[topParty] * 100).toFixed(1)}%)`;
+              const leanLabel = `${partyName} (${(((_b = d.voteShare[topParty]) != null ? _b : 0) * 100).toFixed(1)}%)`;
+              let breakdownHtml = "";
+              if (this.parties.length > 2) {
+                const ranked = this.parties.map((p) => {
+                  var _a2;
+                  return { p, pct: ((_a2 = d.voteShare[p]) != null ? _a2 : 0) * 100 };
+                }).sort((a2, b) => b.pct - a2.pct);
+                const bar = ranked.map(
+                  ({ p, pct }) => `<span style="width:${pct.toFixed(1)}%;background:${this.colorOf(p)}"></span>`
+                ).join("");
+                const legend = ranked.map(({ p, pct }) => {
+                  var _a2;
+                  const entry = `${escapeHtml((_a2 = this.partyNames[p]) != null ? _a2 : partyLabel(this.parties, p))} ${pct.toFixed(0)}%`;
+                  const homeIdx = independentHomes == null ? void 0 : independentHomes.get(p);
+                  if (homeIdx === void 0)
+                    return entry;
+                  const homeDist = assignments.get(homeIdx);
+                  return homeDist !== void 0 && homeDist === dId ? `\u2302 ${entry}` : `${entry} <span class="off-ballot">(not on ballot)</span>`;
+                }).join(" \xB7 ");
+                breakdownHtml = `<div class="vote-bar-multi" style="margin:5px 0 3px">${bar}</div><span style="color:#8898b0">${legend}</span>`;
+              }
               let groupsHtml = "";
               if (d.groupShares && d.groupShares.length > 1) {
                 const lines = d.groupShares.map(
-                  (g) => `${g.name}: ${(g.share * 100).toFixed(0)}%`
+                  (g) => `${escapeHtml(g.name)}: ${(g.share * 100).toFixed(0)}%`
                 );
                 groupsHtml = `<br><span style="color:#8898b0">` + lines.join("<br>") + `</span>`;
               }
-              infoPanel.innerHTML = `<div class="precinct-name">${precinctLabel}</div><div class="precinct-detail">${distLabel}<br>Pop: ${d.population.toLocaleString()}<br>Lean: ${leanLabel}` + groupsHtml + `</div>`;
+              const countyHtml = d.county_name ? `<span style="color:#8898b0">${escapeHtml(d.county_name)}</span><br>` : "";
+              infoPanel.innerHTML = `<div class="precinct-name">${precinctLabel}</div><div class="precinct-detail">` + countyHtml + `${distLabel}<br>Pop: ${d.population.toLocaleString()}<br>Lean: ${leanLabel}` + breakdownHtml + groupsHtml + `</div>`;
             }
           }
         });
@@ -14552,7 +14565,7 @@ var init_mapRenderer = __esm({
           const { activeDistrict, assignments } = this.getState();
           this.isPainting = true;
           this.strokeDistrict = activeDistrict;
-          this.strokePrecincts = /* @__PURE__ */ new Set([d.id]);
+          this.strokePrecincts = /* @__PURE__ */ new Set([d.index]);
           this.strokeSnapshot = new Map(assignments);
           this.setActiveDistrict(activeDistrict);
           this.applyPaintVisual(path2, activeDistrict);
@@ -14566,9 +14579,9 @@ var init_mapRenderer = __esm({
             return;
           const path2 = target;
           const d = select_default2(path2).datum();
-          if (d === void 0 || this.strokePrecincts.has(d.id))
+          if (d === void 0 || this.strokePrecincts.has(d.index))
             return;
-          this.strokePrecincts.add(d.id);
+          this.strokePrecincts.add(d.index);
           this.applyPaintVisual(path2, this.strokeDistrict);
           this.updateBoundaryPreview();
         });
@@ -14591,11 +14604,10 @@ var init_mapRenderer = __esm({
        * so there is no hex-color feedback in lean mode; boundary preview is the signal.
        */
       applyPaintVisual(path2, districtId) {
-        var _a;
         if (this.viewMode === "lean")
           return;
         const d = select_default2(path2).datum();
-        const base = (_a = DISTRICT_COLORS[districtId - 1]) != null ? _a : "#2a2a3e";
+        const base = districtColor(districtId);
         const c3 = hsl(base);
         if (d !== void 0 && this.popMax > this.popMin) {
           const normPop = (d.population - this.popMin) / (this.popMax - this.popMin);
@@ -14604,17 +14616,42 @@ var init_mapRenderer = __esm({
         select_default2(path2).attr("fill", c3.formatHex()).attr("opacity", _SvgMapRenderer.ASSIGNED_OPACITY);
       }
       // ─── Fill / opacity helpers ───────────────────────────────────────────────
-      hexFill(d, assignments) {
+      /** A party's display color: scenario-authored (GAME-043) when present, else the
+       *  PARTY_PALETTE fallback by party order. Mirrors panels.ts:colorOf so the lean map
+       *  and precinct-info bar agree with the results panel on one color per party — the
+       *  first 3-party scenario (tutorial-005) otherwise renders its third bloc two
+       *  different colors across surfaces (GAME-120). */
+      colorOf(party) {
         var _a;
+        return (_a = this.partyColors[party]) != null ? _a : partyColor(this.parties, party);
+      }
+      hexFill(d, assignments) {
+        var _a, _b, _c, _d;
         if (this.viewMode === "lean") {
-          const lean = d.partyShare.D - d.partyShare.R;
+          if (this.parties.length > 2) {
+            const top = winnerOf(d.voteShare, this.parties);
+            const sorted = this.parties.map((p) => {
+              var _a2;
+              return (_a2 = d.voteShare[p]) != null ? _a2 : 0;
+            }).sort((a2, b) => b - a2);
+            const margin = ((_a = sorted[0]) != null ? _a : 0) - ((_b = sorted[1]) != null ? _b : 0);
+            const strength = Math.min(1, margin / _SvgMapRenderer.LEAN_FULL_MARGIN);
+            const c4 = hsl(this.colorOf(top));
+            c4.l = c4.l + (1 - strength) * (_SvgMapRenderer.LEAN_PALE_L - c4.l);
+            return c4.formatHex();
+          }
+          const party1 = this.parties[0];
+          const party2 = this.parties[1];
+          const p1Share = party1 !== void 0 ? (_c = d.voteShare[party1]) != null ? _c : 0 : 0;
+          const p2Share = party2 !== void 0 ? (_d = d.voteShare[party2]) != null ? _d : 0 : 0;
+          const lean = p2Share - p1Share;
           const t = Math.max(0.1, Math.min(0.9, (lean + 1) / 2));
           return PuOr_default(t);
         }
-        const dId = assignments.get(d.id);
+        const dId = assignments.get(d.index);
         if (dId == null)
           return "#2a2a3e";
-        const base = (_a = DISTRICT_COLORS[dId - 1]) != null ? _a : "#2a2a3e";
+        const base = districtColor(dId);
         const normPop = this.popMax > this.popMin ? (d.population - this.popMin) / (this.popMax - this.popMin) : 0.5;
         const c3 = hsl(base);
         c3.l = _SvgMapRenderer.HEX_LIGHTNESS_BASE - normPop * _SvgMapRenderer.HEX_LIGHTNESS_RANGE;
@@ -14623,21 +14660,23 @@ var init_mapRenderer = __esm({
       hexOpacity(d, assignments) {
         if (this.viewMode === "lean")
           return _SvgMapRenderer.LEAN_OPACITY;
-        const dId = assignments.get(d.id);
+        const dId = assignments.get(d.index);
         return dId != null ? _SvgMapRenderer.ASSIGNED_OPACITY : _SvgMapRenderer.UNASSIGNED_OPACITY;
       }
       // ─── Keyboard precinct navigation (GAME-008) ──────────────────────────────
       initKeyboardNav() {
         const svgNode2 = this.svg.node();
         svgNode2.addEventListener("keydown", (e) => {
+          if (svgNode2.hasAttribute("inert"))
+            return;
           const { precincts, activeDistrict, districtCount } = this.getState();
           if (precincts.length === 0)
             return;
           if (this.focusedPrecinctId === null) {
-            this.setKeyboardFocus(precincts[0].id, precincts);
+            this.setKeyboardFocus(precincts[0].index, precincts);
             return;
           }
-          const current = precincts.find((p) => p.id === this.focusedPrecinctId);
+          const current = precincts.find((p) => p.index === this.focusedPrecinctId);
           if (current === void 0)
             return;
           const dirMap = {
@@ -14658,7 +14697,7 @@ var init_mapRenderer = __esm({
             }
             return;
           }
-          const num = parseInt(e.key, 10);
+          const num = Number.parseInt(e.key, 10);
           if (num >= 1 && num <= districtCount) {
             e.preventDefault();
             this.paintStroke([this.focusedPrecinctId], num);
@@ -14686,15 +14725,15 @@ var init_mapRenderer = __esm({
           return;
         this.keyboardFocusPath = path2;
         select_default2(path2).attr("stroke", "#F0E442").attr("stroke-width", 2 / this.currentK).attr("stroke-dasharray", `${4 / this.currentK},${2 / this.currentK}`);
-        const p = precincts.find((pr) => pr.id === precinctId);
+        const p = precincts.find((pr) => pr.index === precinctId);
         if (p !== void 0) {
-          const { assignments } = this.getState();
-          const dId = assignments.get(p.id);
+          const { assignments, districtCount } = this.getState();
+          const dId = assignments.get(p.index);
           const distLabel = dId != null ? `district ${dId}` : "unassigned";
-          const label = (_a = p.name) != null ? _a : `Precinct ${p.id}`;
+          const label = (_a = p.name) != null ? _a : `Precinct ${p.index}`;
           this.svg.attr(
             "aria-label",
-            `District map \u2014 focused: ${label}, ${distLabel}. Arrow keys navigate. Number keys 1\u20135 assign district. Space assigns active district.`
+            `District map \u2014 focused: ${label}, ${distLabel}. Arrow keys navigate. Number keys 1\u2013${districtCount} assign district. Space assigns active district.`
           );
         }
       }
@@ -14708,9 +14747,10 @@ var init_mapRenderer = __esm({
           if (d !== void 0) {
             select_default2(path2).attr("stroke", "none").attr("stroke-dasharray", null).attr("stroke-width", 0.5).attr("opacity", this.hexOpacity(d, assignments));
           }
+          const { districtCount } = this.getState();
           this.svg.attr(
             "aria-label",
-            "District map. Use mouse or keyboard to paint precincts. Arrow keys navigate precincts, number keys 1\u20135 assign to a district."
+            `District map. Use mouse or keyboard to paint precincts. Arrow keys navigate precincts, number keys 1\u2013${districtCount} assign to a district.`
           );
         }
       }
@@ -14734,7 +14774,7 @@ var init_mapRenderer = __esm({
     // Terrain boundary sits above hex fills (no hex-fill attenuation); lower opacity
     // compensates so it appears the same visual weight as district boundaries below hex fills.
     __publicField(_SvgMapRenderer, "TERRAIN_BOUNDARY_OPACITY", 0.4);
-    __publicField(_SvgMapRenderer, "COUNTY_OPACITY", 0.7);
+    __publicField(_SvgMapRenderer, "COUNTY_OPACITY", 0.9);
     __publicField(_SvgMapRenderer, "PREVIEW_OPACITY", 0.85);
     __publicField(_SvgMapRenderer, "LEAN_OPACITY", 0.9);
     __publicField(_SvgMapRenderer, "ASSIGNED_OPACITY", 0.75);
@@ -14745,9 +14785,15 @@ var init_mapRenderer = __esm({
     // District hex lightness = HEX_LIGHTNESS_BASE − normPop × HEX_LIGHTNESS_RANGE
     __publicField(_SvgMapRenderer, "HEX_LIGHTNESS_BASE", 0.55);
     __publicField(_SvgMapRenderer, "HEX_LIGHTNESS_RANGE", 0.3);
+    // Multiparty (3+) lean shading (GAME-112): a precinct is painted its plurality
+    // party's color, its lightness pulled toward LEAN_PALE_L as the plurality margin
+    // over the runner-up shrinks toward 0 — a ≥LEAN_FULL_MARGIN lead reads full-saturation.
+    __publicField(_SvgMapRenderer, "LEAN_FULL_MARGIN", 0.4);
+    __publicField(_SvgMapRenderer, "LEAN_PALE_L", 0.82);
     // Dash patterns (on,off in map units before zoom correction)
-    __publicField(_SvgMapRenderer, "COUNTY_DASH_ON", 6);
-    __publicField(_SvgMapRenderer, "COUNTY_DASH_OFF", 4);
+    // Short dashes + wide gaps so an underlying white district border shows through.
+    __publicField(_SvgMapRenderer, "COUNTY_DASH_ON", 3);
+    __publicField(_SvgMapRenderer, "COUNTY_DASH_OFF", 5);
     __publicField(_SvgMapRenderer, "PREVIEW_DASH_ON", 5);
     __publicField(_SvgMapRenderer, "PREVIEW_DASH_OFF", 4);
     // Terrain styling (DESIGN-008): fills, glyphs, opacity for sea/lake/mountain tiles
@@ -14769,6 +14815,9 @@ var init_mapRenderer = __esm({
     __publicField(_SvgMapRenderer, "FOOTHILL_INTRUSION_DEPTH", 6);
     __publicField(_SvgMapRenderer, "LAKE_INTRUSION_DEPTH", 5);
     __publicField(_SvgMapRenderer, "COORD_LABEL_FONT_SIZE", 9);
+    // apparent px at any zoom level
+    // Home-pin (GAME-118) label size — apparent px at any zoom level, like coord labels.
+    __publicField(_SvgMapRenderer, "HOME_PIN_FONT_SIZE", 12);
     SvgMapRenderer = _SvgMapRenderer;
   }
 });
@@ -14849,60 +14898,111 @@ var init_validity = __esm({
 });
 
 // game/web/src/render/panels.ts
-function renderResults(container, state, partyLabels) {
+function renderResults(container, state, partyNames, partyColors, partyCandidates) {
+  var _a, _b;
   if (state.simulationResult === null || state.simulationResult.districtResults.length === 0) {
     container.innerHTML = '<div style="color:#606080;font-size:0.85rem;">Draw districts to see results</div>';
     return;
   }
-  const labels = __spreadValues(__spreadValues({}, PARTY_LABELS), partyLabels);
+  const parties = state.parties;
+  const party1 = parties[0];
+  const party2 = (_a = parties[1]) != null ? _a : party1;
+  const isMultiparty = parties.length > 2;
+  const labelOf = (p) => {
+    var _a2;
+    return escapeHtml((_a2 = partyNames == null ? void 0 : partyNames[p]) != null ? _a2 : partyLabel(parties, p));
+  };
+  const colorOf = (p) => {
+    var _a2;
+    return (_a2 = partyColors == null ? void 0 : partyColors[p]) != null ? _a2 : partyColor(parties, p);
+  };
+  const winnerOfDistrict = (p, districtId) => {
+    const name = candidateForDistrict(partyCandidates == null ? void 0 : partyCandidates[p], districtId);
+    return name !== void 0 ? escapeHtml(name) : labelOf(p);
+  };
   const { districtResults } = state.simulationResult;
+  const independentHomes = state.independentHomes;
+  const isIndependent = (p) => {
+    var _a2;
+    return (_a2 = independentHomes == null ? void 0 : independentHomes.has(p)) != null ? _a2 : false;
+  };
+  const homeDistrictOf = (p) => {
+    var _a2;
+    const idx = independentHomes == null ? void 0 : independentHomes.get(p);
+    return idx === void 0 ? void 0 : (_a2 = state.assignments.get(idx)) != null ? _a2 : void 0;
+  };
   const html2 = districtResults.map((r) => {
-    var _a;
-    const color2 = (_a = DISTRICT_COLORS[r.districtId - 1]) != null ? _a : "#888";
-    const winnerColor = PARTY_COLORS[r.winner];
-    const winnerLabel = labels[r.winner];
-    const dPct = (r.voteTotals.D * 100).toFixed(1);
-    const rPct = (r.voteTotals.R * 100).toFixed(1);
+    var _a2, _b2;
+    const color2 = districtColor(r.districtId);
+    const winnerColor = colorOf(r.winner);
+    const winnerLabel = winnerOfDistrict(r.winner, r.districtId);
     const marginPct = (r.margin * 100).toFixed(1);
+    if (isMultiparty) {
+      const ranked = parties.map((p) => {
+        var _a3;
+        return { p, pct: ((_a3 = r.voteTotals[p]) != null ? _a3 : 0) * 100 };
+      }).sort((a2, b) => b.pct - a2.pct);
+      const segments = ranked.map(
+        ({ p, pct }) => `<span style="width:${pct.toFixed(1)}%;background:${colorOf(p)}"></span>`
+      ).join("");
+      const details = ranked.map(({ p, pct }) => {
+        const entry = `${labelOf(p)} ${pct.toFixed(1)}%`;
+        if (!isIndependent(p))
+          return entry;
+        return homeDistrictOf(p) === r.districtId ? `\u2302 ${entry}` : `${entry} <span class="off-ballot">(not on ballot)</span>`;
+      }).join(" \xB7 ");
+      return `
+      <div class="result-district" style="border-left-color:${color2}">
+        <div class="dist-name">District ${r.districtId}</div>
+        <div class="winner-badge" style="background:${winnerColor};color:#fff">${winnerLabel} +${marginPct}%</div>
+        <div class="vote-bar-multi">${segments}</div>
+        <div class="vote-details">
+          ${details} \xB7 ${r.precinctCount} precincts \xB7 pop ${r.population.toLocaleString()}
+        </div>
+      </div>`;
+    }
+    const p2Label = labelOf(party2);
+    const p1Label = labelOf(party1);
+    const p2Pct = (((_a2 = r.voteTotals[party2]) != null ? _a2 : 0) * 100).toFixed(1);
+    const p1Pct = (((_b2 = r.voteTotals[party1]) != null ? _b2 : 0) * 100).toFixed(1);
     return `
       <div class="result-district" style="border-left-color:${color2}">
         <div class="dist-name">District ${r.districtId}</div>
         <div class="winner-badge" style="background:${winnerColor};color:#fff">${winnerLabel} +${marginPct}%</div>
-        <div class="vote-bar" style="--d-pct:${dPct}%"></div>
+        <div class="vote-bar" style="--d-pct:${p2Pct}%"></div>
         <div class="vote-details">
-          ${labels.D} ${dPct}% \xB7 ${labels.R} ${rPct}% \xB7 ${r.precinctCount} precincts \xB7 pop ${r.population.toLocaleString()}
+          ${p2Label} ${p2Pct}% \xB7 ${p1Label} ${p1Pct}% \xB7 ${r.precinctCount} precincts \xB7 pop ${r.population.toLocaleString()}
         </div>
       </div>`;
   }).join("");
-  container.innerHTML = html2;
-}
-function renderLegend(container, districtCount) {
-  const items = Array.from({ length: districtCount }, (_, i) => {
-    var _a;
-    const color2 = (_a = DISTRICT_COLORS[i]) != null ? _a : "#888";
-    return `<div class="legend-item">
-      <div class="legend-swatch" style="background:${color2}"></div>
-      <span>District ${i + 1}</span>
-    </div>`;
-  });
-  container.innerHTML = items.join("");
+  const footnote = ((_b = independentHomes == null ? void 0 : independentHomes.size) != null ? _b : 0) > 0 ? `<div class="results-footnote">\u2302 Independent candidates run only in their home district (pinned on the map). Elsewhere their support is shown for context, but they are not on the ballot.</div>` : "";
+  container.innerHTML = html2 + footnote;
 }
 function renderDistrictButtons(container, districtCount, activeDistrict, onSelect, demoStat) {
-  var _a, _b;
+  var _a;
   container.innerHTML = "";
   for (let i = 1; i <= districtCount; i++) {
-    const color2 = (_a = DISTRICT_COLORS[i - 1]) != null ? _a : "#888";
+    const color2 = districtColor(i);
     const wrapper = document.createElement("div");
     wrapper.className = "district-btn-wrap";
     const btn = document.createElement("button");
     btn.className = `district-btn${i === activeDistrict ? " active" : ""}`;
-    btn.textContent = `District ${i}`;
     btn.style.background = color2;
     btn.style.color = "#fff";
+    btn.setAttribute("aria-label", `Paint District ${i}`);
+    btn.setAttribute("data-tip", `District ${i}`);
+    btn.setAttribute("data-district", String(i));
+    const num = document.createElement("span");
+    num.className = "district-num";
+    num.textContent = String(i);
+    const label = document.createElement("span");
+    label.className = "district-label";
+    label.textContent = `District ${i}`;
+    btn.append(num, label);
     btn.addEventListener("click", () => onSelect(i));
     wrapper.appendChild(btn);
     if (demoStat) {
-      const share = (_b = demoStat.shares[i - 1]) != null ? _b : 0;
+      const share = (_a = demoStat.shares[i - 1]) != null ? _a : 0;
       const pct = Math.round(share * 100);
       const thresholdPct = Math.round(demoStat.threshold * 100);
       const met = pct >= thresholdPct;
@@ -14914,8 +15014,7 @@ function renderDistrictButtons(container, districtCount, activeDistrict, onSelec
     container.appendChild(wrapper);
   }
 }
-function renderValidityPanel(container, state, rules) {
-  var _a, _b;
+function renderValidityPanel(container, state, rules, showBalance = true) {
   const { precincts, assignments, districtCount } = state;
   const stats = computeValidityStats(precincts, assignments, districtCount, rules);
   let html2 = "";
@@ -14924,21 +15023,23 @@ function renderValidityPanel(container, state, rules) {
   html2 += `<div class="validity-row ${unassignedCls}">`;
   html2 += `<span>Unassigned</span><span class="validity-badge">${unassignedLabel}</span>`;
   html2 += `</div>`;
-  html2 += `<div class="validity-section-label">Population balance</div>`;
-  for (const d of stats.districtPop) {
-    const color2 = (_a = DISTRICT_COLORS[d.districtId - 1]) != null ? _a : "#888";
-    const sign3 = d.deviationPct >= 0 ? "+" : "";
-    const cls = d.status === "ok" ? "validity-ok" : "validity-error";
-    const statusLabel = d.status === "ok" ? "ok" : d.status;
-    html2 += `<div class="validity-row ${cls}" style="border-left-color:${color2}">`;
-    html2 += `<span>D${d.districtId}: ${d.population.toLocaleString()}</span>`;
-    html2 += `<span class="validity-badge">${sign3}${d.deviationPct.toFixed(1)}% ${statusLabel}</span>`;
-    html2 += `</div>`;
+  if (showBalance) {
+    html2 += `<div class="validity-section-label">Population balance</div>`;
+    for (const d of stats.districtPop) {
+      const color2 = districtColor(d.districtId);
+      const sign3 = d.deviationPct >= 0 ? "+" : "";
+      const cls = d.status === "ok" ? "validity-ok" : "validity-error";
+      const statusLabel = d.status === "ok" ? "ok" : d.status;
+      html2 += `<div class="validity-row ${cls}" style="border-left-color:${color2}">`;
+      html2 += `<span>D${d.districtId}: ${d.population.toLocaleString()}</span>`;
+      html2 += `<span class="validity-badge">${sign3}${d.deviationPct.toFixed(1)}% ${statusLabel}</span>`;
+      html2 += `</div>`;
+    }
   }
   if (stats.contiguity !== null) {
     html2 += `<div class="validity-section-label">Contiguity</div>`;
     for (const [did, ok] of stats.contiguity) {
-      const color2 = (_b = DISTRICT_COLORS[did - 1]) != null ? _b : "#888";
+      const color2 = districtColor(did);
       const cls = ok ? "validity-ok" : rules.contiguity === "required" ? "validity-error" : "validity-warn";
       const label = ok ? "Connected" : "Non-contiguous";
       html2 += `<div class="validity-row ${cls}" style="border-left-color:${color2}">`;
@@ -14950,8 +15051,407 @@ function renderValidityPanel(container, state, rules) {
 }
 var init_panels = __esm({
   "game/web/src/render/panels.ts"() {
-    init_types();
+    init_escape_html();
+    init_runtime();
+    init_party();
     init_validity();
+  }
+});
+
+// game/web/src/tutorial/overlay.ts
+function asArray(sel) {
+  if (sel === void 0)
+    return [];
+  return Array.isArray(sel) ? sel : [sel];
+}
+function selectorsToElements(sel) {
+  const out = [];
+  for (const s2 of asArray(sel)) {
+    document.querySelectorAll(s2).forEach((el) => out.push(el));
+  }
+  return out;
+}
+function renderText(el, text) {
+  el.innerHTML = text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+}
+function completeKey(id2) {
+  return `tutorial-${id2}-complete`;
+}
+function setMapKeyboardLock(locked) {
+  const svg2 = document.getElementById("map-svg");
+  if (!svg2)
+    return;
+  if (locked) {
+    svg2.setAttribute("inert", "");
+    svg2.setAttribute("tabindex", "-1");
+    svg2.blur();
+  } else {
+    svg2.removeAttribute("inert");
+    svg2.setAttribute("tabindex", "0");
+  }
+}
+function startTutorialOverlay(scenario, store) {
+  if (scenario.guided !== true)
+    return;
+  const script = SCRIPTS[scenario.id];
+  if (!script || script.length === 0)
+    return;
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("resetTutorial") === "1") {
+    clearTutorialFlags();
+  } else if (isComplete(scenario.id)) {
+    return;
+  }
+  runOverlay(scenario.id, script, store);
+}
+function restartTutorialOverlay(scenario, store) {
+  if (scenario.guided !== true)
+    return;
+  const script = SCRIPTS[scenario.id];
+  if (!script || script.length === 0)
+    return;
+  activeOverlayTeardown == null ? void 0 : activeOverlayTeardown();
+  try {
+    localStorage.removeItem(completeKey(scenario.id));
+  } catch (e) {
+  }
+  runOverlay(scenario.id, script, store);
+}
+function isComplete(id2) {
+  try {
+    return localStorage.getItem(completeKey(id2)) === "1";
+  } catch (e) {
+    return false;
+  }
+}
+function clearTutorialFlags() {
+  try {
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k2 = localStorage.key(i);
+      if (k2 && k2.startsWith("tutorial-") && k2.endsWith("-complete"))
+        keys.push(k2);
+    }
+    keys.forEach((k2) => localStorage.removeItem(k2));
+  } catch (e) {
+  }
+}
+function runOverlay(id2, script, store) {
+  const overlayAc = new AbortController();
+  let stepIdx = 0;
+  let stepCleanup = null;
+  const revealEls = /* @__PURE__ */ new Set();
+  for (const step of script) {
+    for (const el of selectorsToElements(step.reveal))
+      revealEls.add(el);
+  }
+  revealEls.forEach((el) => el.classList.add("tutorial-reveal-hidden"));
+  const editorRoots = [
+    document.getElementById("app-header"),
+    document.getElementById("main")
+  ].filter((el) => el !== null);
+  const panel = document.createElement("div");
+  panel.id = PANEL_ID;
+  panel.setAttribute("role", "dialog");
+  panel.setAttribute("aria-live", "polite");
+  panel.setAttribute("aria-label", "Tutorial");
+  const textEl = document.createElement("div");
+  textEl.className = "tutorial-text";
+  const progressEl = document.createElement("div");
+  progressEl.className = "tutorial-progress";
+  progressEl.style.display = "none";
+  const controls = document.createElement("div");
+  controls.className = "tutorial-controls";
+  const nextBtn = document.createElement("button");
+  nextBtn.className = "tutorial-next";
+  nextBtn.textContent = "Next \u2192";
+  const skipBtn = document.createElement("button");
+  skipBtn.className = "tutorial-skip";
+  skipBtn.textContent = "Skip tutorial";
+  controls.append(nextBtn, skipBtn);
+  panel.append(textEl, progressEl, controls);
+  document.body.appendChild(panel);
+  nextBtn.addEventListener(
+    "click",
+    () => {
+      var _a;
+      if (((_a = script[stepIdx]) == null ? void 0 : _a.advance.on) === "next")
+        advance();
+    },
+    { signal: overlayAc.signal }
+  );
+  skipBtn.addEventListener("click", () => finish(), { signal: overlayAc.signal });
+  document.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.key === "Escape")
+        finish();
+    },
+    { signal: overlayAc.signal }
+  );
+  function clearStepDecorations() {
+    stepCleanup == null ? void 0 : stepCleanup();
+    stepCleanup = null;
+    document.querySelectorAll(".tutorial-highlight").forEach((el) => el.classList.remove("tutorial-highlight"));
+    document.querySelectorAll(".tutorial-interactive").forEach((el) => el.classList.remove("tutorial-interactive"));
+    editorRoots.forEach((r) => r.classList.remove("tutorial-paused"));
+    setMapKeyboardLock(false);
+  }
+  function teardown() {
+    clearStepDecorations();
+    overlayAc.abort();
+    panel.remove();
+    document.querySelectorAll(".tutorial-reveal-hidden").forEach((el) => el.classList.remove("tutorial-reveal-hidden"));
+    if (activeOverlayTeardown === teardown)
+      activeOverlayTeardown = null;
+  }
+  activeOverlayTeardown = teardown;
+  function finish() {
+    teardown();
+    try {
+      localStorage.setItem(completeKey(id2), "1");
+    } catch (e) {
+    }
+  }
+  function advance() {
+    clearStepDecorations();
+    stepIdx += 1;
+    if (stepIdx >= script.length) {
+      finish();
+      return;
+    }
+    renderStep();
+  }
+  function renderStep() {
+    const step = script[stepIdx];
+    renderText(textEl, step.text);
+    selectorsToElements(step.reveal).forEach((el) => el.classList.remove("tutorial-reveal-hidden"));
+    const targets = selectorsToElements(step.highlight);
+    targets.forEach((el) => el.classList.add("tutorial-highlight"));
+    editorRoots.forEach((r) => r.classList.add("tutorial-paused"));
+    const paints = step.advance.on === "paint-count" || step.advance.on === "any-map-click";
+    const paintTargets = paints ? selectorsToElements(["#map-svg", "#district-toolbar"]) : [];
+    [...targets, ...paintTargets].forEach((el) => el.classList.add("tutorial-interactive"));
+    setMapKeyboardLock(!paints);
+    nextBtn.textContent = stepIdx === script.length - 1 ? "Done" : "Next \u2192";
+    nextBtn.style.display = step.advance.on === "next" ? "" : "none";
+    const isPaintCount = step.advance.on === "paint-count";
+    progressEl.style.display = isPaintCount ? "" : "none";
+    if (!isPaintCount)
+      progressEl.classList.remove("tutorial-progress-complete");
+    const reportProgress = (text, done) => {
+      progressEl.textContent = text;
+      progressEl.classList.toggle("tutorial-progress-complete", done);
+    };
+    stepCleanup = setupAdvance(step, targets, advance, store, reportProgress);
+  }
+  renderStep();
+}
+function setupAdvance(step, targets, advance, store, reportProgress) {
+  var _a, _b;
+  switch (step.advance.on) {
+    case "next":
+      return () => {
+      };
+    case "click-target": {
+      const ac2 = new AbortController();
+      targets.forEach(
+        (el) => el.addEventListener("click", () => advance(), { signal: ac2.signal, once: false })
+      );
+      return () => ac2.abort();
+    }
+    case "any-map-click": {
+      const ac2 = new AbortController();
+      (_a = document.getElementById("map-svg")) == null ? void 0 : _a.addEventListener("click", () => advance(), {
+        signal: ac2.signal
+      });
+      return () => ac2.abort();
+    }
+    case "submit": {
+      const ac2 = new AbortController();
+      (_b = document.getElementById("btn-submit")) == null ? void 0 : _b.addEventListener("click", () => advance(), {
+        signal: ac2.signal
+      });
+      return () => ac2.abort();
+    }
+    case "paint-count": {
+      const { district, n } = step.advance;
+      const count3 = () => {
+        let c3 = 0;
+        for (const d of store.getState().assignments.values())
+          if (d === district)
+            c3 += 1;
+        return c3;
+      };
+      let advanceTimer = 0;
+      let fired = false;
+      let unsub = () => {
+      };
+      const tick = () => {
+        const c3 = count3();
+        const done = c3 >= n;
+        reportProgress(`District ${district} \u2014 ${Math.min(c3, n)} / ${n} painted`, done);
+        if (done && !fired) {
+          fired = true;
+          unsub();
+          advanceTimer = window.setTimeout(() => advance(), 450);
+        }
+      };
+      unsub = store.subscribe(tick);
+      tick();
+      return () => {
+        unsub();
+        if (advanceTimer)
+          window.clearTimeout(advanceTimer);
+      };
+    }
+    case "auto": {
+      const t = window.setTimeout(() => advance(), step.advance.ms);
+      return () => window.clearTimeout(t);
+    }
+  }
+}
+var PANEL_ID, activeOverlayTeardown, TUTORIAL_001, TUTORIAL_002, TUTORIAL_003, TUTORIAL_004, TUTORIAL_005, TUTORIAL_006, SCRIPTS;
+var init_overlay = __esm({
+  "game/web/src/tutorial/overlay.ts"() {
+    PANEL_ID = "tutorial-panel";
+    activeOverlayTeardown = null;
+    TUTORIAL_001 = [
+      {
+        text: "Welcome. This whole county is **District 1** \u2014 your job is to split it into two.",
+        advance: { on: "next" }
+      },
+      {
+        text: "Pick **District 2** from the painter on the left.",
+        highlight: '[data-district="2"]',
+        advance: { on: "click-target" }
+      },
+      {
+        text: "Now click precincts on the map to paint them into District 2.",
+        highlight: "#map-svg",
+        advance: { on: "paint-count", district: 2, n: 5 }
+      },
+      {
+        text: "Changed your mind? **Undo** steps back.",
+        highlight: "#btn-undo",
+        advance: { on: "next" }
+      },
+      {
+        text: "When the county is split into two districts, hit **Submit**.",
+        highlight: "#btn-submit",
+        advance: { on: "submit" }
+      }
+    ];
+    TUTORIAL_002 = [
+      {
+        text: "Bigger map \u2014 and now there are **rules**. A **legal** map needs two things: districts roughly equal in population, and each one a single connected piece.",
+        advance: { on: "next" }
+      },
+      {
+        text: "Paint your three districts like before \u2014 pick a district, then click precincts.",
+        highlight: ["#district-toolbar", "#map-svg"],
+        advance: { on: "paint-count", district: 2, n: 5 }
+      },
+      {
+        text: "Watch the **Map Validity** panel \u2014 it flags a district that's too big, too small, or split in two, and turns all green when the map is **legal**.",
+        highlight: "#validity-container",
+        advance: { on: "next" }
+      },
+      {
+        text: "That's the goal. Hit **Done**, then the map's yours: even the districts out until the **Map Validity** panel is all green, and **Submit** once it's a legal map.",
+        advance: { on: "next" }
+      }
+    ];
+    TUTORIAL_003 = [
+      {
+        text: "A new map, with some geography \u2014 a river runs through the Bend. It's just scenery; your districts can cross it freely.",
+        advance: { on: "next" }
+      },
+      {
+        text: "Until now every voter was the same. They're not. Click **Lean** to colour each precinct by who its voters favour \u2014 and the **election result** panel (just appeared) shows what that produces, district by district.",
+        reveal: ["#filter-lean", "#results-heading", "#results-container"],
+        highlight: "#filter-lean",
+        advance: { on: "click-target" }
+      },
+      {
+        text: "Repaint a district and watch the result move. The lines you draw decide who wins.",
+        highlight: "#results-container",
+        advance: { on: "paint-count", district: 2, n: 5 }
+      },
+      {
+        text: "**County** borders are the old administrative lines. Like the river, they're **cosmetic** \u2014 they don't affect your districts at all; they just help you read the map and ground where things are.",
+        reveal: "#filter-county",
+        highlight: "#filter-county",
+        advance: { on: "click-target" }
+      },
+      {
+        text: "That's the whole picture. Hit **Done**, then draw your three districts \u2014 balanced and connected \u2014 and **Submit** once the **Map Validity** panel is all green.",
+        advance: { on: "next" }
+      }
+    ];
+    TUTORIAL_004 = [
+      {
+        text: "Putting it together \u2014 everything you've learned so far, one map. Nothing's hidden: the **Map Validity** panel, the **Lean** view, the **County** borders, and the **election result** are all here from the start.",
+        advance: { on: "next" }
+      },
+      {
+        text: "Get going \u2014 pick **District 2** and paint a full district's worth of precincts into it, keeping it connected. Watch the counter; glance at the result to see who your lines elect.",
+        highlight: ["#district-toolbar", "#map-svg"],
+        advance: { on: "paint-count", district: 2, n: 32 }
+      },
+      {
+        text: "You've drawn a district \u2014 you've got this. Hit **Done** and the map is yours: pan around, watch the **Map Validity** panel, and **Submit** when your four districts are balanced and connected. That's every tool, one map \u2014 the whole craft is yours now.",
+        advance: { on: "next" }
+      }
+    ];
+    TUTORIAL_005 = [
+      {
+        text: "A three-cornered race. Three PARTIES run across the Bend \u2014 **Ken** out west, **Ryu** in the city, **Chun-Li** out east \u2014 each with a candidate in every district. Everything's here from the start: the **Lean** view, the **election result**, and the **Map Validity** panel.",
+        advance: { on: "next" }
+      },
+      {
+        text: "Click **Lean** to colour each precinct by the party its voters favour. Three bases show up \u2014 Ken orange in the west, Ryu purple in the centre, Chun-Li teal in the east. That's who you're drawing around.",
+        highlight: "#filter-lean",
+        advance: { on: "click-target" }
+      },
+      {
+        text: "One catch before you carve: Hawthorn city holds most of the people. Three equal-width columns and the middle bursts the balance limit \u2014 the **crowded centre needs the smaller district**. Pick **District 2** and paint the city core into a tight central district; let the rural wings run wide.",
+        highlight: ["#district-toolbar", "#map-svg"],
+        advance: { on: "paint-count", district: 2, n: 18 }
+      },
+      {
+        text: "That's the centre. Hit **Done** and the map is yours \u2014 carve the west and east wings, keep all three balanced and connected, and **Submit** when the **Map Validity** panel is green. Watch the result: keep the eastern base whole and Chun-Li carries that seat; split it across districts and she's shut out.",
+        advance: { on: "next" }
+      }
+    ];
+    TUTORIAL_006 = [
+      {
+        text: "Hollowmere. Two parties run everywhere \u2014 **Ken** out west, **Ryu** through the centre \u2014 but the eastern Hollow has its own: **Dhalsim**, an independent. Everything's here from the start: the **Lean** view, the **election result**, and the **Map Validity** panel.",
+        advance: { on: "next" }
+      },
+      {
+        text: "Click **Lean** to colour each precinct by who its voters favour. Dhalsim's teal fills the east \u2014 that's who *favours* him. But find the **\u2302 pin**: that's his home, and an independent is on the **ballot only in the district that holds it**. Lean is map-wide; the ballot is home-only.",
+        highlight: "#filter-lean",
+        advance: { on: "click-target" }
+      },
+      {
+        text: "So give the Hollow a voice: pick **District 3** and paint the eastern precincts \u2014 the teal ones, around the **\u2302 pin** \u2014 into it. Keep his home and his base together and Dhalsim is both on the ballot *and* ahead.",
+        highlight: ["#district-toolbar", "#map-svg"],
+        advance: { on: "paint-count", district: 3, n: 20 }
+      },
+      {
+        text: "That's the Hollow together. Hit **Done** and the map is yours \u2014 carve the west and centre into the other two districts, keep all three balanced and connected, and **Submit**. Watch the result: with his home and base in one district, Dhalsim carries the Hollow. (Split it across districts instead, and his voice slips away.)",
+        advance: { on: "next" }
+      }
+    ];
+    SCRIPTS = {
+      "tutorial-001": TUTORIAL_001,
+      "tutorial-002": TUTORIAL_002,
+      "tutorial-003": TUTORIAL_003,
+      "tutorial-004": TUTORIAL_004,
+      "tutorial-005": TUTORIAL_005,
+      "tutorial-006": TUTORIAL_006
+    };
   }
 });
 
@@ -15119,8 +15619,9 @@ var init_dist = __esm({
 });
 
 // game/web/src/model/adapter.js
-function scenarioToSpike(scenario) {
+function scenarioToRuntime(scenario) {
   var _a, _b, _c, _d;
+  const parties = scenario.parties.map((p) => p.id);
   const districtIndexMap = /* @__PURE__ */ new Map();
   scenario.districts.forEach((d, i) => {
     districtIndexMap.set(d.id, i + 1);
@@ -15130,6 +15631,16 @@ function scenarioToSpike(scenario) {
     const pos = pc.position;
     if ("q" in pos)
       posMap.set(`${pos.q},${pos.r}`, i);
+  });
+  const independentHomes = /* @__PURE__ */ new Map();
+  scenario.parties.forEach((p) => {
+    if (!p.independent || p.home === void 0)
+      return;
+    const homeIndex = posMap.get(`${p.home.q},${p.home.r}`);
+    if (homeIndex === void 0) {
+      throw new Error(`Independent party "${p.id}" home (${p.home.q},${p.home.r}) matches no precinct`);
+    }
+    independentHomes.set(p.id, homeIndex);
   });
   const terrainPosMap = /* @__PURE__ */ new Map();
   for (const tile of (_a = scenario.terrain_tiles) != null ? _a : []) {
@@ -15150,7 +15661,7 @@ function scenarioToSpike(scenario) {
   }
   const blocksContiguity = (_c = scenario.river_blocks_contiguity) != null ? _c : false;
   const precincts = scenario.precincts.map((pc, i) => {
-    var _a2, _b2, _c2, _d2;
+    var _a2, _b2, _c2, _d2, _e;
     const pos = pc.position;
     const q = "q" in pos ? pos.q : 0;
     const r = "q" in pos ? pos.r : 0;
@@ -15183,46 +15694,46 @@ function scenarioToSpike(scenario) {
       lakeside: hasLakeAdj,
       riverside: isRiverside && !hasSea && !hasMountain && !hasLakeAdj
     };
-    const firstPartyId = (_a2 = scenario.parties[0]) == null ? void 0 : _a2.id;
-    const secondPartyId = (_b2 = scenario.parties[1]) == null ? void 0 : _b2.id;
-    let firstShare = 0;
-    let secondShare = 0;
+    const voteShare = zeroShare(parties);
     for (const g of pc.demographic_groups) {
       const vs = g.vote_shares;
-      if (firstPartyId)
-        firstShare += g.population_share * ((_c2 = vs[firstPartyId]) != null ? _c2 : 0);
-      if (secondPartyId)
-        secondShare += g.population_share * ((_d2 = vs[secondPartyId]) != null ? _d2 : 0);
+      for (const party of parties) {
+        voteShare[party] = ((_a2 = voteShare[party]) != null ? _a2 : 0) + g.population_share * ((_b2 = vs[party]) != null ? _b2 : 0);
+      }
     }
-    const partyShare = {
-      R: Math.round(firstShare * 1e3) / 1e3,
-      D: Math.round(secondShare * 1e3) / 1e3,
-      L: 0,
-      G: 0,
-      I: 0
-    };
-    const winner = partyShare.D >= partyShare.R ? "D" : "R";
-    const margin = Math.round(Math.abs(partyShare.D - partyShare.R) * 100) / 100;
-    const spikePrecinct = {
-      id: i,
+    for (const party of parties) {
+      voteShare[party] = Math.round(((_c2 = voteShare[party]) != null ? _c2 : 0) * 1e3) / 1e3;
+    }
+    const winner = winnerOf(voteShare, parties);
+    const sorted = parties.slice().sort((a2, b) => {
+      var _a3, _b3;
+      return ((_a3 = voteShare[b]) != null ? _a3 : 0) - ((_b3 = voteShare[a2]) != null ? _b3 : 0);
+    });
+    const runnerUp = sorted[1];
+    const rawMargin = runnerUp !== void 0 ? ((_d2 = voteShare[winner]) != null ? _d2 : 0) - ((_e = voteShare[runnerUp]) != null ? _e : 0) : 0;
+    const margin = Math.round(rawMargin * 100) / 100;
+    const runtimePrecinct = {
+      index: i,
+      scenarioId: pc.id,
       coord: { q, r },
       center,
       neighbors,
       passableNeighbors,
       population: pc.total_population,
-      partyShare,
-      previousResult: { winner, margin },
-      demographics: { male: 0.49, female: 0.49, nonbinary: 0.02 }
+      voteShare,
+      previousResult: { winner, margin }
     };
     if (pc.name !== void 0)
-      spikePrecinct.name = pc.name;
+      runtimePrecinct.name = pc.name;
     if (pc.county_id !== void 0)
-      spikePrecinct.county_id = pc.county_id;
+      runtimePrecinct.county_id = pc.county_id;
+    if (pc.county_name !== void 0)
+      runtimePrecinct.county_name = pc.county_name;
     if (hasSea || hasMountain || isRiverside || hasLakeAdj) {
-      spikePrecinct.terrainAnnotation = terrainAnnotation;
+      runtimePrecinct.terrainAnnotation = terrainAnnotation;
     }
     if (pc.demographic_groups.length > 1) {
-      spikePrecinct.groupShares = pc.demographic_groups.map((g) => {
+      runtimePrecinct.groupShares = pc.demographic_groups.map((g) => {
         var _a3;
         const entry = {
           name: (_a3 = g.name) != null ? _a3 : g.id,
@@ -15233,61 +15744,64 @@ function scenarioToSpike(scenario) {
         return entry;
       });
     }
-    return spikePrecinct;
+    return runtimePrecinct;
   });
   const assignments = /* @__PURE__ */ new Map();
   scenario.precincts.forEach((pc, i) => {
     var _a2;
     const sDistId = pc.initial_district_id;
-    const spikeDistId = sDistId != null ? (_a2 = districtIndexMap.get(sDistId)) != null ? _a2 : null : null;
-    assignments.set(i, spikeDistId);
+    const runtimeDistId = sDistId != null ? (_a2 = districtIndexMap.get(sDistId)) != null ? _a2 : null : null;
+    assignments.set(i, runtimeDistId);
   });
   const terrainTiles = ((_d = scenario.terrain_tiles) != null ? _d : []).map((tile) => ({
     coord: { q: tile.position.q, r: tile.position.r },
     center: hexToPixel(tile.position.q, tile.position.r),
     type: tile.type
   }));
-  return { precincts, assignments, districtCount: scenario.districts.length, terrainTiles, riverEdges: riverPairs };
+  return __spreadValues({
+    precincts,
+    parties,
+    assignments,
+    districtCount: scenario.districts.length,
+    terrainTiles,
+    riverEdges: riverPairs
+  }, independentHomes.size > 0 ? { independentHomes } : {});
 }
 var init_adapter = __esm({
   "game/web/src/model/adapter.js"() {
+    init_party();
     init_hex_geometry();
   }
 });
 
 // game/web/src/simulation/election.js
-function zeroShare() {
-  return { R: 0, D: 0, L: 0, G: 0, I: 0 };
-}
-function pluralityWinner(share) {
-  let best = "R";
-  for (const p of ALL_PARTIES) {
-    if (share[p] > share[best]) {
-      best = p;
-    }
-  }
-  return best;
-}
-function simulateDistrict(districtId, precincts, assignments) {
-  var _a;
-  const inDistrict = precincts.filter((p) => assignments.get(p.id) === districtId);
-  const voteTotals = zeroShare();
+function simulateDistrict(districtId, precincts, assignments, parties, independentHomes) {
+  var _a, _b, _c, _d, _e, _f;
+  const inDistrict = precincts.filter((p) => assignments.get(p.index) === districtId);
+  const voteTotals = zeroShare(parties);
   let totalPop = 0;
   for (const p of inDistrict) {
     totalPop += p.population;
-    for (const party of ALL_PARTIES) {
-      voteTotals[party] += p.partyShare[party] * p.population;
+    for (const party of parties) {
+      voteTotals[party] = ((_a = voteTotals[party]) != null ? _a : 0) + ((_b = p.voteShare[party]) != null ? _b : 0) * p.population;
     }
   }
   if (totalPop > 0) {
-    for (const party of ALL_PARTIES) {
-      voteTotals[party] /= totalPop;
+    for (const party of parties) {
+      voteTotals[party] = ((_c = voteTotals[party]) != null ? _c : 0) / totalPop;
     }
   }
-  const winner = pluralityWinner(voteTotals);
-  const sorted = ALL_PARTIES.slice().sort((a2, b) => voteTotals[b] - voteTotals[a2]);
-  const runnerUp = (_a = sorted[1]) != null ? _a : "R";
-  const margin = voteTotals[winner] - voteTotals[runnerUp];
+  const eligibleParties = independentHomes ? parties.filter((party) => {
+    const home = independentHomes.get(party);
+    return home === void 0 || assignments.get(home) === districtId;
+  }) : parties;
+  const winner = winnerOf(voteTotals, eligibleParties);
+  const sorted = eligibleParties.slice().sort((a2, b) => {
+    var _a2, _b2;
+    return ((_a2 = voteTotals[b]) != null ? _a2 : 0) - ((_b2 = voteTotals[a2]) != null ? _b2 : 0);
+  });
+  const runnerUp = (_d = sorted[1]) != null ? _d : eligibleParties[0];
+  const margin = ((_e = voteTotals[winner]) != null ? _e : 0) - ((_f = voteTotals[runnerUp]) != null ? _f : 0);
   return {
     districtId,
     winner,
@@ -15308,7 +15822,7 @@ function runElection(state) {
   }
   const districtResults = [];
   for (const dId of Array.from(activeDistricts).sort((a2, b) => a2 - b)) {
-    districtResults.push(simulateDistrict(dId, state.precincts, state.assignments));
+    districtResults.push(simulateDistrict(dId, state.precincts, state.assignments, state.parties, state.independentHomes));
   }
   const seatsByParty = {};
   for (const r of districtResults) {
@@ -15317,10 +15831,9 @@ function runElection(state) {
   }
   return { districtResults, seatsByParty };
 }
-var ALL_PARTIES;
 var init_election = __esm({
   "game/web/src/simulation/election.js"() {
-    ALL_PARTIES = ["R", "D", "L", "G", "I"];
+    init_party();
   }
 });
 
@@ -15329,17 +15842,18 @@ function cloneAssignments(m) {
   return new Map(m);
 }
 function createGameStore(scenario) {
-  const { precincts, assignments, districtCount, terrainTiles, riverEdges } = scenarioToSpike(scenario);
+  const { precincts, parties, assignments, districtCount, terrainTiles, riverEdges, independentHomes } = scenarioToRuntime(scenario);
   const initialAssignments = new Map(assignments);
-  const initialState = {
+  const initialState = __spreadValues({
     precincts,
+    parties,
     districtCount,
     assignments,
     activeDistrict: 1,
     simulationResult: null,
     terrainTiles,
     riverEdges
-  };
+  }, independentHomes ? { independentHomes } : {});
   initialState.simulationResult = runElection(initialState);
   const store = createStore()(temporal((set3, get3) => __spreadProps(__spreadValues({}, initialState), {
     setActiveDistrict(id2) {
@@ -15392,7 +15906,23 @@ function createGameStore(scenario) {
       });
     }
   }), {
-    // zundo: equality check — prevents storing a new history entry if assignments unchanged
+    // Snapshot only assignments (+ the consistent simulationResult) so undo/redo
+    // never reverts the active district / brush selection. zustand merge-set
+    // preserves the rest of state (activeDistrict, precincts, …).
+    // INVARIANT (load-bearing): simulationResult is written in the SAME set() as
+    // assignments — paint, restoreAssignments, and reset all recompute it via
+    // runElection on the assignments path — so each snapshot's result matches its
+    // board and undo restores a consistent pair. A future independent
+    // simulationResult write would desync undo; keep it on the assignments path
+    // or drop it from partialize.
+    partialize: (state) => ({
+      assignments: state.assignments,
+      simulationResult: state.simulationResult
+    }),
+    // Cap history so long sessions don't grow the undo stack unboundedly.
+    limit: 100,
+    // zundo: equality check — prevents storing a new history entry if assignments unchanged.
+    // With partialize present, the args are the partialized shape.
     equality: (a2, b) => {
       if (a2.assignments === b.assignments)
         return true;
@@ -15495,8 +16025,8 @@ function computeDistrictGroupShares(scenarioPrecincts, assignments, districtCoun
   }
   return shares;
 }
-function evaluateCriteria(criteria, validityStats, simResult, rules, precincts, assignments, districtCount, partyIdToKey, scenarioPrecincts = []) {
-  var _a, _b, _c, _d;
+function evaluateCriteria(criteria, validityStats, simResult, rules, precincts, assignments, districtCount, parties, scenarioPrecincts = []) {
+  var _a, _b, _c;
   let compactnessScores = null;
   function getCompactness() {
     if (compactnessScores === null) {
@@ -15541,17 +16071,15 @@ function evaluateCriteria(criteria, validityStats, simResult, rules, precincts, 
         break;
       }
       case "seat_count": {
-        const key = (_a = partyIdToKey.get(c3.party)) != null ? _a : String(c3.party);
-        const seats = (_b = simResult.seatsByParty[key]) != null ? _b : 0;
+        const seats = (_a = simResult.seatsByParty[c3.party]) != null ? _a : 0;
         passed = applyOp(seats, c3.operator, c3.count);
-        detail = `${key}: ${seats} seat(s) (required ${OP_LABEL[c3.operator]}${c3.count})`;
+        detail = `${c3.party}: ${seats} seat(s) (required ${OP_LABEL[c3.operator]}${c3.count})`;
         break;
       }
       case "safe_seats": {
-        const key = (_c = partyIdToKey.get(c3.party)) != null ? _c : String(c3.party);
-        const safeCount = simResult.districtResults.filter((dr) => dr.winner === key && dr.margin >= c3.margin).length;
+        const safeCount = simResult.districtResults.filter((dr) => dr.winner === c3.party && dr.margin >= c3.margin).length;
         passed = safeCount >= c3.min_count;
-        detail = `${key}: ${safeCount} safe seat(s) with margin \u2265${(c3.margin * 100).toFixed(0)}% (required \u2265${c3.min_count})`;
+        detail = `${c3.party}: ${safeCount} safe seat(s) with margin \u2265${(c3.margin * 100).toFixed(0)}% (required \u2265${c3.min_count})`;
         break;
       }
       case "competitive_seats": {
@@ -15561,36 +16089,46 @@ function evaluateCriteria(criteria, validityStats, simResult, rules, precincts, 
         break;
       }
       case "efficiency_gap": {
-        let rWasted = 0;
-        let dWasted = 0;
-        let allVotes = 0;
+        const party1 = parties[0];
+        const party2 = parties[1];
+        let p1Wasted = 0;
+        let p2Wasted = 0;
+        let twoPartyVotes = 0;
         for (const dr of simResult.districtResults) {
-          const rVotes = dr.voteTotals.R * dr.totalVotes;
-          const dVotes = dr.voteTotals.D * dr.totalVotes;
-          allVotes += dr.totalVotes;
-          if (dr.winner === "R") {
-            rWasted += Math.max(0, rVotes - dr.totalVotes * 0.5);
-            dWasted += dVotes;
-          } else if (dr.winner === "D") {
-            dWasted += Math.max(0, dVotes - dr.totalVotes * 0.5);
-            rWasted += rVotes;
+          const p1Votes = ((_b = dr.voteTotals[party1]) != null ? _b : 0) * dr.totalVotes;
+          const p2Votes = ((_c = dr.voteTotals[party2]) != null ? _c : 0) * dr.totalVotes;
+          const twoPartyTotal = p1Votes + p2Votes;
+          const winLine = twoPartyTotal * 0.5;
+          twoPartyVotes += twoPartyTotal;
+          if (dr.winner === party1) {
+            p1Wasted += Math.max(0, p1Votes - winLine);
+            p2Wasted += p2Votes;
+          } else if (dr.winner === party2) {
+            p2Wasted += Math.max(0, p2Votes - winLine);
+            p1Wasted += p1Votes;
           } else {
-            rWasted += rVotes;
-            dWasted += dVotes;
+            p1Wasted += p1Votes;
+            p2Wasted += p2Votes;
           }
         }
-        const rawGap = allVotes > 0 ? (rWasted - dWasted) / allVotes : 0;
+        const rawGap = twoPartyVotes > 0 ? (p1Wasted - p2Wasted) / twoPartyVotes : 0;
         const absGap = Math.abs(rawGap);
         passed = applyOp(absGap, c3.operator, c3.threshold);
-        const direction = rawGap >= 0 ? "R-disadvantaged" : "D-disadvantaged";
+        const direction = rawGap >= 0 ? `${party1}-disadvantaged` : `${party2}-disadvantaged`;
         detail = `efficiency gap: ${(absGap * 100).toFixed(1)}% (${direction}; required ${OP_LABEL[c3.operator]}${(c3.threshold * 100).toFixed(0)}%)`;
         break;
       }
       case "mean_median": {
-        const key = (_d = partyIdToKey.get(c3.party)) != null ? _d : String(c3.party);
+        const party1 = parties[0];
+        const party2 = parties[1];
+        const targetIsMajor = c3.party === party1 || c3.party === party2;
         const shares = simResult.districtResults.map((dr) => {
-          var _a2;
-          return (_a2 = dr.voteTotals[key]) != null ? _a2 : 0;
+          var _a2, _b2, _c2;
+          const pShare = (_a2 = dr.voteTotals[c3.party]) != null ? _a2 : 0;
+          if (!targetIsMajor)
+            return pShare;
+          const twoParty = ((_b2 = dr.voteTotals[party1]) != null ? _b2 : 0) + ((_c2 = dr.voteTotals[party2]) != null ? _c2 : 0);
+          return twoParty > 0 ? pShare / twoParty : 0;
         });
         if (shares.length === 0) {
           passed = false;
@@ -15604,7 +16142,7 @@ function evaluateCriteria(criteria, validityStats, simResult, rules, precincts, 
         const diff = mean2 - median2;
         passed = applyOp(diff, c3.operator, c3.threshold);
         const sign3 = diff >= 0 ? "+" : "";
-        detail = `${key}: mean ${(mean2 * 100).toFixed(1)}% \u2212 median ${(median2 * 100).toFixed(1)}% = ${sign3}${(diff * 100).toFixed(1)}% (required ${OP_LABEL[c3.operator]}${(c3.threshold * 100).toFixed(0)}%)`;
+        detail = `${c3.party}: mean ${(mean2 * 100).toFixed(1)}% \u2212 median ${(median2 * 100).toFixed(1)}% = ${sign3}${(diff * 100).toFixed(1)}% (required ${OP_LABEL[c3.operator]}${(c3.threshold * 100).toFixed(0)}%)`;
         break;
       }
       case "majority_minority": {
@@ -15618,6 +16156,10 @@ function evaluateCriteria(criteria, validityStats, simResult, rules, precincts, 
         passed = qualifying >= c3.min_districts;
         detail = `${qualifying} of ${districtCount} district(s) have target group \u2265${(c3.min_eligible_share * 100).toFixed(0)}% (required ${c3.min_districts})`;
         break;
+      }
+      default: {
+        const _exhaustive = c3;
+        throw new Error(`evaluateCriteria: unhandled criterion type: ${_exhaustive.type}`);
       }
     }
     const entry = {
@@ -15633,10 +16175,10 @@ function evaluateCriteria(criteria, validityStats, simResult, rules, precincts, 
   const overallPass = criterionResults.filter((r) => r.required).every((r) => r.passed);
   return { criterionResults, overallPass };
 }
-function isMapSubmittable(validityStats, rules) {
+function isMapSubmittable(validityStats, rules, enforceBalance = true) {
   if (validityStats.unassignedCount > 0)
     return false;
-  if (validityStats.districtPop.some((d) => d.status !== "ok"))
+  if (enforceBalance && validityStats.districtPop.some((d) => d.status !== "ok"))
     return false;
   if (rules.contiguity === "required" && validityStats.contiguity !== null) {
     for (const ok of validityStats.contiguity.values()) {
@@ -15649,7 +16191,54 @@ function isMapSubmittable(validityStats, rules) {
 var OP_LABEL;
 var init_evaluate = __esm({
   "game/web/src/simulation/evaluate.js"() {
-    OP_LABEL = { lt: "<", lte: "\u2264", eq: "=", gte: "\u2265", gt: ">" };
+    OP_LABEL = {
+      lt: "<",
+      lte: "\u2264",
+      eq: "=",
+      gte: "\u2265",
+      gt: ">"
+    };
+  }
+});
+
+// game/web/src/simulation/verdict.js
+function computeStarCount(criterionResults, mapIsValid) {
+  const allRequiredPass = criterionResults.every((cr) => !cr.required || cr.passed);
+  if (!mapIsValid || !allRequiredPass)
+    return 0;
+  return 1 + criterionResults.filter((cr) => !cr.required && cr.passed).length;
+}
+function computeMaxStars(criterionResults) {
+  return 1 + criterionResults.filter((cr) => !cr.required).length;
+}
+function buildValidityRows(validity, scenarioCriterionTypes) {
+  const rows = [];
+  if (validity.unassignedCount > 0 && !scenarioCriterionTypes.has("district_count")) {
+    rows.push({
+      criterionId: "validity:all-assigned",
+      required: true,
+      description: "All precincts must be assigned to a district",
+      passed: false,
+      detail: `${validity.unassignedCount} precinct(s) unassigned`
+    });
+  }
+  if (validity.contiguity !== null) {
+    for (const [distId, ok] of validity.contiguity) {
+      if (!ok) {
+        rows.push({
+          criterionId: `validity:contiguity-${distId}`,
+          required: true,
+          description: `District ${distId} must be contiguous`,
+          passed: false,
+          detail: `District ${distId} is split into disconnected pieces`
+        });
+      }
+    }
+  }
+  return rows;
+}
+var init_verdict = __esm({
+  "game/web/src/simulation/verdict.js"() {
   }
 });
 
@@ -15679,6 +16268,23 @@ function clearWip() {
     localStorage.removeItem(WIP_KEY);
   } catch (e) {
   }
+}
+function reconcileWipAssignments(base, saved, districtCount) {
+  const result = new Map(base);
+  for (const [key, value] of Object.entries(saved)) {
+    const precinctId = Number(key);
+    if (!result.has(precinctId))
+      continue;
+    if (!Number.isInteger(value) || value < 1 || value > districtCount)
+      continue;
+    result.set(precinctId, value);
+  }
+  return result;
+}
+function clampActiveDistrict(saved, districtCount) {
+  if (Number.isInteger(saved) && saved >= 1 && saved <= districtCount)
+    return saved;
+  return 1;
 }
 function serializeProgress(progress) {
   return JSON.stringify({ completed: progress.completed });
@@ -15730,6 +16336,15 @@ var init_progress = __esm({
 function getCampaign(id2) {
   return CAMPAIGN_REGISTRY.find((c3) => c3.id === id2);
 }
+function visibleCampaigns(isDebug, registry = CAMPAIGN_REGISTRY) {
+  return registry.filter((c3) => !c3.debugOnly || isDebug);
+}
+function isPreviewHost(hostname) {
+  return hostname.startsWith("dev.");
+}
+function rendersAsComingSoon(campaign, hostname, isDebug) {
+  return !!campaign.comingSoon && !isDebug && !isPreviewHost(hostname);
+}
 function saveLastPlayedScenario(scenarioId) {
   try {
     localStorage.setItem(LAST_PLAYED_KEY, scenarioId);
@@ -15751,13 +16366,27 @@ var init_campaigns = __esm({
       {
         id: "tutorial",
         title: "Tutorial",
-        description: "Learn the basics of district drawing and the map's geographic features.",
-        scenarioIds: ["tutorial-001", "tutorial-002", "tutorial-003"]
+        description: "Learn to draw districts: the core loop, the rules, reading elections, and races with multiple parties and independents.",
+        // The public tutorial ladder (GAME-121; see thoughts/shared/decisions/2026-07-05-
+        // tutorial-progression-and-multiparty-placement.md): six rungs, each teaching one new
+        // mechanic through the guided coach, all gated on legality only (no seat goals). 005 and
+        // 006 were promoted here out of the retired debug campaign.
+        scenarioIds: [
+          "tutorial-001",
+          "tutorial-002",
+          "tutorial-003",
+          "tutorial-004",
+          "tutorial-005",
+          "tutorial-006"
+        ]
       },
       {
         id: "educational",
         title: "Educational Campaign",
         description: "Explore eight scenarios that illustrate real gerrymandering techniques and their effects on elections.",
+        // Not yet playable in beta — shown as a "coming soon" placeholder on campaign-select
+        // (GAME-128). The scenarios exist in the bundle and still resolve via ?campaign=educational.
+        comingSoon: true,
         scenarioIds: [
           "scenario-002",
           "scenario-003",
@@ -15812,7 +16441,7 @@ var init_assets = __esm({
   }
 });
 
-// game/web/src/criterion-icons.ts
+// game/web/src/criterion-icons.js
 function getCriterionIcon(criterionId, criterionType) {
   if (criterionType in ICONS)
     return ICONS[criterionType];
@@ -15826,7 +16455,7 @@ function getCriterionIcon(criterionId, criterionType) {
 }
 var ICONS;
 var init_criterion_icons = __esm({
-  "game/web/src/criterion-icons.ts"() {
+  "game/web/src/criterion-icons.js"() {
     ICONS = {
       district_count: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <rect x="3" y="3" width="7" height="7" rx="1"/>
@@ -15955,20 +16584,24 @@ var init_audioPlayer = __esm({
 // game/web/src/main.ts
 var require_main = __commonJS({
   "game/web/src/main.ts"(exports) {
+    init_escape_html();
     init_loader();
     init_mapRenderer();
     init_panels();
+    init_overlay();
     init_gameStore();
     init_evaluate();
     init_validity();
+    init_verdict();
     init_progress();
     init_campaigns();
     init_assets();
+    init_party();
     init_criterion_icons();
     init_audioPlayer();
     var SCENARIO_MANIFEST = [
-      { id: "tutorial-002", title: "Millbrook County: Three-District Challenge" },
-      { id: "scenario-002", title: "Clearwater County: The Governor's Map" },
+      { id: "tutorial-002", title: "A Legal Map: Millbrook County" },
+      { id: "scenario-002", title: "Clearwater Valley: The Governor's Map" },
       { id: "scenario-003", title: "Riverport: The Packing Problem" },
       { id: "scenario-004", title: "Lakeview: Cracking the Opposition" },
       { id: "scenario-005", title: "Valle Verde: A Voice for the Valley" },
@@ -15976,10 +16609,16 @@ var require_main = __commonJS({
       { id: "scenario-007", title: "The Reform Map" },
       { id: "scenario-008", title: "Both Sides Unhappy" },
       { id: "scenario-009", title: "Cats vs. Dogs" },
-      { id: "tutorial-003", title: "Hawthorn Bend \u2014 A Tour of the Map" }
+      { id: "tutorial-003", title: "Hawthorn Bend: Reading the Vote" },
+      { id: "tutorial-004", title: "Fairhaven: Putting It Together" }
     ];
     var CAMPAIGN_ONLY_SCENARIOS = [
-      { id: "tutorial-001", title: "Welcome to Redistricting: Millbrook County" }
+      { id: "tutorial-001", title: "Welcome to Redistricting: Millbrook County" },
+      // Tutorial rungs 5–6 — reachable via the "tutorial" campaign, not the all-scenarios fallback
+      // (like tutorial-001). Promoted out of the retired debug campaign (GAME-121; see the
+      // tutorial-progression ADR). tutorial-005 = three-party race; tutorial-006 = home-base independent.
+      { id: "tutorial-005", title: "Hawthorn Bend: A Three-Way Race" },
+      { id: "tutorial-006", title: "The Hollow's Own: An Independent's Home Ground" }
     ];
     var MANIFEST_BY_ID = new Map([
       ...SCENARIO_MANIFEST.map((e) => [e.id, e]),
@@ -15988,12 +16627,9 @@ var require_main = __commonJS({
     var svgEl = document.getElementById("map-svg");
     var resultsEl = document.getElementById("results-container");
     var validityEl = document.getElementById("validity-container");
-    var legendEl = document.getElementById("legend-container");
     var districtBtnsEl = document.getElementById("district-buttons");
     var btnUndo = document.getElementById("btn-undo");
     var btnRedo = document.getElementById("btn-redo");
-    var btnViewToggle = document.getElementById("btn-view-toggle");
-    var btnCountyToggle = document.getElementById("btn-county-toggle");
     var btnReset = document.getElementById("btn-reset");
     var resetConfirm = document.getElementById("reset-confirm");
     var btnResetConfirm = document.getElementById("btn-reset-confirm");
@@ -16008,12 +16644,64 @@ var require_main = __commonJS({
     var resultVerdict = document.getElementById("result-verdict");
     var resultSubtitle = document.getElementById("result-subtitle");
     var resultCriteriaList = document.getElementById("result-criteria-list");
+    var resultEpilogue = document.getElementById("result-epilogue");
+    var resultMain = document.getElementById("result-main");
+    var resultDebrief = document.getElementById("result-debrief");
+    var btnContinue = document.getElementById("btn-continue");
+    var btnDebriefBack = document.getElementById("btn-debrief-back");
+    var btnDebriefNext = document.getElementById("btn-debrief-next");
     var btnKeepDrawing = document.getElementById("btn-keep-drawing");
     var btnNextScenario = document.getElementById("btn-next-scenario");
+    var btnBackToMenu = document.getElementById("btn-back-to-menu");
+    var btnDebriefMenu = document.getElementById("btn-debrief-menu");
     var resultStars = document.getElementById("result-stars");
-    var resultRevealControls = document.getElementById("result-reveal-controls");
+    var resultRevealControls = document.getElementById(
+      "result-reveal-controls"
+    );
     var btnRevealSkip = document.getElementById("btn-reveal-skip");
     var btnMuteAudio = document.getElementById("btn-mute-audio");
+    function renderProse(el, text) {
+      el.textContent = "";
+      for (const para of text.split(/\n+/)) {
+        const trimmed = para.trim();
+        if (!trimmed)
+          continue;
+        const p = document.createElement("p");
+        p.textContent = trimmed;
+        el.appendChild(p);
+      }
+    }
+    function focusEl(id2) {
+      const el = document.getElementById(id2);
+      if (el)
+        requestAnimationFrame(() => el.focus());
+    }
+    function focusFirst(containerId) {
+      const container = document.getElementById(containerId);
+      if (!container)
+        return;
+      requestAnimationFrame(() => {
+        const candidates = Array.from(
+          container.querySelectorAll(
+            'button:not([disabled]):not([hidden]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          )
+        );
+        for (const c3 of candidates) {
+          if (c3.offsetParent !== null || c3 === document.activeElement) {
+            c3.focus();
+            return;
+          }
+        }
+        container.focus();
+      });
+    }
+    function setEditorInert(on) {
+      for (const id2 of ["app-header", "main"]) {
+        const el = document.getElementById(id2);
+        if (el)
+          el.inert = on;
+      }
+    }
     var introScreen = document.getElementById("intro-screen");
     var charNameEl = document.getElementById("char-name");
     var charRoleEl = document.getElementById("char-role");
@@ -16026,7 +16714,7 @@ var require_main = __commonJS({
     var btnIntroNext = document.getElementById("btn-intro-next");
     var btnIntroStart = document.getElementById("btn-intro-start");
     var btnIntroSkip = document.getElementById("btn-intro-skip");
-    if (svgEl === null || resultsEl === null || validityEl === null || legendEl === null || districtBtnsEl === null || btnUndo === null || btnRedo === null || btnViewToggle === null || btnCountyToggle === null || btnReset === null || resetConfirm === null || btnResetConfirm === null || btnResetCancel === null || appHeader === null || mainEl === null) {
+    if (svgEl === null || resultsEl === null || validityEl === null || districtBtnsEl === null || btnUndo === null || btnRedo === null || btnReset === null || resetConfirm === null || btnResetConfirm === null || btnResetCancel === null || appHeader === null || mainEl === null) {
       throw new Error("Required DOM elements not found");
     }
     var DEBUG_KEY = "redistricting-sim-debug";
@@ -16044,8 +16732,10 @@ var require_main = __commonJS({
     }
     var IS_DEBUG = debugParam !== null && debugParam !== "off" || sessionStorage.getItem(DEBUG_KEY) === "1";
     (() => __async(exports, null, function* () {
-      var _a, _b, _c, _d, _e, _f;
+      var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
       initAssets();
+      document.documentElement.style.setProperty("--party-r", PARTY_PALETTE[0]);
+      document.documentElement.style.setProperty("--party-d", PARTY_PALETTE[1]);
       let progress = loadProgress();
       const urlParams = new URLSearchParams(window.location.search);
       const campaignParam = ((_a = urlParams.get("campaign")) != null ? _a : "").replace(/[^a-z0-9-]/g, "");
@@ -16070,6 +16760,7 @@ var require_main = __commonJS({
           const inProgress = (wip == null ? void 0 : wip.scenarioId) === entry.id;
           const card = document.createElement("div");
           card.className = `scenario-card${locked ? " locked" : ""}`;
+          card.setAttribute("role", "listitem");
           const titleEl = document.createElement("div");
           titleEl.className = "sc-title";
           titleEl.textContent = entry.title;
@@ -16110,6 +16801,10 @@ var require_main = __commonJS({
         const wipTitle = (_b2 = (_a2 = SCENARIO_MANIFEST.find((e) => e.id === wipScenarioId)) == null ? void 0 : _a2.title) != null ? _b2 : wipScenarioId;
         text.textContent = `You have unsaved progress in "${wipTitle}". Switching scenarios will discard it.`;
         modal.classList.remove("hidden");
+        const underlay = document.getElementById("scenario-select");
+        if (underlay)
+          underlay.inert = true;
+        focusEl("wip-warning-text");
         const onConfirm = () => {
           cleanup();
           clearWip();
@@ -16119,6 +16814,8 @@ var require_main = __commonJS({
         const onCancel = () => {
           cleanup();
           modal.classList.add("hidden");
+          if (underlay)
+            underlay.inert = false;
         };
         function cleanup() {
           confirmBtn.removeEventListener("click", onConfirm);
@@ -16143,18 +16840,28 @@ var require_main = __commonJS({
         const cardsEl = document.getElementById("campaign-cards");
         if (cardsEl) {
           cardsEl.innerHTML = "";
-          for (const campaign of CAMPAIGN_REGISTRY) {
-            const completed = campaign.scenarioIds.filter((id2) => isCompleted(progress, id2)).length;
-            const total = campaign.scenarioIds.length;
+          for (const campaign of visibleCampaigns(IS_DEBUG)) {
             const card = document.createElement("div");
-            card.className = "campaign-card";
-            card.setAttribute("role", "button");
-            card.setAttribute("tabindex", "0");
-            card.setAttribute("aria-label", campaign.title);
             const heading = document.createElement("h2");
             heading.textContent = campaign.title;
             const desc = document.createElement("p");
             desc.textContent = campaign.description;
+            if (rendersAsComingSoon(campaign, window.location.hostname, IS_DEBUG)) {
+              card.className = "campaign-card coming-soon";
+              card.setAttribute("aria-disabled", "true");
+              const note = document.createElement("div");
+              note.className = "campaign-progress campaign-coming-soon";
+              note.textContent = "coming soon";
+              card.append(heading, desc, note);
+              cardsEl.appendChild(card);
+              continue;
+            }
+            const completed = campaign.scenarioIds.filter((id2) => isCompleted(progress, id2)).length;
+            const total = campaign.scenarioIds.length;
+            card.className = "campaign-card";
+            card.setAttribute("role", "button");
+            card.setAttribute("tabindex", "0");
+            card.setAttribute("aria-label", campaign.title);
             const prog = document.createElement("div");
             prog.className = "campaign-progress";
             prog.textContent = `${completed} / ${total} scenarios complete`;
@@ -16174,6 +16881,7 @@ var require_main = __commonJS({
           window.location.assign("./");
         });
         el.classList.remove("hidden");
+        focusEl("btn-campaign-back");
       }
       function showMainMenu() {
         var _a2, _b2, _c2;
@@ -16199,18 +16907,22 @@ var require_main = __commonJS({
           var _a3;
           mainMenuEl.classList.add("hidden");
           (_a3 = document.getElementById("about-screen")) == null ? void 0 : _a3.classList.remove("hidden");
+          focusEl("btn-about-close");
         });
         (_c2 = document.getElementById("btn-about-close")) == null ? void 0 : _c2.addEventListener("click", () => {
           var _a3;
           (_a3 = document.getElementById("about-screen")) == null ? void 0 : _a3.classList.add("hidden");
           mainMenuEl.classList.remove("hidden");
+          focusEl("btn-main-about");
         });
         mainMenuEl.classList.remove("hidden");
+        focusFirst("main-menu-nav");
       }
       function showScenarioSelect() {
         var _a2;
         renderScenarioCards();
         scenarioSelectEl == null ? void 0 : scenarioSelectEl.classList.remove("hidden");
+        focusEl("scenario-select-heading");
         const backBtn = document.getElementById("btn-back-to-campaign");
         if (backBtn) {
           backBtn.hidden = !activeCampaign;
@@ -16266,15 +16978,25 @@ var require_main = __commonJS({
         return;
       }
       function showLoadError(bodyHtml, errorMsg) {
-        document.body.insertAdjacentHTML(
-          "afterbegin",
-          `<div style="position:fixed;inset:0;background:#0d1b2e;color:#c0d0e8;padding:2em;font-family:system-ui;z-index:999;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;">
-				<h1 style="color:#e94560;font-size:1.4rem;">Scenario Failed to Load</h1>
-				<p style="max-width:600px;text-align:center;">${bodyHtml}</p>
-				<pre style="background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;">${errorMsg}</pre>
-				<button onclick="window.location.assign('${backUrl}')" style="padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;">${backLabel}</button>
-			</div>`
-        );
+        const overlay = document.createElement("div");
+        overlay.style.cssText = "position:fixed;inset:0;background:#0d1b2e;color:#c0d0e8;padding:2em;font-family:system-ui;z-index:999;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;";
+        const heading = document.createElement("h1");
+        heading.style.cssText = "color:#e94560;font-size:1.4rem;";
+        heading.textContent = "Scenario Failed to Load";
+        const body = document.createElement("p");
+        body.style.cssText = "max-width:600px;text-align:center;";
+        body.innerHTML = bodyHtml;
+        const pre = document.createElement("pre");
+        pre.style.cssText = "background:#16213e;padding:12px 16px;border-radius:6px;max-width:600px;overflow-x:auto;font-size:0.8rem;color:#e94560;white-space:pre-wrap;";
+        pre.textContent = errorMsg;
+        const button = document.createElement("button");
+        button.style.cssText = "padding:8px 20px;background:#1a3a5c;color:#c0d0e8;border:1px solid #2a5a8c;border-radius:6px;cursor:pointer;";
+        button.textContent = backLabel;
+        button.addEventListener("click", () => {
+          window.location.assign(backUrl);
+        });
+        overlay.append(heading, body, pre, button);
+        document.body.insertAdjacentElement("afterbegin", overlay);
       }
       saveLastPlayedScenario(entryToLoad.id);
       let json;
@@ -16286,7 +17008,7 @@ var require_main = __commonJS({
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
         console.error(`[GAME-032] Failed to fetch scenario "${entryToLoad.id}":`, e);
-        showLoadError(`Could not fetch scenario <strong>${entryToLoad.id}</strong>.`, msg);
+        showLoadError(`Could not fetch scenario <strong>${escapeHtml(entryToLoad.id)}</strong>.`, msg);
         return;
       }
       let scenario;
@@ -16295,7 +17017,10 @@ var require_main = __commonJS({
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
         console.error(`[GAME-032] Scenario "${entryToLoad.id}" validation failed:`, e);
-        showLoadError(`Scenario <strong>${entryToLoad.id}</strong> could not be loaded due to a validation error.`, msg);
+        showLoadError(
+          `Scenario <strong>${escapeHtml(entryToLoad.id)}</strong> could not be loaded due to a validation error.`,
+          msg
+        );
         return;
       }
       const majorityMinorityCriterion = scenario.success_criteria.map((sc) => sc.criterion).find((c3) => c3.type === "majority_minority");
@@ -16327,10 +17052,13 @@ var require_main = __commonJS({
       const savedWip = loadWip();
       if (savedWip !== null && savedWip.scenarioId === scenario.id) {
         isRestoringWip = true;
-        const restoredMap = new Map(
-          Object.entries(savedWip.assignments).map(([k2, v2]) => [Number(k2), v2])
+        const districtCount = store.getState().districtCount;
+        const restoredMap = reconcileWipAssignments(
+          store.getState().assignments,
+          savedWip.assignments,
+          districtCount
         );
-        store.getState().restoreAssignments(restoredMap, savedWip.activeDistrict);
+        store.getState().restoreAssignments(restoredMap, clampActiveDistrict(savedWip.activeDistrict, districtCount));
         temporalStore.getState().clear();
         isRestoringWip = false;
       }
@@ -16367,25 +17095,52 @@ var require_main = __commonJS({
         (ids, district) => store.getState().paintStroke(ids, district),
         (id2) => store.getState().setActiveDistrict(id2)
       );
-      const SPIKE_PARTY_KEYS = ["R", "D", "L", "G", "I"];
-      const partyIdToKey = /* @__PURE__ */ new Map();
-      scenario.parties.forEach((p, i) => {
-        var _a2;
-        partyIdToKey.set(p.id, (_a2 = SPIKE_PARTY_KEYS[i]) != null ? _a2 : "I");
-      });
-      const partyLabels = {};
-      scenario.parties.forEach((p) => {
-        const key = partyIdToKey.get(p.id);
-        if (key !== void 0)
-          partyLabels[key] = p.name;
-      });
+      const parties = scenario.parties.map((p) => p.id);
+      const partyNames = {};
+      for (const p of scenario.parties)
+        partyNames[p.id] = p.name;
+      const partyColors = {};
+      for (const p of scenario.parties)
+        if (p.color !== void 0)
+          partyColors[p.id] = p.color;
+      const partyCandidates = {};
+      for (const p of scenario.parties)
+        if (p.candidates !== void 0)
+          partyCandidates[p.id] = p.candidates;
+      renderer.setParties(parties, partyNames, partyColors);
+      if (parties[0] !== void 0) {
+        document.documentElement.style.setProperty(
+          "--party-r",
+          (_f = partyColors[parties[0]]) != null ? _f : partyColor(parties, parties[0])
+        );
+      }
+      if (parties[1] !== void 0) {
+        document.documentElement.style.setProperty(
+          "--party-d",
+          (_g = partyColors[parties[1]]) != null ? _g : partyColor(parties, parties[1])
+        );
+      }
+      const showResults = scenario.hide_election_results !== true;
+      const hasBalanceCriterion = scenario.success_criteria.some(
+        (c3) => c3.criterion.type === "population_balance"
+      );
+      const showValidity = hasBalanceCriterion || scenario.rules.contiguity !== "allowed";
+      if (!showResults) {
+        (_h = document.getElementById("results-heading")) == null ? void 0 : _h.style.setProperty("display", "none");
+        resultsEl.style.display = "none";
+      }
+      if (!showValidity) {
+        (_i = document.getElementById("validity-heading")) == null ? void 0 : _i.style.setProperty("display", "none");
+        validityEl.style.display = "none";
+      }
       function updateUI() {
         const state = store.getState();
         const { pastStates, futureStates } = temporalStore.getState();
         renderer.render();
-        renderResults(resultsEl, state, partyLabels);
-        renderValidityPanel(validityEl, state, scenario.rules);
-        renderLegend(legendEl, state.districtCount);
+        if (showResults)
+          renderResults(resultsEl, state, partyNames, partyColors, partyCandidates);
+        if (showValidity)
+          renderValidityPanel(validityEl, state, scenario.rules, hasBalanceCriterion);
         let demoStat;
         if (majorityMinorityCriterion) {
           demoStat = {
@@ -16399,9 +17154,15 @@ var require_main = __commonJS({
             threshold: majorityMinorityCriterion.min_eligible_share
           };
         }
-        renderDistrictButtons(districtBtnsEl, state.districtCount, state.activeDistrict, (id2) => {
-          store.getState().setActiveDistrict(id2);
-        }, demoStat);
+        renderDistrictButtons(
+          districtBtnsEl,
+          state.districtCount,
+          state.activeDistrict,
+          (id2) => {
+            store.getState().setActiveDistrict(id2);
+          },
+          demoStat
+        );
         btnUndo.disabled = pastStates.length === 0;
         btnRedo.disabled = futureStates.length === 0;
         btnSubmit.disabled = false;
@@ -16415,6 +17176,8 @@ var require_main = __commonJS({
         (_a2 = document.getElementById("main-menu")) == null ? void 0 : _a2.classList.add("hidden");
         appHeader.style.display = "";
         mainEl.style.display = "";
+        focusEl("map-svg");
+        requestAnimationFrame(() => startTutorialOverlay(scenario, store));
       }
       function startScenarioIntro() {
         var _a2, _b2, _c2;
@@ -16444,7 +17207,7 @@ var require_main = __commonJS({
           if (introSlideHeading)
             introSlideHeading.textContent = (_a3 = slide.heading) != null ? _a3 : "";
           if (introSlideBody)
-            introSlideBody.textContent = slide.body;
+            renderProse(introSlideBody, slide.body);
           if (introProgress)
             introProgress.textContent = `${index2 + 1} / ${slides.length}`;
           if (btnIntroPrev)
@@ -16457,21 +17220,33 @@ var require_main = __commonJS({
         }
         renderSlide(0);
         introScreen.classList.remove("hidden");
-        btnIntroPrev == null ? void 0 : btnIntroPrev.addEventListener("click", () => {
-          if (currentSlide > 0)
-            renderSlide(--currentSlide);
-        }, { signal });
-        btnIntroNext == null ? void 0 : btnIntroNext.addEventListener("click", () => {
-          if (currentSlide < slides.length - 1)
-            renderSlide(++currentSlide);
-        }, { signal });
+        btnIntroPrev == null ? void 0 : btnIntroPrev.addEventListener(
+          "click",
+          () => {
+            if (currentSlide > 0)
+              renderSlide(--currentSlide);
+          },
+          { signal }
+        );
+        btnIntroNext == null ? void 0 : btnIntroNext.addEventListener(
+          "click",
+          () => {
+            if (currentSlide < slides.length - 1)
+              renderSlide(++currentSlide);
+          },
+          { signal }
+        );
         const startHandler = () => showEditor();
         btnIntroStart == null ? void 0 : btnIntroStart.addEventListener("click", startHandler, { signal });
         btnIntroSkip == null ? void 0 : btnIntroSkip.addEventListener("click", startHandler, { signal });
-        document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape")
-            showEditor();
-        }, { signal });
+        document.addEventListener(
+          "keydown",
+          (e) => {
+            if (e.key === "Escape")
+              showEditor();
+          },
+          { signal }
+        );
       }
       document.addEventListener("keydown", (e) => {
         var _a2, _b2;
@@ -16495,18 +17270,89 @@ var require_main = __commonJS({
       btnRedo.addEventListener("click", () => {
         temporalStore.getState().redo();
       });
+      const filterDistricts = document.getElementById("filter-districts");
+      const filterLean = document.getElementById("filter-lean");
+      const filterCounty = document.getElementById("filter-county");
       let currentViewMode = "districts";
-      btnViewToggle.addEventListener("click", () => {
-        currentViewMode = currentViewMode === "districts" ? "lean" : "districts";
-        renderer.setViewMode(currentViewMode);
-        btnViewToggle.textContent = currentViewMode === "districts" ? "Switch to Partisan Lean" : "Switch to Districts";
-      });
+      function applyViewMode(mode2) {
+        currentViewMode = mode2;
+        renderer.setViewMode(mode2);
+        filterDistricts == null ? void 0 : filterDistricts.classList.toggle("active", mode2 === "districts");
+        filterDistricts == null ? void 0 : filterDistricts.setAttribute("aria-checked", String(mode2 === "districts"));
+        filterLean == null ? void 0 : filterLean.classList.toggle("active", mode2 === "lean");
+        filterLean == null ? void 0 : filterLean.setAttribute("aria-checked", String(mode2 === "lean"));
+      }
+      filterDistricts == null ? void 0 : filterDistricts.addEventListener("click", () => applyViewMode("districts"));
+      filterLean == null ? void 0 : filterLean.addEventListener("click", () => applyViewMode("lean"));
       let countyBordersVisible = false;
-      btnCountyToggle.addEventListener("click", () => {
-        countyBordersVisible = !countyBordersVisible;
-        renderer.setCountyBordersVisible(countyBordersVisible);
-        btnCountyToggle.textContent = countyBordersVisible ? "Hide County Borders" : "Show County Borders";
-        btnCountyToggle.classList.toggle("active", countyBordersVisible);
+      function applyCounty(visible) {
+        countyBordersVisible = visible;
+        renderer.setCountyBordersVisible(visible);
+        filterCounty == null ? void 0 : filterCounty.classList.toggle("active", visible);
+        filterCounty == null ? void 0 : filterCounty.setAttribute("aria-pressed", String(visible));
+      }
+      filterCounty == null ? void 0 : filterCounty.addEventListener("click", () => applyCounty(!countyBordersVisible));
+      const mapFilters = document.getElementById("map-filters");
+      const mapFiltersToggle = document.getElementById("map-filters-toggle");
+      const FILTERS_COLLAPSED_KEY = "redistricting-sim-filters-collapsed";
+      function applyFiltersCollapsed(collapsed) {
+        mapFilters == null ? void 0 : mapFilters.classList.toggle("collapsed", collapsed);
+        mapFilters == null ? void 0 : mapFilters.classList.toggle("expanded", !collapsed);
+        mapFiltersToggle == null ? void 0 : mapFiltersToggle.setAttribute("aria-expanded", String(!collapsed));
+        mapFiltersToggle == null ? void 0 : mapFiltersToggle.setAttribute(
+          "aria-label",
+          collapsed ? "Expand view filters" : "Collapse view filters"
+        );
+        mapFiltersToggle == null ? void 0 : mapFiltersToggle.setAttribute("data-tip", collapsed ? "Expand" : "Collapse");
+        try {
+          localStorage.setItem(FILTERS_COLLAPSED_KEY, collapsed ? "1" : "0");
+        } catch (e) {
+        }
+      }
+      let filtersCollapsed = false;
+      try {
+        filtersCollapsed = localStorage.getItem(FILTERS_COLLAPSED_KEY) === "1";
+      } catch (e) {
+      }
+      applyFiltersCollapsed(filtersCollapsed);
+      if (scenario.hide_view_toolbar)
+        mapFilters == null ? void 0 : mapFilters.style.setProperty("display", "none");
+      mapFiltersToggle == null ? void 0 : mapFiltersToggle.addEventListener("click", () => {
+        filtersCollapsed = !filtersCollapsed;
+        applyFiltersCollapsed(filtersCollapsed);
+      });
+      const districtToolbar = document.getElementById("district-toolbar");
+      const districtToolbarToggle = document.getElementById("district-toolbar-toggle");
+      const DISTRICTS_COLLAPSED_KEY = "redistricting-sim-districts-collapsed";
+      function applyDistrictsCollapsed(collapsed, persist = true) {
+        districtToolbar == null ? void 0 : districtToolbar.classList.toggle("collapsed", collapsed);
+        districtToolbar == null ? void 0 : districtToolbar.classList.toggle("expanded", !collapsed);
+        districtToolbarToggle == null ? void 0 : districtToolbarToggle.setAttribute("aria-expanded", String(!collapsed));
+        districtToolbarToggle == null ? void 0 : districtToolbarToggle.setAttribute(
+          "aria-label",
+          collapsed ? "Expand district painter" : "Collapse district painter"
+        );
+        districtToolbarToggle == null ? void 0 : districtToolbarToggle.setAttribute("data-tip", collapsed ? "Expand" : "Collapse");
+        if (persist) {
+          try {
+            localStorage.setItem(DISTRICTS_COLLAPSED_KEY, collapsed ? "1" : "0");
+          } catch (e) {
+          }
+        }
+      }
+      let districtsCollapsed = false;
+      try {
+        districtsCollapsed = localStorage.getItem(DISTRICTS_COLLAPSED_KEY) === "1";
+      } catch (e) {
+      }
+      if (scenario.hide_view_toolbar) {
+        districtsCollapsed = false;
+        applyDistrictsCollapsed(false, false);
+      } else
+        applyDistrictsCollapsed(districtsCollapsed);
+      districtToolbarToggle == null ? void 0 : districtToolbarToggle.addEventListener("click", () => {
+        districtsCollapsed = !districtsCollapsed;
+        applyDistrictsCollapsed(districtsCollapsed);
       });
       btnReset.addEventListener("click", () => {
         resetConfirm.classList.add("visible");
@@ -16521,66 +17367,69 @@ var require_main = __commonJS({
         temporalStore.getState().clear();
         resetConfirm.classList.remove("visible");
         btnReset.disabled = false;
+        applyViewMode("districts");
+        applyCounty(false);
+        renderer.resetView();
+        restartTutorialOverlay(scenario, store);
       });
-      function buildValidityRows(validity) {
-        const rows = [];
-        const scenarioCriterionTypes = new Set(scenario.success_criteria.map((sc) => sc.criterion.type));
-        if (validity.unassignedCount > 0 && !scenarioCriterionTypes.has("district_count")) {
-          rows.push({
-            criterionId: "validity:all-assigned",
-            required: true,
-            description: "All precincts must be assigned to a district",
-            passed: false,
-            detail: `${validity.unassignedCount} precinct(s) unassigned`
-          });
-        }
-        const badPop = validity.districtPop.filter((d) => d.status !== "ok");
-        if (badPop.length > 0 && !scenarioCriterionTypes.has("population_balance")) {
-          const worst = badPop[0];
-          const sign3 = worst.deviationPct >= 0 ? "+" : "";
-          rows.push({
-            criterionId: "validity:population-balance",
-            required: true,
-            description: "District populations must be within tolerance",
-            passed: false,
-            detail: `District ${worst.districtId}: ${sign3}${worst.deviationPct.toFixed(1)}% deviation`
-          });
-        }
-        if (validity.contiguity !== null) {
-          for (const [distId, ok] of validity.contiguity) {
-            if (!ok) {
-              rows.push({
-                criterionId: `validity:contiguity-${distId}`,
-                required: true,
-                description: `District ${distId} must be contiguous`,
-                passed: false,
-                detail: `District ${distId} is split into disconnected pieces`
-              });
-            }
-          }
-        }
-        return rows;
-      }
-      function computeStarCount(criterionResults, mapIsValid) {
-        const allRequiredPass = criterionResults.every((cr) => !cr.required || cr.passed);
-        if (!mapIsValid || !allRequiredPass)
-          return 0;
-        return 1 + criterionResults.filter((cr) => !cr.required && cr.passed).length;
-      }
       const GOV_ROW_SCALE = 84 / 752;
-      const GOV_SHEET = { neutral: { x: 0, w: 400 }, approve: { x: 400, w: 480 }, disapprove: { x: 880, w: 496 } };
+      const GOV_SHEET = {
+        neutral: { x: 0, w: 400 },
+        approve: { x: 400, w: 480 },
+        disapprove: { x: 880, w: 496 }
+      };
       const CHAR_ROW_SCALE = 84 / 768;
       const CHAR_POSES = {
-        "commissioner-wm": { neutral: { x: 0, w: 458 }, approve: { x: 458, w: 482 }, disapprove: { x: 940, w: 468 } },
-        "commissioner-wf": { neutral: { x: 0, w: 451 }, approve: { x: 451, w: 481 }, disapprove: { x: 932, w: 476 } },
-        "commissioner-bf": { neutral: { x: 0, w: 462 }, approve: { x: 462, w: 492 }, disapprove: { x: 954, w: 454 } },
-        "judge": { neutral: { x: 0, w: 463 }, approve: { x: 463, w: 480 }, disapprove: { x: 943, w: 465 } },
-        "judge-lm": { neutral: { x: 0, w: 469 }, approve: { x: 469, w: 467 }, disapprove: { x: 936, w: 472 } },
-        "judge-naf": { neutral: { x: 0, w: 464 }, approve: { x: 464, w: 473 }, disapprove: { x: 937, w: 471 } },
-        "legislator-wm": { neutral: { x: 0, w: 435 }, approve: { x: 435, w: 499 }, disapprove: { x: 934, w: 474 } },
-        "legislator-wf": { neutral: { x: 0, w: 419 }, approve: { x: 419, w: 479 }, disapprove: { x: 898, w: 510 } },
-        "legislator-bm": { neutral: { x: 0, w: 420 }, approve: { x: 420, w: 522 }, disapprove: { x: 942, w: 466 } },
-        "party": { neutral: { x: 0, w: 467 }, approve: { x: 467, w: 473 }, disapprove: { x: 940, w: 468 } }
+        "commissioner-wm": {
+          neutral: { x: 0, w: 458 },
+          approve: { x: 458, w: 482 },
+          disapprove: { x: 940, w: 468 }
+        },
+        "commissioner-wf": {
+          neutral: { x: 0, w: 451 },
+          approve: { x: 451, w: 481 },
+          disapprove: { x: 932, w: 476 }
+        },
+        "commissioner-bf": {
+          neutral: { x: 0, w: 462 },
+          approve: { x: 462, w: 492 },
+          disapprove: { x: 954, w: 454 }
+        },
+        judge: {
+          neutral: { x: 0, w: 463 },
+          approve: { x: 463, w: 480 },
+          disapprove: { x: 943, w: 465 }
+        },
+        "judge-lm": {
+          neutral: { x: 0, w: 469 },
+          approve: { x: 469, w: 467 },
+          disapprove: { x: 936, w: 472 }
+        },
+        "judge-naf": {
+          neutral: { x: 0, w: 464 },
+          approve: { x: 464, w: 473 },
+          disapprove: { x: 937, w: 471 }
+        },
+        "legislator-wm": {
+          neutral: { x: 0, w: 435 },
+          approve: { x: 435, w: 499 },
+          disapprove: { x: 934, w: 474 }
+        },
+        "legislator-wf": {
+          neutral: { x: 0, w: 419 },
+          approve: { x: 419, w: 479 },
+          disapprove: { x: 898, w: 510 }
+        },
+        "legislator-bm": {
+          neutral: { x: 0, w: 420 },
+          approve: { x: 420, w: 522 },
+          disapprove: { x: 942, w: 466 }
+        },
+        party: {
+          neutral: { x: 0, w: 467 },
+          approve: { x: 467, w: 473 },
+          disapprove: { x: 940, w: 468 }
+        }
       };
       function charPlaceholderSvg(state) {
         if (state === "neutral") {
@@ -16633,7 +17482,9 @@ var require_main = __commonJS({
             const n = poses.neutral;
             const v2 = passed ? poses.approve : poses.disapprove;
             const img = assetUrl(`assets/characters/${dir}/sheet.png`);
-            const vw = Math.round(Math.max(poses.neutral.w, poses.approve.w, poses.disapprove.w) * CHAR_ROW_SCALE);
+            const vw = Math.round(
+              Math.max(poses.neutral.w, poses.approve.w, poses.disapprove.w) * CHAR_ROW_SCALE
+            );
             const makeCharSprite = (col, label) => {
               const s2 = document.createElement("div");
               s2.className = "character-sprite character-sprite--row";
@@ -16678,7 +17529,7 @@ var require_main = __commonJS({
           state.districtCount,
           scenario.rules
         );
-        let mapIsValid = isMapSubmittable(validity, scenario.rules);
+        let mapIsValid = isMapSubmittable(validity, scenario.rules, hasBalanceCriterion);
         const evalResult = evaluateCriteria(
           scenario.success_criteria,
           validity,
@@ -16687,7 +17538,7 @@ var require_main = __commonJS({
           state.precincts,
           state.assignments,
           state.districtCount,
-          partyIdToKey,
+          parties,
           scenario.precincts
         );
         let overallPass = mapIsValid && evalResult.overallPass;
@@ -16700,11 +17551,17 @@ var require_main = __commonJS({
         resultVerdict.style.opacity = "0";
         resultSubtitle.textContent = "";
         resultSubtitle.style.opacity = "0";
+        if (resultEpilogue)
+          resultEpilogue.textContent = "";
+        resultMain == null ? void 0 : resultMain.classList.remove("hidden");
+        resultDebrief == null ? void 0 : resultDebrief.classList.add("hidden");
+        if (btnContinue)
+          btnContinue.style.display = "none";
         if (resultStars) {
           resultStars.innerHTML = "";
           resultStars.classList.add("hidden");
         }
-        const maxStars = 1 + evalResult.criterionResults.filter((cr) => !cr.required).length;
+        const maxStars = computeMaxStars(evalResult.criterionResults);
         const stars = debugForcePass ? maxStars : computeStarCount(evalResult.criterionResults, mapIsValid);
         const criterionTypeMap = /* @__PURE__ */ new Map();
         for (const sc of scenario.success_criteria) {
@@ -16721,12 +17578,17 @@ var require_main = __commonJS({
           } else {
             charType = raw;
           }
-          const entry = { type: charType };
+          const entry = {
+            type: charType
+          };
           if (sc.party_id !== void 0)
             entry.party_id = sc.party_id;
           charInfoMap.set(sc.id, entry);
         }
-        const validityRows = mapIsValid ? [] : buildValidityRows(validity);
+        const scenarioCriterionTypes = new Set(
+          scenario.success_criteria.map((sc) => sc.criterion.type)
+        );
+        const validityRows = mapIsValid ? [] : buildValidityRows(validity, scenarioCriterionTypes);
         const criterionRows = debugForcePass ? evalResult.criterionResults.map((cr) => __spreadProps(__spreadValues({}, cr), { passed: true })) : evalResult.criterionResults;
         const allRows = [...validityRows, ...criterionRows];
         resultCriteriaList.innerHTML = "";
@@ -16750,20 +17612,43 @@ var require_main = __commonJS({
             el.appendChild(s2);
           }
         }
+        function preparePostWin(pass) {
+          var _a3;
+          const epilogue = pass ? (_a3 = scenario.narrative) == null ? void 0 : _a3.epilogue : void 0;
+          if (resultEpilogue) {
+            if (epilogue)
+              renderProse(resultEpilogue, epilogue);
+            else
+              resultEpilogue.textContent = "";
+          }
+          if (btnContinue)
+            btnContinue.style.display = pass && epilogue ? "" : "none";
+          btnNextScenario.style.display = pass && !epilogue ? "" : "none";
+          if (btnBackToMenu)
+            btnBackToMenu.style.display = pass && !epilogue ? "" : "none";
+        }
+        function applyVerdictUI(pass, starCount, subtitle) {
+          resultVerdict.textContent = pass ? "Map Passed!" : "Map Failed";
+          resultVerdict.className = pass ? "pass" : "fail";
+          resultVerdict.style.opacity = "1";
+          resultSubtitle.textContent = subtitle;
+          resultSubtitle.style.opacity = "1";
+          if (resultStars) {
+            if (pass) {
+              renderStars(resultStars, starCount, maxStars);
+              resultStars.classList.remove("hidden");
+            } else {
+              resultStars.classList.add("hidden");
+            }
+          }
+          preparePostWin(pass);
+        }
         function revealVerdict(pass, starCount) {
           if (verdictShown)
             return;
           verdictShown = true;
-          resultVerdict.textContent = pass ? "Map Passed!" : "Map Failed";
-          resultVerdict.className = pass ? "pass" : "fail";
-          resultVerdict.style.opacity = "1";
-          resultSubtitle.textContent = pass ? "All required criteria met." : mapIsValid ? "One or more required criteria were not met." : "The map has structural issues that must be fixed.";
-          resultSubtitle.style.opacity = "1";
-          btnNextScenario.style.display = pass ? "" : "none";
-          if (pass && resultStars) {
-            renderStars(resultStars, starCount, maxStars);
-            resultStars.classList.remove("hidden");
-          }
+          const subtitle = pass ? "All required criteria met." : mapIsValid ? "One or more required criteria were not met." : "The map has structural issues that must be fixed.";
+          applyVerdictUI(pass, starCount, subtitle);
           if (pass) {
             play("tada");
           } else {
@@ -16813,27 +17698,17 @@ var require_main = __commonJS({
         function syncOverallVerdict() {
           if (!resultVerdict || !resultSubtitle || !resultCriteriaList)
             return;
-          const rows = Array.from(resultCriteriaList.querySelectorAll(".result-criterion"));
+          const rows = Array.from(
+            resultCriteriaList.querySelectorAll(".result-criterion")
+          );
           const anyRequiredFailed = rows.some((r) => r.classList.contains("failed-required"));
           const nowPass = !anyRequiredFailed;
           verdictShown = true;
-          resultVerdict.textContent = nowPass ? "Map Passed!" : "Map Failed";
-          resultVerdict.className = nowPass ? "pass" : "fail";
-          resultVerdict.style.opacity = "1";
-          resultSubtitle.textContent = nowPass ? "All required criteria met." : "One or more required criteria were not met.";
-          resultSubtitle.style.opacity = "1";
-          btnNextScenario.style.display = nowPass ? "" : "none";
-          if (resultStars) {
-            if (nowPass) {
-              const optionalPassed = rows.filter(
-                (r) => r.dataset["required"] === "false" && r.dataset["passed"] === "true"
-              ).length;
-              renderStars(resultStars, 1 + optionalPassed, maxStars);
-              resultStars.classList.remove("hidden");
-            } else {
-              resultStars.classList.add("hidden");
-            }
-          }
+          const optionalPassed = rows.filter(
+            (r) => r.dataset["required"] === "false" && r.dataset["passed"] === "true"
+          ).length;
+          const subtitle = nowPass ? "All required criteria met." : "One or more required criteria were not met.";
+          applyVerdictUI(nowPass, 1 + optionalPassed, subtitle);
         }
         function debugReplayRow(row, newPassed) {
           var _a3;
@@ -16955,6 +17830,8 @@ var require_main = __commonJS({
         btnKeepDrawing.textContent = mapIsValid ? "\u2190 Keep Drawing" : "\u2190 Fix It";
         btnKeepDrawing.style.display = "";
         btnNextScenario.style.display = "none";
+        if (btnBackToMenu)
+          btnBackToMenu.style.display = "none";
         if (reducedMotion) {
           for (const cr of allRows) {
             resultCriteriaList.appendChild(buildRowElement(
@@ -16997,7 +17874,9 @@ var require_main = __commonJS({
                 if (!passed) {
                   const badge = row.querySelector(".rc-badge");
                   badge.classList.add("rc-pop");
-                  badge.addEventListener("animationend", () => badge.classList.remove("rc-pop"), { once: true });
+                  badge.addEventListener("animationend", () => badge.classList.remove("rc-pop"), {
+                    once: true
+                  });
                 }
                 if (i === rowElements.length - 1) {
                   const tDone = setTimeout(() => {
@@ -17036,6 +17915,8 @@ var require_main = __commonJS({
         }
         syncMuteButton();
         resultScreen.classList.remove("hidden");
+        setEditorInert(true);
+        focusEl("btn-keep-drawing");
       }
       function syncMuteButton() {
         if (!btnMuteAudio)
@@ -17079,11 +17960,19 @@ var require_main = __commonJS({
           skipClickHandler();
         }
         resultScreen.classList.add("hidden");
+        setEditorInert(false);
+        focusEl("map-svg");
       });
-      const navBackTrigger = document.getElementById("btn-nav-back-trigger");
+      const navBackTrigger = document.getElementById(
+        "btn-nav-back-trigger"
+      );
       const navBackMenu = document.getElementById("nav-back-menu");
-      const btnBackToScenarios = document.getElementById("btn-back-to-scenarios");
-      const btnBackToMainMenu = document.getElementById("btn-back-to-main-menu");
+      const btnBackToScenarios = document.getElementById(
+        "btn-back-to-scenarios"
+      );
+      const btnBackToMainMenu = document.getElementById(
+        "btn-back-to-main-menu"
+      );
       if (!activeCampaign && btnBackToScenarios)
         btnBackToScenarios.hidden = true;
       if (!activeCampaign && navBackTrigger) {
@@ -17099,6 +17988,12 @@ var require_main = __commonJS({
           navBackMenu == null ? void 0 : navBackMenu.setAttribute("hidden", "");
           navBackTrigger == null ? void 0 : navBackTrigger.setAttribute("aria-expanded", "false");
         };
+        const menuItems = () => {
+          var _a2;
+          return Array.from(
+            (_a2 = navBackMenu == null ? void 0 : navBackMenu.querySelectorAll('[role="menuitem"]')) != null ? _a2 : []
+          ).filter((b) => !b.hidden);
+        };
         navBackTrigger == null ? void 0 : navBackTrigger.addEventListener("click", (e) => {
           e.stopPropagation();
           const isOpen = !(navBackMenu == null ? void 0 : navBackMenu.hasAttribute("hidden"));
@@ -17107,12 +18002,33 @@ var require_main = __commonJS({
           } else {
             navBackMenu == null ? void 0 : navBackMenu.removeAttribute("hidden");
             navBackTrigger.setAttribute("aria-expanded", "true");
+            requestAnimationFrame(() => {
+              var _a2;
+              return (_a2 = menuItems()[0]) == null ? void 0 : _a2.focus();
+            });
           }
+        });
+        navBackMenu == null ? void 0 : navBackMenu.addEventListener("keydown", (e) => {
+          var _a2;
+          if (e.key !== "ArrowDown" && e.key !== "ArrowUp")
+            return;
+          const items = menuItems();
+          if (items.length === 0)
+            return;
+          e.preventDefault();
+          const cur = items.indexOf(document.activeElement);
+          const delta = e.key === "ArrowDown" ? 1 : -1;
+          const next = (cur + delta + items.length) % items.length;
+          (_a2 = items[next]) == null ? void 0 : _a2.focus();
         });
         document.addEventListener("click", closeNavMenu);
         document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape")
+          if (e.key === "Escape") {
+            const wasOpen = !(navBackMenu == null ? void 0 : navBackMenu.hasAttribute("hidden"));
             closeNavMenu();
+            if (wasOpen)
+              navBackTrigger == null ? void 0 : navBackTrigger.focus();
+          }
         });
         btnBackToScenarios == null ? void 0 : btnBackToScenarios.addEventListener("click", () => {
           flushWipSave();
@@ -17123,17 +18039,37 @@ var require_main = __commonJS({
           window.location.assign("./");
         });
       }
-      btnNextScenario.addEventListener("click", () => {
+      function goToNextScenario() {
         var _a2;
-        const allComplete = SCENARIO_MANIFEST.every((e) => isCompleted(progress, e.id));
-        if (allComplete) {
+        const curIdx = activeList.findIndex((e) => e.id === entryToLoad.id);
+        const next = curIdx >= 0 ? activeList[curIdx + 1] : void 0;
+        if (next) {
+          const dest = campaignParam !== "" ? `./?s=${next.id}&campaign=${campaignParam}` : `./?s=${next.id}`;
+          window.location.assign(dest);
+        } else {
           resultScreen.classList.add("hidden");
           (_a2 = document.getElementById("wrap-up-screen")) == null ? void 0 : _a2.classList.remove("hidden");
-        } else {
-          window.location.assign(backUrl);
+          focusEl("wrap-up-heading");
         }
+      }
+      function goToMenu() {
+        window.location.assign(backUrl);
+      }
+      btnNextScenario.addEventListener("click", goToNextScenario);
+      btnDebriefNext == null ? void 0 : btnDebriefNext.addEventListener("click", goToNextScenario);
+      btnBackToMenu == null ? void 0 : btnBackToMenu.addEventListener("click", goToMenu);
+      btnDebriefMenu == null ? void 0 : btnDebriefMenu.addEventListener("click", goToMenu);
+      btnContinue == null ? void 0 : btnContinue.addEventListener("click", () => {
+        resultMain == null ? void 0 : resultMain.classList.add("hidden");
+        resultDebrief == null ? void 0 : resultDebrief.classList.remove("hidden");
+        focusEl("result-debrief-heading");
       });
-      (_f = document.getElementById("btn-wrap-up-replay")) == null ? void 0 : _f.addEventListener("click", () => {
+      btnDebriefBack == null ? void 0 : btnDebriefBack.addEventListener("click", () => {
+        resultDebrief == null ? void 0 : resultDebrief.classList.add("hidden");
+        resultMain == null ? void 0 : resultMain.classList.remove("hidden");
+        focusEl("btn-keep-drawing");
+      });
+      (_j = document.getElementById("btn-wrap-up-replay")) == null ? void 0 : _j.addEventListener("click", () => {
         window.location.assign(backUrl);
       });
       store.subscribe(() => {

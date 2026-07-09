@@ -1,0 +1,3068 @@
+{
+  "format_version": "1",
+  "id": "tutorial-004",
+  "title": "Fairhaven: Putting It Together",
+  "election_type": "state_house",
+  "region": {
+    "id": "fairhaven",
+    "name": "Fairhaven"
+  },
+  "geometry": {
+    "type": "hex_axial"
+  },
+  "parties": [
+    {
+      "id": "ken",
+      "name": "Ken Party",
+      "abbreviation": "KEN",
+      "color": "#c96d00"
+    },
+    {
+      "id": "ryu",
+      "name": "Ryu Party",
+      "abbreviation": "RYU",
+      "color": "#7b35a8"
+    }
+  ],
+  "districts": [
+    {
+      "id": "d1",
+      "name": "District 1"
+    },
+    {
+      "id": "d2",
+      "name": "District 2"
+    },
+    {
+      "id": "d3",
+      "name": "District 3"
+    },
+    {
+      "id": "d4",
+      "name": "District 4"
+    }
+  ],
+  "precincts": [
+    {
+      "id": "p001",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -6
+      },
+      "total_population": 5112,
+      "demographic_groups": [
+        {
+          "id": "p001-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39458329772576695,
+            "ryu": 0.605416702274233
+          },
+          "turnout_rate": 0.6170543589279986,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (1,-6)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p002",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -6
+      },
+      "total_population": 4659,
+      "demographic_groups": [
+        {
+          "id": "p002-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3826627225056291,
+            "ryu": 0.6173372774943708
+          },
+          "turnout_rate": 0.6073579227551817,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (2,-6)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p003",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -6
+      },
+      "total_population": 3895,
+      "demographic_groups": [
+        {
+          "id": "p003-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3981367206014693,
+            "ryu": 0.6018632793985307
+          },
+          "turnout_rate": 0.6837983632227406,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (3,-6)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p004",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -6
+      },
+      "total_population": 4036,
+      "demographic_groups": [
+        {
+          "id": "p004-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4296067142300308,
+            "ryu": 0.5703932857699692
+          },
+          "turnout_rate": 0.6018699843203649,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (4,-6)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p005",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -6
+      },
+      "total_population": 4759,
+      "demographic_groups": [
+        {
+          "id": "p005-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39542752871289855,
+            "ryu": 0.6045724712871015
+          },
+          "turnout_rate": 0.6664485651417635,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (5,-6)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p006",
+      "editable": true,
+      "position": {
+        "q": 6,
+        "r": -6
+      },
+      "total_population": 5810,
+      "demographic_groups": [
+        {
+          "id": "p006-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.37510870821774006,
+            "ryu": 0.62489129178226
+          },
+          "turnout_rate": 0.6010311936144717,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (6,-6)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p007",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -5
+      },
+      "total_population": 5209,
+      "demographic_groups": [
+        {
+          "id": "p007-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5090602679364383,
+            "ryu": 0.4909397320635617
+          },
+          "turnout_rate": 0.6010118426987902,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p008",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -5
+      },
+      "total_population": 4527,
+      "demographic_groups": [
+        {
+          "id": "p008-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3677558574825526,
+            "ryu": 0.6322441425174474
+          },
+          "turnout_rate": 0.6874086724361405,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (1,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p009",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -5
+      },
+      "total_population": 4089,
+      "demographic_groups": [
+        {
+          "id": "p009-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.37651262374594807,
+            "ryu": 0.6234873762540519
+          },
+          "turnout_rate": 0.6331495414488018,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (2,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p010",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -5
+      },
+      "total_population": 4387,
+      "demographic_groups": [
+        {
+          "id": "p010-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.42586546795442703,
+            "ryu": 0.574134532045573
+          },
+          "turnout_rate": 0.5577264230814762,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (3,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p011",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -5
+      },
+      "total_population": 3771,
+      "demographic_groups": [
+        {
+          "id": "p011-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3990941791236401,
+            "ryu": 0.6009058208763599
+          },
+          "turnout_rate": 0.5846481505548582,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (4,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p012",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -5
+      },
+      "total_population": 4580,
+      "demographic_groups": [
+        {
+          "id": "p012-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.40397385040298106,
+            "ryu": 0.5960261495970189
+          },
+          "turnout_rate": 0.6198546073515899,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (5,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p013",
+      "editable": true,
+      "position": {
+        "q": 6,
+        "r": -5
+      },
+      "total_population": 4935,
+      "demographic_groups": [
+        {
+          "id": "p013-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.36782592011615634,
+            "ryu": 0.6321740798838437
+          },
+          "turnout_rate": 0.6503202840918675,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (6,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p014",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -4
+      },
+      "total_population": 3954,
+      "demographic_groups": [
+        {
+          "id": "p014-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6243624844960868,
+            "ryu": 0.3756375155039132
+          },
+          "turnout_rate": 0.6847514454042538,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p015",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -4
+      },
+      "total_population": 3638,
+      "demographic_groups": [
+        {
+          "id": "p015-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5119073671475053,
+            "ryu": 0.4880926328524947
+          },
+          "turnout_rate": 0.6383641132269986,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p016",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -4
+      },
+      "total_population": 4703,
+      "demographic_groups": [
+        {
+          "id": "p016-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3746810869127512,
+            "ryu": 0.6253189130872487
+          },
+          "turnout_rate": 0.5998928956803866,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (1,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p017",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -4
+      },
+      "total_population": 3632,
+      "demographic_groups": [
+        {
+          "id": "p017-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3905385799519718,
+            "ryu": 0.6094614200480282
+          },
+          "turnout_rate": 0.5967233489500359,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (2,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p018",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -4
+      },
+      "total_population": 4086,
+      "demographic_groups": [
+        {
+          "id": "p018-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.41084715966135266,
+            "ryu": 0.5891528403386473
+          },
+          "turnout_rate": 0.6137941024033353,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (3,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p019",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -4
+      },
+      "total_population": 4597,
+      "demographic_groups": [
+        {
+          "id": "p019-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.39109037492424253,
+            "ryu": 0.6089096250757575
+          },
+          "turnout_rate": 0.6890918989200144,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (4,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p020",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -4
+      },
+      "total_population": 3593,
+      "demographic_groups": [
+        {
+          "id": "p020-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.40655387803912163,
+            "ryu": 0.5934461219608784
+          },
+          "turnout_rate": 0.6630021613207645,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (5,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p021",
+      "editable": true,
+      "position": {
+        "q": 6,
+        "r": -4
+      },
+      "total_population": 4161,
+      "demographic_groups": [
+        {
+          "id": "p021-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.38515277104452256,
+            "ryu": 0.6148472289554774
+          },
+          "turnout_rate": 0.6797138896072283,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (6,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p022",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -3
+      },
+      "total_population": 3664,
+      "demographic_groups": [
+        {
+          "id": "p022-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6337163808196783,
+            "ryu": 0.3662836191803217
+          },
+          "turnout_rate": 0.6692216172930784,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-2,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p023",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -3
+      },
+      "total_population": 4078,
+      "demographic_groups": [
+        {
+          "id": "p023-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6112357207387685,
+            "ryu": 0.38876427926123147
+          },
+          "turnout_rate": 0.5691644873120822,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p024",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -3
+      },
+      "total_population": 3968,
+      "demographic_groups": [
+        {
+          "id": "p024-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4977137579955161,
+            "ryu": 0.5022862420044839
+          },
+          "turnout_rate": 0.5589453586959281,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p025",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -3
+      },
+      "total_population": 3490,
+      "demographic_groups": [
+        {
+          "id": "p025-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3681223918125034,
+            "ryu": 0.6318776081874966
+          },
+          "turnout_rate": 0.6586283131851814,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (1,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p026",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -3
+      },
+      "total_population": 4221,
+      "demographic_groups": [
+        {
+          "id": "p026-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3913649856857956,
+            "ryu": 0.6086350143142044
+          },
+          "turnout_rate": 0.6678136123460717,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (2,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p027",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -3
+      },
+      "total_population": 4410,
+      "demographic_groups": [
+        {
+          "id": "p027-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.38238807883113624,
+            "ryu": 0.6176119211688638
+          },
+          "turnout_rate": 0.5821730385301634,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (3,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p028",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -3
+      },
+      "total_population": 4532,
+      "demographic_groups": [
+        {
+          "id": "p028-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.41270425867289307,
+            "ryu": 0.5872957413271069
+          },
+          "turnout_rate": 0.6762797155068255,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (4,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p029",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -3
+      },
+      "total_population": 4208,
+      "demographic_groups": [
+        {
+          "id": "p029-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3628143643774092,
+            "ryu": 0.6371856356225908
+          },
+          "turnout_rate": 0.5536988853244111,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (5,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p030",
+      "editable": true,
+      "position": {
+        "q": 6,
+        "r": -3
+      },
+      "total_population": 4130,
+      "demographic_groups": [
+        {
+          "id": "p030-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3697113167867065,
+            "ryu": 0.6302886832132935
+          },
+          "turnout_rate": 0.5815924910479225,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (6,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p031",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": -2
+      },
+      "total_population": 3603,
+      "demographic_groups": [
+        {
+          "id": "p031-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6081583623774349,
+            "ryu": 0.3918416376225651
+          },
+          "turnout_rate": 0.6627799432026222,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-3,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p032",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -2
+      },
+      "total_population": 3783,
+      "demographic_groups": [
+        {
+          "id": "p032-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5818413197062909,
+            "ryu": 0.41815868029370906
+          },
+          "turnout_rate": 0.6956092950189485,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-2,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p033",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -2
+      },
+      "total_population": 3846,
+      "demographic_groups": [
+        {
+          "id": "p033-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5771487576700747,
+            "ryu": 0.4228512423299253
+          },
+          "turnout_rate": 0.6851792228175326,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p034",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -2
+      },
+      "total_population": 3755,
+      "demographic_groups": [
+        {
+          "id": "p034-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5376875500567257,
+            "ryu": 0.46231244994327425
+          },
+          "turnout_rate": 0.5883194961585104,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p035",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -2
+      },
+      "total_population": 4176,
+      "demographic_groups": [
+        {
+          "id": "p035-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3796219392120838,
+            "ryu": 0.6203780607879161
+          },
+          "turnout_rate": 0.55147852570517,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (1,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p036",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -2
+      },
+      "total_population": 3903,
+      "demographic_groups": [
+        {
+          "id": "p036-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.36691359406337143,
+            "ryu": 0.6330864059366286
+          },
+          "turnout_rate": 0.6638078864663839,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (2,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p037",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -2
+      },
+      "total_population": 3855,
+      "demographic_groups": [
+        {
+          "id": "p037-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4257099470496178,
+            "ryu": 0.5742900529503823
+          },
+          "turnout_rate": 0.6582859521498904,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (3,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p038",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -2
+      },
+      "total_population": 4556,
+      "demographic_groups": [
+        {
+          "id": "p038-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3928669538535178,
+            "ryu": 0.6071330461464822
+          },
+          "turnout_rate": 0.5974374528392218,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (4,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p039",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -2
+      },
+      "total_population": 4107,
+      "demographic_groups": [
+        {
+          "id": "p039-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3779472036659718,
+            "ryu": 0.6220527963340282
+          },
+          "turnout_rate": 0.6204701071605087,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (5,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p040",
+      "editable": true,
+      "position": {
+        "q": 6,
+        "r": -2
+      },
+      "total_population": 4330,
+      "demographic_groups": [
+        {
+          "id": "p040-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.42289968354627494,
+            "ryu": 0.5771003164537251
+          },
+          "turnout_rate": 0.5874460522201844,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (6,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p041",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": -1
+      },
+      "total_population": 3935,
+      "demographic_groups": [
+        {
+          "id": "p041-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5903200794942677,
+            "ryu": 0.4096799205057323
+          },
+          "turnout_rate": 0.5742762949317693,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-4,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p042",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": -1
+      },
+      "total_population": 4489,
+      "demographic_groups": [
+        {
+          "id": "p042-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6046276674419642,
+            "ryu": 0.39537233255803583
+          },
+          "turnout_rate": 0.6094638338778168,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-3,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p043",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -1
+      },
+      "total_population": 4548,
+      "demographic_groups": [
+        {
+          "id": "p043-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5642361441254615,
+            "ryu": 0.4357638558745385
+          },
+          "turnout_rate": 0.6335543711320497,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-2,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p044",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -1
+      },
+      "total_population": 4384,
+      "demographic_groups": [
+        {
+          "id": "p044-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6327446200326085,
+            "ryu": 0.36725537996739155
+          },
+          "turnout_rate": 0.6039657651796005,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p045",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -1
+      },
+      "total_population": 6783,
+      "demographic_groups": [
+        {
+          "id": "p045-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.49322360260412096,
+            "ryu": 0.506776397395879
+          },
+          "turnout_rate": 0.659970424149651,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p046",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -1
+      },
+      "total_population": 6116,
+      "demographic_groups": [
+        {
+          "id": "p046-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3869157689064741,
+            "ryu": 0.6130842310935258
+          },
+          "turnout_rate": 0.5795435580774211,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (1,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p047",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -1
+      },
+      "total_population": 3963,
+      "demographic_groups": [
+        {
+          "id": "p047-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4157729943469167,
+            "ryu": 0.5842270056530833
+          },
+          "turnout_rate": 0.6752566414303146,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (2,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p048",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -1
+      },
+      "total_population": 3427,
+      "demographic_groups": [
+        {
+          "id": "p048-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4061813158355654,
+            "ryu": 0.5938186841644346
+          },
+          "turnout_rate": 0.6903612421476282,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (3,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p049",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -1
+      },
+      "total_population": 3482,
+      "demographic_groups": [
+        {
+          "id": "p049-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.396933835465461,
+            "ryu": 0.603066164534539
+          },
+          "turnout_rate": 0.5574059411534109,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (4,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p050",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -1
+      },
+      "total_population": 4292,
+      "demographic_groups": [
+        {
+          "id": "p050-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4146698375232518,
+            "ryu": 0.5853301624767482
+          },
+          "turnout_rate": 0.5504795113229193,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (5,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p051",
+      "editable": true,
+      "position": {
+        "q": 6,
+        "r": -1
+      },
+      "total_population": 3860,
+      "demographic_groups": [
+        {
+          "id": "p051-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4143976239115,
+            "ryu": 0.5856023760885001
+          },
+          "turnout_rate": 0.5541803675820121,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_east",
+      "county_name": "Fairhaven East",
+      "name": "East (6,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p052",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 0
+      },
+      "total_population": 5159,
+      "demographic_groups": [
+        {
+          "id": "p052-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6165565836988389,
+            "ryu": 0.3834434163011611
+          },
+          "turnout_rate": 0.6471529657603241,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-5,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p053",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 0
+      },
+      "total_population": 3890,
+      "demographic_groups": [
+        {
+          "id": "p053-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5813188093341887,
+            "ryu": 0.41868119066581133
+          },
+          "turnout_rate": 0.6266452410956844,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-4,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p054",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 0
+      },
+      "total_population": 3643,
+      "demographic_groups": [
+        {
+          "id": "p054-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6277532273903489,
+            "ryu": 0.3722467726096511
+          },
+          "turnout_rate": 0.583696395996958,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-3,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p055",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 0
+      },
+      "total_population": 4207,
+      "demographic_groups": [
+        {
+          "id": "p055-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6073826665058731,
+            "ryu": 0.39261733349412686
+          },
+          "turnout_rate": 0.6168884568614885,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-2,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p056",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 0
+      },
+      "total_population": 7045,
+      "demographic_groups": [
+        {
+          "id": "p056-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5973144599236547,
+            "ryu": 0.40268554007634527
+          },
+          "turnout_rate": 0.6441837420105003,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p057",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 0
+      },
+      "total_population": 5995,
+      "demographic_groups": [
+        {
+          "id": "p057-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.53283806623891,
+            "ryu": 0.46716193376109005
+          },
+          "turnout_rate": 0.552473549777642,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p058",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 0
+      },
+      "total_population": 5982,
+      "demographic_groups": [
+        {
+          "id": "p058-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4190530849806965,
+            "ryu": 0.5809469150193035
+          },
+          "turnout_rate": 0.6111082299030386,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (1,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p059",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 0
+      },
+      "total_population": 3507,
+      "demographic_groups": [
+        {
+          "id": "p059-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.41929875418543816,
+            "ryu": 0.5807012458145618
+          },
+          "turnout_rate": 0.6410937727545388,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (2,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p060",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 0
+      },
+      "total_population": 3624,
+      "demographic_groups": [
+        {
+          "id": "p060-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4245060569606722,
+            "ryu": 0.5754939430393278
+          },
+          "turnout_rate": 0.6372832789667882,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (3,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p061",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": 0
+      },
+      "total_population": 4133,
+      "demographic_groups": [
+        {
+          "id": "p061-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4124527196772397,
+            "ryu": 0.5875472803227604
+          },
+          "turnout_rate": 0.6749551395187154,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (4,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p062",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": 0
+      },
+      "total_population": 4328,
+      "demographic_groups": [
+        {
+          "id": "p062-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3975241613388062,
+            "ryu": 0.6024758386611938
+          },
+          "turnout_rate": 0.6779020464164205,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (5,0)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p063",
+      "editable": true,
+      "position": {
+        "q": -6,
+        "r": 1
+      },
+      "total_population": 5005,
+      "demographic_groups": [
+        {
+          "id": "p063-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5928197175264358,
+            "ryu": 0.4071802824735642
+          },
+          "turnout_rate": 0.5586795719340444,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-6,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p064",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 1
+      },
+      "total_population": 5400,
+      "demographic_groups": [
+        {
+          "id": "p064-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5757636658847332,
+            "ryu": 0.42423633411526684
+          },
+          "turnout_rate": 0.5863387588760816,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-5,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p065",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 1
+      },
+      "total_population": 3804,
+      "demographic_groups": [
+        {
+          "id": "p065-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6123428263701498,
+            "ryu": 0.3876571736298502
+          },
+          "turnout_rate": 0.560711484157946,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-4,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p066",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 1
+      },
+      "total_population": 4536,
+      "demographic_groups": [
+        {
+          "id": "p066-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6184880041889846,
+            "ryu": 0.38151199581101536
+          },
+          "turnout_rate": 0.6110969903646037,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-3,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p067",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 1
+      },
+      "total_population": 4613,
+      "demographic_groups": [
+        {
+          "id": "p067-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6370159504190087,
+            "ryu": 0.3629840495809913
+          },
+          "turnout_rate": 0.5944235187605955,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-2,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p068",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 1
+      },
+      "total_population": 6282,
+      "demographic_groups": [
+        {
+          "id": "p068-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6087841776572167,
+            "ryu": 0.3912158223427833
+          },
+          "turnout_rate": 0.613865530048497,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p069",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 1
+      },
+      "total_population": 6269,
+      "demographic_groups": [
+        {
+          "id": "p069-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4686382692307234,
+            "ryu": 0.5313617307692766
+          },
+          "turnout_rate": 0.599796605494339,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p070",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 1
+      },
+      "total_population": 3362,
+      "demographic_groups": [
+        {
+          "id": "p070-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.405458960775286,
+            "ryu": 0.594541039224714
+          },
+          "turnout_rate": 0.5828374742297456,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (1,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p071",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 1
+      },
+      "total_population": 3462,
+      "demographic_groups": [
+        {
+          "id": "p071-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3942386387847364,
+            "ryu": 0.6057613612152636
+          },
+          "turnout_rate": 0.5601402274565772,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (2,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p072",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 1
+      },
+      "total_population": 4337,
+      "demographic_groups": [
+        {
+          "id": "p072-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.37481948938220744,
+            "ryu": 0.6251805106177926
+          },
+          "turnout_rate": 0.6807771600433625,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (3,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p073",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": 1
+      },
+      "total_population": 4418,
+      "demographic_groups": [
+        {
+          "id": "p073-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4382401643879712,
+            "ryu": 0.5617598356120288
+          },
+          "turnout_rate": 0.6425249486695975,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (4,1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p074",
+      "editable": true,
+      "position": {
+        "q": -6,
+        "r": 2
+      },
+      "total_population": 5078,
+      "demographic_groups": [
+        {
+          "id": "p074-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6319776852428913,
+            "ryu": 0.36802231475710867
+          },
+          "turnout_rate": 0.6173283703974448,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-6,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p075",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 2
+      },
+      "total_population": 4060,
+      "demographic_groups": [
+        {
+          "id": "p075-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.602273116465658,
+            "ryu": 0.39772688353434205
+          },
+          "turnout_rate": 0.5956029675435275,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-5,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p076",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 2
+      },
+      "total_population": 3776,
+      "demographic_groups": [
+        {
+          "id": "p076-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5916263542510569,
+            "ryu": 0.4083736457489431
+          },
+          "turnout_rate": 0.5721381322364323,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-4,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p077",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 2
+      },
+      "total_population": 3642,
+      "demographic_groups": [
+        {
+          "id": "p077-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5834046847745776,
+            "ryu": 0.41659531522542237
+          },
+          "turnout_rate": 0.6501861247466877,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-3,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p078",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 2
+      },
+      "total_population": 3961,
+      "demographic_groups": [
+        {
+          "id": "p078-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5984163824282587,
+            "ryu": 0.4015836175717413
+          },
+          "turnout_rate": 0.641431775689125,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-2,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p079",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 2
+      },
+      "total_population": 4372,
+      "demographic_groups": [
+        {
+          "id": "p079-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5633656283840537,
+            "ryu": 0.4366343716159463
+          },
+          "turnout_rate": 0.6727835516445339,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p080",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 2
+      },
+      "total_population": 3674,
+      "demographic_groups": [
+        {
+          "id": "p080-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.51597358064726,
+            "ryu": 0.48402641935274004
+          },
+          "turnout_rate": 0.6142346638254821,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p081",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 2
+      },
+      "total_population": 3843,
+      "demographic_groups": [
+        {
+          "id": "p081-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.426549930870533,
+            "ryu": 0.573450069129467
+          },
+          "turnout_rate": 0.6402034871280193,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (1,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p082",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 2
+      },
+      "total_population": 3560,
+      "demographic_groups": [
+        {
+          "id": "p082-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.4216878173872829,
+            "ryu": 0.5783121826127171
+          },
+          "turnout_rate": 0.670599197782576,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (2,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p083",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 2
+      },
+      "total_population": 4075,
+      "demographic_groups": [
+        {
+          "id": "p083-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3813542377576232,
+            "ryu": 0.6186457622423768
+          },
+          "turnout_rate": 0.6030862923478708,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (3,2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p084",
+      "editable": true,
+      "position": {
+        "q": -6,
+        "r": 3
+      },
+      "total_population": 4054,
+      "demographic_groups": [
+        {
+          "id": "p084-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6026453738287091,
+            "ryu": 0.3973546261712909
+          },
+          "turnout_rate": 0.6660780387115665,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-6,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p085",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 3
+      },
+      "total_population": 3446,
+      "demographic_groups": [
+        {
+          "id": "p085-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6305506302602589,
+            "ryu": 0.3694493697397411
+          },
+          "turnout_rate": 0.5823236346128396,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-5,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p086",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 3
+      },
+      "total_population": 4088,
+      "demographic_groups": [
+        {
+          "id": "p086-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6066291642002761,
+            "ryu": 0.3933708357997239
+          },
+          "turnout_rate": 0.6590292712673544,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-4,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p087",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 3
+      },
+      "total_population": 4546,
+      "demographic_groups": [
+        {
+          "id": "p087-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6126864813826978,
+            "ryu": 0.38731351861730223
+          },
+          "turnout_rate": 0.6552091700723395,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-3,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p088",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 3
+      },
+      "total_population": 3818,
+      "demographic_groups": [
+        {
+          "id": "p088-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5834822659380734,
+            "ryu": 0.4165177340619266
+          },
+          "turnout_rate": 0.6588593317428604,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-2,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p089",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 3
+      },
+      "total_population": 3890,
+      "demographic_groups": [
+        {
+          "id": "p089-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6215500585548579,
+            "ryu": 0.3784499414451421
+          },
+          "turnout_rate": 0.5795566580141894,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p090",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 3
+      },
+      "total_population": 4303,
+      "demographic_groups": [
+        {
+          "id": "p090-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5096629149094224,
+            "ryu": 0.4903370850905776
+          },
+          "turnout_rate": 0.6836399416206405,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p091",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 3
+      },
+      "total_population": 3787,
+      "demographic_groups": [
+        {
+          "id": "p091-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.41595160139724613,
+            "ryu": 0.5840483986027538
+          },
+          "turnout_rate": 0.6640956641640514,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (1,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p092",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 3
+      },
+      "total_population": 3606,
+      "demographic_groups": [
+        {
+          "id": "p092-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.400019087959081,
+            "ryu": 0.599980912040919
+          },
+          "turnout_rate": 0.6927397357998415,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (2,3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p093",
+      "editable": true,
+      "position": {
+        "q": -6,
+        "r": 4
+      },
+      "total_population": 4434,
+      "demographic_groups": [
+        {
+          "id": "p093-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6054655350372196,
+            "ryu": 0.39453446496278044
+          },
+          "turnout_rate": 0.5672165253316053,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-6,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p094",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 4
+      },
+      "total_population": 4599,
+      "demographic_groups": [
+        {
+          "id": "p094-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6205447477474808,
+            "ryu": 0.3794552522525192
+          },
+          "turnout_rate": 0.6794960416387766,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-5,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p095",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 4
+      },
+      "total_population": 4263,
+      "demographic_groups": [
+        {
+          "id": "p095-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5741485600173473,
+            "ryu": 0.42585143998265274
+          },
+          "turnout_rate": 0.6908357500331476,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-4,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p096",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 4
+      },
+      "total_population": 4580,
+      "demographic_groups": [
+        {
+          "id": "p096-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5717741883173585,
+            "ryu": 0.4282258116826415
+          },
+          "turnout_rate": 0.6429658666718752,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-3,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p097",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 4
+      },
+      "total_population": 3950,
+      "demographic_groups": [
+        {
+          "id": "p097-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6053673010878264,
+            "ryu": 0.39463269891217356
+          },
+          "turnout_rate": 0.6762087233364582,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-2,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p098",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 4
+      },
+      "total_population": 3414,
+      "demographic_groups": [
+        {
+          "id": "p098-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6055051027052104,
+            "ryu": 0.3944948972947896
+          },
+          "turnout_rate": 0.6362544484087266,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p099",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 4
+      },
+      "total_population": 4239,
+      "demographic_groups": [
+        {
+          "id": "p099-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.46984028911218045,
+            "ryu": 0.5301597108878195
+          },
+          "turnout_rate": 0.6758299675188026,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p100",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 4
+      },
+      "total_population": 3354,
+      "demographic_groups": [
+        {
+          "id": "p100-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.3872636339813471,
+            "ryu": 0.6127363660186529
+          },
+          "turnout_rate": 0.627307879331056,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (1,4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p101",
+      "editable": true,
+      "position": {
+        "q": -6,
+        "r": 5
+      },
+      "total_population": 4962,
+      "demographic_groups": [
+        {
+          "id": "p101-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6324599133059382,
+            "ryu": 0.3675400866940618
+          },
+          "turnout_rate": 0.6708907243912108,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-6,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p102",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 5
+      },
+      "total_population": 4114,
+      "demographic_groups": [
+        {
+          "id": "p102-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6057832564227282,
+            "ryu": 0.39421674357727177
+          },
+          "turnout_rate": 0.6157452023937366,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-5,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p103",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 5
+      },
+      "total_population": 4431,
+      "demographic_groups": [
+        {
+          "id": "p103-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6035680665448308,
+            "ryu": 0.39643193345516925
+          },
+          "turnout_rate": 0.6470192681881599,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-4,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p104",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 5
+      },
+      "total_population": 4205,
+      "demographic_groups": [
+        {
+          "id": "p104-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5708235806040466,
+            "ryu": 0.4291764193959534
+          },
+          "turnout_rate": 0.6319606663426385,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-3,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p105",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 5
+      },
+      "total_population": 3696,
+      "demographic_groups": [
+        {
+          "id": "p105-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6222830416634678,
+            "ryu": 0.3777169583365322
+          },
+          "turnout_rate": 0.6700663228984922,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-2,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p106",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 5
+      },
+      "total_population": 4014,
+      "demographic_groups": [
+        {
+          "id": "p106-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.613362126275897,
+            "ryu": 0.38663787372410297
+          },
+          "turnout_rate": 0.6670589846442453,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-1,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p107",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 5
+      },
+      "total_population": 4451,
+      "demographic_groups": [
+        {
+          "id": "p107-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5087425708957016,
+            "ryu": 0.49125742910429837
+          },
+          "turnout_rate": 0.574862046528142,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (0,5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p108",
+      "editable": true,
+      "position": {
+        "q": -6,
+        "r": 6
+      },
+      "total_population": 4842,
+      "demographic_groups": [
+        {
+          "id": "p108-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5968605799786746,
+            "ryu": 0.4031394200213254
+          },
+          "turnout_rate": 0.5763506454299204,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-6,6)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p109",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 6
+      },
+      "total_population": 4848,
+      "demographic_groups": [
+        {
+          "id": "p109-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5946591859310866,
+            "ryu": 0.4053408140689134
+          },
+          "turnout_rate": 0.6111276840558275,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-5,6)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p110",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 6
+      },
+      "total_population": 4092,
+      "demographic_groups": [
+        {
+          "id": "p110-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.5783306436613201,
+            "ryu": 0.42166935633867986
+          },
+          "turnout_rate": 0.6714758491609245,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_west",
+      "county_name": "Fairhaven West",
+      "name": "West (-4,6)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p111",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 6
+      },
+      "total_population": 3969,
+      "demographic_groups": [
+        {
+          "id": "p111-all",
+          "population_share": 1,
+          "vote_shares": {
+            "ken": 0.6100321702100336,
+            "ryu": 0.38996782978996636
+          },
+          "turnout_rate": 0.6351542703574523,
+          "name": "All voters"
+        }
+      ],
+      "county_id": "fairhaven_central",
+      "county_name": "Fairhaven Central",
+      "name": "Central (-3,6)",
+      "initial_district_id": "d1"
+    }
+  ],
+  "events": [],
+  "rules": {
+    "population_tolerance": 0.15,
+    "contiguity": "required"
+  },
+  "success_criteria": [
+    {
+      "id": "sc-district-count",
+      "required": true,
+      "description": "All four districts are in use and every precinct is assigned.",
+      "criterion": {
+        "type": "district_count"
+      }
+    },
+    {
+      "id": "sc-population-balance",
+      "required": true,
+      "description": "All four districts have roughly equal population (within 15%).",
+      "criterion": {
+        "type": "population_balance"
+      }
+    }
+  ],
+  "narrative": {
+    "character": {
+      "name": "You",
+      "role": "Mapmaker, Fairhaven",
+      "motivation": "The whole toolkit, one map — bigger, four districts, everything on the table at once. Draw a legal map, read the result, and you've got the fundamentals cold.\n"
+    },
+    "intro_slides": [
+      {
+        "body": "This is the whole kit. Fairhaven is bigger — four districts — and nothing is hidden: the Map Validity panel, the Lean view, the County borders, and the election result are all here from the start. Draw a legal map and watch what it produces.\n",
+        "heading": "Everything You've Learned"
+      },
+      {
+        "body": "A legal map is the same as ever: four districts, roughly equal in population, each one connected. The Map Validity panel tracks both — even the districts out and keep each whole until it's green. There's no seat target; read the result to see who your lines elect, then submit. Get this down and the maps ahead are the same craft with new twists.\n",
+        "heading": "A Complete Legal Map"
+      }
+    ],
+    "objective": "Draw four balanced, connected districts — a complete legal map — and read the result your lines produce, then submit. (No seat target; the outcome is yours to read, not to hit.)\n",
+    "epilogue": "That's everything: pick a district and paint it, keep the populations even and each district whole, and read the lean and the result to see who your lines elect. You've got the whole loop now.\nEvery race so far has come down to two sides. Next the map opens up — a third party with ground of its own to hold, then a candidate who answers to no party. Same tools, more corners to weigh. On to the three-way race.\n"
+  },
+  "default_district_id": "d1",
+  "terrain_tiles": [
+    {
+      "position": {
+        "q": -6,
+        "r": 0
+      },
+      "type": "mountain"
+    },
+    {
+      "position": {
+        "q": -5,
+        "r": -1
+      },
+      "type": "mountain"
+    },
+    {
+      "position": {
+        "q": -4,
+        "r": -2
+      },
+      "type": "mountain"
+    },
+    {
+      "position": {
+        "q": -3,
+        "r": -3
+      },
+      "type": "mountain"
+    },
+    {
+      "position": {
+        "q": -2,
+        "r": -4
+      },
+      "type": "mountain"
+    },
+    {
+      "position": {
+        "q": -1,
+        "r": -5
+      },
+      "type": "mountain"
+    },
+    {
+      "position": {
+        "q": 0,
+        "r": -6
+      },
+      "type": "mountain"
+    },
+    {
+      "position": {
+        "q": 6,
+        "r": 0
+      },
+      "type": "sea"
+    },
+    {
+      "position": {
+        "q": 5,
+        "r": 1
+      },
+      "type": "sea"
+    },
+    {
+      "position": {
+        "q": 4,
+        "r": 2
+      },
+      "type": "sea"
+    },
+    {
+      "position": {
+        "q": 3,
+        "r": 3
+      },
+      "type": "sea"
+    },
+    {
+      "position": {
+        "q": 2,
+        "r": 4
+      },
+      "type": "sea"
+    },
+    {
+      "position": {
+        "q": 1,
+        "r": 5
+      },
+      "type": "sea"
+    },
+    {
+      "position": {
+        "q": 0,
+        "r": 6
+      },
+      "type": "sea"
+    },
+    {
+      "position": {
+        "q": -1,
+        "r": 6
+      },
+      "type": "sea"
+    },
+    {
+      "position": {
+        "q": -2,
+        "r": 6
+      },
+      "type": "sea"
+    }
+  ],
+  "river_edges": [
+    [
+      "p022",
+      "p031"
+    ],
+    [
+      "p022",
+      "p032"
+    ],
+    [
+      "p023",
+      "p032"
+    ],
+    [
+      "p032",
+      "p033"
+    ],
+    [
+      "p033",
+      "p043"
+    ],
+    [
+      "p043",
+      "p044"
+    ],
+    [
+      "p044",
+      "p055"
+    ],
+    [
+      "p055",
+      "p056"
+    ],
+    [
+      "p056",
+      "p067"
+    ],
+    [
+      "p067",
+      "p068"
+    ],
+    [
+      "p068",
+      "p078"
+    ],
+    [
+      "p068",
+      "p079"
+    ],
+    [
+      "p069",
+      "p079"
+    ],
+    [
+      "p069",
+      "p080"
+    ],
+    [
+      "p070",
+      "p080"
+    ],
+    [
+      "p080",
+      "p081"
+    ],
+    [
+      "p081",
+      "p090"
+    ],
+    [
+      "p090",
+      "p091"
+    ],
+    [
+      "p091",
+      "p099"
+    ],
+    [
+      "p099",
+      "p100"
+    ],
+    [
+      "p100",
+      "p107"
+    ]
+  ],
+  "hide_election_results": false,
+  "hide_view_toolbar": false,
+  "guided": true
+}

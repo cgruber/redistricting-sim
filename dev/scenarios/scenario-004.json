@@ -14,12 +14,14 @@
     {
       "id": "ken",
       "name": "Ken Party",
-      "abbreviation": "KEN"
+      "abbreviation": "KEN",
+      "color": "#c96d00"
     },
     {
       "id": "ryu",
       "name": "Ryu Party",
-      "abbreviation": "RYU"
+      "abbreviation": "RYU",
+      "color": "#7b35a8"
     }
   ],
   "districts": [
@@ -44,3060 +46,3059 @@
       "name": "District 5"
     }
   ],
-  "default_district_id": "d1",
   "precincts": [
     {
       "id": "p001",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 0,
         "r": -6
       },
-      "total_population": 1488,
-      "initial_district_id": "d5",
-      "name": "South (0,-6)",
+      "total_population": 1601,
       "demographic_groups": [
         {
           "id": "p001-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6287,
-            "ryu": 0.3713
-          }
+            "ken": 0.6768944185785949,
+            "ryu": 0.3231055814214051
+          },
+          "turnout_rate": 0.5739571965066717,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (0,-6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p002",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 1,
         "r": -6
       },
-      "total_population": 1536,
-      "initial_district_id": "d5",
-      "name": "South (1,-6)",
+      "total_population": 1398,
       "demographic_groups": [
         {
           "id": "p002-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6796,
-            "ryu": 0.3204
-          }
+            "ken": 0.6166504183225334,
+            "ryu": 0.3833495816774666
+          },
+          "turnout_rate": 0.6701439496246167,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (1,-6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p003",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 2,
         "r": -6
       },
-      "total_population": 1500,
-      "initial_district_id": "d5",
-      "name": "South (2,-6)",
+      "total_population": 1375,
       "demographic_groups": [
         {
           "id": "p003-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6293,
-            "ryu": 0.3707
-          }
+            "ken": 0.660906296838075,
+            "ryu": 0.339093703161925
+          },
+          "turnout_rate": 0.6243280027410947,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (2,-6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p004",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 3,
         "r": -6
       },
-      "total_population": 1366,
-      "initial_district_id": "d5",
-      "name": "South (3,-6)",
+      "total_population": 1591,
       "demographic_groups": [
         {
           "id": "p004-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6849,
-            "ryu": 0.3151
-          }
+            "ken": 0.6520567374676466,
+            "ryu": 0.3479432625323534
+          },
+          "turnout_rate": 0.6062858423800208,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (3,-6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p005",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 4,
         "r": -6
       },
-      "total_population": 1520,
-      "initial_district_id": "d5",
-      "name": "South (4,-6)",
+      "total_population": 1541,
       "demographic_groups": [
         {
           "id": "p005-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6725,
-            "ryu": 0.3275
-          }
+            "ken": 0.658392451480031,
+            "ryu": 0.341607548519969
+          },
+          "turnout_rate": 0.6638239357853308,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (4,-6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p006",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 5,
         "r": -6
       },
-      "total_population": 1519,
-      "initial_district_id": "d5",
-      "name": "South (5,-6)",
+      "total_population": 1499,
       "demographic_groups": [
         {
           "id": "p006-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6431,
-            "ryu": 0.3569
-          }
+            "ken": 0.6320988536626101,
+            "ryu": 0.3679011463373899
+          },
+          "turnout_rate": 0.551823341625277,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (5,-6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p007",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 6,
         "r": -6
       },
-      "total_population": 1450,
-      "initial_district_id": "d5",
-      "name": "South (6,-6)",
+      "total_population": 1508,
       "demographic_groups": [
         {
           "id": "p007-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6496,
-            "ryu": 0.3504
-          }
+            "ken": 0.6878817821480334,
+            "ryu": 0.3121182178519666
+          },
+          "turnout_rate": 0.6754517627763561,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (6,-6)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p008",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": -1,
         "r": -5
       },
-      "total_population": 1458,
-      "initial_district_id": "d5",
-      "name": "South (-1,-5)",
+      "total_population": 1462,
       "demographic_groups": [
         {
           "id": "p008-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6523,
-            "ryu": 0.3477
-          }
+            "ken": 0.676597046032548,
+            "ryu": 0.323402953967452
+          },
+          "turnout_rate": 0.5513486929936335,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (-1,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p009",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 0,
         "r": -5
       },
-      "total_population": 1440,
-      "initial_district_id": "d5",
-      "name": "South (0,-5)",
+      "total_population": 1532,
       "demographic_groups": [
         {
           "id": "p009-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6525,
-            "ryu": 0.3475
-          }
+            "ken": 0.6432782848924399,
+            "ryu": 0.3567217151075601
+          },
+          "turnout_rate": 0.6433959238580428,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (0,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p010",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 1,
         "r": -5
       },
-      "total_population": 1430,
-      "initial_district_id": "d5",
-      "name": "South (1,-5)",
+      "total_population": 1578,
       "demographic_groups": [
         {
           "id": "p010-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6342,
-            "ryu": 0.3658
-          }
+            "ken": 0.6513170494697988,
+            "ryu": 0.34868295053020115
+          },
+          "turnout_rate": 0.6272591500892304,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (1,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p011",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 2,
         "r": -5
       },
-      "total_population": 1581,
-      "initial_district_id": "d5",
-      "name": "South (2,-5)",
+      "total_population": 1433,
       "demographic_groups": [
         {
           "id": "p011-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6581,
-            "ryu": 0.3419
-          }
+            "ken": 0.6498209505528212,
+            "ryu": 0.3501790494471788
+          },
+          "turnout_rate": 0.5988040699390694,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (2,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p012",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 3,
         "r": -5
       },
-      "total_population": 1523,
-      "initial_district_id": "d5",
-      "name": "South (3,-5)",
+      "total_population": 1353,
       "demographic_groups": [
         {
           "id": "p012-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6661,
-            "ryu": 0.3339
-          }
+            "ken": 0.684975771382451,
+            "ryu": 0.315024228617549
+          },
+          "turnout_rate": 0.5626414222526365,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (3,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p013",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 4,
         "r": -5
       },
-      "total_population": 1572,
-      "initial_district_id": "d5",
-      "name": "South (4,-5)",
+      "total_population": 1643,
       "demographic_groups": [
         {
           "id": "p013-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6678,
-            "ryu": 0.3322
-          }
+            "ken": 0.6380054291337729,
+            "ryu": 0.3619945708662271
+          },
+          "turnout_rate": 0.6999221012112684,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (4,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p014",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 5,
         "r": -5
       },
-      "total_population": 1634,
-      "initial_district_id": "d5",
-      "name": "South (5,-5)",
+      "total_population": 1601,
       "demographic_groups": [
         {
           "id": "p014-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6639,
-            "ryu": 0.3361
-          }
+            "ken": 0.6430385203287006,
+            "ryu": 0.35696147967129943
+          },
+          "turnout_rate": 0.6987484896555543,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (5,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p015",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 6,
         "r": -5
       },
-      "total_population": 1417,
-      "initial_district_id": "d5",
-      "name": "South (6,-5)",
+      "total_population": 1600,
       "demographic_groups": [
         {
           "id": "p015-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6651,
-            "ryu": 0.3349
-          }
+            "ken": 0.6448642895929515,
+            "ryu": 0.3551357104070485
+          },
+          "turnout_rate": 0.6400539293535985,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (6,-5)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p016",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": -2,
         "r": -4
       },
-      "total_population": 1536,
-      "initial_district_id": "d5",
-      "name": "South (-2,-4)",
+      "total_population": 1352,
       "demographic_groups": [
         {
           "id": "p016-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6833,
-            "ryu": 0.3167
-          }
+            "ken": 0.6315076976642012,
+            "ryu": 0.36849230233579877
+          },
+          "turnout_rate": 0.5787687522359193,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (-2,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p017",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": -1,
         "r": -4
       },
-      "total_population": 1555,
-      "initial_district_id": "d5",
-      "name": "South (-1,-4)",
+      "total_population": 1475,
       "demographic_groups": [
         {
           "id": "p017-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6244,
-            "ryu": 0.3756
-          }
+            "ken": 0.6451039706543088,
+            "ryu": 0.3548960293456912
+          },
+          "turnout_rate": 0.5991960113984532,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (-1,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p018",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 0,
         "r": -4
       },
-      "total_population": 1477,
-      "initial_district_id": "d5",
-      "name": "South (0,-4)",
+      "total_population": 1537,
       "demographic_groups": [
         {
           "id": "p018-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6113,
-            "ryu": 0.3887
-          }
+            "ken": 0.6385826775431633,
+            "ryu": 0.36141732245683666
+          },
+          "turnout_rate": 0.5511493808007799,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (0,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p019",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 1,
         "r": -4
       },
-      "total_population": 1455,
-      "initial_district_id": "d5",
-      "name": "South (1,-4)",
+      "total_population": 1505,
       "demographic_groups": [
         {
           "id": "p019-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6397,
-            "ryu": 0.3603
-          }
+            "ken": 0.676250669118017,
+            "ryu": 0.323749330881983
+          },
+          "turnout_rate": 0.6078273532679305,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (1,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p020",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 2,
         "r": -4
       },
-      "total_population": 1507,
-      "initial_district_id": "d5",
-      "name": "South (2,-4)",
+      "total_population": 1505,
       "demographic_groups": [
         {
           "id": "p020-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6145,
-            "ryu": 0.3855
-          }
+            "ken": 0.6556094779260457,
+            "ryu": 0.34439052207395426
+          },
+          "turnout_rate": 0.6066689435858279,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (2,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p021",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 3,
         "r": -4
       },
-      "total_population": 1373,
-      "initial_district_id": "d5",
-      "name": "South (3,-4)",
+      "total_population": 1499,
       "demographic_groups": [
         {
           "id": "p021-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6643,
-            "ryu": 0.3357
-          }
+            "ken": 0.6132100515067578,
+            "ryu": 0.3867899484932422
+          },
+          "turnout_rate": 0.6431523741106503,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (3,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p022",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 4,
         "r": -4
       },
-      "total_population": 1546,
-      "initial_district_id": "d5",
-      "name": "South (4,-4)",
+      "total_population": 1447,
       "demographic_groups": [
         {
           "id": "p022-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6168,
-            "ryu": 0.3832
-          }
+            "ken": 0.6332501390390098,
+            "ryu": 0.36674986096099016
+          },
+          "turnout_rate": 0.6556637475383468,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (4,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p023",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 5,
         "r": -4
       },
-      "total_population": 1375,
-      "initial_district_id": "d5",
-      "name": "South (5,-4)",
+      "total_population": 1632,
       "demographic_groups": [
         {
           "id": "p023-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6739,
-            "ryu": 0.3261
-          }
+            "ken": 0.6803830431587994,
+            "ryu": 0.3196169568412006
+          },
+          "turnout_rate": 0.6907914971467107,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (5,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p024",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 6,
         "r": -4
       },
-      "total_population": 1583,
-      "initial_district_id": "d5",
-      "name": "South (6,-4)",
+      "total_population": 1375,
       "demographic_groups": [
         {
           "id": "p024-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6287,
-            "ryu": 0.3713
-          }
+            "ken": 0.6495052090100945,
+            "ryu": 0.35049479098990555
+          },
+          "turnout_rate": 0.6210206352756359,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (6,-4)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p025",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": -3,
         "r": -3
       },
-      "total_population": 1549,
-      "initial_district_id": "d5",
-      "name": "South (-3,-3)",
+      "total_population": 1455,
       "demographic_groups": [
         {
           "id": "p025-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6295,
-            "ryu": 0.3705
-          }
+            "ken": 0.6700860671885311,
+            "ryu": 0.32991393281146886
+          },
+          "turnout_rate": 0.6189594619674608,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (-3,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p026",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": -2,
         "r": -3
       },
-      "total_population": 1555,
-      "initial_district_id": "d5",
-      "name": "South (-2,-3)",
+      "total_population": 1650,
       "demographic_groups": [
         {
           "id": "p026-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6158,
-            "ryu": 0.3842
-          }
+            "ken": 0.6691025114431978,
+            "ryu": 0.33089748855680223
+          },
+          "turnout_rate": 0.5883391686948016,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (-2,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p027",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": -1,
         "r": -3
       },
-      "total_population": 1569,
-      "initial_district_id": "d5",
-      "name": "South (-1,-3)",
+      "total_population": 1474,
       "demographic_groups": [
         {
           "id": "p027-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6382,
-            "ryu": 0.3618
-          }
+            "ken": 0.6623149400763214,
+            "ryu": 0.3376850599236786
+          },
+          "turnout_rate": 0.6680003504967317,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (-1,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p028",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 0,
         "r": -3
       },
-      "total_population": 1621,
-      "initial_district_id": "d5",
-      "name": "South (0,-3)",
+      "total_population": 1648,
       "demographic_groups": [
         {
           "id": "p028-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6687,
-            "ryu": 0.3313
-          }
+            "ken": 0.6373249400407076,
+            "ryu": 0.3626750599592924
+          },
+          "turnout_rate": 0.5584798820666038,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (0,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p029",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 1,
         "r": -3
       },
-      "total_population": 1461,
-      "initial_district_id": "d5",
-      "name": "South (1,-3)",
+      "total_population": 1481,
       "demographic_groups": [
         {
           "id": "p029-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6739,
-            "ryu": 0.3261
-          }
+            "ken": 0.6780008896254003,
+            "ryu": 0.3219991103745997
+          },
+          "turnout_rate": 0.5824122560559772,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (1,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p030",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 2,
         "r": -3
       },
-      "total_population": 1598,
-      "initial_district_id": "d5",
-      "name": "South (2,-3)",
+      "total_population": 1530,
       "demographic_groups": [
         {
           "id": "p030-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6365,
-            "ryu": 0.3635
-          }
+            "ken": 0.6265042229369283,
+            "ryu": 0.3734957770630717
+          },
+          "turnout_rate": 0.5783006853889674,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (2,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p031",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 3,
         "r": -3
       },
-      "total_population": 1568,
-      "initial_district_id": "d5",
-      "name": "South (3,-3)",
+      "total_population": 1430,
       "demographic_groups": [
         {
           "id": "p031-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6209,
-            "ryu": 0.3791
-          }
+            "ken": 0.6782661831751466,
+            "ryu": 0.32173381682485336
+          },
+          "turnout_rate": 0.5988826875109226,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (3,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p032",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 4,
         "r": -3
       },
-      "total_population": 1541,
-      "initial_district_id": "d5",
-      "name": "South (4,-3)",
+      "total_population": 1407,
       "demographic_groups": [
         {
           "id": "p032-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6554,
-            "ryu": 0.3446
-          }
+            "ken": 0.6125189750641584,
+            "ryu": 0.3874810249358416
+          },
+          "turnout_rate": 0.585771940916311,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (4,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p033",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 5,
         "r": -3
       },
       "total_population": 1482,
-      "initial_district_id": "d5",
-      "name": "South (5,-3)",
       "demographic_groups": [
         {
           "id": "p033-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6573,
-            "ryu": 0.3427
-          }
+            "ken": 0.6872570847161115,
+            "ryu": 0.31274291528388853
+          },
+          "turnout_rate": 0.6972499587573111,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (5,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p034",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 6,
         "r": -3
       },
-      "total_population": 1393,
-      "initial_district_id": "d5",
-      "name": "South (6,-3)",
+      "total_population": 1448,
       "demographic_groups": [
         {
           "id": "p034-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6535,
-            "ryu": 0.3465
-          }
+            "ken": 0.6260328269563615,
+            "ryu": 0.37396717304363847
+          },
+          "turnout_rate": 0.6745990251074545,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (6,-3)",
+      "initial_district_id": "d5"
     },
     {
       "id": "p035",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": -4,
         "r": -2
       },
-      "total_population": 1612,
-      "initial_district_id": "d4",
-      "name": "South (-4,-2)",
+      "total_population": 1457,
       "demographic_groups": [
         {
           "id": "p035-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6493,
-            "ryu": 0.3507
-          }
+            "ken": 0.6598306437768042,
+            "ryu": 0.3401693562231958
+          },
+          "turnout_rate": 0.5866134917130694,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (-4,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p036",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": -3,
         "r": -2
       },
-      "total_population": 1386,
-      "initial_district_id": "d4",
-      "name": "South (-3,-2)",
+      "total_population": 1352,
       "demographic_groups": [
         {
           "id": "p036-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6118,
-            "ryu": 0.3882
-          }
+            "ken": 0.6608763471432031,
+            "ryu": 0.3391236528567969
+          },
+          "turnout_rate": 0.6601625821436755,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (-3,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p037",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": -2,
         "r": -2
       },
-      "total_population": 1637,
-      "initial_district_id": "d4",
-      "name": "South (-2,-2)",
+      "total_population": 1599,
       "demographic_groups": [
         {
           "id": "p037-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6433,
-            "ryu": 0.3567
-          }
+            "ken": 0.6801110539957881,
+            "ryu": 0.3198889460042119
+          },
+          "turnout_rate": 0.5706490513402969,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (-2,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p038",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": -1,
         "r": -2
       },
-      "total_population": 1626,
-      "initial_district_id": "d4",
-      "name": "South (-1,-2)",
+      "total_population": 1466,
       "demographic_groups": [
         {
           "id": "p038-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6688,
-            "ryu": 0.3312
-          }
+            "ken": 0.680101389978081,
+            "ryu": 0.319898610021919
+          },
+          "turnout_rate": 0.6423266978701576,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (-1,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p039",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 0,
         "r": -2
       },
-      "total_population": 1458,
-      "initial_district_id": "d4",
-      "name": "South (0,-2)",
+      "total_population": 1521,
       "demographic_groups": [
         {
           "id": "p039-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6864,
-            "ryu": 0.3136
-          }
+            "ken": 0.6508106664381922,
+            "ryu": 0.3491893335618078
+          },
+          "turnout_rate": 0.5723622017423623,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (0,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p040",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 1,
         "r": -2
       },
-      "total_population": 1521,
-      "initial_district_id": "d4",
-      "name": "South (1,-2)",
+      "total_population": 1463,
       "demographic_groups": [
         {
           "id": "p040-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.625,
-            "ryu": 0.375
-          }
+            "ken": 0.6221104932203889,
+            "ryu": 0.3778895067796111
+          },
+          "turnout_rate": 0.6547583970823325,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (1,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p041",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 2,
         "r": -2
       },
-      "total_population": 1435,
-      "initial_district_id": "d4",
-      "name": "South (2,-2)",
+      "total_population": 1362,
       "demographic_groups": [
         {
           "id": "p041-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6518,
-            "ryu": 0.3482
-          }
+            "ken": 0.6548356330022216,
+            "ryu": 0.3451643669977784
+          },
+          "turnout_rate": 0.5613630200736225,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (2,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p042",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 3,
         "r": -2
       },
-      "total_population": 1441,
-      "initial_district_id": "d4",
-      "name": "South (3,-2)",
+      "total_population": 1536,
       "demographic_groups": [
         {
           "id": "p042-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6415,
-            "ryu": 0.3585
-          }
+            "ken": 0.6252284071221947,
+            "ryu": 0.37477159287780526
+          },
+          "turnout_rate": 0.6823675555177032,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (3,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p043",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 4,
         "r": -2
       },
-      "total_population": 1484,
-      "initial_district_id": "d4",
-      "name": "South (4,-2)",
+      "total_population": 1437,
       "demographic_groups": [
         {
           "id": "p043-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6229,
-            "ryu": 0.3771
-          }
+            "ken": 0.6254531698301434,
+            "ryu": 0.37454683016985657
+          },
+          "turnout_rate": 0.5928984676254914,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (4,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p044",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 5,
         "r": -2
       },
-      "total_population": 1456,
-      "initial_district_id": "d4",
-      "name": "South (5,-2)",
+      "total_population": 1562,
       "demographic_groups": [
         {
           "id": "p044-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6824,
-            "ryu": 0.3176
-          }
+            "ken": 0.6626712075248361,
+            "ryu": 0.3373287924751639
+          },
+          "turnout_rate": 0.6790036655962467,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (5,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p045",
       "editable": true,
-      "county_id": "lakeview_south",
       "position": {
         "q": 6,
         "r": -2
       },
-      "total_population": 1540,
-      "initial_district_id": "d4",
-      "name": "South (6,-2)",
+      "total_population": 1614,
       "demographic_groups": [
         {
           "id": "p045-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6314,
-            "ryu": 0.3686
-          }
+            "ken": 0.6726907839253545,
+            "ryu": 0.32730921607464547
+          },
+          "turnout_rate": 0.580387480952777,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_south",
+      "name": "South (6,-2)",
+      "initial_district_id": "d4"
     },
     {
       "id": "p046",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -5,
         "r": -1
       },
-      "total_population": 1364,
-      "initial_district_id": "d3",
-      "name": "South (-5,-1)",
+      "total_population": 1632,
       "demographic_groups": [
         {
           "id": "p046-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6575,
-            "ryu": 0.3425
-          }
+            "ken": 0.6725329945981503,
+            "ryu": 0.3274670054018497
+          },
+          "turnout_rate": 0.5964504934847356,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-5,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p047",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -4,
         "r": -1
       },
-      "total_population": 1602,
-      "initial_district_id": "d3",
-      "name": "South (-4,-1)",
+      "total_population": 1498,
       "demographic_groups": [
         {
           "id": "p047-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6116,
-            "ryu": 0.3884
-          }
+            "ken": 0.6178065736778081,
+            "ryu": 0.3821934263221919
+          },
+          "turnout_rate": 0.6469030990614556,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-4,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p048",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -3,
         "r": -1
       },
-      "total_population": 1376,
-      "initial_district_id": "d3",
-      "name": "South (-3,-1)",
+      "total_population": 1492,
       "demographic_groups": [
         {
           "id": "p048-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6588,
-            "ryu": 0.3412
-          }
+            "ken": 0.6853415865637362,
+            "ryu": 0.3146584134362638
+          },
+          "turnout_rate": 0.5544010894955136,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-3,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p049",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -2,
         "r": -1
       },
-      "total_population": 1608,
-      "initial_district_id": "d3",
-      "name": "South (-2,-1)",
+      "total_population": 1576,
       "demographic_groups": [
         {
           "id": "p049-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6159,
-            "ryu": 0.3841
-          }
+            "ken": 0.662220139913261,
+            "ryu": 0.337779860086739
+          },
+          "turnout_rate": 0.671645609033294,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-2,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p050",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -1,
         "r": -1
       },
-      "total_population": 1427,
-      "initial_district_id": "d3",
-      "name": "South (-1,-1)",
+      "total_population": 1488,
       "demographic_groups": [
         {
           "id": "p050-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6856,
-            "ryu": 0.3144
-          }
+            "ken": 0.6521021473780275,
+            "ryu": 0.3478978526219725
+          },
+          "turnout_rate": 0.5607319380273111,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-1,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p051",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 0,
         "r": -1
       },
-      "total_population": 1492,
-      "initial_district_id": "d3",
-      "name": "South (0,-1)",
+      "total_population": 1572,
       "demographic_groups": [
         {
           "id": "p051-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6889,
-            "ryu": 0.3111
-          }
+            "ken": 0.6662082738056779,
+            "ryu": 0.33379172619432207
+          },
+          "turnout_rate": 0.5753934373264201,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (0,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p052",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 1,
         "r": -1
       },
-      "total_population": 1518,
-      "initial_district_id": "d3",
-      "name": "South (1,-1)",
+      "total_population": 1426,
       "demographic_groups": [
         {
           "id": "p052-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6334,
-            "ryu": 0.3666
-          }
+            "ken": 0.6566291079111397,
+            "ryu": 0.3433708920888603
+          },
+          "turnout_rate": 0.6698173476848751,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (1,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p053",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 2,
         "r": -1
       },
-      "total_population": 1415,
-      "initial_district_id": "d3",
-      "name": "South (2,-1)",
+      "total_population": 1546,
       "demographic_groups": [
         {
           "id": "p053-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6895,
-            "ryu": 0.3105
-          }
+            "ken": 0.6217018723487854,
+            "ryu": 0.3782981276512146
+          },
+          "turnout_rate": 0.5711902771843598,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (2,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p054",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 3,
         "r": -1
       },
-      "total_population": 1470,
-      "initial_district_id": "d3",
-      "name": "South (3,-1)",
+      "total_population": 1586,
       "demographic_groups": [
         {
           "id": "p054-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6474,
-            "ryu": 0.3526
-          }
+            "ken": 0.6463472324982286,
+            "ryu": 0.35365276750177144
+          },
+          "turnout_rate": 0.5875487272511236,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (3,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p055",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 4,
         "r": -1
       },
-      "total_population": 1380,
-      "initial_district_id": "d3",
-      "name": "South (4,-1)",
+      "total_population": 1452,
       "demographic_groups": [
         {
           "id": "p055-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6476,
-            "ryu": 0.3524
-          }
+            "ken": 0.6370856167748571,
+            "ryu": 0.3629143832251429
+          },
+          "turnout_rate": 0.5674628375796602,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (4,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p056",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 5,
         "r": -1
       },
-      "total_population": 1538,
-      "initial_district_id": "d3",
-      "name": "South (5,-1)",
+      "total_population": 1367,
       "demographic_groups": [
         {
           "id": "p056-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6866,
-            "ryu": 0.3134
-          }
+            "ken": 0.6328599465824664,
+            "ryu": 0.36714005341753364
+          },
+          "turnout_rate": 0.6189959270181135,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (5,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p057",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 6,
         "r": -1
       },
-      "total_population": 1473,
-      "initial_district_id": "d3",
-      "name": "South (6,-1)",
+      "total_population": 1605,
       "demographic_groups": [
         {
           "id": "p057-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6764,
-            "ryu": 0.3236
-          }
+            "ken": 0.6740555947460234,
+            "ryu": 0.3259444052539766
+          },
+          "turnout_rate": 0.6774682059534824,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (6,-1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p058",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -6,
         "r": 0
       },
-      "total_population": 1598,
-      "initial_district_id": "d3",
-      "name": "Lakeshore (-6,0)",
+      "total_population": 1415,
       "demographic_groups": [
         {
           "id": "p058-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1782,
-            "ryu": 0.8218
-          }
+            "ken": 0.20738583600148558,
+            "ryu": 0.7926141639985145
+          },
+          "turnout_rate": 0.5942134197568522,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-6,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p059",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -5,
         "r": 0
       },
-      "total_population": 1549,
-      "initial_district_id": "d3",
-      "name": "Lakeshore (-5,0)",
+      "total_population": 1412,
       "demographic_groups": [
         {
           "id": "p059-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.198,
-            "ryu": 0.802
-          }
+            "ken": 0.17060022456571458,
+            "ryu": 0.8293997754342854
+          },
+          "turnout_rate": 0.6520944824093021,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-5,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p060",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -4,
         "r": 0
       },
-      "total_population": 1615,
-      "initial_district_id": "d3",
-      "name": "Lakeshore (-4,0)",
+      "total_population": 1406,
       "demographic_groups": [
         {
           "id": "p060-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1741,
-            "ryu": 0.8259
-          }
+            "ken": 0.18877329632639883,
+            "ryu": 0.8112267036736012
+          },
+          "turnout_rate": 0.6692367537878453,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-4,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p061",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -3,
         "r": 0
       },
-      "total_population": 1400,
-      "initial_district_id": "d3",
-      "name": "Lakeshore (-3,0)",
+      "total_population": 1606,
       "demographic_groups": [
         {
           "id": "p061-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2148,
-            "ryu": 0.7852
-          }
+            "ken": 0.14817459311336278,
+            "ryu": 0.8518254068866372
+          },
+          "turnout_rate": 0.6357506734319032,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-3,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p062",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -2,
         "r": 0
       },
-      "total_population": 1526,
-      "initial_district_id": "d3",
-      "name": "Lakeshore (-2,0)",
+      "total_population": 1448,
       "demographic_groups": [
         {
           "id": "p062-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1411,
-            "ryu": 0.8589
-          }
+            "ken": 0.2057281153835356,
+            "ryu": 0.7942718846164644
+          },
+          "turnout_rate": 0.6702898430405184,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-2,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p063",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -1,
         "r": 0
       },
-      "total_population": 1578,
-      "initial_district_id": "d3",
-      "name": "Lakeshore (-1,0)",
+      "total_population": 1359,
       "demographic_groups": [
         {
           "id": "p063-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1991,
-            "ryu": 0.8009
-          }
+            "ken": 0.20354112731292842,
+            "ryu": 0.7964588726870716
+          },
+          "turnout_rate": 0.6213550233398564,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-1,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p064",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 0,
         "r": 0
       },
-      "total_population": 1555,
-      "initial_district_id": "d3",
-      "name": "Lakeshore (0,0)",
+      "total_population": 1421,
       "demographic_groups": [
         {
           "id": "p064-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1618,
-            "ryu": 0.8382
-          }
+            "ken": 0.18947046503424644,
+            "ryu": 0.8105295349657535
+          },
+          "turnout_rate": 0.5735870184493251,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (0,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p065",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 1,
         "r": 0
       },
-      "total_population": 1549,
-      "initial_district_id": "d3",
-      "name": "Lakeshore (1,0)",
+      "total_population": 1640,
       "demographic_groups": [
         {
           "id": "p065-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.207,
-            "ryu": 0.793
-          }
+            "ken": 0.2196387495100498,
+            "ryu": 0.7803612504899502
+          },
+          "turnout_rate": 0.5628455462516286,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (1,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p066",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 2,
         "r": 0
       },
-      "total_population": 1467,
-      "initial_district_id": "d3",
-      "name": "Lakeshore (2,0)",
+      "total_population": 1645,
       "demographic_groups": [
         {
           "id": "p066-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1711,
-            "ryu": 0.8289
-          }
+            "ken": 0.17311903854832053,
+            "ryu": 0.8268809614516794
+          },
+          "turnout_rate": 0.6262637688778341,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (2,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p067",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 3,
         "r": 0
       },
-      "total_population": 1373,
-      "initial_district_id": "d3",
-      "name": "Lakeshore (3,0)",
+      "total_population": 1410,
       "demographic_groups": [
         {
           "id": "p067-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.164,
-            "ryu": 0.836
-          }
+            "ken": 0.174350678101182,
+            "ryu": 0.825649321898818
+          },
+          "turnout_rate": 0.5609759213984944,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (3,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p068",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 4,
         "r": 0
       },
-      "total_population": 1642,
-      "initial_district_id": "d3",
-      "name": "Lakeshore (4,0)",
+      "total_population": 1600,
       "demographic_groups": [
         {
           "id": "p068-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1528,
-            "ryu": 0.8472
-          }
+            "ken": 0.20078668151050805,
+            "ryu": 0.799213318489492
+          },
+          "turnout_rate": 0.6247486843145452,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (4,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p069",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 5,
         "r": 0
       },
-      "total_population": 1523,
-      "initial_district_id": "d3",
-      "name": "Lakeshore (5,0)",
+      "total_population": 1537,
       "demographic_groups": [
         {
           "id": "p069-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.1964,
-            "ryu": 0.8036
-          }
+            "ken": 0.15696278097108005,
+            "ryu": 0.8430372190289199
+          },
+          "turnout_rate": 0.6616088398266583,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (5,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p070",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 6,
         "r": 0
       },
-      "total_population": 1564,
-      "initial_district_id": "d3",
-      "name": "Lakeshore (6,0)",
+      "total_population": 1423,
       "demographic_groups": [
         {
           "id": "p070-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.2066,
-            "ryu": 0.7934
-          }
+            "ken": 0.17843865253031255,
+            "ryu": 0.8215613474696875
+          },
+          "turnout_rate": 0.6249174082535319,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (6,0)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p071",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -6,
         "r": 1
       },
-      "total_population": 1472,
-      "initial_district_id": "d3",
-      "name": "North (-6,1)",
+      "total_population": 1541,
       "demographic_groups": [
         {
           "id": "p071-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.55,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6258,
-            "ryu": 0.3742
-          }
+            "ken": 0.6753331168554724,
+            "ryu": 0.32466688314452763
+          },
+          "turnout_rate": 0.6296486367820762,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-6,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p072",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -5,
         "r": 1
       },
-      "total_population": 1561,
-      "initial_district_id": "d3",
-      "name": "North (-5,1)",
+      "total_population": 1571,
       "demographic_groups": [
         {
           "id": "p072-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.615,
-            "ryu": 0.385
-          }
+            "ken": 0.6150906842760742,
+            "ryu": 0.38490931572392584
+          },
+          "turnout_rate": 0.6432243628893047,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-5,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p073",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -4,
         "r": 1
       },
-      "total_population": 1459,
-      "initial_district_id": "d3",
-      "name": "North (-4,1)",
+      "total_population": 1613,
       "demographic_groups": [
         {
           "id": "p073-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.657,
-            "ryu": 0.343
-          }
+            "ken": 0.6714165673963726,
+            "ryu": 0.32858343260362743
+          },
+          "turnout_rate": 0.615264446742367,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-4,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p074",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -3,
         "r": 1
       },
-      "total_population": 1365,
-      "initial_district_id": "d3",
-      "name": "North (-3,1)",
+      "total_population": 1391,
       "demographic_groups": [
         {
           "id": "p074-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6703,
-            "ryu": 0.3297
-          }
+            "ken": 0.6495942440256477,
+            "ryu": 0.3504057559743523
+          },
+          "turnout_rate": 0.659848734003026,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-3,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p075",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -2,
         "r": 1
       },
-      "total_population": 1576,
-      "initial_district_id": "d3",
-      "name": "North (-2,1)",
+      "total_population": 1613,
       "demographic_groups": [
         {
           "id": "p075-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.69,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6607,
-            "ryu": 0.3393
-          }
+            "ken": 0.6483394838310779,
+            "ryu": 0.35166051616892213
+          },
+          "turnout_rate": 0.6748263289802707,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-2,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p076",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": -1,
         "r": 1
       },
-      "total_population": 1537,
-      "initial_district_id": "d3",
-      "name": "North (-1,1)",
+      "total_population": 1535,
       "demographic_groups": [
         {
           "id": "p076-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6156,
-            "ryu": 0.3844
-          }
+            "ken": 0.6465037423372268,
+            "ryu": 0.35349625766277315
+          },
+          "turnout_rate": 0.6576212655869312,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (-1,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p077",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 0,
         "r": 1
       },
-      "total_population": 1408,
-      "initial_district_id": "d3",
-      "name": "North (0,1)",
+      "total_population": 1503,
       "demographic_groups": [
         {
           "id": "p077-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.66,
-            "ryu": 0.34
-          }
+            "ken": 0.6790285233035683,
+            "ryu": 0.32097147669643167
+          },
+          "turnout_rate": 0.6655978828552179,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (0,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p078",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 1,
         "r": 1
       },
-      "total_population": 1503,
-      "initial_district_id": "d3",
-      "name": "North (1,1)",
+      "total_population": 1394,
       "demographic_groups": [
         {
           "id": "p078-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6114,
-            "ryu": 0.3886
-          }
+            "ken": 0.6672066548280418,
+            "ryu": 0.33279334517195824
+          },
+          "turnout_rate": 0.5822475867229514,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (1,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p079",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 2,
         "r": 1
       },
-      "total_population": 1467,
-      "initial_district_id": "d3",
-      "name": "North (2,1)",
+      "total_population": 1395,
       "demographic_groups": [
         {
           "id": "p079-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6844,
-            "ryu": 0.3156
-          }
+            "ken": 0.6671828299202025,
+            "ryu": 0.3328171700797975
+          },
+          "turnout_rate": 0.5599200978991576,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (2,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p080",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 3,
         "r": 1
       },
-      "total_population": 1493,
-      "initial_district_id": "d3",
-      "name": "North (3,1)",
+      "total_population": 1560,
       "demographic_groups": [
         {
           "id": "p080-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6295,
-            "ryu": 0.3705
-          }
+            "ken": 0.6497431985102594,
+            "ryu": 0.3502568014897406
+          },
+          "turnout_rate": 0.5684429488144815,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (3,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p081",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 4,
         "r": 1
       },
-      "total_population": 1354,
-      "initial_district_id": "d3",
-      "name": "North (4,1)",
+      "total_population": 1518,
       "demographic_groups": [
         {
           "id": "p081-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6798,
-            "ryu": 0.3202
-          }
+            "ken": 0.669494054634124,
+            "ryu": 0.33050594536587596
+          },
+          "turnout_rate": 0.6702843399718403,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (4,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p082",
       "editable": true,
-      "county_id": "lakeview_central",
       "position": {
         "q": 5,
         "r": 1
       },
-      "total_population": 1419,
-      "initial_district_id": "d3",
-      "name": "North (5,1)",
+      "total_population": 1372,
       "demographic_groups": [
         {
           "id": "p082-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6812,
-            "ryu": 0.3188
-          }
+            "ken": 0.6338046698272228,
+            "ryu": 0.36619533017277717
+          },
+          "turnout_rate": 0.6421057176194154,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_central",
+      "name": "Central (5,1)",
+      "initial_district_id": "d3"
     },
     {
       "id": "p083",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -6,
         "r": 2
       },
-      "total_population": 1527,
-      "initial_district_id": "d2",
-      "name": "North (-6,2)",
+      "total_population": 1407,
       "demographic_groups": [
         {
           "id": "p083-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6548,
-            "ryu": 0.3452
-          }
+            "ken": 0.6265408327803016,
+            "ryu": 0.3734591672196984
+          },
+          "turnout_rate": 0.6929890555096789,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-6,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p084",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -5,
         "r": 2
       },
-      "total_population": 1433,
-      "initial_district_id": "d2",
-      "name": "North (-5,2)",
+      "total_population": 1615,
       "demographic_groups": [
         {
           "id": "p084-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6496,
-            "ryu": 0.3504
-          }
+            "ken": 0.6338955489359797,
+            "ryu": 0.36610445106402034
+          },
+          "turnout_rate": 0.5612339581479319,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-5,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p085",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -4,
         "r": 2
       },
-      "total_population": 1355,
-      "initial_district_id": "d2",
-      "name": "North (-4,2)",
+      "total_population": 1408,
       "demographic_groups": [
         {
           "id": "p085-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6529,
-            "ryu": 0.3471
-          }
+            "ken": 0.6219172047451139,
+            "ryu": 0.3780827952548861
+          },
+          "turnout_rate": 0.686906180868391,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-4,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p086",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -3,
         "r": 2
       },
-      "total_population": 1390,
-      "initial_district_id": "d2",
-      "name": "North (-3,2)",
+      "total_population": 1436,
       "demographic_groups": [
         {
           "id": "p086-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6456,
-            "ryu": 0.3544
-          }
+            "ken": 0.6134494049102068,
+            "ryu": 0.38655059508979317
+          },
+          "turnout_rate": 0.5836904967087321,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-3,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p087",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -2,
         "r": 2
       },
-      "total_population": 1463,
-      "initial_district_id": "d2",
-      "name": "North (-2,2)",
+      "total_population": 1548,
       "demographic_groups": [
         {
           "id": "p087-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6703,
-            "ryu": 0.3297
-          }
+            "ken": 0.6601575293764472,
+            "ryu": 0.3398424706235528
+          },
+          "turnout_rate": 0.6043407721212134,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-2,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p088",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -1,
         "r": 2
       },
-      "total_population": 1646,
-      "initial_district_id": "d2",
-      "name": "North (-1,2)",
+      "total_population": 1608,
       "demographic_groups": [
         {
           "id": "p088-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6744,
-            "ryu": 0.3256
-          }
+            "ken": 0.6333482392504811,
+            "ryu": 0.3666517607495189
+          },
+          "turnout_rate": 0.668282318173442,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-1,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p089",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 0,
         "r": 2
       },
-      "total_population": 1528,
-      "initial_district_id": "d2",
-      "name": "North (0,2)",
+      "total_population": 1585,
       "demographic_groups": [
         {
           "id": "p089-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6378,
-            "ryu": 0.3622
-          }
+            "ken": 0.673109327442944,
+            "ryu": 0.32689067255705595
+          },
+          "turnout_rate": 0.6755116238142364,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (0,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p090",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 1,
         "r": 2
       },
-      "total_population": 1563,
-      "initial_district_id": "d2",
-      "name": "North (1,2)",
+      "total_population": 1410,
       "demographic_groups": [
         {
           "id": "p090-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6469,
-            "ryu": 0.3531
-          }
+            "ken": 0.6218331534042955,
+            "ryu": 0.37816684659570454
+          },
+          "turnout_rate": 0.5578930242685601,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (1,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p091",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 2,
         "r": 2
       },
-      "total_population": 1612,
-      "initial_district_id": "d2",
-      "name": "North (2,2)",
+      "total_population": 1585,
       "demographic_groups": [
         {
           "id": "p091-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.651,
-            "ryu": 0.349
-          }
+            "ken": 0.6171312091313302,
+            "ryu": 0.38286879086866976
+          },
+          "turnout_rate": 0.5623073516180739,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (2,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p092",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 3,
         "r": 2
       },
-      "total_population": 1535,
-      "initial_district_id": "d2",
-      "name": "North (3,2)",
+      "total_population": 1443,
       "demographic_groups": [
         {
           "id": "p092-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.65,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6167,
-            "ryu": 0.3833
-          }
+            "ken": 0.6883265597559511,
+            "ryu": 0.31167344024404886
+          },
+          "turnout_rate": 0.67171174462419,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (3,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p093",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 4,
         "r": 2
       },
-      "total_population": 1425,
-      "initial_district_id": "d2",
-      "name": "North (4,2)",
+      "total_population": 1379,
       "demographic_groups": [
         {
           "id": "p093-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6266,
-            "ryu": 0.3734
-          }
+            "ken": 0.6543266490846873,
+            "ryu": 0.3456733509153127
+          },
+          "turnout_rate": 0.6119625446968712,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (4,2)",
+      "initial_district_id": "d2"
     },
     {
       "id": "p094",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -6,
         "r": 3
       },
-      "total_population": 1626,
-      "initial_district_id": "d1",
-      "name": "North (-6,3)",
+      "total_population": 1544,
       "demographic_groups": [
         {
           "id": "p094-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6502,
-            "ryu": 0.3498
-          }
+            "ken": 0.6325039013847709,
+            "ryu": 0.36749609861522914
+          },
+          "turnout_rate": 0.5826319655403495,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-6,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p095",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -5,
         "r": 3
       },
-      "total_population": 1474,
-      "initial_district_id": "d1",
-      "name": "North (-5,3)",
+      "total_population": 1633,
       "demographic_groups": [
         {
           "id": "p095-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6254,
-            "ryu": 0.3746
-          }
+            "ken": 0.6381581388413906,
+            "ryu": 0.3618418611586094
+          },
+          "turnout_rate": 0.5962058014236391,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-5,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p096",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -4,
         "r": 3
       },
-      "total_population": 1541,
-      "initial_district_id": "d1",
-      "name": "North (-4,3)",
+      "total_population": 1358,
       "demographic_groups": [
         {
           "id": "p096-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6729,
-            "ryu": 0.3271
-          }
+            "ken": 0.6888572109304368,
+            "ryu": 0.31114278906956316
+          },
+          "turnout_rate": 0.5997833808418364,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-4,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p097",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -3,
         "r": 3
       },
-      "total_population": 1550,
-      "initial_district_id": "d1",
-      "name": "North (-3,3)",
+      "total_population": 1546,
       "demographic_groups": [
         {
           "id": "p097-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6685,
-            "ryu": 0.3315
-          }
+            "ken": 0.6767637070827186,
+            "ryu": 0.3232362929172814
+          },
+          "turnout_rate": 0.5746206888230517,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-3,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p098",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -2,
         "r": 3
       },
-      "total_population": 1556,
-      "initial_district_id": "d1",
-      "name": "North (-2,3)",
+      "total_population": 1594,
       "demographic_groups": [
         {
           "id": "p098-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6288,
-            "ryu": 0.3712
-          }
+            "ken": 0.6617448099888862,
+            "ryu": 0.3382551900111138
+          },
+          "turnout_rate": 0.6659318957943469,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-2,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p099",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -1,
         "r": 3
       },
-      "total_population": 1537,
-      "initial_district_id": "d1",
-      "name": "North (-1,3)",
+      "total_population": 1508,
       "demographic_groups": [
         {
           "id": "p099-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6619,
-            "ryu": 0.3381
-          }
+            "ken": 0.6843149090744555,
+            "ryu": 0.31568509092554453
+          },
+          "turnout_rate": 0.6586200805148109,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-1,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p100",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 0,
         "r": 3
       },
-      "total_population": 1571,
-      "initial_district_id": "d1",
-      "name": "North (0,3)",
+      "total_population": 1371,
       "demographic_groups": [
         {
           "id": "p100-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6356,
-            "ryu": 0.3644
-          }
+            "ken": 0.6405965352244676,
+            "ryu": 0.3594034647755324
+          },
+          "turnout_rate": 0.6178576281061396,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (0,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p101",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 1,
         "r": 3
       },
-      "total_population": 1609,
-      "initial_district_id": "d1",
-      "name": "North (1,3)",
+      "total_population": 1561,
       "demographic_groups": [
         {
           "id": "p101-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6829,
-            "ryu": 0.3171
-          }
+            "ken": 0.6655086984671652,
+            "ryu": 0.3344913015328348
+          },
+          "turnout_rate": 0.6290519805043004,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (1,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p102",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 2,
         "r": 3
       },
-      "total_population": 1530,
-      "initial_district_id": "d1",
-      "name": "North (2,3)",
+      "total_population": 1400,
       "demographic_groups": [
         {
           "id": "p102-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6817,
-            "ryu": 0.3183
-          }
+            "ken": 0.6524463686533273,
+            "ryu": 0.3475536313466727
+          },
+          "turnout_rate": 0.6168107075151056,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (2,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p103",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 3,
         "r": 3
       },
-      "total_population": 1358,
-      "initial_district_id": "d1",
-      "name": "North (3,3)",
+      "total_population": 1525,
       "demographic_groups": [
         {
           "id": "p103-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6732,
-            "ryu": 0.3268
-          }
+            "ken": 0.6848607197776437,
+            "ryu": 0.31513928022235627
+          },
+          "turnout_rate": 0.636806468013674,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (3,3)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p104",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -6,
         "r": 4
       },
-      "total_population": 1446,
-      "initial_district_id": "d1",
-      "name": "North (-6,4)",
+      "total_population": 1590,
       "demographic_groups": [
         {
           "id": "p104-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.7,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6665,
-            "ryu": 0.3335
-          }
+            "ken": 0.6279816882871092,
+            "ryu": 0.3720183117128908
+          },
+          "turnout_rate": 0.5893935383530334,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-6,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p105",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -5,
         "r": 4
       },
-      "total_population": 1506,
-      "initial_district_id": "d1",
-      "name": "North (-5,4)",
+      "total_population": 1394,
       "demographic_groups": [
         {
           "id": "p105-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.56,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6819,
-            "ryu": 0.3181
-          }
+            "ken": 0.6455019880644978,
+            "ryu": 0.35449801193550223
+          },
+          "turnout_rate": 0.6744881268707104,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-5,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p106",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -4,
         "r": 4
       },
-      "total_population": 1452,
-      "initial_district_id": "d1",
-      "name": "North (-4,4)",
+      "total_population": 1392,
       "demographic_groups": [
         {
           "id": "p106-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6333,
-            "ryu": 0.3667
-          }
+            "ken": 0.661108909137547,
+            "ryu": 0.33889109086245295
+          },
+          "turnout_rate": 0.6720662439474836,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-4,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p107",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -3,
         "r": 4
       },
-      "total_population": 1585,
-      "initial_district_id": "d1",
-      "name": "North (-3,4)",
+      "total_population": 1486,
       "demographic_groups": [
         {
           "id": "p107-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6251,
-            "ryu": 0.3749
-          }
+            "ken": 0.6192341423220933,
+            "ryu": 0.3807658576779067
+          },
+          "turnout_rate": 0.5673269624239765,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-3,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p108",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -2,
         "r": 4
       },
-      "total_population": 1479,
-      "initial_district_id": "d1",
-      "name": "North (-2,4)",
+      "total_population": 1425,
       "demographic_groups": [
         {
           "id": "p108-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6726,
-            "ryu": 0.3274
-          }
+            "ken": 0.6528949571400882,
+            "ryu": 0.34710504285991184
+          },
+          "turnout_rate": 0.6412642178474925,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-2,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p109",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -1,
         "r": 4
       },
-      "total_population": 1453,
-      "initial_district_id": "d1",
-      "name": "North (-1,4)",
+      "total_population": 1451,
       "demographic_groups": [
         {
           "id": "p109-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6534,
-            "ryu": 0.3466
-          }
+            "ken": 0.643945332299918,
+            "ryu": 0.356054667700082
+          },
+          "turnout_rate": 0.5800524653634057,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-1,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p110",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 0,
         "r": 4
       },
-      "total_population": 1596,
-      "initial_district_id": "d1",
-      "name": "North (0,4)",
+      "total_population": 1385,
       "demographic_groups": [
         {
           "id": "p110-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.62,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6585,
-            "ryu": 0.3415
-          }
+            "ken": 0.619937618598342,
+            "ryu": 0.38006238140165804
+          },
+          "turnout_rate": 0.6500251973047853,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (0,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p111",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 1,
         "r": 4
       },
-      "total_population": 1573,
-      "initial_district_id": "d1",
-      "name": "North (1,4)",
+      "total_population": 1436,
       "demographic_groups": [
         {
           "id": "p111-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6325,
-            "ryu": 0.3675
-          }
+            "ken": 0.6556163058057427,
+            "ryu": 0.3443836941942573
+          },
+          "turnout_rate": 0.5573934273910709,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (1,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p112",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 2,
         "r": 4
       },
-      "total_population": 1430,
-      "initial_district_id": "d1",
-      "name": "North (2,4)",
+      "total_population": 1488,
       "demographic_groups": [
         {
           "id": "p112-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.57,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6552,
-            "ryu": 0.3448
-          }
+            "ken": 0.6515770332142711,
+            "ryu": 0.3484229667857289
+          },
+          "turnout_rate": 0.6675043654860928,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (2,4)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p113",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -6,
         "r": 5
       },
-      "total_population": 1648,
-      "initial_district_id": "d1",
-      "name": "North (-6,5)",
+      "total_population": 1591,
       "demographic_groups": [
         {
           "id": "p113-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6777,
-            "ryu": 0.3223
-          }
+            "ken": 0.6239350824244321,
+            "ryu": 0.3760649175755679
+          },
+          "turnout_rate": 0.5863596968003549,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-6,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p114",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -5,
         "r": 5
       },
-      "total_population": 1633,
-      "initial_district_id": "d1",
-      "name": "North (-5,5)",
+      "total_population": 1605,
       "demographic_groups": [
         {
           "id": "p114-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.58,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6819,
-            "ryu": 0.3181
-          }
+            "ken": 0.6393418442644179,
+            "ryu": 0.36065815573558213
+          },
+          "turnout_rate": 0.6184619059436954,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-5,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p115",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -4,
         "r": 5
       },
-      "total_population": 1472,
-      "initial_district_id": "d1",
-      "name": "North (-4,5)",
+      "total_population": 1603,
       "demographic_groups": [
         {
           "id": "p115-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6552,
-            "ryu": 0.3448
-          }
+            "ken": 0.673214138392359,
+            "ryu": 0.326785861607641
+          },
+          "turnout_rate": 0.6150431770016439,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-4,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p116",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -3,
         "r": 5
       },
-      "total_population": 1362,
-      "initial_district_id": "d1",
-      "name": "North (-3,5)",
+      "total_population": 1438,
       "demographic_groups": [
         {
           "id": "p116-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6547,
-            "ryu": 0.3453
-          }
+            "ken": 0.619695879034698,
+            "ryu": 0.380304120965302
+          },
+          "turnout_rate": 0.6721486187423579,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-3,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p117",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -2,
         "r": 5
       },
-      "total_population": 1364,
-      "initial_district_id": "d1",
-      "name": "North (-2,5)",
+      "total_population": 1465,
       "demographic_groups": [
         {
           "id": "p117-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6563,
-            "ryu": 0.3437
-          }
+            "ken": 0.6224279969744384,
+            "ryu": 0.3775720030255616
+          },
+          "turnout_rate": 0.6776988082798198,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-2,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p118",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -1,
         "r": 5
       },
-      "total_population": 1358,
-      "initial_district_id": "d1",
-      "name": "North (-1,5)",
+      "total_population": 1554,
       "demographic_groups": [
         {
           "id": "p118-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.632,
-            "ryu": 0.368
-          }
+            "ken": 0.6528800204582512,
+            "ryu": 0.3471199795417488
+          },
+          "turnout_rate": 0.6960584161104634,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-1,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p119",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 0,
         "r": 5
       },
-      "total_population": 1388,
-      "initial_district_id": "d1",
-      "name": "North (0,5)",
+      "total_population": 1533,
       "demographic_groups": [
         {
           "id": "p119-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.63,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6488,
-            "ryu": 0.3512
-          }
+            "ken": 0.6598153264634311,
+            "ryu": 0.3401846735365689
+          },
+          "turnout_rate": 0.6826641862862743,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (0,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p120",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 1,
         "r": 5
       },
-      "total_population": 1644,
-      "initial_district_id": "d1",
-      "name": "North (1,5)",
+      "total_population": 1589,
       "demographic_groups": [
         {
           "id": "p120-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.6,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6696,
-            "ryu": 0.3304
-          }
+            "ken": 0.6113179816305637,
+            "ryu": 0.3886820183694363
+          },
+          "turnout_rate": 0.6433164390735329,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (1,5)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p121",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -6,
         "r": 6
       },
-      "total_population": 1516,
-      "initial_district_id": "d1",
-      "name": "North (-6,6)",
+      "total_population": 1380,
       "demographic_groups": [
         {
           "id": "p121-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6846,
-            "ryu": 0.3154
-          }
+            "ken": 0.6223932872340083,
+            "ryu": 0.37760671276599167
+          },
+          "turnout_rate": 0.5948115352541209,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-6,6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p122",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -5,
         "r": 6
       },
-      "total_population": 1449,
-      "initial_district_id": "d1",
-      "name": "North (-5,6)",
+      "total_population": 1522,
       "demographic_groups": [
         {
           "id": "p122-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.66,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6401,
-            "ryu": 0.3599
-          }
+            "ken": 0.6811512363143265,
+            "ryu": 0.3188487636856735
+          },
+          "turnout_rate": 0.6001145319547504,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-5,6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p123",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -4,
         "r": 6
       },
-      "total_population": 1567,
-      "initial_district_id": "d1",
-      "name": "North (-4,6)",
+      "total_population": 1597,
       "demographic_groups": [
         {
           "id": "p123-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.59,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6315,
-            "ryu": 0.3685
-          }
+            "ken": 0.6804154503531754,
+            "ryu": 0.3195845496468246
+          },
+          "turnout_rate": 0.6723191144759766,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-4,6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p124",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -3,
         "r": 6
       },
-      "total_population": 1603,
-      "initial_district_id": "d1",
-      "name": "North (-3,6)",
+      "total_population": 1591,
       "demographic_groups": [
         {
           "id": "p124-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.67,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6234,
-            "ryu": 0.3766
-          }
+            "ken": 0.6269431797415018,
+            "ryu": 0.3730568202584982
+          },
+          "turnout_rate": 0.5586589927203023,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-3,6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p125",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -2,
         "r": 6
       },
-      "total_population": 1353,
-      "initial_district_id": "d1",
-      "name": "North (-2,6)",
+      "total_population": 1589,
       "demographic_groups": [
         {
           "id": "p125-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.61,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6234,
-            "ryu": 0.3766
-          }
+            "ken": 0.684303552955389,
+            "ryu": 0.315696447044611
+          },
+          "turnout_rate": 0.6998874687589705,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-2,6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p126",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": -1,
         "r": 6
       },
-      "total_population": 1419,
-      "initial_district_id": "d1",
-      "name": "North (-1,6)",
+      "total_population": 1493,
       "demographic_groups": [
         {
           "id": "p126-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.64,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6315,
-            "ryu": 0.3685
-          }
+            "ken": 0.6265951414592564,
+            "ryu": 0.37340485854074357
+          },
+          "turnout_rate": 0.6243373429053463,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (-1,6)",
+      "initial_district_id": "d1"
     },
     {
       "id": "p127",
       "editable": true,
-      "county_id": "lakeview_north",
       "position": {
         "q": 0,
         "r": 6
       },
-      "total_population": 1445,
-      "initial_district_id": "d1",
-      "name": "North (0,6)",
+      "total_population": 1536,
       "demographic_groups": [
         {
           "id": "p127-all",
-          "name": "All voters",
-          "population_share": 1.0,
-          "turnout_rate": 0.68,
+          "population_share": 1,
           "vote_shares": {
-            "ken": 0.6273,
-            "ryu": 0.3727
-          }
+            "ken": 0.6287937201000751,
+            "ryu": 0.37120627989992494
+          },
+          "turnout_rate": 0.6733055816381238,
+          "name": "All voters"
         }
-      ]
+      ],
+      "county_id": "lakeview_north",
+      "name": "North (0,6)",
+      "initial_district_id": "d1"
     }
   ],
   "events": [],
   "rules": {
-    "population_tolerance": 0.10,
+    "population_tolerance": 0.1,
     "contiguity": "required"
   },
   "success_criteria": [
@@ -3153,20 +3154,21 @@
     },
     "intro_slides": [
       {
-        "heading": "The Corridor",
-        "body": "A narrow band of Ryu voters runs through the center of Lakeview County — along the lakeshore, where the apartments are dense and the politics lean hard Ryu.\n\nRight now, if those voters are in one district, they win it. Your predecessor let that happen. You won't."
+        "body": "A narrow band of Ryu voters runs through the center of Lakeview County — along the lakeshore, where the apartments are dense and the politics lean hard Ryu.\n\nRight now, if those voters are in one district, they win it. Your predecessor let that happen. You won't.",
+        "heading": "The Corridor"
       },
       {
-        "heading": "The Cracking Play",
-        "body": "Cracking is the opposite of packing. Instead of concentrating the opposition, you split them. Draw district lines that cut through the corridor, dividing Ryu voters across multiple districts.\n\nIn each district, the corridor's Ryu precincts are outnumbered by the surrounding Ken territory. Ryu voters still vote — but they lose everywhere."
+        "body": "Cracking is the opposite of packing. Instead of concentrating the opposition, you split them. Draw district lines that cut through the corridor, dividing Ryu voters across multiple districts.\n\nIn each district, the corridor's Ryu precincts are outnumbered by the surrounding Ken territory. Ryu voters still vote — but they lose everywhere.",
+        "heading": "The Cracking Play"
       },
       {
-        "heading": "The Disappearing Voice",
-        "body": "Notice what happens: a community that could win one seat now wins zero. Their total vote count hasn't changed. Their turnout hasn't dropped. But the lines moved, and their voice vanished.\n\nThis is what cracking does. It doesn't silence voters — it dilutes them until they don't matter."
+        "body": "Notice what happens: a community that could win one seat now wins zero. Their total vote count hasn't changed. Their turnout hasn't dropped. But the lines moved, and their voice vanished.\n\nThis is what cracking does. It doesn't silence voters — it dilutes them until they don't matter.",
+        "heading": "The Disappearing Voice"
       }
     ],
     "objective": "Crack the Ryu corridor across all 5 districts. Ken Party must win every seat."
   },
+  "default_district_id": "d1",
   "instigator_character": "party",
   "character_demographics": {
     "commissioner": "wm",
