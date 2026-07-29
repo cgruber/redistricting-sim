@@ -1,0 +1,5223 @@
+{
+  "format_version": "1",
+  "id": "scenario-010",
+  "title": "Vera County: The 55% Problem",
+  "election_type": "state_house",
+  "region": {
+    "id": "vera_county",
+    "name": "Vera County"
+  },
+  "geometry": {
+    "type": "hex_axial"
+  },
+  "parties": [
+    {
+      "id": "ken",
+      "name": "Ken Party",
+      "abbreviation": "KEN",
+      "color": "#c96d00"
+    },
+    {
+      "id": "ryu",
+      "name": "Ryu Party",
+      "abbreviation": "RYU",
+      "color": "#7b35a8"
+    }
+  ],
+  "districts": [
+    {
+      "id": "d1",
+      "name": "District 1"
+    },
+    {
+      "id": "d2",
+      "name": "District 2"
+    },
+    {
+      "id": "d3",
+      "name": "District 3"
+    },
+    {
+      "id": "d4",
+      "name": "District 4"
+    },
+    {
+      "id": "d5",
+      "name": "District 5"
+    }
+  ],
+  "precincts": [
+    {
+      "id": "p001",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -6
+      },
+      "total_population": 1478,
+      "demographic_groups": [
+        {
+          "id": "p001-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p001-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (0,-6)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p002",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -6
+      },
+      "total_population": 1362,
+      "demographic_groups": [
+        {
+          "id": "p002-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p002-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (1,-6)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p003",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -6
+      },
+      "total_population": 1559,
+      "demographic_groups": [
+        {
+          "id": "p003-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p003-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (2,-6)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p004",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -6
+      },
+      "total_population": 1496,
+      "demographic_groups": [
+        {
+          "id": "p004-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p004-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (3,-6)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p005",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -6
+      },
+      "total_population": 1384,
+      "demographic_groups": [
+        {
+          "id": "p005-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p005-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (4,-6)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p006",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -6
+      },
+      "total_population": 1598,
+      "demographic_groups": [
+        {
+          "id": "p006-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p006-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (5,-6)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p007",
+      "editable": true,
+      "position": {
+        "q": 6,
+        "r": -6
+      },
+      "total_population": 1615,
+      "demographic_groups": [
+        {
+          "id": "p007-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p007-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (6,-6)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p008",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -5
+      },
+      "total_population": 1585,
+      "demographic_groups": [
+        {
+          "id": "p008-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p008-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-1,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p009",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -5
+      },
+      "total_population": 1366,
+      "demographic_groups": [
+        {
+          "id": "p009-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p009-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (0,-5)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p010",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -5
+      },
+      "total_population": 1404,
+      "demographic_groups": [
+        {
+          "id": "p010-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p010-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (1,-5)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p011",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -5
+      },
+      "total_population": 1623,
+      "demographic_groups": [
+        {
+          "id": "p011-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p011-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (2,-5)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p012",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -5
+      },
+      "total_population": 1525,
+      "demographic_groups": [
+        {
+          "id": "p012-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p012-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (3,-5)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p013",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -5
+      },
+      "total_population": 1499,
+      "demographic_groups": [
+        {
+          "id": "p013-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p013-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (4,-5)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p014",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -5
+      },
+      "total_population": 1557,
+      "demographic_groups": [
+        {
+          "id": "p014-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p014-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (5,-5)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p015",
+      "editable": true,
+      "position": {
+        "q": 6,
+        "r": -5
+      },
+      "total_population": 1477,
+      "demographic_groups": [
+        {
+          "id": "p015-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p015-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (6,-5)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p016",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -4
+      },
+      "total_population": 1366,
+      "demographic_groups": [
+        {
+          "id": "p016-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p016-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-2,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p017",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -4
+      },
+      "total_population": 1389,
+      "demographic_groups": [
+        {
+          "id": "p017-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p017-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-1,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p018",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -4
+      },
+      "total_population": 1372,
+      "demographic_groups": [
+        {
+          "id": "p018-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p018-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (0,-4)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p019",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -4
+      },
+      "total_population": 1475,
+      "demographic_groups": [
+        {
+          "id": "p019-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p019-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (1,-4)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p020",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -4
+      },
+      "total_population": 1502,
+      "demographic_groups": [
+        {
+          "id": "p020-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p020-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (2,-4)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p021",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -4
+      },
+      "total_population": 1643,
+      "demographic_groups": [
+        {
+          "id": "p021-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p021-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (3,-4)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p022",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -4
+      },
+      "total_population": 1367,
+      "demographic_groups": [
+        {
+          "id": "p022-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p022-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (4,-4)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p023",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -4
+      },
+      "total_population": 1436,
+      "demographic_groups": [
+        {
+          "id": "p023-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p023-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (5,-4)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p024",
+      "editable": true,
+      "position": {
+        "q": 6,
+        "r": -4
+      },
+      "total_population": 1425,
+      "demographic_groups": [
+        {
+          "id": "p024-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p024-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (6,-4)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p025",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": -3
+      },
+      "total_population": 1390,
+      "demographic_groups": [
+        {
+          "id": "p025-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p025-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-3,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p026",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -3
+      },
+      "total_population": 1412,
+      "demographic_groups": [
+        {
+          "id": "p026-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p026-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-2,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p027",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -3
+      },
+      "total_population": 1415,
+      "demographic_groups": [
+        {
+          "id": "p027-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p027-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-1,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p028",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -3
+      },
+      "total_population": 1352,
+      "demographic_groups": [
+        {
+          "id": "p028-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p028-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (0,-3)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p029",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -3
+      },
+      "total_population": 1595,
+      "demographic_groups": [
+        {
+          "id": "p029-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p029-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (1,-3)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p030",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -3
+      },
+      "total_population": 1506,
+      "demographic_groups": [
+        {
+          "id": "p030-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p030-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (2,-3)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p031",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -3
+      },
+      "total_population": 1493,
+      "demographic_groups": [
+        {
+          "id": "p031-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p031-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (3,-3)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p032",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -3
+      },
+      "total_population": 1532,
+      "demographic_groups": [
+        {
+          "id": "p032-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p032-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (4,-3)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p033",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -3
+      },
+      "total_population": 1441,
+      "demographic_groups": [
+        {
+          "id": "p033-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p033-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (5,-3)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p034",
+      "editable": true,
+      "position": {
+        "q": 6,
+        "r": -3
+      },
+      "total_population": 1427,
+      "demographic_groups": [
+        {
+          "id": "p034-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p034-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (6,-3)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p035",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": -2
+      },
+      "total_population": 1529,
+      "demographic_groups": [
+        {
+          "id": "p035-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p035-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-4,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p036",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": -2
+      },
+      "total_population": 1433,
+      "demographic_groups": [
+        {
+          "id": "p036-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p036-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-3,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p037",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -2
+      },
+      "total_population": 1563,
+      "demographic_groups": [
+        {
+          "id": "p037-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p037-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-2,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p038",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -2
+      },
+      "total_population": 1483,
+      "demographic_groups": [
+        {
+          "id": "p038-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p038-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-1,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p039",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -2
+      },
+      "total_population": 1538,
+      "demographic_groups": [
+        {
+          "id": "p039-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p039-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (0,-2)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p040",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -2
+      },
+      "total_population": 1527,
+      "demographic_groups": [
+        {
+          "id": "p040-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p040-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (1,-2)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p041",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -2
+      },
+      "total_population": 1470,
+      "demographic_groups": [
+        {
+          "id": "p041-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p041-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (2,-2)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p042",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -2
+      },
+      "total_population": 1385,
+      "demographic_groups": [
+        {
+          "id": "p042-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p042-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (3,-2)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p043",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -2
+      },
+      "total_population": 1442,
+      "demographic_groups": [
+        {
+          "id": "p043-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p043-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (4,-2)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p044",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -2
+      },
+      "total_population": 1518,
+      "demographic_groups": [
+        {
+          "id": "p044-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p044-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (5,-2)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p045",
+      "editable": true,
+      "position": {
+        "q": 6,
+        "r": -2
+      },
+      "total_population": 1352,
+      "demographic_groups": [
+        {
+          "id": "p045-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p045-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (6,-2)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p046",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": -1
+      },
+      "total_population": 1630,
+      "demographic_groups": [
+        {
+          "id": "p046-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p046-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-5,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p047",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": -1
+      },
+      "total_population": 1388,
+      "demographic_groups": [
+        {
+          "id": "p047-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p047-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-4,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p048",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": -1
+      },
+      "total_population": 1622,
+      "demographic_groups": [
+        {
+          "id": "p048-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p048-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-3,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p049",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": -1
+      },
+      "total_population": 1497,
+      "demographic_groups": [
+        {
+          "id": "p049-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p049-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-2,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p050",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": -1
+      },
+      "total_population": 1595,
+      "demographic_groups": [
+        {
+          "id": "p050-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p050-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-1,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p051",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": -1
+      },
+      "total_population": 1445,
+      "demographic_groups": [
+        {
+          "id": "p051-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p051-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (0,-1)",
+      "initial_district_id": "d1"
+    },
+    {
+      "id": "p052",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": -1
+      },
+      "total_population": 1463,
+      "demographic_groups": [
+        {
+          "id": "p052-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p052-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (1,-1)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p053",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": -1
+      },
+      "total_population": 1432,
+      "demographic_groups": [
+        {
+          "id": "p053-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p053-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (2,-1)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p054",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": -1
+      },
+      "total_population": 1545,
+      "demographic_groups": [
+        {
+          "id": "p054-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p054-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (3,-1)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p055",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": -1
+      },
+      "total_population": 1605,
+      "demographic_groups": [
+        {
+          "id": "p055-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p055-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (4,-1)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p056",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": -1
+      },
+      "total_population": 1474,
+      "demographic_groups": [
+        {
+          "id": "p056-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p056-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (5,-1)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p057",
+      "editable": true,
+      "position": {
+        "q": 6,
+        "r": -1
+      },
+      "total_population": 1467,
+      "demographic_groups": [
+        {
+          "id": "p057-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p057-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (6,-1)",
+      "initial_district_id": "d2"
+    },
+    {
+      "id": "p058",
+      "editable": true,
+      "position": {
+        "q": -6,
+        "r": 0
+      },
+      "total_population": 1520,
+      "demographic_groups": [
+        {
+          "id": "p058-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p058-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-6,0)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p059",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 0
+      },
+      "total_population": 1439,
+      "demographic_groups": [
+        {
+          "id": "p059-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p059-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-5,0)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p060",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 0
+      },
+      "total_population": 1579,
+      "demographic_groups": [
+        {
+          "id": "p060-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p060-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-4,0)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p061",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 0
+      },
+      "total_population": 1462,
+      "demographic_groups": [
+        {
+          "id": "p061-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p061-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-3,0)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p062",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 0
+      },
+      "total_population": 1473,
+      "demographic_groups": [
+        {
+          "id": "p062-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p062-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-2,0)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p063",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 0
+      },
+      "total_population": 1451,
+      "demographic_groups": [
+        {
+          "id": "p063-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p063-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-1,0)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p064",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 0
+      },
+      "total_population": 1492,
+      "demographic_groups": [
+        {
+          "id": "p064-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p064-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (0,0)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p065",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 0
+      },
+      "total_population": 1540,
+      "demographic_groups": [
+        {
+          "id": "p065-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p065-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (1,0)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p066",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 0
+      },
+      "total_population": 1514,
+      "demographic_groups": [
+        {
+          "id": "p066-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p066-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (2,0)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p067",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 0
+      },
+      "total_population": 1593,
+      "demographic_groups": [
+        {
+          "id": "p067-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p067-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (3,0)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p068",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": 0
+      },
+      "total_population": 1503,
+      "demographic_groups": [
+        {
+          "id": "p068-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p068-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (4,0)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p069",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": 0
+      },
+      "total_population": 1506,
+      "demographic_groups": [
+        {
+          "id": "p069-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p069-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (5,0)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p070",
+      "editable": true,
+      "position": {
+        "q": 6,
+        "r": 0
+      },
+      "total_population": 1506,
+      "demographic_groups": [
+        {
+          "id": "p070-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p070-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (6,0)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p071",
+      "editable": true,
+      "position": {
+        "q": -6,
+        "r": 1
+      },
+      "total_population": 1457,
+      "demographic_groups": [
+        {
+          "id": "p071-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p071-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-6,1)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p072",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 1
+      },
+      "total_population": 1491,
+      "demographic_groups": [
+        {
+          "id": "p072-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p072-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-5,1)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p073",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 1
+      },
+      "total_population": 1533,
+      "demographic_groups": [
+        {
+          "id": "p073-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p073-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-4,1)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p074",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 1
+      },
+      "total_population": 1532,
+      "demographic_groups": [
+        {
+          "id": "p074-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p074-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-3,1)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p075",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 1
+      },
+      "total_population": 1455,
+      "demographic_groups": [
+        {
+          "id": "p075-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p075-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-2,1)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p076",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 1
+      },
+      "total_population": 1487,
+      "demographic_groups": [
+        {
+          "id": "p076-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p076-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (-1,1)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p077",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 1
+      },
+      "total_population": 1372,
+      "demographic_groups": [
+        {
+          "id": "p077-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p077-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (0,1)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p078",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 1
+      },
+      "total_population": 1385,
+      "demographic_groups": [
+        {
+          "id": "p078-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p078-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (1,1)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p079",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 1
+      },
+      "total_population": 1360,
+      "demographic_groups": [
+        {
+          "id": "p079-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p079-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (2,1)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p080",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 1
+      },
+      "total_population": 1472,
+      "demographic_groups": [
+        {
+          "id": "p080-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p080-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (3,1)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p081",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": 1
+      },
+      "total_population": 1443,
+      "demographic_groups": [
+        {
+          "id": "p081-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p081-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (4,1)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p082",
+      "editable": true,
+      "position": {
+        "q": 5,
+        "r": 1
+      },
+      "total_population": 1481,
+      "demographic_groups": [
+        {
+          "id": "p082-lat",
+          "population_share": 0.1,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p082-ang",
+          "population_share": 0.9,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_uplands",
+      "name": "Uplands (5,1)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p083",
+      "editable": true,
+      "position": {
+        "q": -6,
+        "r": 2
+      },
+      "total_population": 1423,
+      "demographic_groups": [
+        {
+          "id": "p083-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p083-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-6,2)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p084",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 2
+      },
+      "total_population": 1443,
+      "demographic_groups": [
+        {
+          "id": "p084-lat",
+          "population_share": 0.62,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p084-ang",
+          "population_share": 0.38,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-5,2)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p085",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 2
+      },
+      "total_population": 1536,
+      "demographic_groups": [
+        {
+          "id": "p085-lat",
+          "population_share": 0.44,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p085-ang",
+          "population_share": 0.56,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-4,2)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p086",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 2
+      },
+      "total_population": 1366,
+      "demographic_groups": [
+        {
+          "id": "p086-lat",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p086-ang",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-3,2)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p087",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 2
+      },
+      "total_population": 1485,
+      "demographic_groups": [
+        {
+          "id": "p087-lat",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p087-ang",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-2,2)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p088",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 2
+      },
+      "total_population": 1595,
+      "demographic_groups": [
+        {
+          "id": "p088-lat",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p088-ang",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-1,2)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p089",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 2
+      },
+      "total_population": 1553,
+      "demographic_groups": [
+        {
+          "id": "p089-lat",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p089-ang",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (0,2)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p090",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 2
+      },
+      "total_population": 1514,
+      "demographic_groups": [
+        {
+          "id": "p090-lat",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p090-ang",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (1,2)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p091",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 2
+      },
+      "total_population": 1528,
+      "demographic_groups": [
+        {
+          "id": "p091-lat",
+          "population_share": 0.44,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p091-ang",
+          "population_share": 0.56,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (2,2)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p092",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 2
+      },
+      "total_population": 1445,
+      "demographic_groups": [
+        {
+          "id": "p092-lat",
+          "population_share": 0.62,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p092-ang",
+          "population_share": 0.38,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (3,2)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p093",
+      "editable": true,
+      "position": {
+        "q": 4,
+        "r": 2
+      },
+      "total_population": 1593,
+      "demographic_groups": [
+        {
+          "id": "p093-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p093-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (4,2)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p094",
+      "editable": true,
+      "position": {
+        "q": -6,
+        "r": 3
+      },
+      "total_population": 1508,
+      "demographic_groups": [
+        {
+          "id": "p094-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p094-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-6,3)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p095",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 3
+      },
+      "total_population": 1648,
+      "demographic_groups": [
+        {
+          "id": "p095-lat",
+          "population_share": 0.62,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p095-ang",
+          "population_share": 0.38,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-5,3)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p096",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 3
+      },
+      "total_population": 1437,
+      "demographic_groups": [
+        {
+          "id": "p096-lat",
+          "population_share": 0.44,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p096-ang",
+          "population_share": 0.56,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-4,3)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p097",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 3
+      },
+      "total_population": 1352,
+      "demographic_groups": [
+        {
+          "id": "p097-lat",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p097-ang",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-3,3)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p098",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 3
+      },
+      "total_population": 1588,
+      "demographic_groups": [
+        {
+          "id": "p098-lat",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p098-ang",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-2,3)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p099",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 3
+      },
+      "total_population": 1394,
+      "demographic_groups": [
+        {
+          "id": "p099-lat",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p099-ang",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-1,3)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p100",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 3
+      },
+      "total_population": 1360,
+      "demographic_groups": [
+        {
+          "id": "p100-lat",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p100-ang",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (0,3)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p101",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 3
+      },
+      "total_population": 1472,
+      "demographic_groups": [
+        {
+          "id": "p101-lat",
+          "population_share": 0.44,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p101-ang",
+          "population_share": 0.56,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (1,3)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p102",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 3
+      },
+      "total_population": 1353,
+      "demographic_groups": [
+        {
+          "id": "p102-lat",
+          "population_share": 0.62,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p102-ang",
+          "population_share": 0.38,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (2,3)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p103",
+      "editable": true,
+      "position": {
+        "q": 3,
+        "r": 3
+      },
+      "total_population": 1596,
+      "demographic_groups": [
+        {
+          "id": "p103-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p103-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (3,3)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p104",
+      "editable": true,
+      "position": {
+        "q": -6,
+        "r": 4
+      },
+      "total_population": 1492,
+      "demographic_groups": [
+        {
+          "id": "p104-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p104-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-6,4)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p105",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 4
+      },
+      "total_population": 1375,
+      "demographic_groups": [
+        {
+          "id": "p105-lat",
+          "population_share": 0.62,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p105-ang",
+          "population_share": 0.38,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-5,4)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p106",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 4
+      },
+      "total_population": 1548,
+      "demographic_groups": [
+        {
+          "id": "p106-lat",
+          "population_share": 0.44,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p106-ang",
+          "population_share": 0.56,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-4,4)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p107",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 4
+      },
+      "total_population": 1457,
+      "demographic_groups": [
+        {
+          "id": "p107-lat",
+          "population_share": 0.44,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p107-ang",
+          "population_share": 0.56,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-3,4)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p108",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 4
+      },
+      "total_population": 1377,
+      "demographic_groups": [
+        {
+          "id": "p108-lat",
+          "population_share": 0.44,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p108-ang",
+          "population_share": 0.56,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-2,4)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p109",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 4
+      },
+      "total_population": 1414,
+      "demographic_groups": [
+        {
+          "id": "p109-lat",
+          "population_share": 0.44,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p109-ang",
+          "population_share": 0.56,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-1,4)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p110",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 4
+      },
+      "total_population": 1378,
+      "demographic_groups": [
+        {
+          "id": "p110-lat",
+          "population_share": 0.44,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p110-ang",
+          "population_share": 0.56,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (0,4)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p111",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 4
+      },
+      "total_population": 1427,
+      "demographic_groups": [
+        {
+          "id": "p111-lat",
+          "population_share": 0.62,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p111-ang",
+          "population_share": 0.38,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (1,4)",
+      "initial_district_id": "d4"
+    },
+    {
+      "id": "p112",
+      "editable": true,
+      "position": {
+        "q": 2,
+        "r": 4
+      },
+      "total_population": 1594,
+      "demographic_groups": [
+        {
+          "id": "p112-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p112-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (2,4)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p113",
+      "editable": true,
+      "position": {
+        "q": -6,
+        "r": 5
+      },
+      "total_population": 1592,
+      "demographic_groups": [
+        {
+          "id": "p113-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p113-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-6,5)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p114",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 5
+      },
+      "total_population": 1397,
+      "demographic_groups": [
+        {
+          "id": "p114-lat",
+          "population_share": 0.62,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p114-ang",
+          "population_share": 0.38,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-5,5)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p115",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 5
+      },
+      "total_population": 1502,
+      "demographic_groups": [
+        {
+          "id": "p115-lat",
+          "population_share": 0.62,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p115-ang",
+          "population_share": 0.38,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-4,5)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p116",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 5
+      },
+      "total_population": 1636,
+      "demographic_groups": [
+        {
+          "id": "p116-lat",
+          "population_share": 0.62,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p116-ang",
+          "population_share": 0.38,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-3,5)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p117",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 5
+      },
+      "total_population": 1504,
+      "demographic_groups": [
+        {
+          "id": "p117-lat",
+          "population_share": 0.62,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p117-ang",
+          "population_share": 0.38,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-2,5)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p118",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 5
+      },
+      "total_population": 1596,
+      "demographic_groups": [
+        {
+          "id": "p118-lat",
+          "population_share": 0.62,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p118-ang",
+          "population_share": 0.38,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-1,5)",
+      "initial_district_id": "d3"
+    },
+    {
+      "id": "p119",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 5
+      },
+      "total_population": 1531,
+      "demographic_groups": [
+        {
+          "id": "p119-lat",
+          "population_share": 0.62,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p119-ang",
+          "population_share": 0.38,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (0,5)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p120",
+      "editable": true,
+      "position": {
+        "q": 1,
+        "r": 5
+      },
+      "total_population": 1508,
+      "demographic_groups": [
+        {
+          "id": "p120-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p120-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (1,5)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p121",
+      "editable": true,
+      "position": {
+        "q": -6,
+        "r": 6
+      },
+      "total_population": 1419,
+      "demographic_groups": [
+        {
+          "id": "p121-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p121-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-6,6)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p122",
+      "editable": true,
+      "position": {
+        "q": -5,
+        "r": 6
+      },
+      "total_population": 1352,
+      "demographic_groups": [
+        {
+          "id": "p122-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p122-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-5,6)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p123",
+      "editable": true,
+      "position": {
+        "q": -4,
+        "r": 6
+      },
+      "total_population": 1420,
+      "demographic_groups": [
+        {
+          "id": "p123-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p123-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-4,6)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p124",
+      "editable": true,
+      "position": {
+        "q": -3,
+        "r": 6
+      },
+      "total_population": 1407,
+      "demographic_groups": [
+        {
+          "id": "p124-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p124-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-3,6)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p125",
+      "editable": true,
+      "position": {
+        "q": -2,
+        "r": 6
+      },
+      "total_population": 1490,
+      "demographic_groups": [
+        {
+          "id": "p125-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p125-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-2,6)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p126",
+      "editable": true,
+      "position": {
+        "q": -1,
+        "r": 6
+      },
+      "total_population": 1567,
+      "demographic_groups": [
+        {
+          "id": "p126-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p126-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (-1,6)",
+      "initial_district_id": "d5"
+    },
+    {
+      "id": "p127",
+      "editable": true,
+      "position": {
+        "q": 0,
+        "r": 6
+      },
+      "total_population": 1580,
+      "demographic_groups": [
+        {
+          "id": "p127-lat",
+          "population_share": 0.8,
+          "vote_shares": {
+            "ken": 0.28,
+            "ryu": 0.72
+          },
+          "turnout_rate": 0.6,
+          "name": "Latino voters",
+          "dimensions": {
+            "ethnicity": "latino"
+          }
+        },
+        {
+          "id": "p127-ang",
+          "population_share": 0.2,
+          "vote_shares": {
+            "ken": 0.72,
+            "ryu": 0.28
+          },
+          "turnout_rate": 0.6,
+          "name": "Anglo voters",
+          "dimensions": {
+            "ethnicity": "anglo"
+          }
+        }
+      ],
+      "county_id": "vera_coast",
+      "name": "Coast (0,6)",
+      "initial_district_id": "d5"
+    }
+  ],
+  "events": [],
+  "rules": {
+    "population_tolerance": 0.05,
+    "contiguity": "required"
+  },
+  "success_criteria": [
+    {
+      "id": "sc-district-count",
+      "required": true,
+      "description": "All five districts are in use and every precinct is assigned.",
+      "criterion": {
+        "type": "district_count"
+      },
+      "character": "commissioner"
+    },
+    {
+      "id": "sc-population-balance",
+      "required": true,
+      "description": "All five districts have roughly equal population (within 5%).",
+      "criterion": {
+        "type": "population_balance"
+      },
+      "character": "commissioner"
+    },
+    {
+      "id": "sc-compactness",
+      "required": true,
+      "description": "No district may be a thin strip or a sprawling tentacle — every district must be reasonably compact (compactness ≥ 42%).",
+      "criterion": {
+        "type": "compactness",
+        "operator": "gte",
+        "threshold": 0.42
+      },
+      "character": "judge"
+    },
+    {
+      "id": "sc-majority-minority",
+      "required": true,
+      "description": "At least one district must be an effective Latino majority (≥ 50% of population) — and, like every district, it must be compact.",
+      "criterion": {
+        "type": "majority_minority",
+        "group_filter": {
+          "dimension": "ethnicity",
+          "value": "latino"
+        },
+        "min_eligible_share": 0.5,
+        "min_districts": 1
+      },
+      "character": "judge"
+    }
+  ],
+  "narrative": {
+    "character": {
+      "name": "You",
+      "role": "Redistricting Commissioner, Vera County",
+      "motivation": "A federal court has struck Vera County's map. One district had concentrated the county's Latino community far past a majority, in a shape so irregular the court held that race predominated over traditional districting principles. Your task is to draw a lawful map — one that still gives the community a fair opportunity to elect its candidate of choice."
+    },
+    "intro_slides": [
+      {
+        "body": "Section 2 of the Voting Rights Act can require a majority-minority district. Under Thornburg v. Gingles (1986), where a minority community is large and compact enough to form a district majority, votes cohesively, and is usually outvoted by a bloc majority, a map that denies it that district may dilute its votes.\n\nVera County's Latino community, along the southern coast, meets that description. It is entitled to a district it can elect.",
+        "heading": "When the Law Requires a District"
+      },
+      {
+        "body": "The Constitution limits how such a district may be drawn. When race predominates over traditional principles and the district is not reasonably compact, courts apply strict scrutiny (Shaw v. Reno; Miller v. Johnson; Bethune-Hill v. Virginia).\n\nThe old map packed the community well past a bare majority into a thin, winding shape. That is what the court struck — not the majority-minority district itself, but its form.",
+        "heading": "But There Is a Ceiling"
+      },
+      {
+        "body": "This scenario uses simplified data. It measures each district's Latino population share — real Voting Rights Act analysis uses voting-age population and asks a harder question this game does not model: whether the community can actually elect its candidate of choice, given who turns out and how people vote.\n\nA real court also weighs intent alongside shape. Here, the compactness score stands in for that judgment — but a district does not have to look bizarre to be a racial gerrymander. Courts weigh intent and process, not shape alone; this scenario uses shape as the part you can see. What is faithful is the shape of the tradeoff, not the exact numbers.",
+        "heading": "What This Map Can and Can't Show"
+      },
+      {
+        "body": "A district only needs 50% + 1 to be an effective majority (Bartlett v. Strickland). You do not need to pack it higher, and you may not draw it as a tentacle to do so.\n\nDraw a map where the Latino community holds one COMPACT majority district. Keep all five districts compact, contiguous, and balanced in population.",
+        "heading": "Your Task"
+      }
+    ],
+    "objective": "Draw a compact, population-balanced map with at least one compact district where Latino voters are a majority (≥ 50%)."
+  },
+  "group_schema": {
+    "dimensions": {
+      "ethnicity": [
+        "latino",
+        "anglo"
+      ]
+    },
+    "eligibility_rules": []
+  },
+  "default_district_id": "d1",
+  "instigator_character": "commissioner",
+  "character_demographics": {
+    "commissioner": "wf",
+    "judge": "naf"
+  }
+}

@@ -16339,12 +16339,6 @@ function getCampaign(id2) {
 function visibleCampaigns(isDebug, registry = CAMPAIGN_REGISTRY) {
   return registry.filter((c3) => !c3.debugOnly || isDebug);
 }
-function isPreviewHost(hostname) {
-  return hostname.startsWith("dev.");
-}
-function rendersAsComingSoon(campaign, hostname, isDebug) {
-  return !!campaign.comingSoon && !isDebug && !isPreviewHost(hostname);
-}
 function saveLastPlayedScenario(scenarioId) {
   try {
     localStorage.setItem(LAST_PLAYED_KEY, scenarioId);
@@ -16383,7 +16377,7 @@ var init_campaigns = __esm({
       {
         id: "educational",
         title: "Educational Campaign",
-        description: "Explore eight scenarios that illustrate real gerrymandering techniques and their effects on elections.",
+        description: "Explore nine scenarios that illustrate real gerrymandering techniques and their effects on elections.",
         // Not yet playable in beta — shown as a "coming soon" placeholder on campaign-select
         // (GAME-128). The scenarios exist in the bundle and still resolve via ?campaign=educational.
         comingSoon: true,
@@ -16392,6 +16386,7 @@ var init_campaigns = __esm({
           "scenario-003",
           "scenario-004",
           "scenario-005",
+          "scenario-010",
           "scenario-006",
           "scenario-007",
           "scenario-008",
@@ -16609,6 +16604,7 @@ var require_main = __commonJS({
       { id: "scenario-007", title: "The Reform Map" },
       { id: "scenario-008", title: "Both Sides Unhappy" },
       { id: "scenario-009", title: "Cats vs. Dogs" },
+      { id: "scenario-010", title: "Vera County: The 55% Problem" },
       { id: "tutorial-003", title: "Hawthorn Bend: Reading the Vote" },
       { id: "tutorial-004", title: "Fairhaven: Putting It Together" }
     ];
@@ -16846,7 +16842,7 @@ var require_main = __commonJS({
             heading.textContent = campaign.title;
             const desc = document.createElement("p");
             desc.textContent = campaign.description;
-            if (rendersAsComingSoon(campaign, window.location.hostname, IS_DEBUG)) {
+            if (campaign.comingSoon) {
               card.className = "campaign-card coming-soon";
               card.setAttribute("aria-disabled", "true");
               const note = document.createElement("div");
