@@ -2,7 +2,9 @@
 /**
  * Generator for scenario-005.json: "Valle Verde: A Voice for the Valley"
  *
- * Lesson: Voting Rights Act (VRA) / majority-minority districts.
+ * Lesson: minority vote dilution / majority-minority districts. Deliberately does not name
+ * the Voting Rights Act — that doctrine is introduced in scenario-010, the next scenario in
+ * the campaign; naming it here would repeat scenario-010's own first slide one lesson early.
  *
  * Shape: hex-of-hexes, radius 6 → 127 precincts, 5 districts of ~25-26.
  * Coordinates: axial, centered at (0,0); range q,r in [-6,6].
@@ -219,7 +221,7 @@ $precincts
     "character": {
       "name": "You",
       "role": "Court-Appointed Redistricting Coordinator, Valle Verde County",
-      "motivation": "A federal court found that the current district map violates the Voting Rights Act. The Valley's Latino community has been cracked across multiple districts — diluted so thoroughly that they cannot elect their preferred candidate anywhere. You must draw a new map that complies with the law."
+      "motivation": "A federal court has ruled that the current district map is not legally valid. The Valley's Latino community has been cracked across multiple districts — diluted so thoroughly that they cannot elect their preferred candidate anywhere. You must draw a new map the court will accept."
     },
     "intro_slides": [
       {
@@ -227,12 +229,12 @@ $precincts
         "body": "Over the past decade, Valle Verde County's Valley has seen significant population growth. The Latino community, concentrated in this area, now makes up a meaningful share of the county's total population.\n\nBut on the current map, drawn ten years ago, the Valley is sliced across multiple districts — each one a piece of a different district, none large enough to matter."
       },
       {
-        "heading": "The Voting Rights Act",
-        "body": "Section 2 of the Voting Rights Act prohibits maps that dilute minority voting power. When a minority community is sufficiently large, geographically compact, and politically cohesive, mapmakers must give them a fair opportunity to elect their preferred representative.\n\nThe Valley meets all three conditions. A court has already ruled that the current map is illegal. Your job is to fix it."
+        "heading": "A Voice Split Too Thin",
+        "body": "When a community is large enough, lives close together, and tends to vote the same way, splitting it across several districts can leave it without a real voice anywhere — even if every district looks fine on its own.\n\nThe Valley meets that description. A court has already ruled that the current map doesn't hold up. Your job is to fix it."
       },
       {
         "heading": "A Tradeoff You'll See",
-        "body": "Creating a majority-Latino district solves the legal problem — but notice what happens to the surrounding districts. Concentrating a cohesive voting bloc into one place can shift the balance everywhere else.\n\nThis is one of the real tensions in redistricting. Even compliance with a fairness law reshapes who wins and loses. There is no map without consequences.\n\nNote: This scenario uses simplified demographic data to illustrate VRA concepts. Real-world redistricting involves far more complex demographic analysis and legal requirements."
+        "body": "Creating a majority-Latino district solves the legal problem — but notice what happens to the surrounding districts. Concentrating a cohesive voting bloc into one place can shift the balance everywhere else.\n\nThis is one of the real tensions in redistricting. Even compliance with the court's order reshapes who wins and loses. There is no map without consequences.\n\nNote: This scenario uses simplified demographic data to illustrate how minority vote dilution works. Real-world redistricting involves far more complex demographic analysis and legal requirements."
       }
     ],
     "objective": "Draw at least one majority-Latino district (≥ 50% Latino population) to give the Valley community a fair chance to elect their preferred representative."
