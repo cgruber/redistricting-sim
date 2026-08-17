@@ -45,7 +45,7 @@ export const CAMPAIGN_REGISTRY: Campaign[] = [
 		id: "educational",
 		title: "Educational Campaign",
 		description:
-			"Explore eight scenarios that illustrate real gerrymandering techniques and their effects on elections.",
+			"Explore nine scenarios that illustrate real gerrymandering techniques and their effects on elections.",
 		// Not yet playable in beta — shown as a "coming soon" placeholder on campaign-select
 		// (GAME-128). The scenarios exist in the bundle and still resolve via ?campaign=educational.
 		comingSoon: true,
@@ -54,6 +54,7 @@ export const CAMPAIGN_REGISTRY: Campaign[] = [
 			"scenario-003",
 			"scenario-004",
 			"scenario-005",
+			"scenario-010",
 			"scenario-006",
 			"scenario-007",
 			"scenario-008",

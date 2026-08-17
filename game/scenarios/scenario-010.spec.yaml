@@ -1,0 +1,233 @@
+# Spec file for scenario-010: "The 55% Problem" — VRA arc, Scenario A (GAME-078).
+# Source of truth for the map generation pipeline. Generated output: scenario-010.json
+#
+# TEACHES the Bethune-Hill compactness CEILING on majority-minority districts: a minority
+# community can be given an effective majority (VRA §2 / Thornburg v. Gingles), but it may NOT
+# be over-packed into a bizarre, non-compact shape (Shaw v. Reno; Miller v. Johnson; Bethune-Hill
+# v. Virginia). REMEDIATION framing: the STARTING map IS the court-struck over-packed district;
+# the player redraws a COMPACT opportunity district.
+#
+# ── Geometry & the two-witness proof (measured on the real R=6 / 127-precinct disc with the
+#    verbatim evaluate.ts compactness + population-share math; tool: redistricting-sim-vra-measure3) ──
+#
+#   Community = a SOUTHERN COASTAL SHELL: Latino population share is concentrated on the southern
+#   rim and falls off inland (rim 0.80 → ring 0.62 → 0.44 → deep interior 0.20 → anglo north 0.10).
+#   This shell is what makes the over-pack pedagogy run the correct direction: a COMPACT district
+#   touching the south necessarily mixes in lower-share inland hexes (→ ~0.52), while a THIN
+#   rim-hugging arm packs the shell higher (→ ~0.58) at the cost of compactness. (A solid-cap
+#   density model inverts this — the compact blob out-packs the thin arm — and the lesson dies.)
+#
+#   W1  WIN exists:  the proven Voronoi 5-partition (from scenario-007's e2e) has ONE compact
+#                    majority-Latino district — D2: compactness 0.744, Latino 0.524 ★ — with the
+#                    other four compact (≥0.72) and all five balanced [26,26,25,25,25]. #MM = 1.
+#   W2  OVER-PACK wall exists:  a thin rim+spur arm reaches Latino 0.582 (> the compact 0.524)
+#                    but compactness 0.347 < threshold. The authored STARTING map (below) is this
+#                    over-pack: its D5 is that arm.
+#   W2b CRACK fails: 5 vertical slices each dilute the community below 0.50 (#MM = 0) — proving
+#                    the community CAN be cracked, so majority_minority is a real constraint the
+#                    player must actively satisfy (not free).
+#
+#   Compact WIN Latino 0.524 sits comfortably below 0.55 (the "you didn't need 55%" beat — a
+#   compact district clears the Bartlett v. Strickland 50%+1 floor without chasing the packed
+#   0.58). NOTE: 0.524 is the UNWEIGHTED share; the durable proof test re-measures it under the
+#   real seed-77 population field. Player latitude (a compact district hugging more rim scores
+#   higher) means the win is not knife-edge on this exact partition.
+#
+# ── FLAGGED for owner review ──
+#   * STARTING map fails compactness AND population-balance (sizes [21,36,30,16,24], spread 20),
+#     not compactness-ALONE as the GAME-078 plan specifies. A BALANCED thin-arm start is not
+#     expressible with the available ZoneFilter cuts (q / r / hex_dist / near) on the sheared
+#     axial disc — the thin ★MM arm is geographically confined to the south, so its complement
+#     is north-heavy and will not split into four balanced cells under those primitives. The
+#     scenario is still winnable (redraw to the Voronoi partition) and the compactness lesson
+#     still lands; the extra red criterion (balance) is arguably realistic for a struck
+#     gerrymander. Options if the owner wants compactness-only: relax the start to a non-thin
+#     shape, or add an explicit per-hex initial-map rule to the pipeline.
+#   * NARRATIVE below is a DEV DRAFT (Increment 1, for dev testing). It DOES carry the DESIGN-014
+#     simplification disclaimers (intro slide "What This Map Can and Can't Show"): the sim measures
+#     population SHARE, not VAP / can-elect (guardrails #2/#3), and compact is NOT a safe harbor — a
+#     compact district can still be a racial gerrymander if race predominated (guardrail #8). It does
+#     NOT yet carry the both-sides value-debate epilogue (guardrail #4), which lands with the final
+#     prose in Increment 2 (owner-gated, advisor-reviewed, never to beta without sign-off) per
+#     DESIGN-014.
+
+format_version: "1"
+
+# ── Scenario identity ─────────────────────────────────────────────────────────
+
+scenario:
+  id: scenario-010
+  title: "Vera County: The 55% Problem"
+  election_type: state_house
+  region:
+    id: vera_county
+    name: Vera County
+
+# ── Stage 1: Map + terrain ────────────────────────────────────────────────────
+#
+# Pure political-geography puzzle — no terrain; precincts fill the full R=6 circle (127 hexes).
+
+map:
+  geometry: hex_axial
+  shape: hex_circle
+  radius: 6
+
+terrain: {}
+
+# ── Stage 2: Population ───────────────────────────────────────────────────────
+#
+# Reuses scenario-007's uniform field (seed 77, base 1500 +/- 150): the Voronoi win-partition
+# inherits 007's already-proven ±5% balance, and population is Stage-2 independent of the
+# Stage-3 demographics below.
+
+population:
+  seed: 77
+  base: 1500
+  variance: 150
+
+# ── Stage 3: Demographics (multi-group ethnicity — racially-polarized voting) ──
+#
+# Two ethnic groups (latino / anglo); per-hex population_split reproduces the SOUTHERN COASTAL
+# SHELL (first-match, north gate then hex-distance rings — 6 - hex_dist is "rings in from the rim"):
+#   r <= 1            latino 0.10   anglo north (all districts up here are anglo)
+#   r >= 2, d <= 3    latino 0.20   deep interior
+#   r >= 2, d == 4    latino 0.44   inland ring
+#   r >= 2, d == 5    latino 0.62   near-coast ring
+#   r >= 2, d == 6    latino 0.80   southern rim (the coastal community)
+# Bloc voting is COSMETIC (not gated): latino leans ryu, anglo leans ken — the Gingles bloc-voting
+# picture (an anglo majority usually defeats the latino-preferred candidate unless the community is
+# districted together). Only population_share drives the majority_minority criterion.
+
+demographics:
+  seed: 77
+  parties: [ken, ryu]
+  dimension: ethnicity
+  groups:
+    - value: latino
+      id_suffix: lat
+      name: Latino voters
+      party_base: { ken: 0.28 } # 28% ken / 72% ryu — cohesive minority bloc
+      turnout: 0.60
+    - value: anglo
+      id_suffix: ang
+      name: Anglo voters
+      party_base: { ken: 0.72 } # 72% ken / 28% ryu — anglo majority bloc
+      turnout: 0.60
+  zones:
+    - name: anglo_north
+      filter: { r_lte: 1 }
+      population_split: { latino: 0.10, anglo: 0.90 }
+    - name: deep_interior
+      filter: { hex_dist_lte: 3 }
+      population_split: { latino: 0.20, anglo: 0.80 }
+    - name: inland_ring
+      filter: { hex_dist_lte: 4 }
+      population_split: { latino: 0.44, anglo: 0.56 }
+    - name: nearcoast_ring
+      filter: { hex_dist_lte: 5 }
+      population_split: { latino: 0.62, anglo: 0.38 }
+    - name: southern_rim
+      filter: { default: true }
+      population_split: { latino: 0.80, anglo: 0.20 }
+  county_labels:
+    - id: vera_coast
+      filter: { r_gte: 2 }
+    - id: vera_uplands
+      filter: { default: true }
+
+# ── Stage 4: Assembly ─────────────────────────────────────────────────────────
+
+assembly:
+  parties:
+    - { id: ken, name: Ken Party, abbreviation: KEN, color: "#c96d00" }
+    - { id: ryu, name: Ryu Party, abbreviation: RYU, color: "#7b35a8" }
+  districts:
+    - { id: d1, name: District 1 }
+    - { id: d2, name: District 2 }
+    - { id: d3, name: District 3 }
+    - { id: d4, name: District 4 }
+    - { id: d5, name: District 5 }
+  default_district_id: d1
+  # STARTING MAP = the court-struck OVER-PACK (first-match zones). D5 is the thin rim+spur arm
+  # (compactness 0.347 < 0.42 ✗, Latino 0.582 ★MM ✓); D1-D4 are the four interior quadrants.
+  # Sizes [21,36,30,16,24] — see the balance FLAG in the header.
+  initial_district_rule:
+    type: zones
+    zones:
+      - filter: { q_lte: 0, q_gte: 0, r_gte: 1, r_lte: 5 } # central spur q==0, r in 1..5
+        district: d5
+      - filter: { hex_dist_lte: 5, r_lte: -1, q_lte: 0 } # NW interior
+        district: d1
+      - filter: { hex_dist_lte: 5, r_lte: -1, q_gte: 1 } # NE interior
+        district: d2
+      - filter: { hex_dist_lte: 5, r_gte: 0, q_lte: -1 } # SW interior
+        district: d3
+      - filter: { hex_dist_lte: 5, r_gte: 0, q_gte: 0 } # SE interior
+        district: d4
+      - filter: { r_gte: 0 } # leftover southern rim → arm
+        district: d5
+      - filter: { q_lte: 0 } # leftover north rim (west) → d1
+        district: d1
+      - filter: { default: true } # remainder (north rim east) → d2
+        district: d2
+  rules:
+    population_tolerance: 0.05
+    contiguity: required
+  success_criteria:
+    - id: sc-district-count
+      required: true
+      description: All five districts are in use and every precinct is assigned.
+      criterion: { type: district_count }
+      character: commissioner
+    - id: sc-population-balance
+      required: true
+      description: All five districts have roughly equal population (within 5%).
+      criterion: { type: population_balance }
+      character: commissioner
+    - id: sc-compactness
+      required: true
+      description: No district may be a thin strip or a sprawling tentacle — every district must be reasonably compact (compactness ≥ 42%).
+      criterion: { type: compactness, operator: gte, threshold: 0.42 }
+      character: judge
+    - id: sc-majority-minority
+      required: true
+      description: At least one district must be an effective Latino majority (≥ 50% of population) — and, like every district, it must be compact.
+      criterion:
+        type: majority_minority
+        group_filter: { dimension: ethnicity, value: latino }
+        min_eligible_share: 0.50
+        min_districts: 1
+      character: judge
+  narrative:
+    character:
+      name: You
+      role: Redistricting Commissioner, Vera County
+      motivation: |-
+        A federal court has struck Vera County's map. One district had concentrated the county's Latino community far past a majority, in a shape so irregular the court held that race predominated over traditional districting principles. Your task is to draw a lawful map — one that still gives the community a fair opportunity to elect its candidate of choice.
+    intro_slides:
+      - heading: When the Law Requires a District
+        body: |-
+          Section 2 of the Voting Rights Act can require a majority-minority district. Under Thornburg v. Gingles (1986), where a minority community is large and compact enough to form a district majority, votes cohesively, and is usually outvoted by a bloc majority, a map that denies it that district may dilute its votes.
+
+          Vera County's Latino community, along the southern coast, meets that description. It is entitled to a district it can elect.
+      - heading: But There Is a Ceiling
+        body: |-
+          The Constitution limits how such a district may be drawn. When race predominates over traditional principles and the district is not reasonably compact, courts apply strict scrutiny (Shaw v. Reno; Miller v. Johnson; Bethune-Hill v. Virginia).
+
+          The old map packed the community well past a bare majority into a thin, winding shape. That is what the court struck — not the majority-minority district itself, but its form.
+      - heading: What This Map Can and Can't Show
+        body: |-
+          This scenario uses simplified data. It measures each district's Latino population share — real Voting Rights Act analysis uses voting-age population and asks a harder question this game does not model: whether the community can actually elect its candidate of choice, given who turns out and how people vote.
+
+          A real court also weighs intent alongside shape. Here, the compactness score stands in for that judgment — but a district does not have to look bizarre to be a racial gerrymander. Courts weigh intent and process, not shape alone; this scenario uses shape as the part you can see. What is faithful is the shape of the tradeoff, not the exact numbers.
+      - heading: Your Task
+        body: |-
+          A district only needs 50% + 1 to be an effective majority (Bartlett v. Strickland). You do not need to pack it higher, and you may not draw it as a tentacle to do so.
+
+          Draw a map where the Latino community holds one COMPACT majority district. Keep all five districts compact, contiguous, and balanced in population.
+    objective: |-
+      Draw a compact, population-balanced map with at least one compact district where Latino voters are a majority (≥ 50%).
+  instigator_character: commissioner
+  character_demographics:
+    commissioner: wf
+    judge: naf

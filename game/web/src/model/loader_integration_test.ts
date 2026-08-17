@@ -76,6 +76,7 @@ const EXPECTED: Record<string, { precincts: number; districts: number }> = {
 	"scenario-007.json": { precincts: 127, districts: 5 },
 	"scenario-008.json": { precincts: 127, districts: 5 },
 	"scenario-009.json": { precincts: 127, districts: 5 },
+	"scenario-010.json": { precincts: 127, districts: 5 },
 };
 
 // Sanity: the glob must actually find scenarios (guards against a runfiles/data

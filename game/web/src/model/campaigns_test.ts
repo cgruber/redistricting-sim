@@ -70,10 +70,10 @@ test("tutorial campaign scenarioIds are tutorial-001 through tutorial-006", () =
 	assertEqual(tutorial!.scenarioIds[5], "tutorial-006", "sixth scenario (independent)");
 });
 
-test("educational campaign has exactly 8 scenario IDs", () => {
+test("educational campaign has exactly 9 scenario IDs", () => {
 	const edu = getCampaign("educational");
 	assertNotNull(edu, "educational exists");
-	assertEqual(edu!.scenarioIds.length, 8, "educational scenarioIds length");
+	assertEqual(edu!.scenarioIds.length, 9, "educational scenarioIds length");
 });
 
 test("educational campaign starts with scenario-002", () => {

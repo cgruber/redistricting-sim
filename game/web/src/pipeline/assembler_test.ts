@@ -23,13 +23,13 @@
  * Run via Bazel: bazel test //game/web/src/pipeline:assembler_test
  */
 
+import type { DistrictId, PartialScenario, PartyId, SuccessCriterion } from "../model/scenario.js";
+import { assertEqual, summarize, test } from "../testing/test_runner.js";
 import { assembleScenario } from "./assembler.js";
-import { generateTerrain } from "./terrain-generator.js";
 import { addDemographics, assignCounties } from "./demographics-stage.js";
 import { populateScenario } from "./population-stage.js";
-import type { PipelineSpec, AssemblySpec, CriterionSpec } from "./spec-types.js";
-import type { PartialScenario, PartyId, DistrictId, SuccessCriterion } from "../model/scenario.js";
-import { test, assertEqual, summarize } from "../testing/test_runner.js";
+import type { AssemblySpec, CriterionSpec, PipelineSpec } from "./spec-types.js";
+import { generateTerrain } from "./terrain-generator.js";
 
 const KEN = "ken" as PartyId;
 const RYU = "ryu" as PartyId;
@@ -54,7 +54,11 @@ function minimalSpec(radius: number): PipelineSpec {
 
 function makeEnrichedPartial(radius: number): PartialScenario {
 	const terrain = generateTerrain(minimalSpec(radius));
-	const withPop = populateScenario(terrain, { seed: 1, base: 1000, variance: 0 });
+	const withPop = populateScenario(terrain, {
+		seed: 1,
+		base: 1000,
+		variance: 0,
+	});
 	const withDemo = addDemographics(withPop, {
 		seed: 1,
 		parties: ["ken", "ryu"],
@@ -101,7 +105,12 @@ function baseAssemblySpec(overrides: Partial<AssemblySpec> = {}): AssemblySpec {
 				id: "sc-ken-seats",
 				required: true,
 				description: "Ken wins 2 seats",
-				criterion: { type: "seat_count", party: "ken", operator: "gte", count: 2 },
+				criterion: {
+					type: "seat_count",
+					party: "ken",
+					operator: "gte",
+					count: 2,
+				},
 				character: "governor",
 			},
 		],
@@ -306,6 +315,52 @@ test("assembleScenario: no-match row_band throws", () => {
 	assertEqual(threw, true);
 });
 
+// ─── Zones / initial_district_id ─────────────────────────────────────────────
+
+test("assembleScenario: zones assigns initial_district_id by first-match ZoneFilter", () => {
+	// GAME-078: the general zone-filter initial map behind the VRA arc's over-packed "before"
+	// picture. First matching filter wins — the exact same semantics as the demographics/county
+	// stages (matchesFilter is shared). An early hex_dist_lte claims the interior; later filters
+	// catch what falls through, which is how layered zones build rings. Here the center (0,0)
+	// matches BOTH d1 (hex_dist_lte:0) and d2 (q_lte:0), but d1 wins purely by list order — the
+	// property a thin, non-compact opportunity district drawn around a community depends on.
+	const partial = makeEnrichedPartial(2);
+	const spec = baseAssemblySpec({
+		initial_district_rule: {
+			type: "zones",
+			zones: [
+				{ filter: { hex_dist_lte: 0 }, district: "d1" },
+				{ filter: { q_lte: 0 }, district: "d2" },
+				{ filter: { default: true }, district: "d3" },
+			],
+		},
+	});
+	const result = assembleScenario(partial, spec);
+	for (const p of result.precincts) {
+		const pos = p.position as { q: number; r: number };
+		const hexDist = (Math.abs(pos.q) + Math.abs(pos.r) + Math.abs(-pos.q - pos.r)) / 2;
+		const expected = hexDist <= 0 ? D1 : pos.q <= 0 ? D2 : D3;
+		assertEqual(p.initial_district_id, expected);
+	}
+});
+
+test("assembleScenario: no-match zones throws", () => {
+	const partial = makeEnrichedPartial(1);
+	const spec = baseAssemblySpec({
+		initial_district_rule: {
+			type: "zones",
+			zones: [{ filter: { hex_dist_lte: -1 }, district: "d1" }],
+		},
+	});
+	let threw = false;
+	try {
+		assembleScenario(partial, spec);
+	} catch {
+		threw = true;
+	}
+	assertEqual(threw, true);
+});
+
 // ─── Precinct names ───────────────────────────────────────────────────────────
 
 test("assembleScenario: precinct name derived from county_id last segment + (q,r)", () => {
@@ -332,7 +387,11 @@ test("assembleScenario: rules population_tolerance and contiguity copied", () =>
 test("assembleScenario: rules compactness_threshold forwarded when present", () => {
 	const partial = makeEnrichedPartial(1);
 	const spec = baseAssemblySpec({
-		rules: { population_tolerance: 0.05, contiguity: "preferred", compactness_threshold: 0.4 },
+		rules: {
+			population_tolerance: 0.05,
+			contiguity: "preferred",
+			compactness_threshold: 0.4,
+		},
 	});
 	const result = assembleScenario(partial, spec);
 	assertEqual(result.rules?.compactness_threshold, 0.4);
@@ -414,6 +473,63 @@ test("assembleScenario: compactness criterion mapped with operator+threshold", (
 	assertEqual(c.type, "compactness");
 	assertEqual(c.operator, "gte");
 	assertEqual(c.threshold, 0.4);
+});
+
+test("assembleScenario: majority_minority criterion mapped with dimension/value group_filter", () => {
+	// GAME-078 VRA arc: the protected-group opportunity criterion. group_filter carries a
+	// dimension/value pair; min_eligible_share + min_districts pass through.
+	const partial = makeEnrichedPartial(1);
+	const spec = baseAssemblySpec({
+		success_criteria: [
+			{
+				id: "sc-mm",
+				required: true,
+				description: "One Latino-opportunity district",
+				criterion: {
+					type: "majority_minority",
+					group_filter: { dimension: "ethnicity", value: "latino" },
+					min_eligible_share: 0.5,
+					min_districts: 1,
+				},
+			},
+		],
+	});
+	const result = assembleScenario(partial, spec);
+	const c = result.success_criteria![0]!.criterion as Extract<
+		SuccessCriterion["criterion"],
+		{ type: "majority_minority" }
+	>;
+	assertEqual(c.type, "majority_minority");
+	const gf = c.group_filter as { dimension: string; value: string };
+	assertEqual(gf.dimension, "ethnicity");
+	assertEqual(gf.value, "latino");
+	assertEqual(c.min_eligible_share, 0.5);
+	assertEqual(c.min_districts, 1);
+});
+
+test("assembleScenario: majority_minority without a group_filter throws", () => {
+	const partial = makeEnrichedPartial(1);
+	const spec = baseAssemblySpec({
+		success_criteria: [
+			{
+				id: "sc-mm-bad",
+				required: true,
+				description: "Missing group_filter",
+				criterion: {
+					type: "majority_minority",
+					min_eligible_share: 0.5,
+					min_districts: 1,
+				} as CriterionSpec,
+			},
+		],
+	});
+	let threw = false;
+	try {
+		assembleScenario(partial, spec);
+	} catch {
+		threw = true;
+	}
+	assertEqual(threw, true);
 });
 
 test("assembleScenario: unknown criterion type throws", () => {

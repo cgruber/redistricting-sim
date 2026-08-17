@@ -1,14 +1,17 @@
-import type { PartialScenario } from "../model/scenario.js";
+import type { GroupSchema, PartialScenario } from "../model/scenario.js";
 import type { GroupId, PartyId } from "../model/scenario.js";
-import type { DemographicsSpec, ZoneFilter, CountyLabelSpec } from "./spec-types.js";
 import { makePrng } from "./prng.js";
+import type { CountyLabelSpec, DemographicsSpec, ZoneFilter } from "./spec-types.js";
 
 function hexDist(q: number, r: number): number {
 	const s = -q - r;
 	return (Math.abs(q) + Math.abs(r) + Math.abs(s)) / 2;
 }
 
-function matchesFilter(filter: ZoneFilter, q: number, r: number): boolean {
+// Exported so the assembler's `zones` initial_district_rule (GAME-078) can reuse the
+// exact same first-match ZoneFilter semantics as the demographics/county stages —
+// one predicate, not a third divergent copy.
+export function matchesFilter(filter: ZoneFilter, q: number, r: number): boolean {
 	if (filter.default) return true;
 	if (filter.q_lte !== undefined && q > filter.q_lte) return false;
 	if (filter.q_gte !== undefined && q < filter.q_gte) return false;
@@ -44,6 +47,17 @@ function matchesFilter(filter: ZoneFilter, q: number, r: number): boolean {
  * which is bit-identical to the pre-GAME-116 `secondary = 1 − primary`.
  */
 export function addDemographics(partial: PartialScenario, spec: DemographicsSpec): PartialScenario {
+	// GAME-078: multi-group (ethnicity) demographics is a separate, fully deterministic path
+	// for racially-polarized voting. The single-group partisan path below is unchanged; the
+	// two guards here just route to it and fail fast if a single-group spec is missing fields.
+	if (spec.dimension !== undefined && spec.groups !== undefined) {
+		return addMultiGroupDemographics(partial, spec);
+	}
+	if (spec.group === undefined || spec.turnout === undefined || spec.jitter === undefined) {
+		throw new Error(
+			"Single-group demographics requires `group`, `turnout`, and `jitter` (or provide `dimension` + `groups` for multi-group)",
+		);
+	}
 	const prng = makePrng(spec.seed);
 	const parties = spec.parties as PartyId[];
 	const primaryParty = parties[0]!;
@@ -59,12 +73,12 @@ export function addDemographics(partial: PartialScenario, spec: DemographicsSpec
 
 		// One jitter draw (primary only), then the turnout draw — order preserved
 		// from the 2-party version so seeded output is byte-identical at N=2.
-		const rawJitter = prng.nextDouble(-spec.jitter, spec.jitter);
-		const primaryBase = zone.party_base[primaryParty] ?? 0;
+		const rawJitter = prng.nextDouble(-spec.jitter!, spec.jitter!);
+		const primaryBase = zone.party_base![primaryParty] ?? 0;
 		const primaryShare = Math.min(1, Math.max(0, primaryBase + rawJitter));
 		const remainder = 1 - primaryShare;
 
-		const weights = otherParties.map((op) => zone.party_base[op] ?? 0);
+		const weights = otherParties.map((op) => zone.party_base![op] ?? 0);
 		const weightSum = weights.reduce((a, b) => a + b, 0);
 
 		const vote_shares = { [primaryParty]: primaryShare } as Record<PartyId, number>;
@@ -73,16 +87,16 @@ export function addDemographics(partial: PartialScenario, spec: DemographicsSpec
 			vote_shares[op] = remainder * w;
 		});
 
-		const turnout = prng.nextDouble(spec.turnout.min, spec.turnout.max);
+		const turnout = prng.nextDouble(spec.turnout!.min, spec.turnout!.max);
 
-		const groupId = `${p.id}-${spec.group.id_suffix}` as GroupId;
+		const groupId = `${p.id}-${spec.group!.id_suffix}` as GroupId;
 
 		return {
 			...p,
 			demographic_groups: [
 				{
 					id: groupId,
-					...(spec.group.name !== undefined ? { name: spec.group.name } : {}),
+					...(spec.group!.name !== undefined ? { name: spec.group!.name } : {}),
 					population_share: 1.0,
 					vote_shares,
 					turnout_rate: turnout,
@@ -92,6 +106,84 @@ export function addDemographics(partial: PartialScenario, spec: DemographicsSpec
 	});
 
 	return { ...partial, precincts };
+}
+
+/**
+ * Multi-group demographics (GAME-078): the racially-polarized-voting path behind the VRA
+ * arc. For every precinct, emits one demographic group per `spec.groups` def — each with
+ * its zone-local population share (`zone.population_split[value]`), a FIXED bloc vote lean
+ * (no seeded jitter), a fixed turnout, and `dimensions[dimension] = value` — and sets the
+ * scenario `group_schema` so the loader and the majority_minority criterion can read the
+ * protected-group share. Fully deterministic: unlike the single-group partisan path it makes
+ * no PRNG draws (the leans are cosmetic; only population share drives the criterion).
+ */
+function addMultiGroupDemographics(
+	partial: PartialScenario,
+	spec: DemographicsSpec,
+): PartialScenario {
+	const dimension = spec.dimension!;
+	const groups = spec.groups!;
+	const parties = spec.parties as PartyId[];
+	const primaryParty = parties[0]!;
+	const otherParties = parties.slice(1);
+
+	// Fail fast with a friendly message before the loader's Invariant 5 (per-precinct shares
+	// must sum to 1.0): every zone must declare a split over the groups that sums to 1.0.
+	for (const zone of spec.zones) {
+		const split = zone.population_split;
+		if (split === undefined) {
+			throw new Error(`Multi-group demographics: zone "${zone.name}" is missing population_split`);
+		}
+		const sum = groups.reduce((acc, g) => acc + (split[g.value] ?? 0), 0);
+		if (Math.abs(sum - 1) > 1e-9) {
+			throw new Error(
+				`Multi-group demographics: zone "${zone.name}" population_split sums to ${sum}, expected 1.0`,
+			);
+		}
+	}
+
+	const precincts = partial.precincts.map((p) => {
+		const pos = p.position;
+		if (!("q" in pos)) throw new Error(`Precinct ${p.id} has no hex position`);
+		const { q, r } = pos;
+
+		const zone = spec.zones.find((z) => matchesFilter(z.filter, q, r));
+		if (!zone) throw new Error(`No zone matched precinct ${p.id} at q=${q} r=${r}`);
+		const split = zone.population_split!;
+
+		const demographic_groups = groups.map((g) => {
+			// Fixed bloc lean — same N-party weight model as the single-group path, minus the
+			// seeded jitter (deterministic). Primary party gets its base; the remainder is split
+			// among the others by weight (equal split when none are specified).
+			const primaryShare = Math.min(1, Math.max(0, g.party_base[primaryParty] ?? 0));
+			const remainder = 1 - primaryShare;
+			const weights = otherParties.map((op) => g.party_base[op] ?? 0);
+			const weightSum = weights.reduce((a, b) => a + b, 0);
+			const vote_shares = { [primaryParty]: primaryShare } as Record<PartyId, number>;
+			otherParties.forEach((op, i) => {
+				const w = weightSum > 0 ? weights[i]! / weightSum : 1 / otherParties.length;
+				vote_shares[op] = remainder * w;
+			});
+
+			return {
+				id: `${p.id}-${g.id_suffix}` as GroupId,
+				...(g.name !== undefined ? { name: g.name } : {}),
+				population_share: split[g.value] ?? 0,
+				vote_shares,
+				turnout_rate: g.turnout,
+				dimensions: { [dimension]: g.value },
+			};
+		});
+
+		return { ...p, demographic_groups };
+	});
+
+	const group_schema: GroupSchema = {
+		dimensions: { [dimension]: groups.map((g) => g.value) },
+		eligibility_rules: [],
+	};
+
+	return { ...partial, precincts, group_schema };
 }
 
 export function assignCounties(
