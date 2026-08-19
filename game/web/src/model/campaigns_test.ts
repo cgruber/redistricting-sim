@@ -35,6 +35,8 @@ import {
 	saveLastPlayedScenario,
 	loadLastPlayedScenario,
 	visibleCampaigns,
+	isPreviewHost,
+	rendersAsComingSoon,
 } from "./campaigns.js";
 import { test, assertEqual, assertNull, assertNotNull, summarize } from "../testing/test_runner.js";
 
@@ -98,6 +100,74 @@ test("educational campaign is marked comingSoon", () => {
 
 test("tutorial campaign is not comingSoon", () => {
 	assertEqual(getCampaign("tutorial")!.comingSoon, undefined, "tutorial not comingSoon");
+});
+
+// ─── env-conditional comingSoon (GAME-131) ──────────────────────────────────
+// The educational arc keeps `comingSoon: true` in the data (above), but whether it RENDERS as a
+// placeholder depends on the runtime channel: open on the dev deploy (any `dev.` host) or in debug
+// mode (?debug), coming-soon everywhere else (beta / staging / production / a default local build).
+// Keyed on the runtime hostname — NOT import.meta.env.DEV, which is false on the dev deploy's
+// production vite build, and would wrongly close the card on the very deployment meant to open it.
+
+test("isPreviewHost: any dev.* host is a preview host", () => {
+	assertEqual(isPreviewHost("dev.pastthepost.gg"), true, "dev deploy");
+	assertEqual(isPreviewHost("dev.localhost"), true, "any dev. prefix");
+});
+
+test("isPreviewHost: beta / staging / production / localhost are NOT preview hosts", () => {
+	assertEqual(isPreviewHost("beta.pastthepost.gg"), false, "beta");
+	assertEqual(isPreviewHost("staging.pastthepost.gg"), false, "staging");
+	assertEqual(isPreviewHost("pastthepost.gg"), false, "production");
+	assertEqual(isPreviewHost("localhost"), false, "localhost");
+	assertEqual(isPreviewHost("127.0.0.1"), false, "loopback ip");
+	assertEqual(isPreviewHost(""), false, "empty host (fail-closed)");
+});
+
+test("rendersAsComingSoon: educational is OPEN on the dev deploy (dev.* host, no debug)", () => {
+	assertEqual(
+		rendersAsComingSoon(getCampaign("educational")!, "dev.pastthepost.gg", false),
+		false,
+		"educational unlocked on the dev deploy",
+	);
+});
+
+test("rendersAsComingSoon: educational is CLOSED on beta / staging / production", () => {
+	const edu = getCampaign("educational")!;
+	assertEqual(rendersAsComingSoon(edu, "beta.pastthepost.gg", false), true, "closed on beta");
+	assertEqual(rendersAsComingSoon(edu, "staging.pastthepost.gg", false), true, "closed on staging");
+	assertEqual(rendersAsComingSoon(edu, "pastthepost.gg", false), true, "closed on production");
+});
+
+test("rendersAsComingSoon: educational is CLOSED on a default local build, OPEN with ?debug", () => {
+	const edu = getCampaign("educational")!;
+	assertEqual(rendersAsComingSoon(edu, "localhost", false), true, "closed on localhost by default");
+	assertEqual(
+		rendersAsComingSoon(edu, "localhost", true),
+		false,
+		"debug (?debug) opens it locally",
+	);
+});
+
+test("rendersAsComingSoon: debug mode opens a comingSoon campaign on ANY host", () => {
+	assertEqual(
+		rendersAsComingSoon(getCampaign("educational")!, "beta.pastthepost.gg", true),
+		false,
+		"debug override opens educational even on beta",
+	);
+});
+
+test("rendersAsComingSoon: a non-comingSoon campaign is never a placeholder", () => {
+	const tut = getCampaign("tutorial")!;
+	assertEqual(
+		rendersAsComingSoon(tut, "beta.pastthepost.gg", false),
+		false,
+		"tutorial never coming-soon",
+	);
+	assertEqual(
+		rendersAsComingSoon(tut, "localhost", false),
+		false,
+		"tutorial never coming-soon (local)",
+	);
 });
 
 // ─── debugOnly gating (GAME-115) ────────────────────────────────────────────
