@@ -738,7 +738,9 @@ test("scenario-005 smoke: loads and renders 127 precincts", async ({ page }) => 
 	expect(await page.locator("path.hex").count()).toBe(127);
 });
 
-test("scenario-005 smoke: intro shows VRA character and objective", async ({ page }) => {
+test("scenario-005 smoke: intro shows the court-appointed coordinator and objective", async ({
+	page,
+}) => {
 	await page.goto("/?s=scenario-005&debug");
 	await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
 	await expect(page.locator("#char-role")).toContainText("Redistricting Coordinator");
@@ -1176,8 +1178,8 @@ test("scenario-007 winnability: five compact blobs pass reform criteria", async 
 	 * Hex-of-hexes R=6: 127 precincts sorted by (r, q).
 	 * Initial: diagonal strips (k=q+r) — non-compact, population-imbalanced → submit disabled.
 	 * Winning: 5 compact Voronoi-like blobs grown from seeds at d=4 (~72° apart).
-	 *   Sizes: 26, 26, 25, 25, 25 — all within ±10% of target (25.4).
-	 *   Compactness: 0.81–0.83 — well above the 0.40 threshold.
+	 *   Sizes: 26, 26, 25, 25, 25 precincts (target 25.4); passes the 5% population tolerance.
+	 *   Compactness: 0.81–0.83 — well above the 0.50 threshold.
 	 *
 	 * Precomputed via Voronoi BFS from seeds:
 	 *   D1 seed (4,0)  ~0°,   D2 seed (-1,4) ~74°,  D3 seed (-4,2) ~150°,
@@ -2463,6 +2465,22 @@ test("scenario-010 smoke: intro shows the commissioner role and the majority-min
 	await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
 	await expect(page.locator("#char-role")).toContainText("Commissioner");
 	await expect(page.locator("#objective-text")).toContainText("majority");
+});
+
+test("intro briefing: on a phone-sized viewport, every slide's controls stay reachable", async ({
+	page,
+}) => {
+	// scenario-010 has the longest briefing (persistent motivation + a three-paragraph
+	// disclaimer slide), so it overflows a phone screen on every slide. The intro screen must
+	// scroll: Playwright's click() scrolls the target into view and fails if it cannot.
+	await page.setViewportSize({ width: 375, height: 812 });
+	await page.goto("/?s=scenario-010&debug");
+	await expect(page.locator("#intro-screen")).toBeVisible({ timeout: 15_000 });
+	for (let slide = 1; slide < 4; slide++) {
+		await page.locator("#btn-intro-next").click();
+	}
+	await page.locator("#btn-intro-start").click();
+	await expect(page.locator("#intro-screen")).toBeHidden();
 });
 
 test("scenario-010 winnability: a compact Latino coast district + four compact blocks passes", async ({
