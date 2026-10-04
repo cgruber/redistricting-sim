@@ -203,7 +203,7 @@ assembly:
       name: You
       role: Redistricting Commissioner, Vera County
       motivation: |-
-        A federal court has struck Vera County's map. One district had concentrated the county's Latino community far past a majority, in a shape so irregular the court held that race predominated over traditional districting principles. Your task is to draw a lawful map — one that still gives the community a fair opportunity to elect its candidate of choice.
+        You've handled a case like this before, in Valle Verde — a community cracked apart, unable to elect anyone anywhere. This time the problem runs the other way. A federal court has struck Vera County's map. One district had concentrated the county's Latino community far past a majority, in a shape so irregular the court held that race predominated over traditional districting principles. Your task is to draw a lawful map — one that still gives the community a fair opportunity to elect its candidate of choice.
     intro_slides:
       - heading: When the Law Requires a District
         body: |-
@@ -220,6 +220,8 @@ assembly:
           This scenario uses simplified data. It measures each district's Latino population share — real Voting Rights Act analysis uses voting-age population and asks a harder question this game does not model: whether the community can actually elect its candidate of choice, given who turns out and how people vote.
 
           A real court also weighs intent alongside shape. Here, the compactness score stands in for that judgment — but a district does not have to look bizarre to be a racial gerrymander. Courts weigh intent and process, not shape alone; this scenario uses shape as the part you can see. What is faithful is the shape of the tradeoff, not the exact numbers.
+
+          One more simplification: the first slide treats "entitled to a district it can elect" as settled law. It isn't, right now — courts have been narrowing when a community can actually win that kind of case, and that narrowing is still underway. This scenario plays out as if the fight were already won. What happens when it isn't is a story for later.
       - heading: Your Task
         body: |-
           A district only needs 50% + 1 to be an effective majority (Bartlett v. Strickland). You do not need to pack it higher, and you may not draw it as a tentacle to do so.
